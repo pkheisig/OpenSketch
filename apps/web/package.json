@@ -1,0 +1,29 @@
+{
+  "name": "@opensketch/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@opensketch/editor-core": "workspace:*",
+    "@fontsource/inter": "^5.2.6",
+    "@fontsource/source-sans-3": "^5.2.6",
+    "@fontsource/source-serif-4": "^5.2.6",
+    "@fontsource/stix-two-text": "^5.2.6",
+    "dexie": "^4.0.11",
+    "dompurify": "^3.2.6",
+    "fabric": "^7.0.0",
+    "lucide-react": "^0.536.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-window": "^1.8.11",
+    "zustand": "^5.0.6"
+  },
+  "devDependencies": {
+    "@types/react-window": "^1.8.8"
+  }
+}

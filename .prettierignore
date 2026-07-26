@@ -1,0 +1,10 @@
+node_modules/
+inst/app/
+apps/web/public/assets/
+apps/web/src/generated/
+data/source-lock.json
+coverage/
+playwright-report/
+test-results/
+*.Rcheck/
+*.tar.gz

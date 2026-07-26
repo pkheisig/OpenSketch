@@ -1,0 +1,116 @@
+import { basename, join } from "node:path";
+import { readFile, readdir, stat } from "node:fs/promises";
+import sharp from "sharp";
+import type { AssetManifest } from "../../packages/editor-core/src/types";
+import { readJson, sha256 } from "./io";
+import { LOCK_PATH, MANIFEST_PATH, SVG_DIR, THUMB_DIR } from "./paths";
+import { assertSafeSvg } from "./sanitize-svg";
+import type { SourceLock } from "./types";
+
+async function exists(filePath: string): Promise<boolean> {
+  try {
+    return (await stat(filePath)).isFile();
+  } catch {
+    return false;
+  }
+}
+
+async function main(): Promise<void> {
+  const [manifest, lock] = await Promise.all([
+    readJson<AssetManifest>(MANIFEST_PATH),
+    readJson<SourceLock>(LOCK_PATH)
+  ]);
+  const errors: string[] = [];
+  const ids = new Set<string>();
+  const lockById = new Map(Object.values(lock.files).map((entry) => [entry.assetId, entry]));
+  if (lock.sanitizerVersion !== 3) {
+    errors.push(`source-lock.json uses sanitizer pipeline ${lock.sanitizerVersion}; expected 3.`);
+  }
+  if (manifest.families.length === 0 || Object.keys(lock.files).length === 0) {
+    errors.push("The NIH BioArt collection is empty; run pnpm assets:sync.");
+  }
+
+  for (const family of manifest.families) {
+    if (!family.commonsPage || !family.nihSourcePage) {
+      errors.push(`${family.familyId}: source URLs are missing.`);
+    }
+    if (family.license !== "Public Domain") {
+      errors.push(`${family.familyId}: license is not explicitly Public Domain.`);
+    }
+    if (!family.variants.some((variant) => variant.id === family.defaultVariantId)) {
+      errors.push(`${family.familyId}: default variant does not exist.`);
+    }
+    for (const variant of family.variants) {
+      if (ids.has(variant.id)) errors.push(`${variant.id}: duplicate asset ID.`);
+      ids.add(variant.id);
+      const svgPath = join(SVG_DIR, basename(variant.assetPath));
+      const thumbnailPath = join(THUMB_DIR, basename(variant.thumbnailPath));
+      if (!(await exists(svgPath))) errors.push(`${variant.id}: SVG is missing.`);
+      if (!(await exists(thumbnailPath))) errors.push(`${variant.id}: thumbnail is missing.`);
+      if (await exists(thumbnailPath)) {
+        try {
+          const thumbnail = await sharp(thumbnailPath).metadata();
+          if (thumbnail.format !== "webp") {
+            errors.push(`${variant.id}: thumbnail is not WebP.`);
+          }
+          if (
+            !thumbnail.width ||
+            !thumbnail.height ||
+            thumbnail.width > 256 ||
+            thumbnail.height > 256
+          ) {
+            errors.push(`${variant.id}: thumbnail exceeds 256 x 256 pixels.`);
+          }
+          if (!thumbnail.hasAlpha) {
+            errors.push(`${variant.id}: thumbnail has no alpha channel.`);
+          }
+        } catch (error) {
+          errors.push(`${variant.id}: thumbnail cannot be decoded: ${String(error)}`);
+        }
+      }
+      if (await exists(svgPath)) {
+        try {
+          const source = await readFile(svgPath, "utf8");
+          assertSafeSvg(source);
+          const lockEntry = lockById.get(variant.id);
+          if (!lockEntry) errors.push(`${variant.id}: source-lock entry is missing.`);
+          else if (lockEntry.sanitizerVersion !== lock.sanitizerVersion) {
+            errors.push(`${variant.id}: sanitizer pipeline version differs from source lock.`);
+          } else if (sha256(source) !== lockEntry.localSha256) {
+            errors.push(`${variant.id}: local SHA-256 differs from source-lock.json.`);
+          }
+        } catch (error) {
+          errors.push(`${variant.id}: ${String(error)}`);
+        }
+      }
+    }
+  }
+  for (const assetId of lockById.keys()) {
+    if (!ids.has(assetId)) errors.push(`${assetId}: source-lock entry is absent from manifest.`);
+  }
+  for (const [directory, extension] of [
+    [SVG_DIR, ".svg"],
+    [THUMB_DIR, ".webp"]
+  ] as const) {
+    for (const file of await readdir(directory)) {
+      if (
+        file.startsWith("nih-bioart-") &&
+        file.endsWith(extension) &&
+        !ids.has(file.slice(0, -extension.length))
+      ) {
+        errors.push(`${file}: unreferenced generated asset.`);
+      }
+    }
+  }
+
+  if (errors.length) {
+    console.error(errors.map((error) => `- ${error}`).join("\n"));
+    throw new Error(`Asset validation failed with ${errors.length} issue(s).`);
+  }
+  console.log(`Validated ${manifest.families.length} families and ${ids.size} SVG variants.`);
+}
+
+main().catch((error) => {
+  console.error(error);
+  process.exitCode = 1;
+});

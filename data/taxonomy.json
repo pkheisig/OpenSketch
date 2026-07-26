@@ -1,0 +1,159 @@
+{
+  "categories": [
+    "Anatomy",
+    "Animals",
+    "Arthropods",
+    "Bacteria",
+    "Cells and organelles",
+    "Cellular processes",
+    "Equipment",
+    "Molecules",
+    "People",
+    "Plants",
+    "Proteins",
+    "Shapes and arrows",
+    "Viruses",
+    "Other"
+  ],
+  "rules": [
+    { "category": "Viruses", "keywords": ["virus", "virion", "phage", "coronavirus"] },
+    { "category": "Bacteria", "keywords": ["bacteria", "bacterium", "bacillus", "coccus"] },
+    {
+      "category": "Arthropods",
+      "keywords": [
+        "arthropod",
+        "tick",
+        "mosquito",
+        "flea",
+        "mite",
+        "insect",
+        "bee",
+        "fly",
+        "larva",
+        "nymph",
+        "ixodes",
+        "anopheles",
+        "aedes"
+      ]
+    },
+    {
+      "category": "Cellular processes",
+      "keywords": [
+        "apoptosis",
+        "mitosis",
+        "meiosis",
+        "polymerization",
+        "transcription",
+        "translation",
+        "signaling",
+        "mutation",
+        "endocytosis",
+        "exocytosis"
+      ]
+    },
+    { "category": "Proteins", "keywords": ["protein", "antibody", "enzyme", "receptor"] },
+    {
+      "category": "Cells and organelles",
+      "keywords": [
+        "cell",
+        "mitochond",
+        "nucleus",
+        "organelle",
+        "neuron",
+        "macrophage",
+        "lymphocyte",
+        "basophil",
+        "eosinophil",
+        "fibroblast"
+      ]
+    },
+    {
+      "category": "Anatomy",
+      "keywords": [
+        "anatomy",
+        "brain",
+        "liver",
+        "pancreas",
+        "spleen",
+        "kidney",
+        "lung",
+        "heart",
+        "bone",
+        "skin",
+        "ear",
+        "digestive tract",
+        "respiratory tract",
+        "blood vessel"
+      ]
+    },
+    {
+      "category": "People",
+      "keywords": [
+        "person",
+        "people",
+        "human female",
+        "human male",
+        "scientist",
+        "doctor",
+        "patient",
+        "child",
+        "hiker"
+      ]
+    },
+    {
+      "category": "Plants",
+      "keywords": ["plant", "leaf", "flower", "grass", "tree", "root", "seedling"]
+    },
+    {
+      "category": "Animals",
+      "keywords": [
+        "animal",
+        "mouse",
+        "rat",
+        "hamster",
+        "guinea pig",
+        "cat",
+        "dog",
+        "bat",
+        "bird",
+        "chicken",
+        "fish",
+        "goat",
+        "horse",
+        "bear",
+        "fox",
+        "squirrel"
+      ]
+    },
+    {
+      "category": "Molecules",
+      "keywords": [
+        "molecule",
+        "compound",
+        "drug",
+        "lipid",
+        "inhibitor",
+        "metabolite",
+        "amino acid",
+        "monoxide"
+      ]
+    },
+    {
+      "category": "Equipment",
+      "keywords": [
+        "microscope",
+        "pipette",
+        "tube",
+        "plate",
+        "flask",
+        "machine",
+        "vial",
+        "centrifuge"
+      ]
+    },
+    {
+      "category": "Shapes and arrows",
+      "keywords": ["arrow", "shape", "bracket", "lightning bolt", "symbol"]
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+OpenSketch bundled font notices
+
+Source Sans 3 - attributed by the distribution to Google Inc.
+Source Serif 4 - attributed by the distribution to Google Inc.
+STIX Two Text - Copyright 2001-2021 The STIX Fonts Project Authors.
+
+These fonts are distributed under the SIL Open Font License 1.1:
+https://openfontlicense.org/open-font-license-official-text/
+
+The bundled NIAID NIH BioArt illustrations remain in the public domain.
+Per-asset author, source, Commons record, and public-domain status are retained
+in the OpenSketch asset manifest and source lock.
