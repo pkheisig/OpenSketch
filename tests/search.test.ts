@@ -38,4 +38,22 @@ describe("asset search", () => {
     expect(filterAssetFamilies([antibody], "immunoglobulins")).toEqual([antibody]);
     expect(filterAssetFamilies([antibody], "antibody", "Viruses")).toEqual([]);
   });
+
+  it("ranks exact names ahead of expansions and avoids partial biological-code matches", () => {
+    const tCell: AssetFamily = {
+      ...antibody,
+      familyId: "nih-bioart-509",
+      bioartEntryId: 509,
+      title: "T Cell",
+      keywords: ["T Cell", "cell", "lymphocyte"]
+    };
+    const cd80: AssetFamily = {
+      ...antibody,
+      familyId: "nih-bioart-68",
+      bioartEntryId: 68,
+      title: "CD80",
+      keywords: ["CD80", "protein"]
+    };
+    expect(filterAssetFamilies([cd80, tCell], "T cell")).toEqual([tCell]);
+  });
 });

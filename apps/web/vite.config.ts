@@ -13,12 +13,12 @@ export default defineConfig({
   build: {
     outDir: "../../inst/app",
     emptyOutDir: true,
-    sourcemap: true,
+    sourcemap: false,
     rollupOptions: {
       output: {
         manualChunks: {
           fabric: ["fabric"],
-          storage: ["dexie", "zustand"],
+          storage: ["dexie"],
           react: ["react", "react-dom"]
         }
       }

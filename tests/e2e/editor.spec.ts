@@ -14,19 +14,26 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   await page.getByRole("button", { name: "New figure", exact: true }).first().click();
   await expect(page.getByLabel("OpenSketch figure artboard")).toBeVisible();
 
-  await page.getByRole("button", { name: "Shapes", exact: true }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await page.getByRole("button", { name: "Rectangle" }).click();
   await expect(page.getByText("rectangle", { exact: true }).last()).toBeVisible();
-  await page.getByRole("button", { name: "Text", exact: true }).click();
+  await page.getByRole("tab", { name: "Text", exact: true }).click();
   await page.getByRole("button", { name: /Point text/ }).click();
   await page.keyboard.type("CD8 T cell");
   await page.keyboard.press("Escape");
 
-  await page.getByRole("button", { name: "Assets", exact: true }).click();
+  await page.getByRole("tab", { name: "Assets", exact: true }).click();
   const firstAsset = page.locator(".asset-card-image").first();
   await expect(firstAsset).toBeVisible();
   await firstAsset.click();
   await expect(page.locator(".layers-title small")).toHaveText("3");
+  await expect(page.locator(".asset-effects")).toBeVisible();
+  await page
+    .locator("label.range-field")
+    .filter({ hasText: "Tint strength" })
+    .locator('input[type="range"]')
+    .fill("0.2");
+  await page.getByRole("button", { name: "Reset all" }).click();
   const resetPalette = page.getByRole("button", { name: "Reset", exact: true });
   if (await resetPalette.isVisible()) {
     const firstSwatch = page.locator(".palette input[type=color]").first();
@@ -63,7 +70,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   expect(svg).toContain("CD8 T cell");
 
   await page.getByRole("button", { name: "Export" }).click();
-  await page.getByRole("button", { name: /PNG/ }).click();
+  await page.getByRole("tab", { name: /PNG/ }).click();
   await page.getByLabel("Pixel scaling").selectOption("1");
   await page.getByLabel("Output DPI").selectOption("150");
   const pngDownloadPromise = page.waitForEvent("download");
@@ -94,11 +101,15 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   const portable = JSON.parse(await readFile(projectPath!, "utf8")) as {
     format: string;
     formatVersion: number;
-    objects: { objects: unknown[] };
+    objects: {
+      objects: Array<{ type?: string; text?: string; width?: number }>;
+    };
   };
   expect(portable.format).toBe("opensketch");
   expect(portable.formatVersion).toBe(1);
   expect(portable.objects.objects).toHaveLength(3);
+  const textObject = portable.objects.objects.find((object) => object.text === "CD8 T cell");
+  expect(textObject?.width).toBeGreaterThan(150);
 
   const chooserPromise = page.waitForEvent("filechooser");
   await page.getByRole("button", { name: "Import project" }).click();
@@ -106,4 +117,66 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   await expect(page.getByLabel("OpenSketch figure artboard")).toBeVisible();
   await expect(page.locator(".layers-title small")).toHaveText("3");
   expect(externalRequests).toEqual([]);
+});
+
+test("builds and persists a styled object-attached connector", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure", exact: true }).first().click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  await page.getByRole("button", { name: "Rectangle", exact: true }).click();
+  await page.getByRole("button", { name: "Rectangle", exact: true }).click();
+  await page.keyboard.press("ControlOrMeta+A");
+  await page.getByRole("button", { name: "Arrow", exact: true }).click();
+
+  await expect(page.locator(".layers-title small")).toHaveText("3");
+  await expect(page.locator(".inspector-header h2")).toHaveText("Connector");
+  await page.getByLabel("Start anchor").selectOption("left");
+  await page.getByLabel("End anchor").selectOption("right");
+  await page.getByLabel("Start head").selectOption("open");
+  await page.getByLabel("End head").selectOption("circle");
+  await page.getByLabel("Line style").selectOption("dashed");
+  await page
+    .locator("label.range-field")
+    .filter({ hasText: "Curvature" })
+    .locator('input[type="range"]')
+    .fill("0.36");
+
+  await page.getByRole("button", { name: "Project information" }).click();
+  await page
+    .getByLabel("Accessible scientific description")
+    .fill("Two biological objects connected by a directional signaling path.");
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog", { name: "Untitled figure" })).toHaveCount(0);
+
+  await page.getByRole("button", { name: "Export" }).click();
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export SVG" }).click();
+  const path = await (await downloadPromise).path();
+  expect(path).not.toBeNull();
+  const svg = await readFile(path!, "utf8");
+  expect(svg).toContain("stroke-dasharray");
+  expect(svg).toContain("directional signaling path");
+
+  await expect(page.getByText("Saved locally")).toBeVisible({ timeout: 5_000 });
+  await page.getByRole("button", { name: "Project home" }).click();
+  await page.getByRole("button", { name: "Untitled figure" }).click();
+  await page.locator(".layer-list button").filter({ hasText: "Connector" }).click();
+  await expect(page.getByLabel("Line style")).toHaveValue("dashed");
+  await expect(page.getByLabel("Start head")).toHaveValue("open");
+  await expect(page.getByLabel("End head")).toHaveValue("circle");
+});
+
+test("keeps the canvas responsive with one hundred ordinary objects", async ({ page }) => {
+  test.setTimeout(45_000);
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure", exact: true }).first().click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  const rectangle = page.getByRole("button", { name: "Rectangle", exact: true });
+  for (let index = 0; index < 100; index += 1) {
+    await rectangle.click();
+  }
+  await expect(page.locator(".layers-title small")).toHaveText("100");
+  await page.keyboard.press("ControlOrMeta+A");
+  await page.keyboard.press("Shift+ArrowRight");
+  await expect(page.getByText("Saved locally")).toBeVisible({ timeout: 10_000 });
 });

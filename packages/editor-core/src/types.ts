@@ -71,9 +71,17 @@ export interface ProjectRecord extends PortableProject {
   thumbnail?: string;
 }
 
+export type ConnectorAnchor = "top" | "right" | "bottom" | "left" | "center";
+export type ConnectorArrowhead = "none" | "triangle" | "open" | "circle";
+export type ConnectorLineStyle = "solid" | "dashed" | "dotted";
+
 export interface ConnectorBinding {
-  fromObjectId?: string;
-  fromAnchor?: "top" | "right" | "bottom" | "left" | "center";
-  toObjectId?: string;
-  toAnchor?: "top" | "right" | "bottom" | "left" | "center";
+  fromObjectId: string;
+  fromAnchor: ConnectorAnchor;
+  toObjectId: string;
+  toAnchor: ConnectorAnchor;
+  startArrowhead: ConnectorArrowhead;
+  endArrowhead: ConnectorArrowhead;
+  lineStyle: ConnectorLineStyle;
+  curvature: number;
 }

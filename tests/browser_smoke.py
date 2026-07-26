@@ -35,7 +35,7 @@ with sync_playwright() as playwright:
 
     page.get_by_role("button", name="New figure", exact=True).first.click()
     page.get_by_label("OpenSketch figure artboard").wait_for()
-    page.get_by_role("button", name="Shapes", exact=True).click()
+    page.get_by_role("tab", name="Shapes", exact=True).click()
     page.get_by_role("button", name="Rectangle").click()
     page.get_by_text("rectangle", exact=True).last.wait_for()
     page.screenshot(path=SCREENSHOTS / "editor.png", full_page=True)

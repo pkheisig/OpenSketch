@@ -27,6 +27,12 @@ invoke semantic operations such as `addAsset`, `align`, `replaceColor`, and
 `exportSvg`; panels do not manipulate the Fabric canvas directly except for layer
 selection.
 
+Pure geometry and color transforms live in `apps/web/src/editor/geometry.ts` and
+`colors.ts`, while `connectors.ts` owns connector construction. This keeps snapping,
+anchor resolution, gradient-aware effects, and connector rendering independently
+testable. Attached connectors are ordinary serialized Fabric groups carrying a
+versioned binding to stable object IDs.
+
 `scripts/assets` is development-only Node code. It is deliberately not imported by
 the browser bundle.
 
@@ -44,7 +50,8 @@ Future format changes must add a migration in
 
 SVG is the canonical vector export. Fabric emits the scene SVG; OpenSketch injects
 an accessible title, optional description, generator information, used asset IDs,
-and the global NIH BioArt credit into `<metadata>`.
+per-asset source/author/license records, and the global NIH BioArt credit into
+`<metadata>`.
 
 PNG is rendered from a neutral logical viewport so editor zoom never changes
 output dimensions. Preset or custom pixel scaling is accompanied by a valid PNG

@@ -4,21 +4,26 @@ import {
   Download,
   HelpCircle,
   Home,
+  Info,
   Redo2,
   Undo2,
   ZoomIn,
   ZoomOut
 } from "lucide-react";
 import type { ProjectRecord } from "@opensketch/editor-core";
-import { GLOBAL_CREDIT } from "@/assets/manifest";
+import { GLOBAL_CREDIT } from "@/assets/credit";
 import { useEditor } from "@/editor/EditorContext";
 import { Logo } from "./Logo";
 import { ExportDialog } from "./dialogs";
+import { useModalDialog } from "./useModalDialog";
 
 export function TopToolbar({ project, onHome }: { project: ProjectRecord; onHome: () => void }) {
   const editor = useEditor();
   const [exportOpen, setExportOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [infoOpen, setInfoOpen] = useState(false);
+  const helpRef = useModalDialog(helpOpen, () => setHelpOpen(false));
+  const infoRef = useModalDialog(infoOpen, () => setInfoOpen(false));
   return (
     <>
       <header className="top-toolbar">
@@ -77,10 +82,21 @@ export function TopToolbar({ project, onHome }: { project: ProjectRecord; onHome
         </div>
         <div className="toolbar-actions">
           <span className={`save-state ${editor.saveStatus}`}>
-            {editor.saveStatus === "saved" ? "Saved locally" : "Saving…"}
+            {editor.saveStatus === "saved"
+              ? "Saved locally"
+              : editor.saveStatus === "saving"
+                ? "Saving…"
+                : "Save failed"}
           </span>
           <button className="icon-button" onClick={() => setHelpOpen(true)} aria-label="Help">
             <HelpCircle size={17} />
+          </button>
+          <button
+            className="icon-button"
+            onClick={() => setInfoOpen(true)}
+            aria-label="Project information"
+          >
+            <Info size={17} />
           </button>
           <button className="button export-button" onClick={() => setExportOpen(true)}>
             <Download size={16} /> Export <ChevronDown size={13} />
@@ -88,13 +104,49 @@ export function TopToolbar({ project, onHome }: { project: ProjectRecord; onHome
         </div>
       </header>
       {exportOpen && <ExportDialog onClose={() => setExportOpen(false)} />}
+      {infoOpen && (
+        <div className="dialog-backdrop" onMouseDown={() => setInfoOpen(false)}>
+          <section
+            ref={infoRef}
+            className="dialog project-info-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="project-info-title"
+            tabIndex={-1}
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <p className="eyebrow">PROJECT RECORD</p>
+            <h2 id="project-info-title">{project.name}</h2>
+            <label className="field">
+              Accessible scientific description
+              <textarea
+                value={editor.projectDescription}
+                onChange={(event) => editor.setProjectDescription(event.target.value)}
+                placeholder="Describe the figure, biological process, and essential visual relationships…"
+              />
+            </label>
+            <p className="dialog-note">{GLOBAL_CREDIT}</p>
+            <button
+              className="button secondary wide"
+              onClick={() => void navigator.clipboard?.writeText(GLOBAL_CREDIT)}
+            >
+              Copy artwork credit
+            </button>
+            <button className="button primary wide" onClick={() => setInfoOpen(false)}>
+              Done
+            </button>
+          </section>
+        </div>
+      )}
       {helpOpen && (
         <div className="dialog-backdrop" onMouseDown={() => setHelpOpen(false)}>
           <section
+            ref={helpRef}
             className="dialog shortcut-dialog"
             role="dialog"
             aria-modal="true"
             aria-labelledby="shortcut-title"
+            tabIndex={-1}
             onMouseDown={(event) => event.stopPropagation()}
           >
             <p className="eyebrow">FIELD GUIDE</p>
@@ -112,11 +164,14 @@ export function TopToolbar({ project, onHome }: { project: ProjectRecord; onHome
               <kbd>⌘ G / ⇧⌘ G</kbd>
               <span>Nudge / large nudge</span>
               <kbd>↑ / ⇧ ↑</kbd>
+              <span>Zoom / fit canvas</span>
+              <kbd>⌘ + / − / 0</kbd>
               <span>Delete</span>
               <kbd>⌫</kbd>
             </div>
             <p className="dialog-note">
-              Pan with the workspace scrollbars. Use Fit canvas to return to the full artboard.
+              Hold Space and drag, use the middle mouse button, or use the workspace scrollbars to
+              pan. Hold Ctrl/⌘ while scrolling to zoom.
             </p>
             <p className="dialog-note">{GLOBAL_CREDIT}</p>
             <button className="button primary" onClick={() => setHelpOpen(false)}>

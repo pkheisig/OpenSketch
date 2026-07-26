@@ -1,25 +1,32 @@
 import { useState } from "react";
 import { Download, FileImage, FileType2, X } from "lucide-react";
 import { useEditor } from "@/editor/EditorContext";
+import { useModalDialog } from "./useModalDialog";
 
 export function ExportDialog({ onClose }: { onClose: () => void }) {
   const editor = useEditor();
+  const dialogRef = useModalDialog(true, onClose);
   const [format, setFormat] = useState<"svg" | "png">("svg");
   const [scale, setScale] = useState(2);
   const [dpi, setDpi] = useState(editor.canvasSettings.dpi);
   const [customMultiplier, setCustomMultiplier] = useState<number | null>(null);
   const [transparent, setTransparent] = useState(false);
-  const [description, setDescription] = useState("");
+  const [background, setBackground] = useState(editor.canvasSettings.background);
+  const [description, setDescription] = useState(editor.projectDescription);
+  const [exportError, setExportError] = useState("");
+  const [exporting, setExporting] = useState(false);
   const pngMultiplier = customMultiplier ?? scale * (dpi / editor.canvasSettings.dpi);
   const pixelWidth = Math.round(editor.canvasSettings.width * pngMultiplier);
   const pixelHeight = Math.round(editor.canvasSettings.height * pngMultiplier);
   return (
     <div className="dialog-backdrop" onMouseDown={onClose}>
       <section
+        ref={dialogRef}
         className="dialog export-dialog"
         role="dialog"
         aria-modal="true"
         aria-labelledby="export-title"
+        tabIndex={-1}
         onMouseDown={(event) => event.stopPropagation()}
       >
         <div className="dialog-titlebar">
@@ -32,13 +39,23 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
           </button>
         </div>
         <div className="format-tabs" role="tablist">
-          <button className={format === "svg" ? "active" : ""} onClick={() => setFormat("svg")}>
+          <button
+            className={format === "svg" ? "active" : ""}
+            onClick={() => setFormat("svg")}
+            role="tab"
+            aria-selected={format === "svg"}
+          >
             <FileType2 size={20} />
             <span>
               SVG<strong>Vector · recommended</strong>
             </span>
           </button>
-          <button className={format === "png" ? "active" : ""} onClick={() => setFormat("png")}>
+          <button
+            className={format === "png" ? "active" : ""}
+            onClick={() => setFormat("png")}
+            role="tab"
+            aria-selected={format === "png"}
+          >
             <FileImage size={20} />
             <span>
               PNG<strong>High-resolution raster</strong>
@@ -50,7 +67,10 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
             Accessible description
             <textarea
               value={description}
-              onChange={(event) => setDescription(event.target.value)}
+              onChange={(event) => {
+                setDescription(event.target.value);
+                editor.setProjectDescription(event.target.value);
+              }}
               placeholder="Describe the scientific content of this figure…"
             />
             <small>Embedded as SVG title, description, and OpenSketch provenance metadata.</small>
@@ -127,6 +147,19 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
               />
               Transparent background
             </label>
+            {!transparent && (
+              <label className="color-field">
+                Export background
+                <span>
+                  <input
+                    type="color"
+                    value={background}
+                    onChange={(event) => setBackground(event.target.value)}
+                  />
+                  {background}
+                </span>
+              </label>
+            )}
           </>
         )}
         <div className="export-summary">
@@ -136,15 +169,28 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
           </span>
           <span>{format === "png" ? dpi : editor.canvasSettings.dpi} DPI</span>
         </div>
+        {exportError ? (
+          <p className="panel-error" role="alert">
+            {exportError}
+          </p>
+        ) : null}
         <button
           className="button primary wide"
-          onClick={() => {
-            if (format === "svg") editor.exportSvg(undefined, description);
-            else editor.exportPng(pngMultiplier, transparent, dpi);
-            onClose();
+          disabled={exporting}
+          onClick={async () => {
+            setExporting(true);
+            setExportError("");
+            try {
+              if (format === "svg") editor.exportSvg(undefined, description);
+              else await editor.exportPng(pngMultiplier, transparent, dpi, background);
+              onClose();
+            } catch (reason) {
+              setExportError(String(reason).replace(/^Error:\s*/, ""));
+              setExporting(false);
+            }
           }}
         >
-          <Download size={17} /> Export {format.toUpperCase()}
+          <Download size={17} /> {exporting ? "Preparing…" : `Export ${format.toUpperCase()}`}
         </button>
       </section>
     </div>

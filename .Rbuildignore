@@ -3,6 +3,7 @@
 ^scripts$
 ^data$
 ^docs$
+^examples$
 ^node_modules$
 ^package\.json$
 ^pnpm-lock\.yaml$
@@ -14,6 +15,12 @@
 ^\.github$
 ^\.gitignore$
 ^\.prettier
+^LICENSE$
+^LICENSE\.md$
+^THIRD_PARTY_NOTICES\.md$
+^CITATION\.cff$
+^CONTRIBUTING\.md$
+^SECURITY\.md$
 ^test-results$
 ^playwright-report$
 ^.*\.Rcheck$

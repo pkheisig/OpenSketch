@@ -11,8 +11,9 @@ import {
   Upload
 } from "lucide-react";
 import type { ProjectRecord } from "@opensketch/editor-core";
-import { GLOBAL_CREDIT } from "@/assets/manifest";
+import { GLOBAL_CREDIT } from "@/assets/credit";
 import { Logo } from "./Logo";
+import { useModalDialog } from "./useModalDialog";
 
 export function HomeScreen({
   projects,
@@ -35,6 +36,7 @@ export function HomeScreen({
 }) {
   const input = useRef<HTMLInputElement>(null);
   const [about, setAbout] = useState(false);
+  const aboutRef = useModalDialog(about, () => setAbout(false));
 
   useEffect(() => {
     document.title = "OpenSketch — scientific figure studio";
@@ -172,10 +174,12 @@ export function HomeScreen({
       {about && (
         <div className="dialog-backdrop" role="presentation" onMouseDown={() => setAbout(false)}>
           <section
+            ref={aboutRef}
             className="dialog about-dialog"
             role="dialog"
             aria-modal="true"
             aria-labelledby="about-title"
+            tabIndex={-1}
             onMouseDown={(event) => event.stopPropagation()}
           >
             <p className="eyebrow">ABOUT THE STUDIO</p>
@@ -191,6 +195,14 @@ export function HomeScreen({
             >
               <Copy size={15} /> Copy artwork credit
             </button>
+            <a
+              className="button secondary"
+              href="https://github.com/pkheisig/opensketch"
+              target="_blank"
+              rel="noreferrer"
+            >
+              View source code
+            </a>
             <button className="button primary" onClick={() => setAbout(false)}>
               Continue
             </button>

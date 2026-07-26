@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If OpenSketch supports your figure workflow, please cite the software and retain the embedded artwork provenance."
+title: "OpenSketch: an offline scientific figure editor"
+type: software
+authors:
+  - family-names: Heisig
+    given-names: Paul
+    orcid: "https://orcid.org/0000-0002-8529-7944"
+repository-code: "https://github.com/pkheisig/opensketch"
+license: AGPL-3.0-or-later
+version: 0.1.0

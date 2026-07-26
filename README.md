@@ -15,9 +15,18 @@ can be exported as portable `.opensketch` files.
 The source code is AGPL-3.0-or-later. Imported artwork retains its original
 public-domain status and is not licensed under the OpenSketch software license.
 
+OpenSketch is currently under active pre-release development. The repository does
+not yet publish version tags, release artifacts, or a hosted production editor.
+
 ## Install and launch from R
 
-Build the static application before installing a development checkout:
+Install the current development package directly from GitHub:
+
+```r
+pak::pak("pkheisig/opensketch")
+```
+
+Or build a development checkout locally:
 
 ```sh
 corepack pnpm install
@@ -64,7 +73,7 @@ corepack pnpm test
 corepack pnpm build
 corepack pnpm test:e2e
 R CMD build .
-R CMD check --no-manual opensketch_0.1.0.tar.gz
+R CMD check --no-manual --as-cran opensketch_0.1.0.tar.gz
 ```
 
 ## NIH BioArt asset pipeline
@@ -122,6 +131,7 @@ scripts/assets/            manual Commons import and SVG security pipeline
 data/                      taxonomy, overrides, source lock, import report
 tests/                     unit, browser, and R package tests
 docs/                      architecture and contributor notes
+examples/                  verified portable project and SVG examples
 ```
 
 ## Current feature set
@@ -129,22 +139,40 @@ docs/                      architecture and contributor notes
 - Local project home, autosave, duplicate/delete, and `.opensketch` portability
 - Searchable and categorized asset-family browser with variants and provenance
 - Fabric canvas selection, movement, resize, rotation, duplicate, group, align,
-  distribute, flip, lock/hide, layers, keyboard nudging, undo, and redo
+  equal-gap distribution, smart guides, pan/zoom, flip, lock/hide, layers,
+  keyboard nudging, undo, and redo
 - Editable point text, text boxes, built-in diagram shapes, callouts, brackets,
-  membrane primitives, and vector arrows
-- Palette-level asset recoloring and reset
+  membrane primitives, scientific sub/superscripts, and vector arrows
+- Object-attached connectors with independent anchors, arrowheads, line styles,
+  curvature, and automatic geometry updates
+- Palette-level asset recoloring, gradient-aware tint, saturation, brightness,
+  opacity, and complete reset
 - Sanitized SVG plus PNG/JPEG/WebP uploads embedded in project data
 - Vector SVG export with accessible metadata and high-resolution PNG export
   carrying explicit physical-DPI metadata and custom pixel dimensions
 - A4, Letter, presentation, square, and custom artboard dimensions
 
-Basic object-attached connectors update when their endpoints move or resize.
-Advanced anchor routing and PDF export are intentionally deferred until SVG
-fidelity and connector geometry have broader regression coverage.
+PDF export remains deferred until the SVG regression suite covers a broader range
+of gradients, masks, clip paths, fonts, and external PDF renderers.
+
+## Example figure
+
+The [antibody-mediated immune response project](examples/antibody-mediated-immune-response.opensketch)
+is a portable, editable example built in OpenSketch from two bundled NIH BioArt
+families. Its [SVG export](examples/antibody-mediated-immune-response.svg) demonstrates
+vector preservation, accessible title and description fields, and per-asset
+public-domain provenance in the export metadata.
 
 ## Contributing
 
 See [docs/architecture.md](docs/architecture.md) and
-[docs/asset-pipeline.md](docs/asset-pipeline.md). Do not add non-public-domain
+[docs/asset-pipeline.md](docs/asset-pipeline.md), plus
+[CONTRIBUTING.md](CONTRIBUTING.md) and [SECURITY.md](SECURITY.md). Do not add non-public-domain
 artwork to the built-in library, and do not move asset synchronization into normal
 development or production builds.
+
+## Author and citation
+
+OpenSketch is authored and maintained by Paul Heisig
+([ORCID 0000-0002-8529-7944](https://orcid.org/0000-0002-8529-7944)).
+Machine-readable citation metadata is provided in [CITATION.cff](CITATION.cff).

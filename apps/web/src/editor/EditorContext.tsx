@@ -14,6 +14,7 @@ import {
   Circle,
   FabricImage,
   FabricObject,
+  Gradient,
   Group,
   IText,
   Line,
@@ -22,6 +23,8 @@ import {
   Rect,
   Textbox,
   Triangle,
+  cache,
+  filters,
   loadSVGFromString,
   util
 } from "fabric";
@@ -29,13 +32,17 @@ import type {
   AssetFamily,
   AssetVariant,
   CanvasSettings,
+  ConnectorBinding,
   ProjectRecord,
   UploadRecord
 } from "@opensketch/editor-core";
 import { sanitizeUploadedSvg } from "@/assets/browserSanitizer";
 import { setPngDpi } from "@/export/png";
 import { downloadBlob, safeFilename } from "@/persistence/portable";
-import { GLOBAL_CREDIT } from "@/assets/manifest";
+import { GLOBAL_CREDIT } from "@/assets/credit";
+import { connectorAppearance, createConnectorObject } from "@/editor/connectors";
+import { transformColor, type AssetColorEffects } from "@/editor/colors";
+import { anchorPoint, snapBounds, type Point } from "@/editor/geometry";
 
 FabricObject.customProperties = [
   "objectId",
@@ -47,11 +54,39 @@ FabricObject.customProperties = [
   "originalPalette",
   "originalFill",
   "originalStroke",
-  "connector"
+  "effectBaseFill",
+  "effectBaseStroke",
+  "originalGradientFill",
+  "originalGradientStroke",
+  "effectBaseGradientFill",
+  "effectBaseGradientStroke",
+  "connector",
+  "assetTint",
+  "assetTintAmount",
+  "assetSaturation",
+  "assetBrightness"
 ];
 
 const MAX_HISTORY = 120;
+const SVG_CACHE_LIMIT = 64;
 const svgStringCache = new Map<string, string>();
+const COALESCABLE_HISTORY_LABELS = new Set([
+  "Change properties",
+  "Edit connector",
+  "Adjust asset color",
+  "Recolor",
+  "Canvas settings",
+  "Nudge"
+]);
+
+function cacheSvg(assetId: string, source: string): void {
+  svgStringCache.delete(assetId);
+  svgStringCache.set(assetId, source);
+  if (svgStringCache.size > SVG_CACHE_LIMIT) {
+    const oldest = svgStringCache.keys().next().value as string | undefined;
+    if (oldest) svgStringCache.delete(oldest);
+  }
+}
 
 type ShapeKind =
   | "rectangle"
@@ -74,13 +109,15 @@ interface EditorContextValue {
   zoom: number;
   historyState: { canUndo: boolean; canRedo: boolean };
   canvasSettings: CanvasSettings;
-  saveStatus: "saved" | "saving";
+  saveStatus: "saved" | "saving" | "error";
+  projectDescription: string;
   setCanvasElement: (element: HTMLCanvasElement | null) => void;
   setCanvasSettings: (settings: Partial<CanvasSettings>) => void;
   setProjectName: (name: string) => void;
+  setProjectDescription: (description: string) => void;
   addText: (kind?: "point" | "box") => void;
   addShape: (kind: ShapeKind) => void;
-  addAsset: (family: AssetFamily, variant: AssetVariant) => Promise<void>;
+  addAsset: (family: AssetFamily, variant: AssetVariant, point?: Point) => Promise<void>;
   addUpload: (file: File) => Promise<void>;
   deleteSelection: () => void;
   duplicateSelection: () => Promise<void>;
@@ -91,15 +128,24 @@ interface EditorContextValue {
   distribute: (axis: "horizontal" | "vertical") => void;
   flip: (axis: "x" | "y") => void;
   setObject: (properties: Record<string, unknown>) => void;
+  updateConnector: (properties: Partial<ConnectorBinding>) => void;
+  applyTextScript: (script: "normal" | "subscript" | "superscript") => void;
   replaceColor: (before: string, after: string) => void;
   resetColors: () => void;
   getPalette: () => string[];
+  getAssetEffects: () => AssetColorEffects;
+  setAssetEffects: (effects: Partial<AssetColorEffects>) => void;
   undo: () => void;
   redo: () => void;
   setZoom: (value: number) => void;
   fitCanvas: () => void;
   exportSvg: (title?: string, description?: string) => void;
-  exportPng: (scale: number, transparent: boolean, dpi: number) => void;
+  exportPng: (
+    scale: number,
+    transparent: boolean,
+    dpi: number,
+    background?: string
+  ) => Promise<void>;
   commit: (label?: string) => void;
 }
 
@@ -109,6 +155,19 @@ function assignIdentity(object: FabricObject, name: string, type: string): void 
   object.objectId ??= crypto.randomUUID();
   object.name ??= name;
   object.opensketchType ??= type;
+}
+
+function refreshTextMetrics(objects: FabricObject[]): void {
+  cache.clearFontCache();
+  const visit = (object: FabricObject) => {
+    if (object instanceof IText) {
+      object.initDimensions();
+      object.dirty = true;
+      object.setCoords();
+    }
+    if (object instanceof Group) object.getObjects().forEach(visit);
+  };
+  objects.forEach(visit);
 }
 
 function solidColor(value: unknown): value is string {
@@ -133,8 +192,14 @@ function paletteFromObject(object: FabricObject): string[] {
 
 function replaceObjectColor(object: FabricObject, before: string, after: string): void {
   const walk = (current: FabricObject) => {
-    if (current.fill === before) current.set("fill", after);
-    if (current.stroke === before) current.set("stroke", after);
+    if (current.fill === before) {
+      current.set("fill", after);
+      current.effectBaseFill = after;
+    }
+    if (current.stroke === before) {
+      current.set("stroke", after);
+      current.effectBaseStroke = after;
+    }
     if (current instanceof Group) current.getObjects().forEach(walk);
   };
   walk(object);
@@ -142,8 +207,28 @@ function replaceObjectColor(object: FabricObject, before: string, after: string)
 
 function rememberOriginalColors(object: FabricObject): void {
   const walk = (current: FabricObject) => {
-    if (solidColor(current.fill)) current.originalFill = current.fill;
-    if (solidColor(current.stroke)) current.originalStroke = current.stroke;
+    if (solidColor(current.fill)) {
+      current.originalFill = current.fill;
+      current.effectBaseFill = current.fill;
+    }
+    if (solidColor(current.stroke)) {
+      current.originalStroke = current.stroke;
+      current.effectBaseStroke = current.stroke;
+    }
+    if (current.fill instanceof Gradient) {
+      current.originalGradientFill = structuredClone(current.fill.toObject()) as Record<
+        string,
+        unknown
+      >;
+      current.effectBaseGradientFill = structuredClone(current.originalGradientFill);
+    }
+    if (current.stroke instanceof Gradient) {
+      current.originalGradientStroke = structuredClone(current.stroke.toObject()) as Record<
+        string,
+        unknown
+      >;
+      current.effectBaseGradientStroke = structuredClone(current.originalGradientStroke);
+    }
     if (current instanceof Group) current.getObjects().forEach(walk);
   };
   walk(object);
@@ -151,11 +236,96 @@ function rememberOriginalColors(object: FabricObject): void {
 
 function restoreOriginalColors(object: FabricObject): void {
   const walk = (current: FabricObject) => {
-    if (current.originalFill !== undefined) current.set("fill", current.originalFill);
-    if (current.originalStroke !== undefined) current.set("stroke", current.originalStroke);
+    if (current.originalFill !== undefined) {
+      current.set("fill", current.originalFill);
+      current.effectBaseFill = current.originalFill;
+    }
+    if (current.originalStroke !== undefined) {
+      current.set("stroke", current.originalStroke);
+      current.effectBaseStroke = current.originalStroke;
+    }
+    if (current.originalGradientFill) {
+      current.set("fill", new Gradient(structuredClone(current.originalGradientFill) as never));
+      current.effectBaseGradientFill = structuredClone(current.originalGradientFill);
+    }
+    if (current.originalGradientStroke) {
+      current.set("stroke", new Gradient(structuredClone(current.originalGradientStroke) as never));
+      current.effectBaseGradientStroke = structuredClone(current.originalGradientStroke);
+    }
     if (current instanceof Group) current.getObjects().forEach(walk);
   };
   walk(object);
+  object.assetTint = "#ffffff";
+  object.assetTintAmount = 0;
+  object.assetSaturation = 0;
+  object.assetBrightness = 0;
+}
+
+const DEFAULT_ASSET_EFFECTS: AssetColorEffects = {
+  tint: "#ffffff",
+  tintAmount: 0,
+  saturation: 0,
+  brightness: 0
+};
+
+function applyColorEffects(object: FabricObject, effects: AssetColorEffects): void {
+  if (object instanceof FabricImage) {
+    const imageFilters = [];
+    if (effects.tintAmount > 0) {
+      imageFilters.push(
+        new filters.BlendColor({
+          color: effects.tint,
+          mode: "tint",
+          alpha: effects.tintAmount
+        })
+      );
+    }
+    if (effects.saturation !== 0) {
+      imageFilters.push(new filters.Saturation({ saturation: effects.saturation }));
+    }
+    if (effects.brightness !== 0) {
+      imageFilters.push(new filters.Brightness({ brightness: effects.brightness }));
+    }
+    object.filters = imageFilters;
+    object.applyFilters();
+  } else {
+    const transformGradient = (source: Record<string, unknown>) => {
+      const colorStops = Array.isArray(source.colorStops)
+        ? source.colorStops.map((stop) => {
+            const record = stop as Record<string, unknown>;
+            return {
+              ...record,
+              color:
+                typeof record.color === "string"
+                  ? transformColor(record.color, effects)
+                  : record.color
+            };
+          })
+        : [];
+      return new Gradient({ ...structuredClone(source), colorStops } as never);
+    };
+    const walk = (current: FabricObject) => {
+      if (current.effectBaseFill) {
+        current.set("fill", transformColor(current.effectBaseFill, effects));
+      }
+      if (current.effectBaseStroke) {
+        current.set("stroke", transformColor(current.effectBaseStroke, effects));
+      }
+      if (current.effectBaseGradientFill) {
+        current.set("fill", transformGradient(current.effectBaseGradientFill));
+      }
+      if (current.effectBaseGradientStroke) {
+        current.set("stroke", transformGradient(current.effectBaseGradientStroke));
+      }
+      if (current instanceof Group) current.getObjects().forEach(walk);
+    };
+    walk(object);
+  }
+  object.assetTint = effects.tint;
+  object.assetTintAmount = effects.tintAmount;
+  object.assetSaturation = effects.saturation;
+  object.assetBrightness = effects.brightness;
+  object.dirty = true;
 }
 
 function createArrowPath(doubleHeaded = false, curved = false): FabricObject {
@@ -207,22 +377,71 @@ export function EditorProvider({
   const [selection, setSelection] = useState<FabricObject[]>([]);
   const [zoom, setZoomState] = useState(1);
   const [canvasSettings, setCanvasSettingsState] = useState(project.canvas);
-  const [saveStatus, setSaveStatus] = useState<"saved" | "saving">("saved");
+  const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "error">("saved");
+  const [projectDescription, setProjectDescriptionState] = useState(project.description ?? "");
   const [historyState, setHistoryState] = useState({ canUndo: false, canRedo: false });
   const history = useRef<string[]>([]);
   const historyIndex = useRef(-1);
+  const lastCommit = useRef<{ label: string; at: number } | null>(null);
   const restoring = useRef(false);
   const clipboard = useRef<FabricObject[]>([]);
   const saveTimer = useRef<number | undefined>(undefined);
+  const pendingSnapshot = useRef<string | undefined>(undefined);
   const latestProject = useRef(project);
   const latestCanvasSettings = useRef(project.canvas);
   const canvasElement = useRef<HTMLCanvasElement | null>(null);
+  const guides = useRef<{ vertical?: number; horizontal?: number }>({});
 
-  const serialize = useCallback(
-    () =>
-      canvas ? JSON.stringify(canvas.toJSON()) : JSON.stringify(latestProject.current.objects),
+  const refreshConnectors = useCallback(
+    (changedObjectId?: string) => {
+      if (!canvas) return;
+      const objects = canvas.getObjects();
+      const byId = new Map(
+        objects
+          .filter((object) => Boolean(object.objectId))
+          .map((object) => [object.objectId as string, object])
+      );
+      for (const connector of [...objects]) {
+        const binding = connector.connector;
+        if (
+          !binding ||
+          (changedObjectId &&
+            binding.fromObjectId !== changedObjectId &&
+            binding.toObjectId !== changedObjectId)
+        ) {
+          continue;
+        }
+        const fromObject = byId.get(binding.fromObjectId);
+        const toObject = byId.get(binding.toObjectId);
+        if (!fromObject || !toObject) continue;
+        const replacement = createConnectorObject(
+          anchorPoint(fromObject.getBoundingRect(), binding.fromAnchor),
+          anchorPoint(toObject.getBoundingRect(), binding.toAnchor),
+          binding,
+          connectorAppearance(connector)
+        );
+        replacement.objectId = connector.objectId;
+        replacement.name = connector.name;
+        replacement.visible = connector.visible;
+        replacement.selectable = connector.selectable;
+        replacement.evented = connector.evented;
+        const index = canvas.getObjects().indexOf(connector);
+        const active = canvas.getActiveObject() === connector;
+        canvas.remove(connector);
+        canvas.insertAt(index, replacement);
+        if (active) canvas.setActiveObject(replacement);
+        byId.set(replacement.objectId!, replacement);
+      }
+      canvas.requestRenderAll();
+    },
     [canvas]
   );
+
+  const serialize = useCallback(() => {
+    if (!canvas) return JSON.stringify(latestProject.current.objects);
+    refreshTextMetrics(canvas.getObjects());
+    return JSON.stringify(canvas.toJSON());
+  }, [canvas]);
 
   const updateHistoryState = useCallback(() => {
     setHistoryState({
@@ -231,19 +450,17 @@ export function EditorProvider({
     });
   }, []);
 
-  const persist = useCallback(
-    (snapshot?: string) => {
+  const saveSnapshot = useCallback(
+    async (snapshot: string) => {
       if (!canvas) return;
-      setSaveStatus("saving");
-      window.clearTimeout(saveTimer.current);
-      saveTimer.current = window.setTimeout(async () => {
+      try {
         const now = new Date().toISOString();
         const current = latestProject.current;
         const next: ProjectRecord = {
           ...current,
           updatedAt: now,
           canvas: latestCanvasSettings.current,
-          objects: JSON.parse(snapshot ?? serialize()) as Record<string, unknown>,
+          objects: JSON.parse(snapshot) as Record<string, unknown>,
           usedAssetIds: canvas
             .getObjects()
             .map((object) => object.assetId)
@@ -256,22 +473,48 @@ export function EditorProvider({
         };
         latestProject.current = next;
         await onProjectChange(next);
+        pendingSnapshot.current = undefined;
         setSaveStatus("saved");
+      } catch {
+        setSaveStatus("error");
+      }
+    },
+    [canvas, onProjectChange]
+  );
+
+  const persist = useCallback(
+    (snapshot?: string) => {
+      if (!canvas) return;
+      setSaveStatus("saving");
+      pendingSnapshot.current = snapshot ?? serialize();
+      window.clearTimeout(saveTimer.current);
+      saveTimer.current = window.setTimeout(() => {
+        if (pendingSnapshot.current) void saveSnapshot(pendingSnapshot.current);
       }, 500);
     },
-    [canvas, onProjectChange, serialize]
+    [canvas, saveSnapshot, serialize]
   );
 
   const commit = useCallback(
     (label = "Change") => {
-      void label;
       if (!canvas || restoring.current) return;
       const snapshot = serialize();
       if (history.current[historyIndex.current] === snapshot) return;
-      history.current = history.current.slice(0, historyIndex.current + 1);
-      history.current.push(snapshot);
+      const now = performance.now();
+      const replaceCurrent =
+        COALESCABLE_HISTORY_LABELS.has(label) &&
+        lastCommit.current?.label === label &&
+        now - lastCommit.current.at < 600 &&
+        historyIndex.current === history.current.length - 1;
+      if (replaceCurrent) {
+        history.current[historyIndex.current] = snapshot;
+      } else {
+        history.current = history.current.slice(0, historyIndex.current + 1);
+        history.current.push(snapshot);
+      }
       if (history.current.length > MAX_HISTORY) history.current.shift();
       historyIndex.current = history.current.length - 1;
+      lastCommit.current = { label, at: now };
       updateHistoryState();
       persist(snapshot);
     },
@@ -314,55 +557,118 @@ export function EditorProvider({
   useEffect(() => {
     if (!canvas) return;
     const select = () => setSelection(canvas.getActiveObjects());
-    const modified = () => {
-      setSelection(canvas.getActiveObjects());
-      commit("Transform");
-    };
-    const updateConnectors = ({ target }: { target?: FabricObject }) => {
-      if (!target?.objectId) return;
-      const objects = canvas.getObjects();
-      for (const candidate of objects) {
-        const binding = candidate.connector;
-        if (
-          !(candidate instanceof Line) ||
-          !binding ||
-          (binding.fromObjectId !== target.objectId && binding.toObjectId !== target.objectId)
-        ) {
-          continue;
+    const modified = ({ target }: { target?: FabricObject } = {}) => {
+      const changed = target ?? canvas.getActiveObject();
+      const finish = () => {
+        if (changed instanceof IText) {
+          cache.clearFontCache(changed.fontFamily);
+          changed.initDimensions();
+          changed.dirty = true;
+          changed.setCoords();
         }
-        const from = objects.find((object) => object.objectId === binding.fromObjectId);
-        const to = objects.find((object) => object.objectId === binding.toObjectId);
-        if (!from || !to) continue;
-        const fromPoint = from.getCenterPoint();
-        const toPoint = to.getCenterPoint();
-        candidate.set({
-          x1: fromPoint.x,
-          y1: fromPoint.y,
-          x2: toPoint.x,
-          y2: toPoint.y
-        });
-        candidate.setCoords();
+        guides.current = {};
+        setSelection(canvas.getActiveObjects());
+        if (changed?.objectId) refreshConnectors(changed.objectId);
+        canvas.requestRenderAll();
+        commit("Transform");
+      };
+      if (changed instanceof IText && "fonts" in document) {
+        const weight = String(changed.fontWeight ?? 400);
+        const family = changed.fontFamily
+          .split(",")[0]
+          .trim()
+          .replace(/^['"]|['"]$/g, "");
+        void document.fonts
+          .load(`${weight} ${changed.fontSize ?? 54}px "${family}"`)
+          .then(finish, finish);
+      } else {
+        finish();
       }
+    };
+    const moving = ({ target }: { target?: FabricObject }) => {
+      if (!target?.objectId || target.connector) return;
+      const result = snapBounds(
+        target.getBoundingRect(),
+        canvas
+          .getObjects()
+          .filter(
+            (candidate) =>
+              candidate !== target && !candidate.connector && candidate.visible !== false
+          )
+          .map((candidate) => candidate.getBoundingRect()),
+        6 / Math.max(canvas.getZoom(), 0.1),
+        {
+          left: 0,
+          top: 0,
+          width: latestCanvasSettings.current.width,
+          height: latestCanvasSettings.current.height
+        }
+      );
+      if (result.dx || result.dy) {
+        target.set({
+          left: (target.left ?? 0) + result.dx,
+          top: (target.top ?? 0) + result.dy
+        });
+        target.setCoords();
+      }
+      guides.current = {
+        vertical: result.verticalGuide,
+        horizontal: result.horizontalGuide
+      };
+      refreshConnectors(target.objectId);
       canvas.requestRenderAll();
+    };
+    const transform = ({ target }: { target?: FabricObject }) => {
+      if (target?.objectId) refreshConnectors(target.objectId);
+    };
+    const drawGuides = () => {
+      const { vertical, horizontal } = guides.current;
+      if (vertical === undefined && horizontal === undefined) return;
+      const context = canvas.getTopContext();
+      const viewport = canvas.viewportTransform;
+      const x = (vertical ?? 0) * viewport[0] + viewport[4];
+      const y = (horizontal ?? 0) * viewport[3] + viewport[5];
+      context.save();
+      context.strokeStyle = "#e65353";
+      context.lineWidth = 1;
+      context.setLineDash([5, 4]);
+      if (vertical !== undefined) {
+        context.beginPath();
+        context.moveTo(x, 0);
+        context.lineTo(x, canvas.height);
+        context.stroke();
+      }
+      if (horizontal !== undefined) {
+        context.beginPath();
+        context.moveTo(0, y);
+        context.lineTo(canvas.width, y);
+        context.stroke();
+      }
+      context.restore();
     };
     canvas.on("selection:created", select);
     canvas.on("selection:updated", select);
     canvas.on("selection:cleared", select);
     canvas.on("object:modified", modified);
-    canvas.on("object:moving", updateConnectors);
-    canvas.on("object:scaling", updateConnectors);
+    canvas.on("object:moving", moving);
+    canvas.on("object:scaling", transform);
+    canvas.on("object:rotating", transform);
+    canvas.on("after:render", drawGuides);
     canvas.on("text:editing:exited", modified);
     return () => {
+      window.clearTimeout(saveTimer.current);
+      if (pendingSnapshot.current) void saveSnapshot(pendingSnapshot.current);
       canvas.dispose();
       setCanvas(null);
     };
-  }, [canvas, commit]);
+  }, [canvas, commit, refreshConnectors, saveSnapshot]);
 
   const restoreAt = useCallback(
     async (index: number) => {
       if (!canvas || !history.current[index]) return;
       restoring.current = true;
       await canvas.loadFromJSON(history.current[index]);
+      refreshConnectors();
       canvas.requestRenderAll();
       historyIndex.current = index;
       setSelection([]);
@@ -370,7 +676,7 @@ export function EditorProvider({
       restoring.current = false;
       persist(history.current[index]);
     },
-    [canvas, persist, updateHistoryState]
+    [canvas, persist, refreshConnectors, updateHistoryState]
   );
 
   const undo = useCallback(() => {
@@ -383,12 +689,12 @@ export function EditorProvider({
   }, [restoreAt]);
 
   const centerObject = useCallback(
-    (object: FabricObject) => {
+    (object: FabricObject, point?: Point) => {
       if (!canvas) return;
       const viewport = canvas.vptCoords;
       object.set({
-        left: (viewport.tl.x + viewport.br.x) / 2,
-        top: (viewport.tl.y + viewport.br.y) / 2,
+        left: point?.x ?? (viewport.tl.x + viewport.br.x) / 2,
+        top: point?.y ?? (viewport.tl.y + viewport.br.y) / 2,
         originX: "center",
         originY: "center"
       });
@@ -398,10 +704,10 @@ export function EditorProvider({
   );
 
   const addObject = useCallback(
-    (object: FabricObject, name: string, type: string) => {
+    (object: FabricObject, name: string, type: string, point?: Point) => {
       if (!canvas) return;
       assignIdentity(object, name, type);
-      centerObject(object);
+      centerObject(object, point);
       canvas.add(object);
       canvas.setActiveObject(object);
       canvas.requestRenderAll();
@@ -415,7 +721,7 @@ export function EditorProvider({
     (kind: "point" | "box" = "point") => {
       const options = {
         fill: "#183133",
-        fontFamily: "Source Sans 3, sans-serif",
+        fontFamily: "Source Sans 3",
         fontSize: 54,
         lineHeight: 1.2
       };
@@ -430,8 +736,58 @@ export function EditorProvider({
     [addObject]
   );
 
+  const addAttachedConnector = useCallback(
+    (kind: "line" | "arrow" | "double-arrow" | "curved-arrow") => {
+      if (!canvas) return false;
+      const targets = canvas.getActiveObjects().filter((object) => !object.connector);
+      if (targets.length !== 2) return false;
+      const [fromObject, toObject] = targets;
+      assignIdentity(
+        fromObject,
+        fromObject.name ?? "Object",
+        fromObject.opensketchType ?? fromObject.type
+      );
+      assignIdentity(toObject, toObject.name ?? "Object", toObject.opensketchType ?? toObject.type);
+      const fromCenter = fromObject.getCenterPoint();
+      const toCenter = toObject.getCenterPoint();
+      const horizontal = Math.abs(toCenter.x - fromCenter.x) >= Math.abs(toCenter.y - fromCenter.y);
+      const forward = horizontal ? toCenter.x >= fromCenter.x : toCenter.y >= fromCenter.y;
+      const binding: ConnectorBinding = {
+        fromObjectId: fromObject.objectId!,
+        fromAnchor: horizontal ? (forward ? "right" : "left") : forward ? "bottom" : "top",
+        toObjectId: toObject.objectId!,
+        toAnchor: horizontal ? (forward ? "left" : "right") : forward ? "top" : "bottom",
+        startArrowhead: kind === "double-arrow" ? "triangle" : "none",
+        endArrowhead: kind === "line" ? "none" : "triangle",
+        lineStyle: "solid",
+        curvature: kind === "curved-arrow" ? 0.24 : 0
+      };
+      const connector = createConnectorObject(
+        anchorPoint(fromObject.getBoundingRect(), binding.fromAnchor),
+        anchorPoint(toObject.getBoundingRect(), binding.toAnchor),
+        binding,
+        { color: "#25494b", width: 4, opacity: 1 }
+      );
+      assignIdentity(connector, "Connector", "connector");
+      canvas.add(connector);
+      canvas.sendObjectToBack(connector);
+      canvas.setActiveObject(connector);
+      setSelection([connector]);
+      canvas.requestRenderAll();
+      commit("Add connector");
+      return true;
+    },
+    [canvas, commit]
+  );
+
   const addShape = useCallback(
     (kind: ShapeKind) => {
+      if (
+        ["line", "arrow", "double-arrow", "curved-arrow"].includes(kind) &&
+        addAttachedConnector(kind as "line" | "arrow" | "double-arrow" | "curved-arrow")
+      ) {
+        return;
+      }
       const common = {
         fill: "#d8efe9",
         stroke: "#25494b",
@@ -465,28 +821,11 @@ export function EditorProvider({
           common
         );
       } else if (kind === "line") {
-        const targets = canvas?.getActiveObjects() ?? [];
-        if (targets.length === 2) {
-          const from = targets[0].getCenterPoint();
-          const to = targets[1].getCenterPoint();
-          object = new Line([from.x, from.y, to.x, to.y], {
-            stroke: "#25494b",
-            strokeWidth: 5,
-            strokeLineCap: "round"
-          });
-          object.connector = {
-            fromObjectId: targets[0].objectId ?? "",
-            fromAnchor: "center",
-            toObjectId: targets[1].objectId ?? "",
-            toAnchor: "center"
-          };
-        } else {
-          object = new Line([0, 0, 220, 0], {
-            stroke: "#25494b",
-            strokeWidth: 5,
-            strokeLineCap: "round"
-          });
-        }
+        object = new Line([0, 0, 220, 0], {
+          stroke: "#25494b",
+          strokeWidth: 5,
+          strokeLineCap: "round"
+        });
       } else if (kind === "bracket") {
         object = new Path("M 32 0 H 0 V 180 H 32 M 168 0 H 200 V 180 H 168", {
           fill: "",
@@ -525,18 +864,20 @@ export function EditorProvider({
       }
       addObject(object, kind.replace("-", " "), kind.includes("arrow") ? "connector" : "shape");
     },
-    [addObject, canvas]
+    [addAttachedConnector, addObject]
   );
 
   const addAsset = useCallback(
-    async (family: AssetFamily, variant: AssetVariant) => {
+    async (family: AssetFamily, variant: AssetVariant, point?: Point) => {
       if (!canvas) return;
       let source = svgStringCache.get(variant.id);
       if (!source) {
         const response = await fetch(variant.assetPath);
         if (!response.ok) throw new Error(`Could not load ${family.title}.`);
         source = await response.text();
-        svgStringCache.set(variant.id, source);
+        cacheSvg(variant.id, source);
+      } else {
+        cacheSvg(variant.id, source);
       }
       const result = await loadSVGFromString(source);
       const objects = result.objects.filter((object): object is FabricObject => Boolean(object));
@@ -556,7 +897,7 @@ export function EditorProvider({
         paletteFromObject(group).map((color) => [color, color])
       );
       rememberOriginalColors(group);
-      addObject(group, family.title, "nih-asset");
+      addObject(group, family.title, "nih-asset", point);
     },
     [addObject, canvas]
   );
@@ -564,6 +905,13 @@ export function EditorProvider({
   const addUpload = useCallback(
     async (file: File) => {
       if (!canvas) return;
+      const extension = file.name.toLowerCase().split(".").at(-1);
+      if (!["svg", "png", "jpg", "jpeg", "webp"].includes(extension ?? "")) {
+        throw new Error("Choose an SVG, PNG, JPEG, or WebP image.");
+      }
+      if (file.size > 25 * 1024 * 1024) {
+        throw new Error("Images must be 25 MB or smaller.");
+      }
       const uploadId = crypto.randomUUID();
       let dataUrl = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
@@ -603,7 +951,16 @@ export function EditorProvider({
   const deleteSelection = useCallback(() => {
     if (!canvas) return;
     const active = canvas.getActiveObjects();
-    active.forEach((object) => canvas.remove(object));
+    const removedIds = new Set(active.map((object) => object.objectId).filter(Boolean));
+    const connected = canvas
+      .getObjects()
+      .filter(
+        (object) =>
+          object.connector &&
+          (removedIds.has(object.connector.fromObjectId) ||
+            removedIds.has(object.connector.toObjectId))
+      );
+    [...active, ...connected].forEach((object) => canvas.remove(object));
     canvas.discardActiveObject();
     setSelection([]);
     canvas.requestRenderAll();
@@ -689,31 +1046,51 @@ export function EditorProvider({
         if (axis === "bottom")
           object.top! += bounds.top + bounds.height - (objectBounds.top + objectBounds.height);
         object.setCoords();
+        if (object.objectId) refreshConnectors(object.objectId);
       });
       canvas.requestRenderAll();
       commit("Align");
     },
-    [canvas, commit]
+    [canvas, commit, refreshConnectors]
   );
 
   const distribute = useCallback(
     (axis: "horizontal" | "vertical") => {
       if (!canvas) return;
       const objects = [...canvas.getActiveObjects()].sort((a, b) =>
-        axis === "horizontal" ? (a.left ?? 0) - (b.left ?? 0) : (a.top ?? 0) - (b.top ?? 0)
+        axis === "horizontal"
+          ? a.getBoundingRect().left - b.getBoundingRect().left
+          : a.getBoundingRect().top - b.getBoundingRect().top
       );
       if (objects.length < 3) return;
-      const first = axis === "horizontal" ? (objects[0].left ?? 0) : (objects[0].top ?? 0);
-      const last = axis === "horizontal" ? (objects.at(-1)!.left ?? 0) : (objects.at(-1)!.top ?? 0);
+      const bounds = objects.map((object) => object.getBoundingRect());
+      const first = axis === "horizontal" ? bounds[0].left : bounds[0].top;
+      const lastBounds = bounds.at(-1)!;
+      const last =
+        axis === "horizontal"
+          ? lastBounds.left + lastBounds.width
+          : lastBounds.top + lastBounds.height;
+      const occupied = bounds.reduce(
+        (total, item) => total + (axis === "horizontal" ? item.width : item.height),
+        0
+      );
+      const gap = (last - first - occupied) / (objects.length - 1);
+      let cursor = first + (axis === "horizontal" ? bounds[0].width : bounds[0].height) + gap;
       objects.slice(1, -1).forEach((object, index) => {
-        const value = first + ((last - first) * (index + 1)) / (objects.length - 1);
-        object.set(axis === "horizontal" ? "left" : "top", value);
+        const objectBounds = bounds[index + 1];
+        const current = axis === "horizontal" ? objectBounds.left : objectBounds.top;
+        object.set(
+          axis === "horizontal" ? "left" : "top",
+          (axis === "horizontal" ? (object.left ?? 0) : (object.top ?? 0)) + cursor - current
+        );
         object.setCoords();
+        if (object.objectId) refreshConnectors(object.objectId);
+        cursor += (axis === "horizontal" ? objectBounds.width : objectBounds.height) + gap;
       });
       canvas.requestRenderAll();
       commit("Distribute");
     },
-    [canvas, commit]
+    [canvas, commit, refreshConnectors]
   );
 
   const flip = useCallback(
@@ -732,13 +1109,57 @@ export function EditorProvider({
   const setObject = useCallback(
     (properties: Record<string, unknown>) => {
       if (!canvas) return;
-      canvas.getActiveObjects().forEach((object) => {
+      const objects = canvas.getActiveObjects();
+      objects.forEach((object) => {
         object.set(properties);
         object.setCoords();
       });
+      if (objects.some((object) => object.connector)) refreshConnectors();
+      objects
+        .filter((object) => !object.connector && object.objectId)
+        .forEach((object) => refreshConnectors(object.objectId));
       canvas.requestRenderAll();
       setSelection([...canvas.getActiveObjects()]);
       commit("Change properties");
+    },
+    [canvas, commit, refreshConnectors]
+  );
+
+  const updateConnector = useCallback(
+    (properties: Partial<ConnectorBinding>) => {
+      if (!canvas) return;
+      const connector = canvas.getActiveObject();
+      if (!connector?.connector) return;
+      connector.connector = { ...connector.connector, ...properties };
+      refreshConnectors();
+      setSelection(canvas.getActiveObjects());
+      commit("Edit connector");
+    },
+    [canvas, commit, refreshConnectors]
+  );
+
+  const applyTextScript = useCallback(
+    (script: "normal" | "subscript" | "superscript") => {
+      if (!canvas) return;
+      const text = canvas.getActiveObject();
+      if (!(text instanceof IText)) return;
+      const fontSize = text.fontSize || 40;
+      const start = text.selectionStart !== text.selectionEnd ? (text.selectionStart ?? 0) : 0;
+      const end =
+        text.selectionStart !== text.selectionEnd
+          ? (text.selectionEnd ?? text.text.length)
+          : text.text.length;
+      const style =
+        script === "normal"
+          ? { fontSize, deltaY: 0 }
+          : script === "subscript"
+            ? { fontSize: fontSize * 0.66, deltaY: fontSize * 0.28 }
+            : { fontSize: fontSize * 0.66, deltaY: -fontSize * 0.34 };
+      text.setSelectionStyles(style, start, end);
+      text.dirty = true;
+      canvas.requestRenderAll();
+      setSelection([...canvas.getActiveObjects()]);
+      commit(`Apply ${script}`);
     },
     [canvas, commit]
   );
@@ -746,6 +1167,35 @@ export function EditorProvider({
   const getPalette = useCallback(
     () => (selection.length === 1 ? paletteFromObject(selection[0]) : []),
     [selection]
+  );
+  const getAssetEffects = useCallback((): AssetColorEffects => {
+    const object = selection.length === 1 ? selection[0] : undefined;
+    return object
+      ? {
+          tint: object.assetTint ?? DEFAULT_ASSET_EFFECTS.tint,
+          tintAmount: object.assetTintAmount ?? DEFAULT_ASSET_EFFECTS.tintAmount,
+          saturation: object.assetSaturation ?? DEFAULT_ASSET_EFFECTS.saturation,
+          brightness: object.assetBrightness ?? DEFAULT_ASSET_EFFECTS.brightness
+        }
+      : DEFAULT_ASSET_EFFECTS;
+  }, [selection]);
+  const setAssetEffects = useCallback(
+    (effects: Partial<AssetColorEffects>) => {
+      if (!canvas) return;
+      canvas.getActiveObjects().forEach((object) => {
+        applyColorEffects(object, {
+          tint: object.assetTint ?? DEFAULT_ASSET_EFFECTS.tint,
+          tintAmount: object.assetTintAmount ?? DEFAULT_ASSET_EFFECTS.tintAmount,
+          saturation: object.assetSaturation ?? DEFAULT_ASSET_EFFECTS.saturation,
+          brightness: object.assetBrightness ?? DEFAULT_ASSET_EFFECTS.brightness,
+          ...effects
+        });
+      });
+      canvas.requestRenderAll();
+      setSelection([...canvas.getActiveObjects()]);
+      commit("Adjust asset color");
+    },
+    [canvas, commit]
   );
   const replaceColor = useCallback(
     (before: string, after: string) => {
@@ -758,7 +1208,13 @@ export function EditorProvider({
   );
   const resetColors = useCallback(() => {
     if (!canvas) return;
-    canvas.getActiveObjects().forEach(restoreOriginalColors);
+    canvas.getActiveObjects().forEach((object) => {
+      restoreOriginalColors(object);
+      if (object instanceof FabricImage) {
+        object.filters = [];
+        object.applyFilters();
+      }
+    });
     canvas.requestRenderAll();
     commit("Reset colors");
   }, [canvas, commit]);
@@ -815,10 +1271,19 @@ export function EditorProvider({
     },
     [persist]
   );
+  const setProjectDescription = useCallback(
+    (description: string) => {
+      latestProject.current = { ...latestProject.current, description };
+      setProjectDescriptionState(description);
+      persist();
+    },
+    [persist]
+  );
 
   const exportSvg = useCallback(
-    (title = latestProject.current.name, description = "") => {
+    (title = latestProject.current.name, description = latestProject.current.description ?? "") => {
       if (!canvas) return;
+      refreshTextMetrics(canvas.getObjects());
       let svg = withLogicalViewport(canvas, canvasSettings, () =>
         canvas.toSVG({
           suppressPreamble: false,
@@ -827,16 +1292,22 @@ export function EditorProvider({
           viewBox: { x: 0, y: 0, width: canvasSettings.width, height: canvasSettings.height }
         })
       );
+      const usedAssets = canvas
+        .getObjects()
+        .filter((object) => object.assetId && object.provenance)
+        .map((object) => ({
+          assetId: object.assetId,
+          familyId: object.familyId,
+          ...object.provenance
+        }));
       const metadata = `<metadata>${escapeXml(
         JSON.stringify({
           generator: "OpenSketch",
+          formatVersion: 1,
           title,
           description,
           credit: GLOBAL_CREDIT,
-          usedAssets: canvas
-            .getObjects()
-            .map((object) => object.assetId)
-            .filter(Boolean)
+          usedAssets
         })
       )}</metadata><title>${escapeXml(title)}</title>${
         description ? `<desc>${escapeXml(description)}</desc>` : ""
@@ -848,10 +1319,15 @@ export function EditorProvider({
   );
 
   const exportPng = useCallback(
-    (scale: number, transparent: boolean, dpi: number) => {
+    async (
+      scale: number,
+      transparent: boolean,
+      dpi: number,
+      background = canvasSettings.background
+    ) => {
       if (!canvas) return;
       const previous = canvas.backgroundColor;
-      if (transparent) canvas.backgroundColor = "";
+      canvas.backgroundColor = transparent ? "" : background;
       let dataUrl: string;
       try {
         dataUrl = withLogicalViewport(canvas, canvasSettings, () =>
@@ -865,12 +1341,9 @@ export function EditorProvider({
         canvas.backgroundColor = previous;
         canvas.requestRenderAll();
       }
-      fetch(dataUrl)
-        .then((response) => response.blob())
-        .then((blob) => setPngDpi(blob, dpi))
-        .then((blob) =>
-          downloadBlob(blob, `${safeFilename(latestProject.current.name)}-${scale}x.png`)
-        );
+      const response = await fetch(dataUrl);
+      const blob = await setPngDpi(await response.blob(), dpi);
+      downloadBlob(blob, `${safeFilename(latestProject.current.name)}-${scale}x.png`);
     },
     [canvas, canvasSettings]
   );
@@ -934,6 +1407,15 @@ export function EditorProvider({
           setSelection(objects);
           canvas.requestRenderAll();
         }
+      } else if (modifier && ["+", "="].includes(event.key)) {
+        event.preventDefault();
+        setZoom(zoom + 0.1);
+      } else if (modifier && event.key === "-") {
+        event.preventDefault();
+        setZoom(zoom - 0.1);
+      } else if (modifier && event.key === "0") {
+        event.preventDefault();
+        fitCanvas();
       } else if (event.key === "Backspace" || event.key === "Delete") {
         event.preventDefault();
         deleteSelection();
@@ -950,6 +1432,7 @@ export function EditorProvider({
           if (event.key === "ArrowUp") object.top! -= step;
           if (event.key === "ArrowDown") object.top! += step;
           object.setCoords();
+          if (object.objectId) refreshConnectors(object.objectId);
         });
         canvas.requestRenderAll();
       } else if (modifier && event.key.toLowerCase() === "g") {
@@ -974,10 +1457,14 @@ export function EditorProvider({
     commit,
     deleteSelection,
     duplicateSelection,
+    fitCanvas,
     groupSelection,
     redo,
+    refreshConnectors,
+    setZoom,
     undo,
-    ungroupSelection
+    ungroupSelection,
+    zoom
   ]);
 
   const value = useMemo<EditorContextValue>(
@@ -988,9 +1475,11 @@ export function EditorProvider({
       historyState,
       canvasSettings,
       saveStatus,
+      projectDescription,
       setCanvasElement,
       setCanvasSettings,
       setProjectName,
+      setProjectDescription,
       addText,
       addShape,
       addAsset,
@@ -1004,9 +1493,13 @@ export function EditorProvider({
       distribute,
       flip,
       setObject,
+      updateConnector,
+      applyTextScript,
       replaceColor,
       resetColors,
       getPalette,
+      getAssetEffects,
+      setAssetEffects,
       undo,
       redo,
       setZoom,
@@ -1021,6 +1514,7 @@ export function EditorProvider({
       addText,
       addUpload,
       align,
+      applyTextScript,
       arrange,
       canvas,
       canvasSettings,
@@ -1032,21 +1526,26 @@ export function EditorProvider({
       exportSvg,
       fitCanvas,
       flip,
+      getAssetEffects,
       getPalette,
       groupSelection,
       historyState,
+      projectDescription,
       redo,
       replaceColor,
       resetColors,
       saveStatus,
       selection,
+      setAssetEffects,
       setCanvasElement,
       setCanvasSettings,
       setObject,
       setProjectName,
+      setProjectDescription,
       setZoom,
       undo,
       ungroupSelection,
+      updateConnector,
       zoom
     ]
   );

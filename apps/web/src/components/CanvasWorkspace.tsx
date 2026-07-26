@@ -1,4 +1,11 @@
-import { useEffect, useRef, useState, type DragEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type DragEvent,
+  type PointerEvent,
+  type WheelEvent
+} from "react";
 import { ChevronDown, Grid3X3, Maximize2, Minus, Plus } from "lucide-react";
 import { assetManifest } from "@/assets/manifest";
 import { useEditor } from "@/editor/EditorContext";
@@ -7,7 +14,12 @@ export function CanvasWorkspace() {
   const editor = useEditor();
   const { setCanvasElement, canvas, fitCanvas } = editor;
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const spacePressed = useRef(false);
+  const panOrigin = useRef<{ x: number; y: number; left: number; top: number } | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [panning, setPanning] = useState(false);
 
   useEffect(() => {
     setCanvasElement(canvasRef.current);
@@ -15,9 +27,38 @@ export function CanvasWorkspace() {
 
   useEffect(() => {
     if (!canvas) return;
-    const timeout = window.setTimeout(fitCanvas, 30);
+    const timeout = window.setTimeout(() => {
+      fitCanvas();
+      window.requestAnimationFrame(() => {
+        const host = scrollRef.current;
+        if (!host) return;
+        host.scrollLeft = Math.max(0, (host.scrollWidth - host.clientWidth) / 2);
+        host.scrollTop = Math.max(0, (host.scrollHeight - host.clientHeight) / 2);
+      });
+    }, 30);
     return () => window.clearTimeout(timeout);
   }, [canvas, fitCanvas]);
+
+  useEffect(() => {
+    const keyDown = (event: KeyboardEvent) => {
+      if (
+        event.code === "Space" &&
+        !(event.target instanceof HTMLInputElement) &&
+        !(event.target instanceof HTMLTextAreaElement)
+      ) {
+        spacePressed.current = true;
+      }
+    };
+    const keyUp = (event: KeyboardEvent) => {
+      if (event.code === "Space") spacePressed.current = false;
+    };
+    window.addEventListener("keydown", keyDown);
+    window.addEventListener("keyup", keyUp);
+    return () => {
+      window.removeEventListener("keydown", keyDown);
+      window.removeEventListener("keyup", keyUp);
+    };
+  }, []);
 
   const onDrop = (event: DragEvent) => {
     event.preventDefault();
@@ -27,7 +68,59 @@ export function CanvasWorkspace() {
     const data = JSON.parse(encoded) as { familyId: string; variantId: string };
     const family = assetManifest.families.find((item) => item.familyId === data.familyId);
     const variant = family?.variants.find((item) => item.id === data.variantId);
-    if (family && variant) void editor.addAsset(family, variant);
+    const bounds = stageRef.current?.getBoundingClientRect();
+    const point = bounds
+      ? {
+          x: Math.max(
+            0,
+            Math.min(editor.canvasSettings.width, (event.clientX - bounds.left) / editor.zoom)
+          ),
+          y: Math.max(
+            0,
+            Math.min(editor.canvasSettings.height, (event.clientY - bounds.top) / editor.zoom)
+          )
+        }
+      : undefined;
+    if (family && variant) void editor.addAsset(family, variant, point);
+  };
+
+  const beginPan = (event: PointerEvent<HTMLDivElement>) => {
+    if (event.button !== 1 && !(event.button === 0 && spacePressed.current)) return;
+    const host = scrollRef.current;
+    if (!host) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.currentTarget.setPointerCapture(event.pointerId);
+    panOrigin.current = {
+      x: event.clientX,
+      y: event.clientY,
+      left: host.scrollLeft,
+      top: host.scrollTop
+    };
+    setPanning(true);
+  };
+
+  const movePan = (event: PointerEvent<HTMLDivElement>) => {
+    const host = scrollRef.current;
+    const origin = panOrigin.current;
+    if (!host || !origin) return;
+    host.scrollLeft = origin.left - (event.clientX - origin.x);
+    host.scrollTop = origin.top - (event.clientY - origin.y);
+  };
+
+  const endPan = (event: PointerEvent<HTMLDivElement>) => {
+    if (!panOrigin.current) return;
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId);
+    }
+    panOrigin.current = null;
+    setPanning(false);
+  };
+
+  const zoomWheel = (event: WheelEvent<HTMLDivElement>) => {
+    if (!event.ctrlKey && !event.metaKey) return;
+    event.preventDefault();
+    editor.setZoom(editor.zoom + (event.deltaY < 0 ? 0.1 : -0.1));
   };
 
   return (
@@ -55,17 +148,36 @@ export function CanvasWorkspace() {
           <span key={index}>{index * 200}</span>
         ))}
       </div>
-      <div className="workspace-scroll">
+      <div
+        ref={scrollRef}
+        className={`workspace-scroll ${panning ? "is-panning" : ""}`}
+        tabIndex={0}
+        aria-label="Scrollable canvas workspace. Hold Space and drag, or use the middle mouse button, to pan."
+        onPointerDownCapture={beginPan}
+        onPointerMove={movePan}
+        onPointerUp={endPan}
+        onPointerCancel={endPan}
+        onWheel={zoomWheel}
+      >
         <div
-          className={`artboard-stage ${editor.canvasSettings.grid ? "show-grid" : ""} ${
-            editor.canvasSettings.transparent ? "transparent" : ""
-          }`}
+          className="workspace-plane"
           style={{
-            width: editor.canvasSettings.width * editor.zoom,
-            height: editor.canvasSettings.height * editor.zoom
+            width: Math.max(2400, editor.canvasSettings.width * editor.zoom + 1600),
+            height: Math.max(1800, editor.canvasSettings.height * editor.zoom + 1200)
           }}
         >
-          <canvas ref={canvasRef} aria-label="OpenSketch figure artboard" />
+          <div
+            ref={stageRef}
+            className={`artboard-stage ${editor.canvasSettings.grid ? "show-grid" : ""} ${
+              editor.canvasSettings.transparent ? "transparent" : ""
+            }`}
+            style={{
+              width: editor.canvasSettings.width * editor.zoom,
+              height: editor.canvasSettings.height * editor.zoom
+            }}
+          >
+            <canvas ref={canvasRef} aria-label="OpenSketch figure artboard" />
+          </div>
         </div>
       </div>
       {dragging && (

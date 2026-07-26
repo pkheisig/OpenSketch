@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type DragEvent, type KeyboardEvent } from "react";
 import { FixedSizeList as List, type ListChildComponentProps } from "react-window";
 import {
   ArrowRight,
@@ -24,6 +24,7 @@ import {
 import { filterAssetFamilies, type AssetFamily, type AssetVariant } from "@opensketch/editor-core";
 import { ASSET_CATEGORIES, assetManifest } from "@/assets/manifest";
 import { useEditor } from "@/editor/EditorContext";
+import { useModalDialog } from "./useModalDialog";
 
 type Tab = "assets" | "text" | "shapes" | "uploads";
 
@@ -31,7 +32,7 @@ export function LeftSidebar() {
   const [tab, setTab] = useState<Tab>("assets");
   return (
     <aside className="left-sidebar">
-      <nav className="sidebar-tabs" aria-label="Insert tools">
+      <nav className="sidebar-tabs" aria-label="Insert tools" role="tablist">
         {(
           [
             ["assets", Sparkles, "Assets"],
@@ -44,14 +45,21 @@ export function LeftSidebar() {
             key={value}
             className={tab === value ? "active" : ""}
             onClick={() => setTab(value)}
-            aria-current={tab === value ? "page" : undefined}
+            role="tab"
+            aria-selected={tab === value}
+            aria-controls={`insert-panel-${value}`}
           >
             <Icon size={17} />
             {label}
           </button>
         ))}
       </nav>
-      <div className="sidebar-content">
+      <div
+        className="sidebar-content"
+        id={`insert-panel-${tab}`}
+        role="tabpanel"
+        aria-label={`${tab} tools`}
+      >
         {tab === "assets" && <AssetsPanel />}
         {tab === "text" && <TextPanel />}
         {tab === "shapes" && <ShapesPanel />}
@@ -75,6 +83,9 @@ function AssetsPanel() {
     () => JSON.parse(localStorage.getItem("opensketch:recent-assets") ?? "[]") as string[]
   );
   const [info, setInfo] = useState<AssetFamily | null>(null);
+  const [assetError, setAssetError] = useState("");
+  const assetListRef = useRef<HTMLDivElement>(null);
+  const infoRef = useModalDialog(Boolean(info), () => setInfo(null));
   const families = useMemo(() => {
     const matches = filterAssetFamilies(assetManifest.families, debouncedQuery, category);
     return showFavorites ? matches.filter((family) => favorites.has(family.familyId)) : matches;
@@ -101,7 +112,10 @@ function AssetsPanel() {
     const next = [family.familyId, ...recent.filter((id) => id !== family.familyId)].slice(0, 8);
     setRecent(next);
     localStorage.setItem("opensketch:recent-assets", JSON.stringify(next));
-    void editor.addAsset(family, variant);
+    setAssetError("");
+    void editor
+      .addAsset(family, variant)
+      .catch((reason) => setAssetError(String(reason).replace(/^Error:\s*/, "")));
   };
 
   const Row = ({ index, style }: ListChildComponentProps) => (
@@ -125,6 +139,27 @@ function AssetsPanel() {
       })}
     </div>
   );
+  const navigateAssets = (event: KeyboardEvent<HTMLElement>) => {
+    if (!event.key.startsWith("Arrow")) return;
+    const buttons = [
+      ...(assetListRef.current?.querySelectorAll<HTMLButtonElement>(".asset-card-image") ?? [])
+    ];
+    const current = buttons.indexOf(document.activeElement as HTMLButtonElement);
+    if (current < 0) return;
+    const delta =
+      event.key === "ArrowLeft"
+        ? -1
+        : event.key === "ArrowRight"
+          ? 1
+          : event.key === "ArrowUp"
+            ? -2
+            : 2;
+    const target = buttons[current + delta];
+    if (target) {
+      event.preventDefault();
+      target.focus();
+    }
+  };
 
   return (
     <>
@@ -174,6 +209,11 @@ function AssetsPanel() {
           </button>
         )}
       </div>
+      {assetError ? (
+        <p className="panel-error" role="alert">
+          {assetError}
+        </p>
+      ) : null}
       {!query && recent.length > 0 && (
         <div className="recent-assets" aria-label="Recent assets">
           <span>Recent</span>
@@ -189,9 +229,15 @@ function AssetsPanel() {
         </div>
       )}
       {families.length ? (
-        <List className="asset-list" height={560} itemCount={rows} itemSize={184} width="100%">
-          {Row}
-        </List>
+        <div
+          ref={assetListRef}
+          onKeyDown={navigateAssets}
+          aria-label="NIH BioArt illustration families"
+        >
+          <List className="asset-list" height={560} itemCount={rows} itemSize={184} width="100%">
+            {Row}
+          </List>
+        </div>
       ) : assetManifest.families.length === 0 ? (
         <div className="empty-library">
           <Sparkles size={25} />
@@ -211,10 +257,12 @@ function AssetsPanel() {
       {info && (
         <div className="dialog-backdrop" onMouseDown={() => setInfo(null)}>
           <section
+            ref={infoRef}
             className="dialog asset-info-dialog"
             role="dialog"
             aria-modal="true"
             aria-labelledby="asset-info-title"
+            tabIndex={-1}
             onMouseDown={(event) => event.stopPropagation()}
           >
             <button
@@ -400,8 +448,8 @@ function ShapesPanel() {
       <div className="panel-tip">
         <MousePointer2 size={16} />
         <p>
-          <strong>Connectors stay editable.</strong> Select an arrow to tune weight, color,
-          rotation, and layer position.
+          <strong>Connect two objects precisely.</strong> Select two objects, then add a line or
+          arrow. Choose edge anchors, arrowheads, curvature, and line style in the inspector.
         </p>
       </div>
     </>
@@ -411,6 +459,7 @@ function ShapesPanel() {
 function UploadsPanel() {
   const editor = useEditor();
   const input = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState("");
   return (
     <>
       <div className="panel-heading">
@@ -433,10 +482,20 @@ function UploadsPanel() {
         accept=".svg,.png,.jpg,.jpeg,.webp,image/svg+xml,image/png,image/jpeg,image/webp"
         onChange={(event) => {
           const file = event.target.files?.[0];
-          if (file) void editor.addUpload(file);
+          if (file) {
+            setError("");
+            void editor
+              .addUpload(file)
+              .catch((reason) => setError(String(reason).replace(/^Error:\s*/, "")));
+          }
           event.currentTarget.value = "";
         }}
       />
+      {error ? (
+        <p className="panel-error" role="alert">
+          {error}
+        </p>
+      ) : null}
       <div className="security-note">
         <Info size={16} />
         <p>

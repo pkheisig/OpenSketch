@@ -2,14 +2,17 @@ Package: opensketch
 Title: Offline Scientific Figure Editor
 Version: 0.1.0
 Authors@R:
-    person("OpenSketch", "Contributors", role = c("aut", "cre"),
-           email = "pkheisig@users.noreply.github.com")
+    person(given = "Paul", family = "Heisig", email = "pkheisig@gmail.com",
+           role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-8529-7944"))
 Description: Launches a browser-based scientific figure editor bundled entirely
     inside the package. The editor uses public-domain biological artwork sourced
     from the NIAID NIH BioArt Source via Wikimedia Commons and supports local
     projects, vector editing, and publication-quality export without an account
     or remote application server.
-License: AGPL (>= 3) + file LICENSE
+URL: https://github.com/pkheisig/opensketch
+BugReports: https://github.com/pkheisig/opensketch/issues
+License: AGPL (>= 3)
 Encoding: UTF-8
 Depends:
     R (>= 4.1.0)

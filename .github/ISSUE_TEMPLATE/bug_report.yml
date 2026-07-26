@@ -1,0 +1,38 @@
+name: Bug report
+description: Report a reproducible editor, export, asset, or R launcher defect.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe the expected and observed behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Give the smallest sequence or attach a non-confidential .opensketch file.
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: OpenSketch version or commit
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser, R version, and operating system
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Data safety
+      options:
+        - label: I removed confidential scientific or patient data from attachments.
+          required: true

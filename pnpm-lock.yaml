@@ -14,8 +14,8 @@ importers:
         specifier: ^1.55.0
         version: 1.62.0
       "@testing-library/jest-dom":
-        specifier: ^6.6.4
-        version: 6.10.0(@testing-library/dom@10.4.1)
+        specifier: 6.9.1
+        version: 6.9.1
       "@testing-library/react":
         specifier: ^16.3.0
         version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -85,9 +85,6 @@ importers:
 
   apps/web:
     dependencies:
-      "@opensketch/editor-core":
-        specifier: workspace:*
-        version: link:../../packages/editor-core
       "@fontsource/inter":
         specifier: ^5.2.6
         version: 5.3.0
@@ -100,6 +97,9 @@ importers:
       "@fontsource/stix-two-text":
         specifier: ^5.2.6
         version: 5.3.0
+      "@opensketch/editor-core":
+        specifier: workspace:*
+        version: link:../../packages/editor-core
       dexie:
         specifier: ^4.0.11
         version: 4.4.4
@@ -121,9 +121,6 @@ importers:
       react-window:
         specifier: ^1.8.11
         version: 1.8.11(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
-      zustand:
-        specifier: ^5.0.6
-        version: 5.0.14(@types/react@19.2.17)(react@19.2.8)
     devDependencies:
       "@types/react-window":
         specifier: ^1.8.8
@@ -1362,15 +1359,12 @@ packages:
       }
     engines: { node: ">=18" }
 
-  "@testing-library/jest-dom@6.10.0":
+  "@testing-library/jest-dom@6.9.1":
     resolution:
       {
-        integrity: sha512-HQwu0KaB2zyT0iLzBL+8CLyZDL3KlZlZJ+2iyc9uCUnlJVskJU/UlPuVCyIPhtukjPQdT2QNoR5nCP5FqTmmDQ==
+        integrity: sha512-zIcONa+hVtVSSep9UT3jZ5rizo2BsxgyDYU7WFD5eICBE7no3881HGeb/QkGfsJs6JTkY1aQhT7rIPC7e+0nnA==
       }
-    engines: { node: ">=22", npm: ">=6", yarn: ">=1" }
-    deprecated: Incorrect minor release with breaking changes (Node >=22 and required @testing-library/dom peer). Use 6.9.1 for the 6.x line, or upgrade to 7.0.0.
-    peerDependencies:
-      "@testing-library/dom": ">=10 <11"
+    engines: { node: ">=14", npm: ">=6", yarn: ">=1" }
 
   "@testing-library/react@16.3.2":
     resolution:
@@ -3427,27 +3421,6 @@ packages:
       }
     engines: { node: ">=10" }
 
-  zustand@5.0.14:
-    resolution:
-      {
-        integrity: sha512-/8tAspM5LMPr28b3fwLYrtdj77ECpfZviaP75CMTnwO8ISyaE4GDIG/9rDDYq/cH9D2Xw2A2RXglLInmVBQB/g==
-      }
-    engines: { node: ">=12.20.0" }
-    peerDependencies:
-      "@types/react": ">=18.0.0"
-      immer: ">=9.0.6"
-      react: ">=18.0.0"
-      use-sync-external-store: ">=1.2.0"
-    peerDependenciesMeta:
-      "@types/react":
-        optional: true
-      immer:
-        optional: true
-      react:
-        optional: true
-      use-sync-external-store:
-        optional: true
-
 snapshots:
   "@adobe/css-tools@4.5.0": {}
 
@@ -4025,10 +3998,9 @@ snapshots:
       picocolors: 1.1.1
       pretty-format: 27.5.1
 
-  "@testing-library/jest-dom@6.10.0(@testing-library/dom@10.4.1)":
+  "@testing-library/jest-dom@6.9.1":
     dependencies:
       "@adobe/css-tools": 4.5.0
-      "@testing-library/dom": 10.4.1
       aria-query: 5.3.2
       css.escape: 1.5.1
       dom-accessibility-api: 0.6.3
@@ -5322,8 +5294,3 @@ snapshots:
   yallist@3.1.1: {}
 
   yocto-queue@0.1.0: {}
-
-  zustand@5.0.14(@types/react@19.2.17)(react@19.2.8):
-    optionalDependencies:
-      "@types/react": 19.2.17
-      react: 19.2.8

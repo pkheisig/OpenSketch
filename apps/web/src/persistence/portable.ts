@@ -10,6 +10,9 @@ export function downloadProject(project: ProjectRecord): void {
 }
 
 export async function readProjectFile(file: File): Promise<ProjectRecord> {
+  if (file.size > 100 * 1024 * 1024) {
+    throw new Error("This project is larger than the 100 MB safety limit.");
+  }
   const migrated = migrateProject(JSON.parse(await file.text()));
   return {
     ...migrated,

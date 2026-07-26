@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { AlertTriangle, X } from "lucide-react";
 import type { ProjectRecord } from "@opensketch/editor-core";
 import {
@@ -9,12 +9,11 @@ import {
   saveProject
 } from "@/persistence/database";
 import { downloadProject, readProjectFile } from "@/persistence/portable";
-import { EditorProvider } from "@/editor/EditorContext";
 import { HomeScreen } from "@/components/HomeScreen";
-import { TopToolbar } from "@/components/TopToolbar";
-import { LeftSidebar } from "@/components/LeftSidebar";
-import { CanvasWorkspace } from "@/components/CanvasWorkspace";
-import { Inspector } from "@/components/Inspector";
+
+const EditorStudio = lazy(() =>
+  import("@/components/EditorStudio").then((module) => ({ default: module.EditorStudio }))
+);
 
 export function App() {
   const [projects, setProjects] = useState<ProjectRecord[]>([]);
@@ -45,7 +44,7 @@ export function App() {
 
   const updateProject = useCallback(async (project: ProjectRecord) => {
     await saveProject(project);
-    setCurrent(project);
+    setCurrent((active) => (active?.id === project.id ? project : active));
   }, []);
 
   if (loading) {
@@ -60,22 +59,23 @@ export function App() {
   return (
     <>
       {current ? (
-        <EditorProvider key={current.id} project={current} onProjectChange={updateProject}>
-          <main className="editor-shell">
-            <TopToolbar
-              project={current}
-              onHome={() => {
-                setCurrent(null);
-                void refresh();
-              }}
-            />
-            <div className="editor-grid">
-              <LeftSidebar />
-              <CanvasWorkspace />
-              <Inspector />
+        <Suspense
+          fallback={
+            <div className="loading-screen">
+              <div className="loading-mark" />
+              <span>Opening vector workspace…</span>
             </div>
-          </main>
-        </EditorProvider>
+          }
+        >
+          <EditorStudio
+            project={current}
+            onProjectChange={updateProject}
+            onHome={() => {
+              setCurrent(null);
+              void refresh();
+            }}
+          />
+        </Suspense>
       ) : (
         <HomeScreen
           projects={projects}

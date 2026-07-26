@@ -28,9 +28,12 @@ import {
   CANVAS_PRESETS,
   pixelsToUnit,
   unitToPixels,
-  type CanvasUnit
+  type CanvasUnit,
+  type ConnectorAnchor,
+  type ConnectorArrowhead,
+  type ConnectorLineStyle
 } from "@opensketch/editor-core";
-import { FabricObject, Group as FabricGroup, Text } from "fabric";
+import { Color, FabricObject, Group as FabricGroup, Text } from "fabric";
 import { useEditor } from "@/editor/EditorContext";
 
 function number(value: number | undefined, digits = 0) {
@@ -158,8 +161,11 @@ function CanvasInspector() {
 
 function ObjectInspector({ object }: { object: FabricObject }) {
   const editor = useEditor();
+  const [aspectLocked, setAspectLocked] = useState(true);
   const palette = editor.getPalette();
+  const effects = editor.getAssetEffects();
   const isText = object instanceof Text;
+  const isAsset = object.opensketchType === "nih-asset" || object.opensketchType === "upload";
   const width = (object.width ?? 0) * (object.scaleX ?? 1);
   const height = (object.height ?? 0) * (object.scaleY ?? 1);
   return (
@@ -177,18 +183,40 @@ function ObjectInspector({ object }: { object: FabricObject }) {
             onChange={(top) => editor.setObject({ top })}
           />
         </div>
-        <div className="field-row two">
+        <div className="field-row dimensions">
           <NumberField
             label="W"
             value={width}
             min={1}
-            onChange={(next) => editor.setObject({ scaleX: next / (object.width || 1) })}
+            onChange={(next) => {
+              const scaleX = next / (object.width || 1);
+              editor.setObject(
+                aspectLocked
+                  ? { scaleX, scaleY: (object.scaleY ?? 1) * (next / Math.max(width, 1)) }
+                  : { scaleX }
+              );
+            }}
           />
+          <button
+            className={`aspect-lock ${aspectLocked ? "active" : ""}`}
+            onClick={() => setAspectLocked((current) => !current)}
+            aria-label={aspectLocked ? "Unlock aspect ratio" : "Lock aspect ratio"}
+            aria-pressed={aspectLocked}
+          >
+            {aspectLocked ? <Lock size={13} /> : <Unlock size={13} />}
+          </button>
           <NumberField
             label="H"
             value={height}
             min={1}
-            onChange={(next) => editor.setObject({ scaleY: next / (object.height || 1) })}
+            onChange={(next) => {
+              const scaleY = next / (object.height || 1);
+              editor.setObject(
+                aspectLocked
+                  ? { scaleY, scaleX: (object.scaleX ?? 1) * (next / Math.max(height, 1)) }
+                  : { scaleY }
+              );
+            }}
           />
         </div>
         <NumberField
@@ -242,6 +270,23 @@ function ObjectInspector({ object }: { object: FabricObject }) {
               </select>
             </label>
           </div>
+          <div className="field-row two">
+            <NumberField
+              label="Line height"
+              value={object.lineHeight}
+              min={0.5}
+              max={4}
+              step={0.05}
+              onChange={(lineHeight) => editor.setObject({ lineHeight })}
+            />
+            <NumberField
+              label="Tracking"
+              value={object.charSpacing}
+              min={-200}
+              max={1000}
+              onChange={(charSpacing) => editor.setObject({ charSpacing })}
+            />
+          </div>
           <div className="segmented-icons text-style">
             <button
               className={object.fontStyle === "italic" ? "active" : ""}
@@ -267,6 +312,68 @@ function ObjectInspector({ object }: { object: FabricObject }) {
               <AlignRight size={15} />
             </button>
           </div>
+          <div className="segmented-icons text-script" aria-label="Scientific text position">
+            <button onClick={() => editor.applyTextScript("normal")}>Normal</button>
+            <button onClick={() => editor.applyTextScript("subscript")}>
+              X<sub>2</sub>
+            </button>
+            <button onClick={() => editor.applyTextScript("superscript")}>
+              X<sup>2</sup>
+            </button>
+          </div>
+        </InspectorSection>
+      )}
+      {object.connector && (
+        <InspectorSection title="Connector" open>
+          <div className="field-row two">
+            <ConnectorSelect
+              label="Start anchor"
+              value={object.connector.fromAnchor}
+              values={["top", "right", "bottom", "left", "center"]}
+              onChange={(fromAnchor) => editor.updateConnector({ fromAnchor })}
+            />
+            <ConnectorSelect
+              label="End anchor"
+              value={object.connector.toAnchor}
+              values={["top", "right", "bottom", "left", "center"]}
+              onChange={(toAnchor) => editor.updateConnector({ toAnchor })}
+            />
+          </div>
+          <div className="field-row two">
+            <ConnectorSelect
+              label="Start head"
+              value={object.connector.startArrowhead}
+              values={["none", "triangle", "open", "circle"]}
+              onChange={(startArrowhead) => editor.updateConnector({ startArrowhead })}
+            />
+            <ConnectorSelect
+              label="End head"
+              value={object.connector.endArrowhead}
+              values={["none", "triangle", "open", "circle"]}
+              onChange={(endArrowhead) => editor.updateConnector({ endArrowhead })}
+            />
+          </div>
+          <ConnectorSelect
+            label="Line style"
+            value={object.connector.lineStyle}
+            values={["solid", "dashed", "dotted"]}
+            onChange={(lineStyle) => editor.updateConnector({ lineStyle })}
+          />
+          <label className="range-field">
+            <span>
+              Curvature <output>{Math.round(object.connector.curvature * 100)}%</output>
+            </span>
+            <input
+              type="range"
+              min="-0.8"
+              max="0.8"
+              step="0.02"
+              value={object.connector.curvature}
+              onChange={(event) =>
+                editor.updateConnector({ curvature: Number(event.target.value) })
+              }
+            />
+          </label>
         </InspectorSection>
       )}
       <InspectorSection title="Appearance" open>
@@ -303,6 +410,41 @@ function ObjectInspector({ object }: { object: FabricObject }) {
             </div>
           </div>
         )}
+        {isAsset && (
+          <div className="asset-effects">
+            <div className="palette-title">
+              <span>Scientific color effects</span>
+              <button onClick={editor.resetColors}>Reset all</button>
+            </div>
+            <label className="color-field">
+              Tint
+              <span>
+                <input
+                  type="color"
+                  value={effects.tint}
+                  onChange={(event) => editor.setAssetEffects({ tint: event.target.value })}
+                />
+              </span>
+            </label>
+            <EffectRange
+              label="Tint strength"
+              value={effects.tintAmount}
+              onChange={(tintAmount) => editor.setAssetEffects({ tintAmount })}
+            />
+            <EffectRange
+              label="Saturation"
+              value={effects.saturation}
+              minimum={-1}
+              onChange={(saturation) => editor.setAssetEffects({ saturation })}
+            />
+            <EffectRange
+              label="Brightness"
+              value={effects.brightness}
+              minimum={-1}
+              onChange={(brightness) => editor.setAssetEffects({ brightness })}
+            />
+          </div>
+        )}
         {typeof object.fill === "string" && (
           <label className="color-field">
             Fill
@@ -337,7 +479,7 @@ function ObjectInspector({ object }: { object: FabricObject }) {
         </div>
       </InspectorSection>
       <InspectorSection title="Align & distribute">
-        <div className="icon-grid">
+        <div className="icon-grid alignment-grid">
           <button onClick={() => editor.align("left")} aria-label="Align left">
             <AlignLeft size={15} />
           </button>
@@ -352,6 +494,15 @@ function ObjectInspector({ object }: { object: FabricObject }) {
             aria-label="Distribute horizontally"
           >
             <AlignHorizontalDistributeCenter size={15} />
+          </button>
+          <button onClick={() => editor.align("top")} aria-label="Align top">
+            <ArrowUpToLine size={15} />
+          </button>
+          <button onClick={() => editor.align("middle")} aria-label="Align middles">
+            <AlignVerticalDistributeCenter size={15} />
+          </button>
+          <button onClick={() => editor.align("bottom")} aria-label="Align bottom">
+            <ArrowDownToLine size={15} />
           </button>
           <button onClick={() => editor.distribute("vertical")} aria-label="Distribute vertically">
             <AlignVerticalDistributeCenter size={15} />
@@ -513,17 +664,60 @@ function NumberField({
   );
 }
 
+function ConnectorSelect<T extends ConnectorAnchor | ConnectorArrowhead | ConnectorLineStyle>({
+  label,
+  value,
+  values,
+  onChange
+}: {
+  label: string;
+  value: T;
+  values: readonly T[];
+  onChange: (value: T) => void;
+}) {
+  return (
+    <label className="field">
+      {label}
+      <select value={value} onChange={(event) => onChange(event.target.value as T)}>
+        {values.map((item) => (
+          <option key={item} value={item}>
+            {item.replace("-", " ")}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
+}
+
+function EffectRange({
+  label,
+  value,
+  minimum = 0,
+  onChange
+}: {
+  label: string;
+  value: number;
+  minimum?: number;
+  onChange: (value: number) => void;
+}) {
+  return (
+    <label className="range-field">
+      <span>
+        {label} <output>{Math.round(value * 100)}%</output>
+      </span>
+      <input
+        type="range"
+        min={minimum}
+        max="1"
+        step="0.01"
+        value={value}
+        onChange={(event) => onChange(Number(event.target.value))}
+      />
+    </label>
+  );
+}
+
 function normalizeHex(value: string): string {
-  if (/^#[0-9a-f]{6}$/i.test(value)) return value;
-  if (/^#[0-9a-f]{3}$/i.test(value)) {
-    return `#${value
-      .slice(1)
-      .split("")
-      .map((character) => character + character)
-      .join("")}`;
-  }
-  const context = document.createElement("canvas").getContext("2d");
-  if (!context) return "#000000";
-  context.fillStyle = value;
-  return context.fillStyle.startsWith("#") ? context.fillStyle : "#000000";
+  const parsed = new Color(value);
+  return parsed.isUnrecognised ? "#000000" : `#${parsed.toHex()}`;
 }
