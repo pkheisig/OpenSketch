@@ -449,7 +449,8 @@ function ShapesPanel() {
         <MousePointer2 size={16} />
         <p>
           <strong>Connect two objects precisely.</strong> Select two objects, then add a line or
-          arrow. Choose edge anchors, arrowheads, curvature, and line style in the inspector.
+          arrow. Choose edge anchors, arrowheads, direct or collision-aware routing, and line style
+          in the inspector.
         </p>
       </div>
     </>

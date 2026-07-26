@@ -38,6 +38,7 @@ import type {
 } from "@opensketch/editor-core";
 import { sanitizeUploadedSvg } from "@/assets/browserSanitizer";
 import { setPngDpi } from "@/export/png";
+import { svgToPdfBlob } from "@/export/pdf";
 import { downloadBlob, safeFilename } from "@/persistence/portable";
 import { GLOBAL_CREDIT } from "@/assets/credit";
 import { connectorAppearance, createConnectorObject } from "@/editor/connectors";
@@ -140,6 +141,7 @@ interface EditorContextValue {
   setZoom: (value: number) => void;
   fitCanvas: () => void;
   exportSvg: (title?: string, description?: string) => void;
+  exportPdf: (title?: string, description?: string) => Promise<void>;
   exportPng: (
     scale: number,
     transparent: boolean,
@@ -414,11 +416,21 @@ export function EditorProvider({
         const fromObject = byId.get(binding.fromObjectId);
         const toObject = byId.get(binding.toObjectId);
         if (!fromObject || !toObject) continue;
+        const obstacles = objects
+          .filter(
+            (object) =>
+              !object.connector &&
+              object.visible !== false &&
+              object.objectId !== binding.fromObjectId &&
+              object.objectId !== binding.toObjectId
+          )
+          .map((object) => object.getBoundingRect());
         const replacement = createConnectorObject(
           anchorPoint(fromObject.getBoundingRect(), binding.fromAnchor),
           anchorPoint(toObject.getBoundingRect(), binding.toAnchor),
           binding,
-          connectorAppearance(connector)
+          connectorAppearance(connector),
+          obstacles
         );
         replacement.objectId = connector.objectId;
         replacement.name = connector.name;
@@ -760,13 +772,25 @@ export function EditorProvider({
         startArrowhead: kind === "double-arrow" ? "triangle" : "none",
         endArrowhead: kind === "line" ? "none" : "triangle",
         lineStyle: "solid",
+        routing: kind === "curved-arrow" ? "direct" : "orthogonal",
         curvature: kind === "curved-arrow" ? 0.24 : 0
       };
+      const obstacles = canvas
+        .getObjects()
+        .filter(
+          (object) =>
+            !object.connector &&
+            object.visible !== false &&
+            object !== fromObject &&
+            object !== toObject
+        )
+        .map((object) => object.getBoundingRect());
       const connector = createConnectorObject(
         anchorPoint(fromObject.getBoundingRect(), binding.fromAnchor),
         anchorPoint(toObject.getBoundingRect(), binding.toAnchor),
         binding,
-        { color: "#25494b", width: 4, opacity: 1 }
+        { color: "#25494b", width: 4, opacity: 1 },
+        obstacles
       );
       assignIdentity(connector, "Connector", "connector");
       canvas.add(connector);
@@ -1280,9 +1304,9 @@ export function EditorProvider({
     [persist]
   );
 
-  const exportSvg = useCallback(
+  const buildSvg = useCallback(
     (title = latestProject.current.name, description = latestProject.current.description ?? "") => {
-      if (!canvas) return;
+      if (!canvas) throw new Error("The figure canvas is not ready.");
       refreshTextMetrics(canvas.getObjects());
       let svg = withLogicalViewport(canvas, canvasSettings, () =>
         canvas.toSVG({
@@ -1313,9 +1337,33 @@ export function EditorProvider({
         description ? `<desc>${escapeXml(description)}</desc>` : ""
       }`;
       svg = svg.replace(/(<svg[^>]*>)/, `$1${metadata}`);
-      downloadBlob(new Blob([svg], { type: "image/svg+xml" }), `${safeFilename(title)}.svg`);
+      return svg;
     },
     [canvas, canvasSettings]
+  );
+
+  const exportSvg = useCallback(
+    (title = latestProject.current.name, description = latestProject.current.description ?? "") => {
+      const svg = buildSvg(title, description);
+      downloadBlob(new Blob([svg], { type: "image/svg+xml" }), `${safeFilename(title)}.svg`);
+    },
+    [buildSvg]
+  );
+
+  const exportPdf = useCallback(
+    async (
+      title = latestProject.current.name,
+      description = latestProject.current.description ?? ""
+    ) => {
+      const svg = buildSvg(title, description);
+      const blob = await svgToPdfBlob(svg, canvasSettings.width, canvasSettings.height, {
+        title,
+        description,
+        credit: GLOBAL_CREDIT
+      });
+      downloadBlob(blob, `${safeFilename(title)}.pdf`);
+    },
+    [buildSvg, canvasSettings.height, canvasSettings.width]
   );
 
   const exportPng = useCallback(
@@ -1505,6 +1553,7 @@ export function EditorProvider({
       setZoom,
       fitCanvas,
       exportSvg,
+      exportPdf,
       exportPng,
       commit
     }),
@@ -1523,6 +1572,7 @@ export function EditorProvider({
       distribute,
       duplicateSelection,
       exportPng,
+      exportPdf,
       exportSvg,
       fitCanvas,
       flip,

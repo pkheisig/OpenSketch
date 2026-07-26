@@ -2,6 +2,7 @@ test_that("bundled application is present", {
   path <- opensketch_path()
   expect_true(dir.exists(path))
   expect_true(file.exists(file.path(path, "index.html")))
+  expect_true(length(list.files(file.path(path, "assets"), pattern = "\\.ttf$")) >= 3L)
 })
 
 test_that("launcher validates server handles", {

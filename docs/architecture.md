@@ -28,10 +28,15 @@ invoke semantic operations such as `addAsset`, `align`, `replaceColor`, and
 selection.
 
 Pure geometry and color transforms live in `apps/web/src/editor/geometry.ts` and
-`colors.ts`, while `connectors.ts` owns connector construction. This keeps snapping,
-anchor resolution, gradient-aware effects, and connector rendering independently
-testable. Attached connectors are ordinary serialized Fabric groups carrying a
-versioned binding to stable object IDs.
+`colors.ts`, while `connectors.ts` owns connector construction and Manhattan route
+search. This keeps snapping, anchor resolution, gradient-aware effects, and
+collision-aware connector rendering independently testable. Attached connectors
+are ordinary serialized Fabric groups carrying a versioned binding to stable
+object IDs.
+
+`templates/scientificTemplates.ts` creates starter projects from the same Fabric
+objects and connector bindings used by the live editor. Templates are not
+flattened images and do not introduce a separate document format.
 
 `scripts/assets` is development-only Node code. It is deliberately not imported by
 the browser bundle.
@@ -55,5 +60,11 @@ per-asset source/author/license records, and the global NIH BioArt credit into
 
 PNG is rendered from a neutral logical viewport so editor zoom never changes
 output dimensions. Preset or custom pixel scaling is accompanied by a valid PNG
-physical-resolution (`pHYs`) chunk. PDF should consume SVG rather than rasterizing
-the scene when it is added.
+physical-resolution (`pHYs`) chunk.
+
+PDF consumes that generated SVG through `svg2pdf.js` and jsPDF, retaining
+supported vector paths and text instead of rasterizing the page. A local Latin,
+Greek, and scientific-script subset of Source Sans 3 is embedded so the default
+canvas typography remains searchable and visually faithful. PDF document
+properties carry the title, description, author, generator, and global NIH
+BioArt credit.

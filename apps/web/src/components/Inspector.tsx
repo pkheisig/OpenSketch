@@ -31,7 +31,8 @@ import {
   type CanvasUnit,
   type ConnectorAnchor,
   type ConnectorArrowhead,
-  type ConnectorLineStyle
+  type ConnectorLineStyle,
+  type ConnectorRouting
 } from "@opensketch/editor-core";
 import { Color, FabricObject, Group as FabricGroup, Text } from "fabric";
 import { useEditor } from "@/editor/EditorContext";
@@ -359,21 +360,29 @@ function ObjectInspector({ object }: { object: FabricObject }) {
             values={["solid", "dashed", "dotted"]}
             onChange={(lineStyle) => editor.updateConnector({ lineStyle })}
           />
-          <label className="range-field">
-            <span>
-              Curvature <output>{Math.round(object.connector.curvature * 100)}%</output>
-            </span>
-            <input
-              type="range"
-              min="-0.8"
-              max="0.8"
-              step="0.02"
-              value={object.connector.curvature}
-              onChange={(event) =>
-                editor.updateConnector({ curvature: Number(event.target.value) })
-              }
-            />
-          </label>
+          <ConnectorSelect
+            label="Routing"
+            value={object.connector.routing ?? "direct"}
+            values={["direct", "orthogonal"]}
+            onChange={(routing) => editor.updateConnector({ routing })}
+          />
+          {(object.connector.routing ?? "direct") === "direct" && (
+            <label className="range-field">
+              <span>
+                Curvature <output>{Math.round(object.connector.curvature * 100)}%</output>
+              </span>
+              <input
+                type="range"
+                min="-0.8"
+                max="0.8"
+                step="0.02"
+                value={object.connector.curvature}
+                onChange={(event) =>
+                  editor.updateConnector({ curvature: Number(event.target.value) })
+                }
+              />
+            </label>
+          )}
         </InspectorSection>
       )}
       <InspectorSection title="Appearance" open>
@@ -664,7 +673,9 @@ function NumberField({
   );
 }
 
-function ConnectorSelect<T extends ConnectorAnchor | ConnectorArrowhead | ConnectorLineStyle>({
+function ConnectorSelect<
+  T extends ConnectorAnchor | ConnectorArrowhead | ConnectorLineStyle | ConnectorRouting
+>({
   label,
   value,
   values,

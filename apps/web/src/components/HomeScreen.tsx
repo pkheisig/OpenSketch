@@ -5,15 +5,19 @@ import {
   FilePlus2,
   FolderOpen,
   MoreHorizontal,
+  Network,
   Pencil,
   Save,
   Trash2,
-  Upload
+  Upload,
+  Workflow,
+  Columns3
 } from "lucide-react";
 import type { ProjectRecord } from "@opensketch/editor-core";
 import { GLOBAL_CREDIT } from "@/assets/credit";
 import { Logo } from "./Logo";
 import { useModalDialog } from "./useModalDialog";
+import { SCIENTIFIC_TEMPLATES, type ScientificTemplateId } from "@/templates/scientificTemplates";
 
 export function HomeScreen({
   projects,
@@ -26,7 +30,7 @@ export function HomeScreen({
   onImport
 }: {
   projects: ProjectRecord[];
-  onNew: () => void;
+  onNew: (templateId?: ScientificTemplateId) => void;
   onOpen: (project: ProjectRecord) => void;
   onDuplicate: (project: ProjectRecord) => void;
   onDelete: (project: ProjectRecord) => void;
@@ -53,7 +57,7 @@ export function HomeScreen({
           <button className="button secondary" onClick={() => input.current?.click()}>
             <Upload size={16} /> Import project
           </button>
-          <button className="button primary" onClick={onNew}>
+          <button className="button primary" onClick={() => onNew()}>
             <FilePlus2 size={17} /> New figure
           </button>
           <input
@@ -78,7 +82,7 @@ export function HomeScreen({
             Assemble biological illustrations, labels, and pathways in a precise canvas that keeps
             every project on your device.
           </p>
-          <button className="hero-cta" onClick={onNew}>
+          <button className="hero-cta" onClick={() => onNew()}>
             Start a blank figure <ArrowRight size={18} />
           </button>
         </div>
@@ -106,6 +110,34 @@ export function HomeScreen({
         </div>
       </section>
 
+      <section className="templates-section">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">START WITH STRUCTURE</p>
+            <h2>Scientific layouts</h2>
+          </div>
+          <span className="local-pill">Fully editable</span>
+        </div>
+        <div className="template-grid">
+          {SCIENTIFIC_TEMPLATES.map((template) => (
+            <button
+              className="template-card"
+              key={template.id}
+              onClick={() => onNew(template.id)}
+              aria-label={`Create ${template.name} figure`}
+            >
+              <TemplatePreview kind={template.preview} />
+              <span className="template-copy">
+                <small>{template.eyebrow}</small>
+                <strong>{template.name}</strong>
+                <span>{template.description}</span>
+              </span>
+              <ArrowRight size={17} />
+            </button>
+          ))}
+        </div>
+      </section>
+
       <section className="projects-section">
         <div className="section-heading">
           <div>
@@ -115,7 +147,7 @@ export function HomeScreen({
           <span className="local-pill">Stored locally</span>
         </div>
         <div className="project-grid">
-          <button className="new-project-card" onClick={onNew}>
+          <button className="new-project-card" onClick={() => onNew()}>
             <span>
               <FilePlus2 size={25} />
             </span>
@@ -210,5 +242,20 @@ export function HomeScreen({
         </div>
       )}
     </main>
+  );
+}
+
+function TemplatePreview({ kind }: { kind: (typeof SCIENTIFIC_TEMPLATES)[number]["preview"] }) {
+  const Icon = kind === "cascade" ? Network : kind === "workflow" ? Workflow : Columns3;
+  return (
+    <span className={`template-preview ${kind}`} aria-hidden="true">
+      <Icon size={18} />
+      <span className="template-preview-nodes">
+        <i />
+        <i />
+        <i />
+        <i />
+      </span>
+    </span>
   );
 }

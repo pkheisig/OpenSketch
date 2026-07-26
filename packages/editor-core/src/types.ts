@@ -74,6 +74,7 @@ export interface ProjectRecord extends PortableProject {
 export type ConnectorAnchor = "top" | "right" | "bottom" | "left" | "center";
 export type ConnectorArrowhead = "none" | "triangle" | "open" | "circle";
 export type ConnectorLineStyle = "solid" | "dashed" | "dotted";
+export type ConnectorRouting = "direct" | "orthogonal";
 
 export interface ConnectorBinding {
   fromObjectId: string;
@@ -83,5 +84,6 @@ export interface ConnectorBinding {
   startArrowhead: ConnectorArrowhead;
   endArrowhead: ConnectorArrowhead;
   lineStyle: ConnectorLineStyle;
+  routing?: ConnectorRouting;
   curvature: number;
 }

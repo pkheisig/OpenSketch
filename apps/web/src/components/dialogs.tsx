@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Download, FileImage, FileType2, X } from "lucide-react";
+import { Download, FileImage, FileText, FileType2, X } from "lucide-react";
 import { useEditor } from "@/editor/EditorContext";
 import { useModalDialog } from "./useModalDialog";
 
 export function ExportDialog({ onClose }: { onClose: () => void }) {
   const editor = useEditor();
   const dialogRef = useModalDialog(true, onClose);
-  const [format, setFormat] = useState<"svg" | "png">("svg");
+  const [format, setFormat] = useState<"svg" | "png" | "pdf">("svg");
   const [scale, setScale] = useState(2);
   const [dpi, setDpi] = useState(editor.canvasSettings.dpi);
   const [customMultiplier, setCustomMultiplier] = useState<number | null>(null);
@@ -61,8 +61,19 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
               PNG<strong>High-resolution raster</strong>
             </span>
           </button>
+          <button
+            className={format === "pdf" ? "active" : ""}
+            onClick={() => setFormat("pdf")}
+            role="tab"
+            aria-selected={format === "pdf"}
+          >
+            <FileText size={20} />
+            <span>
+              PDF<strong>Vector document</strong>
+            </span>
+          </button>
         </div>
-        {format === "svg" ? (
+        {format !== "png" ? (
           <label className="field">
             Accessible description
             <textarea
@@ -73,7 +84,10 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
               }}
               placeholder="Describe the scientific content of this figure…"
             />
-            <small>Embedded as SVG title, description, and OpenSketch provenance metadata.</small>
+            <small>
+              Embedded with OpenSketch provenance in the{" "}
+              {format === "svg" ? "SVG document" : "PDF document properties"}.
+            </small>
           </label>
         ) : (
           <>
@@ -167,7 +181,11 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
             {format === "png" ? pixelWidth : editor.canvasSettings.width} ×{" "}
             {format === "png" ? pixelHeight : editor.canvasSettings.height} px
           </span>
-          <span>{format === "png" ? dpi : editor.canvasSettings.dpi} DPI</span>
+          <span>
+            {format === "pdf"
+              ? "Vector page"
+              : `${format === "png" ? dpi : editor.canvasSettings.dpi} DPI`}
+          </span>
         </div>
         {exportError ? (
           <p className="panel-error" role="alert">
@@ -182,6 +200,7 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
             setExportError("");
             try {
               if (format === "svg") editor.exportSvg(undefined, description);
+              else if (format === "pdf") await editor.exportPdf(undefined, description);
               else await editor.exportPng(pngMultiplier, transparent, dpi, background);
               onClose();
             } catch (reason) {

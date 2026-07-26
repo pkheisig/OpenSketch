@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { readFile } from "node:fs/promises";
+import { PDFDocument } from "pdf-lib";
 
 test("creates, edits, saves, reopens, and exports a local figure", async ({ page }) => {
   const externalRequests: string[] = [];
@@ -84,6 +85,23 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   expect(physicalChunk).toBeGreaterThan(0);
   expect(png.readUInt32BE(physicalChunk + 4)).toBe(5906);
 
+  await page.getByRole("button", { name: "Export" }).click();
+  await page.getByRole("tab", { name: /PDF/ }).click();
+  const pdfDownloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export PDF" }).click();
+  const pdfPath = await (await pdfDownloadPromise).path();
+  expect(pdfPath).not.toBeNull();
+  const pdfBytes = await readFile(pdfPath!);
+  expect(pdfBytes.subarray(0, 5).toString()).toBe("%PDF-");
+  expect(pdfBytes.toString("latin1")).toContain("/FontName /Source#20Sans#203");
+  const pdf = await PDFDocument.load(pdfBytes);
+  expect(pdf.getPageCount()).toBe(1);
+  expect(pdf.getTitle()).toBe("Untitled figure");
+  expect(pdf.getAuthor()).toBe("Paul Heisig");
+  expect(pdf.getCreator()).toBe("OpenSketch");
+  const pageSize = pdf.getPage(0).getSize();
+  expect(pageSize.width).toBeGreaterThan(pageSize.height);
+
   await page.getByRole("button", { name: "Project home" }).click();
   await expect(page.getByRole("heading", { name: "Recent projects" })).toBeVisible();
   await page.getByRole("button", { name: "Untitled figure" }).click();
@@ -135,6 +153,7 @@ test("builds and persists a styled object-attached connector", async ({ page }) 
   await page.getByLabel("Start head").selectOption("open");
   await page.getByLabel("End head").selectOption("circle");
   await page.getByLabel("Line style").selectOption("dashed");
+  await page.getByLabel("Routing").selectOption("direct");
   await page
     .locator("label.range-field")
     .filter({ hasText: "Curvature" })
@@ -164,9 +183,33 @@ test("builds and persists a styled object-attached connector", async ({ page }) 
   await expect(page.getByLabel("Line style")).toHaveValue("dashed");
   await expect(page.getByLabel("Start head")).toHaveValue("open");
   await expect(page.getByLabel("End head")).toHaveValue("circle");
+  await expect(page.getByLabel("Routing")).toHaveValue("direct");
 });
 
-test("keeps the canvas responsive with one hundred ordinary objects", async ({ page }) => {
+test("opens a fully editable scientific starter layout", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Create Experimental workflow figure" }).click();
+  await expect(page.getByLabel("OpenSketch figure artboard")).toBeVisible();
+  await expect(page.locator(".layers-title small")).toHaveText("23");
+  await expect(
+    page.locator(".layer-list button").filter({ hasText: "EXPERIMENTAL WORKFLOW" })
+  ).toBeVisible();
+
+  await page.getByRole("button", { name: "Project home" }).click();
+  const savedTemplate = page.locator(".project-title").filter({ hasText: "Experimental workflow" });
+  await expect(savedTemplate).toBeVisible();
+  await savedTemplate.click();
+  await expect(page.locator(".layers-title small")).toHaveText("23");
+});
+
+test("keeps the canvas responsive with one hundred ordinary objects", async ({
+  page,
+  browserName
+}) => {
+  test.skip(
+    browserName !== "chromium",
+    "The stress benchmark runs once; workflows run in all engines."
+  );
   test.setTimeout(45_000);
   await page.goto("/");
   await page.getByRole("button", { name: "New figure", exact: true }).first().click();

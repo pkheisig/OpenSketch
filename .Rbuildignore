@@ -14,6 +14,7 @@
 ^vitest\.config\.ts$
 ^\.github$
 ^\.gitignore$
+^\.gitattributes$
 ^\.prettier
 ^LICENSE$
 ^LICENSE\.md$

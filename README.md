@@ -73,8 +73,12 @@ corepack pnpm test
 corepack pnpm build
 corepack pnpm test:e2e
 R CMD build .
-R CMD check --no-manual --as-cran opensketch_0.1.0.tar.gz
+R CMD check --no-manual opensketch_0.1.0.tar.gz
 ```
+
+The browser suite runs the full editor, persistence, SVG/PNG/PDF export, and
+export-fidelity workflows in Chromium, Firefox, and WebKit. The 100-object
+responsiveness benchmark runs once in Chromium.
 
 ## NIH BioArt asset pipeline
 
@@ -144,24 +148,34 @@ examples/                  verified portable project and SVG examples
 - Editable point text, text boxes, built-in diagram shapes, callouts, brackets,
   membrane primitives, scientific sub/superscripts, and vector arrows
 - Object-attached connectors with independent anchors, arrowheads, line styles,
-  curvature, and automatic geometry updates
+  curvature, automatic geometry updates, and collision-aware orthogonal routing
 - Palette-level asset recoloring, gradient-aware tint, saturation, brightness,
   opacity, and complete reset
 - Sanitized SVG plus PNG/JPEG/WebP uploads embedded in project data
-- Vector SVG export with accessible metadata and high-resolution PNG export
-  carrying explicit physical-DPI metadata and custom pixel dimensions
+- Vector SVG and PDF export with accessible metadata and embedded default
+  typography, plus high-resolution PNG export carrying explicit physical-DPI
+  metadata and custom pixel dimensions
 - A4, Letter, presentation, square, and custom artboard dimensions
+- Editable signaling-cascade, experimental-workflow, and comparative-panel
+  starter figures available directly from the project home
 
-PDF export remains deferred until the SVG regression suite covers a broader range
-of gradients, masks, clip paths, fonts, and external PDF renderers.
-
-## Example figure
+## Example figures
 
 The [antibody-mediated immune response project](examples/antibody-mediated-immune-response.opensketch)
 is a portable, editable example built in OpenSketch from two bundled NIH BioArt
 families. Its [SVG export](examples/antibody-mediated-immune-response.svg) demonstrates
 vector preservation, accessible title and description fields, and per-asset
 public-domain provenance in the export metadata.
+
+Three shape-based scientific examples mirror the built-in starter layouts and
+demonstrate editable labels, panels, and attached orthogonal connectors:
+
+- [signaling cascade project](examples/signaling-cascade.opensketch) and
+  [SVG](examples/signaling-cascade.svg)
+- [experimental workflow project](examples/experimental-workflow.opensketch) and
+  [SVG](examples/experimental-workflow.svg)
+- [comparative panels project](examples/comparative-panels.opensketch) and
+  [SVG](examples/comparative-panels.svg)
 
 ## Contributing
 

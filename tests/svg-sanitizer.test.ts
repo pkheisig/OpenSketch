@@ -66,6 +66,21 @@ describe("SVG sanitization", () => {
     expect(uploaded).toContain('href="#upload-shape"');
   });
 
+  it("preserves internal masks and filters while namespacing their references", () => {
+    const effects = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+      <defs>
+        <mask id="fade"><rect width="20" height="20" fill="white"/></mask>
+        <filter id="shadow"><feDropShadow dx="1" dy="1" stdDeviation="1"/></filter>
+      </defs>
+      <circle cx="10" cy="10" r="8" mask="url(#fade)" filter="url(#shadow)"/>
+    </svg>`;
+    const clean = sanitizeUploadedSvg(effects, "upload");
+    expect(clean).toContain('id="upload-fade"');
+    expect(clean).toContain('id="upload-shadow"');
+    expect(clean).toContain("url(#upload-fade)");
+    expect(clean).toContain("url(#upload-shadow)");
+  });
+
   it("removes external use references", () => {
     const externalUse = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
       <use href="https://example.org/shapes.svg#cell"/>

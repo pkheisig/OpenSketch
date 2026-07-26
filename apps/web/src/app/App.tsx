@@ -10,6 +10,10 @@ import {
 } from "@/persistence/database";
 import { downloadProject, readProjectFile } from "@/persistence/portable";
 import { HomeScreen } from "@/components/HomeScreen";
+import {
+  instantiateScientificTemplate,
+  type ScientificTemplateId
+} from "@/templates/scientificTemplates";
 
 const EditorStudio = lazy(() =>
   import("@/components/EditorStudio").then((module) => ({ default: module.EditorStudio }))
@@ -31,9 +35,11 @@ export function App() {
       .finally(() => setLoading(false));
   }, [refresh]);
 
-  const newProject = async () => {
+  const newProject = async (templateId?: ScientificTemplateId) => {
     try {
-      const project = createProject();
+      const project = templateId
+        ? await instantiateScientificTemplate(templateId)
+        : createProject();
       await saveProject(project);
       setCurrent(project);
       await refresh();
@@ -79,7 +85,7 @@ export function App() {
       ) : (
         <HomeScreen
           projects={projects}
-          onNew={() => void newProject()}
+          onNew={(templateId) => void newProject(templateId)}
           onOpen={setCurrent}
           onDuplicate={(project) => {
             duplicateProject(project)

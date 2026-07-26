@@ -47,6 +47,7 @@ opensketch <- function(host = "127.0.0.1", port = NULL,
     jpeg = "image/jpeg",
     woff = "font/woff",
     woff2 = "font/woff2",
+    ttf = "font/ttf",
     ico = "image/x-icon"
   )
 
