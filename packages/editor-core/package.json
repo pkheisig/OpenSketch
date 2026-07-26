@@ -1,5 +1,5 @@
 {
-  "name": "@opensketch/editor-core",
+  "name": "@workspace/editor-core",
   "version": "0.1.0",
   "private": true,
   "type": "module",

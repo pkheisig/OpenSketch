@@ -1,4 +1,4 @@
-import type { AssetManifest } from "@opensketch/editor-core";
+import type { AssetManifest } from "@workspace/editor-core";
 import manifest from "../generated/nih-bioart-manifest.json";
 
 export const assetManifest = manifest as AssetManifest;

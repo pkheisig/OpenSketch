@@ -21,7 +21,7 @@ import type { CommonsPage, ImportFailure, ImportSkip, SourceLock, SourceLockEntr
 const API = "https://commons.wikimedia.org/w/api.php";
 const SANITIZER_VERSION = 3;
 const USER_AGENT =
-  "OpenSketchAssetImporter/0.1 (https://github.com/pkheisig/opensketch; scientific figure editor)";
+  "OpenSketchAssetImporter/0.1 (https://github.com/pkheisig/OpenSketch; scientific figure editor)";
 const sanitizerPool = new Piscina({
   filename: fileURLToPath(new URL("./sanitize-worker.mjs", import.meta.url)),
   minThreads: 2,

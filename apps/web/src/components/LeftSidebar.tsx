@@ -21,7 +21,7 @@ import {
   Waves,
   X
 } from "lucide-react";
-import { filterAssetFamilies, type AssetFamily, type AssetVariant } from "@opensketch/editor-core";
+import { filterAssetFamilies, type AssetFamily, type AssetVariant } from "@workspace/editor-core";
 import { ASSET_CATEGORIES, assetManifest } from "@/assets/manifest";
 import { useEditor } from "@/editor/EditorContext";
 import { useModalDialog } from "./useModalDialog";
@@ -77,10 +77,10 @@ function AssetsPanel() {
   const [showFavorites, setShowFavorites] = useState(false);
   const [variants, setVariants] = useState<Record<string, string>>({});
   const [favorites, setFavorites] = useState<Set<string>>(
-    () => new Set(JSON.parse(localStorage.getItem("opensketch:favorites") ?? "[]") as string[])
+    () => new Set(JSON.parse(localStorage.getItem("OpenSketch:favorites") ?? "[]") as string[])
   );
   const [recent, setRecent] = useState<string[]>(
-    () => JSON.parse(localStorage.getItem("opensketch:recent-assets") ?? "[]") as string[]
+    () => JSON.parse(localStorage.getItem("OpenSketch:recent-assets") ?? "[]") as string[]
   );
   const [info, setInfo] = useState<AssetFamily | null>(null);
   const [assetError, setAssetError] = useState("");
@@ -105,13 +105,13 @@ function AssetsPanel() {
     if (next.has(familyId)) next.delete(familyId);
     else next.add(familyId);
     setFavorites(next);
-    localStorage.setItem("opensketch:favorites", JSON.stringify([...next]));
+    localStorage.setItem("OpenSketch:favorites", JSON.stringify([...next]));
   };
 
   const insert = (family: AssetFamily, variant: AssetVariant) => {
     const next = [family.familyId, ...recent.filter((id) => id !== family.familyId)].slice(0, 8);
     setRecent(next);
-    localStorage.setItem("opensketch:recent-assets", JSON.stringify(next));
+    localStorage.setItem("OpenSketch:recent-assets", JSON.stringify(next));
     setAssetError("");
     void editor
       .addAsset(family, variant)
@@ -334,7 +334,7 @@ function AssetCard({
   const onDragStart = (event: DragEvent) => {
     event.dataTransfer.effectAllowed = "copy";
     event.dataTransfer.setData(
-      "application/x-opensketch-asset",
+      "application/x-scientific-asset",
       JSON.stringify({ familyId: family.familyId, variantId: variant.id })
     );
   };

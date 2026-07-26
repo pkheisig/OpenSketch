@@ -4,7 +4,7 @@ OpenSketch is an R package containing a precompiled static web application.
 
 ## Runtime boundary
 
-The R function `opensketch()` serves `inst/app/` on loopback using `httpuv`.
+The R function `OpenSketch()` serves `inst/app/` on loopback using `httpuv`.
 The server only maps request paths to bundled files and supplies a restrictive
 content security policy. It has no project routes, authentication, telemetry, or
 network proxy.
@@ -15,7 +15,7 @@ The browser owns all state:
 - A bounded 120-snapshot history provides undo and redo.
 - Meaningful scene changes debounce into Dexie/IndexedDB after 500 ms.
 - User uploads are stored as data URLs inside the project record.
-- `.opensketch` is versioned JSON and passes through an explicit migration gate.
+- `.OpenSketch` is versioned JSON and passes through an explicit migration gate.
 
 ## Source layout
 

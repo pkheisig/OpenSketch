@@ -4,7 +4,7 @@ import type {
   ConnectorArrowhead,
   ConnectorBinding,
   ConnectorLineStyle
-} from "@opensketch/editor-core";
+} from "@workspace/editor-core";
 import type { Bounds, Point } from "./geometry";
 
 export interface ConnectorAppearance {
@@ -434,7 +434,7 @@ export function createConnectorObject(
     lockScalingY: true
   });
   group.connector = { ...binding };
-  group.opensketchType = "connector";
+  group.OpenSketchType = "connector";
   group.name = "Connector";
   return group;
 }

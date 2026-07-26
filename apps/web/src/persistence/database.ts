@@ -1,15 +1,15 @@
 import Dexie, { type EntityTable } from "dexie";
 import {
-  OPENSKETCH_FORMAT_VERSION,
+  OpenSketch_FORMAT_VERSION,
   DEFAULT_CANVAS,
   type ProjectRecord
-} from "@opensketch/editor-core";
+} from "@workspace/editor-core";
 
 class OpenSketchDatabase extends Dexie {
   projects!: EntityTable<ProjectRecord, "id">;
 
   constructor() {
-    super("opensketch");
+    super("OpenSketch");
     this.version(1).stores({
       projects: "id, updatedAt, name"
     });
@@ -21,8 +21,8 @@ export const db = new OpenSketchDatabase();
 export function createProject(name = "Untitled figure"): ProjectRecord {
   const now = new Date().toISOString();
   return {
-    format: "opensketch",
-    formatVersion: OPENSKETCH_FORMAT_VERSION,
+    format: "OpenSketch",
+    formatVersion: OpenSketch_FORMAT_VERSION,
     id: crypto.randomUUID(),
     name,
     version: 1,

@@ -1,12 +1,12 @@
-import { migrateProject, type PortableProject, type ProjectRecord } from "@opensketch/editor-core";
+import { migrateProject, type PortableProject, type ProjectRecord } from "@workspace/editor-core";
 
 export function downloadProject(project: ProjectRecord): void {
   const portable = structuredClone(project) as PortableProject & { thumbnail?: string };
   delete portable.thumbnail;
   const blob = new Blob([JSON.stringify(portable, null, 2)], {
-    type: "application/vnd.opensketch+json"
+    type: "application/vnd.OpenSketch+json"
   });
-  downloadBlob(blob, `${safeFilename(project.name)}.opensketch`);
+  downloadBlob(blob, `${safeFilename(project.name)}.OpenSketch`);
 }
 
 export async function readProjectFile(file: File): Promise<ProjectRecord> {
@@ -38,6 +38,6 @@ export function safeFilename(value: string): string {
       .trim()
       .replace(/[^a-z0-9._-]+/gi, "-")
       .replace(/^-+|-+$/g, "")
-      .slice(0, 80) || "opensketch-figure"
+      .slice(0, 80) || "OpenSketch-figure"
   );
 }

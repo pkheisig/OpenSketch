@@ -1,4 +1,4 @@
-import type { ConnectorAnchor } from "@opensketch/editor-core";
+import type { ConnectorAnchor } from "@workspace/editor-core";
 
 export interface Point {
   x: number;

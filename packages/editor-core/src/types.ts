@@ -1,4 +1,4 @@
-export const OPENSKETCH_FORMAT_VERSION = 1;
+export const OpenSketch_FORMAT_VERSION = 1;
 
 export type CanvasUnit = "px" | "mm" | "in";
 
@@ -53,7 +53,7 @@ export interface UploadRecord {
 }
 
 export interface PortableProject {
-  format: "opensketch";
+  format: "OpenSketch";
   formatVersion: number;
   version: 1;
   id: string;

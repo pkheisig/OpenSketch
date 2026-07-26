@@ -63,7 +63,7 @@ export function CanvasWorkspace() {
   const onDrop = (event: DragEvent) => {
     event.preventDefault();
     setDragging(false);
-    const encoded = event.dataTransfer.getData("application/x-opensketch-asset");
+    const encoded = event.dataTransfer.getData("application/x-scientific-asset");
     if (!encoded) return;
     const data = JSON.parse(encoded) as { familyId: string; variantId: string };
     const family = assetManifest.families.find((item) => item.familyId === data.familyId);
@@ -127,7 +127,7 @@ export function CanvasWorkspace() {
     <section
       className={`canvas-workspace ${dragging ? "drop-active" : ""}`}
       onDragOver={(event) => {
-        if (event.dataTransfer.types.includes("application/x-opensketch-asset")) {
+        if (event.dataTransfer.types.includes("application/x-scientific-asset")) {
           event.preventDefault();
           event.dataTransfer.dropEffect = "copy";
           setDragging(true);

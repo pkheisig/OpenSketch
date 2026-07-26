@@ -1,4 +1,4 @@
-import type { ConnectorBinding, ProjectRecord } from "@opensketch/editor-core";
+import type { ConnectorBinding, ProjectRecord } from "@workspace/editor-core";
 import { createProject } from "@/persistence/database";
 
 export type ScientificTemplateId =
@@ -36,7 +36,7 @@ export const SCIENTIFIC_TEMPLATES: ScientificTemplate[] = [
   }
 ];
 
-const SERIALIZED_PROPERTIES = ["objectId", "name", "opensketchType", "connector"];
+const SERIALIZED_PROPERTIES = ["objectId", "name", "OpenSketchType", "connector"];
 
 export async function instantiateScientificTemplate(
   templateId: ScientificTemplateId
@@ -54,7 +54,7 @@ export async function instantiateScientificTemplate(
   const identity = (object: TemplateObject, name: string, type: string) => {
     object.objectId = crypto.randomUUID();
     object.name = name;
-    object.opensketchType = type;
+    object.OpenSketchType = type;
     object.setCoords();
     return object;
   };

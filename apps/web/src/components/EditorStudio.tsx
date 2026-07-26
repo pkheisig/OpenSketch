@@ -1,4 +1,4 @@
-import type { ProjectRecord } from "@opensketch/editor-core";
+import type { ProjectRecord } from "@workspace/editor-core";
 import { EditorProvider } from "@/editor/EditorContext";
 import { TopToolbar } from "@/components/TopToolbar";
 import { LeftSidebar } from "@/components/LeftSidebar";

@@ -2,8 +2,8 @@
 #'
 #' @return The absolute path to the bundled static application.
 #' @export
-opensketch_path <- function() {
-  path <- system.file("app", package = "opensketch")
+OpenSketch_path <- function() {
+  path <- system.file("app", package = "OpenSketch")
   if (!nzchar(path) || !file.exists(file.path(path, "index.html"))) {
     stop(
       "The bundled OpenSketch application is missing. ",
@@ -23,11 +23,11 @@ opensketch_path <- function() {
 #' @param host Interface to bind to. The loopback default is recommended.
 #' @param port TCP port. Use `NULL` to select a free local port.
 #' @param launch.browser Open the application in the default browser.
-#' @return A `opensketch_server` object. Pass it to [stop_opensketch()] when done.
+#' @return A `OpenSketch_server` object. Pass it to [stop_OpenSketch()] when done.
 #' @export
-opensketch <- function(host = "127.0.0.1", port = NULL,
+OpenSketch <- function(host = "127.0.0.1", port = NULL,
                       launch.browser = interactive()) {
-  root <- opensketch_path()
+  root <- OpenSketch_path()
   if (is.null(port)) {
     port <- httpuv::randomPort()
   }
@@ -102,26 +102,26 @@ opensketch <- function(host = "127.0.0.1", port = NULL,
   url <- sprintf("http://%s:%d", host, port)
   handle <- structure(
     list(server = server, url = url, host = host, port = port),
-    class = "opensketch_server"
+    class = "OpenSketch_server"
   )
   if (isTRUE(launch.browser)) utils::browseURL(handle$url)
   handle
 }
 
 #' @export
-print.opensketch_server <- function(x, ...) {
+print.OpenSketch_server <- function(x, ...) {
   cat("<OpenSketch local server>\n", x$url, "\n", sep = "")
   invisible(x)
 }
 
 #' Stop an OpenSketch server
 #'
-#' @param server A server returned by [opensketch()].
+#' @param server A server returned by [OpenSketch()].
 #' @return `TRUE`, invisibly.
 #' @export
-stop_opensketch <- function(server) {
-  if (!inherits(server, "opensketch_server")) {
-    stop("`server` must be returned by `opensketch()`.", call. = FALSE)
+stop_OpenSketch <- function(server) {
+  if (!inherits(server, "OpenSketch_server")) {
+    stop("`server` must be returned by `OpenSketch()`.", call. = FALSE)
   }
   httpuv::stopServer(server$server)
   invisible(TRUE)

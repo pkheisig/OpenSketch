@@ -100,7 +100,7 @@ importers:
       "@fontsource/stix-two-text":
         specifier: ^5.2.6
         version: 5.3.0
-      "@opensketch/editor-core":
+      "@workspace/editor-core":
         specifier: workspace:*
         version: link:../../packages/editor-core
       dexie:

@@ -35,7 +35,7 @@ import type {
   ConnectorBinding,
   ProjectRecord,
   UploadRecord
-} from "@opensketch/editor-core";
+} from "@workspace/editor-core";
 import { sanitizeUploadedSvg } from "@/assets/browserSanitizer";
 import { setPngDpi } from "@/export/png";
 import { svgToPdfBlob } from "@/export/pdf";
@@ -48,7 +48,7 @@ import { anchorPoint, snapBounds, type Point } from "@/editor/geometry";
 FabricObject.customProperties = [
   "objectId",
   "name",
-  "opensketchType",
+  "OpenSketchType",
   "assetId",
   "familyId",
   "provenance",
@@ -156,7 +156,7 @@ const EditorContext = createContext<EditorContextValue | null>(null);
 function assignIdentity(object: FabricObject, name: string, type: string): void {
   object.objectId ??= crypto.randomUUID();
   object.name ??= name;
-  object.opensketchType ??= type;
+  object.OpenSketchType ??= type;
 }
 
 function refreshTextMetrics(objects: FabricObject[]): void {
@@ -552,7 +552,7 @@ export function EditorProvider({
             assignIdentity(
               object,
               object.name ?? "Untitled layer",
-              object.opensketchType ?? object.type
+              object.OpenSketchType ?? object.type
             )
           );
         instance.requestRenderAll();
@@ -757,9 +757,9 @@ export function EditorProvider({
       assignIdentity(
         fromObject,
         fromObject.name ?? "Object",
-        fromObject.opensketchType ?? fromObject.type
+        fromObject.OpenSketchType ?? fromObject.type
       );
-      assignIdentity(toObject, toObject.name ?? "Object", toObject.opensketchType ?? toObject.type);
+      assignIdentity(toObject, toObject.name ?? "Object", toObject.OpenSketchType ?? toObject.type);
       const fromCenter = fromObject.getCenterPoint();
       const toCenter = toObject.getCenterPoint();
       const horizontal = Math.abs(toCenter.x - fromCenter.x) >= Math.abs(toCenter.y - fromCenter.y);

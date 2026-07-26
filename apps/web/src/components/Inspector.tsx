@@ -33,7 +33,7 @@ import {
   type ConnectorArrowhead,
   type ConnectorLineStyle,
   type ConnectorRouting
-} from "@opensketch/editor-core";
+} from "@workspace/editor-core";
 import { Color, FabricObject, Group as FabricGroup, Text } from "fabric";
 import { useEditor } from "@/editor/EditorContext";
 
@@ -49,7 +49,7 @@ export function Inspector() {
       <div className="inspector-header">
         <div>
           <p className="eyebrow">
-            {selected ? (selected.opensketchType ?? selected.type) : "DOCUMENT"}
+            {selected ? (selected.OpenSketchType ?? selected.type) : "DOCUMENT"}
           </p>
           <h2>{selected?.name ?? "Canvas"}</h2>
         </div>
@@ -166,7 +166,7 @@ function ObjectInspector({ object }: { object: FabricObject }) {
   const palette = editor.getPalette();
   const effects = editor.getAssetEffects();
   const isText = object instanceof Text;
-  const isAsset = object.opensketchType === "nih-asset" || object.opensketchType === "upload";
+  const isAsset = object.OpenSketchType === "nih-asset" || object.OpenSketchType === "upload";
   const width = (object.width ?? 0) * (object.scaleX ?? 1);
   const height = (object.height ?? 0) * (object.scaleY ?? 1);
   return (
@@ -584,7 +584,7 @@ function LayersPanel() {
               </span>
               <span className="layer-copy">
                 <strong>{object.name ?? object.type}</strong>
-                <small>{object.opensketchType ?? object.type}</small>
+                <small>{object.OpenSketchType ?? object.type}</small>
               </span>
               {object.visible === false ? <EyeOff size={13} /> : <Eye size={13} />}
             </button>

@@ -113,7 +113,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   const projectDownloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export project" }).click();
   const projectDownload = await projectDownloadPromise;
-  expect(projectDownload.suggestedFilename()).toBe("Untitled-figure.opensketch");
+  expect(projectDownload.suggestedFilename()).toBe("Untitled-figure.OpenSketch");
   const projectPath = await projectDownload.path();
   expect(projectPath).not.toBeNull();
   const portable = JSON.parse(await readFile(projectPath!, "utf8")) as {
@@ -123,7 +123,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
       objects: Array<{ type?: string; text?: string; width?: number }>;
     };
   };
-  expect(portable.format).toBe("opensketch");
+  expect(portable.format).toBe("OpenSketch");
   expect(portable.formatVersion).toBe(1);
   expect(portable.objects.objects).toHaveLength(3);
   const textObject = portable.objects.objects.find((object) => object.text === "CD8 T cell");

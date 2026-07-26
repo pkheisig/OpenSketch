@@ -10,7 +10,7 @@ import {
   ZoomIn,
   ZoomOut
 } from "lucide-react";
-import type { ProjectRecord } from "@opensketch/editor-core";
+import type { ProjectRecord } from "@workspace/editor-core";
 import { GLOBAL_CREDIT } from "@/assets/credit";
 import { useEditor } from "@/editor/EditorContext";
 import { Logo } from "./Logo";

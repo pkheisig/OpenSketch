@@ -1,4 +1,4 @@
-import { OPENSKETCH_FORMAT_VERSION, type PortableProject } from "./types";
+import { OpenSketch_FORMAT_VERSION, type PortableProject } from "./types";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
@@ -33,10 +33,10 @@ export function migrateProject(input: unknown): PortableProject {
     throw new Error("This file is not an OpenSketch project.");
   }
   const project = input as Partial<PortableProject>;
-  if (project.format !== "opensketch") {
+  if (project.format !== "OpenSketch") {
     throw new Error("The project marker is missing or invalid.");
   }
-  if (project.formatVersion !== OPENSKETCH_FORMAT_VERSION) {
+  if (project.formatVersion !== OpenSketch_FORMAT_VERSION) {
     throw new Error(
       `Project version ${String(project.formatVersion)} is not supported by this release.`
     );

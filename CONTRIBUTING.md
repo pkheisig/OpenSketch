@@ -16,7 +16,7 @@ corepack pnpm assets:validate
 corepack pnpm build
 corepack pnpm test:e2e
 R CMD build .
-R CMD check --no-manual --as-cran opensketch_*.tar.gz
+R CMD check --no-manual --as-cran OpenSketch_*.tar.gz
 ```
 
 Treat SVG input as executable XML. Changes to either sanitizer require adversarial

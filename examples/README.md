@@ -1,6 +1,6 @@
 # OpenSketch examples
 
-`antibody-mediated-immune-response.opensketch` is an editable project containing
+`antibody-mediated-immune-response.OpenSketch` is an editable project containing
 an antibody, a T cell, vector structure, attached connector, and accessible
 scientific description. Import it from the OpenSketch project home screen.
 

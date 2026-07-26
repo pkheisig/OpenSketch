@@ -4,9 +4,9 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 
-SCREENSHOTS = Path("/tmp/opensketch-smoke")
+SCREENSHOTS = Path("/tmp/OpenSketch-smoke")
 SCREENSHOTS.mkdir(parents=True, exist_ok=True)
-BASE_URL = os.environ.get("OPENSKETCH_URL", "http://127.0.0.1:5173")
+BASE_URL = os.environ.get("OpenSketch_URL", "http://127.0.0.1:5173")
 
 with sync_playwright() as playwright:
     browser = playwright.chromium.launch(headless=True)

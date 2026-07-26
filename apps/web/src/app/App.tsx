@@ -1,6 +1,6 @@
 import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { AlertTriangle, X } from "lucide-react";
-import type { ProjectRecord } from "@opensketch/editor-core";
+import type { ProjectRecord } from "@workspace/editor-core";
 import {
   createProject,
   db,

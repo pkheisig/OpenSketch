@@ -13,7 +13,7 @@ import {
   Workflow,
   Columns3
 } from "lucide-react";
-import type { ProjectRecord } from "@opensketch/editor-core";
+import type { ProjectRecord } from "@workspace/editor-core";
 import { GLOBAL_CREDIT } from "@/assets/credit";
 import { Logo } from "./Logo";
 import { useModalDialog } from "./useModalDialog";
@@ -64,7 +64,7 @@ export function HomeScreen({
             ref={input}
             hidden
             type="file"
-            accept=".opensketch,application/json"
+            accept=".OpenSketch,application/json"
             onChange={(event) => {
               const file = event.target.files?.[0];
               if (file) onImport(file);
@@ -229,7 +229,7 @@ export function HomeScreen({
             </button>
             <a
               className="button secondary"
-              href="https://github.com/pkheisig/opensketch"
+              href="https://github.com/pkheisig/OpenSketch"
               target="_blank"
               rel="noreferrer"
             >

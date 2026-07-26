@@ -6,7 +6,7 @@ the public-domain illustrations imported from the NIAID NIH BioArt Source.
 
 The installed app is static. It has no account system, database server, analytics,
 or runtime dependency on NIH or Wikimedia. Projects stay in browser IndexedDB and
-can be exported as portable `.opensketch` files.
+can be exported as portable `.OpenSketch` files.
 
 > Biological artwork sourced from the NIAID NIH BioArt Source and obtained via
 > Wikimedia Commons. OpenSketch is an independent project and is not affiliated
@@ -23,7 +23,7 @@ not yet publish version tags, release artifacts, or a hosted production editor.
 Install the current development package directly from GitHub:
 
 ```r
-pak::pak("pkheisig/opensketch")
+pak::pak("pkheisig/OpenSketch")
 ```
 
 Or build a development checkout locally:
@@ -37,14 +37,14 @@ R CMD INSTALL .
 Then launch the package:
 
 ```r
-library(opensketch)
-server <- opensketch()
+library(OpenSketch)
+server <- OpenSketch()
 
 # When finished:
-stop_opensketch(server)
+stop_OpenSketch(server)
 ```
 
-`opensketch()` starts a loopback-only static file server so browsers can load the
+`OpenSketch()` starts a loopback-only static file server so browsers can load the
 bundled JavaScript modules. It is not an application backend: editing, persistence,
 search, uploads, and export all happen in the browser.
 
@@ -73,7 +73,7 @@ corepack pnpm test
 corepack pnpm build
 corepack pnpm test:e2e
 R CMD build .
-R CMD check --no-manual opensketch_0.1.0.tar.gz
+R CMD check --no-manual OpenSketch_0.1.0.tar.gz
 ```
 
 The browser suite runs the full editor, persistence, SVG/PNG/PDF export, and
@@ -140,7 +140,7 @@ examples/                  verified portable project and SVG examples
 
 ## Current feature set
 
-- Local project home, autosave, duplicate/delete, and `.opensketch` portability
+- Local project home, autosave, duplicate/delete, and `.OpenSketch` portability
 - Searchable and categorized asset-family browser with variants and provenance
 - Fabric canvas selection, movement, resize, rotation, duplicate, group, align,
   equal-gap distribution, smart guides, pan/zoom, flip, lock/hide, layers,
@@ -161,7 +161,7 @@ examples/                  verified portable project and SVG examples
 
 ## Example figures
 
-The [antibody-mediated immune response project](examples/antibody-mediated-immune-response.opensketch)
+The [antibody-mediated immune response project](examples/antibody-mediated-immune-response.OpenSketch)
 is a portable, editable example built in OpenSketch from two bundled NIH BioArt
 families. Its [SVG export](examples/antibody-mediated-immune-response.svg) demonstrates
 vector preservation, accessible title and description fields, and per-asset
@@ -170,11 +170,11 @@ public-domain provenance in the export metadata.
 Three shape-based scientific examples mirror the built-in starter layouts and
 demonstrate editable labels, panels, and attached orthogonal connectors:
 
-- [signaling cascade project](examples/signaling-cascade.opensketch) and
+- [signaling cascade project](examples/signaling-cascade.OpenSketch) and
   [SVG](examples/signaling-cascade.svg)
-- [experimental workflow project](examples/experimental-workflow.opensketch) and
+- [experimental workflow project](examples/experimental-workflow.OpenSketch) and
   [SVG](examples/experimental-workflow.svg)
-- [comparative panels project](examples/comparative-panels.opensketch) and
+- [comparative panels project](examples/comparative-panels.OpenSketch) and
   [SVG](examples/comparative-panels.svg)
 
 ## Contributing

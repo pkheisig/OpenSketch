@@ -1,11 +1,11 @@
 import "fabric";
-import type { ConnectorBinding } from "@opensketch/editor-core";
+import type { ConnectorBinding } from "@workspace/editor-core";
 
 declare module "fabric" {
   interface FabricObject {
     objectId?: string;
     name?: string;
-    opensketchType?: string;
+    OpenSketchType?: string;
     assetId?: string;
     familyId?: string;
     provenance?: Record<string, string>;

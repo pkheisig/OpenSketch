@@ -1,4 +1,4 @@
 library(testthat)
-library(opensketch)
+library(OpenSketch)
 
-test_check("opensketch")
+test_check("OpenSketch")

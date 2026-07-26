@@ -3,7 +3,7 @@ import { DEFAULT_CANVAS, migrateProject } from "../packages/editor-core/src";
 
 describe("project migrations", () => {
   const project = {
-    format: "opensketch",
+    format: "OpenSketch",
     formatVersion: 1,
     version: 1,
     id: "project-1",
@@ -21,7 +21,7 @@ describe("project migrations", () => {
   });
 
   it("rejects unknown future formats", () => {
-    expect(() => migrateProject({ format: "opensketch", formatVersion: 99 })).toThrow(
+    expect(() => migrateProject({ format: "OpenSketch", formatVersion: 99 })).toThrow(
       "not supported"
     );
   });

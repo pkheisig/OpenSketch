@@ -1,5 +1,5 @@
 {
-  "name": "@opensketch/web",
+  "name": "@workspace/web",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -13,7 +13,7 @@
     "@fontsource/source-sans-3": "^5.2.6",
     "@fontsource/source-serif-4": "^5.2.6",
     "@fontsource/stix-two-text": "^5.2.6",
-    "@opensketch/editor-core": "workspace:*",
+    "@workspace/editor-core": "workspace:*",
     "dexie": "^4.0.11",
     "dompurify": "^3.2.6",
     "fabric": "^7.0.0",
