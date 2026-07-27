@@ -1,22 +1,21 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import DOMPurify from "dompurify";
 import {
   Copy,
   FilePlus2,
   FolderOpen,
+  Github,
   MoreHorizontal,
-  Network,
   Pencil,
   Save,
   Trash2,
-  Upload,
-  Workflow,
-  Columns3
+  Upload
 } from "lucide-react";
 import type { ProjectRecord } from "@workspace/editor-core";
 import { GLOBAL_CREDIT } from "@/assets/credit";
+import { vectorThumbnailMarkup } from "@/persistence/thumbnailFormat";
 import { Logo } from "./Logo";
 import { useModalDialog } from "./useModalDialog";
-import { SCIENTIFIC_TEMPLATES, type ScientificTemplateId } from "@/templates/scientificTemplates";
 
 export function HomeScreen({
   projects,
@@ -25,35 +24,40 @@ export function HomeScreen({
   onDuplicate,
   onDelete,
   onExport,
-  canSaveToFolder,
-  onSaveToFolder,
   onRename,
   onImport
 }: {
   projects: ProjectRecord[];
-  onNew: (templateId?: ScientificTemplateId) => void;
+  onNew: () => void;
   onOpen: (project: ProjectRecord) => void;
   onDuplicate: (project: ProjectRecord) => void;
   onDelete: (project: ProjectRecord) => void;
   onExport: (project: ProjectRecord) => void;
-  canSaveToFolder: boolean;
-  onSaveToFolder: (project: ProjectRecord) => void;
   onRename: (project: ProjectRecord) => void;
   onImport: (file: File) => void;
 }) {
   const input = useRef<HTMLInputElement>(null);
   const [about, setAbout] = useState(false);
-  const [offlineReady, setOfflineReady] = useState(
-    document.documentElement.dataset.offlineReady === "true" ||
-      Boolean(navigator.serviceWorker?.controller)
-  );
   const aboutRef = useModalDialog(about, () => setAbout(false));
 
   useEffect(() => {
-    document.title = "OpenSketch — scientific figure studio";
-    const markOfflineReady = () => setOfflineReady(true);
-    window.addEventListener("opensketch:offline-ready", markOfflineReady);
-    return () => window.removeEventListener("opensketch:offline-ready", markOfflineReady);
+    document.title = "OpenSketch";
+  }, []);
+
+  useEffect(() => {
+    const closeOtherProjectMenus = (event: PointerEvent) => {
+      const clickedMenu =
+        event.target instanceof Element
+          ? event.target.closest<HTMLDetailsElement>(".project-card details")
+          : null;
+      document
+        .querySelectorAll<HTMLDetailsElement>(".project-card details[open]")
+        .forEach((menu) => {
+          if (menu !== clickedMenu) menu.open = false;
+        });
+    };
+    document.addEventListener("pointerdown", closeOtherProjectMenus);
+    return () => document.removeEventListener("pointerdown", closeOtherProjectMenus);
   }, []);
 
   return (
@@ -79,33 +83,13 @@ export function HomeScreen({
       </header>
 
       <div className="home-content">
-        <section className="templates-section">
-          <div className="section-heading">
-            <h1>New figure</h1>
-          </div>
-          <div className="start-grid">
-            <button
-              className="template-card blank-template-card"
-              onClick={() => onNew()}
-              aria-label="Create blank figure"
-            >
-              <span className="template-preview" aria-hidden="true">
-                <FilePlus2 size={20} />
-              </span>
-              <strong>Blank</strong>
-            </button>
-            {SCIENTIFIC_TEMPLATES.map((template) => (
-              <button
-                className="template-card"
-                key={template.id}
-                onClick={() => onNew(template.id)}
-                aria-label={`Create ${template.name} figure`}
-              >
-                <TemplatePreview kind={template.preview} />
-                <strong>{template.name}</strong>
-              </button>
-            ))}
-          </div>
+        <section className="new-figure-section">
+          <button className="new-figure-button" onClick={onNew}>
+            <span className="new-figure-icon" aria-hidden="true">
+              <FilePlus2 size={20} />
+            </span>
+            New figure
+          </button>
         </section>
 
         <section className="projects-section">
@@ -119,7 +103,7 @@ export function HomeScreen({
                 <article className="project-card" key={project.id}>
                   <button className="project-preview" onClick={() => onOpen(project)}>
                     {project.thumbnail ? (
-                      <img src={project.thumbnail} alt="" />
+                      <ProjectPreview thumbnail={project.thumbnail} />
                     ) : (
                       <div className="empty-preview">
                         <FolderOpen size={27} />
@@ -145,11 +129,6 @@ export function HomeScreen({
                         <button onClick={() => onExport(project)}>
                           <Save size={14} /> Export project
                         </button>
-                        {canSaveToFolder ? (
-                          <button onClick={() => onSaveToFolder(project)}>
-                            <FolderOpen size={14} /> Save to folder
-                          </button>
-                        ) : null}
                         <button onClick={() => onDuplicate(project)}>
                           <Copy size={14} /> Duplicate
                         </button>
@@ -172,7 +151,6 @@ export function HomeScreen({
         <button className="text-button" onClick={() => setAbout(true)}>
           About
         </button>
-        <span>Local only · {offlineReady ? "Ready offline" : "Preparing offline copy…"}</span>
       </footer>
 
       {about && (
@@ -182,34 +160,24 @@ export function HomeScreen({
             className="dialog about-dialog"
             role="dialog"
             aria-modal="true"
-            aria-labelledby="about-title"
+            aria-label="About OpenSketch"
             tabIndex={-1}
             onMouseDown={(event) => event.stopPropagation()}
           >
-            <p className="eyebrow">ABOUT THE STUDIO</p>
-            <h2 id="about-title">Biology, drawn openly.</h2>
             <p>{GLOBAL_CREDIT}</p>
             <p>
               The editor runs locally, uses no account or application backend, and keeps project
               files in your browser&apos;s IndexedDB.
             </p>
-            <button
-              className="button secondary"
-              onClick={() => void navigator.clipboard?.writeText(GLOBAL_CREDIT)}
-            >
-              <Copy size={15} /> Copy artwork credit
-            </button>
             <a
               className="button secondary"
               href="https://github.com/pkheisig/OpenSketch"
               target="_blank"
               rel="noreferrer"
             >
-              View source code
+              <Github size={16} aria-hidden="true" />
+              GitHub
             </a>
-            <button className="button primary" onClick={() => setAbout(false)}>
-              Continue
-            </button>
           </section>
         </div>
       )}
@@ -217,11 +185,23 @@ export function HomeScreen({
   );
 }
 
-function TemplatePreview({ kind }: { kind: (typeof SCIENTIFIC_TEMPLATES)[number]["preview"] }) {
-  const Icon = kind === "cascade" ? Network : kind === "workflow" ? Workflow : Columns3;
-  return (
-    <span className={`template-preview ${kind}`} aria-hidden="true">
-      <Icon size={20} />
-    </span>
+function ProjectPreview({ thumbnail }: { thumbnail: string }) {
+  const vectorMarkup = useMemo(() => {
+    const markup = vectorThumbnailMarkup(thumbnail);
+    return markup
+      ? DOMPurify.sanitize(markup, {
+          USE_PROFILES: { svg: true, svgFilters: true }
+        })
+      : null;
+  }, [thumbnail]);
+
+  return vectorMarkup ? (
+    <span
+      className="project-preview-vector"
+      aria-hidden="true"
+      dangerouslySetInnerHTML={{ __html: vectorMarkup }}
+    />
+  ) : (
+    <img src={thumbnail} alt="" />
   );
 }

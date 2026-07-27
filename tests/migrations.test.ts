@@ -37,7 +37,7 @@ describe("project migrations", () => {
     ).toThrow("external or executable");
   });
 
-  it("rejects malformed canvas and upload records", () => {
+  it("rejects malformed canvas and imported-media records", () => {
     expect(() =>
       migrateProject({
         ...project,
@@ -49,6 +49,6 @@ describe("project migrations", () => {
         ...project,
         uploads: [{ id: "x", name: "x", mimeType: "text/html", dataUrl: "javascript:evil()" }]
       })
-    ).toThrow("uploads");
+    ).toThrow("imported media");
   });
 });

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 
 const FOCUSABLE =
-  'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  'button:not([disabled]), a[href], input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 export function useModalDialog(open: boolean, onClose: () => void) {
   const dialogRef = useRef<HTMLElement>(null);
@@ -13,6 +13,7 @@ export function useModalDialog(open: boolean, onClose: () => void) {
     const dialog = dialogRef.current;
     if (!dialog) return;
     const previous = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    const restoreVisibleFocus = previous?.matches(":focus-visible") ?? false;
     const focusable = () => [...dialog.querySelectorAll<HTMLElement>(FOCUSABLE)];
     (focusable()[0] ?? dialog).focus();
     const keyDown = (event: KeyboardEvent) => {
@@ -41,7 +42,10 @@ export function useModalDialog(open: boolean, onClose: () => void) {
     document.addEventListener("keydown", keyDown);
     return () => {
       document.removeEventListener("keydown", keyDown);
-      previous?.focus();
+      previous?.focus({ preventScroll: true });
+      if (previous && !restoreVisibleFocus && document.activeElement === previous) {
+        previous.blur();
+      }
     };
   }, [open]);
 

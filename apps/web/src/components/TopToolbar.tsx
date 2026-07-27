@@ -4,7 +4,6 @@ import {
   ChevronDown,
   Download,
   HelpCircle,
-  Info,
   Redo2,
   Undo2,
   ZoomIn,
@@ -13,25 +12,30 @@ import {
 import type { ProjectRecord } from "@workspace/editor-core";
 import { GLOBAL_CREDIT } from "@/assets/credit";
 import { useEditor } from "@/editor/EditorContext";
-import { Logo } from "./Logo";
 import { ExportDialog } from "./dialogs";
 import { useModalDialog } from "./useModalDialog";
 
 export function TopToolbar({ project, onHome }: { project: ProjectRecord; onHome: () => void }) {
   const editor = useEditor();
+  const [leaving, setLeaving] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
-  const [infoOpen, setInfoOpen] = useState(false);
   const helpRef = useModalDialog(helpOpen, () => setHelpOpen(false));
-  const infoRef = useModalDialog(infoOpen, () => setInfoOpen(false));
   return (
     <>
       <header className="top-toolbar">
-        <button className="back-to-projects-button" onClick={onHome} aria-label="Back to projects">
+        <button
+          className="back-to-projects-button"
+          disabled={leaving}
+          onClick={() => {
+            setLeaving(true);
+            void editor.flushSave().then(onHome, () => setLeaving(false));
+          }}
+          aria-label="Back to projects"
+        >
           <ArrowLeft size={16} />
           <span>Projects</span>
         </button>
-        <Logo compact />
         <span className="toolbar-rule" />
         <input
           className="document-title"
@@ -82,22 +86,8 @@ export function TopToolbar({ project, onHome }: { project: ProjectRecord; onHome
           </span>
         </div>
         <div className="toolbar-actions">
-          <span className={`save-state ${editor.saveStatus}`}>
-            {editor.saveStatus === "saved"
-              ? "Saved locally"
-              : editor.saveStatus === "saving"
-                ? "Saving…"
-                : "Save failed"}
-          </span>
           <button className="icon-button" onClick={() => setHelpOpen(true)} aria-label="Help">
             <HelpCircle size={17} />
-          </button>
-          <button
-            className="icon-button"
-            onClick={() => setInfoOpen(true)}
-            aria-label="Project information"
-          >
-            <Info size={17} />
           </button>
           <button className="button export-button" onClick={() => setExportOpen(true)}>
             <Download size={16} /> Export <ChevronDown size={13} />
@@ -105,40 +95,6 @@ export function TopToolbar({ project, onHome }: { project: ProjectRecord; onHome
         </div>
       </header>
       {exportOpen && <ExportDialog onClose={() => setExportOpen(false)} />}
-      {infoOpen && (
-        <div className="dialog-backdrop" onMouseDown={() => setInfoOpen(false)}>
-          <section
-            ref={infoRef}
-            className="dialog project-info-dialog"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="project-info-title"
-            tabIndex={-1}
-            onMouseDown={(event) => event.stopPropagation()}
-          >
-            <p className="eyebrow">PROJECT RECORD</p>
-            <h2 id="project-info-title">{project.name}</h2>
-            <label className="field">
-              Accessible scientific description
-              <textarea
-                value={editor.projectDescription}
-                onChange={(event) => editor.setProjectDescription(event.target.value)}
-                placeholder="Describe the figure, biological process, and essential visual relationships…"
-              />
-            </label>
-            <p className="dialog-note">{GLOBAL_CREDIT}</p>
-            <button
-              className="button secondary wide"
-              onClick={() => void navigator.clipboard?.writeText(GLOBAL_CREDIT)}
-            >
-              Copy artwork credit
-            </button>
-            <button className="button primary wide" onClick={() => setInfoOpen(false)}>
-              Done
-            </button>
-          </section>
-        </div>
-      )}
       {helpOpen && (
         <div className="dialog-backdrop" onMouseDown={() => setHelpOpen(false)}>
           <section

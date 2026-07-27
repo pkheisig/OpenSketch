@@ -2,12 +2,12 @@ import { expect, test } from "@playwright/test";
 
 test("reopens the production app and a saved project while offline", async ({ context, page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "New figure" })).toBeVisible();
-
-  await page.getByRole("button", { name: "Create blank figure" }).click();
+  await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await page.getByRole("button", { name: "Rectangle", exact: true }).click();
-  await expect(page.getByText("Saved locally")).toBeVisible({ timeout: 5_000 });
+  const artboard = await page.locator(".artboard-stage").boundingBox();
+  if (!artboard) throw new Error("Artboard is not visible.");
+  await page.mouse.click(artboard.x + artboard.width / 2, artboard.y + artboard.height / 2);
   await page.getByRole("button", { name: "Back to projects" }).click();
 
   await page.evaluate(async () => {

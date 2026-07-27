@@ -8,6 +8,11 @@ an offline bundle of public-domain illustrations imported from the NIAID NIH
 BioArt Source. It has no application server, account system, analytics, or
 telemetry.
 
+Built-in and imported multi-element SVGs remain grouped as one movable layer.
+Double-click a visible SVG region to edit that source element independently,
+including its fill, stroke, opacity, position, scale, and rotation. Press
+Escape or choose **Done** to return to the complete asset.
+
 > Biological artwork sourced from the NIAID NIH BioArt Source and obtained via
 > Wikimedia Commons. OpenSketch is an independent project and is not affiliated
 > with or endorsed by NIH or NIAID.
@@ -20,11 +25,12 @@ public-domain status and is not licensed under the OpenSketch software license.
 Everything after the static site download happens on the device:
 
 - Projects and canvas settings are stored in browser IndexedDB.
-- Favorite and recently used assets are stored in `localStorage`.
-- Uploaded images are sanitized or decoded locally and embedded in the project.
+- Favorite and recently used assets plus each project's last zoom and pan
+  position are stored in `localStorage`.
+- Imported images are sanitized or decoded locally and embedded in the project.
 - SVG, PNG, PDF, and `.OpenSketch` files are generated in the browser.
-- No project, image, filename, or project metadata is uploaded to OpenSketch or
-  any other application server.
+- No project, image, filename, or project metadata is sent to OpenSketch or any
+  other application server.
 - The production content security policy blocks runtime network connections
   outside the OpenSketch origin.
 
@@ -41,7 +47,7 @@ available. Afterward the application, saved projects, built-in artwork, and
 exports can be reopened without internet access.
 
 The service worker only reads static files from the same GitHub Pages origin.
-It never uploads user data.
+It never sends user data.
 
 ## Browser and file support
 
@@ -90,11 +96,11 @@ corepack pnpm test:e2e
 corepack pnpm test:pwa
 ```
 
-The tests cover project migration and round-trips, embedded uploads, color and
-geometry calculations, connector routing, SVG sanitization, PNG DPI metadata,
-IndexedDB persistence, built-in and uploaded assets, SVG/PNG/PDF exports,
-cross-browser editor workflows, the `/OpenSketch/` deployment path, and an
-offline production reload.
+The tests cover project migration and round-trips, embedded imported media,
+color and geometry calculations, connector routing, SVG sanitization,
+independent SVG-part editing, PNG DPI metadata, IndexedDB persistence, built-in
+and imported assets, SVG/PNG/PDF exports, cross-browser editor workflows, the
+`/OpenSketch/` deployment path, and an offline production reload.
 
 ## Deployment architecture
 
@@ -135,7 +141,7 @@ contact Wikimedia or NIH.
 
 ### Sanitization policy
 
-Built-in and user-uploaded SVGs reject or remove scripts, event handlers,
+Built-in and user-imported SVGs reject or remove scripts, event handlers,
 `foreignObject`, JavaScript URLs, external CSS, external images and fonts, and
 network references in SVG paint/filter attributes. Internal references are
 retained and namespaced with the asset ID before conservative SVGO processing.
@@ -167,10 +173,9 @@ dist/                      generated production site; never committed
   automatic updates, and collision-aware orthogonal routing
 - Palette recoloring, gradient-aware tint, saturation, brightness, opacity, and
   reset
-- Sanitized SVG plus PNG/JPEG/WebP uploads embedded in project data
+- Sanitized SVG plus PNG/JPEG/WebP imports embedded in project data
 - Vector SVG/PDF and high-resolution, physical-DPI PNG export
 - A4, Letter, presentation, square, and custom artboard dimensions
-- Editable scientific starter layouts
 
 ## Example figures
 
@@ -178,12 +183,6 @@ The [antibody-mediated immune response project](examples/antibody-mediated-immun
 is a portable, editable example made from two bundled NIH BioArt families. Its
 [SVG export](examples/antibody-mediated-immune-response.svg) demonstrates vector
 preservation, accessible metadata, and artwork provenance.
-
-Additional editable examples:
-
-- [signaling cascade](examples/signaling-cascade.OpenSketch)
-- [experimental workflow](examples/experimental-workflow.OpenSketch)
-- [comparative panels](examples/comparative-panels.OpenSketch)
 
 ## Contributing and citation
 

@@ -8,17 +8,9 @@ import {
   listProjects,
   saveProject
 } from "@/persistence/database";
-import {
-  downloadProject,
-  readProjectFile,
-  saveProjectToDirectory,
-  supportsProjectDirectory
-} from "@/persistence/portable";
+import { downloadProject, readProjectFile } from "@/persistence/portable";
+import { isCurrentVectorThumbnail } from "@/persistence/thumbnailFormat";
 import { HomeScreen } from "@/components/HomeScreen";
-import {
-  instantiateScientificTemplate,
-  type ScientificTemplateId
-} from "@/templates/scientificTemplates";
 
 const EditorStudio = lazy(() =>
   import("@/components/EditorStudio").then((module) => ({ default: module.EditorStudio }))
@@ -38,7 +30,22 @@ export function App() {
   const [error, setError] = useState("");
 
   const refresh = useCallback(async () => {
-    setProjects(await listProjects());
+    const stored = await listProjects();
+    setProjects(stored);
+    const needsVectorPreview = stored.some((project) => {
+      const objects = project.objects.objects;
+      const hasObjects = Array.isArray(objects) && objects.length > 0;
+      return hasObjects && !isCurrentVectorThumbnail(project.thumbnail);
+    });
+    if (!needsVectorPreview) return;
+
+    const { upgradeProjectThumbnails } = await import("@/persistence/projectThumbnail");
+    const upgraded = await upgradeProjectThumbnails(stored);
+    const changed = upgraded.filter(
+      (project, index) => project.thumbnail !== stored[index]?.thumbnail
+    );
+    await Promise.all(changed.map(saveProject));
+    setProjects(upgraded);
   }, []);
 
   useEffect(() => {
@@ -91,11 +98,9 @@ export function App() {
     void refresh();
   }, [refresh]);
 
-  const newProject = async (templateId?: ScientificTemplateId) => {
+  const newProject = async () => {
     try {
-      const project = templateId
-        ? await instantiateScientificTemplate(templateId)
-        : createProject();
+      const project = createProject();
       await saveProject(project);
       openProject(project);
       await refresh();
@@ -107,6 +112,11 @@ export function App() {
   const updateProject = useCallback(async (project: ProjectRecord) => {
     await saveProject(project);
     setCurrent((active) => (active?.id === project.id ? project : active));
+    setProjects((existing) =>
+      [project, ...existing.filter((item) => item.id !== project.id)].sort((left, right) =>
+        right.updatedAt.localeCompare(left.updatedAt)
+      )
+    );
   }, []);
 
   if (loading) {
@@ -138,7 +148,7 @@ export function App() {
       ) : (
         <HomeScreen
           projects={projects}
-          onNew={(templateId) => void newProject(templateId)}
+          onNew={() => void newProject()}
           onOpen={openProject}
           onDuplicate={(project) => {
             duplicateProject(project)
@@ -153,10 +163,6 @@ export function App() {
               .catch((reason) => setError(String(reason)));
           }}
           onExport={downloadProject}
-          canSaveToFolder={supportsProjectDirectory()}
-          onSaveToFolder={(project) => {
-            saveProjectToDirectory(project).catch((reason) => setError(String(reason)));
-          }}
           onRename={(project) => {
             const name = window.prompt("Rename project", project.name)?.trim();
             if (!name || name === project.name) return;

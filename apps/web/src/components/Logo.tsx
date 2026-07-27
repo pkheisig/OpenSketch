@@ -9,7 +9,6 @@ export function Logo({ compact = false }: { compact?: boolean }) {
       {!compact && (
         <span>
           Open<strong>Sketch</strong>
-          <small>scientific figure studio</small>
         </span>
       )}
     </div>

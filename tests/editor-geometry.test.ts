@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { anchorPoint, snapBounds } from "../apps/web/src/editor/geometry";
+import {
+  anchorPoint,
+  applySnapResistance,
+  SNAP_RELEASE_DISTANCE_PX,
+  snapBounds
+} from "../apps/web/src/editor/geometry";
 
 describe("editor geometry", () => {
   const bounds = { left: 10, top: 20, width: 100, height: 60 };
@@ -22,5 +27,73 @@ describe("editor geometry", () => {
     expect(result.verticalGuide).toBe(120);
     expect(result.dy).toBe(2);
     expect(result.horizontalGuide).toBe(60);
+  });
+
+  it("holds a snap until pointer resistance is overcome, then releases without reacquiring", () => {
+    const acquired = applySnapResistance({
+      proposedPosition: 97,
+      pointer: 200,
+      snapDelta: 3,
+      snapGuide: 120,
+      releaseDistance: SNAP_RELEASE_DISTANCE_PX
+    });
+    expect(acquired).toMatchObject({
+      position: 100,
+      guide: 120,
+      released: false
+    });
+
+    const resisted = applySnapResistance({
+      proposedPosition: 106,
+      pointer: 200 + SNAP_RELEASE_DISTANCE_PX - 1,
+      snapDelta: -6,
+      snapGuide: 120,
+      lock: acquired.lock,
+      releaseDistance: SNAP_RELEASE_DISTANCE_PX
+    });
+    expect(resisted).toMatchObject({
+      position: 100,
+      guide: 120,
+      released: false
+    });
+
+    const released = applySnapResistance({
+      proposedPosition: 111,
+      pointer: 200 + SNAP_RELEASE_DISTANCE_PX + 1,
+      snapDelta: -1,
+      snapGuide: 120,
+      lock: resisted.lock,
+      releaseDistance: SNAP_RELEASE_DISTANCE_PX
+    });
+    expect(released).toMatchObject({
+      position: 111,
+      released: true
+    });
+
+    const stillReleased = applySnapResistance({
+      proposedPosition: 112,
+      pointer: 212,
+      snapDelta: -2,
+      snapGuide: 120,
+      lock: released.lock,
+      releaseDistance: SNAP_RELEASE_DISTANCE_PX
+    });
+    expect(stillReleased).toMatchObject({
+      position: 112,
+      released: true
+    });
+    expect(stillReleased.guide).toBeUndefined();
+
+    const cleared = applySnapResistance({
+      proposedPosition: 120,
+      pointer: 220,
+      snapDelta: 0,
+      lock: stillReleased.lock,
+      releaseDistance: SNAP_RELEASE_DISTANCE_PX
+    });
+    expect(cleared).toEqual({
+      position: 120,
+      released: false
+    });
   });
 });

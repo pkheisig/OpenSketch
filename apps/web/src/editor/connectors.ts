@@ -1,4 +1,13 @@
-import { Circle, FabricObject, Group, Path, Triangle, type TOptions } from "fabric";
+import {
+  Circle,
+  FabricObject,
+  Group,
+  Path,
+  Point as FabricPoint,
+  Triangle,
+  util,
+  type TOptions
+} from "fabric";
 import type {
   ConnectorAnchor,
   ConnectorArrowhead,
@@ -436,6 +445,29 @@ export function createConnectorObject(
   group.connector = { ...binding };
   group.OpenSketchType = "connector";
   group.name = "Connector";
+  return group;
+}
+
+export function createFreeConnectorObject(
+  from: Point,
+  to: Point,
+  binding: ConnectorBinding,
+  appearance: ConnectorAppearance
+): Group {
+  const angle = Math.atan2(to.y - from.y, to.x - from.x);
+  const length = Math.max(1, Math.hypot(to.x - from.x, to.y - from.y));
+  const group = createConnectorObject({ x: 0, y: 0 }, { x: length, y: 0 }, binding, appearance);
+  const localStart = util.transformPoint(
+    new FabricPoint(0, 0),
+    util.invertTransform(group.calcTransformMatrix())
+  );
+  group.set("angle", (angle * 180) / Math.PI);
+  const transformedStart = util.transformPoint(localStart, group.calcTransformMatrix());
+  group.set({
+    left: group.left + from.x - transformedStart.x,
+    top: group.top + from.y - transformedStart.y
+  });
+  group.setCoords();
   return group;
 }
 

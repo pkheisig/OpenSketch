@@ -19,6 +19,82 @@ export interface SnapResult {
   horizontalGuide?: number;
 }
 
+export interface AxisSnapLock {
+  pointer: number;
+  position: number;
+  guide: number;
+  released?: boolean;
+}
+
+export interface ResistantSnapResult {
+  position: number;
+  guide?: number;
+  lock?: AxisSnapLock;
+  released: boolean;
+}
+
+export const SNAP_RELEASE_DISTANCE_PX = 12;
+
+export function applySnapResistance({
+  proposedPosition,
+  pointer,
+  snapDelta,
+  snapGuide,
+  lock,
+  releaseDistance
+}: {
+  proposedPosition: number;
+  pointer: number;
+  snapDelta: number;
+  snapGuide?: number;
+  lock?: AxisSnapLock;
+  releaseDistance: number;
+}): ResistantSnapResult {
+  if (lock) {
+    if (lock.released) {
+      if (snapGuide === lock.guide) {
+        return {
+          position: proposedPosition,
+          lock,
+          released: true
+        };
+      }
+      if (snapGuide === undefined) {
+        return {
+          position: proposedPosition,
+          released: false
+        };
+      }
+    } else if (Math.abs(pointer - lock.pointer) <= releaseDistance) {
+      return {
+        position: lock.position,
+        guide: lock.guide,
+        lock,
+        released: false
+      };
+    }
+    return {
+      position: proposedPosition,
+      lock: { ...lock, released: true },
+      released: true
+    };
+  }
+  if (snapGuide === undefined) {
+    return {
+      position: proposedPosition,
+      released: false
+    };
+  }
+  const position = proposedPosition + snapDelta;
+  const nextLock = { pointer, position, guide: snapGuide, released: false };
+  return {
+    position,
+    guide: snapGuide,
+    lock: nextLock,
+    released: false
+  };
+}
+
 export function anchorPoint(bounds: Bounds, anchor: ConnectorAnchor): Point {
   const centerX = bounds.left + bounds.width / 2;
   const centerY = bounds.top + bounds.height / 2;

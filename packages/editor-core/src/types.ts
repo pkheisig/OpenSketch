@@ -45,7 +45,7 @@ export interface AssetManifest {
   families: AssetFamily[];
 }
 
-export interface UploadRecord {
+export interface ImportedMediaRecord {
   id: string;
   name: string;
   mimeType: string;
@@ -62,7 +62,8 @@ export interface PortableProject {
   updatedAt: string;
   canvas: CanvasSettings;
   objects: Record<string, unknown>;
-  uploads: UploadRecord[];
+  /** Legacy serialized key retained for .OpenSketch project compatibility. */
+  uploads: ImportedMediaRecord[];
   usedAssetIds: string[];
   description?: string;
 }

@@ -25,7 +25,6 @@ import {
   Triangle,
   cache,
   filters,
-  loadSVGFromString,
   util
 } from "fabric";
 import type {
@@ -34,16 +33,44 @@ import type {
   CanvasSettings,
   ConnectorBinding,
   ProjectRecord,
-  UploadRecord
+  ImportedMediaRecord
 } from "@workspace/editor-core";
-import { sanitizeUploadedSvg } from "@/assets/browserSanitizer";
+import { sanitizeImportedSvg } from "@/assets/browserSanitizer";
 import { setPngDpi } from "@/export/png";
 import { svgToPdfBlob } from "@/export/pdf";
 import { downloadBlob, safeFilename } from "@/persistence/portable";
+import { createVectorThumbnail } from "@/persistence/projectThumbnail";
 import { GLOBAL_CREDIT } from "@/assets/credit";
-import { connectorAppearance, createConnectorObject } from "@/editor/connectors";
+import {
+  connectorAppearance,
+  createConnectorObject,
+  createFreeConnectorObject
+} from "@/editor/connectors";
 import { transformColor, type AssetColorEffects } from "@/editor/colors";
-import { anchorPoint, snapBounds, type Point } from "@/editor/geometry";
+import {
+  anchorPoint,
+  applySnapResistance,
+  SNAP_RELEASE_DISTANCE_PX,
+  snapBounds,
+  type AxisSnapLock,
+  type Point
+} from "@/editor/geometry";
+import {
+  configureSelectionControls,
+  SELECTION_STROKE_WIDTH_PX,
+  selectionStrokeWidthAtZoom
+} from "@/editor/selection";
+import { copySvgBlendModes, loadEditableSvg } from "@/editor/svg";
+import { assetManifest } from "@/assets/manifest";
+import {
+  CREATION_DEFAULTS_STORAGE_KEY,
+  DEFAULT_CREATION_DEFAULTS,
+  normalizeCreationDefaults,
+  type CreationDefaults,
+  type CreationTool,
+  type ShapeKind,
+  type TextKind
+} from "@/editor/creation";
 
 FabricObject.customProperties = [
   "objectId",
@@ -71,6 +98,11 @@ FabricObject.customProperties = [
 const MAX_HISTORY = 120;
 const SVG_CACHE_LIMIT = 64;
 const svgStringCache = new Map<string, string>();
+const bundledVariants = new Map(
+  assetManifest.families.flatMap((family) =>
+    family.variants.map((variant) => [variant.id, variant] as const)
+  )
+);
 const COALESCABLE_HISTORY_LABELS = new Set([
   "Change properties",
   "Edit connector",
@@ -89,37 +121,60 @@ function cacheSvg(assetId: string, source: string): void {
   }
 }
 
-type ShapeKind =
-  | "rectangle"
-  | "rounded-rectangle"
-  | "ellipse"
-  | "circle"
-  | "triangle"
-  | "polygon"
-  | "line"
-  | "arrow"
-  | "double-arrow"
-  | "curved-arrow"
-  | "bracket"
-  | "callout"
-  | "membrane";
+async function bundledSvgSource(assetId: string): Promise<string | null> {
+  const cached = svgStringCache.get(assetId);
+  if (cached) {
+    cacheSvg(assetId, cached);
+    return cached;
+  }
+  const variant = bundledVariants.get(assetId);
+  if (!variant) return null;
+  const response = await fetch(variant.assetPath);
+  if (!response.ok) return null;
+  const source = await response.text();
+  cacheSvg(assetId, source);
+  return source;
+}
+
+async function restoreBundledSvgBlendModes(objects: FabricObject[]): Promise<void> {
+  await Promise.all(
+    objects.map(async (object) => {
+      if (!(object instanceof Group) || !object.assetId) return;
+      const target = object.getObjects();
+      if (target.some((child) => child.globalCompositeOperation !== "source-over")) return;
+      const source = await bundledSvgSource(object.assetId);
+      if (!source) return;
+      const parsed = await loadEditableSvg(source);
+      copySvgBlendModes(
+        parsed.objects.filter((item): item is FabricObject => Boolean(item)),
+        target
+      );
+      object.dirty = true;
+    })
+  );
+}
 
 interface EditorContextValue {
+  projectId: string;
   canvas: Canvas | null;
   selection: FabricObject[];
   zoom: number;
   historyState: { canUndo: boolean; canRedo: boolean };
   canvasSettings: CanvasSettings;
-  saveStatus: "saved" | "saving" | "error";
   projectDescription: string;
   setCanvasElement: (element: HTMLCanvasElement | null) => void;
   setCanvasSettings: (settings: Partial<CanvasSettings>) => void;
   setProjectName: (name: string) => void;
   setProjectDescription: (description: string) => void;
-  addText: (kind?: "point" | "box") => void;
-  addShape: (kind: ShapeKind) => void;
+  selectParentAsset: () => void;
+  flushSave: () => Promise<void>;
+  creationTool: CreationTool | null;
+  creationDefaults: CreationDefaults;
+  setCreationTool: (tool: CreationTool | null) => void;
+  setCreationDefaults: (defaults: CreationDefaults) => void;
+  placeCreation: (point: Point, endPoint?: Point) => void;
   addAsset: (family: AssetFamily, variant: AssetVariant, point?: Point) => Promise<void>;
-  addUpload: (file: File) => Promise<void>;
+  importMedia: (file: File) => Promise<void>;
   deleteSelection: () => void;
   duplicateSelection: () => Promise<void>;
   groupSelection: () => void;
@@ -129,6 +184,7 @@ interface EditorContextValue {
   distribute: (axis: "horizontal" | "vertical") => void;
   flip: (axis: "x" | "y") => void;
   setObject: (properties: Record<string, unknown>) => void;
+  resetSelectionToDefaults: () => void;
   updateConnector: (properties: Partial<ConnectorBinding>) => void;
   applyTextScript: (script: "normal" | "subscript" | "superscript") => void;
   replaceColor: (before: string, after: string) => void;
@@ -139,7 +195,9 @@ interface EditorContextValue {
   undo: () => void;
   redo: () => void;
   setZoom: (value: number) => void;
+  previewZoom: (value: number) => void;
   fitCanvas: () => void;
+  fitRequest: number;
   exportSvg: (title?: string, description?: string) => void;
   exportPdf: (title?: string, description?: string) => Promise<void>;
   exportPng: (
@@ -159,6 +217,54 @@ function assignIdentity(object: FabricObject, name: string, type: string): void 
   object.OpenSketchType ??= type;
 }
 
+function editableAssetParent(object: FabricObject | undefined): Group | null {
+  for (let parent = object?.group; parent; parent = parent.group) {
+    if (
+      parent instanceof Group &&
+      (parent.OpenSketchType === "nih-asset" ||
+        parent.OpenSketchType === "import" ||
+        parent.OpenSketchType === "upload")
+    ) {
+      return parent;
+    }
+  }
+  return null;
+}
+
+function configureEditableSvgParts(object: FabricObject): void {
+  if (!(object instanceof Group)) return;
+  object.subTargetCheck = true;
+  object.interactive = false;
+  object.getObjects().forEach((part, index) => {
+    const typeName = part.type.charAt(0).toUpperCase() + part.type.slice(1);
+    assignIdentity(part, `${typeName} ${index + 1}`, "svg-part");
+    part.hoverCursor = "crosshair";
+    part.perPixelTargetFind = true;
+    if (part instanceof Group) configureEditableSvgParts(part);
+  });
+  object.setCoords();
+}
+
+function configureCanvasAssets(objects: FabricObject[]): void {
+  objects.forEach((object) => {
+    if (object.OpenSketchType === "upload") object.OpenSketchType = "import";
+    if (
+      object.OpenSketchType === "nih-asset" ||
+      object.OpenSketchType === "import" ||
+      object.OpenSketchType === "upload"
+    ) {
+      configureEditableSvgParts(object);
+    } else if (object instanceof Group) {
+      configureCanvasAssets(object.getObjects());
+    }
+  });
+}
+
+function groupSvgElements(objects: FabricObject[], options: Record<string, unknown>): Group {
+  const grouped = util.groupSVGElements(objects, options);
+  return grouped instanceof Group ? grouped : new Group([grouped]);
+}
+
 function refreshTextMetrics(objects: FabricObject[]): void {
   cache.clearFontCache();
   const visit = (object: FabricObject) => {
@@ -170,6 +276,18 @@ function refreshTextMetrics(objects: FabricObject[]): void {
     if (object instanceof Group) object.getObjects().forEach(visit);
   };
   objects.forEach(visit);
+}
+
+function assetIdsFromSnapshot(snapshot: Record<string, unknown>): string[] {
+  const assetIds = new Set<string>();
+  const visit = (value: unknown) => {
+    if (!value || typeof value !== "object") return;
+    const record = value as Record<string, unknown>;
+    if (typeof record.assetId === "string" && record.assetId) assetIds.add(record.assetId);
+    if (Array.isArray(record.objects)) record.objects.forEach(visit);
+  };
+  visit(snapshot);
+  return [...assetIds];
 }
 
 function solidColor(value: unknown): value is string {
@@ -378,8 +496,18 @@ export function EditorProvider({
   const [canvas, setCanvas] = useState<Canvas | null>(null);
   const [selection, setSelection] = useState<FabricObject[]>([]);
   const [zoom, setZoomState] = useState(1);
+  const [fitRequest, setFitRequest] = useState(0);
+  const [creationTool, setCreationTool] = useState<CreationTool | null>(null);
+  const [creationDefaults, setCreationDefaultsState] = useState<CreationDefaults>(() => {
+    try {
+      return normalizeCreationDefaults(
+        JSON.parse(localStorage.getItem(CREATION_DEFAULTS_STORAGE_KEY) ?? "null")
+      );
+    } catch {
+      return DEFAULT_CREATION_DEFAULTS;
+    }
+  });
   const [canvasSettings, setCanvasSettingsState] = useState(project.canvas);
-  const [saveStatus, setSaveStatus] = useState<"saved" | "saving" | "error">("saved");
   const [projectDescription, setProjectDescriptionState] = useState(project.description ?? "");
   const [historyState, setHistoryState] = useState({ canUndo: false, canRedo: false });
   const history = useRef<string[]>([]);
@@ -387,12 +515,23 @@ export function EditorProvider({
   const lastCommit = useRef<{ label: string; at: number } | null>(null);
   const restoring = useRef(false);
   const clipboard = useRef<FabricObject[]>([]);
-  const saveTimer = useRef<number | undefined>(undefined);
-  const pendingSnapshot = useRef<string | undefined>(undefined);
+  const pendingSnapshot = useRef<{ snapshot: string; revision: number } | undefined>(undefined);
+  const saveQueue = useRef<Promise<void>>(Promise.resolve());
+  const saveRevision = useRef(0);
+  const savedRevision = useRef(0);
+  const lastSaveError = useRef<unknown>(undefined);
+  const assetInsertQueue = useRef<Promise<void>>(Promise.resolve());
+  const importQueue = useRef<Promise<void>>(Promise.resolve());
   const latestProject = useRef(project);
   const latestCanvasSettings = useRef(project.canvas);
+  const latestZoom = useRef(1);
   const canvasElement = useRef<HTMLCanvasElement | null>(null);
   const guides = useRef<{ vertical?: number; horizontal?: number }>({});
+  const snapSession = useRef<{
+    target?: FabricObject;
+    x?: AxisSnapLock;
+    y?: AxisSnapLock;
+  }>({});
 
   const refreshConnectors = useCallback(
     (changedObjectId?: string) => {
@@ -463,48 +602,86 @@ export function EditorProvider({
   }, []);
 
   const saveSnapshot = useCallback(
-    async (snapshot: string) => {
-      if (!canvas) return;
+    async (snapshot: string, revision: number) => {
       try {
         const now = new Date().toISOString();
         const current = latestProject.current;
+        const objects = JSON.parse(snapshot) as Record<string, unknown>;
         const next: ProjectRecord = {
           ...current,
           updatedAt: now,
           canvas: latestCanvasSettings.current,
-          objects: JSON.parse(snapshot) as Record<string, unknown>,
-          usedAssetIds: canvas
-            .getObjects()
-            .map((object) => object.assetId)
-            .filter((value): value is string => Boolean(value)),
-          thumbnail: canvas.toDataURL({
-            format: "png",
-            multiplier: Math.min(0.25, 320 / latestCanvasSettings.current.width),
-            enableRetinaScaling: false
-          })
+          objects,
+          usedAssetIds: assetIdsFromSnapshot(objects),
+          // The project data is the durable source of truth. Its derived preview
+          // is refreshed after the save queue drains or by the project overview.
+          thumbnail: undefined
         };
-        latestProject.current = next;
         await onProjectChange(next);
-        pendingSnapshot.current = undefined;
-        setSaveStatus("saved");
-      } catch {
-        setSaveStatus("error");
+        latestProject.current = next;
+        savedRevision.current = Math.max(savedRevision.current, revision);
+        lastSaveError.current = undefined;
+      } catch (reason) {
+        lastSaveError.current = reason;
+        throw reason;
       }
     },
-    [canvas, onProjectChange]
+    [onProjectChange]
   );
+
+  const refreshThumbnail = useCallback(async () => {
+    if (!canvas) return;
+    try {
+      const thumbnail = createVectorThumbnail(canvas, latestCanvasSettings.current);
+      const next = { ...latestProject.current, thumbnail };
+      await onProjectChange(next);
+      latestProject.current = next;
+    } catch (reason) {
+      // A preview is derived and optional. Never discard or block navigation
+      // after the actual project snapshot has already been saved.
+      console.warn("Project preview could not be refreshed; project data is saved.", reason);
+    }
+  }, [canvas, onProjectChange]);
+
+  const enqueuePendingSave = useCallback(() => {
+    const pending = pendingSnapshot.current;
+    if (!pending) return saveQueue.current;
+    pendingSnapshot.current = undefined;
+    const operation = saveQueue.current.then(() =>
+      saveSnapshot(pending.snapshot, pending.revision)
+    );
+    saveQueue.current = operation.catch(() => {
+      if (pending.revision === saveRevision.current && !pendingSnapshot.current) {
+        pendingSnapshot.current = pending;
+      }
+    });
+    return operation;
+  }, [saveSnapshot]);
+
+  const flushSave = useCallback(async () => {
+    // A toolbar click can follow an asset click before its SVG has finished
+    // parsing. Treat that insertion as part of the action being flushed.
+    await Promise.all([assetInsertQueue.current, importQueue.current]);
+    await saveQueue.current;
+    if (pendingSnapshot.current) {
+      await enqueuePendingSave().catch(() => undefined);
+      await saveQueue.current;
+    }
+    if (savedRevision.current < saveRevision.current && lastSaveError.current) {
+      throw lastSaveError.current;
+    }
+    await refreshThumbnail();
+  }, [enqueuePendingSave, refreshThumbnail]);
 
   const persist = useCallback(
     (snapshot?: string) => {
       if (!canvas) return;
-      setSaveStatus("saving");
-      pendingSnapshot.current = snapshot ?? serialize();
-      window.clearTimeout(saveTimer.current);
-      saveTimer.current = window.setTimeout(() => {
-        if (pendingSnapshot.current) void saveSnapshot(pendingSnapshot.current);
-      }, 500);
+      const revision = saveRevision.current + 1;
+      saveRevision.current = revision;
+      pendingSnapshot.current = { snapshot: snapshot ?? serialize(), revision };
+      void enqueuePendingSave().catch(() => undefined);
     },
-    [canvas, saveSnapshot, serialize]
+    [canvas, enqueuePendingSave, serialize]
   );
 
   const commit = useCallback(
@@ -541,20 +718,20 @@ export function EditorProvider({
         preserveObjectStacking: true,
         selectionColor: "rgba(18, 178, 175, 0.12)",
         selectionBorderColor: "#12b2af",
-        selectionLineWidth: 1
+        selectionLineWidth: SELECTION_STROKE_WIDTH_PX
       });
       instance.setDimensions({ width: project.canvas.width, height: project.canvas.height });
       instance.backgroundColor = project.canvas.transparent ? "" : project.canvas.background;
-      instance.loadFromJSON(project.objects).then(() => {
-        instance
-          .getObjects()
-          .forEach((object) =>
-            assignIdentity(
-              object,
-              object.name ?? "Untitled layer",
-              object.OpenSketchType ?? object.type
-            )
+      instance.loadFromJSON(project.objects).then(async () => {
+        await restoreBundledSvgBlendModes(instance.getObjects());
+        instance.getObjects().forEach((object) => {
+          assignIdentity(
+            object,
+            object.name ?? "Untitled layer",
+            object.OpenSketchType ?? object.type
           );
+        });
+        configureCanvasAssets(instance.getObjects());
         instance.requestRenderAll();
         const initial = JSON.stringify(instance.toJSON());
         history.current = [initial];
@@ -568,7 +745,27 @@ export function EditorProvider({
 
   useEffect(() => {
     if (!canvas) return;
-    const select = () => setSelection(canvas.getActiveObjects());
+    const select = () => {
+      const activeObject = canvas.getActiveObject();
+      if (activeObject) configureSelectionControls(activeObject, latestZoom.current);
+      setSelection(canvas.getActiveObjects());
+      canvas.requestRenderAll();
+    };
+    const selectSvgPart = ({
+      target,
+      subTargets = []
+    }: {
+      target?: FabricObject;
+      subTargets?: FabricObject[];
+    }) => {
+      const part = [target, ...subTargets].find((candidate): candidate is FabricObject =>
+        Boolean(candidate && editableAssetParent(candidate))
+      );
+      if (!part) return;
+      canvas.setActiveObject(part);
+      setSelection([part]);
+      canvas.requestRenderAll();
+    };
     const modified = ({ target }: { target?: FabricObject } = {}) => {
       const changed = target ?? canvas.getActiveObject();
       const finish = () => {
@@ -579,6 +776,12 @@ export function EditorProvider({
           changed.setCoords();
         }
         guides.current = {};
+        snapSession.current = {};
+        const parentAsset = editableAssetParent(changed);
+        if (parentAsset) {
+          parentAsset.dirty = true;
+          parentAsset.triggerLayout();
+        }
         setSelection(canvas.getActiveObjects());
         if (changed?.objectId) refreshConnectors(changed.objectId);
         canvas.requestRenderAll();
@@ -597,8 +800,12 @@ export function EditorProvider({
         finish();
       }
     };
-    const moving = ({ target }: { target?: FabricObject }) => {
+    const moving = ({ target, scenePoint }: { target?: FabricObject; scenePoint?: Point }) => {
       if (!target?.objectId || target.connector) return;
+      if (snapSession.current.target !== target) {
+        snapSession.current = { target };
+      }
+      const zoom = Math.max(latestZoom.current, 0.1);
       const result = snapBounds(
         target.getBoundingRect(),
         canvas
@@ -608,7 +815,7 @@ export function EditorProvider({
               candidate !== target && !candidate.connector && candidate.visible !== false
           )
           .map((candidate) => candidate.getBoundingRect()),
-        6 / Math.max(canvas.getZoom(), 0.1),
+        6 / zoom,
         {
           left: 0,
           top: 0,
@@ -616,16 +823,36 @@ export function EditorProvider({
           height: latestCanvasSettings.current.height
         }
       );
-      if (result.dx || result.dy) {
+      const proposedLeft = target.left ?? 0;
+      const proposedTop = target.top ?? 0;
+      const horizontal = applySnapResistance({
+        proposedPosition: proposedLeft,
+        pointer: scenePoint?.x ?? proposedLeft,
+        snapDelta: result.dx,
+        snapGuide: result.verticalGuide,
+        lock: snapSession.current.x,
+        releaseDistance: SNAP_RELEASE_DISTANCE_PX / zoom
+      });
+      const vertical = applySnapResistance({
+        proposedPosition: proposedTop,
+        pointer: scenePoint?.y ?? proposedTop,
+        snapDelta: result.dy,
+        snapGuide: result.horizontalGuide,
+        lock: snapSession.current.y,
+        releaseDistance: SNAP_RELEASE_DISTANCE_PX / zoom
+      });
+      snapSession.current.x = horizontal.lock;
+      snapSession.current.y = vertical.lock;
+      if (horizontal.position !== proposedLeft || vertical.position !== proposedTop) {
         target.set({
-          left: (target.left ?? 0) + result.dx,
-          top: (target.top ?? 0) + result.dy
+          left: horizontal.position,
+          top: vertical.position
         });
         target.setCoords();
       }
       guides.current = {
-        vertical: result.verticalGuide,
-        horizontal: result.horizontalGuide
+        vertical: horizontal.guide,
+        horizontal: vertical.guide
       };
       refreshConnectors(target.objectId);
       canvas.requestRenderAll();
@@ -633,10 +860,15 @@ export function EditorProvider({
     const transform = ({ target }: { target?: FabricObject }) => {
       if (target?.objectId) refreshConnectors(target.objectId);
     };
-    const drawGuides = () => {
+    const clearGuides = () => {
+      snapSession.current = {};
+      if (guides.current.vertical === undefined && guides.current.horizontal === undefined) return;
+      guides.current = {};
+      canvas.requestRenderAll();
+    };
+    const drawGuides = ({ ctx: context }: { ctx: CanvasRenderingContext2D }) => {
       const { vertical, horizontal } = guides.current;
       if (vertical === undefined && horizontal === undefined) return;
-      const context = canvas.getTopContext();
       const viewport = canvas.viewportTransform;
       const x = (vertical ?? 0) * viewport[0] + viewport[4];
       const y = (horizontal ?? 0) * viewport[3] + viewport[5];
@@ -661,25 +893,27 @@ export function EditorProvider({
     canvas.on("selection:created", select);
     canvas.on("selection:updated", select);
     canvas.on("selection:cleared", select);
+    canvas.on("mouse:dblclick", selectSvgPart);
     canvas.on("object:modified", modified);
     canvas.on("object:moving", moving);
     canvas.on("object:scaling", transform);
     canvas.on("object:rotating", transform);
     canvas.on("after:render", drawGuides);
+    canvas.on("mouse:up", clearGuides);
     canvas.on("text:editing:exited", modified);
     return () => {
-      window.clearTimeout(saveTimer.current);
-      if (pendingSnapshot.current) void saveSnapshot(pendingSnapshot.current);
+      void enqueuePendingSave();
       canvas.dispose();
       setCanvas(null);
     };
-  }, [canvas, commit, refreshConnectors, saveSnapshot]);
+  }, [canvas, commit, enqueuePendingSave, refreshConnectors]);
 
   const restoreAt = useCallback(
     async (index: number) => {
       if (!canvas || !history.current[index]) return;
       restoring.current = true;
       await canvas.loadFromJSON(history.current[index]);
+      configureCanvasAssets(canvas.getObjects());
       refreshConnectors();
       canvas.requestRenderAll();
       historyIndex.current = index;
@@ -729,23 +963,30 @@ export function EditorProvider({
     [canvas, centerObject, commit]
   );
 
+  const setCreationDefaults = useCallback((defaults: CreationDefaults) => {
+    const normalized = normalizeCreationDefaults(defaults);
+    setCreationDefaultsState(normalized);
+    localStorage.setItem(CREATION_DEFAULTS_STORAGE_KEY, JSON.stringify(normalized));
+  }, []);
+
   const addText = useCallback(
-    (kind: "point" | "box" = "point") => {
+    (kind: TextKind = "point", point?: Point, fontSize?: number, fontWeight?: number) => {
       const options = {
-        fill: "#183133",
-        fontFamily: "Source Sans 3",
-        fontSize: 54,
+        fill: creationDefaults.text.color,
+        fontFamily: creationDefaults.text.fontFamily,
+        fontSize: fontSize ?? creationDefaults.text.fontSize,
+        fontWeight: fontWeight ?? creationDefaults.text.fontWeight,
         lineHeight: 1.2
       };
       const object =
         kind === "box"
           ? new Textbox("Text box", { ...options, width: 420 })
           : new IText("Label", options);
-      addObject(object, kind === "box" ? "Text box" : "Label", "text");
+      addObject(object, kind === "box" ? "Text box" : "Label", "text", point);
       object.enterEditing();
       object.selectAll();
     },
-    [addObject]
+    [addObject, creationDefaults.text]
   );
 
   const addAttachedConnector = useCallback(
@@ -805,18 +1046,14 @@ export function EditorProvider({
   );
 
   const addShape = useCallback(
-    (kind: ShapeKind) => {
+    (kind: ShapeKind, point?: Point) => {
       if (
         ["line", "arrow", "double-arrow", "curved-arrow"].includes(kind) &&
         addAttachedConnector(kind as "line" | "arrow" | "double-arrow" | "curved-arrow")
       ) {
         return;
       }
-      const common = {
-        fill: "#d8efe9",
-        stroke: "#25494b",
-        strokeWidth: 4
-      };
+      const common = { ...creationDefaults.shape };
       let object: FabricObject;
       if (kind === "rectangle" || kind === "rounded-rectangle") {
         object = new Rect({
@@ -846,15 +1083,15 @@ export function EditorProvider({
         );
       } else if (kind === "line") {
         object = new Line([0, 0, 220, 0], {
-          stroke: "#25494b",
-          strokeWidth: 5,
+          stroke: creationDefaults.line.color,
+          strokeWidth: creationDefaults.line.width,
           strokeLineCap: "round"
         });
       } else if (kind === "bracket") {
         object = new Path("M 32 0 H 0 V 180 H 32 M 168 0 H 200 V 180 H 168", {
           fill: "",
-          stroke: "#25494b",
-          strokeWidth: 5,
+          stroke: creationDefaults.shape.stroke,
+          strokeWidth: creationDefaults.shape.strokeWidth,
           strokeLineCap: "round",
           strokeLineJoin: "round"
         });
@@ -886,95 +1123,226 @@ export function EditorProvider({
       } else {
         object = createArrowPath(kind === "double-arrow", kind === "curved-arrow");
       }
-      addObject(object, kind.replace("-", " "), kind.includes("arrow") ? "connector" : "shape");
+      addObject(
+        object,
+        kind.replace("-", " "),
+        kind.includes("arrow") ? "connector" : "shape",
+        point
+      );
     },
-    [addAttachedConnector, addObject]
+    [addAttachedConnector, addObject, creationDefaults]
+  );
+
+  const addFreeConnector = useCallback(
+    (
+      kind: "line" | "arrow" | "double-arrow" | "curved-arrow",
+      from: Point,
+      requestedTo?: Point
+    ) => {
+      if (!canvas) return;
+      const distance = requestedTo ? Math.hypot(requestedTo.x - from.x, requestedTo.y - from.y) : 0;
+      const to =
+        requestedTo && distance >= 4 / Math.max(latestZoom.current, 0.1)
+          ? requestedTo
+          : {
+              x:
+                from.x + 220 <= latestCanvasSettings.current.width
+                  ? from.x + 220
+                  : Math.max(0, from.x - 220),
+              y: from.y
+            };
+      const binding: ConnectorBinding = {
+        fromObjectId: "",
+        fromAnchor: "center",
+        toObjectId: "",
+        toAnchor: "center",
+        startArrowhead:
+          kind === "double-arrow" ? creationDefaults.line.startArrowhead || "triangle" : "none",
+        endArrowhead: kind === "line" ? "none" : creationDefaults.line.endArrowhead,
+        lineStyle: creationDefaults.line.lineStyle,
+        routing: "direct",
+        curvature: kind === "curved-arrow" ? 0.24 : 0
+      };
+      if (kind === "double-arrow" && binding.startArrowhead === "none") {
+        binding.startArrowhead = "triangle";
+      }
+      const object = createFreeConnectorObject(from, to, binding, {
+        color: creationDefaults.line.color,
+        width: creationDefaults.line.width,
+        opacity: 1
+      });
+      object.connector = undefined;
+      object.OpenSketchType = kind;
+      object.name = kind.replace("-", " ");
+      object.lockScalingX = false;
+      object.lockScalingY = false;
+      assignIdentity(object, object.name, kind);
+      canvas.add(object);
+      canvas.setActiveObject(object);
+      setSelection([object]);
+      canvas.requestRenderAll();
+      commit(`Add ${object.name}`);
+    },
+    [canvas, commit, creationDefaults.line]
+  );
+
+  const placeCreation = useCallback(
+    (point: Point, endPoint?: Point) => {
+      if (!creationTool) return;
+      const tool = creationTool;
+      setCreationTool(null);
+      if (tool.type === "text") {
+        addText(tool.kind, point, tool.fontSize, tool.fontWeight);
+        return;
+      }
+      if (["line", "arrow", "double-arrow", "curved-arrow"].includes(tool.kind)) {
+        const dragged =
+          endPoint &&
+          Math.hypot(endPoint.x - point.x, endPoint.y - point.y) >=
+            4 / Math.max(canvas?.getZoom() ?? 1, 0.1);
+        if (
+          !dragged &&
+          addAttachedConnector(tool.kind as "line" | "arrow" | "double-arrow" | "curved-arrow")
+        ) {
+          return;
+        }
+        addFreeConnector(
+          tool.kind as "line" | "arrow" | "double-arrow" | "curved-arrow",
+          point,
+          endPoint
+        );
+        return;
+      }
+      addShape(tool.kind, point);
+    },
+    [addAttachedConnector, addFreeConnector, addShape, addText, canvas, creationTool]
   );
 
   const addAsset = useCallback(
-    async (family: AssetFamily, variant: AssetVariant, point?: Point) => {
-      if (!canvas) return;
-      let source = svgStringCache.get(variant.id);
-      if (!source) {
-        const response = await fetch(variant.assetPath);
-        if (!response.ok) throw new Error(`Could not load ${family.title}.`);
-        source = await response.text();
-        cacheSvg(variant.id, source);
-      } else {
-        cacheSvg(variant.id, source);
-      }
-      const result = await loadSVGFromString(source);
-      const objects = result.objects.filter((object): object is FabricObject => Boolean(object));
-      const group = util.groupSVGElements(objects, result.options);
-      const maxSide = Math.max(group.width || 1, group.height || 1);
-      const scale = Math.min(1, 360 / maxSide);
-      group.scale(scale);
-      group.assetId = variant.id;
-      group.familyId = family.familyId;
-      group.provenance = {
-        nihSourcePage: family.nihSourcePage,
-        commonsPage: family.commonsPage,
-        author: family.author,
-        license: family.license
-      };
-      group.originalPalette = Object.fromEntries(
-        paletteFromObject(group).map((color) => [color, color])
-      );
-      rememberOriginalColors(group);
-      addObject(group, family.title, "nih-asset", point);
+    (family: AssetFamily, variant: AssetVariant, point?: Point) => {
+      const operation = assetInsertQueue.current.then(async () => {
+        if (!canvas) return;
+        const source = await bundledSvgSource(variant.id);
+        if (!source) throw new Error(`Could not load ${family.title}.`);
+        const result = await loadEditableSvg(source);
+        const objects = result.objects.filter((object): object is FabricObject => Boolean(object));
+        const group = groupSvgElements(objects, result.options);
+        const maxSide = Math.max(group.width || 1, group.height || 1);
+        const scale = Math.min(1, 360 / maxSide);
+        group.scale(scale);
+        group.assetId = variant.id;
+        group.familyId = family.familyId;
+        group.provenance = {
+          nihSourcePage: family.nihSourcePage,
+          commonsPage: family.commonsPage,
+          author: family.author,
+          license: family.license
+        };
+        group.originalPalette = Object.fromEntries(
+          paletteFromObject(group).map((color) => [color, color])
+        );
+        rememberOriginalColors(group);
+        configureEditableSvgParts(group);
+        addObject(group, family.title, "nih-asset", point);
+      });
+      assetInsertQueue.current = operation.catch(() => undefined);
+      return operation;
     },
     [addObject, canvas]
   );
 
-  const addUpload = useCallback(
-    async (file: File) => {
-      if (!canvas) return;
-      const extension = file.name.toLowerCase().split(".").at(-1);
-      if (!["svg", "png", "jpg", "jpeg", "webp"].includes(extension ?? "")) {
-        throw new Error("Choose an SVG, PNG, JPEG, or WebP image.");
-      }
-      if (file.size > 25 * 1024 * 1024) {
-        throw new Error("Images must be 25 MB or smaller.");
-      }
-      const uploadId = crypto.randomUUID();
-      let dataUrl = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(String(reader.result));
-        reader.onerror = () => reject(reader.error);
-        reader.readAsDataURL(file);
-      });
-      let object: FabricObject;
-      if (file.type === "image/svg+xml" || file.name.toLowerCase().endsWith(".svg")) {
-        const source = sanitizeUploadedSvg(await file.text(), `upload-${uploadId}`);
-        dataUrl = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(source)))}`;
-        const result = await loadSVGFromString(source);
-        object = util.groupSVGElements(
-          result.objects.filter((item): item is FabricObject => Boolean(item)),
-          result.options
+  const importMedia = useCallback(
+    (file: File) => {
+      const operation = importQueue.current.then(async () => {
+        if (!canvas) return;
+        const extension = file.name.toLowerCase().split(".").at(-1);
+        if (!["svg", "png", "jpg", "jpeg", "webp"].includes(extension ?? "")) {
+          throw new Error("Choose an SVG, PNG, JPEG, or WebP image.");
+        }
+        if (file.size > 25 * 1024 * 1024) {
+          throw new Error("Images must be 25 MB or smaller.");
+        }
+        const importId = crypto.randomUUID();
+        let dataUrl = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result));
+          reader.onerror = () => reject(reader.error);
+          reader.readAsDataURL(file);
+        });
+        let object: FabricObject;
+        if (file.type === "image/svg+xml" || file.name.toLowerCase().endsWith(".svg")) {
+          const source = sanitizeImportedSvg(await file.text(), `import-${importId}`);
+          dataUrl = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(source)))}`;
+          const result = await loadEditableSvg(source);
+          object = groupSvgElements(
+            result.objects.filter((item): item is FabricObject => Boolean(item)),
+            result.options
+          );
+        } else {
+          object = await FabricImage.fromURL(dataUrl);
+        }
+        const maxSide = Math.max(object.width || 1, object.height || 1);
+        object.scale(Math.min(1, 420 / maxSide));
+        object.assetId = importId;
+        object.originalPalette = Object.fromEntries(
+          paletteFromObject(object).map((color) => [color, color])
         );
-      } else {
-        object = await FabricImage.fromURL(dataUrl);
-      }
-      const maxSide = Math.max(object.width || 1, object.height || 1);
-      object.scale(Math.min(1, 420 / maxSide));
-      object.assetId = uploadId;
-      object.originalPalette = Object.fromEntries(
-        paletteFromObject(object).map((color) => [color, color])
-      );
-      rememberOriginalColors(object);
-      const upload: UploadRecord = { id: uploadId, name: file.name, mimeType: file.type, dataUrl };
-      latestProject.current = {
-        ...latestProject.current,
-        uploads: [...latestProject.current.uploads, upload]
-      };
-      addObject(object, file.name, "upload");
+        rememberOriginalColors(object);
+        configureEditableSvgParts(object);
+        const importedMedia: ImportedMediaRecord = {
+          id: importId,
+          name: file.name,
+          mimeType: file.type,
+          dataUrl
+        };
+        latestProject.current = {
+          ...latestProject.current,
+          uploads: [...latestProject.current.uploads, importedMedia]
+        };
+        addObject(object, file.name, "import");
+      });
+      importQueue.current = operation.catch(() => undefined);
+      return operation;
     },
     [addObject, canvas]
   );
+
+  const selectParentAsset = useCallback(() => {
+    if (!canvas) return;
+    const parent = editableAssetParent(canvas.getActiveObject());
+    if (!parent) return;
+    canvas.setActiveObject(parent);
+    setSelection([parent]);
+    canvas.requestRenderAll();
+  }, [canvas]);
 
   const deleteSelection = useCallback(() => {
     if (!canvas) return;
     const active = canvas.getActiveObjects();
+    const nested = active.filter((object) => editableAssetParent(object));
+    if (nested.length > 0) {
+      const parents = new Set<Group>();
+      nested.forEach((object) => {
+        const parent = object.group;
+        if (!(parent instanceof Group)) return;
+        parents.add(editableAssetParent(object) ?? parent);
+        parent.remove(object);
+        parent.triggerLayout();
+        parent.dirty = true;
+      });
+      const parentAsset = [...parents][0];
+      if (parentAsset && parentAsset.getObjects().length > 0) {
+        canvas.setActiveObject(parentAsset);
+        setSelection([parentAsset]);
+      } else {
+        parents.forEach((parent) => canvas.remove(parent));
+        canvas.discardActiveObject();
+        setSelection([]);
+      }
+      canvas.requestRenderAll();
+      commit("Delete SVG part");
+      return;
+    }
     const removedIds = new Set(active.map((object) => object.objectId).filter(Boolean));
     const connected = canvas
       .getObjects()
@@ -993,7 +1361,28 @@ export function EditorProvider({
 
   const duplicateSelection = useCallback(async () => {
     if (!canvas) return;
-    const clones = await Promise.all(canvas.getActiveObjects().map((object) => object.clone()));
+    const selectedObjects = canvas.getActiveObjects();
+    const clones = await Promise.all(selectedObjects.map((object) => object.clone()));
+    const nestedParent = editableAssetParent(selectedObjects[0]);
+    if (
+      nestedParent &&
+      selectedObjects.every((object) => editableAssetParent(object) === nestedParent)
+    ) {
+      clones.forEach((clone) => {
+        clone.set({ left: (clone.left ?? 0) + 12, top: (clone.top ?? 0) + 12 });
+        clone.objectId = crypto.randomUUID();
+        clone.name = `${selectedObjects[0].name ?? "Part"} copy`;
+        clone.OpenSketchType = "svg-part";
+        nestedParent.add(clone);
+      });
+      nestedParent.triggerLayout();
+      nestedParent.dirty = true;
+      canvas.setActiveObject(clones[0]);
+      setSelection([clones[0]]);
+      canvas.requestRenderAll();
+      commit("Duplicate SVG part");
+      return;
+    }
     clones.forEach((clone) => {
       clone.set({ left: (clone.left ?? 0) + 28, top: (clone.top ?? 0) + 28 });
       clone.objectId = crypto.randomUUID();
@@ -1038,10 +1427,12 @@ export function EditorProvider({
     (action: "front" | "forward" | "backward" | "back") => {
       if (!canvas) return;
       for (const object of canvas.getActiveObjects()) {
-        if (action === "front") canvas.bringObjectToFront(object);
-        if (action === "forward") canvas.bringObjectForward(object);
-        if (action === "backward") canvas.sendObjectBackwards(object);
-        if (action === "back") canvas.sendObjectToBack(object);
+        const collection = object.group instanceof Group ? object.group : canvas;
+        if (action === "front") collection.bringObjectToFront(object);
+        if (action === "forward") collection.bringObjectForward(object);
+        if (action === "backward") collection.sendObjectBackwards(object);
+        if (action === "back") collection.sendObjectToBack(object);
+        if (object.group instanceof Group) object.group.dirty = true;
       }
       canvas.requestRenderAll();
       commit("Arrange layers");
@@ -1119,11 +1510,14 @@ export function EditorProvider({
 
   const flip = useCallback(
     (axis: "x" | "y") => {
-      canvas
-        ?.getActiveObjects()
-        .forEach((object) =>
-          object.set(axis === "x" ? "flipX" : "flipY", axis === "x" ? !object.flipX : !object.flipY)
-        );
+      canvas?.getActiveObjects().forEach((object) => {
+        object.set(axis === "x" ? "flipX" : "flipY", axis === "x" ? !object.flipX : !object.flipY);
+        const parentAsset = editableAssetParent(object);
+        if (parentAsset) {
+          parentAsset.dirty = true;
+          parentAsset.triggerLayout();
+        }
+      });
       canvas?.requestRenderAll();
       commit("Flip");
     },
@@ -1136,7 +1530,35 @@ export function EditorProvider({
       const objects = canvas.getActiveObjects();
       objects.forEach((object) => {
         object.set(properties);
+        if (
+          object instanceof Group &&
+          ["line", "arrow", "double-arrow", "curved-arrow"].includes(object.OpenSketchType ?? "") &&
+          !object.connector
+        ) {
+          object.getObjects().forEach((part) => {
+            if (typeof properties.stroke === "string") {
+              part.set("stroke", properties.stroke);
+              if (typeof part.fill === "string" && part.fill !== "") {
+                part.set("fill", properties.stroke);
+              }
+            }
+            if (typeof properties.strokeWidth === "number") {
+              part.set(
+                "strokeWidth",
+                part instanceof Path
+                  ? properties.strokeWidth
+                  : Math.max(1, properties.strokeWidth * 0.4)
+              );
+            }
+          });
+          object.dirty = true;
+        }
         object.setCoords();
+        const parentAsset = editableAssetParent(object);
+        if (parentAsset) {
+          parentAsset.dirty = true;
+          parentAsset.triggerLayout();
+        }
       });
       if (objects.some((object) => object.connector)) refreshConnectors();
       objects
@@ -1148,6 +1570,83 @@ export function EditorProvider({
     },
     [canvas, commit, refreshConnectors]
   );
+
+  const resetSelectionToDefaults = useCallback(() => {
+    if (!canvas) return;
+    const objects = canvas.getActiveObjects();
+    let changed = false;
+    objects.forEach((object) => {
+      const type = object.OpenSketchType ?? "";
+      if (object instanceof IText || type === "text") {
+        object.set({
+          fill: creationDefaults.text.color,
+          fontFamily: creationDefaults.text.fontFamily,
+          fontSize: creationDefaults.text.fontSize,
+          fontWeight: creationDefaults.text.fontWeight,
+          fontStyle: "normal",
+          underline: false,
+          linethrough: false,
+          overline: false,
+          charSpacing: 0,
+          lineHeight: 1.2,
+          textAlign: "left",
+          opacity: 1
+        });
+        changed = true;
+      } else if (["line", "arrow", "double-arrow", "curved-arrow"].includes(type)) {
+        object.set({
+          stroke: creationDefaults.line.color,
+          strokeWidth: creationDefaults.line.width,
+          opacity: 1
+        });
+        if (object.connector) {
+          object.connector = {
+            ...object.connector,
+            lineStyle: creationDefaults.line.lineStyle,
+            startArrowhead:
+              type === "double-arrow"
+                ? creationDefaults.line.startArrowhead || "triangle"
+                : creationDefaults.line.startArrowhead,
+            endArrowhead: type === "line" ? "none" : creationDefaults.line.endArrowhead
+          };
+        }
+        if (object instanceof Group) {
+          object.getObjects().forEach((part) => {
+            part.set({
+              stroke: creationDefaults.line.color,
+              strokeWidth:
+                part instanceof Path
+                  ? creationDefaults.line.width
+                  : Math.max(1, creationDefaults.line.width * 0.4)
+            });
+            if (typeof part.fill === "string" && part.fill !== "") {
+              part.set("fill", creationDefaults.line.color);
+            }
+          });
+          object.dirty = true;
+        }
+        changed = true;
+      } else if (type === "shape") {
+        const applyShapeDefaults = (target: FabricObject) => {
+          target.set({
+            fill: creationDefaults.shape.fill,
+            stroke: creationDefaults.shape.stroke,
+            strokeWidth: creationDefaults.shape.strokeWidth,
+            opacity: 1
+          });
+          if (target instanceof Group) target.getObjects().forEach(applyShapeDefaults);
+        };
+        applyShapeDefaults(object);
+        changed = true;
+      }
+      object.setCoords();
+    });
+    if (!changed) return;
+    if (objects.some((object) => object.connector)) refreshConnectors();
+    canvas.requestRenderAll();
+    setSelection([...canvas.getActiveObjects()]);
+    commit("Reset to defaults");
+  }, [canvas, commit, creationDefaults, refreshConnectors]);
 
   const updateConnector = useCallback(
     (properties: Partial<ConnectorBinding>) => {
@@ -1224,7 +1723,11 @@ export function EditorProvider({
   const replaceColor = useCallback(
     (before: string, after: string) => {
       if (!canvas) return;
-      canvas.getActiveObjects().forEach((object) => replaceObjectColor(object, before, after));
+      canvas.getActiveObjects().forEach((object) => {
+        replaceObjectColor(object, before, after);
+        const parentAsset = editableAssetParent(object);
+        if (parentAsset) parentAsset.dirty = true;
+      });
       canvas.requestRenderAll();
       commit("Recolor");
     },
@@ -1234,6 +1737,8 @@ export function EditorProvider({
     if (!canvas) return;
     canvas.getActiveObjects().forEach((object) => {
       restoreOriginalColors(object);
+      const parentAsset = editableAssetParent(object);
+      if (parentAsset) parentAsset.dirty = true;
       if (object instanceof FabricImage) {
         object.filters = [];
         object.applyFilters();
@@ -1248,13 +1753,39 @@ export function EditorProvider({
       if (!canvas) return;
       const next = Math.max(0.1, Math.min(4, value));
       const settings = latestCanvasSettings.current;
-      canvas.setDimensions({
-        width: Math.max(1, Math.round(settings.width * next)),
-        height: Math.max(1, Math.round(settings.height * next))
-      });
-      canvas.setZoom(next);
-      setZoomState(next);
+      latestZoom.current = next;
+      canvas.setDimensions(
+        {
+          width: Math.max(1, Math.round(settings.width * next)),
+          height: Math.max(1, Math.round(settings.height * next))
+        },
+        { cssOnly: true }
+      );
+      canvas.selectionLineWidth = selectionStrokeWidthAtZoom(next);
+      const activeObject = canvas.getActiveObject();
+      if (activeObject) configureSelectionControls(activeObject, next);
       canvas.requestRenderAll();
+      setZoomState(next);
+    },
+    [canvas]
+  );
+  const previewZoom = useCallback(
+    (value: number) => {
+      if (!canvas) return;
+      const next = Math.max(0.1, Math.min(4, value));
+      const settings = latestCanvasSettings.current;
+      canvas.setDimensions(
+        {
+          width: Math.max(1, Math.round(settings.width * next)),
+          height: Math.max(1, Math.round(settings.height * next))
+        },
+        { cssOnly: true }
+      );
+      const stage = canvas.wrapperEl.closest(".artboard-stage") as HTMLElement | null;
+      if (stage) {
+        stage.style.width = `${Math.max(1, settings.width * next)}px`;
+        stage.style.height = `${Math.max(1, settings.height * next)}px`;
+      }
     },
     [canvas]
   );
@@ -1268,6 +1799,7 @@ export function EditorProvider({
       1
     );
     setZoom(next);
+    setFitRequest((current) => current + 1);
   }, [canvas, canvasSettings, setZoom]);
 
   const setCanvasSettings = useCallback(
@@ -1277,9 +1809,16 @@ export function EditorProvider({
       setCanvasSettingsState(next);
       if (canvas) {
         canvas.setDimensions({
-          width: Math.max(1, Math.round(next.width * zoom)),
-          height: Math.max(1, Math.round(next.height * zoom))
+          width: Math.max(1, Math.round(next.width)),
+          height: Math.max(1, Math.round(next.height))
         });
+        canvas.setDimensions(
+          {
+            width: Math.max(1, Math.round(next.width * zoom)),
+            height: Math.max(1, Math.round(next.height * zoom))
+          },
+          { cssOnly: true }
+        );
         canvas.backgroundColor = next.transparent ? "" : next.background;
         canvas.requestRenderAll();
         commit("Canvas settings");
@@ -1468,9 +2007,20 @@ export function EditorProvider({
         event.preventDefault();
         deleteSelection();
       } else if (event.key === "Escape") {
-        canvas.discardActiveObject();
-        setSelection([]);
-        canvas.requestRenderAll();
+        if (creationTool) {
+          setCreationTool(null);
+          return;
+        }
+        const parentAsset = editableAssetParent(canvas.getActiveObject());
+        if (parentAsset) {
+          canvas.setActiveObject(parentAsset);
+          setSelection([parentAsset]);
+          canvas.requestRenderAll();
+        } else {
+          canvas.discardActiveObject();
+          setSelection([]);
+          canvas.requestRenderAll();
+        }
       } else if (event.key.startsWith("Arrow")) {
         event.preventDefault();
         const step = event.shiftKey ? 10 : 1;
@@ -1480,6 +2030,11 @@ export function EditorProvider({
           if (event.key === "ArrowUp") object.top! -= step;
           if (event.key === "ArrowDown") object.top! += step;
           object.setCoords();
+          const parentAsset = editableAssetParent(object);
+          if (parentAsset) {
+            parentAsset.dirty = true;
+            parentAsset.triggerLayout();
+          }
           if (object.objectId) refreshConnectors(object.objectId);
         });
         canvas.requestRenderAll();
@@ -1503,12 +2058,14 @@ export function EditorProvider({
   }, [
     canvas,
     commit,
+    creationTool,
     deleteSelection,
     duplicateSelection,
     fitCanvas,
     groupSelection,
     redo,
     refreshConnectors,
+    selectParentAsset,
     setZoom,
     undo,
     ungroupSelection,
@@ -1517,21 +2074,26 @@ export function EditorProvider({
 
   const value = useMemo<EditorContextValue>(
     () => ({
+      projectId: project.id,
       canvas,
       selection,
       zoom,
       historyState,
       canvasSettings,
-      saveStatus,
       projectDescription,
       setCanvasElement,
       setCanvasSettings,
       setProjectName,
       setProjectDescription,
-      addText,
-      addShape,
+      selectParentAsset,
+      flushSave,
+      creationTool,
+      creationDefaults,
+      setCreationTool,
+      setCreationDefaults,
+      placeCreation,
       addAsset,
-      addUpload,
+      importMedia,
       deleteSelection,
       duplicateSelection,
       groupSelection,
@@ -1541,6 +2103,7 @@ export function EditorProvider({
       distribute,
       flip,
       setObject,
+      resetSelectionToDefaults,
       updateConnector,
       applyTextScript,
       replaceColor,
@@ -1551,7 +2114,9 @@ export function EditorProvider({
       undo,
       redo,
       setZoom,
+      previewZoom,
       fitCanvas,
+      fitRequest,
       exportSvg,
       exportPdf,
       exportPng,
@@ -1559,9 +2124,9 @@ export function EditorProvider({
     }),
     [
       addAsset,
-      addShape,
-      addText,
-      addUpload,
+      creationDefaults,
+      creationTool,
+      importMedia,
       align,
       applyTextScript,
       arrange,
@@ -1575,23 +2140,30 @@ export function EditorProvider({
       exportPdf,
       exportSvg,
       fitCanvas,
+      fitRequest,
       flip,
       getAssetEffects,
       getPalette,
       groupSelection,
       historyState,
       projectDescription,
+      project.id,
+      previewZoom,
+      placeCreation,
       redo,
       replaceColor,
       resetColors,
-      saveStatus,
       selection,
       setAssetEffects,
       setCanvasElement,
       setCanvasSettings,
+      setCreationDefaults,
       setObject,
+      resetSelectionToDefaults,
       setProjectName,
       setProjectDescription,
+      selectParentAsset,
+      flushSave,
       setZoom,
       undo,
       ungroupSelection,

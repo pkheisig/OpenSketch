@@ -54,20 +54,22 @@ export function migrateProject(input: unknown): PortableProject {
     throw new Error("The project scene is invalid.");
   }
   assertNoExternalSceneSources(project.objects);
-  const uploads = project.uploads ?? [];
+  // `uploads` is the historical on-disk key. It remains supported so existing
+  // .OpenSketch projects round-trip without a format-version break.
+  const importedMedia = project.uploads ?? [];
   if (
-    !Array.isArray(uploads) ||
-    uploads.some(
-      (upload) =>
-        !upload ||
-        typeof upload.id !== "string" ||
-        typeof upload.name !== "string" ||
-        typeof upload.mimeType !== "string" ||
-        typeof upload.dataUrl !== "string" ||
-        !/^data:image\/(?:svg\+xml|png|jpeg|webp);/i.test(upload.dataUrl)
+    !Array.isArray(importedMedia) ||
+    importedMedia.some(
+      (media) =>
+        !media ||
+        typeof media.id !== "string" ||
+        typeof media.name !== "string" ||
+        typeof media.mimeType !== "string" ||
+        typeof media.dataUrl !== "string" ||
+        !/^data:image\/(?:svg\+xml|png|jpeg|webp);/i.test(media.dataUrl)
     )
   ) {
-    throw new Error("The project uploads are invalid.");
+    throw new Error("The project imported media is invalid.");
   }
   const usedAssetIds = project.usedAssetIds ?? [];
   if (!Array.isArray(usedAssetIds) || usedAssetIds.some((assetId) => typeof assetId !== "string")) {
@@ -76,7 +78,7 @@ export function migrateProject(input: unknown): PortableProject {
   return {
     ...project,
     version: 1,
-    uploads,
+    uploads: importedMedia,
     usedAssetIds
   } as PortableProject;
 }

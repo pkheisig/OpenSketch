@@ -8,7 +8,7 @@ import {
   serializeProject
 } from "../apps/web/src/persistence/portable";
 
-const fixturePath = resolve("examples/comparative-panels.OpenSketch");
+const fixturePath = resolve("examples/antibody-mediated-immune-response.OpenSketch");
 const fixtureText = readFileSync(fixturePath, "utf8");
 const fixture = migrateProject(JSON.parse(fixtureText));
 
@@ -22,12 +22,12 @@ describe("portable OpenSketch projects", () => {
 
     expect(restored).toEqual(fixture);
     expect(serialized).not.toContain("preview-only");
-    expect((restored.objects.objects as unknown[]).length).toBe(27);
+    expect((restored.objects.objects as unknown[]).length).toBe(6);
   });
 
   it("imports existing files with a fresh local identity while preserving content", async () => {
     const imported = await readProjectFile(
-      new File([fixtureText], "comparative-panels.OpenSketch", {
+      new File([fixtureText], "antibody-mediated-immune-response.OpenSketch", {
         type: "application/vnd.OpenSketch+json"
       })
     );
@@ -40,12 +40,12 @@ describe("portable OpenSketch projects", () => {
     expect(imported.usedAssetIds).toEqual(fixture.usedAssetIds);
   });
 
-  it("preserves embedded uploads during export and import", () => {
-    const withUpload: ProjectRecord = {
+  it("preserves embedded imported media during export and import", () => {
+    const withImportedMedia: ProjectRecord = {
       ...fixture,
       uploads: [
         {
-          id: "upload-1",
+          id: "import-1",
           name: "pixel.png",
           mimeType: "image/png",
           dataUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB"
@@ -53,8 +53,8 @@ describe("portable OpenSketch projects", () => {
       ]
     };
 
-    const restored = migrateProject(JSON.parse(serializeProject(withUpload)));
-    expect(restored.uploads).toEqual(withUpload.uploads);
+    const restored = migrateProject(JSON.parse(serializeProject(withImportedMedia)));
+    expect(restored.uploads).toEqual(withImportedMedia.uploads);
   });
 
   it("writes a compatible project through direct directory access", async () => {
@@ -81,7 +81,7 @@ describe("portable OpenSketch projects", () => {
 
     try {
       expect(await saveProjectToDirectory(fixture)).toBe(true);
-      expect(filename).toBe("Comparative-panels.OpenSketch");
+      expect(filename).toBe("Antibody-mediated-immune-response.OpenSketch");
       expect(written?.type).toBe("application/vnd.opensketch+json");
       expect(written?.size).toBeGreaterThan(1_000);
       expect(closed).toBe(true);

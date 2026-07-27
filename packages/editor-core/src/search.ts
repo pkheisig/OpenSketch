@@ -54,6 +54,51 @@ function matchesTerms(haystack: string, value: string): boolean {
     .every((term) => matchesTerm(haystack, term));
 }
 
+const CATEGORY_BROWSE_PRIORITY: Record<string, number> = {
+  "Cells and organelles": 0,
+  Proteins: 1,
+  Molecules: 2,
+  "Cellular processes": 3,
+  Equipment: 4,
+  Bacteria: 5,
+  Viruses: 6,
+  Anatomy: 10,
+  "Shapes and arrows": 11,
+  Other: 12,
+  Plants: 13,
+  Arthropods: 14,
+  Animals: 15,
+  People: 16
+};
+
+const OTHER_BIOCHEMISTRY_PRIORITY: Array<[number, RegExp]> = [
+  [
+    0,
+    /\b(cell|cellular|organelle|nucleus|neutrophil|astrocyte|lymphocyte|macrophage|monocyte|hepatocyte|fibroblast|eosinophil|basophil|erythrocyte|platelet|neuron)\b/
+  ],
+  [
+    1,
+    /\b(protein|receptor|antibody|immunoglobulin|enzyme|kinase|complex|filament|actin|tubulin|microtubule|complement|cd\d+)\b/
+  ],
+  [2, /\b(dna|rna|chromatin|chromosome|gene|genome|nucleic|lipid|molecule|metabolite|ceramide)\b/],
+  [3, /\b(apoptosis|translation|transcription|polymerization|signaling|pathway|cascade)\b/],
+  [
+    4,
+    /\b(plate|dish|vial|tube|pipette|microscope|sequencer|flask|spectrometry|reader|qpcr|centrifuge|grid box)\b/
+  ],
+  [5, /\b(bacteria|bacillus|borrelia|spirochete)\b/],
+  [6, /\b(virus|viral|virion)\b/]
+];
+
+export function assetBrowsePriority(family: AssetFamily): number {
+  if (family.category !== "Other") return CATEGORY_BROWSE_PRIORITY[family.category] ?? 12;
+  const metadata = searchableText(family);
+  return (
+    OTHER_BIOCHEMISTRY_PRIORITY.find(([, pattern]) => pattern.test(metadata))?.[0] ??
+    CATEGORY_BROWSE_PRIORITY.Other
+  );
+}
+
 export function filterAssetFamilies(
   families: AssetFamily[],
   query: string,
@@ -61,6 +106,7 @@ export function filterAssetFamilies(
 ): AssetFamily[] {
   const normalized = normalizeSearch(query);
   const alternatives = (ABBREVIATIONS[normalized] ?? []).map(normalizeSearch);
+  const browseAll = category === "All" && !normalized;
   return families
     .flatMap((family, index) => {
       if (category !== "All" && family.category !== category) return [];
@@ -74,6 +120,14 @@ export function filterAssetFamilies(
         title === normalized ? 1_000 : title.startsWith(normalized) ? 800 : direct ? 500 : 100;
       return [{ family, score, index }];
     })
-    .sort((left, right) => right.score - left.score || left.index - right.index)
+    .sort(
+      (left, right) =>
+        right.score - left.score ||
+        (browseAll
+          ? assetBrowsePriority(left.family) - assetBrowsePriority(right.family) ||
+            left.family.title.localeCompare(right.family.title) ||
+            left.index - right.index
+          : left.index - right.index)
+    )
     .map(({ family }) => family);
 }

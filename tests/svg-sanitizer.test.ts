@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { sanitizeUploadedSvg } from "../apps/web/src/assets/browserSanitizer";
+import { sanitizeImportedSvg } from "../apps/web/src/assets/browserSanitizer";
 import { assertSafeSvg, sanitizeSvg } from "../scripts/assets/sanitize-svg";
 
 describe("SVG sanitization", () => {
@@ -18,8 +18,8 @@ describe("SVG sanitization", () => {
     expect(() => assertSafeSvg(clean)).not.toThrow();
   });
 
-  it("rejects executable user uploads before insertion", () => {
-    expect(() => sanitizeUploadedSvg(unsafe)).toThrow("external or executable");
+  it("rejects executable imported media before insertion", () => {
+    expect(() => sanitizeImportedSvg(unsafe)).toThrow("external or executable");
   });
 
   it("accepts local SVG namespaces and internal references", () => {
@@ -27,17 +27,17 @@ describe("SVG sanitization", () => {
       <defs><linearGradient id="g"><stop stop-color="#fff"/></linearGradient></defs>
       <rect width="10" height="10" fill="url(#g)"/>
     </svg>`;
-    const clean = sanitizeUploadedSvg(safe, "local");
+    const clean = sanitizeImportedSvg(safe, "local");
     expect(clean).toContain("local-g");
     expect(clean).toContain("url(#local-g)");
   });
 
-  it("removes external references embedded in uploaded SVG styles", () => {
+  it("removes external references embedded in imported SVG styles", () => {
     const styled = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
       <style>.tracked { fill: url(https://example.org/paint.svg); }</style>
       <rect class="tracked" width="10" height="10"/>
     </svg>`;
-    const clean = sanitizeUploadedSvg(styled, "local");
+    const clean = sanitizeImportedSvg(styled, "local");
     expect(clean).not.toContain("example.org");
     expect(clean).not.toContain("<style");
   });
@@ -62,8 +62,8 @@ describe("SVG sanitization", () => {
     const clean = sanitizeSvg(reusable, "asset");
     expect(clean).toContain('id="asset-shape"');
     expect(clean).toContain('href="#asset-shape"');
-    const uploaded = sanitizeUploadedSvg(reusable, "upload");
-    expect(uploaded).toContain('href="#upload-shape"');
+    const imported = sanitizeImportedSvg(reusable, "import");
+    expect(imported).toContain('href="#import-shape"');
   });
 
   it("preserves internal masks and filters while namespacing their references", () => {
@@ -74,11 +74,11 @@ describe("SVG sanitization", () => {
       </defs>
       <circle cx="10" cy="10" r="8" mask="url(#fade)" filter="url(#shadow)"/>
     </svg>`;
-    const clean = sanitizeUploadedSvg(effects, "upload");
-    expect(clean).toContain('id="upload-fade"');
-    expect(clean).toContain('id="upload-shadow"');
-    expect(clean).toContain("url(#upload-fade)");
-    expect(clean).toContain("url(#upload-shadow)");
+    const clean = sanitizeImportedSvg(effects, "import");
+    expect(clean).toContain('id="import-fade"');
+    expect(clean).toContain('id="import-shadow"');
+    expect(clean).toContain("url(#import-fade)");
+    expect(clean).toContain("url(#import-shadow)");
   });
 
   it("removes external use references", () => {
@@ -86,6 +86,6 @@ describe("SVG sanitization", () => {
       <use href="https://example.org/shapes.svg#cell"/>
     </svg>`;
     expect(sanitizeSvg(externalUse, "asset")).not.toContain("<use");
-    expect(sanitizeUploadedSvg(externalUse, "upload")).not.toContain("<use");
+    expect(sanitizeImportedSvg(externalUse, "import")).not.toContain("<use");
   });
 });

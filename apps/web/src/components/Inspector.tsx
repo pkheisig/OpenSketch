@@ -10,6 +10,7 @@ import {
   ChevronDown,
   ChevronRight,
   Copy,
+  CornerUpLeft,
   Eye,
   EyeOff,
   FlipHorizontal2,
@@ -19,6 +20,8 @@ import {
   Lock,
   MoveDown,
   MoveUp,
+  PanelRightClose,
+  PanelRightOpen,
   RotateCw,
   Trash2,
   Ungroup,
@@ -36,28 +39,72 @@ import {
 } from "@workspace/editor-core";
 import { Color, FabricObject, Group as FabricGroup, Text } from "fabric";
 import { useEditor } from "@/editor/EditorContext";
+import { UiSelect } from "@/components/UiSelect";
+import { useSidebarHover } from "./useSidebarHover";
 
 function number(value: number | undefined, digits = 0) {
   return Number(value ?? 0).toFixed(digits);
 }
 
-export function Inspector() {
+export function Inspector({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
+  const { hoverExpanded, show, scheduleHide, hideNow } = useSidebarHover(collapsed);
   const editor = useEditor();
   const selected = editor.selection[0];
+  const isSvgPart = selected?.OpenSketchType === "svg-part";
+  const parentAsset = isSvgPart ? svgPartParent(selected) : null;
+  const expanded = !collapsed || hoverExpanded;
   return (
-    <aside className="right-sidebar">
-      <div className="inspector-header">
-        <div>
-          <p className="eyebrow">
-            {selected ? (selected.OpenSketchType ?? selected.type) : "DOCUMENT"}
-          </p>
-          <h2>{selected?.name ?? "Canvas"}</h2>
-        </div>
-        <span>{editor.selection.length > 1 ? `${editor.selection.length} selected` : ""}</span>
+    <aside
+      className={`right-sidebar ${collapsed ? "collapsed" : ""} ${
+        collapsed && hoverExpanded ? "hover-expanded" : ""
+      }`}
+      onPointerLeave={scheduleHide}
+    >
+      <div
+        className="sidebar-hover-trigger"
+        aria-hidden="true"
+        onPointerEnter={(event) => {
+          if (event.pointerType !== "touch") show();
+        }}
+      />
+      <div className="sidebar-rail" inert={expanded} aria-hidden={expanded}>
+        <button
+          className="sidebar-expand"
+          onClick={onToggle}
+          aria-label="Expand right sidebar"
+          title="Expand inspector"
+        >
+          <PanelRightOpen size={18} />
+        </button>
       </div>
-      <div className="inspector-scroll">
-        {selected ? <ObjectInspector object={selected} /> : <CanvasInspector />}
-        <LayersPanel />
+      <div className="inspector-expanded" inert={!expanded} aria-hidden={!expanded}>
+        <div className="inspector-header">
+          <h2>{selected?.name ?? "Canvas"}</h2>
+          <span>{editor.selection.length > 1 ? `${editor.selection.length} selected` : ""}</span>
+          <button
+            className="inspector-collapse"
+            onClick={() => {
+              hideNow();
+              onToggle();
+            }}
+            aria-label={collapsed ? "Keep right sidebar open" : "Minimize right sidebar"}
+            title={collapsed ? "Keep inspector open" : "Minimize inspector"}
+          >
+            {collapsed ? <PanelRightOpen size={16} /> : <PanelRightClose size={16} />}
+          </button>
+        </div>
+        <div className="inspector-scroll">
+          {isSvgPart && (
+            <div className="svg-part-context">
+              <span>Inside {parentAsset?.name ?? "SVG asset"}</span>
+              <button onClick={editor.selectParentAsset}>
+                <CornerUpLeft size={13} /> Done
+              </button>
+            </div>
+          )}
+          {selected ? <ObjectInspector object={selected} /> : <CanvasInspector />}
+          <LayersPanel />
+        </div>
       </div>
     </aside>
   );
@@ -69,24 +116,26 @@ function CanvasInspector() {
   const unit = settings.unit;
   const width = pixelsToUnit(settings.width, unit, settings.dpi);
   const height = pixelsToUnit(settings.height, unit, settings.dpi);
+  const activePreset =
+    Object.entries(CANVAS_PRESETS).find(
+      ([, preset]) => preset.width === settings.width && preset.height === settings.height
+    )?.[0] ?? "";
   return (
     <>
       <InspectorSection title="Artboard" open>
-        <label className="field">
-          Preset
-          <select
-            value=""
-            onChange={(event) => {
-              const preset = CANVAS_PRESETS[event.target.value];
-              if (preset) editor.setCanvasSettings(preset);
-            }}
-          >
-            <option value="">Custom dimensions</option>
-            {Object.keys(CANVAS_PRESETS).map((name) => (
-              <option key={name}>{name}</option>
-            ))}
-          </select>
-        </label>
+        <UiSelect
+          className="field"
+          label="Preset"
+          value={activePreset}
+          options={[
+            { value: "", label: "Custom dimensions" },
+            ...Object.keys(CANVAS_PRESETS).map((name) => ({ value: name, label: name }))
+          ]}
+          onChange={(name) => {
+            const preset = CANVAS_PRESETS[name];
+            if (preset) editor.setCanvasSettings(preset);
+          }}
+        />
         <div className="field-row three">
           <NumberField
             label="W"
@@ -108,19 +157,17 @@ function CanvasInspector() {
               })
             }
           />
-          <label className="mini-field">
-            Unit
-            <select
-              value={unit}
-              onChange={(event) =>
-                editor.setCanvasSettings({ unit: event.target.value as CanvasUnit })
-              }
-            >
-              <option value="px">px</option>
-              <option value="mm">mm</option>
-              <option value="in">in</option>
-            </select>
-          </label>
+          <UiSelect
+            className="mini-field"
+            label="Unit"
+            value={unit}
+            options={[
+              { value: "px", label: "px" },
+              { value: "mm", label: "mm" },
+              { value: "in", label: "in" }
+            ]}
+            onChange={(unit) => editor.setCanvasSettings({ unit: unit as CanvasUnit })}
+          />
         </div>
         <NumberField
           label="Export DPI"
@@ -166,12 +213,23 @@ function ObjectInspector({ object }: { object: FabricObject }) {
   const palette = editor.getPalette();
   const effects = editor.getAssetEffects();
   const isText = object instanceof Text;
-  const isAsset = object.OpenSketchType === "nih-asset" || object.OpenSketchType === "upload";
+  const isSvgPart = object.OpenSketchType === "svg-part";
+  const isAsset =
+    object.OpenSketchType === "nih-asset" ||
+    object.OpenSketchType === "import" ||
+    object.OpenSketchType === "upload";
   const width = (object.width ?? 0) * (object.scaleX ?? 1);
   const height = (object.height ?? 0) * (object.scaleY ?? 1);
   return (
     <>
+      {isAsset && object instanceof FabricGroup && (
+        <div className="svg-edit-hint">
+          <strong>Edit individual parts</strong>
+          <span>Double-click a visible region of the SVG.</span>
+        </div>
+      )}
       <InspectorSection title="Transform" open>
+        {isSvgPart && <p className="section-note">Position and size within the parent SVG.</p>}
         <div className="field-row two">
           <NumberField
             label="X"
@@ -238,19 +296,15 @@ function ObjectInspector({ object }: { object: FabricObject }) {
       </InspectorSection>
       {isText && (
         <InspectorSection title="Typography" open>
-          <label className="field">
-            Typeface
-            <select
-              value={object.fontFamily}
-              onChange={(event) => editor.setObject({ fontFamily: event.target.value })}
-            >
-              <option>Source Sans 3</option>
-              <option>Source Serif 4</option>
-              <option>STIX Two Text</option>
-              <option>Inter</option>
-              <option>Georgia</option>
-            </select>
-          </label>
+          <UiSelect
+            className="field"
+            label="Typeface"
+            value={object.fontFamily}
+            options={["Source Sans 3", "Source Serif 4", "STIX Two Text", "Inter", "Georgia"].map(
+              (font) => ({ value: font, label: font })
+            )}
+            onChange={(fontFamily) => editor.setObject({ fontFamily })}
+          />
           <div className="field-row two">
             <NumberField
               label="Size"
@@ -259,17 +313,17 @@ function ObjectInspector({ object }: { object: FabricObject }) {
               max={400}
               onChange={(fontSize) => editor.setObject({ fontSize })}
             />
-            <label className="mini-field">
-              Weight
-              <select
-                value={String(object.fontWeight)}
-                onChange={(event) => editor.setObject({ fontWeight: event.target.value })}
-              >
-                <option value="400">Regular</option>
-                <option value="600">Semibold</option>
-                <option value="700">Bold</option>
-              </select>
-            </label>
+            <UiSelect
+              className="mini-field"
+              label="Weight"
+              value={String(object.fontWeight)}
+              options={[
+                { value: "400", label: "Regular" },
+                { value: "600", label: "Semibold" },
+                { value: "700", label: "Bold" }
+              ]}
+              onChange={(fontWeight) => editor.setObject({ fontWeight })}
+            />
           </div>
           <div className="field-row two">
             <NumberField
@@ -402,12 +456,12 @@ function ObjectInspector({ object }: { object: FabricObject }) {
         {palette.length > 0 && (
           <div className="palette">
             <div className="palette-title">
-              <span>Asset palette</span>
+              <span>{isSvgPart ? "Part colors" : "Asset palette"}</span>
               <button onClick={editor.resetColors}>Reset</button>
             </div>
             <div className="swatches">
-              {palette.map((color) => (
-                <label key={color} title={`Replace ${color}`}>
+              {palette.map((color, index) => (
+                <label key={`${object.objectId ?? "object"}-${index}`} title={`Replace ${color}`}>
                   <input
                     type="color"
                     value={normalizeHex(color)}
@@ -523,34 +577,58 @@ function ObjectInspector({ object }: { object: FabricObject }) {
           <button onClick={() => void editor.duplicateSelection()}>
             <Copy size={15} /> Duplicate
           </button>
-          <button
-            onClick={editor.selection.length > 1 ? editor.groupSelection : editor.ungroupSelection}
-          >
-            {object instanceof FabricGroup ? <Ungroup size={15} /> : <Group size={15} />}
-            {object instanceof FabricGroup ? "Ungroup" : "Group"}
-          </button>
-          <button
-            onClick={() =>
-              editor.setObject({
-                selectable: object.selectable === false,
-                evented: object.evented === false
-              })
-            }
-          >
-            {object.selectable === false ? <Unlock size={15} /> : <Lock size={15} />}
-            {object.selectable === false ? "Unlock" : "Lock"}
-          </button>
-          <button onClick={() => editor.setObject({ visible: object.visible === false })}>
-            {object.visible === false ? <Eye size={15} /> : <EyeOff size={15} />}
-            {object.visible === false ? "Show" : "Hide"}
-          </button>
+          {isSvgPart ? (
+            <button onClick={editor.selectParentAsset}>
+              <CornerUpLeft size={15} /> Done editing
+            </button>
+          ) : (
+            <>
+              <button
+                onClick={
+                  editor.selection.length > 1 ? editor.groupSelection : editor.ungroupSelection
+                }
+              >
+                {object instanceof FabricGroup ? <Ungroup size={15} /> : <Group size={15} />}
+                {object instanceof FabricGroup ? "Ungroup" : "Group"}
+              </button>
+              <button
+                onClick={() =>
+                  editor.setObject({
+                    selectable: object.selectable === false,
+                    evented: object.evented === false
+                  })
+                }
+              >
+                {object.selectable === false ? <Unlock size={15} /> : <Lock size={15} />}
+                {object.selectable === false ? "Unlock" : "Lock"}
+              </button>
+              <button onClick={() => editor.setObject({ visible: object.visible === false })}>
+                {object.visible === false ? <Eye size={15} /> : <EyeOff size={15} />}
+                {object.visible === false ? "Show" : "Hide"}
+              </button>
+            </>
+          )}
           <button className="danger span-two" onClick={editor.deleteSelection}>
-            <Trash2 size={15} /> Delete object
+            <Trash2 size={15} /> Delete {isSvgPart ? "part" : "object"}
           </button>
         </div>
       </InspectorSection>
     </>
   );
+}
+
+function svgPartParent(object: FabricObject): FabricGroup | null {
+  for (let parent = object.group; parent; parent = parent.group) {
+    if (
+      parent instanceof FabricGroup &&
+      (parent.OpenSketchType === "nih-asset" ||
+        parent.OpenSketchType === "import" ||
+        parent.OpenSketchType === "upload")
+    ) {
+      return parent;
+    }
+  }
+  return null;
 }
 
 function LayersPanel() {
@@ -687,16 +765,16 @@ function ConnectorSelect<
   onChange: (value: T) => void;
 }) {
   return (
-    <label className="field">
-      {label}
-      <select value={value} onChange={(event) => onChange(event.target.value as T)}>
-        {values.map((item) => (
-          <option key={item} value={item}>
-            {item.replace("-", " ")}
-          </option>
-        ))}
-      </select>
-    </label>
+    <UiSelect
+      className="field"
+      label={label}
+      value={value}
+      options={values.map((item) => ({
+        value: item,
+        label: item.replaceAll("-", " ")
+      }))}
+      onChange={onChange}
+    />
   );
 }
 

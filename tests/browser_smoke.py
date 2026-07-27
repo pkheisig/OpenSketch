@@ -30,15 +30,21 @@ with sync_playwright() as playwright:
 
     page.goto(BASE_URL)
     page.wait_for_load_state("networkidle")
-    page.get_by_role("heading", name="New figure").wait_for()
+    page.get_by_role("button", name="New figure").wait_for()
     page.screenshot(path=SCREENSHOTS / "home.png", full_page=True)
 
-    page.get_by_role("button", name="Create blank figure").click()
+    page.get_by_role("button", name="New figure").click()
     page.get_by_label("OpenSketch figure artboard").wait_for()
     page.get_by_role("tab", name="Shapes", exact=True).click()
     page.get_by_role("button", name="Rectangle").click()
+    artboard = page.locator(".artboard-stage").bounding_box()
+    assert artboard is not None
+    page.mouse.click(
+        artboard["x"] + artboard["width"] / 2,
+        artboard["y"] + artboard["height"] / 2,
+    )
     page.get_by_text("rectangle", exact=True).last.wait_for()
-    page.get_by_text("Saving…").wait_for(timeout=5_000)
+    assert page.locator(".save-state").count() == 0
     page.screenshot(path=SCREENSHOTS / "editor.png", full_page=True)
 
     with page.expect_download() as download_info:
@@ -46,7 +52,6 @@ with sync_playwright() as playwright:
         page.get_by_role("button", name="Export SVG").click()
     assert download_info.value.suggested_filename.endswith(".svg")
 
-    page.get_by_text("Saved locally").wait_for(timeout=5_000)
     page.get_by_role("button", name="Back to projects").click()
     try:
         page.get_by_role("heading", name="Projects").wait_for(timeout=5_000)

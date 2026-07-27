@@ -12,16 +12,17 @@ The browser owns all application behavior and state:
 - A bounded 120-snapshot history provides undo and redo.
 - Meaningful scene changes debounce into Dexie/IndexedDB after 500 ms.
 - Canvas settings live in the project record.
-- Asset favorites and recent selections live in `localStorage`.
-- User uploads are stored as data URLs inside the project.
+- Asset favorites, recent selections, and project-scoped viewport focal points
+  live in `localStorage`.
+- Imported media is stored as data URLs inside the project.
 - `.OpenSketch` is versioned JSON and passes through an explicit migration gate.
 - SVG, PNG, and PDF exports are calculated and generated locally.
 - Direct project-folder writes use the File System Access API when available;
-  upload/download paths remain the cross-browser fallback.
+  file-picker and download paths remain the cross-browser fallback.
 
 The production content security policy limits fetches to the same site origin.
 The browser receives only static HTML, JavaScript, CSS, fonts, and bundled
-artwork. There are no project routes, accounts, telemetry endpoints, or upload
+artwork. There are no project routes, accounts, telemetry endpoints, or media-transfer
 services.
 
 ## Source layout
@@ -39,9 +40,21 @@ Pure geometry and color transforms live in
 connector construction and Manhattan route search. Attached connectors are
 serialized Fabric groups carrying versioned bindings to stable object IDs.
 
-`templates/scientificTemplates.ts` creates starter projects from the same Fabric
-objects and connector bindings used by the live editor. Templates are not
-flattened images and do not introduce another document format.
+## SVG scene model
+
+Multi-element built-in and imported SVGs are serialized as Fabric groups.
+Their child primitives receive stable IDs and retain their source fills,
+strokes, gradients, blend modes, and transforms. A normal selection operates on
+the complete group. Per-pixel double-click hit testing selects the innermost
+painted child under the pointer so the inspector can edit that part without
+ungrouping the asset. Child edits remain nested in the parent group and
+therefore survive history, IndexedDB saves, `.OpenSketch` round-trips, and
+vector export.
+
+The editable boundary follows the source SVG structure. A compound `<path>` is
+one source element even if it draws several disconnected regions; OpenSketch
+does not split its geometry heuristically because doing so would alter the
+source artwork.
 
 `scripts/assets` is maintainer-only Node code. It is deliberately excluded from
 the browser bundle and normal production build.
@@ -61,9 +74,13 @@ deployment workflow.
 ## Persistence contract
 
 Project records include the format marker and version, project timestamps,
-canvas settings, serialized Fabric scene, embedded user uploads, and used
+canvas settings, serialized Fabric scene, embedded imported media, and used
 built-in asset IDs. Built-in artwork uses stable manifest IDs and is bundled
 with the application.
+
+The version-1 JSON key for imported media remains `uploads` solely for backward
+compatibility with existing `.OpenSketch` files; the interface and current code
+refer to the feature as importing media.
 
 Future format changes must add a migration in
 `packages/editor-core/src/migrations.ts` before increasing the format version.

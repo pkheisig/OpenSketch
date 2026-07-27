@@ -1,10 +1,19 @@
-import { useEffect, useMemo, useRef, useState, type DragEvent, type KeyboardEvent } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type DragEvent,
+  type KeyboardEvent
+} from "react";
 import { FixedSizeList as List, type ListChildComponentProps } from "react-window";
 import {
   ArrowRight,
   Box,
   Brackets,
   Circle,
+  FileInput,
   FileText,
   Heart,
   ImagePlus,
@@ -12,58 +21,112 @@ import {
   Minus,
   MessageSquare,
   MousePointer2,
+  PanelLeftClose,
+  PanelLeftOpen,
   Search,
   Shapes,
   Sparkles,
   Square,
   Type,
-  Upload,
   Waves,
   X
 } from "lucide-react";
-import { filterAssetFamilies, type AssetFamily, type AssetVariant } from "@workspace/editor-core";
+import {
+  filterAssetFamilies,
+  type AssetFamily,
+  type AssetVariant,
+  type ConnectorArrowhead,
+  type ConnectorLineStyle
+} from "@workspace/editor-core";
 import { ASSET_CATEGORIES, assetManifest } from "@/assets/manifest";
 import { useEditor } from "@/editor/EditorContext";
+import { UiSelect } from "@/components/UiSelect";
 import { useModalDialog } from "./useModalDialog";
+import { useSidebarHover } from "./useSidebarHover";
 
-type Tab = "assets" | "text" | "shapes" | "uploads";
+type Tab = "assets" | "text" | "shapes" | "imports";
 
-export function LeftSidebar() {
+export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const [tab, setTab] = useState<Tab>("assets");
+  const { hoverExpanded, show, scheduleHide, hideNow } = useSidebarHover(collapsed);
+  const editor = useEditor();
+  const expanded = !collapsed || hoverExpanded;
   return (
-    <aside className="left-sidebar">
-      <nav className="sidebar-tabs" aria-label="Insert tools" role="tablist">
-        {(
-          [
-            ["assets", Sparkles, "Assets"],
-            ["text", Type, "Text"],
-            ["shapes", Shapes, "Shapes"],
-            ["uploads", Upload, "Uploads"]
-          ] as const
-        ).map(([value, Icon, label]) => (
-          <button
-            key={value}
-            className={tab === value ? "active" : ""}
-            onClick={() => setTab(value)}
-            role="tab"
-            aria-selected={tab === value}
-            aria-controls={`insert-panel-${value}`}
-          >
-            <Icon size={17} />
-            {label}
-          </button>
-        ))}
-      </nav>
+    <aside
+      className={`left-sidebar ${collapsed ? "collapsed" : ""} ${
+        collapsed && hoverExpanded ? "hover-expanded" : ""
+      }`}
+      onPointerLeave={scheduleHide}
+    >
       <div
-        className="sidebar-content"
-        id={`insert-panel-${tab}`}
-        role="tabpanel"
-        aria-label={`${tab} tools`}
-      >
-        {tab === "assets" && <AssetsPanel />}
-        {tab === "text" && <TextPanel />}
-        {tab === "shapes" && <ShapesPanel />}
-        {tab === "uploads" && <UploadsPanel />}
+        className="sidebar-hover-trigger"
+        aria-hidden="true"
+        onPointerEnter={(event) => {
+          if (event.pointerType !== "touch") show();
+        }}
+      />
+      <div className="sidebar-rail" inert={expanded} aria-hidden={expanded}>
+        <button
+          className="sidebar-expand"
+          onClick={onToggle}
+          aria-label="Expand left sidebar"
+          title="Expand sidebar"
+        >
+          <PanelLeftOpen size={18} />
+        </button>
+      </div>
+      <div className="sidebar-expanded" inert={!expanded} aria-hidden={!expanded}>
+        <div className="sidebar-tabs-shell">
+          <nav className="sidebar-tabs" aria-label="Insert tools" role="tablist">
+            {(
+              [
+                ["assets", Sparkles, "Assets"],
+                ["text", Type, "Text"],
+                ["shapes", Shapes, "Shapes"],
+                ["imports", FileInput, "Imports"]
+              ] as const
+            ).map(([value, Icon, label]) => (
+              <button
+                key={value}
+                className={tab === value ? "active" : ""}
+                onClick={() => {
+                  setTab(value);
+                  editor.setCreationTool(null);
+                }}
+                role="tab"
+                aria-label={label}
+                aria-selected={tab === value}
+                aria-controls={`insert-panel-${value}`}
+                title={label}
+              >
+                <Icon size={19} aria-hidden="true" />
+              </button>
+            ))}
+          </nav>
+          <button
+            className="sidebar-collapse"
+            onClick={() => {
+              hideNow();
+              onToggle();
+            }}
+            aria-label={collapsed ? "Keep left sidebar open" : "Minimize left sidebar"}
+            title={collapsed ? "Keep sidebar open" : "Minimize sidebar"}
+          >
+            {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
+          </button>
+        </div>
+        <div
+          key={tab}
+          className={`sidebar-content sidebar-content-${tab}`}
+          id={`insert-panel-${tab}`}
+          role="tabpanel"
+          aria-label={`${tab} tools`}
+        >
+          {tab === "assets" && <AssetsPanel />}
+          {tab === "text" && <TextPanel />}
+          {tab === "shapes" && <ShapesPanel />}
+          {tab === "imports" && <ImportsPanel />}
+        </div>
       </div>
     </aside>
   );
@@ -74,7 +137,6 @@ function AssetsPanel() {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [category, setCategory] = useState("All");
-  const [showFavorites, setShowFavorites] = useState(false);
   const [variants, setVariants] = useState<Record<string, string>>({});
   const [favorites, setFavorites] = useState<Set<string>>(
     () => new Set(JSON.parse(localStorage.getItem("OpenSketch:favorites") ?? "[]") as string[])
@@ -84,16 +146,36 @@ function AssetsPanel() {
   );
   const [info, setInfo] = useState<AssetFamily | null>(null);
   const [assetError, setAssetError] = useState("");
+  const [assetListHeight, setAssetListHeight] = useState(0);
   const assetListRef = useRef<HTMLDivElement>(null);
   const infoRef = useModalDialog(Boolean(info), () => setInfo(null));
   const families = useMemo(() => {
     const matches = filterAssetFamilies(assetManifest.families, debouncedQuery, category);
-    return showFavorites ? matches.filter((family) => favorites.has(family.familyId)) : matches;
-  }, [category, debouncedQuery, favorites, showFavorites]);
+    return matches
+      .map((family, index) => ({ family, index }))
+      .sort(
+        (left, right) =>
+          Number(favorites.has(right.family.familyId)) -
+            Number(favorites.has(left.family.familyId)) || left.index - right.index
+      )
+      .map(({ family }) => family);
+  }, [category, debouncedQuery, favorites]);
   useEffect(() => {
     const timeout = window.setTimeout(() => setDebouncedQuery(query), 160);
     return () => window.clearTimeout(timeout);
   }, [query]);
+  useLayoutEffect(() => {
+    const list = assetListRef.current;
+    if (!list) return;
+    const updateHeight = () => {
+      const next = Math.max(1, Math.floor(list.getBoundingClientRect().height));
+      setAssetListHeight((current) => (current === next ? current : next));
+    };
+    updateHeight();
+    const observer = new ResizeObserver(updateHeight);
+    observer.observe(list);
+    return () => observer.disconnect();
+  }, [families.length]);
   const rows = Math.ceil(families.length / 2);
   const selectedVariant = (family: AssetFamily) =>
     family.variants.find((variant) => variant.id === variants[family.familyId]) ??
@@ -162,13 +244,11 @@ function AssetsPanel() {
   };
 
   return (
-    <>
+    <div className="assets-panel">
       <div className="panel-heading">
         <div>
-          <p className="eyebrow">NIH BIOART SOURCE</p>
           <h2>Illustration library</h2>
         </div>
-        <span className="count-badge">{assetManifest.families.length}</span>
       </div>
       <label className="search-box">
         <Search size={16} />
@@ -188,26 +268,11 @@ function AssetsPanel() {
           <button
             key={item}
             className={category === item ? "active" : ""}
-            onClick={() => {
-              setCategory(item);
-              setShowFavorites(false);
-            }}
+            onClick={() => setCategory(item)}
           >
             {item}
           </button>
         ))}
-      </div>
-      <div className="asset-results-meta">
-        <span>{families.length} families</span>
-        {favorites.size > 0 && (
-          <button
-            className={showFavorites ? "active" : ""}
-            aria-pressed={showFavorites}
-            onClick={() => setShowFavorites((current) => !current)}
-          >
-            <Heart size={12} fill="currentColor" /> {favorites.size} favorites
-          </button>
-        )}
       </div>
       {assetError ? (
         <p className="panel-error" role="alert">
@@ -231,12 +296,21 @@ function AssetsPanel() {
       {families.length ? (
         <div
           ref={assetListRef}
+          className="asset-list-shell"
           onKeyDown={navigateAssets}
           aria-label="NIH BioArt illustration families"
         >
-          <List className="asset-list" height={560} itemCount={rows} itemSize={184} width="100%">
-            {Row}
-          </List>
+          {assetListHeight > 0 && (
+            <List
+              className="asset-list"
+              height={assetListHeight}
+              itemCount={rows}
+              itemSize={184}
+              width="100%"
+            >
+              {Row}
+            </List>
+          )}
         </div>
       ) : assetManifest.families.length === 0 ? (
         <div className="empty-library">
@@ -310,7 +384,7 @@ function AssetsPanel() {
           </section>
         </div>
       )}
-    </>
+    </div>
   );
 }
 
@@ -352,13 +426,16 @@ function AssetCard({
       <div className="asset-card-copy">
         <strong title={family.title}>{family.title}</strong>
         {family.variants.length > 1 ? (
-          <select value={variant.id} onChange={(event) => onVariant(event.target.value)}>
-            {family.variants.map((item, index) => (
-              <option key={item.id} value={item.id}>
-                Variant {index + 1}
-              </option>
-            ))}
-          </select>
+          <UiSelect
+            className="asset-variant-select"
+            ariaLabel={`${family.title} variant`}
+            value={variant.id}
+            options={family.variants.map((item, index) => ({
+              value: item.id,
+              label: `Variant ${index + 1}`
+            }))}
+            onChange={onVariant}
+          />
         ) : (
           <small>{family.category}</small>
         )}
@@ -369,23 +446,41 @@ function AssetCard({
 
 function TextPanel() {
   const editor = useEditor();
+  const activate = (
+    kind: "point" | "box",
+    overrides: { fontSize?: number; fontWeight?: number } = {}
+  ) => editor.setCreationTool({ type: "text", kind, ...overrides });
+  const active = (kind: "point" | "box") =>
+    editor.creationTool?.type === "text" && editor.creationTool.kind === kind;
+  const updateTextDefaults = (properties: Partial<typeof editor.creationDefaults.text>) =>
+    editor.setCreationDefaults({
+      ...editor.creationDefaults,
+      text: { ...editor.creationDefaults.text, ...properties }
+    });
   return (
     <>
       <div className="panel-heading">
         <div>
-          <p className="eyebrow">ANNOTATE</p>
           <h2>Text</h2>
         </div>
       </div>
       <div className="insert-list">
-        <button onClick={() => editor.addText("point")}>
+        <button
+          className={active("point") ? "active" : ""}
+          aria-pressed={active("point")}
+          onClick={() => activate("point")}
+        >
           <Type size={22} />
           <span>
             <strong>Point text</strong>
             <small>Short labels and headings</small>
           </span>
         </button>
-        <button onClick={() => editor.addText("box")}>
+        <button
+          className={active("box") ? "active" : ""}
+          aria-pressed={active("box")}
+          onClick={() => activate("box")}
+        >
           <FileText size={22} />
           <span>
             <strong>Text box</strong>
@@ -395,25 +490,87 @@ function TextPanel() {
       </div>
       <p className="panel-kicker">TYPOGRAPHIC SCALE</p>
       <div className="type-specimens">
-        <button onClick={() => editor.addText("point")}>
+        <button onClick={() => activate("point", { fontSize: 54, fontWeight: 600 })}>
           <span className="type-display">Figure title</span>
           <small>54 px · Semibold</small>
         </button>
-        <button onClick={() => editor.addText("point")}>
+        <button onClick={() => activate("point", { fontSize: 32, fontWeight: 600 })}>
           <span className="type-section">Section label</span>
           <small>32 px · Semibold</small>
         </button>
-        <button onClick={() => editor.addText("box")}>
+        <button onClick={() => activate("box", { fontSize: 20, fontWeight: 400 })}>
           <span className="type-body">Body annotation for explanatory detail.</span>
           <small>20 px · Regular</small>
         </button>
       </div>
+      <details className="creation-defaults">
+        <summary>New text defaults</summary>
+        <div className="creation-defaults-body">
+          <label className="creation-color-field">
+            Color
+            <span>
+              <input
+                aria-label="Default text color"
+                type="color"
+                value={editor.creationDefaults.text.color}
+                onChange={(event) => updateTextDefaults({ color: event.target.value })}
+              />
+              {editor.creationDefaults.text.color}
+            </span>
+          </label>
+          <UiSelect
+            className="field"
+            label="Typeface"
+            value={editor.creationDefaults.text.fontFamily}
+            options={["Source Sans 3", "Source Serif 4", "STIX Two Text", "Inter", "Georgia"].map(
+              (font) => ({ value: font, label: font })
+            )}
+            onChange={(fontFamily) => updateTextDefaults({ fontFamily })}
+          />
+          <div className="creation-default-grid">
+            <label>
+              Size
+              <input
+                aria-label="Default text size"
+                type="number"
+                min="6"
+                max="400"
+                value={editor.creationDefaults.text.fontSize}
+                onChange={(event) => updateTextDefaults({ fontSize: Number(event.target.value) })}
+              />
+            </label>
+            <UiSelect
+              className="mini-field"
+              label="Weight"
+              value={String(editor.creationDefaults.text.fontWeight)}
+              options={[
+                { value: "400", label: "Regular" },
+                { value: "600", label: "Semibold" },
+                { value: "700", label: "Bold" }
+              ]}
+              onChange={(fontWeight) => updateTextDefaults({ fontWeight: Number(fontWeight) })}
+            />
+          </div>
+        </div>
+      </details>
     </>
   );
 }
 
 function ShapesPanel() {
   const editor = useEditor();
+  const active = (kind: (typeof shapes)[number][0]) =>
+    editor.creationTool?.type === "shape" && editor.creationTool.kind === kind;
+  const updateShapeDefaults = (properties: Partial<typeof editor.creationDefaults.shape>) =>
+    editor.setCreationDefaults({
+      ...editor.creationDefaults,
+      shape: { ...editor.creationDefaults.shape, ...properties }
+    });
+  const updateLineDefaults = (properties: Partial<typeof editor.creationDefaults.line>) =>
+    editor.setCreationDefaults({
+      ...editor.creationDefaults,
+      line: { ...editor.creationDefaults.line, ...properties }
+    });
   const shapes = [
     ["rectangle", Square, "Rectangle"],
     ["rounded-rectangle", Box, "Rounded"],
@@ -433,18 +590,117 @@ function ShapesPanel() {
     <>
       <div className="panel-heading">
         <div>
-          <p className="eyebrow">DIAGRAM TOOLS</p>
           <h2>Shapes & connectors</h2>
         </div>
       </div>
       <div className="shape-grid">
         {shapes.map(([kind, Icon, label]) => (
-          <button key={kind} onClick={() => editor.addShape(kind)}>
+          <button
+            key={kind}
+            className={active(kind) ? "active" : ""}
+            aria-pressed={active(kind)}
+            onClick={() => editor.setCreationTool({ type: "shape", kind })}
+          >
             <Icon size={25} />
             <span>{label}</span>
           </button>
         ))}
       </div>
+      <details className="creation-defaults">
+        <summary>New shape defaults</summary>
+        <div className="creation-defaults-body">
+          <div className="creation-default-grid">
+            <label className="creation-color-field">
+              Fill
+              <span>
+                <input
+                  aria-label="Default shape fill"
+                  type="color"
+                  value={editor.creationDefaults.shape.fill}
+                  onChange={(event) => updateShapeDefaults({ fill: event.target.value })}
+                />
+              </span>
+            </label>
+            <label className="creation-color-field">
+              Outline
+              <span>
+                <input
+                  aria-label="Default shape outline"
+                  type="color"
+                  value={editor.creationDefaults.shape.stroke}
+                  onChange={(event) => updateShapeDefaults({ stroke: event.target.value })}
+                />
+              </span>
+            </label>
+          </div>
+          <label className="creation-number-field">
+            Outline weight
+            <input
+              aria-label="Default shape outline weight"
+              type="number"
+              min="0"
+              max="40"
+              value={editor.creationDefaults.shape.strokeWidth}
+              onChange={(event) => updateShapeDefaults({ strokeWidth: Number(event.target.value) })}
+            />
+          </label>
+        </div>
+      </details>
+      <details className="creation-defaults" open>
+        <summary>New line & arrow defaults</summary>
+        <div className="creation-defaults-body">
+          <div className="creation-default-grid">
+            <label className="creation-color-field">
+              Color
+              <span>
+                <input
+                  aria-label="Default line color"
+                  type="color"
+                  value={editor.creationDefaults.line.color}
+                  onChange={(event) => updateLineDefaults({ color: event.target.value })}
+                />
+                {editor.creationDefaults.line.color}
+              </span>
+            </label>
+            <label className="creation-number-field">
+              Thickness
+              <input
+                aria-label="Default line thickness"
+                type="number"
+                min="1"
+                max="40"
+                value={editor.creationDefaults.line.width}
+                onChange={(event) => updateLineDefaults({ width: Number(event.target.value) })}
+              />
+            </label>
+          </div>
+          <UiSelect
+            className="field"
+            label="Line style"
+            value={editor.creationDefaults.line.lineStyle}
+            options={[
+              { value: "solid", label: "Solid" },
+              { value: "dashed", label: "Dashed" },
+              { value: "dotted", label: "Dotted" }
+            ]}
+            onChange={(lineStyle) =>
+              updateLineDefaults({ lineStyle: lineStyle as ConnectorLineStyle })
+            }
+          />
+          <div className="creation-default-grid">
+            <CreationArrowheadSelect
+              label="Start head"
+              value={editor.creationDefaults.line.startArrowhead}
+              onChange={(startArrowhead) => updateLineDefaults({ startArrowhead })}
+            />
+            <CreationArrowheadSelect
+              label="End head"
+              value={editor.creationDefaults.line.endArrowhead}
+              onChange={(endArrowhead) => updateLineDefaults({ endArrowhead })}
+            />
+          </div>
+        </div>
+      </details>
       <div className="panel-tip">
         <MousePointer2 size={16} />
         <p>
@@ -457,7 +713,32 @@ function ShapesPanel() {
   );
 }
 
-function UploadsPanel() {
+function CreationArrowheadSelect({
+  label,
+  value,
+  onChange
+}: {
+  label: string;
+  value: ConnectorArrowhead;
+  onChange: (value: ConnectorArrowhead) => void;
+}) {
+  return (
+    <UiSelect
+      className="mini-field"
+      label={label}
+      value={value}
+      options={[
+        { value: "none", label: "None" },
+        { value: "triangle", label: "Triangle" },
+        { value: "open", label: "Open" },
+        { value: "circle", label: "Circle" }
+      ]}
+      onChange={(next) => onChange(next as ConnectorArrowhead)}
+    />
+  );
+}
+
+function ImportsPanel() {
   const editor = useEditor();
   const input = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
@@ -465,11 +746,10 @@ function UploadsPanel() {
     <>
       <div className="panel-heading">
         <div>
-          <p className="eyebrow">LOCAL MEDIA</p>
-          <h2>Uploads</h2>
+          <h2>Imports</h2>
         </div>
       </div>
-      <button className="upload-dropzone" onClick={() => input.current?.click()}>
+      <button className="import-dropzone" onClick={() => input.current?.click()}>
         <span>
           <ImagePlus size={24} />
         </span>
@@ -486,7 +766,7 @@ function UploadsPanel() {
           if (file) {
             setError("");
             void editor
-              .addUpload(file)
+              .importMedia(file)
               .catch((reason) => setError(String(reason).replace(/^Error:\s*/, "")));
           }
           event.currentTarget.value = "";
@@ -500,8 +780,8 @@ function UploadsPanel() {
       <div className="security-note">
         <Info size={16} />
         <p>
-          Uploaded SVGs are sanitized before insertion. External images, fonts, scripts, and network
-          references are removed.
+          Imported SVGs are sanitized locally before insertion. External images, fonts, scripts, and
+          network references are removed.
         </p>
       </div>
     </>

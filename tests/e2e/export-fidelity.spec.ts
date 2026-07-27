@@ -1,9 +1,14 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 
 const fixturePath = path.resolve("tests/fixtures/export-fidelity.svg");
+
+async function selectUiOption(page: Page, label: string, option: string) {
+  await page.getByRole("combobox", { name: label }).click();
+  await page.getByRole("option", { name: option, exact: true }).click();
+}
 
 function hexToCssRgb(hex: string): string {
   const value = Number.parseInt(hex.slice(1), 16);
@@ -14,18 +19,27 @@ test("preserves editable color, gradients, clipping, fonts, and raster dimension
   page
 }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Create blank figure" }).click();
-  await page.getByRole("tab", { name: "Uploads", exact: true }).click();
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Imports", exact: true }).click();
   await page.locator('input[type="file"][accept*="image/svg+xml"]').setInputFiles(fixturePath);
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await page.getByRole("button", { name: "Untitled figure" }).click();
   await expect(page.locator(".layers-title small")).toHaveText("1");
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await page.getByRole("button", { name: "Rectangle", exact: true }).click();
+  const canvasBounds = await page.locator(".artboard-stage").boundingBox();
+  if (!canvasBounds) throw new Error("Artboard is not visible.");
+  await page.mouse.click(
+    canvasBounds.x + canvasBounds.width * 0.68,
+    canvasBounds.y + canvasBounds.height * 0.65
+  );
   await expect(page.locator(".layers-title small")).toHaveText("2");
 
   const swatches = page.locator(".palette input[type=color]");
   await expect(swatches.first()).toBeVisible();
   const originalColor = await swatches.first().inputValue();
   const replacement = originalColor.toLowerCase() === "#c2185b" ? "#00796b" : "#c2185b";
+  const activeSwatch = await swatches.first().elementHandle();
   await swatches.first().evaluate((input, color) => {
     const colorInput = input as HTMLInputElement;
     const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
@@ -34,7 +48,8 @@ test("preserves editable color, gradients, clipping, fonts, and raster dimension
     colorInput.dispatchEvent(new Event("change", { bubbles: true }));
   }, replacement);
   await expect(swatches.first()).toHaveValue(replacement);
-  await expect(page.getByText("Saved locally")).toBeVisible();
+  expect(await activeSwatch?.evaluate((input) => input.isConnected)).toBe(true);
+  await expect(page.locator(".save-state")).toHaveCount(0);
 
   await page.getByRole("button", { name: "Export", exact: true }).click();
   const svgDownloadPromise = page.waitForEvent("download");
@@ -50,8 +65,8 @@ test("preserves editable color, gradients, clipping, fonts, and raster dimension
 
   await page.getByRole("button", { name: "Export", exact: true }).click();
   await page.getByRole("tab", { name: /PNG/ }).click();
-  await page.getByLabel("Pixel scaling").selectOption("1");
-  await page.getByLabel("Output DPI").selectOption("150");
+  await selectUiOption(page, "Pixel scaling", "1× · screen");
+  await selectUiOption(page, "Output DPI", "150 DPI");
   const pngDownloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export PNG" }).click();
   const pngPath = await (await pngDownloadPromise).path();

@@ -13,9 +13,9 @@ const URL_ATTRIBUTES = new Set([
   "clip-path"
 ]);
 
-export function sanitizeUploadedSvg(
+export function sanitizeImportedSvg(
   source: string,
-  prefix = `upload-${crypto.randomUUID()}`
+  prefix = `import-${crypto.randomUUID()}`
 ): string {
   if (EXECUTABLE.test(source) || /<!DOCTYPE|<!ENTITY/i.test(source)) {
     throw new Error("The SVG contains external or executable content.");
@@ -49,7 +49,7 @@ export function sanitizeUploadedSvg(
   const document = new DOMParser().parseFromString(clean, "image/svg+xml");
   const svg = document.documentElement;
   if (svg.localName !== "svg" || document.querySelector("parsererror")) {
-    throw new Error("The uploaded file is not a valid SVG.");
+    throw new Error("The imported file is not a valid SVG.");
   }
   const mapping = new Map<string, string>();
   svg.querySelectorAll("[id]").forEach((element) => {
@@ -112,7 +112,7 @@ export function sanitizeUploadedSvg(
     }
   });
   if (!svg.getAttribute("viewBox")) {
-    throw new Error("The uploaded SVG must define a viewBox.");
+    throw new Error("The imported SVG must define a viewBox.");
   }
   return new XMLSerializer().serializeToString(svg);
 }

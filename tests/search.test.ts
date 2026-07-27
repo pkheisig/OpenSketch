@@ -56,4 +56,40 @@ describe("asset search", () => {
     };
     expect(filterAssetFamilies([cd80, tCell], "T cell")).toEqual([tCell]);
   });
+
+  it("prioritizes biochemical and laboratory assets in the unfiltered All tab", () => {
+    const cell = {
+      ...antibody,
+      familyId: "cell",
+      title: "Dendritic Cell",
+      category: "Cells and organelles"
+    };
+    const dna = {
+      ...antibody,
+      familyId: "dna",
+      title: "DNA Helix",
+      description: "Genomic DNA molecule",
+      category: "Other"
+    };
+    const plate = {
+      ...antibody,
+      familyId: "plate",
+      title: "96 Well Plate",
+      category: "Equipment"
+    };
+    const animal = {
+      ...antibody,
+      familyId: "animal",
+      title: "Wood Mouse",
+      category: "Animals"
+    };
+
+    expect(filterAssetFamilies([animal, plate, dna, antibody, cell], "", "All")).toEqual([
+      cell,
+      antibody,
+      dna,
+      plate,
+      animal
+    ]);
+  });
 });

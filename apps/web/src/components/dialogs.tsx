@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Download, FileImage, FileText, FileType2, X } from "lucide-react";
 import { useEditor } from "@/editor/EditorContext";
+import { UiSelect } from "@/components/UiSelect";
 import { useModalDialog } from "./useModalDialog";
 
 export function ExportDialog({ onClose }: { onClose: () => void }) {
@@ -91,36 +92,33 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
           </label>
         ) : (
           <>
-            <label className="field">
-              Pixel scaling
-              <select
-                value={scale}
-                onChange={(event) => {
-                  setScale(Number(event.target.value));
-                  setCustomMultiplier(null);
-                }}
-              >
-                <option value={1}>1× · screen</option>
-                <option value={2}>2× · high resolution</option>
-                <option value={4}>4× · publication</option>
-              </select>
-            </label>
-            <label className="field">
-              Output DPI
-              <select
-                value={dpi}
-                onChange={(event) => {
-                  setDpi(Number(event.target.value));
-                  setCustomMultiplier(null);
-                }}
-              >
-                {[72, 150, 300, 600].map((value) => (
-                  <option key={value} value={value}>
-                    {value} DPI
-                  </option>
-                ))}
-              </select>
-            </label>
+            <UiSelect
+              className="field"
+              label="Pixel scaling"
+              value={scale}
+              options={[
+                { value: 1, label: "1× · screen" },
+                { value: 2, label: "2× · high resolution" },
+                { value: 4, label: "4× · publication" }
+              ]}
+              onChange={(scale) => {
+                setScale(scale);
+                setCustomMultiplier(null);
+              }}
+            />
+            <UiSelect
+              className="field"
+              label="Output DPI"
+              value={dpi}
+              options={[72, 150, 300, 600].map((value) => ({
+                value,
+                label: `${value} DPI`
+              }))}
+              onChange={(dpi) => {
+                setDpi(dpi);
+                setCustomMultiplier(null);
+              }}
+            />
             <div className="field-row two">
               <label className="field">
                 Pixel width
