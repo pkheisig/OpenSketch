@@ -15,7 +15,6 @@ import {
   ArrowUpToLine,
   ChevronDown,
   Copy,
-  Grid3X3,
   Group as GroupIcon,
   Maximize2,
   Minus,
@@ -24,14 +23,22 @@ import {
   MousePointer2,
   Plus,
   RotateCcw,
+  Ruler,
+  Save,
   Trash2,
   Ungroup
 } from "lucide-react";
-import { ActiveSelection, type FabricObject } from "fabric";
+import { ActiveSelection, Group as FabricGroup, type FabricObject } from "fabric";
 import { assetManifest } from "@/assets/manifest";
 import { useEditor } from "@/editor/EditorContext";
-import { wheelZoomDelta } from "@/editor/zoom";
+import {
+  captureZoomAnchor,
+  type ZoomAnchor,
+  wheelZoomDelta,
+  zoomAnchorScrollDelta
+} from "@/editor/zoom";
 import { isLinearCreationTool } from "@/editor/creation";
+import { elementStyleKey } from "@/editor/elementStyles";
 import type { Point } from "@/editor/geometry";
 
 interface StoredViewport {
@@ -39,6 +46,8 @@ interface StoredViewport {
   focusX: number;
   focusY: number;
 }
+
+const RULER_VISIBILITY_KEY = "OpenSketch:ruler-visible";
 
 interface ContextMenuAction {
   label: string;
@@ -77,17 +86,21 @@ function CanvasContextMenu({
   }, [x, y]);
 
   useEffect(() => {
+    const openedAt = performance.now();
     const closeOutside = (event: globalThis.PointerEvent) => {
       if (!menuRef.current?.contains(event.target as Node)) onClose();
     };
-    const closeForViewportChange = () => onClose();
+    const closeForResize = () => onClose();
+    const closeForScroll = () => {
+      if (performance.now() - openedAt > 150) onClose();
+    };
     document.addEventListener("pointerdown", closeOutside);
-    window.addEventListener("resize", closeForViewportChange);
-    window.addEventListener("scroll", closeForViewportChange, true);
+    window.addEventListener("resize", closeForResize);
+    window.addEventListener("scroll", closeForScroll, true);
     return () => {
       document.removeEventListener("pointerdown", closeOutside);
-      window.removeEventListener("resize", closeForViewportChange);
-      window.removeEventListener("scroll", closeForViewportChange, true);
+      window.removeEventListener("resize", closeForResize);
+      window.removeEventListener("scroll", closeForScroll, true);
     };
   }, [onClose]);
 
@@ -198,7 +211,15 @@ export function CanvasWorkspace() {
   const zoomFrame = useRef<number | undefined>(undefined);
   const zoomSettleTimer = useRef<number | undefined>(undefined);
   const pendingZoom = useRef(zoom);
+  const pendingZoomAnchor = useRef<ZoomAnchor | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [rulerVisible, setRulerVisible] = useState(() => {
+    try {
+      return localStorage.getItem(RULER_VISIBILITY_KEY) !== "false";
+    } catch {
+      return true;
+    }
+  });
   const [panning, setPanning] = useState(false);
   const [marquee, setMarquee] = useState<{
     left: number;
@@ -402,15 +423,37 @@ export function CanvasWorkspace() {
   useEffect(() => {
     const host = scrollRef.current;
     if (!host) return;
+    const preserveZoomAnchor = (nextZoom: number) => {
+      const stage = stageRef.current;
+      const anchor = pendingZoomAnchor.current;
+      if (!stage || !anchor) return;
+      const delta = zoomAnchorScrollDelta(anchor, stage.getBoundingClientRect());
+      suppressViewportCaptureUntil.current = performance.now() + 80;
+      host.scrollLeft += delta.x;
+      host.scrollTop += delta.y;
+      viewportFocus.current = {
+        x: (host.scrollLeft + host.clientWidth / 2 - stage.offsetLeft) / nextZoom,
+        y: (host.scrollTop + host.clientHeight / 2 - stage.offsetTop) / nextZoom
+      };
+    };
     const commitPendingZoom = () => {
       window.cancelAnimationFrame(zoomFrame.current ?? 0);
       zoomFrame.current = undefined;
       setZoom(pendingZoom.current);
+      preserveZoomAnchor(pendingZoom.current);
     };
     const onWheel = (event: globalThis.WheelEvent) => {
       if (!event.ctrlKey && !event.metaKey) return;
       event.preventDefault();
       event.stopPropagation();
+      const stage = stageRef.current;
+      if (stage) {
+        pendingZoomAnchor.current = captureZoomAnchor(
+          event.clientX,
+          event.clientY,
+          stage.getBoundingClientRect()
+        );
+      }
       pendingZoom.current = Math.max(
         0.1,
         Math.min(4, pendingZoom.current + wheelZoomDelta(event.deltaY, event.deltaMode))
@@ -419,6 +462,7 @@ export function CanvasWorkspace() {
         zoomFrame.current = window.requestAnimationFrame(() => {
           zoomFrame.current = undefined;
           previewZoom(pendingZoom.current);
+          preserveZoomAnchor(pendingZoom.current);
         });
       }
       window.clearTimeout(zoomSettleTimer.current);
@@ -437,6 +481,7 @@ export function CanvasWorkspace() {
       host.removeEventListener("gesturechange", preventGestureZoom);
       window.cancelAnimationFrame(zoomFrame.current ?? 0);
       window.clearTimeout(zoomSettleTimer.current);
+      pendingZoomAnchor.current = null;
     };
   }, [previewZoom, setZoom]);
 
@@ -629,6 +674,18 @@ export function CanvasWorkspace() {
     });
   };
 
+  const toggleRuler = () => {
+    setRulerVisible((current) => {
+      const next = !current;
+      try {
+        localStorage.setItem(RULER_VISIBILITY_KEY, String(next));
+      } catch {
+        // The ruler can still be toggled for this session when storage is unavailable.
+      }
+      return next;
+    });
+  };
+
   const contextActions = (): ContextMenuAction[] => {
     const objects = contextMenu?.objects ?? [];
     if (objects.length === 0) {
@@ -649,9 +706,9 @@ export function CanvasWorkspace() {
           }
         },
         {
-          label: canvasSettings.grid ? "Hide grid" : "Show grid",
-          icon: <Grid3X3 size={15} />,
-          action: () => editor.setCanvasSettings({ grid: !canvasSettings.grid })
+          label: rulerVisible ? "Hide ruler" : "Show ruler",
+          icon: <Ruler size={15} />,
+          action: toggleRuler
         },
         {
           label: "Fit canvas",
@@ -661,12 +718,7 @@ export function CanvasWorkspace() {
       ];
     }
 
-    const type = objects[0]?.OpenSketchType ?? "";
-    const resettable =
-      objects.length === 1 &&
-      (type === "text" ||
-        type === "shape" ||
-        ["line", "arrow", "double-arrow", "curved-arrow"].includes(type));
+    const styleable = objects.length === 1 && Boolean(elementStyleKey(objects[0]));
     const actions: ContextMenuAction[] = [];
     if (objects.length > 1) {
       actions.push({
@@ -674,19 +726,26 @@ export function CanvasWorkspace() {
         icon: <GroupIcon size={15} />,
         action: editor.groupSelection
       });
-    } else if (type === "group") {
+    } else if (objects[0] instanceof FabricGroup) {
       actions.push({
         label: "Ungroup",
         icon: <Ungroup size={15} />,
         action: editor.ungroupSelection
       });
     }
-    if (resettable) {
-      actions.push({
-        label: "Reset to defaults",
-        icon: <RotateCcw size={15} />,
-        action: editor.resetSelectionToDefaults
-      });
+    if (styleable) {
+      actions.push(
+        {
+          label: "Save styling",
+          icon: <Save size={15} />,
+          action: editor.saveSelectionStyle
+        },
+        {
+          label: "Reset styling",
+          icon: <RotateCcw size={15} />,
+          action: editor.resetSelectionStyle
+        }
+      );
     }
     actions.push(
       {
@@ -731,7 +790,7 @@ export function CanvasWorkspace() {
       ref={workspaceRef}
       className={`canvas-workspace ${dragging ? "drop-active" : ""} ${
         editor.creationTool ? "is-creating" : ""
-      }`}
+      } ${rulerVisible ? "" : "ruler-hidden"}`}
       onDragOver={(event) => {
         if (event.dataTransfer.types.includes("application/x-scientific-asset")) {
           event.preventDefault();
@@ -744,16 +803,20 @@ export function CanvasWorkspace() {
       }}
       onDrop={onDrop}
     >
-      <div className="canvas-ruler ruler-horizontal">
-        {Array.from({ length: 13 }, (_, index) => (
-          <span key={index}>{index * 200}</span>
-        ))}
-      </div>
-      <div className="canvas-ruler ruler-vertical">
-        {Array.from({ length: 8 }, (_, index) => (
-          <span key={index}>{index * 200}</span>
-        ))}
-      </div>
+      {rulerVisible ? (
+        <>
+          <div className="canvas-ruler ruler-horizontal">
+            {Array.from({ length: 13 }, (_, index) => (
+              <span key={index}>{index * 200}</span>
+            ))}
+          </div>
+          <div className="canvas-ruler ruler-vertical">
+            {Array.from({ length: 8 }, (_, index) => (
+              <span key={index}>{index * 200}</span>
+            ))}
+          </div>
+        </>
+      ) : null}
       <div
         ref={scrollRef}
         className={`workspace-scroll ${panning ? "is-panning" : ""}`}
@@ -785,9 +848,7 @@ export function CanvasWorkspace() {
         >
           <div
             ref={stageRef}
-            className={`artboard-stage ${canvasSettings.grid ? "show-grid" : ""} ${
-              canvasSettings.transparent ? "transparent" : ""
-            }`}
+            className={`artboard-stage ${canvasSettings.transparent ? "transparent" : ""}`}
             style={{
               width: canvasSettings.width * zoom,
               height: canvasSettings.height * zoom
@@ -825,14 +886,6 @@ export function CanvasWorkspace() {
         </div>
       )}
       <div className="workspace-controls">
-        <button
-          className={canvasSettings.grid ? "active" : ""}
-          onClick={() => editor.setCanvasSettings({ grid: !canvasSettings.grid })}
-          aria-label="Toggle grid"
-        >
-          <Grid3X3 size={15} />
-        </button>
-        <span />
         <button onClick={() => setZoom(zoom - 0.1)} aria-label="Zoom out">
           <Minus size={14} />
         </button>

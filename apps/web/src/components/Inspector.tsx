@@ -38,7 +38,13 @@ import {
   type ConnectorRouting
 } from "@workspace/editor-core";
 import { Color, FabricObject, Group as FabricGroup, Text } from "fabric";
+import { assetManifest } from "@/assets/manifest";
+import {
+  ASSET_COLOR_PRESETS,
+  colorProfileForFamily
+} from "@/editor/assetColorPresets";
 import { useEditor } from "@/editor/EditorContext";
+import { TEXT_FONT_FAMILIES } from "@/editor/fonts";
 import { UiSelect } from "@/components/UiSelect";
 import { useSidebarHover } from "./useSidebarHover";
 
@@ -210,24 +216,19 @@ function CanvasInspector() {
 function ObjectInspector({ object }: { object: FabricObject }) {
   const editor = useEditor();
   const [aspectLocked, setAspectLocked] = useState(true);
-  const palette = editor.getPalette();
-  const effects = editor.getAssetEffects();
   const isText = object instanceof Text;
   const isSvgPart = object.OpenSketchType === "svg-part";
-  const isAsset =
-    object.OpenSketchType === "nih-asset" ||
-    object.OpenSketchType === "import" ||
-    object.OpenSketchType === "upload";
+  const assetFamily =
+    object instanceof FabricGroup && object.familyId
+      ? assetManifest.families.find((family) => family.familyId === object.familyId)
+      : undefined;
+  const colorProfile = assetFamily ? colorProfileForFamily(assetFamily) : undefined;
+  const canGroup = editor.selection.length > 1;
+  const canUngroup = !canGroup && object instanceof FabricGroup;
   const width = (object.width ?? 0) * (object.scaleX ?? 1);
   const height = (object.height ?? 0) * (object.scaleY ?? 1);
   return (
     <>
-      {isAsset && object instanceof FabricGroup && (
-        <div className="svg-edit-hint">
-          <strong>Edit individual parts</strong>
-          <span>Double-click a visible region of the SVG.</span>
-        </div>
-      )}
       <InspectorSection title="Transform" open>
         {isSvgPart && <p className="section-note">Position and size within the parent SVG.</p>}
         <div className="field-row two">
@@ -300,9 +301,7 @@ function ObjectInspector({ object }: { object: FabricObject }) {
             className="field"
             label="Typeface"
             value={object.fontFamily}
-            options={["Source Sans 3", "Source Serif 4", "STIX Two Text", "Inter", "Georgia"].map(
-              (font) => ({ value: font, label: font })
-            )}
+            options={TEXT_FONT_FAMILIES.map((font) => ({ value: font, label: font }))}
             onChange={(fontFamily) => editor.setObject({ fontFamily })}
           />
           <div className="field-row two">
@@ -453,59 +452,31 @@ function ObjectInspector({ object }: { object: FabricObject }) {
             onChange={(event) => editor.setObject({ opacity: Number(event.target.value) })}
           />
         </label>
-        {palette.length > 0 && (
-          <div className="palette">
-            <div className="palette-title">
-              <span>{isSvgPart ? "Part colors" : "Asset palette"}</span>
-              <button onClick={editor.resetColors}>Reset</button>
+        {colorProfile && (
+          <div className="color-presets">
+            <div className="color-presets-title">
+              <span>Color presets</span>
+              <button onClick={editor.resetColors}>Original</button>
             </div>
-            <div className="swatches">
-              {palette.map((color, index) => (
-                <label key={`${object.objectId ?? "object"}-${index}`} title={`Replace ${color}`}>
-                  <input
-                    type="color"
-                    value={normalizeHex(color)}
-                    onChange={(event) => editor.replaceColor(color, event.target.value)}
-                  />
-                  <span style={{ background: color }} />
-                </label>
+            <div className="color-preset-grid">
+              {ASSET_COLOR_PRESETS.map((preset) => (
+                <button
+                  key={preset.id}
+                  className={object.assetColorPreset === preset.id ? "active" : ""}
+                  onClick={() => editor.applyColorPreset(preset.id)}
+                  aria-label={`Apply ${preset.label} preset`}
+                  aria-pressed={object.assetColorPreset === preset.id}
+                  title={preset.label}
+                >
+                  <span className="color-preset-ramp" aria-hidden="true">
+                    {preset.ramps[colorProfile].map((color) => (
+                      <i key={color} style={{ background: color }} />
+                    ))}
+                  </span>
+                  <span>{preset.label}</span>
+                </button>
               ))}
             </div>
-          </div>
-        )}
-        {isAsset && (
-          <div className="asset-effects">
-            <div className="palette-title">
-              <span>Scientific color effects</span>
-              <button onClick={editor.resetColors}>Reset all</button>
-            </div>
-            <label className="color-field">
-              Tint
-              <span>
-                <input
-                  type="color"
-                  value={effects.tint}
-                  onChange={(event) => editor.setAssetEffects({ tint: event.target.value })}
-                />
-              </span>
-            </label>
-            <EffectRange
-              label="Tint strength"
-              value={effects.tintAmount}
-              onChange={(tintAmount) => editor.setAssetEffects({ tintAmount })}
-            />
-            <EffectRange
-              label="Saturation"
-              value={effects.saturation}
-              minimum={-1}
-              onChange={(saturation) => editor.setAssetEffects({ saturation })}
-            />
-            <EffectRange
-              label="Brightness"
-              value={effects.brightness}
-              minimum={-1}
-              onChange={(brightness) => editor.setAssetEffects({ brightness })}
-            />
           </div>
         )}
         {typeof object.fill === "string" && (
@@ -577,20 +548,21 @@ function ObjectInspector({ object }: { object: FabricObject }) {
           <button onClick={() => void editor.duplicateSelection()}>
             <Copy size={15} /> Duplicate
           </button>
-          {isSvgPart ? (
+          {canGroup ? (
+            <button onClick={editor.groupSelection}>
+              <Group size={15} /> Group
+            </button>
+          ) : isSvgPart ? (
             <button onClick={editor.selectParentAsset}>
               <CornerUpLeft size={15} /> Done editing
             </button>
           ) : (
             <>
-              <button
-                onClick={
-                  editor.selection.length > 1 ? editor.groupSelection : editor.ungroupSelection
-                }
-              >
-                {object instanceof FabricGroup ? <Ungroup size={15} /> : <Group size={15} />}
-                {object instanceof FabricGroup ? "Ungroup" : "Group"}
-              </button>
+              {canUngroup ? (
+                <button onClick={editor.ungroupSelection}>
+                  <Ungroup size={15} /> Ungroup
+                </button>
+              ) : null}
               <button
                 onClick={() =>
                   editor.setObject({
@@ -775,34 +747,6 @@ function ConnectorSelect<
       }))}
       onChange={onChange}
     />
-  );
-}
-
-function EffectRange({
-  label,
-  value,
-  minimum = 0,
-  onChange
-}: {
-  label: string;
-  value: number;
-  minimum?: number;
-  onChange: (value: number) => void;
-}) {
-  return (
-    <label className="range-field">
-      <span>
-        {label} <output>{Math.round(value * 100)}%</output>
-      </span>
-      <input
-        type="range"
-        min={minimum}
-        max="1"
-        step="0.01"
-        value={value}
-        onChange={(event) => onChange(Number(event.target.value))}
-      />
-    </label>
   );
 }
 

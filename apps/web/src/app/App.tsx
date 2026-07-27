@@ -1,15 +1,20 @@
 import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import { AlertTriangle, X } from "lucide-react";
-import type { ProjectRecord } from "@workspace/editor-core";
+import type { ProjectFolderRecord, ProjectRecord } from "@workspace/editor-core";
 import {
+  createProjectFolder,
   createProject,
   db,
+  deleteProjectFolder,
   duplicateProject,
+  listProjectFolders,
   listProjects,
+  moveProjectToFolder,
+  saveProjectFolder,
   saveProject
 } from "@/persistence/database";
 import { downloadProject, readProjectFile } from "@/persistence/portable";
-import { isCurrentVectorThumbnail } from "@/persistence/thumbnailFormat";
+import { isProjectThumbnailCurrent } from "@/persistence/thumbnailFormat";
 import { HomeScreen } from "@/components/HomeScreen";
 
 const EditorStudio = lazy(() =>
@@ -25,18 +30,18 @@ function historyProjectId() {
 
 export function App() {
   const [projects, setProjects] = useState<ProjectRecord[]>([]);
+  const [folders, setFolders] = useState<ProjectFolderRecord[]>([]);
   const [current, setCurrent] = useState<ProjectRecord | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const refresh = useCallback(async () => {
-    const stored = await listProjects();
+    const [stored, storedFolders] = await Promise.all([listProjects(), listProjectFolders()]);
     setProjects(stored);
-    const needsVectorPreview = stored.some((project) => {
-      const objects = project.objects.objects;
-      const hasObjects = Array.isArray(objects) && objects.length > 0;
-      return hasObjects && !isCurrentVectorThumbnail(project.thumbnail);
-    });
+    setFolders(storedFolders);
+    const needsVectorPreview = stored.some(
+      (project) => !isProjectThumbnailCurrent(project.thumbnail, project.updatedAt)
+    );
     if (!needsVectorPreview) return;
 
     const { upgradeProjectThumbnails } = await import("@/persistence/projectThumbnail");
@@ -148,7 +153,13 @@ export function App() {
       ) : (
         <HomeScreen
           projects={projects}
+          folders={folders}
           onNew={() => void newProject()}
+          onNewFolder={(name) => {
+            createProjectFolder(name)
+              .then(refresh)
+              .catch((reason) => setError(String(reason)));
+          }}
           onOpen={openProject}
           onDuplicate={(project) => {
             duplicateProject(project)
@@ -163,6 +174,38 @@ export function App() {
               .catch((reason) => setError(String(reason)));
           }}
           onExport={downloadProject}
+          onArchive={(project) => {
+            saveProject({ ...project, archivedAt: new Date().toISOString() })
+              .then(refresh)
+              .catch((reason) => setError(String(reason)));
+          }}
+          onRestore={(project) => {
+            const restored = { ...project };
+            delete restored.archivedAt;
+            saveProject(restored)
+              .then(refresh)
+              .catch((reason) => setError(String(reason)));
+          }}
+          onMoveProject={(project, folderId) => {
+            moveProjectToFolder(project, folderId)
+              .then(refresh)
+              .catch((reason) => setError(String(reason)));
+          }}
+          onRenameFolder={(folder) => {
+            const name = window.prompt("Rename folder", folder.name)?.trim();
+            if (!name || name === folder.name) return;
+            saveProjectFolder({ ...folder, name, updatedAt: new Date().toISOString() })
+              .then(refresh)
+              .catch((reason) => setError(String(reason)));
+          }}
+          onDeleteFolder={(folder) => {
+            if (!window.confirm(`Delete folder “${folder.name}”? Its projects will be kept.`)) {
+              return;
+            }
+            deleteProjectFolder(folder.id)
+              .then(refresh)
+              .catch((reason) => setError(String(reason)));
+          }}
           onRename={(project) => {
             const name = window.prompt("Rename project", project.name)?.trim();
             if (!name || name === project.name) return;

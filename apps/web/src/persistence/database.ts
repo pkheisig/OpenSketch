@@ -2,16 +2,22 @@ import Dexie, { type EntityTable } from "dexie";
 import {
   OpenSketch_FORMAT_VERSION,
   DEFAULT_CANVAS,
+  type ProjectFolderRecord,
   type ProjectRecord
 } from "@workspace/editor-core";
 
 class OpenSketchDatabase extends Dexie {
   projects!: EntityTable<ProjectRecord, "id">;
+  folders!: EntityTable<ProjectFolderRecord, "id">;
 
   constructor() {
     super("OpenSketch");
     this.version(1).stores({
       projects: "id, updatedAt, name"
+    });
+    this.version(2).stores({
+      projects: "id, updatedAt, name, archivedAt, folderId",
+      folders: "id, updatedAt, name"
     });
   }
 }
@@ -39,8 +45,57 @@ export async function listProjects(): Promise<ProjectRecord[]> {
   return db.projects.orderBy("updatedAt").reverse().toArray();
 }
 
+export async function listProjectFolders(): Promise<ProjectFolderRecord[]> {
+  return db.folders.orderBy("updatedAt").reverse().toArray();
+}
+
 export async function saveProject(project: ProjectRecord): Promise<void> {
   await db.projects.put(project);
+}
+
+export async function createProjectFolder(name: string): Promise<ProjectFolderRecord> {
+  const now = new Date().toISOString();
+  const folder: ProjectFolderRecord = {
+    id: crypto.randomUUID(),
+    name,
+    createdAt: now,
+    updatedAt: now
+  };
+  await db.folders.put(folder);
+  return folder;
+}
+
+export async function saveProjectFolder(folder: ProjectFolderRecord): Promise<void> {
+  await db.folders.put(folder);
+}
+
+export async function moveProjectToFolder(
+  project: ProjectRecord,
+  folderId?: string
+): Promise<void> {
+  const next = { ...project, folderId };
+  if (!folderId) delete next.folderId;
+  await db.projects.put(next);
+  if (folderId) {
+    const folder = await db.folders.get(folderId);
+    if (folder) {
+      await db.folders.put({ ...folder, updatedAt: new Date().toISOString() });
+    }
+  }
+}
+
+export async function deleteProjectFolder(folderId: string): Promise<void> {
+  await db.transaction("rw", db.projects, db.folders, async () => {
+    const projects = await db.projects.where("folderId").equals(folderId).toArray();
+    await Promise.all(
+      projects.map((project) => {
+        const next = { ...project };
+        delete next.folderId;
+        return db.projects.put(next);
+      })
+    );
+    await db.folders.delete(folderId);
+  });
 }
 
 export async function duplicateProject(project: ProjectRecord): Promise<ProjectRecord> {
@@ -52,6 +107,7 @@ export async function duplicateProject(project: ProjectRecord): Promise<ProjectR
     createdAt: now,
     updatedAt: now
   };
+  delete duplicate.archivedAt;
   await saveProject(duplicate);
   return duplicate;
 }

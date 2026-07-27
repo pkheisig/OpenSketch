@@ -3,8 +3,9 @@ import { readFile, readdir, stat } from "node:fs/promises";
 import sharp from "sharp";
 import type { AssetManifest } from "../../packages/editor-core/src/types";
 import { readJson, sha256 } from "./io";
-import { LOCK_PATH, MANIFEST_PATH, SVG_DIR, THUMB_DIR } from "./paths";
+import { LOCK_PATH, MANIFEST_PATH, SVG_DIR, TAXONOMY_PATH, THUMB_DIR } from "./paths";
 import { assertSafeSvg } from "./sanitize-svg";
+import { taxonomyIndex, type AssetTaxonomy } from "./taxonomy";
 import type { SourceLock } from "./types";
 
 async function exists(filePath: string): Promise<boolean> {
@@ -16,13 +17,21 @@ async function exists(filePath: string): Promise<boolean> {
 }
 
 async function main(): Promise<void> {
-  const [manifest, lock] = await Promise.all([
+  const [manifest, lock, taxonomy] = await Promise.all([
     readJson<AssetManifest>(MANIFEST_PATH),
-    readJson<SourceLock>(LOCK_PATH)
+    readJson<SourceLock>(LOCK_PATH),
+    readJson<AssetTaxonomy>(TAXONOMY_PATH)
   ]);
   const errors: string[] = [];
   const ids = new Set<string>();
+  const familyIds = new Set<number>();
   const lockById = new Map(Object.values(lock.files).map((entry) => [entry.assetId, entry]));
+  let categoryByEntry = new Map<number, string>();
+  try {
+    categoryByEntry = taxonomyIndex(taxonomy);
+  } catch (error) {
+    errors.push(`Taxonomy is invalid: ${String(error)}`);
+  }
   if (lock.sanitizerVersion !== 3) {
     errors.push(`source-lock.json uses sanitizer pipeline ${lock.sanitizerVersion}; expected 3.`);
   }
@@ -31,6 +40,15 @@ async function main(): Promise<void> {
   }
 
   for (const family of manifest.families) {
+    familyIds.add(family.bioartEntryId);
+    const reviewedCategory = categoryByEntry.get(family.bioartEntryId);
+    if (!reviewedCategory) {
+      errors.push(`${family.familyId}: no reviewed taxonomy assignment.`);
+    } else if (family.category !== reviewedCategory) {
+      errors.push(
+        `${family.familyId}: manifest category ${family.category} differs from reviewed category ${reviewedCategory}.`
+      );
+    }
     if (!family.commonsPage || !family.nihSourcePage) {
       errors.push(`${family.familyId}: source URLs are missing.`);
     }
@@ -83,6 +101,13 @@ async function main(): Promise<void> {
           errors.push(`${variant.id}: ${String(error)}`);
         }
       }
+    }
+  }
+  for (const [entryId, category] of categoryByEntry) {
+    if (!familyIds.has(entryId)) {
+      errors.push(
+        `Taxonomy entry NIH BioArt ${entryId} (${category}) is absent from the manifest.`
+      );
     }
   }
   for (const assetId of lockById.keys()) {

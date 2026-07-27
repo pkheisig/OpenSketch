@@ -4,7 +4,8 @@ import type {
   AssetVariant
 } from "../../packages/editor-core/src/types";
 import { readJson, writeJsonAtomic } from "./io";
-import { LOCK_PATH, MANIFEST_PATH, OVERRIDES_PATH } from "./paths";
+import { LOCK_PATH, MANIFEST_PATH, OVERRIDES_PATH, TAXONOMY_PATH } from "./paths";
+import { categoryForEntry, taxonomyIndex, type AssetTaxonomy } from "./taxonomy";
 import type { SourceLock } from "./types";
 
 interface Overrides {
@@ -13,8 +14,12 @@ interface Overrides {
 }
 
 export async function buildManifest(): Promise<AssetManifest> {
-  const lock = await readJson<SourceLock>(LOCK_PATH);
-  const overrides = await readJson<Overrides>(OVERRIDES_PATH);
+  const [lock, overrides, taxonomy] = await Promise.all([
+    readJson<SourceLock>(LOCK_PATH),
+    readJson<Overrides>(OVERRIDES_PATH),
+    readJson<AssetTaxonomy>(TAXONOMY_PATH)
+  ]);
+  const categoryByEntry = taxonomyIndex(taxonomy);
   let previous: AssetManifest | undefined;
   try {
     previous = await readJson<AssetManifest>(MANIFEST_PATH);
@@ -41,13 +46,37 @@ export async function buildManifest(): Promise<AssetManifest> {
       continue;
     }
     const familyId = `nih-bioart-${entry.bioartEntryId}`;
+    const category = categoryForEntry(taxonomy, entry.bioartEntryId, categoryByEntry);
     grouped.set(entry.bioartEntryId, {
       familyId,
       bioartEntryId: entry.bioartEntryId,
       ...entry.family,
       defaultVariantId: entry.assetId,
       variants: [variant],
-      ...(overrides.families?.[familyId] ?? {})
+      ...(overrides.families?.[familyId] ?? {}),
+      category,
+      keywords: [
+        ...entry.family.keywords.filter(
+          (keyword) =>
+            ![
+              "Anatomy",
+              "Animals",
+              "Arthropods",
+              "Bacteria",
+              "Cells and organelles",
+              "Cellular processes",
+              "Equipment",
+              "Molecules",
+              "People",
+              "Plants",
+              "Proteins",
+              "Shapes and arrows",
+              "Viruses",
+              "Other"
+            ].includes(keyword)
+        ),
+        category
+      ]
     });
   }
 

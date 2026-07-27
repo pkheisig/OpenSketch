@@ -1,159 +1,84 @@
 {
+  "version": 1,
   "categories": [
-    "Anatomy",
-    "Animals",
-    "Arthropods",
-    "Bacteria",
-    "Cells and organelles",
+    "Cells",
+    "Proteins",
+    "Molecules",
+    "Nucleic acids & genetics",
     "Cellular processes",
     "Equipment",
-    "Molecules",
-    "People",
-    "Plants",
-    "Proteins",
-    "Shapes and arrows",
+    "Bacteria",
     "Viruses",
+    "Parasites",
+    "Anatomy",
+    "People",
+    "Animals",
+    "Arthropods",
+    "Plants",
+    "Food",
+    "Symbols & diagrams",
     "Other"
   ],
-  "rules": [
-    { "category": "Viruses", "keywords": ["virus", "virion", "phage", "coronavirus"] },
-    { "category": "Bacteria", "keywords": ["bacteria", "bacterium", "bacillus", "coccus"] },
-    {
-      "category": "Arthropods",
-      "keywords": [
-        "arthropod",
-        "tick",
-        "mosquito",
-        "flea",
-        "mite",
-        "insect",
-        "bee",
-        "fly",
-        "larva",
-        "nymph",
-        "ixodes",
-        "anopheles",
-        "aedes"
-      ]
-    },
-    {
-      "category": "Cellular processes",
-      "keywords": [
-        "apoptosis",
-        "mitosis",
-        "meiosis",
-        "polymerization",
-        "transcription",
-        "translation",
-        "signaling",
-        "mutation",
-        "endocytosis",
-        "exocytosis"
-      ]
-    },
-    { "category": "Proteins", "keywords": ["protein", "antibody", "enzyme", "receptor"] },
-    {
-      "category": "Cells and organelles",
-      "keywords": [
-        "cell",
-        "mitochond",
-        "nucleus",
-        "organelle",
-        "neuron",
-        "macrophage",
-        "lymphocyte",
-        "basophil",
-        "eosinophil",
-        "fibroblast"
-      ]
-    },
-    {
-      "category": "Anatomy",
-      "keywords": [
-        "anatomy",
-        "brain",
-        "liver",
-        "pancreas",
-        "spleen",
-        "kidney",
-        "lung",
-        "heart",
-        "bone",
-        "skin",
-        "ear",
-        "digestive tract",
-        "respiratory tract",
-        "blood vessel"
-      ]
-    },
-    {
-      "category": "People",
-      "keywords": [
-        "person",
-        "people",
-        "human female",
-        "human male",
-        "scientist",
-        "doctor",
-        "patient",
-        "child",
-        "hiker"
-      ]
-    },
-    {
-      "category": "Plants",
-      "keywords": ["plant", "leaf", "flower", "grass", "tree", "root", "seedling"]
-    },
-    {
-      "category": "Animals",
-      "keywords": [
-        "animal",
-        "mouse",
-        "rat",
-        "hamster",
-        "guinea pig",
-        "cat",
-        "dog",
-        "bat",
-        "bird",
-        "chicken",
-        "fish",
-        "goat",
-        "horse",
-        "bear",
-        "fox",
-        "squirrel"
-      ]
-    },
-    {
-      "category": "Molecules",
-      "keywords": [
-        "molecule",
-        "compound",
-        "drug",
-        "lipid",
-        "inhibitor",
-        "metabolite",
-        "amino acid",
-        "monoxide"
-      ]
-    },
-    {
-      "category": "Equipment",
-      "keywords": [
-        "microscope",
-        "pipette",
-        "tube",
-        "plate",
-        "flask",
-        "machine",
-        "vial",
-        "centrifuge"
-      ]
-    },
-    {
-      "category": "Shapes and arrows",
-      "keywords": ["arrow", "shape", "bracket", "lightning bolt", "symbol"]
-    }
-  ]
+  "assignments": {
+    "Cells": [
+      10, 40, 48, 65, 69, 72, 101, 112, 113, 116, 140, 141, 151, 152, 153, 154, 171, 172, 173, 197,
+      198, 202, 203, 209, 210, 211, 213, 241, 242, 252, 258, 285, 307, 308, 309, 310, 311, 316, 336,
+      352, 353, 356, 357, 376, 377, 378, 380, 381, 382, 383, 397, 399, 400, 415, 424, 442, 443, 444,
+      445, 446, 509, 513, 533, 540, 541, 583, 612, 627, 653, 661, 662, 663, 664, 665, 666
+    ],
+    "Proteins": [
+      8, 17, 18, 22, 51, 66, 68, 70, 73, 85, 95, 98, 121, 165, 248, 249, 250, 255, 259, 260, 299,
+      341, 342, 343, 344, 345, 346, 347, 348, 387, 402, 416, 422, 429, 430, 431, 432, 433, 434, 435,
+      436, 437, 438, 439, 448, 449, 450, 451, 466, 467, 468, 469, 470, 471, 472, 473, 474, 475, 476,
+      477, 478, 479, 480, 481, 482, 483, 490, 510, 511, 512, 515, 521, 528, 537, 617, 651, 667
+    ],
+    "Molecules": [44, 53, 62, 67, 97, 174, 276, 340, 407, 425, 492, 517, 525, 587, 602, 603],
+    "Nucleic acids & genetics": [
+      77, 117, 118, 119, 120, 124, 125, 126, 170, 193, 194, 204, 205, 401, 410, 411, 412, 413, 452,
+      551
+    ],
+    "Cellular processes": [21, 523, 597],
+    "Equipment": [
+      3, 4, 5, 6, 7, 52, 86, 87, 88, 89, 90, 92, 93, 94, 143, 161, 163, 286, 303, 354, 373, 386,
+      392, 394, 398, 404, 408, 423, 426, 457, 488, 501, 503, 505, 507, 514, 516, 520, 526, 535, 536,
+      579, 580, 581, 595, 596, 630, 631, 638, 639, 640
+    ],
+    "Bacteria": [41, 42, 43, 57, 179, 349, 350, 351, 496, 497],
+    "Viruses": [
+      64, 139, 144, 156, 391, 447, 463, 464, 465, 484, 542, 543, 544, 545, 604, 605, 606, 614, 646,
+      647, 648, 649, 659
+    ],
+    "Parasites": [
+      287, 288, 289, 290, 291, 292, 293, 294, 295, 296, 297, 314, 315, 317, 318, 320, 322, 323, 324,
+      325, 326, 328, 339, 414, 634
+    ],
+    "Anatomy": [
+      35, 36, 37, 55, 56, 60, 78, 189, 191, 208, 212, 230, 239, 243, 244, 245, 254, 256, 304, 369,
+      370, 504, 522, 539, 589, 593
+    ],
+    "People": [
+      59, 74, 75, 130, 147, 149, 185, 192, 206, 214, 215, 219, 220, 221, 222, 223, 224, 225, 226,
+      227, 329, 331, 332, 333, 334, 389, 390, 395, 396, 420, 421, 485, 486, 487, 548, 549, 552, 555
+    ],
+    "Animals": [
+      12, 19, 20, 38, 39, 49, 54, 63, 76, 99, 100, 110, 131, 132, 133, 134, 135, 137, 150, 164, 166,
+      168, 169, 176, 177, 178, 183, 184, 186, 188, 190, 195, 196, 207, 278, 279, 280, 281, 282, 283,
+      302, 359, 368, 371, 372, 375, 388, 403, 406, 417, 418, 419, 427, 428, 489, 491, 498, 500, 502,
+      524, 547, 550, 553, 554, 578, 584, 585, 594, 600, 601, 607, 609, 616, 628, 629, 632, 633, 636,
+      643, 668
+    ],
+    "Arthropods": [
+      2, 11, 16, 102, 103, 104, 105, 106, 107, 108, 109, 145, 146, 148, 157, 158, 159, 162, 246,
+      247, 261, 262, 263, 265, 267, 268, 269, 270, 271, 272, 273, 274, 275, 330, 360, 361, 362, 364,
+      365, 366, 367, 458, 459, 460, 461, 529, 530, 531, 532, 610, 611, 613, 615, 624, 626, 635, 644,
+      645, 650, 658
+    ],
+    "Plants": [181, 599, 619, 620, 623],
+    "Food": [621, 622, 625],
+    "Symbols & diagrams": [
+      13, 23, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 79, 80, 96, 167, 298, 518, 582, 592, 598, 618,
+      637, 660
+    ],
+    "Other": [405]
+  }
 }

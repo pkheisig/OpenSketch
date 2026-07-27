@@ -78,6 +78,11 @@ canvas settings, serialized Fabric scene, embedded imported media, and used
 built-in asset IDs. Built-in artwork uses stable manifest IDs and is bundled
 with the application.
 
+The IndexedDB library adds local-only `folderId`, `archivedAt`, and folder
+records for organization on the project home. Those fields are deliberately
+removed from `.OpenSketch` exports: folders and archive state organize the local
+library without changing the portable scientific document.
+
 The version-1 JSON key for imported media remains `uploads` solely for backward
 compatibility with existing `.OpenSketch` files; the interface and current code
 refer to the feature as importing media.

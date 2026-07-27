@@ -18,8 +18,14 @@ type DirectoryPickerWindow = Window & {
 };
 
 export function serializeProject(project: ProjectRecord): string {
-  const portable = structuredClone(project) as PortableProject & { thumbnail?: string };
+  const portable = structuredClone(project) as PortableProject & {
+    thumbnail?: string;
+    folderId?: string;
+    archivedAt?: string;
+  };
   delete portable.thumbnail;
+  delete portable.folderId;
+  delete portable.archivedAt;
   return JSON.stringify(portable, null, 2);
 }
 

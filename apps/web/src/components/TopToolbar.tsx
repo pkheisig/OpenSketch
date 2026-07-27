@@ -4,6 +4,8 @@ import {
   ChevronDown,
   Download,
   HelpCircle,
+  FlipHorizontal2,
+  FlipVertical2,
   Redo2,
   Undo2,
   ZoomIn,
@@ -84,6 +86,25 @@ export function TopToolbar({ project, onHome }: { project: ProjectRecord; onHome
               <ZoomIn size={16} />
             </button>
           </span>
+          <span className="toolbar-rule" />
+          <button
+            className="icon-button"
+            onClick={() => editor.flip("x")}
+            disabled={editor.selection.length === 0}
+            aria-label="Mirror horizontally"
+            title="Mirror horizontally"
+          >
+            <FlipHorizontal2 size={16} />
+          </button>
+          <button
+            className="icon-button"
+            onClick={() => editor.flip("y")}
+            disabled={editor.selection.length === 0}
+            aria-label="Mirror vertically"
+            title="Mirror vertically"
+          >
+            <FlipVertical2 size={16} />
+          </button>
         </div>
         <div className="toolbar-actions">
           <button className="icon-button" onClick={() => setHelpOpen(true)} aria-label="Help">

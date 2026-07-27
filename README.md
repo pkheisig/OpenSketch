@@ -126,7 +126,9 @@ The command paginates the Commons category, requires explicit public-domain
 metadata, derives and validates NIH entry identities, downloads at a courteous
 rate, sanitizes SVG, prefixes all internal IDs, generates transparent WebP
 thumbnails, groups variants into families, and writes a deterministic manifest
-and source lock.
+and source lock. Every family is assigned explicitly in `data/taxonomy.json`;
+new families must be reviewed before synchronization can complete, rather than
+being categorized from loose keyword matches.
 
 Individual stages are available as:
 
@@ -163,7 +165,8 @@ dist/                      generated production site; never committed
 
 ## Current feature set
 
-- Local project home, autosave, duplicate/delete, and `.OpenSketch` portability
+- Local project home with newest-first rails, folders, drag-and-drop filing,
+  archive/restore, autosave, duplicate/delete, and `.OpenSketch` portability
 - Searchable asset-family browser with variants and source provenance
 - Fabric canvas selection, resize, rotation, group, align, distribution, smart
   guides, pan/zoom, flip, lock/hide, layers, keyboard nudging, undo, and redo

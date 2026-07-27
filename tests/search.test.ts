@@ -62,14 +62,14 @@ describe("asset search", () => {
       ...antibody,
       familyId: "cell",
       title: "Dendritic Cell",
-      category: "Cells and organelles"
+      category: "Cells"
     };
     const dna = {
       ...antibody,
       familyId: "dna",
       title: "DNA Helix",
       description: "Genomic DNA molecule",
-      category: "Other"
+      category: "Nucleic acids & genetics"
     };
     const plate = {
       ...antibody,

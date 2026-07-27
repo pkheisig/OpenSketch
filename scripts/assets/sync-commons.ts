@@ -16,6 +16,7 @@ import {
 } from "./io";
 import { ERROR_PATH, LOCK_PATH, OVERRIDES_PATH, SVG_DIR, TAXONOMY_PATH, THUMB_DIR } from "./paths";
 import { assertSafeSvg } from "./sanitize-svg";
+import { categoryForEntry, taxonomyIndex, type AssetTaxonomy } from "./taxonomy";
 import type { CommonsPage, ImportFailure, ImportSkip, SourceLock, SourceLockEntry } from "./types";
 
 const API = "https://commons.wikimedia.org/w/api.php";
@@ -29,11 +30,6 @@ const sanitizerPool = new Piscina({
 });
 
 class AssetSkip extends Error {}
-
-interface Taxonomy {
-  categories: string[];
-  rules: Array<{ category: string; keywords: string[] }>;
-}
 
 interface FileOverride {
   bioartEntryId?: number;
@@ -194,36 +190,6 @@ function concise(value: string, max = 280): string {
   return value.replace(/\s+/g, " ").trim().slice(0, max);
 }
 
-function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-function assignCategory(text: string, taxonomy: Taxonomy, override?: string): string {
-  if (override && taxonomy.categories.includes(override)) return override;
-  const normalized = text
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "");
-  for (const rule of taxonomy.rules) {
-    if (
-      rule.keywords.some((keyword) => {
-        const phrase = keyword
-          .toLowerCase()
-          .normalize("NFKD")
-          .replace(/[\u0300-\u036f]/g, "")
-          .trim()
-          .split(/[\s_-]+/)
-          .map(escapeRegExp)
-          .join("[\\s_-]+");
-        return new RegExp(`(?:^|[^a-z0-9])${phrase}(?:$|[^a-z0-9])`, "i").test(normalized);
-      })
-    ) {
-      return rule.category;
-    }
-  }
-  return "Other";
-}
-
 function keywordsFor(title: string, description: string, category: string, extra: string[] = []) {
   const words = `${title} ${description}`
     .toLowerCase()
@@ -274,7 +240,8 @@ async function fileExists(filePath: string): Promise<boolean> {
 async function processPage(
   page: CommonsPage,
   oldLock: SourceLock,
-  taxonomy: Taxonomy,
+  taxonomy: AssetTaxonomy,
+  categoryByEntry: Map<number, string>,
   overrides: Overrides,
   resolvedVariantIds: Map<number, number>
 ): Promise<SourceLockEntry> {
@@ -303,8 +270,7 @@ async function processPage(
     )
   );
   const description = concise(fileOverride?.description ?? metadata(page, "ImageDescription"));
-  const sourceText = `${rawTitle} ${description} ${metadata(page, "Categories")}`;
-  const category = assignCategory(sourceText, taxonomy, fileOverride?.category);
+  const category = categoryForEntry(taxonomy, entryId, categoryByEntry);
   const author = concise(
     metadata(page, "Artist") || metadata(page, "Author") || "NIAID NIH BioArt"
   );
@@ -416,16 +382,24 @@ async function removeOrphans(previous: SourceLock, current: SourceLock): Promise
 async function main(): Promise<void> {
   const [oldLock, taxonomy, overrides] = await Promise.all([
     readJson<SourceLock>(LOCK_PATH),
-    readJson<Taxonomy>(TAXONOMY_PATH),
+    readJson<AssetTaxonomy>(TAXONOMY_PATH),
     readJson<Overrides>(OVERRIDES_PATH)
   ]);
   const pages = await queryCommons();
   const resolvedVariantIds = await resolveRawVariantIds(pages);
+  const categoryByEntry = taxonomyIndex(taxonomy);
   const failures: ImportFailure[] = [];
   const skipped: ImportSkip[] = [];
   const entries = await mapLimit(pages, 5, async (page, index) => {
     try {
-      const entry = await processPage(page, oldLock, taxonomy, overrides, resolvedVariantIds);
+      const entry = await processPage(
+        page,
+        oldLock,
+        taxonomy,
+        categoryByEntry,
+        overrides,
+        resolvedVariantIds
+      );
       console.log(`[${index + 1}/${pages.length}] ${page.title}`);
       return entry;
     } catch (error) {

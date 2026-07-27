@@ -10,6 +10,28 @@ import "@fontsource/source-sans-3/700.css";
 import "@fontsource/source-serif-4/400.css";
 import "@fontsource/source-serif-4/600.css";
 import "@fontsource/stix-two-text/400.css";
+import "@fontsource/atkinson-hyperlegible/latin-400.css";
+import "@fontsource/atkinson-hyperlegible/latin-700.css";
+import "@fontsource/ibm-plex-sans/latin-400.css";
+import "@fontsource/ibm-plex-sans/latin-600.css";
+import "@fontsource/ibm-plex-sans/latin-700.css";
+import "@fontsource/ibm-plex-serif/latin-400.css";
+import "@fontsource/ibm-plex-serif/latin-600.css";
+import "@fontsource/ibm-plex-serif/latin-700.css";
+import "@fontsource/lato/latin-400.css";
+import "@fontsource/lato/latin-700.css";
+import "@fontsource/merriweather/latin-400.css";
+import "@fontsource/merriweather/latin-600.css";
+import "@fontsource/merriweather/latin-700.css";
+import "@fontsource/noto-sans/latin-400.css";
+import "@fontsource/noto-sans/latin-600.css";
+import "@fontsource/noto-sans/latin-700.css";
+import "@fontsource/noto-serif/latin-400.css";
+import "@fontsource/noto-serif/latin-600.css";
+import "@fontsource/noto-serif/latin-700.css";
+import "@fontsource/roboto-mono/latin-400.css";
+import "@fontsource/roboto-mono/latin-600.css";
+import "@fontsource/roboto-mono/latin-700.css";
 import "./styles/global.css";
 
 registerSW({

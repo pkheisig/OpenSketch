@@ -41,7 +41,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.38, 0.46);
   await expect(page.getByText("rectangle", { exact: true }).last()).toBeVisible();
-  await page.getByRole("tab", { name: "Text", exact: true }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, /Point text/, 0.55, 0.35);
   await page.keyboard.type("CD8 T cell");
   await page.keyboard.press("Escape");
@@ -51,23 +51,15 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   await expect(firstAsset).toBeVisible();
   await firstAsset.click();
   await expect(page.locator(".layers-title small")).toHaveText("3");
-  await expect(page.locator(".asset-effects")).toBeVisible();
-  await page
-    .locator("label.range-field")
-    .filter({ hasText: "Tint strength" })
-    .locator('input[type="range"]')
-    .fill("0.2");
-  await page.getByRole("button", { name: "Reset all" }).click();
-  const resetPalette = page.getByRole("button", { name: "Reset", exact: true });
-  if (await resetPalette.isVisible()) {
-    const firstSwatch = page.locator(".palette input[type=color]").first();
-    const originalColor = await firstSwatch.inputValue();
-    const replacement = originalColor.toLowerCase() === "#ff0000" ? "#00ff00" : "#ff0000";
-    await firstSwatch.fill(replacement);
-    await expect(page.locator(".palette input[type=color]").first()).toHaveValue(replacement);
-    await resetPalette.click();
-    await expect(page.locator(".palette input[type=color]").first()).toHaveValue(originalColor);
-  }
+  await expect(page.getByText("Asset palette", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Part colors", { exact: true })).toHaveCount(0);
+  await expect(page.locator(".color-presets")).toBeVisible();
+  await page.getByRole("button", { name: "Apply Green preset" }).click();
+  await expect(page.getByRole("button", { name: "Apply Green preset" })).toHaveAttribute(
+    "aria-pressed",
+    "true"
+  );
+  await page.getByRole("button", { name: "Original", exact: true }).click();
   await page.keyboard.press("ControlOrMeta+A");
   await page.getByRole("button", { name: "Group", exact: true }).click();
   await expect(page.locator(".layers-title small")).toHaveText("1");
@@ -315,7 +307,6 @@ test("places text and shapes from active tools and persists line creation defaul
   await page.mouse.up();
   await expect(page.locator(".layers-title small")).toHaveText("5");
 
-  await page.getByRole("tab", { name: "Text", exact: true }).click();
   const pointText = page.getByRole("button", { name: /Point text/ });
   await pointText.click();
   await expect(pointText).toHaveAttribute("aria-pressed", "true");
@@ -326,6 +317,70 @@ test("places text and shapes from active tools and persists line creation defaul
   await page.keyboard.press("Escape");
   await expect(page.locator(".layers-title small")).toHaveText("6");
   await expect(page.locator(".layer-list button").filter({ hasText: "Label" })).toBeVisible();
+});
+
+test("places point text from the first icon-only Shapes tool without blanking the editor", async ({
+  page
+}) => {
+  const pageErrors: string[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error.message));
+
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await expect(page.getByRole("tab", { name: "Text", exact: true })).toHaveCount(0);
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+
+  const tools = page.locator(".shape-grid > button");
+  const pointText = page.getByRole("button", { name: "Point text", exact: true });
+  await expect(tools.first()).toHaveAttribute("aria-label", "Point text");
+  await expect(pointText).toHaveText("");
+  await pointText.click();
+  await expect(pointText).toHaveAttribute("aria-pressed", "true");
+
+  const point = await artboardPoint(page, 0.52, 0.32);
+  await page.mouse.click(point.x, point.y);
+  await page.keyboard.type("Stable label");
+  await page.keyboard.press("Escape");
+
+  await expect(pointText).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator("main")).toBeVisible();
+  await expect(page.getByLabel("OpenSketch figure artboard")).toBeVisible();
+  await expect(page.locator(".layer-list button").filter({ hasText: "Label" })).toBeVisible();
+  await expect(page.getByText("Figure title", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Section label", { exact: true })).toHaveCount(0);
+  await expect(page.getByText(/Body annotation/)).toHaveCount(0);
+  expect(pageErrors).toEqual([]);
+});
+
+test("preserves clipboard object size across repeated pastes", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  await placeTool(page, "Rectangle", 0.45, 0.45);
+
+  const width = page.locator(".field-row.dimensions input").first();
+  const originalWidth = Number(await width.inputValue());
+  await page.keyboard.press("ControlOrMeta+C");
+  await page.waitForTimeout(50);
+  await page.keyboard.press("ControlOrMeta+V");
+  await expect(page.locator(".layers-title small")).toHaveText("2");
+  await expect.poll(async () => Number(await width.inputValue())).toBeCloseTo(originalWidth, 0);
+
+  await page.keyboard.press("ControlOrMeta+V");
+  await expect(page.locator(".layers-title small")).toHaveText("3");
+  await expect.poll(async () => Number(await width.inputValue())).toBeCloseTo(originalWidth, 0);
+});
+
+test("inserts assets from the sidebar at the reduced default size", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
+  await page.getByRole("button", { name: "Insert T Cell", exact: true }).click();
+
+  const dimensions = page.locator(".field-row.dimensions input");
+  const width = Number(await dimensions.nth(0).inputValue());
+  const height = Number(await dimensions.nth(1).inputValue());
+  expect(Math.max(width, height)).toBeCloseTo(180, 0);
 });
 
 test("uses accessible in-app dropdowns with keyboard and outside-click behavior", async ({
@@ -375,6 +430,7 @@ test("offers selection-aware canvas context actions", async ({ page }) => {
   const multipleMenu = page.getByRole("menu", { name: "2 selected actions" });
   await expect(multipleMenu).toBeVisible();
   await expect(multipleMenu.getByRole("menuitem", { name: "Group" })).toBeVisible();
+  await expect(multipleMenu.getByRole("menuitem", { name: /ruler/i })).toHaveCount(0);
   await multipleMenu.getByRole("menuitem", { name: "Group" }).click();
   await expect(page.locator(".layers-title small")).toHaveText("1");
 
@@ -391,17 +447,19 @@ test("offers selection-aware canvas context actions", async ({ page }) => {
   const secondRectangle = await artboardPoint(page, 0.65, 0.5);
   await page.mouse.click(secondRectangle.x, secondRectangle.y, { button: "right" });
   const shapeMenu = page.getByRole("menu", { name: "rectangle actions" });
-  await expect(shapeMenu.getByRole("menuitem", { name: "Reset to defaults" })).toBeVisible();
+  await expect(shapeMenu.getByRole("menuitem", { name: "Save styling" })).toBeVisible();
+  await expect(shapeMenu.getByRole("menuitem", { name: "Reset styling" })).toBeVisible();
   await expect(shapeMenu.getByRole("menuitem", { name: "Duplicate" })).toBeVisible();
   await expect(shapeMenu.getByRole("menuitem", { name: "Bring one up" })).toBeVisible();
   await expect(shapeMenu.getByRole("menuitem", { name: "Bring to front" })).toBeVisible();
   await expect(shapeMenu.getByRole("menuitem", { name: "Send one down" })).toBeVisible();
   await expect(shapeMenu.getByRole("menuitem", { name: "Send to back" })).toBeVisible();
+  await expect(shapeMenu.getByRole("menuitem", { name: /ruler/i })).toHaveCount(0);
   await expect(shapeMenu.getByRole("menuitem", { name: "Delete object" })).toBeVisible();
-  await shapeMenu.getByRole("menuitem", { name: "Reset to defaults" }).click();
+  await shapeMenu.getByRole("menuitem", { name: "Reset styling" }).click();
   await expect(fill).toHaveValue("#d8efe9");
 
-  await page.getByRole("tab", { name: "Text", exact: true }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   const textPoint = await artboardPoint(page, 0.5, 0.25);
   await placeTool(page, /Point text/, 0.5, 0.25);
   await page.keyboard.type("Context label");
@@ -410,9 +468,173 @@ test("offers selection-aware canvas context actions", async ({ page }) => {
   await textFill.fill("#00ff00");
   await page.mouse.click(textPoint.x, textPoint.y, { button: "right" });
   const textMenu = page.getByRole("menu", { name: "Label actions" });
-  await expect(textMenu.getByRole("menuitem", { name: "Reset to defaults" })).toBeVisible();
-  await textMenu.getByRole("menuitem", { name: "Reset to defaults" }).click();
+  await expect(textMenu.getByRole("menuitem", { name: "Save styling" })).toBeVisible();
+  await expect(textMenu.getByRole("menuitem", { name: "Reset styling" })).toBeVisible();
+  await textMenu.getByRole("menuitem", { name: "Reset styling" }).click();
   await expect(textFill).toHaveValue("#183133");
+});
+
+test("saves and resets per-element styling for future sidebar shapes", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+
+  const firstPoint = await artboardPoint(page, 0.35, 0.5);
+  await placeTool(page, "Rectangle", 0.35, 0.5);
+  const fill = page.locator("label.color-field").filter({ hasText: "Fill" }).locator("input");
+  await fill.fill("#ff0000");
+  await page.mouse.click(firstPoint.x, firstPoint.y, { button: "right" });
+  await page
+    .getByRole("menu", { name: "rectangle actions" })
+    .getByRole("menuitem", { name: "Save styling" })
+    .click();
+
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  const secondPoint = await artboardPoint(page, 0.65, 0.5);
+  await placeTool(page, "Rectangle", 0.65, 0.5);
+  await expect(fill).toHaveValue("#ff0000");
+
+  await page.mouse.click(secondPoint.x, secondPoint.y, { button: "right" });
+  await page
+    .getByRole("menu", { name: "rectangle actions" })
+    .getByRole("menuitem", { name: "Reset styling" })
+    .click();
+  await expect(fill).toHaveValue("#d8efe9");
+
+  await placeTool(page, "Rectangle", 0.82, 0.5);
+  await expect(fill).toHaveValue("#d8efe9");
+  await expect
+    .poll(() =>
+      page.evaluate(() => {
+        const styles = JSON.parse(localStorage.getItem("OpenSketch:element-styles") ?? "{}");
+        return styles["shape:rectangle"];
+      })
+    )
+    .toBeUndefined();
+});
+
+test("ungroups exactly one level of a nested group hierarchy", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  await placeTool(page, "Rectangle", 0.3, 0.5);
+  await placeTool(page, "Circle", 0.5, 0.5);
+
+  await page.keyboard.press("ControlOrMeta+A");
+  await page.getByRole("button", { name: "Group", exact: true }).click();
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+
+  await placeTool(page, "Triangle", 0.7, 0.5);
+  await expect(page.locator(".layers-title small")).toHaveText("2");
+  await page.keyboard.press("ControlOrMeta+A");
+  await page.getByRole("button", { name: "Group", exact: true }).click();
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+
+  const nestedGroupPoint = await artboardPoint(page, 0.5, 0.5);
+  await page.mouse.click(nestedGroupPoint.x, nestedGroupPoint.y, { button: "right" });
+  const outerGroupMenu = page.getByRole("menu", { name: "Group actions" });
+  await expect(outerGroupMenu.getByRole("menuitem", { name: "Ungroup" })).toBeVisible();
+  await outerGroupMenu.getByRole("menuitem", { name: "Ungroup" }).click();
+
+  await expect(page.locator(".layers-title small")).toHaveText("2");
+  const innerGroupLayer = page
+    .locator(".layer-list > button")
+    .filter({ has: page.getByText("Group", { exact: true }) });
+  await expect(innerGroupLayer).toHaveCount(1);
+  await innerGroupLayer.click();
+  await expect(page.getByRole("button", { name: "Ungroup", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Ungroup", exact: true }).click();
+  await expect(page.locator(".layers-title small")).toHaveText("3");
+});
+
+test("double-clicks through overlapping objects and into grouped children", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  await placeTool(page, "Rectangle", 0.5, 0.5);
+  await placeTool(page, "Circle", 0.5, 0.5);
+
+  const overlap = await artboardPoint(page, 0.5, 0.5);
+  await expect(page.locator(".inspector-header h2")).toHaveText("circle");
+
+  await page.mouse.dblclick(overlap.x, overlap.y);
+  await expect(page.locator(".inspector-header h2")).toHaveText("rectangle");
+  const ungroupedX = page.locator(".inspector-scroll").getByLabel("X", { exact: true });
+  const ungroupedStartX = Number(await ungroupedX.inputValue());
+  await page.mouse.move(overlap.x, overlap.y);
+  await page.mouse.down();
+  await page.mouse.move(overlap.x + 140, overlap.y, { steps: 5 });
+  await page.mouse.up();
+  await expect(page.locator(".inspector-header h2")).toHaveText("rectangle");
+  await expect
+    .poll(async () => Number(await ungroupedX.inputValue()))
+    .toBeGreaterThan(ungroupedStartX + 100);
+
+  await page.mouse.move(overlap.x + 140, overlap.y);
+  await page.mouse.down();
+  await page.mouse.move(overlap.x, overlap.y, { steps: 5 });
+  await page.mouse.up();
+  await page.mouse.dblclick(overlap.x, overlap.y);
+  await expect(page.locator(".inspector-header h2")).toHaveText("circle");
+
+  await page.keyboard.press("ControlOrMeta+A");
+  await page.getByRole("button", { name: "Group", exact: true }).click();
+  await expect(page.locator(".inspector-header h2")).toHaveText("Group");
+
+  await page.mouse.dblclick(overlap.x, overlap.y);
+  await expect(page.locator(".inspector-header h2")).toHaveText("circle");
+  const groupedX = page.locator(".inspector-scroll").getByLabel("X", { exact: true });
+  const groupedStartX = Number(await groupedX.inputValue());
+  await page.mouse.move(overlap.x, overlap.y);
+  await page.mouse.down();
+  await page.mouse.move(overlap.x + 140, overlap.y, { steps: 5 });
+  await page.mouse.up();
+  await expect(page.locator(".inspector-header h2")).toHaveText("circle");
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+  await expect
+    .poll(async () => Number(await groupedX.inputValue()))
+    .toBeGreaterThan(groupedStartX + 100);
+
+  await page.mouse.dblclick(overlap.x, overlap.y);
+  await expect(page.locator(".inspector-header h2")).toHaveText("rectangle");
+});
+
+test("shows every visible layer of a grouped stack in the project preview", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+
+  for (const width of [400, 300, 200]) {
+    await placeTool(page, "Circle", 0.5, 0.5);
+    const widthField = page.locator(".inspector-scroll").getByLabel("W", { exact: true });
+    await widthField.fill(String(width));
+    await widthField.blur();
+  }
+
+  await page.keyboard.press("ControlOrMeta+A");
+  await page.getByRole("button", { name: "Group", exact: true }).click();
+  await page.getByRole("button", { name: "Back to projects" }).click();
+
+  const preview = page.locator("canvas[data-opensketch-project-preview]").first();
+  await expect(preview).toBeVisible();
+  await expect
+    .poll(() =>
+      preview.evaluate((canvas: HTMLCanvasElement) => {
+        const context = canvas.getContext("2d")!;
+        const row = context.getImageData(0, Math.floor(canvas.height / 2), canvas.width, 1).data;
+        let runs = 0;
+        let insideDarkRun = false;
+        for (let index = 0; index < row.length; index += 4) {
+          const dark = row[index] < 200 && row[index + 1] < 200 && row[index + 2] < 200;
+          if (dark && !insideDarkRun) runs += 1;
+          insideDarkRun = dark;
+        }
+        return runs;
+      })
+    )
+    .toBeGreaterThanOrEqual(6);
 });
 
 test("moves objects exactly one layer through the canvas context menu", async ({ page }) => {
@@ -443,7 +665,7 @@ test("moves objects exactly one layer through the canvas context menu", async ({
   await expect(layerNames).toHaveText(["rectangle", "triangle", "circle"]);
 });
 
-test("keeps project overview previews vector-sharp and upgrades legacy raster thumbnails", async ({
+test("renders project previews with Fabric and upgrades legacy raster thumbnails", async ({
   page
 }) => {
   await page.goto("/");
@@ -454,10 +676,24 @@ test("keeps project overview previews vector-sharp and upgrades legacy raster th
   await page.waitForTimeout(700);
   await page.getByRole("button", { name: "Back to projects" }).click();
 
-  await expect(page.locator(".project-preview svg").first()).toHaveAttribute(
-    "data-opensketch-thumbnail",
-    "2"
-  );
+  const preview = page.locator("canvas[data-opensketch-project-preview]").first();
+  await expect(preview).toBeVisible();
+  await expect
+    .poll(() =>
+      preview.evaluate((canvas: HTMLCanvasElement) => {
+        const pixels = canvas
+          .getContext("2d")!
+          .getImageData(0, 0, canvas.width, canvas.height).data;
+        let colored = 0;
+        for (let index = 0; index < pixels.length; index += 4) {
+          if (pixels[index] < 245 || pixels[index + 1] < 245 || pixels[index + 2] < 245) {
+            colored += 1;
+          }
+        }
+        return colored;
+      })
+    )
+    .toBeGreaterThan(100);
 
   await page.evaluate(async () => {
     const database = await new Promise<IDBDatabase>((resolve, reject) => {
@@ -488,10 +724,28 @@ test("keeps project overview previews vector-sharp and upgrades legacy raster th
   });
 
   await page.reload();
-  await expect(page.locator(".project-preview svg").first()).toHaveAttribute(
-    "data-opensketch-thumbnail",
-    "2"
-  );
+  await expect(page.locator("canvas[data-opensketch-project-preview]").first()).toBeVisible();
+  await expect
+    .poll(() =>
+      page.evaluate(async () => {
+        const database = await new Promise<IDBDatabase>((resolve, reject) => {
+          const request = indexedDB.open("OpenSketch");
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+        const transaction = database.transaction("projects", "readonly");
+        const request = transaction.objectStore("projects").getAll();
+        const projects = await new Promise<Array<{ thumbnail?: string }>>((resolve, reject) => {
+          request.onsuccess = () => resolve(request.result);
+          request.onerror = () => reject(request.error);
+        });
+        database.close();
+        return decodeURIComponent(projects[0]?.thumbnail ?? "").includes(
+          'data-opensketch-thumbnail="3"'
+        );
+      })
+    )
+    .toBe(true);
 });
 
 test("supports visible and native navigation for new figures", async ({ page }) => {
@@ -535,6 +789,105 @@ test("supports visible and native navigation for new figures", async ({ page }) 
 
   await backToProjects.click();
   await expect(page.getByRole("button", { name: "Untitled figure" })).toBeVisible();
+  const emptyProjectPreview = page.locator(".project-preview").first();
+  const emptyProjectCanvas = emptyProjectPreview.locator("canvas[data-opensketch-project-preview]");
+  await expect(emptyProjectCanvas).toBeVisible();
+  await expect(page.locator(".empty-preview")).toHaveCount(0);
+  const [previewBounds, previewCanvasBounds] = await Promise.all([
+    emptyProjectPreview.boundingBox(),
+    emptyProjectCanvas.boundingBox()
+  ]);
+  expect(previewBounds).not.toBeNull();
+  expect(previewCanvasBounds).not.toBeNull();
+  expect(previewCanvasBounds!.width).toBeGreaterThanOrEqual(previewBounds!.width - 2);
+  expect(previewCanvasBounds!.height).toBeGreaterThanOrEqual(previewBounds!.height - 2);
+});
+
+test("archives projects and organizes newest-first project rows with folders", async ({ page }) => {
+  const createNamedProject = async (name: string) => {
+    await page.getByRole("button", { name: "New figure" }).click();
+    const title = page.getByLabel("Document title");
+    await title.fill(name);
+    await title.blur();
+    await page.getByRole("button", { name: "Back to projects" }).click();
+    await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
+  };
+
+  await page.goto("/");
+  await createNamedProject("Alpha");
+  await createNamedProject("Beta");
+
+  const mainRow = page.getByLabel("Projects, newest edited first", { exact: true });
+  await expect(mainRow.locator(".project-title").first()).toContainText("Beta");
+
+  await page.getByRole("button", { name: "New folder" }).click();
+  await page.getByLabel("Folder name").fill("Lab figures");
+  await page.getByRole("button", { name: "Create folder" }).click();
+  const folder = page.locator(".folder-card").filter({ hasText: "Lab figures" });
+  await expect(folder).toContainText("0 projects");
+
+  const alpha = mainRow.locator(".project-card").filter({ hasText: "Alpha" });
+  await alpha.dragTo(folder);
+  await expect(folder).toContainText("1 project");
+  await expect(alpha).toHaveCount(0);
+
+  await folder.locator(".folder-card-main").click();
+  const folderDrawer = page.getByRole("region", { name: "Lab figures folder" });
+  const filedAlpha = folderDrawer.locator(".project-card").filter({ hasText: "Alpha" });
+  await expect(filedAlpha).toBeVisible();
+  await filedAlpha.getByLabel("Project actions for Alpha").click();
+  await filedAlpha.getByRole("button", { name: "Archive", exact: true }).click();
+  await expect(filedAlpha).toHaveCount(0);
+
+  await page.reload();
+  await expect(folder).toHaveClass(/open/);
+  await expect(folderDrawer).toBeVisible();
+  const archiveDisclosure = page.getByRole("button", { name: /Archived/ });
+  await expect(archiveDisclosure).toContainText("1");
+  await archiveDisclosure.click();
+  const archivedRow = page.getByLabel("Archived projects, newest edited first");
+  const archivedAlpha = archivedRow.locator(".project-card").filter({ hasText: "Alpha" });
+  await expect(archivedAlpha).toBeVisible();
+  await archivedAlpha.getByLabel("Project actions for Alpha").click();
+  await archivedAlpha.getByRole("button", { name: "Restore", exact: true }).click();
+  await expect(archivedAlpha).toHaveCount(0);
+  const restoredAlpha = folderDrawer.locator(".project-card").filter({ hasText: "Alpha" });
+  await expect(restoredAlpha).toBeVisible();
+
+  await restoredAlpha.locator(".project-title").click();
+  await expect(page.getByLabel("Document title")).toHaveValue("Alpha");
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await expect(folder).toHaveClass(/open/);
+  await expect(folderDrawer.locator(".project-card").filter({ hasText: "Alpha" })).toBeVisible();
+
+  await page.getByRole("button", { name: "New folder" }).click();
+  await page.getByLabel("Folder name").fill("Other figures");
+  await page.getByRole("button", { name: "Create folder" }).click();
+  const otherFolder = page.locator(".folder-card").filter({ hasText: "Other figures" });
+  await otherFolder.locator(".folder-card-main").click();
+  await expect(otherFolder).toHaveClass(/open/);
+  await expect(folder).not.toHaveClass(/open/);
+  await expect(folderDrawer).toHaveCount(0);
+  const otherFolderDrawer = page.getByRole("region", { name: "Other figures folder" });
+  await expect(otherFolderDrawer).toBeVisible();
+  await page.getByRole("button", { name: "Close Other figures folder" }).click();
+  await expect(page.locator(".folder-card.open")).toHaveCount(0);
+  await page.reload();
+  await expect(page.locator(".folder-card.open")).toHaveCount(0);
+  await expect(otherFolderDrawer).toHaveCount(0);
+
+  for (let index = 0; index < 4; index += 1) {
+    await mainRow.getByLabel("Project actions for Beta", { exact: true }).click();
+    await mainRow.getByRole("button", { name: "Duplicate", exact: true }).click();
+  }
+  await expect(mainRow.locator(".project-card")).toHaveCount(5);
+  await expect(mainRow.locator(".project-title").first()).toContainText("Beta copy");
+  expect(
+    await mainRow.evaluate((row) => ({
+      overflow: row.scrollWidth > row.clientWidth,
+      wrap: getComputedStyle(row).flexWrap
+    }))
+  ).toEqual({ overflow: true, wrap: "nowrap" });
 });
 
 test("previews canvas zoom without resizing its backing stores or the page", async ({ page }) => {
@@ -556,11 +909,14 @@ test("previews canvas zoom without resizing its backing stores or the page", asy
       observer.observe(canvas, { attributes: true, attributeFilter: ["width", "height"] })
     );
     const dispatchZoom = (target: Element) => {
+      const stageRect = stage.getBoundingClientRect();
       const event = new WheelEvent("wheel", {
         bubbles: true,
         cancelable: true,
         ctrlKey: true,
-        deltaY: -1
+        deltaY: -1,
+        clientX: stageRect.left + stageRect.width * 0.75,
+        clientY: stageRect.top + stageRect.height * 0.3
       });
       target.dispatchEvent(event);
       return event.defaultPrevented;
@@ -590,7 +946,137 @@ test("previews canvas zoom without resizing its backing stores or the page", asy
   expect(result.previewStageWidth).toBeGreaterThan(result.initialStageWidth);
   expect(result.settledStageWidth).toBeCloseTo(result.previewStageWidth, 0);
   expect(result.previewBackingStoreChanges).toBe(0);
-  expect(result.settledBackingStoreChanges).toBe(0);
+  expect(result.settledBackingStoreChanges).toBeGreaterThan(0);
+});
+
+test("zooms around the cursor instead of the artboard center", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  const workspace = page.locator(".workspace-scroll");
+  const stage = workspace.locator(".artboard-stage");
+
+  const before = await stage.boundingBox();
+  expect(before).not.toBeNull();
+  const cursor = {
+    x: before!.x + before!.width * 0.78,
+    y: before!.y + before!.height * 0.32
+  };
+  const logicalBefore = {
+    x: ((cursor.x - before!.x) / before!.width) * 1920,
+    y: ((cursor.y - before!.y) / before!.height) * 1080
+  };
+
+  await page.mouse.move(cursor.x, cursor.y);
+  await page.keyboard.down("Control");
+  await page.mouse.wheel(0, -100);
+  await page.keyboard.up("Control");
+  await page.waitForTimeout(150);
+
+  const after = await stage.boundingBox();
+  expect(after).not.toBeNull();
+  expect(after!.width).toBeGreaterThan(before!.width);
+  const logicalAfter = {
+    x: ((cursor.x - after!.x) / after!.width) * 1920,
+    y: ((cursor.y - after!.y) / after!.height) * 1080
+  };
+  expect(Math.abs(logicalAfter.x - logicalBefore.x)).toBeLessThan(2);
+  expect(Math.abs(logicalAfter.y - logicalBefore.y)).toBeLessThan(2);
+});
+
+test("rerenders vector artwork at the current zoom resolution", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
+  await page.getByRole("button", { name: "Insert T Cell", exact: true }).click();
+  const workspace = page.locator(".workspace-scroll");
+
+  const result = await workspace.evaluate(async (element) => {
+    const stage = element.querySelector<HTMLElement>(".artboard-stage")!;
+    const lowerCanvas = element.querySelector<HTMLCanvasElement>(".lower-canvas")!;
+    const dispatchZoom = () => {
+      const rect = stage.getBoundingClientRect();
+      element.dispatchEvent(
+        new WheelEvent("wheel", {
+          bubbles: true,
+          cancelable: true,
+          ctrlKey: true,
+          deltaY: -100,
+          clientX: rect.left + rect.width / 2,
+          clientY: rect.top + rect.height / 2
+        })
+      );
+    };
+    for (let index = 0; index < 40; index += 1) dispatchZoom();
+    await new Promise((resolve) => setTimeout(resolve, 160));
+    const stageRect = stage.getBoundingClientRect();
+    return {
+      devicePixelRatio: window.devicePixelRatio,
+      stageWidth: stageRect.width,
+      stageHeight: stageRect.height,
+      backingWidth: lowerCanvas.width,
+      backingHeight: lowerCanvas.height
+    };
+  });
+
+  expect(result.stageWidth).toBeGreaterThan(1920 * 2.7);
+  expect(result.backingWidth / result.stageWidth).toBeCloseTo(result.devicePixelRatio, 1);
+  expect(result.backingHeight / result.stageHeight).toBeCloseTo(result.devicePixelRatio, 1);
+});
+
+test("mirrors selections from the toolbar and toggles rulers without a canvas grid", async ({
+  page
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+
+  const mirrorHorizontal = page.getByRole("button", { name: "Mirror horizontally" });
+  const mirrorVertical = page.getByRole("button", { name: "Mirror vertically" });
+  await expect(mirrorHorizontal).toBeDisabled();
+  await expect(mirrorVertical).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Toggle grid" })).toHaveCount(0);
+
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  await placeTool(page, "Triangle", 0.5, 0.5);
+  await expect(mirrorHorizontal).toBeEnabled();
+  await expect(mirrorVertical).toBeEnabled();
+  await mirrorHorizontal.click();
+  await mirrorVertical.click();
+
+  const emptyCanvasPoint = await artboardPoint(page, 0.15, 0.15);
+  await page.mouse.click(emptyCanvasPoint.x, emptyCanvasPoint.y, { button: "right" });
+  const canvasMenu = page.getByRole("menu", { name: "Canvas actions" });
+  await expect(canvasMenu.getByRole("menuitem", { name: /grid/i })).toHaveCount(0);
+  await canvasMenu.getByRole("menuitem", { name: "Hide ruler" }).click();
+  await expect(page.locator(".canvas-ruler")).toHaveCount(0);
+  await expect(page.locator(".canvas-workspace")).toHaveClass(/ruler-hidden/);
+
+  await page.mouse.click(emptyCanvasPoint.x, emptyCanvasPoint.y, { button: "right" });
+  await page
+    .getByRole("menu", { name: "Canvas actions" })
+    .getByRole("menuitem", { name: "Show ruler" })
+    .click();
+  await expect(page.locator(".canvas-ruler")).toHaveCount(2);
+  await expect(page.locator(".artboard-stage")).not.toHaveClass(/show-grid/);
+
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  const transforms = await page.evaluate(async () => {
+    const database = await new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open("OpenSketch");
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const transaction = database.transaction("projects", "readonly");
+    const request = transaction.objectStore("projects").getAll();
+    const projects = await new Promise<
+      Array<{ objects: { objects: Array<{ flipX?: boolean; flipY?: boolean }> } }>
+    >((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    database.close();
+    return projects[0]?.objects.objects[0];
+  });
+  expect(transforms).toMatchObject({ flipX: true, flipY: true });
 });
 
 test("centers a new artboard and restores each project's zoom and pan", async ({ page }) => {
@@ -886,8 +1372,8 @@ test("fills the asset sidebar and presents laboratory assets before organisms", 
   await page.getByRole("button", { name: "New figure" }).click();
 
   const insertTabs = page.getByRole("tab");
-  await expect(insertTabs).toHaveCount(4);
-  for (const label of ["Assets", "Text", "Shapes", "Imports"]) {
+  await expect(insertTabs).toHaveCount(3);
+  for (const label of ["Assets", "Shapes", "Imports"]) {
     const tab = page.getByRole("tab", { name: label, exact: true });
     await expect(tab).toHaveAttribute("title", label);
     await expect(tab).toHaveText("");
@@ -903,7 +1389,7 @@ test("fills the asset sidebar and presents laboratory assets before organisms", 
     "Cajal-Retzius Cell",
     "CD8 TCell",
     "Cell Nucleus",
-    "Dendritic Cell"
+    "Damaged Mitochondria"
   ]);
 
   const dimensions = await page.locator(".asset-list-shell").evaluate((shell) => {
@@ -920,6 +1406,8 @@ test("fills the asset sidebar and presents laboratory assets before organisms", 
   expect(dimensions.scrollHeight).toBeGreaterThan(dimensions.clientHeight);
 
   const firstAsset = page.locator(".asset-card").first();
+  await expect(page.locator(".asset-info")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /^About / })).toHaveCount(0);
   await expect(firstAsset.locator(".asset-card-image")).toHaveCSS(
     "background-color",
     "rgb(255, 255, 255)"
@@ -946,6 +1434,43 @@ test("fills the asset sidebar and presents laboratory assets before organisms", 
   await expect(page.locator(".asset-card").last()).toBeVisible();
 });
 
+test("uses title-free insert panels and supports the expanded offline font catalog", async ({
+  page
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+
+  await expect(page.getByRole("heading", { name: "Illustration library" })).toHaveCount(0);
+  await expect(page.getByRole("tab", { name: "Text", exact: true })).toHaveCount(0);
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  await placeTool(page, "Point text", 0.5, 0.5);
+  const typeface = page.locator(".right-sidebar").getByRole("combobox", { name: "Typeface" });
+  await typeface.click();
+  await expect(page.getByRole("option")).toHaveCount(13);
+  for (const font of [
+    "Atkinson Hyperlegible",
+    "IBM Plex Sans",
+    "IBM Plex Serif",
+    "Merriweather",
+    "Noto Sans",
+    "Noto Serif",
+    "Roboto Mono"
+  ]) {
+    await expect(page.getByRole("option", { name: font, exact: true })).toBeVisible();
+  }
+  await page.getByRole("option", { name: "IBM Plex Sans", exact: true }).click();
+  await expect
+    .poll(() => page.evaluate(() => document.fonts.check('16px "IBM Plex Sans"')))
+    .toBe(true);
+  await expect(typeface).toHaveText("IBM Plex Sans");
+
+  await expect(page.getByRole("heading", { name: /Shapes.*connectors/i })).toHaveCount(0);
+  await expect(page.getByText("Connect two objects precisely.", { exact: true })).toHaveCount(0);
+  await page.getByRole("tab", { name: "Imports", exact: true }).click();
+  await expect(page.getByRole("heading", { name: "Imports", exact: true })).toHaveCount(0);
+  await expect(page.getByText(/Imported SVGs are sanitized locally/)).toHaveCount(0);
+});
+
 test("pins favorite assets above normal All and category results", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
@@ -957,13 +1482,84 @@ test("pins favorite assets above normal All and category results", async ({ page
   await expect(assetTitles.first()).toHaveText("CD8 TCell");
   await expect(page.locator(".asset-results-meta")).toHaveCount(0);
 
-  await page.getByRole("button", { name: "Cells and organelles", exact: true }).click();
+  await page.getByRole("button", { name: "Cells", exact: true }).click();
   await expect(assetTitles.first()).toHaveText("CD8 TCell");
 
   const pinnedCd8 = page.locator(".asset-card").filter({ hasText: "CD8 TCell" }).first();
   await pinnedCd8.hover();
   await pinnedCd8.getByRole("button", { name: "Toggle favorite" }).click();
-  await expect(assetTitles.first()).toHaveText("Basophil");
+  await expect(assetTitles.first()).toHaveText("Activated Neutrophil");
+});
+
+test("shows a minimal no-match state and preserves native page-text copying", async ({
+  page,
+  context
+}) => {
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+
+  const search = page.getByPlaceholder("Search cells, proteins, equipment…");
+  await search.fill("definitely-not-a-biological-asset");
+  await expect(page.getByRole("heading", { name: "No match", exact: true })).toBeVisible();
+  await expect(page.getByText(/Try a synonym/)).toHaveCount(0);
+
+  await page.getByRole("heading", { name: "No match", exact: true }).evaluate((heading) => {
+    const selection = window.getSelection();
+    const range = document.createRange();
+    range.selectNodeContents(heading);
+    selection?.removeAllRanges();
+    selection?.addRange(range);
+  });
+  await page.keyboard.press("ControlOrMeta+C");
+  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe("No match");
+});
+
+test("orders the audited taxonomy from cell biology to macroscopic assets", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+
+  await expect(page.locator(".category-strip button")).toHaveText([
+    "All",
+    "Cells",
+    "Proteins",
+    "Molecules",
+    "Nucleic acids & genetics",
+    "Cellular processes",
+    "Equipment",
+    "Bacteria",
+    "Viruses",
+    "Parasites",
+    "Anatomy",
+    "People",
+    "Animals",
+    "Arthropods",
+    "Plants",
+    "Food",
+    "Symbols & diagrams",
+    "Other"
+  ]);
+
+  const search = page.getByPlaceholder("Search cells, proteins, equipment…");
+  await page.getByRole("button", { name: "Cells", exact: true }).click();
+  await search.fill("Activated Neutrophil");
+  await expect(
+    page.locator(".asset-card").filter({ hasText: "Activated Neutrophil" })
+  ).toBeVisible();
+
+  await page.getByRole("button", { name: "Viruses", exact: true }).click();
+  await search.fill("Bunyavirus");
+  await expect(page.locator(".asset-card").filter({ hasText: "Bunyavirus" })).toBeVisible();
+
+  await page.getByRole("button", { name: "Proteins", exact: true }).click();
+  await search.fill("CD80");
+  await expect(page.locator(".asset-card").filter({ hasText: "CD80" })).toBeVisible();
+
+  await page.getByRole("button", { name: "Animals", exact: true }).click();
+  await search.fill("Tree Dwelling Crab Eating Macaque");
+  await expect(
+    page.locator(".asset-card").filter({ hasText: "Tree Dwelling Crab Eating Macaque" })
+  ).toBeVisible();
 });
 
 test("renders and persists complex NIH illustrations without losing their colors", async ({
@@ -978,6 +1574,11 @@ test("renders and persists complex NIH illustrations without losing their colors
   const insert = dendriticCell.locator(".asset-card-image");
   await insert.click();
   await expect(page.locator(".layers-title small")).toHaveText("1");
+  const dendriticCenter = await artboardPoint(page);
+  await page.mouse.click(dendriticCenter.x, dendriticCenter.y, { button: "right" });
+  const dendriticMenu = page.getByRole("menu", { name: "Dendritic Cell actions" });
+  await expect(dendriticMenu.getByRole("menuitem", { name: "Ungroup" })).toBeVisible();
+  await page.keyboard.press("Escape");
 
   const visibleCellColors = async () =>
     page.locator(".lower-canvas").evaluate((canvas: HTMLCanvasElement) => {
@@ -1010,6 +1611,97 @@ test("renders and persists complex NIH illustrations without losing their colors
   await expect.poll(async () => (await visibleCellColors()).peach).toBeGreaterThan(100);
 });
 
+test("restores an asset's semantic identity when its exact parts are regrouped", async ({
+  page
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
+  await page.getByRole("button", { name: "Insert T Cell", exact: true }).click();
+  await expect(page.locator(".inspector-header h2")).toHaveText("T Cell");
+
+  await page.getByRole("button", { name: "Ungroup", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Group", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Group", exact: true }).click();
+
+  await expect(page.locator(".inspector-header h2")).toHaveText("T Cell");
+  await expect(page.getByText("Edit individual parts", { exact: true })).toHaveCount(0);
+  await expect(page.locator(".layer-list > button").filter({ hasText: "T Cell" })).toHaveCount(1);
+
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await page.getByRole("button", { name: "Untitled figure" }).click();
+  await expect(page.locator(".inspector-header h2")).toHaveText("Canvas");
+  await page.locator(".layer-list > button").filter({ hasText: "T Cell" }).click();
+  await expect(page.locator(".inspector-header h2")).toHaveText("T Cell");
+});
+
+test("applies profile-aware shade presets to grouped biological assets", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
+  await page.getByRole("button", { name: "Insert T Cell", exact: true }).click();
+
+  await expect(page.getByText("Asset palette", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Part colors", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Scientific color effects", { exact: true })).toHaveCount(0);
+  const greenPreset = page.getByRole("button", { name: "Apply Green preset" });
+  await expect(greenPreset).toBeVisible();
+  await greenPreset.click();
+  await expect(greenPreset).toHaveAttribute("aria-pressed", "true");
+
+  const centerColor = await page.locator(".lower-canvas").evaluate((canvas: HTMLCanvasElement) => {
+    const context = canvas.getContext("2d")!;
+    return [...context.getImageData(canvas.width / 2, canvas.height / 2, 1, 1).data];
+  });
+  expect(centerColor[1]).toBeGreaterThan(centerColor[0]);
+  expect(centerColor[1]).toBeGreaterThan(centerColor[2]);
+
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await page.getByRole("button", { name: "Untitled figure" }).click();
+  await page.locator(".layer-list > button").filter({ hasText: "T Cell" }).click();
+  await expect(page.getByRole("button", { name: "Apply Green preset" })).toHaveAttribute(
+    "aria-pressed",
+    "true"
+  );
+  await page.getByRole("button", { name: "Original", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Apply Green preset" })).toHaveAttribute(
+    "aria-pressed",
+    "false"
+  );
+});
+
+test("saves and resets styling for future copies of the same biological asset", async ({
+  page
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
+  const insertTCell = page.getByRole("button", { name: "Insert T Cell", exact: true });
+  await insertTCell.click();
+
+  const greenPreset = page.getByRole("button", { name: "Apply Green preset" });
+  await greenPreset.click();
+  const center = await artboardPoint(page);
+  await page.mouse.click(center.x, center.y, { button: "right" });
+  await page
+    .getByRole("menu", { name: "T Cell actions" })
+    .getByRole("menuitem", { name: "Save styling" })
+    .click();
+
+  await insertTCell.click();
+  await expect(greenPreset).toHaveAttribute("aria-pressed", "true");
+
+  await page.mouse.click(center.x, center.y, { button: "right" });
+  await page
+    .getByRole("menu", { name: "T Cell actions" })
+    .getByRole("menuitem", { name: "Reset styling" })
+    .click();
+  await expect(greenPreset).toHaveAttribute("aria-pressed", "false");
+
+  await insertTCell.click();
+  await expect(greenPreset).toHaveAttribute("aria-pressed", "false");
+});
+
 test("saves an inserted SVG before immediately leaving the editor", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
@@ -1034,7 +1726,7 @@ test("drills into an SVG asset and persists an independently edited part", async
   const dendriticCell = page.locator(".asset-card").filter({ hasText: "Dendritic Cell" }).first();
   await dendriticCell.locator(".asset-card-image").click();
   await expect(page.locator(".layers-title small")).toHaveText("1");
-  await expect(page.getByText("Edit individual parts", { exact: true })).toBeVisible();
+  await expect(page.getByText("Edit individual parts", { exact: true })).toHaveCount(0);
   await expect(page.locator(".inspector-header h2")).toHaveText("Dendritic Cell");
   await expect(page.locator(".inspector-header .eyebrow")).toHaveCount(0);
 

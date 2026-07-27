@@ -55,48 +55,27 @@ function matchesTerms(haystack: string, value: string): boolean {
 }
 
 const CATEGORY_BROWSE_PRIORITY: Record<string, number> = {
-  "Cells and organelles": 0,
+  Cells: 0,
   Proteins: 1,
   Molecules: 2,
-  "Cellular processes": 3,
-  Equipment: 4,
-  Bacteria: 5,
-  Viruses: 6,
-  Anatomy: 10,
-  "Shapes and arrows": 11,
-  Other: 12,
+  "Nucleic acids & genetics": 3,
+  "Cellular processes": 4,
+  Equipment: 5,
+  Bacteria: 6,
+  Viruses: 7,
+  Parasites: 8,
+  Anatomy: 9,
+  People: 10,
+  Animals: 11,
+  Arthropods: 12,
   Plants: 13,
-  Arthropods: 14,
-  Animals: 15,
-  People: 16
+  Food: 14,
+  "Symbols & diagrams": 15,
+  Other: 16
 };
 
-const OTHER_BIOCHEMISTRY_PRIORITY: Array<[number, RegExp]> = [
-  [
-    0,
-    /\b(cell|cellular|organelle|nucleus|neutrophil|astrocyte|lymphocyte|macrophage|monocyte|hepatocyte|fibroblast|eosinophil|basophil|erythrocyte|platelet|neuron)\b/
-  ],
-  [
-    1,
-    /\b(protein|receptor|antibody|immunoglobulin|enzyme|kinase|complex|filament|actin|tubulin|microtubule|complement|cd\d+)\b/
-  ],
-  [2, /\b(dna|rna|chromatin|chromosome|gene|genome|nucleic|lipid|molecule|metabolite|ceramide)\b/],
-  [3, /\b(apoptosis|translation|transcription|polymerization|signaling|pathway|cascade)\b/],
-  [
-    4,
-    /\b(plate|dish|vial|tube|pipette|microscope|sequencer|flask|spectrometry|reader|qpcr|centrifuge|grid box)\b/
-  ],
-  [5, /\b(bacteria|bacillus|borrelia|spirochete)\b/],
-  [6, /\b(virus|viral|virion)\b/]
-];
-
 export function assetBrowsePriority(family: AssetFamily): number {
-  if (family.category !== "Other") return CATEGORY_BROWSE_PRIORITY[family.category] ?? 12;
-  const metadata = searchableText(family);
-  return (
-    OTHER_BIOCHEMISTRY_PRIORITY.find(([, pattern]) => pattern.test(metadata))?.[0] ??
-    CATEGORY_BROWSE_PRIORITY.Other
-  );
+  return CATEGORY_BROWSE_PRIORITY[family.category] ?? CATEGORY_BROWSE_PRIORITY.Other;
 }
 
 export function filterAssetFamilies(

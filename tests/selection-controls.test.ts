@@ -7,7 +7,8 @@ import {
   ROTATION_SNAP_THRESHOLD,
   SELECTION_STROKE_WIDTH_PX,
   selectionStrokeWidthAtZoom,
-  SINGLE_OBJECT_SELECTION_COLOR
+  SINGLE_OBJECT_SELECTION_COLOR,
+  nextDeepSelection
 } from "../apps/web/src/editor/selection";
 
 describe("selection control colors", () => {
@@ -47,14 +48,42 @@ describe("selection control colors", () => {
     }
   });
 
-  it("keeps selection strokes constant on screen and makes them fifty percent thicker", () => {
+  it("keeps selection strokes at two pixels across zoom levels", () => {
     const shape = new Rect({ width: 20, height: 20 });
 
     configureSelectionControls(shape, 2);
 
-    expect(SELECTION_STROKE_WIDTH_PX).toBe(1.5);
-    expect(shape.borderScaleFactor).toBe(0.75);
-    expect(selectionStrokeWidthAtZoom(0.5)).toBe(3);
-    expect(selectionStrokeWidthAtZoom(2) * 2).toBe(SELECTION_STROKE_WIDTH_PX);
+    expect(SELECTION_STROKE_WIDTH_PX).toBe(2);
+    expect(shape.borderScaleFactor).toBe(SELECTION_STROKE_WIDTH_PX);
+    expect(selectionStrokeWidthAtZoom(0.1)).toBe(SELECTION_STROKE_WIDTH_PX);
+    expect(selectionStrokeWidthAtZoom(1)).toBe(SELECTION_STROKE_WIDTH_PX);
+    expect(selectionStrokeWidthAtZoom(4)).toBe(SELECTION_STROKE_WIDTH_PX);
+  });
+});
+
+describe("deep selection cycling", () => {
+  it("enters the first hit child when the selected group is not a leaf candidate", () => {
+    const topChild = new Rect({ width: 20, height: 20 });
+    const lowerChild = new Rect({ width: 20, height: 20 });
+    const group = new Group([lowerChild, topChild]);
+
+    expect(nextDeepSelection(group, [topChild, lowerChild])).toBe(topChild);
+  });
+
+  it("cycles through overlapping objects from front to back and wraps", () => {
+    const top = new Rect({ width: 20, height: 20 });
+    const middle = new Rect({ width: 20, height: 20 });
+    const bottom = new Rect({ width: 20, height: 20 });
+    const hits = [top, middle, bottom];
+
+    expect(nextDeepSelection(top, hits)).toBe(middle);
+    expect(nextDeepSelection(middle, hits)).toBe(bottom);
+    expect(nextDeepSelection(bottom, hits)).toBe(top);
+  });
+
+  it("keeps a sole hit selected", () => {
+    const object = new Rect({ width: 20, height: 20 });
+
+    expect(nextDeepSelection(object, [object])).toBe(object);
   });
 });

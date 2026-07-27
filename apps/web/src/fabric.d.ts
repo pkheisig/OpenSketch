@@ -1,5 +1,7 @@
 import "fabric";
 import type { ConnectorBinding } from "@workspace/editor-core";
+import type { RecognizedGroup } from "@/editor/groupRecognition";
+import type { ElementStyleSnapshot } from "@/editor/elementStyles";
 
 declare module "fabric" {
   interface FabricObject {
@@ -23,5 +25,8 @@ declare module "fabric" {
     assetTintAmount?: number;
     assetSaturation?: number;
     assetBrightness?: number;
+    assetColorPreset?: string;
+    recognizedGroups?: RecognizedGroup[];
+    defaultElementStyle?: ElementStyleSnapshot;
   }
 }

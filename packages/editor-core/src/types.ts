@@ -70,6 +70,17 @@ export interface PortableProject {
 
 export interface ProjectRecord extends PortableProject {
   thumbnail?: string;
+  /** Local project-library placement; not included in portable project exports. */
+  folderId?: string;
+  /** Local archive timestamp; not included in portable project exports. */
+  archivedAt?: string;
+}
+
+export interface ProjectFolderRecord {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export type ConnectorAnchor = "top" | "right" | "bottom" | "left" | "center";

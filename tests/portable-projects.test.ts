@@ -16,12 +16,16 @@ describe("portable OpenSketch projects", () => {
   it("round-trips the established project schema without scene loss", () => {
     const serialized = serializeProject({
       ...fixture,
-      thumbnail: "data:image/png;base64,preview-only"
+      thumbnail: "data:image/png;base64,preview-only",
+      folderId: "folder-1",
+      archivedAt: "2026-07-27T12:00:00.000Z"
     });
     const restored = migrateProject(JSON.parse(serialized));
 
     expect(restored).toEqual(fixture);
     expect(serialized).not.toContain("preview-only");
+    expect(serialized).not.toContain("folder-1");
+    expect(serialized).not.toContain("archivedAt");
     expect((restored.objects.objects as unknown[]).length).toBe(6);
   });
 

@@ -1,14 +1,15 @@
 import { StaticCanvas, type Canvas } from "fabric";
 import type { CanvasSettings, ProjectRecord } from "@workspace/editor-core";
 import {
-  isCurrentVectorThumbnail,
+  isProjectThumbnailCurrent,
   svgThumbnailDataUrl,
   VECTOR_THUMBNAIL_VERSION
 } from "@/persistence/thumbnailFormat";
 
 export function createVectorThumbnail(
   canvas: Canvas | StaticCanvas,
-  settings: CanvasSettings
+  settings: CanvasSettings,
+  projectRevision: string
 ): string {
   const viewport = [...canvas.viewportTransform] as [
     number,
@@ -27,17 +28,15 @@ export function createVectorThumbnail(
         height: `${settings.height}`,
         viewBox: { x: 0, y: 0, width: settings.width, height: settings.height }
       })
-      .replace(/<svg\b/, `<svg data-opensketch-thumbnail="${VECTOR_THUMBNAIL_VERSION}"`);
+      .replace(
+        /<svg\b/,
+        `<svg data-opensketch-thumbnail="${VECTOR_THUMBNAIL_VERSION}" data-opensketch-project-revision="${projectRevision}"`
+      );
     return svgThumbnailDataUrl(svg);
   } finally {
     canvas.setViewportTransform(viewport);
     canvas.requestRenderAll();
   }
-}
-
-function hasProjectObjects(project: ProjectRecord): boolean {
-  const objects = project.objects.objects;
-  return Array.isArray(objects) && objects.length > 0;
 }
 
 async function renderSavedProjectThumbnail(project: ProjectRecord): Promise<string> {
@@ -48,7 +47,7 @@ async function renderSavedProjectThumbnail(project: ProjectRecord): Promise<stri
   });
   try {
     await canvas.loadFromJSON(project.objects);
-    return createVectorThumbnail(canvas, project.canvas);
+    return createVectorThumbnail(canvas, project.canvas, project.updatedAt);
   } finally {
     canvas.dispose();
   }
@@ -59,10 +58,7 @@ export async function upgradeProjectThumbnails(
 ): Promise<ProjectRecord[]> {
   const upgraded: ProjectRecord[] = [];
   for (const project of projects) {
-    if (
-      isCurrentVectorThumbnail(project.thumbnail) ||
-      (!project.thumbnail && !hasProjectObjects(project))
-    ) {
+    if (isProjectThumbnailCurrent(project.thumbnail, project.updatedAt)) {
       upgraded.push(project);
       continue;
     }

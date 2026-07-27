@@ -35,20 +35,21 @@ test("preserves editable color, gradients, clipping, fonts, and raster dimension
   );
   await expect(page.locator(".layers-title small")).toHaveText("2");
 
-  const swatches = page.locator(".palette input[type=color]");
-  await expect(swatches.first()).toBeVisible();
-  const originalColor = await swatches.first().inputValue();
+  const artboard = page.locator(".artboard-stage");
+  const artboardBounds = await artboard.boundingBox();
+  expect(artboardBounds).not.toBeNull();
+  await artboard.dblclick({
+    position: {
+      x: artboardBounds!.width / 2,
+      y: artboardBounds!.height / 2 + 78 * (artboardBounds!.width / 1920)
+    }
+  });
+  const fill = page.locator("label.color-field").filter({ hasText: "Fill" }).locator("input");
+  await expect(fill).toBeVisible();
+  const originalColor = await fill.inputValue();
   const replacement = originalColor.toLowerCase() === "#c2185b" ? "#00796b" : "#c2185b";
-  const activeSwatch = await swatches.first().elementHandle();
-  await swatches.first().evaluate((input, color) => {
-    const colorInput = input as HTMLInputElement;
-    const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
-    setter?.call(colorInput, color);
-    colorInput.dispatchEvent(new Event("input", { bubbles: true }));
-    colorInput.dispatchEvent(new Event("change", { bubbles: true }));
-  }, replacement);
-  await expect(swatches.first()).toHaveValue(replacement);
-  expect(await activeSwatch?.evaluate((input) => input.isConnected)).toBe(true);
+  await fill.fill(replacement);
+  await expect(fill).toHaveValue(replacement);
   await expect(page.locator(".save-state")).toHaveCount(0);
 
   await page.getByRole("button", { name: "Export", exact: true }).click();

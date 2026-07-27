@@ -11,12 +11,16 @@ An asset enters the bundle only when:
 1. Commons reports `image/svg+xml`.
 2. Extended metadata explicitly says public domain.
 3. Exactly one NIH BioArt entry ID can be established.
-4. Sanitized XML has a root SVG and `viewBox`.
-5. Security validation finds no executable or network content.
-6. A transparent 256 × 256 WebP thumbnail can be rendered.
+4. The NIH BioArt family has one explicit reviewed assignment in
+   `data/taxonomy.json`.
+5. Sanitized XML has a root SVG and `viewBox`.
+6. Security validation finds no executable or network content.
+7. A transparent 256 × 256 WebP thumbnail can be rendered.
 
 If identity evidence conflicts, maintainers must resolve it in
 `data/asset-overrides.json`; the importer never silently chooses one value.
+Taxonomy is likewise not inferred from titles or keywords. A newly discovered
+family stops the import until its entry ID is assigned to exactly one category.
 
 ## Determinism
 
@@ -42,4 +46,5 @@ git diff -- data/source-lock.json \
 
 Review `data/import-errors.json`. A non-empty failure list prevents a successful
 sync. Verify identity or taxonomy corrections against the linked Commons and NIH
-source pages before adding overrides.
+source pages before adding overrides. `assets:validate` also proves that the
+taxonomy and generated manifest contain the same family IDs and categories.

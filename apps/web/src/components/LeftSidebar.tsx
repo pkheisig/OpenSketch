@@ -14,13 +14,10 @@ import {
   Brackets,
   Circle,
   FileInput,
-  FileText,
   Heart,
   ImagePlus,
-  Info,
   Minus,
   MessageSquare,
-  MousePointer2,
   PanelLeftClose,
   PanelLeftOpen,
   Search,
@@ -41,10 +38,9 @@ import {
 import { ASSET_CATEGORIES, assetManifest } from "@/assets/manifest";
 import { useEditor } from "@/editor/EditorContext";
 import { UiSelect } from "@/components/UiSelect";
-import { useModalDialog } from "./useModalDialog";
 import { useSidebarHover } from "./useSidebarHover";
 
-type Tab = "assets" | "text" | "shapes" | "imports";
+type Tab = "assets" | "shapes" | "imports";
 
 export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const [tab, setTab] = useState<Tab>("assets");
@@ -81,7 +77,6 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
             {(
               [
                 ["assets", Sparkles, "Assets"],
-                ["text", Type, "Text"],
                 ["shapes", Shapes, "Shapes"],
                 ["imports", FileInput, "Imports"]
               ] as const
@@ -123,7 +118,6 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
           aria-label={`${tab} tools`}
         >
           {tab === "assets" && <AssetsPanel />}
-          {tab === "text" && <TextPanel />}
           {tab === "shapes" && <ShapesPanel />}
           {tab === "imports" && <ImportsPanel />}
         </div>
@@ -144,11 +138,9 @@ function AssetsPanel() {
   const [recent, setRecent] = useState<string[]>(
     () => JSON.parse(localStorage.getItem("OpenSketch:recent-assets") ?? "[]") as string[]
   );
-  const [info, setInfo] = useState<AssetFamily | null>(null);
   const [assetError, setAssetError] = useState("");
   const [assetListHeight, setAssetListHeight] = useState(0);
   const assetListRef = useRef<HTMLDivElement>(null);
-  const infoRef = useModalDialog(Boolean(info), () => setInfo(null));
   const families = useMemo(() => {
     const matches = filterAssetFamilies(assetManifest.families, debouncedQuery, category);
     return matches
@@ -211,7 +203,6 @@ function AssetsPanel() {
             variant={variant}
             favorite={favorites.has(family.familyId)}
             onFavorite={() => toggleFavorite(family.familyId)}
-            onInfo={() => setInfo(family)}
             onInsert={() => insert(family, variant)}
             onVariant={(variantId) =>
               setVariants((current) => ({ ...current, [family.familyId]: variantId }))
@@ -245,11 +236,6 @@ function AssetsPanel() {
 
   return (
     <div className="assets-panel">
-      <div className="panel-heading">
-        <div>
-          <h2>Illustration library</h2>
-        </div>
-      </div>
       <label className="search-box">
         <Search size={16} />
         <input
@@ -324,64 +310,7 @@ function AssetsPanel() {
       ) : (
         <div className="empty-library">
           <Search size={23} />
-          <h3>No biological match</h3>
-          <p>Try a synonym, abbreviation, or broader category.</p>
-        </div>
-      )}
-      {info && (
-        <div className="dialog-backdrop" onMouseDown={() => setInfo(null)}>
-          <section
-            ref={infoRef}
-            className="dialog asset-info-dialog"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="asset-info-title"
-            tabIndex={-1}
-            onMouseDown={(event) => event.stopPropagation()}
-          >
-            <button
-              className="dialog-close icon-button"
-              onClick={() => setInfo(null)}
-              aria-label="Close"
-            >
-              <X size={17} />
-            </button>
-            <img src={selectedVariant(info).thumbnailPath} alt="" className="asset-info-image" />
-            <p className="eyebrow">{info.category}</p>
-            <h2 id="asset-info-title">{info.title}</h2>
-            <p>{info.description || "Public-domain biological illustration."}</p>
-            <dl className="source-list">
-              <div>
-                <dt>Author</dt>
-                <dd>{info.author}</dd>
-              </div>
-              <div>
-                <dt>License</dt>
-                <dd>{info.license}</dd>
-              </div>
-              <div>
-                <dt>Variants</dt>
-                <dd>{info.variants.length}</dd>
-              </div>
-            </dl>
-            <div className="dialog-link-row">
-              <a href={info.nihSourcePage} target="_blank" rel="noreferrer">
-                NIH source <ArrowRight size={13} />
-              </a>
-              <a href={info.commonsPage} target="_blank" rel="noreferrer">
-                Commons record <ArrowRight size={13} />
-              </a>
-            </div>
-            <button
-              className="button primary wide"
-              onClick={() => {
-                insert(info, selectedVariant(info));
-                setInfo(null);
-              }}
-            >
-              Insert illustration
-            </button>
-          </section>
+          <h3>No match</h3>
         </div>
       )}
     </div>
@@ -393,7 +322,6 @@ function AssetCard({
   variant,
   favorite,
   onFavorite,
-  onInfo,
   onInsert,
   onVariant
 }: {
@@ -401,7 +329,6 @@ function AssetCard({
   variant: AssetVariant;
   favorite: boolean;
   onFavorite: () => void;
-  onInfo: () => void;
   onInsert: () => void;
   onVariant: (id: string) => void;
 }) {
@@ -419,9 +346,6 @@ function AssetCard({
       </button>
       <button className="asset-favorite" onClick={onFavorite} aria-label="Toggle favorite">
         <Heart size={14} fill={favorite ? "currentColor" : "none"} />
-      </button>
-      <button className="asset-info" onClick={onInfo} aria-label={`About ${family.title}`}>
-        <Info size={13} />
       </button>
       <div className="asset-card-copy">
         <strong title={family.title}>{family.title}</strong>
@@ -441,119 +365,6 @@ function AssetCard({
         )}
       </div>
     </article>
-  );
-}
-
-function TextPanel() {
-  const editor = useEditor();
-  const activate = (
-    kind: "point" | "box",
-    overrides: { fontSize?: number; fontWeight?: number } = {}
-  ) => editor.setCreationTool({ type: "text", kind, ...overrides });
-  const active = (kind: "point" | "box") =>
-    editor.creationTool?.type === "text" && editor.creationTool.kind === kind;
-  const updateTextDefaults = (properties: Partial<typeof editor.creationDefaults.text>) =>
-    editor.setCreationDefaults({
-      ...editor.creationDefaults,
-      text: { ...editor.creationDefaults.text, ...properties }
-    });
-  return (
-    <>
-      <div className="panel-heading">
-        <div>
-          <h2>Text</h2>
-        </div>
-      </div>
-      <div className="insert-list">
-        <button
-          className={active("point") ? "active" : ""}
-          aria-pressed={active("point")}
-          onClick={() => activate("point")}
-        >
-          <Type size={22} />
-          <span>
-            <strong>Point text</strong>
-            <small>Short labels and headings</small>
-          </span>
-        </button>
-        <button
-          className={active("box") ? "active" : ""}
-          aria-pressed={active("box")}
-          onClick={() => activate("box")}
-        >
-          <FileText size={22} />
-          <span>
-            <strong>Text box</strong>
-            <small>Multiline notes and captions</small>
-          </span>
-        </button>
-      </div>
-      <p className="panel-kicker">TYPOGRAPHIC SCALE</p>
-      <div className="type-specimens">
-        <button onClick={() => activate("point", { fontSize: 54, fontWeight: 600 })}>
-          <span className="type-display">Figure title</span>
-          <small>54 px · Semibold</small>
-        </button>
-        <button onClick={() => activate("point", { fontSize: 32, fontWeight: 600 })}>
-          <span className="type-section">Section label</span>
-          <small>32 px · Semibold</small>
-        </button>
-        <button onClick={() => activate("box", { fontSize: 20, fontWeight: 400 })}>
-          <span className="type-body">Body annotation for explanatory detail.</span>
-          <small>20 px · Regular</small>
-        </button>
-      </div>
-      <details className="creation-defaults">
-        <summary>New text defaults</summary>
-        <div className="creation-defaults-body">
-          <label className="creation-color-field">
-            Color
-            <span>
-              <input
-                aria-label="Default text color"
-                type="color"
-                value={editor.creationDefaults.text.color}
-                onChange={(event) => updateTextDefaults({ color: event.target.value })}
-              />
-              {editor.creationDefaults.text.color}
-            </span>
-          </label>
-          <UiSelect
-            className="field"
-            label="Typeface"
-            value={editor.creationDefaults.text.fontFamily}
-            options={["Source Sans 3", "Source Serif 4", "STIX Two Text", "Inter", "Georgia"].map(
-              (font) => ({ value: font, label: font })
-            )}
-            onChange={(fontFamily) => updateTextDefaults({ fontFamily })}
-          />
-          <div className="creation-default-grid">
-            <label>
-              Size
-              <input
-                aria-label="Default text size"
-                type="number"
-                min="6"
-                max="400"
-                value={editor.creationDefaults.text.fontSize}
-                onChange={(event) => updateTextDefaults({ fontSize: Number(event.target.value) })}
-              />
-            </label>
-            <UiSelect
-              className="mini-field"
-              label="Weight"
-              value={String(editor.creationDefaults.text.fontWeight)}
-              options={[
-                { value: "400", label: "Regular" },
-                { value: "600", label: "Semibold" },
-                { value: "700", label: "Bold" }
-              ]}
-              onChange={(fontWeight) => updateTextDefaults({ fontWeight: Number(fontWeight) })}
-            />
-          </div>
-        </div>
-      </details>
-    </>
   );
 }
 
@@ -588,12 +399,22 @@ function ShapesPanel() {
   ] as const;
   return (
     <>
-      <div className="panel-heading">
-        <div>
-          <h2>Shapes & connectors</h2>
-        </div>
-      </div>
       <div className="shape-grid">
+        <button
+          className={
+            editor.creationTool?.type === "text" && editor.creationTool.kind === "point"
+              ? "active"
+              : ""
+          }
+          aria-label="Point text"
+          title="Point text"
+          aria-pressed={
+            editor.creationTool?.type === "text" && editor.creationTool.kind === "point"
+          }
+          onClick={() => editor.setCreationTool({ type: "text", kind: "point" })}
+        >
+          <Type size={25} aria-hidden="true" />
+        </button>
         {shapes.map(([kind, Icon, label]) => (
           <button
             key={kind}
@@ -701,14 +522,6 @@ function ShapesPanel() {
           </div>
         </div>
       </details>
-      <div className="panel-tip">
-        <MousePointer2 size={16} />
-        <p>
-          <strong>Connect two objects precisely.</strong> Select two objects, then add a line or
-          arrow. Choose edge anchors, arrowheads, direct or collision-aware routing, and line style
-          in the inspector.
-        </p>
-      </div>
     </>
   );
 }
@@ -744,11 +557,6 @@ function ImportsPanel() {
   const [error, setError] = useState("");
   return (
     <>
-      <div className="panel-heading">
-        <div>
-          <h2>Imports</h2>
-        </div>
-      </div>
       <button className="import-dropzone" onClick={() => input.current?.click()}>
         <span>
           <ImagePlus size={24} />
@@ -777,13 +585,6 @@ function ImportsPanel() {
           {error}
         </p>
       ) : null}
-      <div className="security-note">
-        <Info size={16} />
-        <p>
-          Imported SVGs are sanitized locally before insertion. External images, fonts, scripts, and
-          network references are removed.
-        </p>
-      </div>
     </>
   );
 }
