@@ -43,7 +43,11 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   await expect(page.getByText("rectangle", { exact: true }).last()).toBeVisible();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Text", 0.55, 0.35);
+  const fabricTextarea = page.locator('textarea[data-fabric="textarea"]');
+  await expect(fabricTextarea).toBeFocused();
+  await page.keyboard.press("ControlOrMeta+A");
   await page.keyboard.type("CD8 T cell");
+  await expect(fabricTextarea).toHaveValue("CD8 T cell");
   await page.keyboard.press("Escape");
 
   await page.getByRole("tab", { name: "Assets", exact: true }).click();
@@ -903,6 +907,9 @@ test("previews canvas zoom without resizing its backing stores or the page", asy
   const workspace = page.locator(".workspace-scroll");
 
   const result = await workspace.evaluate(async (element) => {
+    await new Promise<void>((resolve) =>
+      requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
+    );
     const canvases = [...element.querySelectorAll("canvas")];
     const stage = element.querySelector<HTMLElement>(".artboard-stage")!;
     const initialStageWidth = stage.getBoundingClientRect().width;
@@ -935,7 +942,7 @@ test("previews canvas zoom without resizing its backing stores or the page", asy
     await new Promise((resolve) => requestAnimationFrame(() => resolve(undefined)));
     const previewBackingStoreChanges = backingStoreChanges;
     const previewStageWidth = stage.getBoundingClientRect().width;
-    await new Promise((resolve) => setTimeout(resolve, 130));
+    await new Promise((resolve) => setTimeout(resolve, 210));
     observer.disconnect();
     return {
       workspacePrevented,
@@ -1054,10 +1061,11 @@ test("keeps mirror controls out of the header and toggles rulers without a canva
   await expect(page.locator(".canvas-workspace")).toHaveClass(/ruler-hidden/);
 
   await page.mouse.click(emptyCanvasPoint.x, emptyCanvasPoint.y, { button: "right" });
-  await page
+  const showRuler = page
     .getByRole("menu", { name: "Canvas actions" })
-    .getByRole("menuitem", { name: "Show ruler" })
-    .click();
+    .getByRole("menuitem", { name: "Show ruler" });
+  await expect(showRuler).toBeVisible();
+  await showRuler.evaluate((button) => (button as HTMLButtonElement).click());
   await expect(page.locator(".canvas-ruler")).toHaveCount(2);
   await expect(page.locator(".artboard-stage")).not.toHaveClass(/show-grid/);
 

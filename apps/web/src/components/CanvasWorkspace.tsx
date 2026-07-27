@@ -466,7 +466,7 @@ export function CanvasWorkspace() {
         });
       }
       window.clearTimeout(zoomSettleTimer.current);
-      zoomSettleTimer.current = window.setTimeout(commitPendingZoom, 90);
+      zoomSettleTimer.current = window.setTimeout(commitPendingZoom, 160);
     };
     const preventGestureZoom = (event: Event) => {
       event.preventDefault();
