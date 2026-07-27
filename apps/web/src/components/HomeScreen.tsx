@@ -26,6 +26,8 @@ export function HomeScreen({
   onDuplicate,
   onDelete,
   onExport,
+  canSaveToFolder,
+  onSaveToFolder,
   onRename,
   onImport
 }: {
@@ -35,15 +37,24 @@ export function HomeScreen({
   onDuplicate: (project: ProjectRecord) => void;
   onDelete: (project: ProjectRecord) => void;
   onExport: (project: ProjectRecord) => void;
+  canSaveToFolder: boolean;
+  onSaveToFolder: (project: ProjectRecord) => void;
   onRename: (project: ProjectRecord) => void;
   onImport: (file: File) => void;
 }) {
   const input = useRef<HTMLInputElement>(null);
   const [about, setAbout] = useState(false);
+  const [offlineReady, setOfflineReady] = useState(
+    document.documentElement.dataset.offlineReady === "true" ||
+      Boolean(navigator.serviceWorker?.controller)
+  );
   const aboutRef = useModalDialog(about, () => setAbout(false));
 
   useEffect(() => {
     document.title = "OpenSketch — scientific figure studio";
+    const markOfflineReady = () => setOfflineReady(true);
+    window.addEventListener("opensketch:offline-ready", markOfflineReady);
+    return () => window.removeEventListener("opensketch:offline-ready", markOfflineReady);
   }, []);
 
   return (
@@ -184,6 +195,11 @@ export function HomeScreen({
                     <button onClick={() => onExport(project)}>
                       <Save size={14} /> Export project
                     </button>
+                    {canSaveToFolder ? (
+                      <button onClick={() => onSaveToFolder(project)}>
+                        <FolderOpen size={14} /> Save to folder
+                      </button>
+                    ) : null}
                     <button onClick={() => onDuplicate(project)}>
                       <Copy size={14} /> Duplicate
                     </button>
@@ -200,7 +216,10 @@ export function HomeScreen({
 
       <footer className="home-footer">
         <span>OpenSketch 0.1 · AGPL-3.0-or-later</span>
-        <span>Projects never leave this browser.</span>
+        <span>
+          Projects never leave this browser.{" "}
+          {offlineReady ? "Ready offline." : "Preparing offline copy…"}
+        </span>
       </footer>
 
       {about && (

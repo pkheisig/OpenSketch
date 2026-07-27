@@ -7,10 +7,8 @@ import tseslint from "typescript-eslint";
 export default tseslint.config(
   {
     ignores: [
-      "**/*.Rcheck/**",
       "**/node_modules/**",
-      "inst/app/**",
-      "apps/web/dist/**",
+      "dist/**",
       "coverage/**",
       "playwright-report/**",
       "test-results/**"

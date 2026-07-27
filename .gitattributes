@@ -1,4 +1,1 @@
-inst/app/assets/*.js -diff -whitespace
-inst/app/assets/*.css -diff -whitespace
-inst/app/assets/*.ttf binary
 apps/web/src/assets/fonts/*.ttf binary

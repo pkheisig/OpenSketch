@@ -1,7 +1,12 @@
 # OpenSketch 0.1.0
 
-- Prepared the initial pre-release implementation of the OpenSketch scientific
-  figure editor as an offline R package.
+- Converted OpenSketch into a static, browser-native GitHub Pages application
+  while preserving the version-1 `.OpenSketch` project format and editor
+  behavior.
+- Added a repository-base-aware Vite build, complete offline PWA cache, and
+  automated test/build/deploy workflow for `main`.
+- Added production-path, offline reload, and portable-project round-trip
+  regression coverage.
 - Added the deterministic, public-domain-only NIH BioArt synchronization and
   validation pipeline.
 - Added local project persistence, portable `.OpenSketch` files, editable vector

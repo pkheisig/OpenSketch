@@ -1,11 +1,7 @@
 node_modules/
-apps/web/dist/
+dist/
 coverage/
 playwright-report/
 test-results/
-*.Rcheck/
-*.tar.gz
-.Rhistory
-.Rproj.user/
 .DS_Store
 data/import-errors.json

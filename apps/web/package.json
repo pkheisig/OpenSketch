@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -25,6 +26,9 @@
     "svg2pdf.js": "2.7.0"
   },
   "devDependencies": {
-    "@types/react-window": "^1.8.8"
+    "@types/react-window": "^1.8.8",
+    "vite-plugin-pwa": "1.3.0",
+    "workbox-build": "^7.4.1",
+    "workbox-window": "^7.4.1"
   }
 }

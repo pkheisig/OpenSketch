@@ -8,7 +8,12 @@ import {
   listProjects,
   saveProject
 } from "@/persistence/database";
-import { downloadProject, readProjectFile } from "@/persistence/portable";
+import {
+  downloadProject,
+  readProjectFile,
+  saveProjectToDirectory,
+  supportsProjectDirectory
+} from "@/persistence/portable";
 import { HomeScreen } from "@/components/HomeScreen";
 import {
   instantiateScientificTemplate,
@@ -100,6 +105,10 @@ export function App() {
               .catch((reason) => setError(String(reason)));
           }}
           onExport={downloadProject}
+          canSaveToFolder={supportsProjectDirectory()}
+          onSaveToFolder={(project) => {
+            saveProjectToDirectory(project).catch((reason) => setError(String(reason)));
+          }}
           onRename={(project) => {
             const name = window.prompt("Rename project", project.name)?.trim();
             if (!name || name === project.name) return;

@@ -10,7 +10,7 @@
 - [ ] `pnpm assets:validate`
 - [ ] `pnpm build`
 - [ ] `pnpm test:e2e`
-- [ ] R package check when R/package files changed
+- [ ] Production PWA check when hosting, caching, or asset paths changed
 
 ## Asset and security checks
 

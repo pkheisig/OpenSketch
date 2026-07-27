@@ -1,8 +1,0 @@
-export(OpenSketch)
-export(OpenSketch_path)
-export(stop_OpenSketch)
-S3method(print,OpenSketch_server)
-importFrom(httpuv,randomPort)
-importFrom(httpuv,startServer)
-importFrom(httpuv,stopServer)
-importFrom(tools,file_ext)
