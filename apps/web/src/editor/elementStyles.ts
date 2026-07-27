@@ -2,6 +2,7 @@ import { Group, type FabricObject } from "fabric";
 import type { ConnectorBinding } from "@workspace/editor-core";
 
 export const SAVED_ELEMENT_STYLES_STORAGE_KEY = "OpenSketch:element-styles";
+export const SAVED_ELEMENT_STYLES_CHANGED_EVENT = "opensketch:element-styles-changed";
 
 type StyleValue = string | number | boolean | number[] | null;
 
@@ -34,6 +35,8 @@ const STYLE_PROPERTIES = [
   "charSpacing",
   "lineHeight",
   "textAlign",
+  "scaleX",
+  "scaleY",
   "assetTint",
   "assetTintAmount",
   "assetSaturation",
@@ -135,4 +138,5 @@ export function persistSavedElementStyles(styles: SavedElementStyles): void {
   } catch {
     // Styling remains active for this session if persistent storage is unavailable.
   }
+  window.dispatchEvent(new Event(SAVED_ELEMENT_STYLES_CHANGED_EVENT));
 }

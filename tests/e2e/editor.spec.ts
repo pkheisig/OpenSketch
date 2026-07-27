@@ -42,7 +42,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   await placeTool(page, "Rectangle", 0.38, 0.46);
   await expect(page.getByText("rectangle", { exact: true }).last()).toBeVisible();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
-  await placeTool(page, /Point text/, 0.55, 0.35);
+  await placeTool(page, "Text", 0.55, 0.35);
   await page.keyboard.type("CD8 T cell");
   await page.keyboard.press("Escape");
 
@@ -307,7 +307,7 @@ test("places text and shapes from active tools and persists line creation defaul
   await page.mouse.up();
   await expect(page.locator(".layers-title small")).toHaveText("5");
 
-  const pointText = page.getByRole("button", { name: /Point text/ });
+  const pointText = page.getByRole("button", { name: "Text", exact: true });
   await pointText.click();
   await expect(pointText).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator(".layers-title small")).toHaveText("5");
@@ -319,9 +319,7 @@ test("places text and shapes from active tools and persists line creation defaul
   await expect(page.locator(".layer-list button").filter({ hasText: "Label" })).toBeVisible();
 });
 
-test("places point text from the first icon-only Shapes tool without blanking the editor", async ({
-  page
-}) => {
+test("places text from the first Shapes tool without blanking the editor", async ({ page }) => {
   const pageErrors: string[] = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
 
@@ -330,10 +328,19 @@ test("places point text from the first icon-only Shapes tool without blanking th
   await expect(page.getByRole("tab", { name: "Text", exact: true })).toHaveCount(0);
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
 
+  const defaultMenuFontSizes = await page
+    .locator(
+      ".creation-defaults summary, .creation-defaults label, .creation-defaults input[type='number'], .creation-defaults .creation-color-field > span, .creation-defaults .ui-select-trigger"
+    )
+    .evaluateAll((elements) => [
+      ...new Set(elements.map((element) => getComputedStyle(element).fontSize))
+    ]);
+  expect(defaultMenuFontSizes).toEqual(["10px"]);
+
   const tools = page.locator(".shape-grid > button");
-  const pointText = page.getByRole("button", { name: "Point text", exact: true });
-  await expect(tools.first()).toHaveAttribute("aria-label", "Point text");
-  await expect(pointText).toHaveText("");
+  const pointText = page.getByRole("button", { name: "Text", exact: true });
+  await expect(tools.first()).toHaveAttribute("aria-label", "Text");
+  await expect(pointText).toHaveText("Text");
   await pointText.click();
   await expect(pointText).toHaveAttribute("aria-pressed", "true");
 
@@ -461,7 +468,7 @@ test("offers selection-aware canvas context actions", async ({ page }) => {
 
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   const textPoint = await artboardPoint(page, 0.5, 0.25);
-  await placeTool(page, /Point text/, 0.5, 0.25);
+  await placeTool(page, "Text", 0.5, 0.25);
   await page.keyboard.type("Context label");
   await page.keyboard.press("Escape");
   const textFill = page.locator("label.color-field").filter({ hasText: "Fill" }).locator("input");
@@ -1023,24 +1030,20 @@ test("rerenders vector artwork at the current zoom resolution", async ({ page })
   expect(result.backingHeight / result.stageHeight).toBeCloseTo(result.devicePixelRatio, 1);
 });
 
-test("mirrors selections from the toolbar and toggles rulers without a canvas grid", async ({
+test("keeps mirror controls out of the header and toggles rulers without a canvas grid", async ({
   page
 }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
 
-  const mirrorHorizontal = page.getByRole("button", { name: "Mirror horizontally" });
-  const mirrorVertical = page.getByRole("button", { name: "Mirror vertically" });
-  await expect(mirrorHorizontal).toBeDisabled();
-  await expect(mirrorVertical).toBeDisabled();
+  await expect(page.getByRole("button", { name: "Mirror horizontally" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Mirror vertically" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Toggle grid" })).toHaveCount(0);
 
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Triangle", 0.5, 0.5);
-  await expect(mirrorHorizontal).toBeEnabled();
-  await expect(mirrorVertical).toBeEnabled();
-  await mirrorHorizontal.click();
-  await mirrorVertical.click();
+  await page.getByRole("button", { name: "Flip H", exact: true }).click();
+  await page.getByRole("button", { name: "Flip V", exact: true }).click();
 
   const emptyCanvasPoint = await artboardPoint(page, 0.15, 0.15);
   await page.mouse.click(emptyCanvasPoint.x, emptyCanvasPoint.y, { button: "right" });
@@ -1443,7 +1446,7 @@ test("uses title-free insert panels and supports the expanded offline font catal
   await expect(page.getByRole("heading", { name: "Illustration library" })).toHaveCount(0);
   await expect(page.getByRole("tab", { name: "Text", exact: true })).toHaveCount(0);
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
-  await placeTool(page, "Point text", 0.5, 0.5);
+  await placeTool(page, "Text", 0.5, 0.5);
   const typeface = page.locator(".right-sidebar").getByRole("combobox", { name: "Typeface" });
   await typeface.click();
   await expect(page.getByRole("option")).toHaveCount(13);
@@ -1493,9 +1496,12 @@ test("pins favorite assets above normal All and category results", async ({ page
 
 test("shows a minimal no-match state and preserves native page-text copying", async ({
   page,
-  context
+  context,
+  browserName
 }) => {
-  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  if (browserName === "chromium") {
+    await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  }
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
 
@@ -1511,8 +1517,11 @@ test("shows a minimal no-match state and preserves native page-text copying", as
     selection?.removeAllRanges();
     selection?.addRange(range);
   });
-  await page.keyboard.press("ControlOrMeta+C");
-  await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe("No match");
+  await expect.poll(() => page.evaluate(() => window.getSelection()?.toString())).toBe("No match");
+  if (browserName === "chromium") {
+    await page.keyboard.press("ControlOrMeta+C");
+    await expect.poll(() => page.evaluate(() => navigator.clipboard.readText())).toBe("No match");
+  }
 });
 
 test("orders the audited taxonomy from cell biology to macroscopic assets", async ({ page }) => {
@@ -1677,10 +1686,21 @@ test("saves and resets styling for future copies of the same biological asset", 
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
   const insertTCell = page.getByRole("button", { name: "Insert T Cell", exact: true });
+  const assetCard = page.locator(".asset-card").filter({ hasText: "T Cell" }).first();
+  const assetPreview = assetCard.locator(".asset-card-image");
+  const assetPreviewImage = assetPreview.locator("img");
+  const originalPreviewSource = await assetPreviewImage.getAttribute("src");
+  const originalPreviewBounds = await assetPreview.boundingBox();
   await insertTCell.click();
 
   const greenPreset = page.getByRole("button", { name: "Apply Green preset" });
   await greenPreset.click();
+  const width = page.locator(".field-row.dimensions input").first();
+  const originalWidth = Number(await width.inputValue());
+  const savedWidth = Math.round(originalWidth * 0.6);
+  await width.fill(String(savedWidth));
+  await width.blur();
+  await expect.poll(async () => Number(await width.inputValue())).toBeCloseTo(savedWidth, 0);
   const center = await artboardPoint(page);
   await page.mouse.click(center.x, center.y, { button: "right" });
   await page
@@ -1688,8 +1708,42 @@ test("saves and resets styling for future copies of the same biological asset", 
     .getByRole("menuitem", { name: "Save styling" })
     .click();
 
+  await expect.poll(() => assetPreviewImage.getAttribute("src")).toMatch(/^data:image\/png/);
+  expect(await assetPreviewImage.getAttribute("src")).not.toBe(originalPreviewSource);
+  await expect
+    .poll(() =>
+      assetPreviewImage.evaluate(
+        (image: HTMLImageElement) => image.complete && image.naturalWidth > 0
+      )
+    )
+    .toBe(true);
+  const greenPreviewPixels = await assetPreviewImage.evaluate((image: HTMLImageElement) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 256;
+    canvas.height = 256;
+    const context = canvas.getContext("2d")!;
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    let green = 0;
+    for (let index = 0; index < pixels.length; index += 4) {
+      if (
+        pixels[index + 3] > 32 &&
+        pixels[index + 1] > pixels[index] * 1.15 &&
+        pixels[index + 1] > pixels[index + 2] * 1.08
+      ) {
+        green += 1;
+      }
+    }
+    return green;
+  });
+  expect(greenPreviewPixels).toBeGreaterThan(100);
+  const savedPreviewBounds = await assetPreview.boundingBox();
+  expect(savedPreviewBounds?.width).toBeCloseTo(originalPreviewBounds?.width ?? 0, 0);
+  expect(savedPreviewBounds?.height).toBeCloseTo(originalPreviewBounds?.height ?? 0, 0);
+
   await insertTCell.click();
   await expect(greenPreset).toHaveAttribute("aria-pressed", "true");
+  await expect.poll(async () => Number(await width.inputValue())).toBeCloseTo(savedWidth, 0);
 
   await page.mouse.click(center.x, center.y, { button: "right" });
   await page
@@ -1697,9 +1751,81 @@ test("saves and resets styling for future copies of the same biological asset", 
     .getByRole("menuitem", { name: "Reset styling" })
     .click();
   await expect(greenPreset).toHaveAttribute("aria-pressed", "false");
+  await expect.poll(async () => Number(await width.inputValue())).toBeCloseTo(originalWidth, 0);
+  await expect(assetPreviewImage).toHaveAttribute("src", originalPreviewSource ?? "");
 
   await insertTCell.click();
   await expect(greenPreset).toHaveAttribute("aria-pressed", "false");
+  await expect.poll(async () => Number(await width.inputValue())).toBeCloseTo(originalWidth, 0);
+});
+
+test("renders every styled eosinophil part in a stable sidebar preview", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Eosinophil");
+  const eosinophilCard = page.locator(".asset-card").filter({ hasText: "Eosinophil" }).first();
+  const previewImage = eosinophilCard.locator("img");
+  await eosinophilCard.locator(".asset-card-image").click();
+  await page.getByRole("button", { name: "Apply Green preset" }).click();
+
+  const center = await artboardPoint(page);
+  await page.mouse.click(center.x, center.y, { button: "right" });
+  await page
+    .getByRole("menu", { name: "Eosinophil actions" })
+    .getByRole("menuitem", { name: "Save styling" })
+    .click();
+  await expect.poll(() => previewImage.getAttribute("src")).toMatch(/^data:image\/png/);
+  await expect
+    .poll(() =>
+      previewImage.evaluate(
+        (image: HTMLImageElement) => image.complete && image.naturalWidth === 448
+      )
+    )
+    .toBe(true);
+
+  const previewStats = await previewImage.evaluate((image: HTMLImageElement) => {
+    const canvas = document.createElement("canvas");
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
+    const context = canvas.getContext("2d")!;
+    context.drawImage(image, 0, 0);
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    const buckets = new Set<string>();
+    let occupied = 0;
+    for (let index = 0; index < pixels.length; index += 4) {
+      if (pixels[index + 3] < 64) continue;
+      occupied += 1;
+      buckets.add(`${pixels[index] >> 5}:${pixels[index + 1] >> 5}:${pixels[index + 2] >> 5}`);
+    }
+    return { occupied, buckets: buckets.size };
+  });
+  expect(previewStats.occupied).toBeGreaterThan(10_000);
+  expect(previewStats.buckets).toBeGreaterThan(8);
+
+  const styledSource = await previewImage.getAttribute("src");
+  await page.evaluate(() => {
+    const state = { sources: [] as string[], timer: 0 };
+    state.timer = window.setInterval(() => {
+      const image = document.querySelector<HTMLImageElement>(".asset-card img");
+      if (image?.src) state.sources.push(image.src);
+    }, 5);
+    (window as unknown as { previewSampler: typeof state }).previewSampler = state;
+  });
+  await page.mouse.move(center.x, center.y);
+  await page.mouse.down();
+  await page.mouse.move(center.x + 100, center.y + 45, { steps: 25 });
+  await page.mouse.up();
+  await page.waitForTimeout(100);
+  const sampledSources = await page.evaluate(() => {
+    const state = (
+      window as unknown as {
+        previewSampler: { sources: string[]; timer: number };
+      }
+    ).previewSampler;
+    window.clearInterval(state.timer);
+    return [...new Set(state.sources)];
+  });
+  expect(sampledSources).toEqual([styledSource]);
 });
 
 test("saves an inserted SVG before immediately leaving the editor", async ({ page }) => {

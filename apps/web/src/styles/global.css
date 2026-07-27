@@ -1574,7 +1574,7 @@ a:focus-visible {
 .creation-defaults summary {
   padding: 10px 11px;
   color: #405b58;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.04em;
   cursor: pointer;
@@ -1598,7 +1598,7 @@ a:focus-visible {
   display: grid;
   gap: 5px;
   color: #667572;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
 }
 
@@ -1620,7 +1620,12 @@ a:focus-visible {
   align-items: center;
   gap: 6px;
   color: #54635f;
-  font-size: 8px;
+  font-size: 10px;
+}
+
+.creation-defaults .field,
+.creation-defaults .mini-field {
+  font-size: 10px;
 }
 
 .creation-color-field input[type="color"] {

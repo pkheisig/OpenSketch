@@ -35,12 +35,85 @@ import {
   type ConnectorArrowhead,
   type ConnectorLineStyle
 } from "@workspace/editor-core";
+import { Group, StaticCanvas, util, type FabricObject } from "fabric";
 import { ASSET_CATEGORIES, assetManifest } from "@/assets/manifest";
 import { useEditor } from "@/editor/EditorContext";
+import {
+  applyElementStyle,
+  loadSavedElementStyles,
+  SAVED_ELEMENT_STYLES_CHANGED_EVENT,
+  type ElementStyleSnapshot,
+  type SavedElementStyles
+} from "@/editor/elementStyles";
+import { loadEditableSvg } from "@/editor/svg";
 import { UiSelect } from "@/components/UiSelect";
 import { useSidebarHover } from "./useSidebarHover";
 
 type Tab = "assets" | "shapes" | "imports";
+
+const styledAssetPreviewCache = new Map<string, Promise<string>>();
+const styledAssetPreviewSources = new Map<string, string>();
+
+function styledAssetPreviewKey(assetPath: string, snapshot: ElementStyleSnapshot): string {
+  return `${assetPath}:${JSON.stringify(snapshot)}`;
+}
+
+async function styledAssetPreview(
+  assetPath: string,
+  snapshot: ElementStyleSnapshot
+): Promise<string> {
+  const cacheKey = styledAssetPreviewKey(assetPath, snapshot);
+  const resolved = styledAssetPreviewSources.get(cacheKey);
+  if (resolved) return resolved;
+  const cached = styledAssetPreviewCache.get(cacheKey);
+  if (cached) return cached;
+  const preview = (async () => {
+    const response = await fetch(assetPath);
+    if (!response.ok) throw new Error(`Could not preview ${assetPath}.`);
+    const parsed = await loadEditableSvg(await response.text());
+    const objects = parsed.objects.filter((object): object is FabricObject => Boolean(object));
+    const grouped = util.groupSVGElements(objects, parsed.options);
+    const group = grouped instanceof Group ? grouped : new Group([grouped]);
+    applyElementStyle(group, snapshot);
+    // Render through Fabric's normal canvas renderer so nested groups,
+    // gradients, masks, and stacking match the inserted object. Serializing a
+    // detached group with toSVG can omit group-level paint definitions.
+    const previewSize = 448;
+    const padding = 18;
+    const width = Math.max(1, group.width || 1);
+    const height = Math.max(1, group.height || 1);
+    const scale = Math.min(
+      (previewSize - padding * 2) / width,
+      (previewSize - padding * 2) / height
+    );
+    group.set({
+      left: previewSize / 2,
+      top: previewSize / 2,
+      originX: "center",
+      originY: "center",
+      scaleX: scale,
+      scaleY: scale
+    });
+    group.setCoords();
+    const previewCanvas = new StaticCanvas(undefined, {
+      width: previewSize,
+      height: previewSize,
+      enableRetinaScaling: false,
+      renderOnAddRemove: false
+    });
+    previewCanvas.add(group);
+    previewCanvas.renderAll();
+    const source = previewCanvas.toDataURL({ format: "png", multiplier: 1 });
+    previewCanvas.dispose();
+    styledAssetPreviewSources.set(cacheKey, source);
+    return source;
+  })();
+  styledAssetPreviewCache.set(cacheKey, preview);
+  void preview.catch(() => {
+    styledAssetPreviewCache.delete(cacheKey);
+  });
+  return preview;
+}
 
 export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const [tab, setTab] = useState<Tab>("assets");
@@ -140,6 +213,7 @@ function AssetsPanel() {
   );
   const [assetError, setAssetError] = useState("");
   const [assetListHeight, setAssetListHeight] = useState(0);
+  const [savedStyles, setSavedStyles] = useState<SavedElementStyles>(loadSavedElementStyles);
   const assetListRef = useRef<HTMLDivElement>(null);
   const families = useMemo(() => {
     const matches = filterAssetFamilies(assetManifest.families, debouncedQuery, category);
@@ -156,6 +230,11 @@ function AssetsPanel() {
     const timeout = window.setTimeout(() => setDebouncedQuery(query), 160);
     return () => window.clearTimeout(timeout);
   }, [query]);
+  useEffect(() => {
+    const updateSavedStyles = () => setSavedStyles(loadSavedElementStyles());
+    window.addEventListener(SAVED_ELEMENT_STYLES_CHANGED_EVENT, updateSavedStyles);
+    return () => window.removeEventListener(SAVED_ELEMENT_STYLES_CHANGED_EVENT, updateSavedStyles);
+  }, []);
   useLayoutEffect(() => {
     const list = assetListRef.current;
     if (!list) return;
@@ -201,6 +280,7 @@ function AssetsPanel() {
             key={family.familyId}
             family={family}
             variant={variant}
+            savedStyle={savedStyles[`asset:${variant.id}`]}
             favorite={favorites.has(family.familyId)}
             onFavorite={() => toggleFavorite(family.familyId)}
             onInsert={() => insert(family, variant)}
@@ -320,6 +400,7 @@ function AssetsPanel() {
 function AssetCard({
   family,
   variant,
+  savedStyle,
   favorite,
   onFavorite,
   onInsert,
@@ -327,11 +408,46 @@ function AssetCard({
 }: {
   family: AssetFamily;
   variant: AssetVariant;
+  savedStyle?: ElementStyleSnapshot;
   favorite: boolean;
   onFavorite: () => void;
   onInsert: () => void;
   onVariant: (id: string) => void;
 }) {
+  const [previewSrc, setPreviewSrc] = useState(() => {
+    if (!savedStyle) return variant.thumbnailPath;
+    return (
+      styledAssetPreviewSources.get(styledAssetPreviewKey(variant.assetPath, savedStyle)) ??
+      variant.thumbnailPath
+    );
+  });
+  useEffect(() => {
+    let active = true;
+    if (!savedStyle) {
+      setPreviewSrc(variant.thumbnailPath);
+      return () => {
+        active = false;
+      };
+    }
+    const cacheKey = styledAssetPreviewKey(variant.assetPath, savedStyle);
+    const resolved = styledAssetPreviewSources.get(cacheKey);
+    if (resolved) {
+      setPreviewSrc(resolved);
+      return () => {
+        active = false;
+      };
+    }
+    void styledAssetPreview(variant.assetPath, savedStyle)
+      .then((source) => {
+        if (active) setPreviewSrc(source);
+      })
+      .catch(() => {
+        if (active) setPreviewSrc(variant.thumbnailPath);
+      });
+    return () => {
+      active = false;
+    };
+  }, [savedStyle, variant.assetPath, variant.thumbnailPath]);
   const onDragStart = (event: DragEvent) => {
     event.dataTransfer.effectAllowed = "copy";
     event.dataTransfer.setData(
@@ -342,7 +458,7 @@ function AssetCard({
   return (
     <article className="asset-card" draggable onDragStart={onDragStart}>
       <button className="asset-card-image" onClick={onInsert} aria-label={`Insert ${family.title}`}>
-        <img src={variant.thumbnailPath} alt="" loading="lazy" />
+        <img src={previewSrc} alt="" loading="lazy" />
       </button>
       <button className="asset-favorite" onClick={onFavorite} aria-label="Toggle favorite">
         <Heart size={14} fill={favorite ? "currentColor" : "none"} />
@@ -406,14 +522,15 @@ function ShapesPanel() {
               ? "active"
               : ""
           }
-          aria-label="Point text"
-          title="Point text"
+          aria-label="Text"
+          title="Text"
           aria-pressed={
             editor.creationTool?.type === "text" && editor.creationTool.kind === "point"
           }
           onClick={() => editor.setCreationTool({ type: "text", kind: "point" })}
         >
           <Type size={25} aria-hidden="true" />
+          <span>Text</span>
         </button>
         {shapes.map(([kind, Icon, label]) => (
           <button

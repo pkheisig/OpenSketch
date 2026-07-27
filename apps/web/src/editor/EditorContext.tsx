@@ -768,7 +768,7 @@ export function EditorProvider({
   }, [saveSnapshot]);
 
   const flushSave = useCallback(async () => {
-    // A toolbar click can follow an asset click before its SVG has finished
+    // A toolbar click can follow a library click before its SVG has finished
     // parsing. Treat that insertion as part of the action being flushed.
     await Promise.all([assetInsertQueue.current, importQueue.current]);
     await saveQueue.current;

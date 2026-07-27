@@ -488,11 +488,6 @@ export function CanvasWorkspace() {
   const onDrop = (event: DragEvent) => {
     event.preventDefault();
     setDragging(false);
-    const encoded = event.dataTransfer.getData("application/x-scientific-asset");
-    if (!encoded) return;
-    const data = JSON.parse(encoded) as { familyId: string; variantId: string };
-    const family = assetManifest.families.find((item) => item.familyId === data.familyId);
-    const variant = family?.variants.find((item) => item.id === data.variantId);
     const bounds = stageRef.current?.getBoundingClientRect();
     const point = bounds
       ? {
@@ -500,6 +495,11 @@ export function CanvasWorkspace() {
           y: Math.max(0, Math.min(canvasSettings.height, (event.clientY - bounds.top) / zoom))
         }
       : undefined;
+    const encoded = event.dataTransfer.getData("application/x-scientific-asset");
+    if (!encoded) return;
+    const data = JSON.parse(encoded) as { familyId: string; variantId: string };
+    const family = assetManifest.families.find((item) => item.familyId === data.familyId);
+    const variant = family?.variants.find((item) => item.id === data.variantId);
     if (family && variant) void editor.addAsset(family, variant, point);
   };
 

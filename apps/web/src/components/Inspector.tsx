@@ -39,10 +39,7 @@ import {
 } from "@workspace/editor-core";
 import { Color, FabricObject, Group as FabricGroup, Text } from "fabric";
 import { assetManifest } from "@/assets/manifest";
-import {
-  ASSET_COLOR_PRESETS,
-  colorProfileForFamily
-} from "@/editor/assetColorPresets";
+import { ASSET_COLOR_PRESETS, colorProfileForFamily } from "@/editor/assetColorPresets";
 import { useEditor } from "@/editor/EditorContext";
 import { TEXT_FONT_FAMILIES } from "@/editor/fonts";
 import { UiSelect } from "@/components/UiSelect";
