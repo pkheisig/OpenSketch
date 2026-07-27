@@ -24,6 +24,13 @@ const EditorStudio = lazy(() =>
   import("@/components/EditorStudio").then((module) => ({ default: module.EditorStudio }))
 );
 
+const PROJECT_HISTORY_KEY = "OpenSketchProjectId";
+
+function historyProjectId() {
+  const state = window.history.state as Record<string, unknown> | null;
+  return typeof state?.[PROJECT_HISTORY_KEY] === "string" ? state[PROJECT_HISTORY_KEY] : null;
+}
+
 export function App() {
   const [projects, setProjects] = useState<ProjectRecord[]>([]);
   const [current, setCurrent] = useState<ProjectRecord | null>(null);
@@ -40,13 +47,57 @@ export function App() {
       .finally(() => setLoading(false));
   }, [refresh]);
 
+  useEffect(() => {
+    const syncViewToHistory = () => {
+      const projectId = historyProjectId();
+      if (!projectId) {
+        setCurrent(null);
+        void refresh();
+        return;
+      }
+
+      db.projects
+        .get(projectId)
+        .then((project) => {
+          setCurrent(project ?? null);
+          if (!project) void refresh();
+        })
+        .catch((reason) => setError(String(reason)));
+    };
+
+    window.addEventListener("popstate", syncViewToHistory);
+    return () => window.removeEventListener("popstate", syncViewToHistory);
+  }, [refresh]);
+
+  const openProject = useCallback((project: ProjectRecord) => {
+    setCurrent(project);
+    if (historyProjectId() === project.id) return;
+
+    const currentState =
+      window.history.state && typeof window.history.state === "object" ? window.history.state : {};
+    window.history.pushState(
+      { ...currentState, [PROJECT_HISTORY_KEY]: project.id },
+      "",
+      window.location.href
+    );
+  }, []);
+
+  const returnToProjects = useCallback(() => {
+    if (historyProjectId()) {
+      window.history.back();
+      return;
+    }
+    setCurrent(null);
+    void refresh();
+  }, [refresh]);
+
   const newProject = async (templateId?: ScientificTemplateId) => {
     try {
       const project = templateId
         ? await instantiateScientificTemplate(templateId)
         : createProject();
       await saveProject(project);
-      setCurrent(project);
+      openProject(project);
       await refresh();
     } catch (reason) {
       setError(String(reason));
@@ -81,17 +132,14 @@ export function App() {
           <EditorStudio
             project={current}
             onProjectChange={updateProject}
-            onHome={() => {
-              setCurrent(null);
-              void refresh();
-            }}
+            onHome={returnToProjects}
           />
         </Suspense>
       ) : (
         <HomeScreen
           projects={projects}
           onNew={(templateId) => void newProject(templateId)}
-          onOpen={setCurrent}
+          onOpen={openProject}
           onDuplicate={(project) => {
             duplicateProject(project)
               .then(refresh)
@@ -121,7 +169,7 @@ export function App() {
               .then(async (project) => {
                 await saveProject(project);
                 await refresh();
-                setCurrent(project);
+                openProject(project);
               })
               .catch((reason) => setError(String(reason)));
           }}

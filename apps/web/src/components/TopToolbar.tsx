@@ -1,9 +1,9 @@
 import { useState } from "react";
 import {
+  ArrowLeft,
   ChevronDown,
   Download,
   HelpCircle,
-  Home,
   Info,
   Redo2,
   Undo2,
@@ -27,8 +27,9 @@ export function TopToolbar({ project, onHome }: { project: ProjectRecord; onHome
   return (
     <>
       <header className="top-toolbar">
-        <button className="icon-button home-button" onClick={onHome} aria-label="Project home">
-          <Home size={17} />
+        <button className="back-to-projects-button" onClick={onHome} aria-label="Back to projects">
+          <ArrowLeft size={16} />
+          <span>Projects</span>
         </button>
         <Logo compact />
         <span className="toolbar-rule" />

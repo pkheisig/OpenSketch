@@ -9,10 +9,8 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
     if (!["127.0.0.1", "localhost"].includes(url.hostname)) externalRequests.push(request.url());
   });
   await page.goto("/");
-  await expect(
-    page.getByRole("heading", { name: "Build the figure your data deserves." })
-  ).toBeVisible();
-  await page.getByRole("button", { name: "New figure", exact: true }).first().click();
+  await expect(page.getByRole("heading", { name: "New figure" })).toBeVisible();
+  await page.getByRole("button", { name: "Create blank figure" }).click();
   await expect(page.getByLabel("OpenSketch figure artboard")).toBeVisible();
 
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
@@ -102,13 +100,13 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   const pageSize = pdf.getPage(0).getSize();
   expect(pageSize.width).toBeGreaterThan(pageSize.height);
 
-  await page.getByRole("button", { name: "Project home" }).click();
-  await expect(page.getByRole("heading", { name: "Recent projects" })).toBeVisible();
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
   await page.getByRole("button", { name: "Untitled figure" }).click();
   await expect(page.getByText("rectangle", { exact: true }).last()).toBeVisible();
   await expect(page.locator(".layers-title small")).toHaveText("3");
 
-  await page.getByRole("button", { name: "Project home" }).click();
+  await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByLabel("Project actions for Untitled figure").click();
   const projectDownloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export project" }).click();
@@ -139,7 +137,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
 
 test("builds and persists a styled object-attached connector", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "New figure", exact: true }).first().click();
+  await page.getByRole("button", { name: "Create blank figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await page.getByRole("button", { name: "Rectangle", exact: true }).click();
   await page.getByRole("button", { name: "Rectangle", exact: true }).click();
@@ -177,7 +175,7 @@ test("builds and persists a styled object-attached connector", async ({ page }) 
   expect(svg).toContain("directional signaling path");
 
   await expect(page.getByText("Saved locally")).toBeVisible({ timeout: 5_000 });
-  await page.getByRole("button", { name: "Project home" }).click();
+  await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
   await page.locator(".layer-list button").filter({ hasText: "Connector" }).click();
   await expect(page.getByLabel("Line style")).toHaveValue("dashed");
@@ -195,7 +193,16 @@ test("opens a fully editable scientific starter layout", async ({ page }) => {
     page.locator(".layer-list button").filter({ hasText: "EXPERIMENTAL WORKFLOW" })
   ).toBeVisible();
 
-  await page.getByRole("button", { name: "Project home" }).click();
+  const backToProjects = page.getByRole("button", { name: "Back to projects" });
+  await expect(backToProjects).toBeVisible();
+  await expect(backToProjects).toContainText("Projects");
+
+  await page.goBack();
+  await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
+  await page.goForward();
+  await expect(page.getByLabel("OpenSketch figure artboard")).toBeVisible();
+
+  await backToProjects.click();
   const savedTemplate = page.locator(".project-title").filter({ hasText: "Experimental workflow" });
   await expect(savedTemplate).toBeVisible();
   await savedTemplate.click();
@@ -212,7 +219,7 @@ test("keeps the canvas responsive with one hundred ordinary objects", async ({
   );
   test.setTimeout(45_000);
   await page.goto("/");
-  await page.getByRole("button", { name: "New figure", exact: true }).first().click();
+  await page.getByRole("button", { name: "Create blank figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   const rectangle = page.getByRole("button", { name: "Rectangle", exact: true });
   for (let index = 0; index < 100; index += 1) {

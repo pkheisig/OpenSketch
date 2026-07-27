@@ -14,7 +14,7 @@ test("preserves editable color, gradients, clipping, fonts, and raster dimension
   page
 }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "New figure", exact: true }).first().click();
+  await page.getByRole("button", { name: "Create blank figure" }).click();
   await page.getByRole("tab", { name: "Uploads", exact: true }).click();
   await page.locator('input[type="file"][accept*="image/svg+xml"]').setInputFiles(fixturePath);
   await expect(page.locator(".layers-title small")).toHaveText("1");
