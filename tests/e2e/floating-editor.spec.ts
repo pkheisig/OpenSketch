@@ -216,6 +216,43 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   await expect(page.locator(".inspector-header").getByText("Canvas", { exact: true })).toHaveCount(0);
 });
 
+test("expands all creation defaults initially and restores each disclosure state", async ({
+  page
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  const shapeMenu = page.getByRole("menu", { name: "Shape tools" });
+  await shapeMenu.getByRole("menuitem", { name: /Defaults/ }).click();
+
+  const defaults = page.getByRole("dialog", { name: "New object defaults" });
+  const sections = defaults.locator("details.creation-defaults");
+  await expect(sections).toHaveCount(3);
+  await expect(sections.nth(0)).toHaveAttribute("open", "");
+  await expect(sections.nth(1)).toHaveAttribute("open", "");
+  await expect(sections.nth(2)).toHaveAttribute("open", "");
+
+  await defaults.getByText("New shape defaults", { exact: true }).click();
+  await expect(sections.nth(1)).not.toHaveAttribute("open", "");
+  await defaults.getByText("New line & arrow defaults", { exact: true }).click();
+  await expect(sections.nth(2)).not.toHaveAttribute("open", "");
+
+  await page.mouse.move(900, 500);
+  await expect(defaults).toHaveCount(0);
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  await page
+    .getByRole("menu", { name: "Shape tools" })
+    .getByRole("menuitem", { name: /Defaults/ })
+    .click();
+
+  const restored = page
+    .getByRole("dialog", { name: "New object defaults" })
+    .locator("details.creation-defaults");
+  await expect(restored.nth(0)).toHaveAttribute("open", "");
+  await expect(restored.nth(1)).not.toHaveAttribute("open", "");
+  await expect(restored.nth(2)).not.toHaveAttribute("open", "");
+});
+
 test("shows variant grids with viewport margins and invisible scrollbars", async ({ page }) => {
   await page.setViewportSize({ width: 1200, height: 760 });
   await page.goto("/");

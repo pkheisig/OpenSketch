@@ -63,6 +63,29 @@ import { UiSelect } from "@/components/UiSelect";
 
 type Tab = "assets" | "imports" | "edit";
 type Flyout = "lines" | "shapes" | "defaults" | null;
+type CreationDefaultsSection = "text" | "shape" | "line";
+
+const CREATION_DEFAULTS_DISCLOSURE_STORAGE_KEY = "OpenSketch:creation-defaults-disclosures";
+const DEFAULT_CREATION_DEFAULTS_DISCLOSURES: Record<CreationDefaultsSection, boolean> = {
+  text: true,
+  shape: true,
+  line: true
+};
+
+function loadCreationDefaultsDisclosures(): Record<CreationDefaultsSection, boolean> {
+  try {
+    const stored = JSON.parse(
+      localStorage.getItem(CREATION_DEFAULTS_DISCLOSURE_STORAGE_KEY) ?? "null"
+    ) as Partial<Record<CreationDefaultsSection, unknown>> | null;
+    return {
+      text: typeof stored?.text === "boolean" ? stored.text : true,
+      shape: typeof stored?.shape === "boolean" ? stored.shape : true,
+      line: typeof stored?.line === "boolean" ? stored.line : true
+    };
+  } catch {
+    return DEFAULT_CREATION_DEFAULTS_DISCLOSURES;
+  }
+}
 
 const SHAPE_GROUPS = {
   basic: [
@@ -844,6 +867,19 @@ function AssetCard({
 
 function ShapesPanel() {
   const editor = useEditor();
+  const [openSections, setOpenSections] = useState(loadCreationDefaultsDisclosures);
+  const setSectionOpen = (section: CreationDefaultsSection, open: boolean) => {
+    setOpenSections((current) => {
+      if (current[section] === open) return current;
+      const next = { ...current, [section]: open };
+      try {
+        localStorage.setItem(CREATION_DEFAULTS_DISCLOSURE_STORAGE_KEY, JSON.stringify(next));
+      } catch {
+        // Keep the disclosure state for this session when storage is unavailable.
+      }
+      return next;
+    });
+  };
   const updateTextDefaults = (properties: Partial<typeof editor.creationDefaults.text>) =>
     editor.setCreationDefaults({
       ...editor.creationDefaults,
@@ -861,7 +897,11 @@ function ShapesPanel() {
     });
   return (
     <>
-      <details className="creation-defaults" open>
+      <details
+        className="creation-defaults"
+        open={openSections.text}
+        onToggle={(event) => setSectionOpen("text", event.currentTarget.open)}
+      >
         <summary>New text defaults</summary>
         <div className="creation-defaults-body">
           <UiSelect
@@ -908,7 +948,11 @@ function ShapesPanel() {
           />
         </div>
       </details>
-      <details className="creation-defaults">
+      <details
+        className="creation-defaults"
+        open={openSections.shape}
+        onToggle={(event) => setSectionOpen("shape", event.currentTarget.open)}
+      >
         <summary>New shape defaults</summary>
         <div className="creation-defaults-body">
           <div className="creation-default-grid">
@@ -942,7 +986,11 @@ function ShapesPanel() {
           </label>
         </div>
       </details>
-      <details className="creation-defaults" open>
+      <details
+        className="creation-defaults"
+        open={openSections.line}
+        onToggle={(event) => setSectionOpen("line", event.currentTarget.open)}
+      >
         <summary>New line & arrow defaults</summary>
         <div className="creation-defaults-body">
           <div className="creation-default-grid">
