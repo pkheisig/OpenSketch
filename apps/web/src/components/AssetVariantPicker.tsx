@@ -21,6 +21,7 @@ export function AssetVariantPicker({
     top: number;
     width: number;
     maxHeight: number;
+    gridTemplateColumns: string;
   } | null>(null);
   const selectedIndex = Math.max(
     0,
@@ -30,24 +31,28 @@ export function AssetVariantPicker({
     const trigger = triggerRef.current;
     if (!trigger) return;
     const rect = trigger.getBoundingClientRect();
-    const gap = 6;
-    const edge = 8;
-    const width = Math.min(292, window.innerWidth - edge * 2);
-    const rows = Math.ceil(family.variants.length / 3);
-    const desiredHeight = Math.min(rows * 92 + 16, 384);
+    const gap = 10;
+    const edge = 16;
+    const columns = family.variants.length > 6 ? 4 : 3;
+    const targetWidth = columns === 4 ? 360 : 292;
+    const width = Math.min(targetWidth, window.innerWidth - edge * 2);
+    const rows = Math.ceil(family.variants.length / columns);
+    const gridContentWidth = width - 14 - Math.max(0, columns - 1) * 6;
+    const cardWidth = gridContentWidth / columns;
+    const desiredHeight = rows * (cardWidth + 24) + Math.max(0, rows - 1) * 6 + 14;
     const availableBelow = window.innerHeight - rect.bottom - edge - gap;
     const availableAbove = rect.top - edge - gap;
-    const openAbove =
-      availableBelow < Math.min(desiredHeight, 184) && availableAbove > availableBelow;
+    const openAbove = desiredHeight > availableBelow && availableAbove > availableBelow;
     const maxHeight = Math.max(
-      100,
+      120,
       Math.min(desiredHeight, openAbove ? availableAbove : availableBelow)
     );
     setPosition({
       left: Math.min(Math.max(edge, rect.left), window.innerWidth - width - edge),
       top: openAbove ? Math.max(edge, rect.top - maxHeight - gap) : rect.bottom + gap,
       width,
-      maxHeight
+      maxHeight,
+      gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`
     });
   }, [family.variants.length]);
   useLayoutEffect(() => {

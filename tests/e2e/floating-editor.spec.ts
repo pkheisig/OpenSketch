@@ -27,6 +27,32 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
     lineMenu.getByRole("menuitem", { name: "Dashed arrow", exact: true })
   ).toBeVisible();
   await expect(lineMenu.locator(".connector-family-arrows button")).toHaveCount(28);
+  const fittedArrowIcons = await lineMenu
+    .locator(".connector-family-arrows button svg")
+    .evaluateAll((icons) =>
+      icons.map((icon) => {
+        const svg = icon as SVGSVGElement;
+        const graphic = svg.querySelector("g") as SVGGElement;
+        const bounds = graphic.getBBox();
+        const viewBox = svg.viewBox.baseVal;
+        return {
+          centeredX: Math.abs(
+            bounds.x + bounds.width / 2 - (viewBox.x + viewBox.width / 2)
+          ),
+          centeredY: Math.abs(
+            bounds.y + bounds.height / 2 - (viewBox.y + viewBox.height / 2)
+          ),
+          contained:
+            bounds.x >= viewBox.x - 0.01 &&
+            bounds.y >= viewBox.y - 0.01 &&
+            bounds.x + bounds.width <= viewBox.x + viewBox.width + 0.01 &&
+            bounds.y + bounds.height <= viewBox.y + viewBox.height + 0.01
+        };
+      })
+    );
+  expect(fittedArrowIcons.every(({ contained }) => contained)).toBe(true);
+  expect(fittedArrowIcons.every(({ centeredX, centeredY }) => centeredX < 0.01 && centeredY < 0.01))
+    .toBe(true);
   const arrowGlyphs = await lineMenu
     .locator(".tool-flyout-secondary button svg")
     .evaluateAll((icons) => icons.map((icon) => icon.outerHTML));
@@ -34,8 +60,8 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
     .locator(".tool-flyout-secondary button")
     .evaluateAll((buttons) =>
       buttons.map((button) => ({
-        paths: button.querySelectorAll("svg > path").length,
-        transformedHeads: button.querySelectorAll('svg > path[transform*="rotate"]').length
+        paths: button.querySelectorAll("svg path").length,
+        transformedHeads: button.querySelectorAll('svg path[transform*="rotate"]').length
       }))
     );
   expect(arrowGeometry.every(({ paths }) => paths >= 2)).toBe(true);
@@ -43,7 +69,7 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   expect(arrowGeometry.filter(({ transformedHeads }) => transformedHeads > 1).length).toBeGreaterThan(
     1
   );
-  await expect(lineMenu.locator(".tool-flyout-secondary button svg > circle")).toHaveCount(0);
+  await expect(lineMenu.locator(".tool-flyout-secondary button svg circle")).toHaveCount(0);
   await lineMenu.getByRole("menuitem", { name: /Inhibitor/ }).hover();
   await expect(
     lineMenu.getByRole("menuitem", { name: "Inhibitor", exact: true }).last()
@@ -62,6 +88,20 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   await expect(
     lineMenu.getByRole("menuitem", { name: "Circular arrow", exact: true })
   ).toBeVisible();
+  const circularCenters = await lineMenu
+    .locator(".connector-family-circular button svg")
+    .evaluateAll((icons) =>
+      icons.map((icon) => {
+        const svg = icon as SVGSVGElement;
+        const bounds = (svg.querySelector("g") as SVGGElement).getBBox();
+        const viewBox = svg.viewBox.baseVal;
+        return {
+          x: Math.abs(bounds.x + bounds.width / 2 - (viewBox.x + viewBox.width / 2)),
+          y: Math.abs(bounds.y + bounds.height / 2 - (viewBox.y + viewBox.height / 2))
+        };
+      })
+    );
+  expect(circularCenters.every(({ x, y }) => x < 0.01 && y < 0.01)).toBe(true);
   await lineMenu.getByRole("menuitem", { name: /Brackets/ }).hover();
   await expect(lineMenu.getByRole("menuitem", { name: "Curly brace", exact: true })).toBeVisible();
   expect(new Set([...lineGlyphs, ...arrowGlyphs]).size).toBe(
@@ -72,6 +112,18 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   const shapeMenu = page.getByRole("menu", { name: "Shape tools" });
   await expect(shapeMenu).toBeVisible();
   await expect(shapeMenu.getByRole("menuitem")).toHaveCount(9);
+  const shapeFamilySpacing = await shapeMenu
+    .locator(".tool-flyout-primary button")
+    .first()
+    .evaluate((button) => {
+      const icon = button.querySelector("svg")?.getBoundingClientRect();
+      const text = Array.from(button.childNodes).find((node) => node.nodeType === Node.TEXT_NODE);
+      if (!icon || !text) return 0;
+      const range = document.createRange();
+      range.selectNodeContents(text);
+      return range.getBoundingClientRect().left - icon.right;
+    });
+  expect(shapeFamilySpacing).toBeGreaterThanOrEqual(8);
   const basicGlyphs = await shapeMenu
     .locator(".tool-flyout-secondary button svg")
     .evaluateAll((icons) => icons.map((icon) => icon.outerHTML));
@@ -144,6 +196,41 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   await page.keyboard.press("Delete");
   await expect(page.locator(".floating-panel")).toHaveCount(0);
   await expect(page.locator(".inspector-header").getByText("Canvas", { exact: true })).toHaveCount(0);
+});
+
+test("shows variant grids with viewport margins and invisible scrollbars", async ({ page }) => {
+  await page.setViewportSize({ width: 1200, height: 760 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Male Child");
+  await expect(page.getByRole("combobox", { name: "Male Child variant" })).toBeVisible();
+  await page.getByRole("combobox", { name: "Male Child variant" }).click();
+
+  const menu = page.getByRole("listbox", { name: "Male Child variants" });
+  await expect(menu.getByRole("option")).toHaveCount(12);
+  await expect
+    .poll(() => menu.evaluate((element) => element.clientHeight === element.scrollHeight))
+    .toBe(true);
+  const spaciousLayout = await menu.evaluate((element) => ({
+    bottom: element.getBoundingClientRect().bottom,
+    viewport: window.innerHeight,
+    columns: getComputedStyle(element).gridTemplateColumns.split(" ").length,
+    scrollbar: getComputedStyle(element).scrollbarWidth
+  }));
+  expect(spaciousLayout.bottom).toBeLessThanOrEqual(spaciousLayout.viewport - 16);
+  expect(spaciousLayout.columns).toBe(4);
+  expect(spaciousLayout.scrollbar).toBe("none");
+
+  await page.setViewportSize({ width: 900, height: 320 });
+  await page.getByRole("combobox", { name: "Male Child variant" }).click();
+  await expect(menu).toBeVisible();
+  await expect
+    .poll(() => menu.evaluate((element) => element.scrollHeight > element.clientHeight))
+    .toBe(true);
+  await menu.evaluate((element) => {
+    element.scrollTop = 80;
+  });
+  await expect.poll(() => menu.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
 });
 
 test("creates every distinct shape variant exposed by the shape pop-out", async ({ page }) => {

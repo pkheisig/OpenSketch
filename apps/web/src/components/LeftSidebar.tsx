@@ -82,6 +82,8 @@ const SHAPE_GROUPS = {
 } as const;
 
 function ConnectorPresetIcon({ value }: { value: ConnectorPreset }) {
+  const graphicRef = useRef<SVGGElement>(null);
+  const [viewBox, setViewBox] = useState("-1 -2 34 28");
   const { from, to } = connectorPreviewEndpoints(value);
   const geometry = buildConnectorGeometry(from, to, value.pathShape, value.curvature);
   const line = {
@@ -116,34 +118,62 @@ function ConnectorPresetIcon({ value }: { value: ConnectorPreset }) {
       kind === "bar"
         ? "M0 -4.5V4.5"
         : kind === "neuron"
-          ? "M 0 0 L -6 -3.4 L -4.6 0 L -6 3.4 Z"
+          ? "M 0 0 L -5 -3 L -3.9 0 L -5 3 Z"
           : kind === "triangle"
-            ? "M 0 0 L -6 -3.7 L -6 3.7 Z"
+            ? "M 0 0 L -5 -3.1 L -5 3.1 Z"
             : "M -6 -3.8 L 0 0 L -6 3.8";
     return (
       <path
         d={pathData}
         transform={`translate(${point.x} ${point.y}) rotate(${degrees})`}
         fill={kind === "triangle" || kind === "neuron" ? "currentColor" : "none"}
-        stroke="currentColor"
-        strokeWidth={kind === "triangle" || kind === "neuron" ? "1.1" : "1.7"}
+        stroke={kind === "triangle" || kind === "neuron" ? "none" : "currentColor"}
+        strokeWidth={kind === "triangle" || kind === "neuron" ? "0" : "1.7"}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
     );
   };
+  useLayoutEffect(() => {
+    const graphic = graphicRef.current;
+    if (!graphic) return;
+    const bounds = graphic.getBBox();
+    if (!Number.isFinite(bounds.width) || !Number.isFinite(bounds.height)) return;
+    const aspectRatio = 43 / 31;
+    let width = Math.max(34, bounds.width + 5);
+    let height = Math.max(24.5, bounds.height + 5);
+    if (width / height < aspectRatio) {
+      width = height * aspectRatio;
+    } else {
+      height = width / aspectRatio;
+    }
+    const centerX = bounds.x + bounds.width / 2;
+    const centerY = bounds.y + bounds.height / 2;
+    const next = `${centerX - width / 2} ${centerY - height / 2} ${width} ${height}`;
+    setViewBox((current) => (current === next ? current : next));
+  }, [
+    geometry.pathData,
+    geometry.startAngle,
+    geometry.endAngle,
+    value.startArrowhead,
+    value.endArrowhead,
+    value.lineStyle,
+    value.widthScale
+  ]);
   return (
     <svg
       width="43"
       height="31"
-      viewBox={value.pathShape === "circular" ? "0 -8 32 40" : "0 0 32 24"}
+      viewBox={viewBox}
       aria-hidden="true"
       style={{ opacity: value.opacity ?? 1 }}
     >
       <title>{value.label}</title>
-      <path {...line} strokeDasharray={dash} d={geometry.pathData} />
-      {head(value.startArrowhead, geometry.startPoint, geometry.startAngle)}
-      {head(value.endArrowhead, geometry.endPoint, geometry.endAngle)}
+      <g ref={graphicRef}>
+        <path {...line} strokeDasharray={dash} d={geometry.pathData} />
+        {head(value.startArrowhead, geometry.startPoint, geometry.startAngle)}
+        {head(value.endArrowhead, geometry.endPoint, geometry.endAngle)}
+      </g>
     </svg>
   );
 }

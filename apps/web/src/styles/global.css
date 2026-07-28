@@ -1509,6 +1509,8 @@ a:focus-visible {
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 6px;
   overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: none;
   padding: 7px;
   border: 1px solid #c7d2ce;
   border-radius: 8px;
@@ -1516,6 +1518,11 @@ a:focus-visible {
   background: #fffefb;
   box-shadow: 0 14px 36px rgba(20, 43, 41, 0.22);
   animation: ui-select-in var(--motion-ui) both;
+}
+
+.asset-variant-menu::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 .asset-variant-menu > button {
@@ -3325,6 +3332,22 @@ input[type="color"] {
   background: transparent;
   font-size: 11px;
   text-align: left;
+}
+
+.shape-tool-flyout .tool-flyout-primary {
+  width: 190px;
+}
+
+.shape-tool-flyout .tool-flyout-primary button {
+  grid-template-columns: 38px 1fr 16px;
+  min-height: 46px;
+  gap: 9px;
+  padding: 0 10px;
+}
+
+.shape-tool-flyout .tool-flyout-primary button > svg:first-child {
+  width: 34px;
+  height: 30px;
 }
 
 .line-tool-flyout .tool-flyout-primary button > svg:first-child {
