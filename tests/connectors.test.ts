@@ -1,6 +1,25 @@
 import { describe, expect, it } from "vitest";
 import { createFreeConnectorObject, routeOrthogonal } from "../apps/web/src/editor/connectors";
-import type { ConnectorBinding } from "../packages/editor-core/src/types";
+import { buildConnectorGeometry } from "../apps/web/src/editor/connectorGeometry";
+import type { ConnectorBinding, ConnectorPathShape } from "../packages/editor-core/src/types";
+
+const PATH_SHAPES: ConnectorPathShape[] = [
+  "straight",
+  "elbow",
+  "rounded-elbow",
+  "step",
+  "rounded-step",
+  "arc",
+  "wave",
+  "pulse",
+  "circular",
+  "bracket-square",
+  "bracket-square-center",
+  "bracket-round",
+  "bracket-curly"
+];
+
+const normalizedDegrees = (value: number) => ((value % 360) + 360) % 360;
 
 describe("orthogonal connector routing", () => {
   it("keeps a direct route compact when the path is clear", () => {
@@ -57,6 +76,89 @@ describe("orthogonal connector routing", () => {
 });
 
 describe("free connector geometry", () => {
+  it.each(PATH_SHAPES)("builds finite %s preview and canvas geometry", (pathShape) => {
+    const geometry = buildConnectorGeometry(
+      { x: 0, y: 0 },
+      { x: 240, y: 0 },
+      pathShape,
+      pathShape === "circular" ? 0.8 : 0
+    );
+
+    expect(geometry.pathData).toMatch(/^M /);
+    expect(geometry.pathData).not.toMatch(/NaN|Infinity/);
+    expect(
+      [
+        geometry.startPoint.x,
+        geometry.startPoint.y,
+        geometry.endPoint.x,
+        geometry.endPoint.y,
+        geometry.startAngle,
+        geometry.endAngle
+      ].every(Number.isFinite)
+    ).toBe(true);
+  });
+
+  it("keeps rounded steps distinct and gives circular connectors a true arc", () => {
+    const from = { x: 0, y: 0 };
+    const to = { x: 240, y: 0 };
+    const roundedStep = buildConnectorGeometry(from, to, "rounded-step");
+    const roundedElbow = buildConnectorGeometry(from, to, "rounded-elbow");
+    const circular = buildConnectorGeometry(from, to, "circular", 0.8);
+
+    expect(roundedStep.pathData).toContain(" Q ");
+    expect(roundedStep.pathData).not.toBe(roundedElbow.pathData);
+    expect(circular.pathData).toContain(" A ");
+    expect(Math.abs(circular.startAngle - circular.endAngle)).toBeGreaterThan(0.5);
+  });
+
+  it("rotates triangle and neuron heads along their actual endpoint tangents", () => {
+    const from = { x: 0, y: 0 };
+    const to = { x: 240, y: 0 };
+    const geometry = buildConnectorGeometry(from, to, "rounded-elbow");
+    const binding: ConnectorBinding = {
+      fromObjectId: "",
+      fromAnchor: "center",
+      toObjectId: "",
+      toAnchor: "center",
+      startArrowhead: "neuron",
+      endArrowhead: "triangle",
+      lineStyle: "solid",
+      pathShape: "rounded-elbow",
+      routing: "direct",
+      curvature: 0
+    };
+    const object = createFreeConnectorObject(from, to, binding, {
+      color: "#244947",
+      width: 5,
+      opacity: 1
+    });
+    const [, startHead, endHead] = object.getObjects();
+
+    expect(normalizedDegrees(startHead.angle)).toBeCloseTo(
+      normalizedDegrees((geometry.startAngle * 180) / Math.PI + 90),
+      6
+    );
+    expect(normalizedDegrees(endHead.angle)).toBeCloseTo(
+      normalizedDegrees((geometry.endAngle * 180) / Math.PI + 90),
+      6
+    );
+  });
+
+  it("builds vertical click-created bracket geometry with distinct bracket styles", () => {
+    const from = { x: 0, y: 0 };
+    const to = { x: 0, y: 220 };
+    const square = buildConnectorGeometry(from, to, "bracket-square");
+    const squareBrace = buildConnectorGeometry(from, to, "bracket-square-center");
+    const round = buildConnectorGeometry(from, to, "bracket-round");
+    const curly = buildConnectorGeometry(from, to, "bracket-curly");
+
+    expect(square.startPoint.x).toBeGreaterThan(from.x);
+    expect(squareBrace.pathData.split(" M ")).toHaveLength(2);
+    expect(
+      new Set([square.pathData, squareBrace.pathData, round.pathData, curly.pathData]).size
+    ).toBe(4);
+  });
+
   it("rotates the selection bounds to match drag-created arrows", () => {
     const binding: ConnectorBinding = {
       fromObjectId: "",

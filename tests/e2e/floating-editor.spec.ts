@@ -169,3 +169,61 @@ test("creates every distinct shape variant exposed by the shape pop-out", async 
     }
   }
 });
+
+test("creates every connector path and endpoint family with valid canvas geometry", async ({
+  page
+}) => {
+  const pageErrors: string[] = [];
+  page.on("pageerror", (error) => pageErrors.push(error.message));
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+
+  const tools = [
+    ["Lines", "Straight line"],
+    ["Lines", "Square elbow"],
+    ["Lines", "Rounded elbow"],
+    ["Lines", "Step line"],
+    ["Lines", "Rounded step"],
+    ["Lines", "Arc"],
+    ["Lines", "Wave"],
+    ["Lines", "Pulse"],
+    ["Arrows", "Open arrow"],
+    ["Inhibitor", "Rounded step inhibitor"],
+    ["Dots", "Elbow dot endpoint"],
+    ["Neurons", "Wave neuron"],
+    ["Circular", "Dashed circular arrow"],
+    ["Brackets", "Square bracket"],
+    ["Brackets", "Square brace"],
+    ["Brackets", "Round bracket"],
+    ["Brackets", "Curly brace"]
+  ] as const;
+
+  const artboard = await page.locator(".artboard-stage").boundingBox();
+  if (!artboard) throw new Error("Artboard is not visible.");
+
+  for (const [index, [family, tool]] of tools.entries()) {
+    await page.getByRole("button", { name: "Lines", exact: true }).hover();
+    const menu = page.getByRole("menu", { name: "Line and arrow tools" });
+    await menu
+      .locator(".tool-flyout-primary")
+      .getByRole("menuitem", { name: new RegExp(`^${family}`) })
+      .hover();
+    await menu
+      .locator(".tool-flyout-secondary")
+      .getByRole("menuitem", { name: tool, exact: true })
+      .click();
+    await expect(page.locator(".floating-panel")).toHaveCount(0);
+    const column = index % 4;
+    const row = Math.floor(index / 4);
+    await page.mouse.click(
+      artboard.x + artboard.width * (0.1 + column * 0.23),
+      artboard.y + artboard.height * (0.1 + row * 0.19)
+    );
+  }
+
+  if ((await page.locator(".floating-panel").count()) === 0) {
+    await page.getByRole("button", { name: "Edit", exact: true }).click();
+  }
+  await expect(page.locator(".layers-title small")).toHaveText(String(tools.length));
+  expect(pageErrors).toEqual([]);
+});

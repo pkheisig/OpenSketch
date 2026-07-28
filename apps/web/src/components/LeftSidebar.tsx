@@ -32,6 +32,7 @@ import {
 import { Group, StaticCanvas, util, type FabricObject } from "fabric";
 import { ASSET_CATEGORIES, assetManifest } from "@/assets/manifest";
 import { useEditor } from "@/editor/EditorContext";
+import { buildConnectorGeometry } from "@/editor/connectorGeometry";
 import {
   applyElementStyle,
   loadSavedElementStyles,
@@ -113,7 +114,7 @@ const CONNECTOR_PRESETS: Record<ConnectorFamily, ConnectorPreset[]> = {
     preset("Rounded elbow", "rounded-elbow"),
     preset("Dashed elbow", "elbow", "dashed"),
     preset("Step line", "step"),
-    preset("Rounded step", "rounded-elbow"),
+    preset("Rounded step", "rounded-step"),
     preset("Dashed step", "step", "dashed"),
     preset("Arc", "arc", "solid", "none", "none", { curvature: -0.35 }),
     preset("Faded arc", "arc", "solid", "none", "none", {
@@ -154,7 +155,7 @@ const CONNECTOR_PRESETS: Record<ConnectorFamily, ConnectorPreset[]> = {
     preset("Rounded inhibitor", "rounded-elbow", "solid", "none", "bar"),
     preset("Dashed elbow inhibitor", "elbow", "dashed", "none", "bar"),
     preset("Step inhibitor", "step", "solid", "none", "bar"),
-    preset("Rounded step inhibitor", "rounded-elbow", "solid", "none", "bar"),
+    preset("Rounded step inhibitor", "rounded-step", "solid", "none", "bar"),
     preset("Dashed step inhibitor", "step", "dashed", "none", "bar"),
     preset("Curved inhibitor", "arc", "solid", "none", "bar", { curvature: -0.32 }),
     preset("Faded curved inhibitor", "arc", "solid", "none", "bar", {
@@ -207,35 +208,26 @@ const CONNECTOR_PRESETS: Record<ConnectorFamily, ConnectorPreset[]> = {
   brackets: [
     preset("Square bracket", "bracket-square"),
     preset("Round bracket", "bracket-round"),
-    preset("Square brace", "bracket-square", "solid", "bar", "none"),
+    preset("Square brace", "bracket-square-center"),
     preset("Curly brace", "bracket-curly"),
     preset("Reverse curly brace", "bracket-curly", "solid", "none", "none", {
-      curvature: -0.25
+      curvature: 0.25
     })
   ]
 };
 
 function ConnectorPresetIcon({ value }: { value: ConnectorPreset }) {
   const markerRoot = useId().replaceAll(":", "");
+  const vertical = value.pathShape.startsWith("bracket-");
+  const from = vertical ? { x: 16, y: 3 } : { x: 4, y: 12 };
+  const to = vertical ? { x: 16, y: 21 } : { x: 28, y: 12 };
+  const geometry = buildConnectorGeometry(from, to, value.pathShape, value.curvature);
   const line = {
     fill: "none",
     stroke: "currentColor",
     strokeWidth: 1.8 * Math.min(value.widthScale ?? 1, 1.45),
     strokeLinecap: "round" as const,
     strokeLinejoin: "round" as const
-  };
-  const paths: Record<ConnectorPathShape, string> = {
-    straight: "M4 12H28",
-    elbow: "M4 18V7H28",
-    "rounded-elbow": "M4 18V11Q4 6 10 6H28",
-    step: "M4 18H11V7H23V12H28",
-    arc: "M4 17Q16 3 28 17",
-    wave: "M4 12C8 3 12 3 16 12S24 21 28 12",
-    pulse: "M4 17H10C12 17 12 5 16 5S20 17 22 17H28",
-    circular: "M5 18C-1 2 27-2 27 13",
-    "bracket-square": "M8 20H4V4H8",
-    "bracket-round": "M9 20Q5 20 5 16V8Q5 4 9 4",
-    "bracket-curly": "M10 22C5 22 8 14 4 12C8 10 5 2 10 2"
   };
   const dash =
     value.lineStyle === "dashed" ? "5 3" : value.lineStyle === "dotted" ? "1 4" : undefined;
@@ -302,7 +294,7 @@ function ConnectorPresetIcon({ value }: { value: ConnectorPreset }) {
     <svg
       width="43"
       height="31"
-      viewBox="0 0 32 24"
+      viewBox={value.pathShape === "circular" ? "0 -8 32 40" : "0 0 32 24"}
       aria-hidden="true"
       style={{ opacity: value.opacity ?? 1 }}
     >
@@ -316,7 +308,7 @@ function ConnectorPresetIcon({ value }: { value: ConnectorPreset }) {
         strokeDasharray={dash}
         markerStart={markerStart}
         markerEnd={markerEnd}
-        d={paths[value.pathShape]}
+        d={geometry.pathData}
       />
     </svg>
   );

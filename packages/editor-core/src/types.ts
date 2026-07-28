@@ -94,11 +94,13 @@ export type ConnectorPathShape =
   | "elbow"
   | "rounded-elbow"
   | "step"
+  | "rounded-step"
   | "arc"
   | "wave"
   | "pulse"
   | "circular"
   | "bracket-square"
+  | "bracket-square-center"
   | "bracket-round"
   | "bracket-curly";
 

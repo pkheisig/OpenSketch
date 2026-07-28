@@ -16,6 +16,7 @@ import type {
   ConnectorPathShape
 } from "@workspace/editor-core";
 import type { Bounds, Point } from "./geometry";
+import { buildConnectorGeometry } from "./connectorGeometry";
 
 export interface ConnectorAppearance {
   color: string;
@@ -321,77 +322,14 @@ function connectorPath(
     const endSource = points.at(-2) ?? from;
     return {
       path,
+      startPoint: from,
+      endPoint: to,
       startAngle: Math.atan2(from.y - startTarget.y, from.x - startTarget.x),
       endAngle: Math.atan2(to.y - endSource.y, to.x - endSource.x)
     };
   }
-  const dx = to.x - from.x;
-  const dy = to.y - from.y;
-  const length = Math.max(1, Math.hypot(dx, dy));
-  const normalX = -dy / length;
-  const normalY = dx / length;
-  const point = (progress: number, normal = 0) => ({
-    x: from.x + dx * progress + normalX * normal,
-    y: from.y + dy * progress + normalY * normal
-  });
-  const bend =
-    (binding.curvature || (["arc", "circular"].includes(pathShape) ? 0.3 : 0)) *
-    Math.min(length, 280);
-  const control = {
-    x: (from.x + to.x) / 2 + normalX * bend,
-    y: (from.y + to.y) / 2 + normalY * bend
-  };
-  const amplitude = Math.min(46, length * 0.18);
-  const p = (value: Point) => `${value.x} ${value.y}`;
-  let data = `M ${p(from)} L ${p(to)}`;
-  if (pathShape === "elbow") {
-    const first = point(0.46);
-    const second = point(0.46, amplitude);
-    const third = point(0.72, amplitude);
-    data = `M ${p(from)} L ${p(first)} L ${p(second)} L ${p(third)} L ${p(to)}`;
-  } else if (pathShape === "rounded-elbow") {
-    const first = point(0.4);
-    const corner = point(0.5, amplitude);
-    const last = point(0.72, amplitude);
-    data = `M ${p(from)} L ${p(first)} Q ${p(point(0.5))} ${p(corner)} L ${p(last)} Q ${p(
-      point(0.82, amplitude)
-    )} ${p(to)}`;
-  } else if (pathShape === "step") {
-    data = `M ${p(from)} L ${p(point(0.28))} L ${p(point(0.28, amplitude))} L ${p(
-      point(0.72, amplitude)
-    )} L ${p(point(0.72))} L ${p(to)}`;
-  } else if (pathShape === "arc" || pathShape === "circular") {
-    data = `M ${p(from)} Q ${p(control)} ${p(to)}`;
-  } else if (pathShape === "wave") {
-    data = `M ${p(from)} C ${p(point(0.12, -amplitude))} ${p(
-      point(0.22, -amplitude)
-    )} ${p(point(0.33))} S ${p(point(0.55, amplitude))} ${p(point(0.66))} S ${p(
-      point(0.9, -amplitude)
-    )} ${p(to)}`;
-  } else if (pathShape === "pulse") {
-    data = `M ${p(from)} L ${p(point(0.26))} C ${p(point(0.34))} ${p(
-      point(0.38, -amplitude * 1.45)
-    )} ${p(point(0.5, -amplitude * 1.45))} S ${p(point(0.66))} ${p(point(0.74))} L ${p(to)}`;
-  } else if (pathShape === "bracket-square") {
-    data = `M ${p(point(0, amplitude * 0.5))} L ${p(from)} L ${p(to)} L ${p(
-      point(1, amplitude * 0.5)
-    )}`;
-  } else if (pathShape === "bracket-round") {
-    data = `M ${p(point(0, amplitude * 0.55))} Q ${p(point(0))} ${p(
-      point(0.16)
-    )} L ${p(point(0.84))} Q ${p(to)} ${p(point(1, amplitude * 0.55))}`;
-  } else if (pathShape === "bracket-curly") {
-    data = `M ${p(point(0, amplitude * 0.7))} C ${p(point(0.12, amplitude * 0.7))} ${p(
-      point(0.08)
-    )} ${p(point(0.25))} C ${p(point(0.42))} ${p(point(0.38, -amplitude * 0.35))} ${p(
-      point(0.5, -amplitude * 0.35)
-    )} C ${p(point(0.62, -amplitude * 0.35))} ${p(point(0.58))} ${p(
-      point(0.75)
-    )} C ${p(point(0.92))} ${p(point(0.88, amplitude * 0.7))} ${p(point(1, amplitude * 0.7))}`;
-  } else if (Math.abs(binding.curvature) >= 0.001) {
-    data = `M ${p(from)} Q ${p(control)} ${p(to)}`;
-  }
-  const path = new Path(data, {
+  const geometry = buildConnectorGeometry(from, to, pathShape, binding.curvature);
+  const path = new Path(geometry.pathData, {
     fill: "",
     stroke: appearance.color,
     strokeWidth: appearance.width,
@@ -401,14 +339,13 @@ function connectorPath(
     selectable: false,
     evented: false
   });
-  const curved = ["arc", "circular"].includes(pathShape) || Math.abs(binding.curvature) >= 0.001;
-  const startAngle = !curved
-    ? Math.atan2(from.y - to.y, from.x - to.x)
-    : Math.atan2(from.y - control.y, from.x - control.x);
-  const endAngle = !curved
-    ? Math.atan2(to.y - from.y, to.x - from.x)
-    : Math.atan2(to.y - control.y, to.x - control.x);
-  return { path, startAngle, endAngle };
+  return {
+    path,
+    startPoint: geometry.startPoint,
+    endPoint: geometry.endPoint,
+    startAngle: geometry.startAngle,
+    endAngle: geometry.endAngle
+  };
 }
 
 function arrowhead(
@@ -470,7 +407,7 @@ function arrowhead(
       fill: color,
       stroke: color,
       strokeWidth: Math.max(1, width * 0.25),
-      angle: (angle * 180) / Math.PI - 90
+      angle: (angle * 180) / Math.PI + 90
     });
   }
   if (kind === "triangle") {
@@ -511,16 +448,28 @@ export function createConnectorObject(
   appearance: ConnectorAppearance,
   obstacles: Bounds[] = []
 ): Group {
-  const { path, startAngle, endAngle } = connectorPath(from, to, binding, appearance, obstacles);
+  const { path, startPoint, endPoint, startAngle, endAngle } = connectorPath(
+    from,
+    to,
+    binding,
+    appearance,
+    obstacles
+  );
   const objects: FabricObject[] = [path];
   const start = arrowhead(
     binding.startArrowhead,
-    from,
+    startPoint,
     startAngle,
     appearance.color,
     appearance.width
   );
-  const end = arrowhead(binding.endArrowhead, to, endAngle, appearance.color, appearance.width);
+  const end = arrowhead(
+    binding.endArrowhead,
+    endPoint,
+    endAngle,
+    appearance.color,
+    appearance.width
+  );
   if (start) objects.push(start);
   if (end) objects.push(end);
   const group = new Group(objects, {

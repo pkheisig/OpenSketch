@@ -1658,16 +1658,24 @@ export function EditorProvider({
     ) => {
       if (!canvas) return;
       const distance = requestedTo ? Math.hypot(requestedTo.x - from.x, requestedTo.y - from.y) : 0;
+      const verticalDefault = preset?.pathShape.startsWith("bracket-") ?? false;
+      const defaultTo = verticalDefault
+        ? {
+            x: from.x,
+            y:
+              from.y + 220 <= latestCanvasSettings.current.height
+                ? from.y + 220
+                : Math.max(0, from.y - 220)
+          }
+        : {
+            x:
+              from.x + 220 <= latestCanvasSettings.current.width
+                ? from.x + 220
+                : Math.max(0, from.x - 220),
+            y: from.y
+          };
       const to =
-        requestedTo && distance >= 4 / Math.max(latestZoom.current, 0.1)
-          ? requestedTo
-          : {
-              x:
-                from.x + 220 <= latestCanvasSettings.current.width
-                  ? from.x + 220
-                  : Math.max(0, from.x - 220),
-              y: from.y
-            };
+        requestedTo && distance >= 4 / Math.max(latestZoom.current, 0.1) ? requestedTo : defaultTo;
       const binding: ConnectorBinding = {
         fromObjectId: "",
         fromAnchor: "center",
