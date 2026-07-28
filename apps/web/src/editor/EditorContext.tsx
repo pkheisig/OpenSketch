@@ -153,6 +153,7 @@ const RESTORABLE_GROUP_PROPERTIES = [
 const MAX_HISTORY = 120;
 const SVG_CACHE_LIMIT = 64;
 const ASSET_INSERT_MAX_SIDE = 180;
+const DRAG_DUPLICATE_OPACITY = 0.35;
 const svgStringCache = new Map<string, string>();
 const bundledVariants = new Map(
   assetManifest.families.flatMap((family) =>
@@ -708,6 +709,7 @@ export function EditorProvider({
         sourceTransforms: ReturnType<FabricObject["calcTransformMatrix"]>[];
         parent?: Group;
         clones: Promise<FabricObject[]>;
+        originalOpacity: number;
         activated: boolean;
         pendingAdd?: Promise<void>;
       }
@@ -1028,13 +1030,9 @@ export function EditorProvider({
         sourceTransforms: sources.map((source) => source.calcTransformMatrix()),
         parent,
         clones: Promise.all(sources.map((source) => source.clone())),
+        originalOpacity: target.opacity ?? 1,
         activated: false
       };
-    };
-    const activateDragDuplicate = (target: FabricObject) => {
-      const session = dragDuplicate.current;
-      if (!session || session.target !== target || session.activated) return;
-      session.activated = true;
     };
     const addDragDuplicate = (
       session: NonNullable<typeof dragDuplicate.current>
@@ -1058,8 +1056,24 @@ export function EditorProvider({
           session.parent.dirty = true;
         }
         configureCanvasAssets(clones);
+        setSelection(canvas.getActiveObjects());
         canvas.requestRenderAll();
       });
+    const activateDragDuplicate = (target: FabricObject) => {
+      const session = dragDuplicate.current;
+      if (!session || session.target !== target || session.activated) return;
+      session.activated = true;
+      target.set("opacity", Math.min(session.originalOpacity, DRAG_DUPLICATE_OPACITY));
+      target.dirty = true;
+      session.pendingAdd = addDragDuplicate(session);
+      canvas.requestRenderAll();
+    };
+    const restoreDragDuplicateOpacity = (
+      session: NonNullable<typeof dragDuplicate.current>
+    ) => {
+      session.target.set("opacity", session.originalOpacity);
+      session.target.dirty = true;
+    };
     const modified = ({ target }: { target?: FabricObject } = {}) => {
       const changed = target ?? canvas.getActiveObject();
       const nestedSession =
@@ -1077,6 +1091,7 @@ export function EditorProvider({
         changed && dragDuplicate.current?.target === changed && dragDuplicate.current.activated
           ? dragDuplicate.current
           : undefined;
+      if (duplicateSession) restoreDragDuplicateOpacity(duplicateSession);
       const finish = () => {
         if (changed instanceof IText) {
           cache.clearFontCache(changed.fontFamily);
@@ -1106,9 +1121,6 @@ export function EditorProvider({
           .load(`${weight} ${changed.fontSize ?? 54}px "${family}"`)
           .then(finish, finish);
       };
-      if (duplicateSession && !duplicateSession.pendingAdd) {
-        duplicateSession.pendingAdd = addDragDuplicate(duplicateSession);
-      }
       if (duplicateSession?.pendingAdd) {
         void duplicateSession.pendingAdd.then(finishAfterFonts, finishAfterFonts);
       } else {
@@ -1231,6 +1243,10 @@ export function EditorProvider({
       canvas.requestRenderAll();
     };
     const finishDragGesture = () => {
+      if (dragDuplicate.current?.activated) {
+        restoreDragDuplicateOpacity(dragDuplicate.current);
+        canvas.requestRenderAll();
+      }
       dragDuplicate.current = undefined;
       nestedDrag.current = undefined;
     };
