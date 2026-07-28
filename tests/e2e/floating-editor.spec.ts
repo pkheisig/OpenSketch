@@ -93,6 +93,13 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
     "aria-expanded",
     "true"
   );
+  await page.getByRole("button", { name: "Close properties" }).click();
+  await expect(page.locator(".floating-panel")).toHaveCount(0);
+  await expect(selectionToolbar).toBeVisible();
+  await page.waitForTimeout(250);
+  await expect(page.locator(".floating-panel")).toHaveCount(0);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await expect(page.locator(".inspector-embedded")).toBeVisible();
   await expect(page.locator(".workspace-controls")).toBeVisible();
   await expect(page.locator(".top-toolbar").getByRole("button", { name: "Zoom in" })).toHaveCount(
     0

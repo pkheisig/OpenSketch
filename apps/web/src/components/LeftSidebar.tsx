@@ -392,7 +392,11 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const [shapeFamily, setShapeFamily] = useState<keyof typeof SHAPE_GROUPS>("basic");
   const [defaultsSource, setDefaultsSource] = useState<"line" | "shape">("line");
   const closeTimer = useRef<number | undefined>(undefined);
+  const handledSelection = useRef("");
   const editor = useEditor();
+  const selectionKey = editor.selection
+    .map((object, index) => object.objectId ?? `${object.type}:${object.name ?? index}`)
+    .join("|");
   const openPanel = (next: Tab) => {
     setTab(next);
     setFlyout(null);
@@ -430,10 +434,15 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     setFlyout(null);
   };
   useEffect(() => {
-    if (editor.selection.length === 0 || editor.creationTool) return;
+    if (!selectionKey) {
+      handledSelection.current = "";
+      return;
+    }
+    if (editor.creationTool || handledSelection.current === selectionKey) return;
+    handledSelection.current = selectionKey;
     setTab("edit");
     if (collapsed) onToggle();
-  }, [collapsed, editor.creationTool, editor.selection.length, onToggle]);
+  }, [collapsed, editor.creationTool, onToggle, selectionKey]);
   useEffect(() => {
     if (!editor.creationTool || collapsed) return;
     onToggle();
