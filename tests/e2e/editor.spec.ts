@@ -1474,6 +1474,15 @@ test("keeps mirror controls out of the header and toggles grid and rulers", asyn
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
 
+  const workspace = page.locator(".workspace-scroll");
+  await page.locator(".layers-title").focus();
+  await page.keyboard.press("Tab");
+  await expect(workspace).toBeFocused();
+  await expect.poll(() => workspace.evaluate((element) => element.matches(":focus-visible"))).toBe(
+    true
+  );
+  expect(await workspace.evaluate((element) => getComputedStyle(element).outlineStyle)).toBe("none");
+
   await expect(page.getByRole("button", { name: "Mirror horizontally" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Mirror vertically" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Show grid" })).toBeVisible();
