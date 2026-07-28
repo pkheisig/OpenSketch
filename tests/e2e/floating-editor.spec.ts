@@ -99,6 +99,8 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   );
   await expect(page.getByRole("button", { name: "Canvas size" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Canvas color" })).toBeVisible();
+  await expect(page.locator(".canvas-workspace")).not.toHaveClass(/grid-visible/);
+  await expect(page.getByRole("button", { name: "Show grid" })).toBeVisible();
   await page.getByRole("button", { name: "Show grid" }).click();
   await expect(page.locator(".canvas-workspace")).toHaveClass(/grid-visible/);
 });
