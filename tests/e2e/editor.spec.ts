@@ -13,6 +13,14 @@ async function selectUiOption(
   await page.getByRole("option", { name: option, exact: true }).click();
 }
 
+async function setPaletteColor(page: Page, label: string, color: string) {
+  await page.getByRole("button", { name: label, exact: true }).click();
+  const palette = page.getByRole("dialog", { name: `${label} palette` });
+  await palette.getByLabel(`${label} hex value`).fill(color);
+  await palette.getByLabel(`${label} hex value`).press("Enter");
+  await expect(palette).toHaveCount(0);
+}
+
 async function artboardPoint(page: Page, xRatio = 0.5, yRatio = 0.5) {
   const bounds = await page.locator(".artboard-stage").boundingBox();
   if (!bounds) throw new Error("Artboard is not visible.");
@@ -436,12 +444,7 @@ test("places text and shapes from active tools and persists line creation defaul
   await expect(textInspector.getByRole("combobox", { name: "Font" })).toHaveText(/Source Serif 4/i);
   await expect(textInspector.getByLabel("Size", { exact: true })).toHaveValue("28");
   await expect(textInspector.getByRole("combobox", { name: "Weight" })).toHaveText(/Semibold/i);
-  await expect(
-    textInspector
-      .locator("label.color-field")
-      .filter({ hasText: "Color" })
-      .locator('input[type="color"]')
-  ).toHaveValue("#3157a4");
+  await expect(textInspector.getByLabel("Text color value")).toHaveValue("#3157a4");
 });
 
 test("places text from the first Shapes tool without blanking the editor", async ({ page }) => {
@@ -843,11 +846,8 @@ test("offers selection-aware canvas context actions", async ({ page }) => {
 
   await ensureLayersOpen(page);
   await page.locator(".layer-list > button").first().click();
-  const fill = page
-    .locator("label.color-field")
-    .filter({ hasText: "Fill" })
-    .locator('input[type="color"]');
-  await fill.fill("#ff0000");
+  const fill = page.getByLabel("Fill color value");
+  await setPaletteColor(page, "Fill color", "#ff0000");
   await expect(fill).toHaveValue("#ff0000");
   const secondRectangle = await artboardPoint(page, 0.65, 0.5);
   await page.mouse.click(secondRectangle.x, secondRectangle.y, { button: "right" });
@@ -871,11 +871,8 @@ test("offers selection-aware canvas context actions", async ({ page }) => {
   await placeTool(page, "Text", 0.5, 0.25);
   await page.keyboard.type("Context label");
   await page.keyboard.press("Escape");
-  const textFill = page
-    .locator("label.color-field")
-    .filter({ hasText: "Fill" })
-    .locator('input[type="color"]');
-  await textFill.fill("#00ff00");
+  const textFill = page.getByLabel("Text color value");
+  await setPaletteColor(page, "Text color", "#00ff00");
   await page.mouse.click(textPoint.x, textPoint.y, { button: "right" });
   const textMenu = page.getByRole("menu", { name: "Text actions" });
   await expect(textMenu.getByRole("menuitem", { name: "Save styling" })).toBeVisible();
@@ -891,11 +888,8 @@ test("saves and resets per-element styling for future sidebar shapes", async ({ 
 
   const firstPoint = await artboardPoint(page, 0.35, 0.5);
   await placeTool(page, "Rectangle", 0.35, 0.5);
-  const fill = page
-    .locator("label.color-field")
-    .filter({ hasText: "Fill" })
-    .locator('input[type="color"]');
-  await fill.fill("#ff0000");
+  const fill = page.getByLabel("Fill color value");
+  await setPaletteColor(page, "Fill color", "#ff0000");
   await page.mouse.click(firstPoint.x, firstPoint.y, { button: "right" });
   await page
     .getByRole("menu", { name: "rectangle actions" })
@@ -1695,11 +1689,7 @@ test("duplicates with modifier-drag and disables snapping while Alt is held", as
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
   await placeTool(page, "Rectangle", 0.65, 0.5);
-  const fill = page
-    .locator("label.color-field")
-    .filter({ hasText: "Fill" })
-    .locator('input[type="color"]');
-  await fill.fill("#000000");
+  await setPaletteColor(page, "Fill color", "#000000");
   await expect(page.locator(".layers-title small")).toHaveText("2");
 
   const secondRectangle = await artboardPoint(page, 0.65, 0.5);
@@ -2545,18 +2535,14 @@ test("drills into an SVG asset and persists an independently edited part", async
   await expect(page.getByText("Inside Dendritic Cell", { exact: true })).toBeVisible();
   const editTools = page.getByLabel("edit tools");
   await expect(editTools.getByRole("button", { name: "Transform", exact: true })).toBeVisible();
-  await expect(editTools.getByRole("button", { name: "Shape", exact: true })).toBeVisible();
-  const fill = page
-    .locator("label.color-field")
-    .filter({ hasText: "Fill" })
-    .locator('input[type="color"]');
-  await expect(fill).toBeVisible();
-  await fill.fill("#00ff00");
+  await expect(editTools.getByRole("button", { name: "Shape", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Fill color", exact: true })).toBeVisible();
+  await setPaletteColor(page, "Fill color", "#00ff00");
   await page
-    .locator("label.range-field")
-    .filter({ hasText: "Opacity" })
+    .locator("label.inspector-value-range")
+    .filter({ hasText: "Transparency" })
     .locator('input[type="range"]')
-    .fill("0.65");
+    .fill("35");
 
   const visibleColors = async () =>
     page.locator(".lower-canvas").evaluate((element: HTMLCanvasElement) => {

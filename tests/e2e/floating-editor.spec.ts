@@ -184,10 +184,27 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   const canvasSettings = page.getByRole("dialog", { name: "Canvas settings" });
   await expect(canvasSettings.getByRole("combobox", { name: "Preset" })).toBeVisible();
   await expect(canvasSettings.getByRole("combobox", { name: "Unit" })).toBeVisible();
-  await expect(canvasSettings.locator('input[type="color"]')).toBeVisible();
+  const canvasBackground = canvasSettings.getByRole("button", {
+    name: "Canvas background",
+    exact: true
+  });
+  await expect(canvasBackground).toBeVisible();
   await expect(canvasSettings.getByText("Transparent background", { exact: true })).toBeVisible();
   await expect(canvasSettings.getByText("Double-click to add text", { exact: true })).toBeVisible();
   await expect(canvasSettings.locator(".canvas-color-control")).toHaveCount(1);
+  await canvasBackground.click();
+  const colorPalette = page.getByRole("dialog", { name: "Canvas background palette" });
+  await expect(colorPalette.locator(".color-palette-swatch")).toHaveCount(70);
+  await expect(page.locator('input[type="color"]')).toHaveCount(0);
+  await colorPalette.getByRole("button", { name: "#ff0000", exact: true }).click();
+  await expect(colorPalette).toHaveCount(0);
+  await canvasBackground.click();
+  await expect(
+    page
+      .getByRole("dialog", { name: "Canvas background palette" })
+      .getByRole("button", { name: "#ff0000", exact: true })
+  ).toHaveAttribute("aria-pressed", "true");
+  await page.keyboard.press("Escape");
   await page.getByRole("button", { name: "Canvas size" }).click();
   await expect(page.locator(".canvas-workspace")).not.toHaveClass(/grid-visible/);
   await expect(page.getByRole("button", { name: "Show grid" })).toBeVisible();

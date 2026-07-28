@@ -37,6 +37,7 @@ import { saveAssetVariantDefault } from "@/editor/assetVariantDefaults";
 import { useEditor } from "@/editor/EditorContext";
 import { TEXT_FONT_FAMILIES } from "@/editor/fonts";
 import { AssetVariantGrid } from "@/components/AssetVariantPicker";
+import { ColorPalettePicker } from "@/components/ColorPalettePicker";
 import { UiSelect } from "@/components/UiSelect";
 
 function number(value: number | undefined, digits = 0) {
@@ -214,19 +215,19 @@ function ObjectInspector({ object }: { object: FabricObject }) {
       ) : null}
       {isLineLike ? (
         <InspectorSection title="Line" open>
-          <label className="inspector-color-row color-field">
+          <div className="inspector-color-row color-field">
             <span>Color</span>
-            <input
-              type="color"
+            <ColorPalettePicker
+              ariaLabel="Line color"
               value={normalizeHex(typeof object.stroke === "string" ? object.stroke : "#232323")}
-              onChange={(event) => editor.setObject({ stroke: event.target.value })}
+              onChange={(stroke) => editor.setObject({ stroke })}
             />
             <input
               value={normalizeHex(typeof object.stroke === "string" ? object.stroke : "#232323")}
               onChange={(event) => editor.setObject({ stroke: event.target.value })}
               aria-label="Line color value"
             />
-          </label>
+          </div>
           <label className="inspector-value-range">
             <span>Width</span>
             <input
@@ -292,33 +293,33 @@ function ObjectInspector({ object }: { object: FabricObject }) {
       ) : isShape || isSvgPart ? (
         <InspectorSection title={isSvgPart ? "Part" : "Shape"} open>
           {typeof object.fill === "string" ? (
-            <label className="inspector-color-row color-field">
+            <div className="inspector-color-row color-field">
               <span>Fill</span>
-              <input
-                type="color"
+              <ColorPalettePicker
+                ariaLabel="Fill color"
                 value={normalizeHex(object.fill)}
-                onChange={(event) => editor.setObject({ fill: event.target.value })}
+                onChange={(fill) => editor.setObject({ fill })}
               />
               <input
                 value={normalizeHex(object.fill)}
                 onChange={(event) => editor.setObject({ fill: event.target.value })}
                 aria-label="Fill color value"
               />
-            </label>
+            </div>
           ) : null}
-          <label className="inspector-color-row color-field">
+          <div className="inspector-color-row color-field">
             <span>Stroke</span>
-            <input
-              type="color"
+            <ColorPalettePicker
+              ariaLabel="Stroke color"
               value={normalizeHex(typeof object.stroke === "string" ? object.stroke : "#13367a")}
-              onChange={(event) => editor.setObject({ stroke: event.target.value })}
+              onChange={(stroke) => editor.setObject({ stroke })}
             />
             <input
               value={normalizeHex(typeof object.stroke === "string" ? object.stroke : "#13367a")}
               onChange={(event) => editor.setObject({ stroke: event.target.value })}
               aria-label="Stroke color value"
             />
-          </label>
+          </div>
           <label className="inspector-value-range">
             <span>Border width</span>
             <input
@@ -429,19 +430,19 @@ function ObjectInspector({ object }: { object: FabricObject }) {
       {isText && (
         <InspectorSection title="Text" open>
           {typeof object.fill === "string" ? (
-            <label className="inspector-color-row color-field">
+            <div className="inspector-color-row color-field">
               <span>Color</span>
-              <input
-                type="color"
+              <ColorPalettePicker
+                ariaLabel="Text color"
                 value={normalizeHex(object.fill)}
-                onChange={(event) => editor.setObject({ fill: event.target.value })}
+                onChange={(fill) => editor.setObject({ fill })}
               />
               <input
                 value={normalizeHex(object.fill)}
                 onChange={(event) => editor.setObject({ fill: event.target.value })}
                 aria-label="Text color value"
               />
-            </label>
+            </div>
           ) : null}
           {transparencyControl}
           <UiSelect
@@ -773,5 +774,5 @@ function ConnectorSelect<
 
 function normalizeHex(value: string): string {
   const parsed = new Color(value);
-  return parsed.isUnrecognised ? "#000000" : `#${parsed.toHex()}`;
+  return parsed.isUnrecognised ? "#000000" : `#${parsed.toHex().toLowerCase()}`;
 }

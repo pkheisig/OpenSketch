@@ -53,6 +53,7 @@ import {
   saveAssetVariantDefault
 } from "@/editor/assetVariantDefaults";
 import { AssetVariantPicker } from "@/components/AssetVariantPicker";
+import { ColorPalettePicker } from "@/components/ColorPalettePicker";
 import { InspectorContent, LayersPanel } from "@/components/Inspector";
 import { UiSelect } from "@/components/UiSelect";
 
@@ -867,18 +868,15 @@ function ShapesPanel() {
             onChange={(fontFamily) => updateTextDefaults({ fontFamily })}
           />
           <div className="creation-default-grid">
-            <label className="creation-color-field">
+            <div className="creation-color-field">
               Color
-              <span>
-                <input
-                  aria-label="Default text color"
-                  type="color"
-                  value={editor.creationDefaults.text.color}
-                  onChange={(event) => updateTextDefaults({ color: event.target.value })}
-                />
-                {editor.creationDefaults.text.color}
-              </span>
-            </label>
+              <ColorPalettePicker
+                ariaLabel="Default text color"
+                value={editor.creationDefaults.text.color}
+                onChange={(color) => updateTextDefaults({ color })}
+                showValue
+              />
+            </div>
             <label className="creation-number-field">
               Size
               <input
@@ -909,28 +907,22 @@ function ShapesPanel() {
         <summary>New shape defaults</summary>
         <div className="creation-defaults-body">
           <div className="creation-default-grid">
-            <label className="creation-color-field">
+            <div className="creation-color-field">
               Fill
-              <span>
-                <input
-                  aria-label="Default shape fill"
-                  type="color"
-                  value={editor.creationDefaults.shape.fill}
-                  onChange={(event) => updateShapeDefaults({ fill: event.target.value })}
-                />
-              </span>
-            </label>
-            <label className="creation-color-field">
+              <ColorPalettePicker
+                ariaLabel="Default shape fill"
+                value={editor.creationDefaults.shape.fill}
+                onChange={(fill) => updateShapeDefaults({ fill })}
+              />
+            </div>
+            <div className="creation-color-field">
               Outline
-              <span>
-                <input
-                  aria-label="Default shape outline"
-                  type="color"
-                  value={editor.creationDefaults.shape.stroke}
-                  onChange={(event) => updateShapeDefaults({ stroke: event.target.value })}
-                />
-              </span>
-            </label>
+              <ColorPalettePicker
+                ariaLabel="Default shape outline"
+                value={editor.creationDefaults.shape.stroke}
+                onChange={(stroke) => updateShapeDefaults({ stroke })}
+              />
+            </div>
           </div>
           <label className="creation-number-field">
             Outline weight
@@ -949,18 +941,15 @@ function ShapesPanel() {
         <summary>New line & arrow defaults</summary>
         <div className="creation-defaults-body">
           <div className="creation-default-grid">
-            <label className="creation-color-field">
+            <div className="creation-color-field">
               Color
-              <span>
-                <input
-                  aria-label="Default line color"
-                  type="color"
-                  value={editor.creationDefaults.line.color}
-                  onChange={(event) => updateLineDefaults({ color: event.target.value })}
-                />
-                {editor.creationDefaults.line.color}
-              </span>
-            </label>
+              <ColorPalettePicker
+                ariaLabel="Default line color"
+                value={editor.creationDefaults.line.color}
+                onChange={(color) => updateLineDefaults({ color })}
+                showValue
+              />
+            </div>
             <label className="creation-number-field">
               Thickness
               <input

@@ -56,6 +56,7 @@ import {
   type CanvasUnit
 } from "@workspace/editor-core";
 import { assetManifest } from "@/assets/manifest";
+import { ColorPalettePicker } from "@/components/ColorPalettePicker";
 import { UiSelect } from "@/components/UiSelect";
 import { useEditor } from "@/editor/EditorContext";
 import {
@@ -304,7 +305,9 @@ export function CanvasWorkspace() {
       const target = event.target;
       if (
         target instanceof Element &&
-        (target.closest(".canvas-controls") || target.closest(".ui-select-menu"))
+        (target.closest(".canvas-controls") ||
+          target.closest(".ui-select-menu") ||
+          target.closest(".color-palette-popover"))
       ) {
         return;
       }
@@ -1374,20 +1377,16 @@ export function CanvasWorkspace() {
                   }
                 />
               </div>
-              <label className="canvas-color-control">
+              <div className="canvas-color-control">
                 Background
-                <span>
-                  <input
-                    type="color"
-                    value={editor.canvasSettings.background}
-                    disabled={editor.canvasSettings.transparent}
-                    onChange={(event) =>
-                      editor.setCanvasSettings({ background: event.target.value })
-                    }
-                  />
-                  {editor.canvasSettings.background}
-                </span>
-              </label>
+                <ColorPalettePicker
+                  ariaLabel="Canvas background"
+                  value={editor.canvasSettings.background}
+                  disabled={editor.canvasSettings.transparent}
+                  onChange={(background) => editor.setCanvasSettings({ background })}
+                  showValue
+                />
+              </div>
               <label className="footer-check">
                 <input
                   type="checkbox"

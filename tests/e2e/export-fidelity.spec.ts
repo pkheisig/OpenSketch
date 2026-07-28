@@ -44,14 +44,14 @@ test("preserves editable color, gradients, clipping, fonts, and raster dimension
       y: artboardBounds!.height / 2 + 78 * (artboardBounds!.width / 1920)
     }
   });
-  const fill = page
-    .locator("label.color-field")
-    .filter({ hasText: "Fill" })
-    .locator('input[type="color"]');
+  const fill = page.getByLabel("Fill color value");
   await expect(fill).toBeVisible();
   const originalColor = await fill.inputValue();
   const replacement = originalColor.toLowerCase() === "#c2185b" ? "#00796b" : "#c2185b";
-  await fill.fill(replacement);
+  await page.getByRole("button", { name: "Fill color", exact: true }).click();
+  const palette = page.getByRole("dialog", { name: "Fill color palette" });
+  await palette.getByLabel("Fill color hex value").fill(replacement);
+  await palette.getByLabel("Fill color hex value").press("Enter");
   await expect(fill).toHaveValue(replacement);
   await expect(page.locator(".save-state")).toHaveCount(0);
 

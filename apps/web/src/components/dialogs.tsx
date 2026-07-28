@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Download, FileImage, FileText, FileType2, X } from "lucide-react";
+import { ColorPalettePicker } from "@/components/ColorPalettePicker";
 import { useEditor } from "@/editor/EditorContext";
 import { UiSelect } from "@/components/UiSelect";
 import { EXPORT_DPI_OPTIONS, loadExportDpi, saveExportDpi } from "@/export/preferences";
@@ -93,17 +94,15 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
               Transparent background
             </label>
             {!transparent && (
-              <label className="color-field">
+              <div className="color-field">
                 Export background
-                <span>
-                  <input
-                    type="color"
-                    value={background}
-                    onChange={(event) => setBackground(event.target.value)}
-                  />
-                  {background}
-                </span>
-              </label>
+                <ColorPalettePicker
+                  ariaLabel="Export background"
+                  value={background}
+                  onChange={setBackground}
+                  showValue
+                />
+              </div>
             )}
           </>
         ) : null}
