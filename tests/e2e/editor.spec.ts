@@ -478,6 +478,69 @@ test("preserves clipboard object size across repeated pastes", async ({ page }) 
   await expect.poll(async () => Number(await width.inputValue())).toBeCloseTo(originalWidth, 0);
 });
 
+test("copies canvas objects to the system clipboard as PNG and SVG", async ({
+  page,
+  context,
+  browserName
+}) => {
+  test.skip(browserName !== "chromium", "Clipboard image reads are only exposed by Chromium.");
+  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  await placeTool(page, "Rectangle", 0.5, 0.5);
+
+  await page.keyboard.press("ControlOrMeta+C");
+  await expect
+    .poll(() =>
+      page.evaluate(async () =>
+        (await navigator.clipboard.read()).some((item) => item.types.includes("image/png"))
+      )
+    )
+    .toBe(true);
+  const pngSignature = await page.evaluate(async () => {
+    const item = (await navigator.clipboard.read()).find((entry) =>
+      entry.types.includes("image/png")
+    );
+    const bytes = new Uint8Array(await (await item!.getType("image/png")).arrayBuffer());
+    return [...bytes.slice(0, 8)];
+  });
+  expect(pngSignature).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
+
+  await page.keyboard.press("ControlOrMeta+V");
+  await expect(page.locator(".layers-title small")).toHaveText("2");
+
+  await page.getByRole("tab", { name: "Assets", exact: true }).click();
+  await page
+    .getByPlaceholder("Search cells, proteins, equipment…")
+    .fill("Cajal-Retzius Cell");
+  await page
+    .getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true })
+    .click();
+  const point = await artboardPoint(page, 0.5, 0.5);
+  await page.mouse.click(point.x, point.y, { button: "right" });
+  const menu = page.getByRole("menu", { name: "Cajal-Retzius Cell actions" });
+  await expect(menu.getByRole("menuitem", { name: "Copy as SVG" })).toBeVisible();
+  await expect(menu.getByRole("menuitem", { name: "Copy as PNG" })).toBeVisible();
+  await menu.getByRole("menuitem", { name: "Copy as SVG" }).click();
+
+  await expect
+    .poll(() =>
+      page.evaluate(async () =>
+        (await navigator.clipboard.read()).some((item) => item.types.includes("text/plain"))
+      )
+    )
+    .toBe(true);
+  const clipboardSvg = await page.evaluate(async () => {
+    const item = (await navigator.clipboard.read()).find((entry) =>
+      entry.types.includes("text/plain")
+    );
+    return (await item!.getType("text/plain")).text();
+  });
+  expect(clipboardSvg).toContain("<svg");
+  expect(clipboardSvg.match(/<path\b/g)?.length).toBeGreaterThanOrEqual(3);
+});
+
 test("inserts assets from the sidebar at the reduced default size", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
@@ -679,6 +742,8 @@ test("offers selection-aware canvas context actions", async ({ page }) => {
   const shapeMenu = page.getByRole("menu", { name: "rectangle actions" });
   await expect(shapeMenu.getByRole("menuitem", { name: "Save styling" })).toBeVisible();
   await expect(shapeMenu.getByRole("menuitem", { name: "Reset styling" })).toBeVisible();
+  await expect(shapeMenu.getByRole("menuitem", { name: "Copy as SVG" })).toBeVisible();
+  await expect(shapeMenu.getByRole("menuitem", { name: "Copy as PNG" })).toBeVisible();
   await expect(shapeMenu.getByRole("menuitem", { name: "Duplicate" })).toBeVisible();
   await expect(shapeMenu.getByRole("menuitem", { name: "Bring one up" })).toBeVisible();
   await expect(shapeMenu.getByRole("menuitem", { name: "Bring to front" })).toBeVisible();

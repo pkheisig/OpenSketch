@@ -84,6 +84,10 @@ import {
   rememberRecognizedGroup,
   type RecognizedGroup
 } from "@/editor/groupRecognition";
+import {
+  type SelectionClipboardFormat,
+  writeSelectionToSystemClipboard
+} from "@/editor/selectionClipboard";
 import { assetManifest } from "@/assets/manifest";
 import {
   CREATION_DEFAULTS_STORAGE_KEY,
@@ -252,6 +256,10 @@ interface EditorContextValue {
   importMedia: (file: File) => Promise<void>;
   deleteSelection: () => void;
   duplicateSelection: () => Promise<void>;
+  copySelectionToClipboard: (
+    format?: SelectionClipboardFormat,
+    cut?: boolean
+  ) => Promise<void>;
   groupSelection: () => void;
   ungroupSelection: () => void;
   arrange: (action: "front" | "forward" | "backward" | "back") => void;
@@ -1740,6 +1748,27 @@ export function EditorProvider({
     commit("Duplicate");
   }, [canvas, commit]);
 
+  const copySelectionToClipboard = useCallback(
+    async (format: SelectionClipboardFormat = "png", cut = false) => {
+      if (!canvas) return;
+      const activeObject = canvas.getActiveObject();
+      const selectedObjects = canvas.getActiveObjects();
+      if (!activeObject || selectedObjects.length === 0) return;
+
+      const systemWrite = writeSelectionToSystemClipboard(activeObject, format).catch(
+        (error: unknown) => {
+          console.warn(`Could not copy the selection as ${format.toUpperCase()}.`, error);
+        }
+      );
+      clipboard.current = await Promise.all(
+        selectedObjects.map((object) => object.clone())
+      );
+      await systemWrite;
+      if (cut) deleteSelection();
+    },
+    [canvas, deleteSelection]
+  );
+
   const groupSelection = useCallback(() => {
     if (!canvas || !(canvas.getActiveObject() instanceof ActiveSelection)) return;
     const active = canvas.getActiveObject() as ActiveSelection;
@@ -2283,13 +2312,6 @@ export function EditorProvider({
   );
 
   useEffect(() => {
-    const copySelection = async (cut = false) => {
-      if (!canvas) return;
-      clipboard.current = await Promise.all(
-        canvas.getActiveObjects().map((object) => object.clone())
-      );
-      if (cut) deleteSelection();
-    };
     const pasteSelection = async () => {
       if (!canvas || clipboard.current.length === 0) return;
       const [clones, nextClipboard] = await Promise.all([
@@ -2342,10 +2364,10 @@ export function EditorProvider({
         void duplicateSelection();
       } else if (modifier && event.key.toLowerCase() === "c") {
         event.preventDefault();
-        void copySelection();
+        void copySelectionToClipboard("png");
       } else if (modifier && event.key.toLowerCase() === "x") {
         event.preventDefault();
-        void copySelection(true);
+        void copySelectionToClipboard("png", true);
       } else if (modifier && event.key.toLowerCase() === "v") {
         event.preventDefault();
         void pasteSelection();
@@ -2417,6 +2439,7 @@ export function EditorProvider({
   }, [
     canvas,
     commit,
+    copySelectionToClipboard,
     creationTool,
     deleteSelection,
     duplicateSelection,
@@ -2456,6 +2479,7 @@ export function EditorProvider({
       importMedia,
       deleteSelection,
       duplicateSelection,
+      copySelectionToClipboard,
       groupSelection,
       ungroupSelection,
       arrange,
@@ -2492,6 +2516,7 @@ export function EditorProvider({
       canvas,
       canvasSettings,
       commit,
+      copySelectionToClipboard,
       deleteSelection,
       distribute,
       duplicateSelection,

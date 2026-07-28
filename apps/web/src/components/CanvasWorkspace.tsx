@@ -15,6 +15,8 @@ import {
   ArrowUpToLine,
   ChevronDown,
   Copy,
+  FileImage,
+  FileType2,
   Group as GroupIcon,
   Maximize2,
   Minus,
@@ -749,10 +751,21 @@ export function CanvasWorkspace() {
     }
     actions.push(
       {
+        label: "Copy as SVG",
+        icon: <FileType2 size={15} />,
+        action: () => void editor.copySelectionToClipboard("svg"),
+        separatorBefore: actions.length > 0
+      },
+      {
+        label: "Copy as PNG",
+        icon: <FileImage size={15} />,
+        action: () => void editor.copySelectionToClipboard("png")
+      },
+      {
         label: "Duplicate",
         icon: <Copy size={15} />,
         action: () => void editor.duplicateSelection(),
-        separatorBefore: actions.length > 0
+        separatorBefore: true
       },
       {
         label: "Bring one up",
