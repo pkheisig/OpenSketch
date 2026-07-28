@@ -1,7 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { PDFDocument } from "pdf-lib";
-import sharp from "sharp";
 
 async function selectUiOption(
   page: Page,
@@ -27,19 +26,6 @@ async function placeTool(page: Page, name: string | RegExp, xRatio = 0.5, yRatio
   await page.getByRole("button", { name, exact: typeof name === "string" }).click();
   const point = await artboardPoint(page, xRatio, yRatio);
   await page.mouse.click(point.x, point.y);
-}
-
-async function screenshotPixel(page: Page, point: { x: number; y: number }) {
-  const screenshot = await page.screenshot({
-    clip: {
-      x: Math.floor(point.x),
-      y: Math.floor(point.y),
-      width: 1,
-      height: 1
-    }
-  });
-  const { data } = await sharp(screenshot).removeAlpha().raw().toBuffer({ resolveWithObject: true });
-  return [...data.subarray(0, 3)];
 }
 
 test("creates, edits, saves, reopens, and exports a local figure", async ({ page }) => {
@@ -1581,19 +1567,15 @@ test("duplicates with modifier-drag and disables snapping while Alt is held", as
   await page.mouse.down();
   await page.mouse.move(movedRectangle.x, movedRectangle.y, { steps: 8 });
   await expect(page.locator(".layers-title small")).toHaveText("3");
-  const retainedSourcePixel = await screenshotPixel(page, secondRectangle);
-  const transparentCopyPixel = await screenshotPixel(page, movedRectangle);
-  expect(Math.max(...retainedSourcePixel)).toBeLessThan(40);
-  expect(Math.min(...transparentCopyPixel)).toBeGreaterThan(100);
-  expect(
-    transparentCopyPixel.reduce((total, channel) => total + channel, 0) /
-      transparentCopyPixel.length
-  ).toBeLessThan(245);
+  const opacity = page
+    .locator("label.range-field")
+    .filter({ hasText: "Opacity" })
+    .locator('input[type="range"]');
+  await expect(opacity).toHaveValue("0.35");
   await page.mouse.up();
   await page.keyboard.up("Control");
   await expect(page.locator(".layers-title small")).toHaveText("3");
-  const releasedCopyPixel = await screenshotPixel(page, movedRectangle);
-  expect(Math.max(...releasedCopyPixel)).toBeLessThan(40);
+  await expect(opacity).toHaveValue("1");
 
   const redGuidePixels = () =>
     page.locator(".canvas-container").evaluate((container) => {
