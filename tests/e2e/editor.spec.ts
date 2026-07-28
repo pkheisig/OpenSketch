@@ -1478,6 +1478,8 @@ test("keeps mirror controls out of the header and toggles grid and rulers", asyn
   await page.getByRole("button", { name: "Flip H", exact: true }).click();
   await page.getByRole("button", { name: "Flip V", exact: true }).click();
 
+  const stageWithRuler = await page.locator(".artboard-stage").boundingBox();
+  expect(stageWithRuler).not.toBeNull();
   const emptyCanvasPoint = await artboardPoint(page, 0.82, 0.15);
   await page.mouse.click(emptyCanvasPoint.x, emptyCanvasPoint.y, { button: "right" });
   const canvasMenu = page.getByRole("menu", { name: "Canvas actions" });
@@ -1485,6 +1487,9 @@ test("keeps mirror controls out of the header and toggles grid and rulers", asyn
   await canvasMenu.getByRole("menuitem", { name: "Hide ruler" }).click();
   await expect(page.locator(".canvas-ruler")).toHaveCount(0);
   await expect(page.locator(".canvas-workspace")).toHaveClass(/ruler-hidden/);
+  const stageWithoutRuler = await page.locator(".artboard-stage").boundingBox();
+  expect(stageWithoutRuler?.x).toBeCloseTo(stageWithRuler!.x, 0);
+  expect(stageWithoutRuler?.y).toBeCloseTo(stageWithRuler!.y, 0);
 
   await page.mouse.click(emptyCanvasPoint.x, emptyCanvasPoint.y, { button: "right" });
   const showRuler = page
@@ -1494,6 +1499,9 @@ test("keeps mirror controls out of the header and toggles grid and rulers", asyn
   await showRuler.evaluate((button) => (button as HTMLButtonElement).click());
   await expect(page.locator(".canvas-ruler")).toHaveCount(2);
   await expect(page.locator(".canvas-workspace")).toHaveClass(/grid-visible/);
+  const restoredStage = await page.locator(".artboard-stage").boundingBox();
+  expect(restoredStage?.x).toBeCloseTo(stageWithRuler!.x, 0);
+  expect(restoredStage?.y).toBeCloseTo(stageWithRuler!.y, 0);
 
   await page.getByRole("button", { name: "Back to projects" }).click();
   const transforms = await page.evaluate(async () => {

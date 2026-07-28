@@ -1789,10 +1789,6 @@ a:focus-visible {
   opacity: 1;
 }
 
-.canvas-workspace.ruler-hidden::before {
-  inset: 0;
-}
-
 .workspace-scroll {
   position: absolute;
   inset: 21px 0 0 21px;
@@ -1801,10 +1797,6 @@ a:focus-visible {
   scrollbar-color: #9eaaa6 transparent;
   scrollbar-width: thin;
   touch-action: pan-x pan-y;
-}
-
-.canvas-workspace.ruler-hidden .workspace-scroll {
-  inset: 0;
 }
 
 .workspace-scroll:focus-visible {
