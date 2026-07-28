@@ -1221,25 +1221,16 @@ test("rerenders vector artwork at the current zoom resolution", async ({ page })
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
   await page.getByRole("button", { name: "Insert T Cell", exact: true }).click();
   const workspace = page.locator(".workspace-scroll");
+  const zoomIn = page.getByRole("button", { name: "Zoom in" }).first();
 
-  const result = await workspace.evaluate(async (element) => {
+  for (let index = 0; index < 25; index += 1) await zoomIn.click();
+  await expect
+    .poll(async () => Number.parseInt((await page.locator(".zoom-value").textContent()) ?? "0", 10))
+    .toBeGreaterThan(270);
+
+  const result = await workspace.evaluate((element) => {
     const stage = element.querySelector<HTMLElement>(".artboard-stage")!;
     const lowerCanvas = element.querySelector<HTMLCanvasElement>(".lower-canvas")!;
-    const dispatchZoom = () => {
-      const rect = stage.getBoundingClientRect();
-      element.dispatchEvent(
-        new WheelEvent("wheel", {
-          bubbles: true,
-          cancelable: true,
-          ctrlKey: true,
-          deltaY: -100,
-          clientX: rect.left + rect.width / 2,
-          clientY: rect.top + rect.height / 2
-        })
-      );
-    };
-    for (let index = 0; index < 40; index += 1) dispatchZoom();
-    await new Promise((resolve) => setTimeout(resolve, 160));
     const stageRect = stage.getBoundingClientRect();
     return {
       devicePixelRatio: window.devicePixelRatio,
