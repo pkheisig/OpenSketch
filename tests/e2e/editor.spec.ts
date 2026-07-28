@@ -101,13 +101,11 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   await expect(page.locator(".layers-title small")).toHaveText("3");
   await expect(page.getByText("Asset palette", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Part colors", { exact: true })).toHaveCount(0);
-  await expect(page.locator(".color-presets")).toBeVisible();
-  await page.getByRole("button", { name: "Apply Green preset" }).click();
-  await expect(page.getByRole("button", { name: "Apply Green preset" })).toHaveAttribute(
-    "aria-pressed",
-    "true"
-  );
-  await page.getByRole("button", { name: "Original", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Style", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Variant", exact: true })).toHaveCount(0);
+  await expect(
+    page.locator("label.inspector-value-range").filter({ hasText: "Transparency" })
+  ).toBeVisible();
   await page.keyboard.press("ControlOrMeta+A");
   await page.getByRole("button", { name: "Group", exact: true }).click();
   await expect(page.locator(".layers-title small")).toHaveText("1");
@@ -629,7 +627,14 @@ test("previews bundled variants and inserts nested-clip-path assets", async ({ p
   await expect(page.locator(".layers-title small")).toHaveText("1");
   await expect(page.locator('[role="alert"]')).toHaveCount(0);
   await expect(page.locator(".inspector-header h2")).toHaveText("Immune Cell");
+  await expect(page.getByRole("button", { name: "Style", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Variant", exact: true })).toHaveAttribute(
+    "aria-expanded",
+    "true"
+  );
+  await expect(page.getByRole("button", { name: "Asset colors", exact: true })).toHaveCount(0);
   await expect(page.getByText("Color presets", { exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Shape", exact: true })).toHaveCount(0);
   const inspectorVariant = page
     .locator(".inspector-embedded")
     .getByRole("combobox", { name: "Immune Cell variant" });
@@ -2278,50 +2283,22 @@ test("restores an asset's semantic identity when its exact parts are regrouped",
   await expect(page.locator(".inspector-header h2")).toHaveText("T Cell");
 });
 
-test("applies profile-aware shade presets to grouped biological assets", async ({ page }) => {
+test("shows no synthetic style or variant menu for a single-variant biological asset", async ({
+  page
+}) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
   await page.getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true }).click();
 
-  await expect(page.getByText("Asset palette", { exact: true })).toHaveCount(0);
-  await expect(page.getByText("Part colors", { exact: true })).toHaveCount(0);
-  await expect(page.getByText("Scientific color effects", { exact: true })).toHaveCount(0);
-  const greenPreset = page.getByRole("button", { name: "Apply Green preset" });
-  await expect(greenPreset).toBeVisible();
-  await greenPreset.click();
-  await expect(greenPreset).toHaveAttribute("aria-pressed", "true");
-
-  const greenPixels = await page.locator(".lower-canvas").evaluate((canvas: HTMLCanvasElement) => {
-    const context = canvas.getContext("2d")!;
-    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
-    let green = 0;
-    for (let index = 0; index < pixels.length; index += 4) {
-      if (
-        pixels[index + 3] > 32 &&
-        pixels[index + 1] > pixels[index] * 1.15 &&
-        pixels[index + 1] > pixels[index + 2] * 1.08
-      ) {
-        green += 1;
-      }
-    }
-    return green;
-  });
-  expect(greenPixels).toBeGreaterThan(100);
-
-  await page.getByRole("button", { name: "Back to projects" }).click();
-  await page.getByRole("button", { name: "Untitled figure" }).click();
-  await ensureLayersOpen(page);
-  await page.locator(".layer-list > button").filter({ hasText: "Cajal-Retzius Cell" }).click();
-  await expect(page.getByRole("button", { name: "Apply Green preset" })).toHaveAttribute(
-    "aria-pressed",
-    "true"
-  );
-  await page.getByRole("button", { name: "Original", exact: true }).click();
-  await expect(page.getByRole("button", { name: "Apply Green preset" })).toHaveAttribute(
-    "aria-pressed",
-    "false"
-  );
+  await expect(page.getByRole("button", { name: "Style", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Variant", exact: true })).toHaveCount(0);
+  await expect(page.getByText("Asset colors", { exact: true })).toHaveCount(0);
+  await expect(page.getByText("Color presets", { exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Shape", exact: true })).toHaveCount(0);
+  await expect(
+    page.locator("label.inspector-value-range").filter({ hasText: "Transparency" })
+  ).toBeVisible();
 });
 
 test("saves and resets styling for future copies of the same biological asset", async ({
@@ -2341,8 +2318,13 @@ test("saves and resets styling for future copies of the same biological asset", 
   const originalPreviewBounds = await assetPreview.boundingBox();
   await insertAsset.click();
 
-  const greenPreset = page.getByRole("button", { name: "Apply Green preset" });
-  await greenPreset.click();
+  const transparency = page
+    .locator("label.inspector-value-range")
+    .filter({ hasText: "Transparency" })
+    .locator('input[type="number"]');
+  await transparency.fill("40");
+  await transparency.blur();
+  await expect(transparency).toHaveValue("40");
   const width = page.locator(".field-row.dimensions input").first();
   const originalWidth = Number(await width.inputValue());
   const savedWidth = Math.round(originalWidth * 0.6);
@@ -2367,26 +2349,6 @@ test("saves and resets styling for future copies of the same biological asset", 
       )
     )
     .toBe(true);
-  const greenPreviewPixels = await assetPreviewImage.evaluate((image: HTMLImageElement) => {
-    const canvas = document.createElement("canvas");
-    canvas.width = 256;
-    canvas.height = 256;
-    const context = canvas.getContext("2d")!;
-    context.drawImage(image, 0, 0, canvas.width, canvas.height);
-    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
-    let green = 0;
-    for (let index = 0; index < pixels.length; index += 4) {
-      if (
-        pixels[index + 3] > 32 &&
-        pixels[index + 1] > pixels[index] * 1.15 &&
-        pixels[index + 1] > pixels[index + 2] * 1.08
-      ) {
-        green += 1;
-      }
-    }
-    return green;
-  });
-  expect(greenPreviewPixels).toBeGreaterThan(100);
   const savedPreviewBounds = await assetPreview.boundingBox();
   expect(
     Math.abs((savedPreviewBounds?.width ?? 0) - (originalPreviewBounds?.width ?? 0))
@@ -2396,7 +2358,7 @@ test("saves and resets styling for future copies of the same biological asset", 
   ).toBeLessThan(1.1);
 
   await insertAsset.click();
-  await expect(greenPreset).toHaveAttribute("aria-pressed", "true");
+  await expect(transparency).toHaveValue("40");
   await expect.poll(async () => Number(await width.inputValue())).toBeCloseTo(savedWidth, 0);
 
   await page.mouse.click(center.x, center.y, { button: "right" });
@@ -2404,14 +2366,14 @@ test("saves and resets styling for future copies of the same biological asset", 
     .getByRole("menu", { name: "Cajal-Retzius Cell actions" })
     .getByRole("menuitem", { name: "Reset styling" })
     .click();
-  await expect(greenPreset).toHaveAttribute("aria-pressed", "false");
+  await expect(transparency).toHaveValue("0");
   await expect.poll(async () => Number(await width.inputValue())).toBeCloseTo(originalWidth, 0);
   await page.getByRole("tab", { name: "Assets", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
   await expect(assetPreviewImage).toHaveAttribute("src", originalPreviewSource ?? "");
 
   await insertAsset.click();
-  await expect(greenPreset).toHaveAttribute("aria-pressed", "false");
+  await expect(transparency).toHaveValue("0");
   await expect.poll(async () => Number(await width.inputValue())).toBeCloseTo(originalWidth, 0);
 });
 

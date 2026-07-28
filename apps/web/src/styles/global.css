@@ -2138,6 +2138,11 @@ a:focus-visible {
   padding: 0 15px 14px;
 }
 
+.inspector-transparency-only {
+  padding-top: 14px;
+  border-bottom: 1px solid #dadeda;
+}
+
 .inspector-style-presets {
   display: flex;
   flex-wrap: wrap;

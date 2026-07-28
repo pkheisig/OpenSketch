@@ -33,7 +33,6 @@ import {
 } from "@workspace/editor-core";
 import { Color, FabricObject, Group as FabricGroup, Text } from "fabric";
 import { assetManifest } from "@/assets/manifest";
-import { ASSET_COLOR_PRESETS, colorProfileForFamily } from "@/editor/assetColorPresets";
 import { saveAssetVariantDefault } from "@/editor/assetVariantDefaults";
 import { useEditor } from "@/editor/EditorContext";
 import { TEXT_FONT_FAMILIES } from "@/editor/fonts";
@@ -108,11 +107,34 @@ function ObjectInspector({ object }: { object: FabricObject }) {
       ? assetManifest.families.find((family) => family.familyId === object.familyId)
       : undefined;
   const hasStoredVariants = Boolean(assetFamily && assetFamily.variants.length > 1);
-  const colorProfile = assetFamily ? colorProfileForFamily(assetFamily) : undefined;
   const canGroup = editor.selection.length > 1;
   const canUngroup = !canGroup && object instanceof FabricGroup;
   const width = (object.width ?? 0) * (object.scaleX ?? 1);
   const height = (object.height ?? 0) * (object.scaleY ?? 1);
+  const transparencyControl = (
+    <label className="inspector-value-range">
+      <span>Transparency</span>
+      <input
+        className="compact-value"
+        type="number"
+        min="0"
+        max="100"
+        value={Math.round((1 - (object.opacity ?? 1)) * 100)}
+        onChange={(event) =>
+          editor.setObject({ opacity: 1 - Number(event.target.value) / 100 })
+        }
+      />
+      <input
+        type="range"
+        min="0"
+        max="100"
+        value={Math.round((1 - (object.opacity ?? 1)) * 100)}
+        onChange={(event) =>
+          editor.setObject({ opacity: 1 - Number(event.target.value) / 100 })
+        }
+      />
+    </label>
+  );
   return (
     <>
       <InspectorSection title="Transform" open>
@@ -181,52 +203,53 @@ function ObjectInspector({ object }: { object: FabricObject }) {
           </button>
         </div>
       </InspectorSection>
-      <InspectorSection title="Style" open>
-        <div className="inspector-style-presets" aria-label="Style presets">
-          {STYLE_PRESETS.map((preset) => (
-            <button
-              key={`${preset.fill}-${preset.stroke}`}
-              style={{
-                background: isLineLike ? preset.stroke : preset.fill,
-                borderColor: preset.stroke
-              }}
-              aria-label={`Apply ${preset.stroke} style`}
-              onClick={() =>
-                editor.setObject(
-                  isLineLike
-                    ? { stroke: preset.stroke }
-                    : { fill: preset.fill, stroke: preset.stroke }
-                )
-              }
-            >
-              {isText ? "Aa" : null}
-            </button>
-          ))}
-        </div>
-        <label className="inspector-value-range">
-          <span>Transparency</span>
-          <input
-            className="compact-value"
-            type="number"
-            min="0"
-            max="100"
-            value={Math.round((1 - (object.opacity ?? 1)) * 100)}
-            onChange={(event) =>
-              editor.setObject({ opacity: 1 - Number(event.target.value) / 100 })
-            }
-          />
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={Math.round((1 - (object.opacity ?? 1)) * 100)}
-            onChange={(event) =>
-              editor.setObject({ opacity: 1 - Number(event.target.value) / 100 })
-            }
-          />
-        </label>
-      </InspectorSection>
-      {isLineLike ? (
+      {assetFamily ? (
+        hasStoredVariants && object.assetId ? (
+          <InspectorSection title="Variant" open>
+            <div className="asset-variants">
+              <AssetVariantPicker
+                family={assetFamily}
+                value={object.assetId}
+                onChange={(variantId) => {
+                  saveAssetVariantDefault(assetFamily.familyId, variantId);
+                  void editor.setAssetVariant(variantId);
+                }}
+              />
+            </div>
+            {transparencyControl}
+          </InspectorSection>
+        ) : (
+          <div className="inspector-section-body inspector-transparency-only">
+            {transparencyControl}
+          </div>
+        )
+      ) : (
+        <InspectorSection title="Style" open>
+          <div className="inspector-style-presets" aria-label="Style presets">
+            {STYLE_PRESETS.map((preset) => (
+              <button
+                key={`${preset.fill}-${preset.stroke}`}
+                style={{
+                  background: isLineLike ? preset.stroke : preset.fill,
+                  borderColor: preset.stroke
+                }}
+                aria-label={`Apply ${preset.stroke} style`}
+                onClick={() =>
+                  editor.setObject(
+                    isLineLike
+                      ? { stroke: preset.stroke }
+                      : { fill: preset.fill, stroke: preset.stroke }
+                  )
+                }
+              >
+                {isText ? "Aa" : null}
+              </button>
+            ))}
+          </div>
+          {transparencyControl}
+        </InspectorSection>
+      )}
+      {!assetFamily && (isLineLike ? (
         <InspectorSection title="Line" open>
           <label className="inspector-color-row color-field">
             <span>Color</span>
@@ -377,7 +400,7 @@ function ObjectInspector({ object }: { object: FabricObject }) {
             />
           </label>
         </InspectorSection>
-      )}
+      ))}
       {object.connector ? (
         <InspectorSection title="Arrow" open>
           <button
@@ -520,52 +543,6 @@ function ObjectInspector({ object }: { object: FabricObject }) {
           </div>
         </InspectorSection>
       )}
-      {assetFamily ? (
-        <InspectorSection title="Asset colors" open>
-          {hasStoredVariants && assetFamily && object.assetId && (
-            <div className="color-presets asset-variants">
-              <div className="color-presets-title">
-                <span>Variants</span>
-              </div>
-              <AssetVariantPicker
-                family={assetFamily}
-                value={object.assetId}
-                onChange={(variantId) => {
-                  saveAssetVariantDefault(assetFamily.familyId, variantId);
-                  void editor.setAssetVariant(variantId);
-                }}
-              />
-            </div>
-          )}
-          {!hasStoredVariants && colorProfile && (
-            <div className="color-presets">
-              <div className="color-presets-title">
-                <span>Color presets</span>
-                <button onClick={editor.resetColors}>Original</button>
-              </div>
-              <div className="color-preset-grid">
-                {ASSET_COLOR_PRESETS.map((preset) => (
-                  <button
-                    key={preset.id}
-                    className={object.assetColorPreset === preset.id ? "active" : ""}
-                    onClick={() => editor.applyColorPreset(preset.id)}
-                    aria-label={`Apply ${preset.label} preset`}
-                    aria-pressed={object.assetColorPreset === preset.id}
-                    title={preset.label}
-                  >
-                    <span className="color-preset-ramp" aria-hidden="true">
-                      {preset.ramps[colorProfile].map((color) => (
-                        <i key={color} style={{ background: color }} />
-                      ))}
-                    </span>
-                    <span>{preset.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </InspectorSection>
-      ) : null}
       <InspectorSection title="Align & distribute">
         <div className="icon-grid alignment-grid">
           <button onClick={() => editor.align("left")} aria-label="Align left">
