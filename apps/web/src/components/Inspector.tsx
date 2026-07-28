@@ -364,13 +364,13 @@ function ObjectInspector({ object }: { object: FabricObject }) {
             <ConnectorSelect
               label="Start head"
               value={object.connector.startArrowhead}
-              values={["none", "triangle", "open", "circle"]}
+              values={["none", "triangle", "open", "circle", "open-circle", "bar", "neuron"]}
               onChange={(startArrowhead) => editor.updateConnector({ startArrowhead })}
             />
             <ConnectorSelect
               label="End head"
               value={object.connector.endArrowhead}
-              values={["none", "triangle", "open", "circle"]}
+              values={["none", "triangle", "open", "circle", "open-circle", "bar", "neuron"]}
               onChange={(endArrowhead) => editor.updateConnector({ endArrowhead })}
             />
           </div>

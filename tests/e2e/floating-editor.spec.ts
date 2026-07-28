@@ -23,6 +23,26 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   const arrowGlyphs = await lineMenu
     .locator(".tool-flyout-secondary button svg")
     .evaluateAll((icons) => icons.map((icon) => icon.innerHTML));
+  await lineMenu.getByRole("menuitem", { name: /Inhibitor/ }).hover();
+  await expect(
+    lineMenu.getByRole("menuitem", { name: "Inhibitor", exact: true }).last()
+  ).toBeVisible();
+  await expect(
+    lineMenu.getByRole("menuitem", { name: "Curved inhibitor", exact: true })
+  ).toBeVisible();
+  await expect(
+    lineMenu.getByRole("menuitem", { name: "Dashed step inhibitor", exact: true })
+  ).toBeVisible();
+  await lineMenu.getByRole("menuitem", { name: /Neurons/ }).hover();
+  await expect(
+    lineMenu.getByRole("menuitem", { name: "Neuron connector", exact: true })
+  ).toBeVisible();
+  await lineMenu.getByRole("menuitem", { name: /Circular/ }).hover();
+  await expect(
+    lineMenu.getByRole("menuitem", { name: "Circular arrow", exact: true })
+  ).toBeVisible();
+  await lineMenu.getByRole("menuitem", { name: /Brackets/ }).hover();
+  await expect(lineMenu.getByRole("menuitem", { name: "Curly brace", exact: true })).toBeVisible();
   expect(new Set([...lineGlyphs, ...arrowGlyphs]).size).toBe(
     lineGlyphs.length + arrowGlyphs.length
   );
@@ -53,6 +73,13 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   await expect(page.locator(".selection-quick-toolbar")).toBeVisible();
   await expect(page.getByRole("toolbar", { name: "Selection actions" })).toContainText("Duplicate");
   await expect(page.locator(".workspace-controls")).toBeVisible();
+  await expect(page.locator(".top-toolbar").getByRole("button", { name: "Zoom in" })).toHaveCount(
+    0
+  );
+  await expect(page.getByRole("button", { name: "Canvas size" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Canvas color" })).toBeVisible();
+  await page.getByRole("button", { name: "Show grid" }).click();
+  await expect(page.locator(".canvas-workspace")).toHaveClass(/grid-visible/);
 });
 
 test("creates every distinct shape variant exposed by the shape pop-out", async ({ page }) => {

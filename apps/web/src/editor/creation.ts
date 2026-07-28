@@ -1,4 +1,8 @@
-import type { ConnectorArrowhead, ConnectorLineStyle } from "@workspace/editor-core";
+import type {
+  ConnectorArrowhead,
+  ConnectorLineStyle,
+  ConnectorPathShape
+} from "@workspace/editor-core";
 
 export type TextKind = "point" | "box";
 
@@ -29,7 +33,17 @@ export type ShapeKind =
 
 export type CreationTool =
   | { type: "text"; kind: TextKind; fontSize?: number; fontWeight?: number }
-  | { type: "shape"; kind: ShapeKind };
+  | { type: "shape"; kind: ShapeKind; connectorPreset?: ConnectorCreationPreset };
+
+export interface ConnectorCreationPreset {
+  pathShape: ConnectorPathShape;
+  lineStyle: ConnectorLineStyle;
+  startArrowhead: ConnectorArrowhead;
+  endArrowhead: ConnectorArrowhead;
+  curvature?: number;
+  opacity?: number;
+  widthScale?: number;
+}
 
 export interface CreationDefaults {
   text: {
@@ -91,7 +105,15 @@ export function normalizeCreationDefaults(value: unknown): CreationDefaults {
   const text = candidate.text ?? {};
   const shape = candidate.shape ?? {};
   const line = candidate.line ?? {};
-  const arrowheads: ConnectorArrowhead[] = ["none", "triangle", "open", "circle"];
+  const arrowheads: ConnectorArrowhead[] = [
+    "none",
+    "triangle",
+    "open",
+    "circle",
+    "open-circle",
+    "bar",
+    "neuron"
+  ];
   const lineStyles: ConnectorLineStyle[] = ["solid", "dashed", "dotted"];
   return {
     text: {

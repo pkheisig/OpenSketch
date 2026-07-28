@@ -83,4 +83,34 @@ describe("free connector geometry", () => {
     expect(object.angle).toBeCloseTo((expectedAngle * 180) / Math.PI, 6);
     expect(selectionAngle).toBeCloseTo(expectedAngle, 6);
   });
+
+  it.each([
+    ["elbow", "bar"],
+    ["wave", "circle"],
+    ["pulse", "open-circle"],
+    ["circular", "triangle"],
+    ["bracket-curly", "none"]
+  ] as const)("renders editable %s paths with %s endpoints", (pathShape, endArrowhead) => {
+    const binding: ConnectorBinding = {
+      fromObjectId: "",
+      fromAnchor: "center",
+      toObjectId: "",
+      toAnchor: "center",
+      startArrowhead: pathShape === "wave" ? "neuron" : "none",
+      endArrowhead,
+      lineStyle: pathShape === "pulse" ? "dashed" : "solid",
+      pathShape,
+      routing: "direct",
+      curvature: pathShape === "circular" ? 0.8 : 0
+    };
+    const object = createFreeConnectorObject({ x: 10, y: 20 }, { x: 310, y: 20 }, binding, {
+      color: "#244947",
+      width: 5,
+      opacity: 1
+    });
+
+    expect(object.getObjects().length).toBeGreaterThanOrEqual(endArrowhead === "none" ? 1 : 2);
+    expect(object.toSVG()).toContain("rgb(36,73,71)");
+    expect(object.connector?.pathShape).toBe(pathShape);
+  });
 });

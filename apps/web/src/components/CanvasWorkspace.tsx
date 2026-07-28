@@ -17,6 +17,7 @@ import {
   Copy,
   FileImage,
   FileType2,
+  Grid3X3,
   Group as GroupIcon,
   Maximize2,
   Minus,
@@ -24,9 +25,12 @@ import {
   MoveUp,
   MousePointer2,
   Plus,
+  Palette,
   RotateCcw,
   Ruler,
   Save,
+  Scaling,
+  ScanLine,
   Trash2,
   Ungroup
 } from "lucide-react";
@@ -224,6 +228,7 @@ export function CanvasWorkspace() {
       return true;
     }
   });
+  const [footerPanel, setFooterPanel] = useState<"size" | "color" | null>(null);
   const [panning, setPanning] = useState(false);
   const [marquee, setMarquee] = useState<{
     left: number;
@@ -616,10 +621,7 @@ export function CanvasWorkspace() {
     if (event.button !== 0 || !canvas) return;
     const insideStage = stageRef.current?.contains(event.target as Node);
     const scenePoint = canvas.getScenePoint(event.nativeEvent);
-    if (
-      insideStage &&
-      canvas.searchPossibleTargets(canvas.getObjects(), scenePoint).target
-    ) {
+    if (insideStage && canvas.searchPossibleTargets(canvas.getObjects(), scenePoint).target) {
       return;
     }
     if (insideStage) {
@@ -752,6 +754,11 @@ export function CanvasWorkspace() {
           }
         },
         {
+          label: editor.canvasSettings.grid ? "Hide grid" : "Show grid",
+          icon: <Grid3X3 size={15} />,
+          action: () => editor.setCanvasSettings({ grid: !editor.canvasSettings.grid })
+        },
+        {
           label: rulerVisible ? "Hide ruler" : "Show ruler",
           icon: <Ruler size={15} />,
           action: toggleRuler
@@ -847,7 +854,7 @@ export function CanvasWorkspace() {
       ref={workspaceRef}
       className={`canvas-workspace ${dragging ? "drop-active" : ""} ${
         editor.creationTool ? "is-creating" : ""
-      } ${rulerVisible ? "" : "ruler-hidden"}`}
+      } ${rulerVisible ? "" : "ruler-hidden"} ${editor.canvasSettings.grid ? "grid-visible" : ""}`}
       onDragOver={(event) => {
         if (event.dataTransfer.types.includes("application/x-scientific-asset")) {
           event.preventDefault();
@@ -967,37 +974,128 @@ export function CanvasWorkspace() {
             <ArrowDownToLine size={15} />
             <span>Back</span>
           </button>
-          <button
-            className="danger"
-            onClick={editor.deleteSelection}
-            aria-label="Delete selection"
-          >
+          <button className="danger" onClick={editor.deleteSelection} aria-label="Delete selection">
             <Trash2 size={15} />
           </button>
         </div>
       ) : null}
-      <div className="workspace-controls">
-        <button
-          className={rulerVisible ? "active" : ""}
-          onClick={toggleRuler}
-          aria-label={rulerVisible ? "Hide ruler" : "Show ruler"}
-        >
-          <Ruler size={14} />
-        </button>
-        <span />
-        <button onClick={() => setZoom(zoom - 0.1)} aria-label="Zoom out">
-          <Minus size={14} />
-        </button>
-        <button className="zoom-readout" onClick={editor.fitCanvas}>
-          {Math.round(zoom * 100)}% <ChevronDown size={11} />
-        </button>
-        <button onClick={() => setZoom(zoom + 0.1)} aria-label="Zoom in">
-          <Plus size={14} />
-        </button>
-        <span />
-        <button onClick={editor.fitCanvas} aria-label="Fit canvas">
-          <Maximize2 size={14} />
-        </button>
+      <div className="workspace-footer">
+        <div className="workspace-footer-section canvas-controls">
+          <button
+            className={footerPanel === "size" ? "active labeled" : "labeled"}
+            onClick={() => setFooterPanel((current) => (current === "size" ? null : "size"))}
+            aria-expanded={footerPanel === "size"}
+          >
+            <Scaling size={15} />
+            Canvas size
+          </button>
+          <button
+            className={footerPanel === "color" ? "active labeled" : "labeled"}
+            onClick={() => setFooterPanel((current) => (current === "color" ? null : "color"))}
+            aria-expanded={footerPanel === "color"}
+          >
+            <Palette size={15} />
+            Canvas color
+          </button>
+          {footerPanel === "size" ? (
+            <div className="workspace-footer-popover canvas-size-popover">
+              <strong>Canvas size</strong>
+              <label>
+                Width
+                <input
+                  type="number"
+                  min="1"
+                  value={editor.canvasSettings.width}
+                  onChange={(event) =>
+                    editor.setCanvasSettings({
+                      width: Math.max(1, Number(event.target.value) || 1)
+                    })
+                  }
+                />
+              </label>
+              <label>
+                Height
+                <input
+                  type="number"
+                  min="1"
+                  value={editor.canvasSettings.height}
+                  onChange={(event) =>
+                    editor.setCanvasSettings({
+                      height: Math.max(1, Number(event.target.value) || 1)
+                    })
+                  }
+                />
+              </label>
+              <button onClick={editor.fitCanvas}>Fit canvas</button>
+            </div>
+          ) : null}
+          {footerPanel === "color" ? (
+            <div className="workspace-footer-popover canvas-color-popover">
+              <strong>Canvas color</strong>
+              <label>
+                <input
+                  type="color"
+                  value={editor.canvasSettings.background}
+                  disabled={editor.canvasSettings.transparent}
+                  onChange={(event) => editor.setCanvasSettings({ background: event.target.value })}
+                />
+                {editor.canvasSettings.background}
+              </label>
+              <label className="footer-check">
+                <input
+                  type="checkbox"
+                  checked={editor.canvasSettings.transparent}
+                  onChange={(event) =>
+                    editor.setCanvasSettings({ transparent: event.target.checked })
+                  }
+                />
+                Transparent
+              </label>
+            </div>
+          ) : null}
+        </div>
+        <div className="workspace-controls" aria-label="Zoom controls">
+          <button onClick={() => setZoom(zoom - 0.1)} aria-label="Zoom out">
+            <Minus size={14} />
+          </button>
+          <button className="zoom-readout" onClick={editor.fitCanvas}>
+            {Math.round(zoom * 100)}% <ChevronDown size={11} />
+          </button>
+          <button onClick={() => setZoom(zoom + 0.1)} aria-label="Zoom in">
+            <Plus size={14} />
+          </button>
+          <span />
+          <button onClick={editor.fitCanvas} aria-label="Fit canvas">
+            <Maximize2 size={14} />
+          </button>
+        </div>
+        <div className="workspace-footer-section view-controls">
+          <button
+            className={editor.alignmentEnabled ? "active" : ""}
+            onClick={() => editor.setAlignmentEnabled(!editor.alignmentEnabled)}
+            aria-label={
+              editor.alignmentEnabled ? "Disable alignment guides" : "Enable alignment guides"
+            }
+            title="Alignment guides"
+          >
+            <ScanLine size={15} />
+          </button>
+          <button
+            className={editor.canvasSettings.grid ? "active" : ""}
+            onClick={() => editor.setCanvasSettings({ grid: !editor.canvasSettings.grid })}
+            aria-label={editor.canvasSettings.grid ? "Hide grid" : "Show grid"}
+            title="Grid"
+          >
+            <Grid3X3 size={15} />
+          </button>
+          <button
+            className={rulerVisible ? "active" : ""}
+            onClick={toggleRuler}
+            aria-label={rulerVisible ? "Hide ruler" : "Show ruler"}
+          >
+            <Ruler size={14} />
+          </button>
+        </div>
       </div>
       {contextMenu && (
         <CanvasContextMenu

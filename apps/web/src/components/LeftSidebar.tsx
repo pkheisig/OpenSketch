@@ -14,7 +14,6 @@ import {
   FileInput,
   Heart,
   ImagePlus,
-  Minus,
   Search,
   Shapes,
   Sparkles,
@@ -26,7 +25,8 @@ import {
   type AssetFamily,
   type AssetVariant,
   type ConnectorArrowhead,
-  type ConnectorLineStyle
+  type ConnectorLineStyle,
+  type ConnectorPathShape
 } from "@workspace/editor-core";
 import { Group, StaticCanvas, util, type FabricObject } from "fabric";
 import { ASSET_CATEGORIES, assetManifest } from "@/assets/manifest";
@@ -51,6 +51,8 @@ import { UiSelect } from "@/components/UiSelect";
 
 type Tab = "assets" | "imports" | "edit";
 type Flyout = "lines" | "shapes" | "defaults" | null;
+type ConnectorFamily =
+  "lines" | "arrows" | "inhibitor" | "dots" | "neurons" | "circular" | "brackets";
 
 const SHAPE_GROUPS = {
   basic: [
@@ -74,97 +76,145 @@ const SHAPE_GROUPS = {
   ]
 } as const;
 
-const LINE_PRESETS = [
-  {
-    label: "Line",
-    kind: "line",
-    glyph: "solid",
-    defaults: { lineStyle: "solid", startArrowhead: "none", endArrowhead: "none" }
-  },
-  {
-    label: "Dashed line",
-    kind: "line",
-    glyph: "dashed",
-    defaults: { lineStyle: "dashed", startArrowhead: "none", endArrowhead: "none" }
-  },
-  {
-    label: "Dotted line",
-    kind: "line",
-    glyph: "dotted",
-    defaults: { lineStyle: "dotted", startArrowhead: "none", endArrowhead: "none" }
-  },
-  {
-    label: "Curved line",
-    kind: "curved-line",
-    glyph: "curved-line",
-    defaults: { lineStyle: "solid", startArrowhead: "none", endArrowhead: "none" }
-  },
-  {
-    label: "Dashed curved line",
-    kind: "curved-line",
-    glyph: "dashed-curved-line",
-    defaults: { lineStyle: "dashed", startArrowhead: "none", endArrowhead: "none" }
-  },
-  {
-    label: "Dotted curved line",
-    kind: "curved-line",
-    glyph: "dotted-curved-line",
-    defaults: { lineStyle: "dotted", startArrowhead: "none", endArrowhead: "none" }
-  }
-] as const;
+interface ConnectorPreset {
+  label: string;
+  pathShape: ConnectorPathShape;
+  lineStyle: ConnectorLineStyle;
+  startArrowhead: ConnectorArrowhead;
+  endArrowhead: ConnectorArrowhead;
+  curvature?: number;
+  opacity?: number;
+  widthScale?: number;
+}
 
-const ARROW_PRESETS = [
-  {
-    label: "Arrow",
-    kind: "arrow",
-    glyph: "arrow",
-    defaults: { lineStyle: "solid", startArrowhead: "none", endArrowhead: "triangle" }
-  },
-  {
-    label: "Open arrow",
-    kind: "arrow",
-    glyph: "open-arrow",
-    defaults: { lineStyle: "solid", startArrowhead: "none", endArrowhead: "open" }
-  },
-  {
-    label: "Double arrow",
-    kind: "double-arrow",
-    glyph: "double-arrow",
-    defaults: { lineStyle: "solid", startArrowhead: "triangle", endArrowhead: "triangle" }
-  },
-  {
-    label: "Curved arrow",
-    kind: "curved-arrow",
-    glyph: "curved-arrow",
-    defaults: { lineStyle: "solid", startArrowhead: "none", endArrowhead: "triangle" }
-  },
-  {
-    label: "Dashed arrow",
-    kind: "arrow",
-    glyph: "dashed-arrow",
-    defaults: { lineStyle: "dashed", startArrowhead: "none", endArrowhead: "triangle" }
-  },
-  {
-    label: "Circle-ended line",
-    kind: "line",
-    glyph: "circle-ended",
-    defaults: { lineStyle: "solid", startArrowhead: "circle", endArrowhead: "circle" }
-  },
-  {
-    label: "Circle-start arrow",
-    kind: "arrow",
-    glyph: "circle-start-arrow",
-    defaults: { lineStyle: "solid", startArrowhead: "circle", endArrowhead: "triangle" }
-  },
-  {
-    label: "Dotted arrow",
-    kind: "arrow",
-    glyph: "dotted-arrow",
-    defaults: { lineStyle: "dotted", startArrowhead: "none", endArrowhead: "triangle" }
-  }
-] as const;
+const preset = (
+  label: string,
+  pathShape: ConnectorPathShape,
+  lineStyle: ConnectorLineStyle = "solid",
+  startArrowhead: ConnectorArrowhead = "none",
+  endArrowhead: ConnectorArrowhead = "none",
+  extra: Partial<Pick<ConnectorPreset, "curvature" | "opacity" | "widthScale">> = {}
+): ConnectorPreset => ({
+  label,
+  pathShape,
+  lineStyle,
+  startArrowhead,
+  endArrowhead,
+  ...extra
+});
 
-function LinePresetIcon({ glyph }: { glyph: string }) {
+const CONNECTOR_PRESETS: Record<ConnectorFamily, ConnectorPreset[]> = {
+  lines: [
+    preset("Straight line", "straight"),
+    preset("Faded line", "straight", "solid", "none", "none", { opacity: 0.35 }),
+    preset("Dashed line", "straight", "dashed"),
+    preset("Square elbow", "elbow"),
+    preset("Rounded elbow", "rounded-elbow"),
+    preset("Dashed elbow", "elbow", "dashed"),
+    preset("Step line", "step"),
+    preset("Rounded step", "rounded-elbow"),
+    preset("Dashed step", "step", "dashed"),
+    preset("Arc", "arc", "solid", "none", "none", { curvature: -0.35 }),
+    preset("Faded arc", "arc", "solid", "none", "none", {
+      curvature: -0.35,
+      opacity: 0.35
+    }),
+    preset("Dashed arc", "arc", "dashed", "none", "none", { curvature: -0.35 }),
+    preset("Wave", "wave"),
+    preset("Faded wave", "wave", "solid", "none", "none", { opacity: 0.35 }),
+    preset("Dashed wave", "wave", "dashed"),
+    preset("Pulse", "pulse"),
+    preset("Faded pulse", "pulse", "solid", "none", "none", { opacity: 0.35 }),
+    preset("Dashed pulse", "pulse", "dashed")
+  ],
+  arrows: [
+    preset("Straight arrow", "straight", "solid", "none", "triangle"),
+    preset("Open arrow", "straight", "solid", "none", "open"),
+    preset("Double arrow", "straight", "solid", "triangle", "triangle"),
+    preset("Dashed arrow", "straight", "dashed", "none", "triangle"),
+    preset("Curved arrow", "arc", "solid", "none", "triangle", { curvature: 0.3 }),
+    preset("Rounded arrow", "rounded-elbow", "solid", "none", "triangle"),
+    preset("Elbow arrow", "elbow", "solid", "none", "triangle"),
+    preset("Dashed elbow arrow", "elbow", "dashed", "none", "triangle"),
+    preset("Step arrow", "step", "solid", "none", "triangle"),
+    preset("Double step arrow", "step", "solid", "triangle", "triangle"),
+    preset("Wave arrow", "wave", "solid", "none", "triangle"),
+    preset("Dashed wave arrow", "wave", "dashed", "none", "triangle"),
+    preset("Broad arrow", "straight", "solid", "none", "triangle", { widthScale: 2 }),
+    preset("Broad double arrow", "straight", "solid", "triangle", "triangle", {
+      widthScale: 2
+    })
+  ],
+  inhibitor: [
+    preset("Inhibitor", "straight", "solid", "none", "bar"),
+    preset("Faded inhibitor", "straight", "solid", "none", "bar", { opacity: 0.35 }),
+    preset("Dashed inhibitor", "straight", "dashed", "none", "bar"),
+    preset("Elbow inhibitor", "elbow", "solid", "none", "bar"),
+    preset("Rounded inhibitor", "rounded-elbow", "solid", "none", "bar"),
+    preset("Dashed elbow inhibitor", "elbow", "dashed", "none", "bar"),
+    preset("Step inhibitor", "step", "solid", "none", "bar"),
+    preset("Rounded step inhibitor", "rounded-elbow", "solid", "none", "bar"),
+    preset("Dashed step inhibitor", "step", "dashed", "none", "bar"),
+    preset("Curved inhibitor", "arc", "solid", "none", "bar", { curvature: -0.32 }),
+    preset("Faded curved inhibitor", "arc", "solid", "none", "bar", {
+      curvature: -0.32,
+      opacity: 0.35
+    }),
+    preset("Dashed curved inhibitor", "arc", "dashed", "none", "bar", {
+      curvature: -0.32
+    })
+  ],
+  dots: [
+    preset("Dot endpoint", "straight", "solid", "none", "circle"),
+    preset("Dashed dot endpoint", "straight", "dashed", "none", "circle"),
+    preset("Elbow dot endpoint", "elbow", "solid", "none", "circle"),
+    preset("Dashed elbow dot endpoint", "elbow", "dashed", "none", "circle")
+  ],
+  neurons: [
+    preset("Neuron connector", "straight", "solid", "neuron", "circle"),
+    preset("Neuron open endpoint", "straight", "solid", "neuron", "open-circle"),
+    preset("Reverse neuron connector", "straight", "solid", "circle", "neuron"),
+    preset("Reverse open neuron", "straight", "solid", "open-circle", "neuron"),
+    preset("Curved neuron", "arc", "solid", "neuron", "circle", { curvature: -0.3 }),
+    preset("Wave neuron", "wave", "solid", "neuron", "circle"),
+    preset("Arc neuron", "arc", "solid", "neuron", "open-circle", { curvature: 0.3 }),
+    preset("Elbow neuron", "elbow", "solid", "neuron", "circle"),
+    preset("Rounded neuron", "rounded-elbow", "solid", "neuron", "circle"),
+    preset("Step neuron", "step", "solid", "neuron", "circle")
+  ],
+  circular: [
+    preset("Circular line", "circular", "solid", "none", "none", { curvature: 0.8 }),
+    preset("Reverse circular line", "circular", "solid", "none", "none", {
+      curvature: -0.8
+    }),
+    preset("Short arc", "arc", "solid", "none", "none", { curvature: 0.5 }),
+    preset("Circular arrow", "circular", "solid", "none", "triangle", { curvature: 0.8 }),
+    preset("Reverse circular arrow", "circular", "solid", "none", "triangle", {
+      curvature: -0.8
+    }),
+    preset("Double circular arrow", "circular", "solid", "triangle", "triangle", {
+      curvature: 0.8
+    }),
+    preset("Open circular arrow", "circular", "solid", "none", "open", { curvature: 0.8 }),
+    preset("Dashed circular line", "circular", "dashed", "none", "none", {
+      curvature: 0.8
+    }),
+    preset("Dashed circular arrow", "circular", "dashed", "none", "triangle", {
+      curvature: 0.8
+    })
+  ],
+  brackets: [
+    preset("Square bracket", "bracket-square"),
+    preset("Round bracket", "bracket-round"),
+    preset("Square brace", "bracket-square", "solid", "bar", "none"),
+    preset("Curly brace", "bracket-curly"),
+    preset("Reverse curly brace", "bracket-curly", "solid", "none", "none", {
+      curvature: -0.25
+    })
+  ]
+};
+
+function ConnectorPresetIcon({ value }: { value: ConnectorPreset }) {
   const line = {
     fill: "none",
     stroke: "currentColor",
@@ -172,43 +222,60 @@ function LinePresetIcon({ glyph }: { glyph: string }) {
     strokeLinecap: "round" as const,
     strokeLinejoin: "round" as const
   };
+  const paths: Record<ConnectorPathShape, string> = {
+    straight: "M4 12H28",
+    elbow: "M4 18V7H28",
+    "rounded-elbow": "M4 18V11Q4 6 10 6H28",
+    step: "M4 18H11V7H23V12H28",
+    arc: "M4 17Q16 3 28 17",
+    wave: "M4 12C8 3 12 3 16 12S24 21 28 12",
+    pulse: "M4 17H10C12 17 12 5 16 5S20 17 22 17H28",
+    circular: "M5 18C-1 2 27-2 27 13",
+    "bracket-square": "M8 20H4V4H8",
+    "bracket-round": "M9 20Q5 20 5 16V8Q5 4 9 4",
+    "bracket-curly": "M10 22C5 22 8 14 4 12C8 10 5 2 10 2"
+  };
+  const dash =
+    value.lineStyle === "dashed" ? "5 3" : value.lineStyle === "dotted" ? "1 4" : undefined;
+  const endHead = value.endArrowhead;
+  const startHead = value.startArrowhead;
+  const endpoint = (kind: ConnectorArrowhead, atStart: boolean) => {
+    const x = atStart ? 4 : 28;
+    if (kind === "none") return null;
+    if (kind === "circle")
+      return <circle key={`${kind}-${x}`} cx={x} cy="12" r="2.5" fill="currentColor" />;
+    if (kind === "open-circle")
+      return <circle key={`${kind}-${x}`} cx={x} cy="12" r="3" {...line} />;
+    if (kind === "bar") return <path key={`${kind}-${x}`} {...line} d={`M${x} 6V18`} />;
+    if (kind === "neuron")
+      return (
+        <path
+          key={`${kind}-${x}`}
+          fill="currentColor"
+          d={atStart ? "M4 12 10 7v10Z" : "M28 12 22 7v10Z"}
+        />
+      );
+    return (
+      <path
+        key={`${kind}-${x}`}
+        {...line}
+        fill={kind === "triangle" ? "currentColor" : "none"}
+        d={atStart ? "M10 6 4 12l6 6" : "m22 6 6 6-6 6"}
+      />
+    );
+  };
   return (
-    <svg width="31" height="24" viewBox="0 0 32 24" aria-hidden="true">
-      {glyph === "solid" && <path {...line} d="M3 12h26" />}
-      {glyph === "dashed" && <path {...line} strokeDasharray="6 4" d="M3 12h26" />}
-      {glyph === "dotted" && <path {...line} strokeDasharray="1 4" d="M3 12h26" />}
-      {glyph === "curved-line" && <path {...line} d="M3 18C8 4 22 4 29 16" />}
-      {glyph === "dashed-curved-line" && (
-        <path {...line} strokeDasharray="5 3" d="M3 18C8 4 22 4 29 16" />
-      )}
-      {glyph === "dotted-curved-line" && (
-        <path {...line} strokeDasharray="1 4" d="M3 18C8 4 22 4 29 16" />
-      )}
-      {glyph === "arrow" && <path {...line} d="M3 12h24m-6-6 6 6-6 6" />}
-      {glyph === "open-arrow" && <path {...line} d="M3 12h23m-5-5 5 5-5 5" />}
-      {glyph === "double-arrow" && (
-        <path {...line} d="M6 6 1 12l5 6M1 12h30M26 6l5 6-5 6" />
-      )}
-      {glyph === "curved-arrow" && <path {...line} d="M3 17C5 4 21 4 27 12m-5-1 5 1-2 5" />}
-      {glyph === "dashed-arrow" && (
-        <path {...line} strokeDasharray="5 3" d="M3 12h24m-6-6 6 6-6 6" />
-      )}
-      {glyph === "circle-ended" && (
-        <>
-          <circle {...line} cx="4" cy="12" r="2.5" />
-          <path {...line} d="M7 12h18" />
-          <circle {...line} cx="28" cy="12" r="2.5" />
-        </>
-      )}
-      {glyph === "circle-start-arrow" && (
-        <>
-          <circle {...line} cx="4" cy="12" r="2.5" />
-          <path {...line} d="M7 12h20m-6-6 6 6-6 6" />
-        </>
-      )}
-      {glyph === "dotted-arrow" && (
-        <path {...line} strokeDasharray="1 4" d="M3 12h24m-6-6 6 6-6 6" />
-      )}
+    <svg
+      width="43"
+      height="31"
+      viewBox="0 0 32 24"
+      aria-hidden="true"
+      style={{ opacity: value.opacity ?? 1 }}
+    >
+      <title>{value.label}</title>
+      <path {...line} strokeDasharray={dash} d={paths[value.pathShape]} />
+      {endpoint(startHead, true)}
+      {endpoint(endHead, false)}
     </svg>
   );
 }
@@ -245,7 +312,10 @@ function ShapePresetIcon({ glyph }: { glyph: string }) {
       {glyph === "trapezoid" && <path {...outline} d="M8 5h16l6 18H2Z" />}
       {glyph === "parallelogram" && <path {...outline} d="M9 5h21l-7 18H2Z" />}
       {glyph === "star" && (
-        <path {...outline} d="m16 2 3.5 7.6 8.5.9-6.3 5.7 1.8 8.3-7.5-4.2-7.5 4.2 1.8-8.3L4 10.5l8.5-.9Z" />
+        <path
+          {...outline}
+          d="m16 2 3.5 7.6 8.5.9-6.3 5.7 1.8 8.3-7.5-4.2-7.5 4.2 1.8-8.3L4 10.5l8.5-.9Z"
+        />
       )}
     </svg>
   );
@@ -318,8 +388,9 @@ async function styledAssetPreview(
 export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const [tab, setTab] = useState<Tab>("assets");
   const [flyout, setFlyout] = useState<Flyout>(null);
-  const [lineFamily, setLineFamily] = useState<"lines" | "arrows">("lines");
+  const [lineFamily, setLineFamily] = useState<ConnectorFamily>("lines");
   const [shapeFamily, setShapeFamily] = useState<keyof typeof SHAPE_GROUPS>("basic");
+  const [defaultsSource, setDefaultsSource] = useState<"line" | "shape">("line");
   const closeTimer = useRef<number | undefined>(undefined);
   const editor = useEditor();
   const openPanel = (next: Tab) => {
@@ -336,12 +407,26 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     window.clearTimeout(closeTimer.current);
     closeTimer.current = window.setTimeout(() => setFlyout(null), 180);
   };
-  const chooseLinePreset = (preset: (typeof LINE_PRESETS)[number] | (typeof ARROW_PRESETS)[number]) => {
+  const chooseLinePreset = (value: ConnectorPreset) => {
     editor.setCreationDefaults({
       ...editor.creationDefaults,
-      line: { ...editor.creationDefaults.line, ...preset.defaults }
+      line: {
+        ...editor.creationDefaults.line,
+        lineStyle: value.lineStyle,
+        startArrowhead: value.startArrowhead,
+        endArrowhead: value.endArrowhead
+      }
     });
-    editor.setCreationTool({ type: "shape", kind: preset.kind });
+    const arrow =
+      value.endArrowhead !== "none" ||
+      value.startArrowhead !== "none" ||
+      lineFamily !== "lines" ||
+      value.pathShape === "circular";
+    editor.setCreationTool({
+      type: "shape",
+      kind: arrow ? "arrow" : value.pathShape === "straight" ? "line" : "curved-line",
+      connectorPreset: value
+    });
     setFlyout(null);
   };
   useEffect(() => {
@@ -437,37 +522,54 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
           onPointerLeave={scheduleFlyoutClose}
         >
           <div className="tool-flyout-primary">
-            <button
-              className={lineFamily === "lines" ? "active" : ""}
-              onPointerEnter={() => setLineFamily("lines")}
-              onClick={() => setLineFamily("lines")}
-              role="menuitem"
-            >
-              <Minus size={18} /> Lines <ArrowRight size={14} />
-            </button>
-            <button
-              className={lineFamily === "arrows" ? "active" : ""}
-              onPointerEnter={() => setLineFamily("arrows")}
-              onClick={() => setLineFamily("arrows")}
-              role="menuitem"
-            >
-              <ArrowRight size={18} /> Arrows <ArrowRight size={14} />
-            </button>
-            <button onClick={() => setFlyout("defaults")} role="menuitem">
-              <Sparkles size={18} /> Defaults <ArrowRight size={14} />
-            </button>
-          </div>
-          <div className="tool-flyout-secondary">
-            {(lineFamily === "lines" ? LINE_PRESETS : ARROW_PRESETS).map((preset) => {
+            {(
+              [
+                ["lines", "Lines"],
+                ["arrows", "Arrows"],
+                ["inhibitor", "Inhibitor"],
+                ["dots", "Dots"],
+                ["neurons", "Neurons"],
+                ["circular", "Circular"],
+                ["brackets", "Brackets"]
+              ] as const
+            ).map(([family, label]) => {
+              const sample = CONNECTOR_PRESETS[family][0];
               return (
                 <button
-                  key={preset.label}
-                  onClick={() => chooseLinePreset(preset)}
+                  key={family}
+                  className={lineFamily === family ? "active" : ""}
+                  onPointerEnter={() => setLineFamily(family)}
+                  onClick={() => setLineFamily(family)}
                   role="menuitem"
-                  aria-label={preset.label}
-                  title={preset.label}
                 >
-                  <LinePresetIcon glyph={preset.glyph} />
+                  <ConnectorPresetIcon value={sample} />
+                  {label}
+                  <ArrowRight size={14} />
+                </button>
+              );
+            })}
+            <button
+              aria-label="Custom defaults"
+              onClick={() => {
+                setDefaultsSource("line");
+                setFlyout("defaults");
+              }}
+              role="menuitem"
+            >
+              <Edit3 size={18} /> Custom <ArrowRight size={14} />
+            </button>
+          </div>
+          <div className={`tool-flyout-secondary connector-family-${lineFamily}`}>
+            {CONNECTOR_PRESETS[lineFamily].map((value) => {
+              return (
+                <button
+                  key={value.label}
+                  onClick={() => chooseLinePreset(value)}
+                  role="menuitem"
+                  aria-label={value.label}
+                  title={value.label}
+                >
+                  <ConnectorPresetIcon value={value} />
                 </button>
               );
             })}
@@ -499,7 +601,13 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
             >
               <ShapePresetIcon glyph="hexagon" /> Polygons <ArrowRight size={14} />
             </button>
-            <button onClick={() => setFlyout("defaults")} role="menuitem">
+            <button
+              onClick={() => {
+                setDefaultsSource("shape");
+                setFlyout("defaults");
+              }}
+              role="menuitem"
+            >
               <Sparkles size={18} /> Defaults <ArrowRight size={14} />
             </button>
           </div>
@@ -530,31 +638,53 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
           onPointerLeave={scheduleFlyoutClose}
         >
           <ShapesPanel />
+          {defaultsSource === "line" ? (
+            <button
+              className="use-custom-connector"
+              onClick={() => {
+                const line = editor.creationDefaults.line;
+                editor.setCreationTool({
+                  type: "shape",
+                  kind:
+                    line.startArrowhead === "none" && line.endArrowhead === "none"
+                      ? "line"
+                      : "arrow",
+                  connectorPreset: {
+                    pathShape: "straight",
+                    lineStyle: line.lineStyle,
+                    startArrowhead: line.startArrowhead,
+                    endArrowhead: line.endArrowhead
+                  }
+                });
+                setFlyout(null);
+              }}
+            >
+              Use custom connector
+            </button>
+          ) : null}
         </div>
       ) : null}
       {!collapsed ? (
         <div className="sidebar-expanded floating-panel">
           {tab !== "edit" ? (
             <div className="floating-panel-header">
-              <strong>
-                {tab === "assets" ? "Assets" : "Imports"}
-              </strong>
+              <strong>{tab === "assets" ? "Assets" : "Imports"}</strong>
               <button className="panel-close-button" onClick={onToggle} aria-label="Close panel">
                 ×
               </button>
             </div>
           ) : null}
-        <div
-          key={tab}
-          className={`sidebar-content sidebar-content-${tab}`}
-          id={`insert-panel-${tab}`}
-          role="tabpanel"
-          aria-label={`${tab} tools`}
-        >
-          {tab === "assets" && <AssetsPanel />}
-          {tab === "imports" && <ImportsPanel />}
-          {tab === "edit" && <InspectorContent onClose={onToggle} />}
-        </div>
+          <div
+            key={tab}
+            className={`sidebar-content sidebar-content-${tab}`}
+            id={`insert-panel-${tab}`}
+            role="tabpanel"
+            aria-label={`${tab} tools`}
+          >
+            {tab === "assets" && <AssetsPanel />}
+            {tab === "imports" && <ImportsPanel />}
+            {tab === "edit" && <InspectorContent onClose={onToggle} />}
+          </div>
           <LayersPanel />
         </div>
       ) : null}
@@ -579,15 +709,14 @@ function AssetsPanel() {
   const [savedStyles, setSavedStyles] = useState<SavedElementStyles>(loadSavedElementStyles);
   const assetListRef = useRef<HTMLDivElement>(null);
   const families = useMemo(() => {
-    const matches = filterAssetFamilies(assetManifest.families, debouncedQuery, category);
-    return matches
-      .map((family, index) => ({ family, index }))
-      .sort(
-        (left, right) =>
-          Number(favorites.has(right.family.familyId)) -
-            Number(favorites.has(left.family.familyId)) || left.index - right.index
-      )
-      .map(({ family }) => family);
+    const matches = filterAssetFamilies(
+      assetManifest.families,
+      debouncedQuery,
+      category === "Favorites" ? "All" : category
+    );
+    return category === "Favorites"
+      ? matches.filter((family) => favorites.has(family.familyId))
+      : matches;
   }, [category, debouncedQuery, favorites]);
   useEffect(() => {
     const timeout = window.setTimeout(() => setDebouncedQuery(query), 160);
@@ -696,12 +825,13 @@ function AssetsPanel() {
         )}
       </label>
       <div className="category-strip" role="list" aria-label="Asset categories">
-        {ASSET_CATEGORIES.map((item) => (
+        {["Favorites", ...ASSET_CATEGORIES].map((item) => (
           <button
             key={item}
             className={category === item ? "active" : ""}
             onClick={() => setCategory(item)}
           >
+            {item === "Favorites" ? <Heart size={14} aria-hidden="true" /> : null}
             {item}
           </button>
         ))}
@@ -711,7 +841,7 @@ function AssetsPanel() {
           {assetError}
         </p>
       ) : null}
-      {!query && recent.length > 0 && (
+      {!query && category !== "Favorites" && recent.length > 0 && (
         <div className="recent-assets" aria-label="Recent assets">
           <span>Recent</span>
           {recent
@@ -1027,7 +1157,10 @@ function CreationArrowheadSelect({
         { value: "none", label: "None" },
         { value: "triangle", label: "Triangle" },
         { value: "open", label: "Open" },
-        { value: "circle", label: "Circle" }
+        { value: "circle", label: "Circle" },
+        { value: "open-circle", label: "Open dot" },
+        { value: "bar", label: "Inhibitor bar" },
+        { value: "neuron", label: "Neuron terminal" }
       ]}
       onChange={(next) => onChange(next as ConnectorArrowhead)}
     />

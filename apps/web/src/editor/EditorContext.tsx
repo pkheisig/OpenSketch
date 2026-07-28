@@ -93,6 +93,7 @@ import {
   CREATION_DEFAULTS_STORAGE_KEY,
   DEFAULT_CREATION_DEFAULTS,
   normalizeCreationDefaults,
+  type ConnectorCreationPreset,
   type CreationDefaults,
   type CreationTool,
   type ShapeKind,
@@ -240,9 +241,11 @@ interface EditorContextValue {
   zoom: number;
   historyState: { canUndo: boolean; canRedo: boolean };
   canvasSettings: CanvasSettings;
+  alignmentEnabled: boolean;
   projectDescription: string;
   setCanvasElement: (element: HTMLCanvasElement | null) => void;
   setCanvasSettings: (settings: Partial<CanvasSettings>) => void;
+  setAlignmentEnabled: (enabled: boolean) => void;
   setProjectName: (name: string) => void;
   setProjectDescription: (description: string) => void;
   selectParentAsset: () => void;
@@ -257,10 +260,7 @@ interface EditorContextValue {
   importMedia: (file: File) => Promise<void>;
   deleteSelection: () => void;
   duplicateSelection: () => Promise<void>;
-  copySelectionToClipboard: (
-    format?: SelectionClipboardFormat,
-    cut?: boolean
-  ) => Promise<void>;
+  copySelectionToClipboard: (format?: SelectionClipboardFormat, cut?: boolean) => Promise<void>;
   groupSelection: () => void;
   ungroupSelection: () => void;
   arrange: (action: "front" | "forward" | "backward" | "back") => void;
@@ -657,6 +657,21 @@ export function EditorProvider({
     }
   });
   const [canvasSettings, setCanvasSettingsState] = useState(project.canvas);
+  const [alignmentEnabled, setAlignmentEnabledState] = useState(() => {
+    try {
+      return localStorage.getItem("OpenSketch:alignment-enabled") !== "false";
+    } catch {
+      return true;
+    }
+  });
+  const setAlignmentEnabled = useCallback((enabled: boolean) => {
+    setAlignmentEnabledState(enabled);
+    try {
+      localStorage.setItem("OpenSketch:alignment-enabled", String(enabled));
+    } catch {
+      // Keep the session setting when storage is unavailable.
+    }
+  }, []);
   const [projectDescription, setProjectDescriptionState] = useState(project.description ?? "");
   const [historyState, setHistoryState] = useState({ canUndo: false, canRedo: false });
   const history = useRef<string[]>([]);
@@ -1034,9 +1049,7 @@ export function EditorProvider({
         activated: false
       };
     };
-    const addDragDuplicate = (
-      session: NonNullable<typeof dragDuplicate.current>
-    ): Promise<void> =>
+    const addDragDuplicate = (session: NonNullable<typeof dragDuplicate.current>): Promise<void> =>
       session.clones.then((clones) => {
         clones.forEach((clone, index) => {
           assignFreshCloneIds(clone);
@@ -1068,18 +1081,14 @@ export function EditorProvider({
       session.pendingAdd = addDragDuplicate(session);
       canvas.requestRenderAll();
     };
-    const restoreDragDuplicateOpacity = (
-      session: NonNullable<typeof dragDuplicate.current>
-    ) => {
+    const restoreDragDuplicateOpacity = (session: NonNullable<typeof dragDuplicate.current>) => {
       session.target.set("opacity", session.originalOpacity);
       session.target.dirty = true;
     };
     const modified = ({ target }: { target?: FabricObject } = {}) => {
       const changed = target ?? canvas.getActiveObject();
       const nestedSession =
-        changed && nestedDrag.current?.target === changed
-          ? nestedDrag.current
-          : undefined;
+        changed && nestedDrag.current?.target === changed ? nestedDrag.current : undefined;
       if (changed && nestedSession) {
         changed.set({
           left: nestedSession.lastLeft,
@@ -1137,21 +1146,15 @@ export function EditorProvider({
       e?: MouseEvent | PointerEvent | TouchEvent;
     }) => {
       if (!target?.objectId) return;
-      const nestedSession =
-        nestedDrag.current?.target === target ? nestedDrag.current : undefined;
+      const nestedSession = nestedDrag.current?.target === target ? nestedDrag.current : undefined;
       const rememberNestedPosition = () => {
         if (!nestedSession) return;
         nestedSession.lastLeft = target.left ?? nestedSession.lastLeft;
         nestedSession.lastTop = target.top ?? nestedSession.lastTop;
       };
       if (nestedSession && scenePoint) {
-        const parentInverse = util.invertTransform(
-          nestedSession.parent.calcTransformMatrix()
-        );
-        const localStart = util.transformPoint(
-          nestedSession.startPointer,
-          parentInverse
-        );
+        const parentInverse = util.invertTransform(nestedSession.parent.calcTransformMatrix());
+        const localStart = util.transformPoint(nestedSession.startPointer, parentInverse);
         const localCurrent = util.transformPoint(
           new FabricPoint(scenePoint.x, scenePoint.y),
           parentInverse
@@ -1171,7 +1174,7 @@ export function EditorProvider({
       if (snapSession.current.target !== target) {
         snapSession.current = { target };
       }
-      if (e && "altKey" in e && e.altKey) {
+      if (!alignmentEnabled || (e && "altKey" in e && e.altKey)) {
         snapSession.current = { target };
         guides.current = {};
         refreshConnectors(target.objectId);
@@ -1297,7 +1300,7 @@ export function EditorProvider({
       canvas.dispose();
       setCanvas(null);
     };
-  }, [canvas, commit, enqueuePendingSave, refreshConnectors]);
+  }, [alignmentEnabled, canvas, commit, enqueuePendingSave, refreshConnectors]);
 
   const restoreAt = useCallback(
     async (index: number) => {
@@ -1404,7 +1407,10 @@ export function EditorProvider({
   }, [addText]);
 
   const addAttachedConnector = useCallback(
-    (kind: "line" | "arrow" | "double-arrow" | "curved-arrow") => {
+    (
+      kind: "line" | "arrow" | "double-arrow" | "curved-arrow",
+      preset?: ConnectorCreationPreset
+    ) => {
       if (!canvas) return false;
       const targets = canvas.getActiveObjects().filter((object) => !object.connector);
       if (targets.length !== 2) return false;
@@ -1425,15 +1431,18 @@ export function EditorProvider({
         toObjectId: toObject.objectId!,
         toAnchor: horizontal ? (forward ? "left" : "right") : forward ? "top" : "bottom",
         startArrowhead:
-          kind === "line"
+          preset?.startArrowhead ??
+          (kind === "line"
             ? "none"
             : kind === "double-arrow"
               ? creationDefaults.line.startArrowhead || "triangle"
-              : creationDefaults.line.startArrowhead,
-        endArrowhead: kind === "line" ? "none" : creationDefaults.line.endArrowhead,
-        lineStyle: creationDefaults.line.lineStyle,
-        routing: kind === "curved-arrow" ? "direct" : "orthogonal",
-        curvature: kind === "curved-arrow" ? 0.24 : 0
+              : creationDefaults.line.startArrowhead),
+        endArrowhead:
+          preset?.endArrowhead ?? (kind === "line" ? "none" : creationDefaults.line.endArrowhead),
+        lineStyle: preset?.lineStyle ?? creationDefaults.line.lineStyle,
+        routing: preset?.pathShape === "straight" ? "direct" : "orthogonal",
+        pathShape: preset?.pathShape,
+        curvature: preset?.curvature ?? (kind === "curved-arrow" ? 0.24 : 0)
       };
       const obstacles = canvas
         .getObjects()
@@ -1449,7 +1458,11 @@ export function EditorProvider({
         anchorPoint(fromObject.getBoundingRect(), binding.fromAnchor),
         anchorPoint(toObject.getBoundingRect(), binding.toAnchor),
         binding,
-        { color: creationDefaults.line.color, width: creationDefaults.line.width, opacity: 1 },
+        {
+          color: creationDefaults.line.color,
+          width: creationDefaults.line.width * (preset?.widthScale ?? 1),
+          opacity: preset?.opacity ?? 1
+        },
         obstacles
       );
       assignIdentity(connector, "Connector", "connector");
@@ -1466,11 +1479,14 @@ export function EditorProvider({
   );
 
   const addShape = useCallback(
-    (kind: ShapeKind, point?: Point) => {
+    (kind: ShapeKind, point?: Point, connectorPreset?: ConnectorCreationPreset) => {
       if (
         kind !== "curved-line" &&
         ["line", "arrow", "double-arrow", "curved-arrow"].includes(kind) &&
-        addAttachedConnector(kind as "line" | "arrow" | "double-arrow" | "curved-arrow")
+        addAttachedConnector(
+          kind as "line" | "arrow" | "double-arrow" | "curved-arrow",
+          connectorPreset
+        )
       ) {
         return;
       }
@@ -1491,10 +1507,10 @@ export function EditorProvider({
       } else if (kind === "pill") {
         object = new Rect({ ...common, width: 280, height: 120, rx: 60, ry: 60 });
       } else if (kind === "donut") {
-        object = new Path(
-          "M 100 0 A 100 100 0 1 1 99.9 0 M 100 42 A 58 58 0 1 0 100.1 42 Z",
-          { ...common, fillRule: "evenodd" }
-        );
+        object = new Path("M 100 0 A 100 100 0 1 1 99.9 0 M 100 42 A 58 58 0 1 0 100.1 42 Z", {
+          ...common,
+          fillRule: "evenodd"
+        });
       } else if (kind === "triangle") {
         object = new Triangle({ ...common, width: 210, height: 190 });
       } else if (kind === "right-triangle") {
@@ -1636,7 +1652,8 @@ export function EditorProvider({
     (
       kind: "line" | "curved-line" | "arrow" | "double-arrow" | "curved-arrow",
       from: Point,
-      requestedTo?: Point
+      requestedTo?: Point,
+      preset?: ConnectorCreationPreset
     ) => {
       if (!canvas) return;
       const distance = requestedTo ? Math.hypot(requestedTo.x - from.x, requestedTo.y - from.y) : 0;
@@ -1656,23 +1673,28 @@ export function EditorProvider({
         toObjectId: "",
         toAnchor: "center",
         startArrowhead:
-          kind === "line" || kind === "curved-line"
+          preset?.startArrowhead ??
+          (kind === "line" || kind === "curved-line"
             ? "none"
             : kind === "double-arrow"
               ? creationDefaults.line.startArrowhead || "triangle"
-              : creationDefaults.line.startArrowhead,
-        endArrowhead: kind === "line" || kind === "curved-line" ? "none" : creationDefaults.line.endArrowhead,
-        lineStyle: creationDefaults.line.lineStyle,
+              : creationDefaults.line.startArrowhead),
+        endArrowhead:
+          preset?.endArrowhead ??
+          (kind === "line" || kind === "curved-line" ? "none" : creationDefaults.line.endArrowhead),
+        lineStyle: preset?.lineStyle ?? creationDefaults.line.lineStyle,
         routing: "direct",
-        curvature: kind === "curved-arrow" || kind === "curved-line" ? 0.24 : 0
+        pathShape: preset?.pathShape,
+        curvature:
+          preset?.curvature ?? (kind === "curved-arrow" || kind === "curved-line" ? 0.24 : 0)
       };
       if (kind === "double-arrow" && binding.startArrowhead === "none") {
         binding.startArrowhead = "triangle";
       }
       const object = createFreeConnectorObject(from, to, binding, {
         color: creationDefaults.line.color,
-        width: creationDefaults.line.width,
-        opacity: 1
+        width: creationDefaults.line.width * (preset?.widthScale ?? 1),
+        opacity: preset?.opacity ?? 1
       });
       object.connector = undefined;
       object.OpenSketchType = kind;
@@ -1707,18 +1729,22 @@ export function EditorProvider({
         if (
           !dragged &&
           tool.kind !== "curved-line" &&
-          addAttachedConnector(tool.kind as "line" | "arrow" | "double-arrow" | "curved-arrow")
+          addAttachedConnector(
+            tool.kind as "line" | "arrow" | "double-arrow" | "curved-arrow",
+            tool.connectorPreset
+          )
         ) {
           return;
         }
         addFreeConnector(
           tool.kind as "line" | "curved-line" | "arrow" | "double-arrow" | "curved-arrow",
           point,
-          endPoint
+          endPoint,
+          tool.connectorPreset
         );
         return;
       }
-      addShape(tool.kind, point);
+      addShape(tool.kind, point, tool.connectorPreset);
     },
     [addAttachedConnector, addFreeConnector, addShape, addText, canvas, creationTool]
   );
@@ -1946,9 +1972,7 @@ export function EditorProvider({
           console.warn(`Could not copy the selection as ${format.toUpperCase()}.`, error);
         }
       );
-      clipboard.current = await Promise.all(
-        selectedObjects.map((object) => object.clone())
-      );
+      clipboard.current = await Promise.all(selectedObjects.map((object) => object.clone()));
       await systemWrite;
       if (cut) deleteSelection();
     },
@@ -2094,7 +2118,9 @@ export function EditorProvider({
         object.set(properties);
         if (
           object instanceof Group &&
-          ["line", "curved-line", "arrow", "double-arrow", "curved-arrow"].includes(object.OpenSketchType ?? "") &&
+          ["line", "curved-line", "arrow", "double-arrow", "curved-arrow"].includes(
+            object.OpenSketchType ?? ""
+          ) &&
           !object.connector
         ) {
           object.getObjects().forEach((part) => {
@@ -2648,9 +2674,11 @@ export function EditorProvider({
       zoom,
       historyState,
       canvasSettings,
+      alignmentEnabled,
       projectDescription,
       setCanvasElement,
       setCanvasSettings,
+      setAlignmentEnabled,
       setProjectName,
       setProjectDescription,
       selectParentAsset,
@@ -2701,6 +2729,7 @@ export function EditorProvider({
       arrange,
       canvas,
       canvasSettings,
+      alignmentEnabled,
       commit,
       copySelectionToClipboard,
       deleteSelection,
@@ -2722,6 +2751,7 @@ export function EditorProvider({
       redo,
       resetColors,
       selection,
+      setAlignmentEnabled,
       setCanvasElement,
       setCanvasSettings,
       setCreationDefaults,

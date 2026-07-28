@@ -1776,10 +1776,17 @@ a:focus-visible {
   position: absolute;
   inset: 21px 0 0 21px;
   pointer-events: none;
-  opacity: 0.45;
-  background-image: radial-gradient(#aeb9b5 0.6px, transparent 0.6px);
-  background-size: 12px 12px;
+  opacity: 0;
+  background-image:
+    linear-gradient(rgba(112, 132, 137, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(112, 132, 137, 0.15) 1px, transparent 1px);
+  background-size: 32px 32px;
   content: "";
+  transition: opacity 150ms ease;
+}
+
+.canvas-workspace.grid-visible::before {
+  opacity: 1;
 }
 
 .canvas-workspace.ruler-hidden::before {
@@ -1913,6 +1920,18 @@ a:focus-visible {
   box-shadow:
     0 0 0 1px rgba(51, 77, 76, 0.22),
     0 18px 48px rgba(28, 52, 51, 0.2);
+}
+
+.canvas-workspace.grid-visible .artboard-stage::after {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(112, 132, 137, 0.14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(112, 132, 137, 0.14) 1px, transparent 1px);
+  background-size: 32px 32px;
+  content: "";
 }
 
 .artboard-stage.transparent {
@@ -3229,7 +3248,7 @@ input[type="color"] {
 
 .tool-flyout-primary {
   display: grid;
-  width: 146px;
+  width: 166px;
   align-content: start;
 }
 
@@ -3248,6 +3267,11 @@ input[type="color"] {
   text-align: left;
 }
 
+.line-tool-flyout .tool-flyout-primary button > svg:first-child {
+  width: 22px;
+  height: 18px;
+}
+
 .tool-flyout-primary button:hover,
 .tool-flyout-primary button.active {
   color: #086e6a;
@@ -3256,10 +3280,19 @@ input[type="color"] {
 
 .tool-flyout-secondary {
   display: grid;
-  width: 180px;
+  width: 222px;
   grid-template-columns: repeat(3, 1fr);
   align-content: start;
   gap: 4px;
+}
+
+.connector-family-arrows.tool-flyout-secondary,
+.connector-family-dots.tool-flyout-secondary,
+.connector-family-neurons.tool-flyout-secondary,
+.connector-family-circular.tool-flyout-secondary,
+.connector-family-brackets.tool-flyout-secondary {
+  width: 246px;
+  grid-template-columns: repeat(4, 1fr);
 }
 
 .tool-flyout-secondary button {
@@ -3308,6 +3341,21 @@ input[type="color"] {
   margin: 0 0 8px;
 }
 
+.use-custom-connector {
+  width: 100%;
+  min-height: 36px;
+  border: 1px solid #13827d;
+  border-radius: 7px;
+  color: white;
+  background: #128984;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.use-custom-connector:hover {
+  background: #08746f;
+}
+
 .selection-quick-toolbar {
   position: absolute;
   z-index: 8;
@@ -3350,13 +3398,140 @@ input[type="color"] {
   background: #f8e9e6;
 }
 
-.workspace-controls {
-  right: auto;
-  left: 50%;
-  bottom: 13px;
+.workspace-footer {
+  position: absolute;
+  z-index: 9;
+  right: 14px;
+  bottom: 12px;
+  left: 14px;
+  display: grid;
+  min-height: 42px;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 5px 7px;
+  border: 1px solid rgba(185, 195, 191, 0.96);
+  border-radius: 10px;
+  background: rgba(255, 254, 250, 0.96);
+  box-shadow: 0 8px 24px rgba(27, 54, 52, 0.14);
+  backdrop-filter: blur(10px);
+}
+
+.workspace-footer .workspace-controls {
+  position: static;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  transform: none;
+  backdrop-filter: none;
+}
+
+.workspace-footer-section {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.workspace-footer-section.view-controls {
+  justify-content: flex-end;
+}
+
+.workspace-footer-section > button,
+.workspace-footer .workspace-controls button {
+  display: inline-flex;
+  min-width: 30px;
+  min-height: 30px;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 6px;
+  color: #3c5451;
+  background: transparent;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.workspace-footer-section > button:hover,
+.workspace-footer-section > button.active,
+.workspace-footer .workspace-controls button:hover {
+  color: #086e6a;
+  background: #e4f0ed;
+}
+
+.workspace-footer-popover {
+  position: absolute;
+  z-index: 12;
+  bottom: calc(100% + 13px);
+  display: grid;
+  width: 232px;
+  gap: 9px;
+  padding: 13px;
+  border: 1px solid #c4cfca;
   border-radius: 9px;
-  background: rgba(255, 254, 250, 0.95);
-  transform: translateX(-50%);
+  background: #fffefb;
+  box-shadow: 0 16px 38px rgba(24, 48, 46, 0.2);
+  animation: context-menu-in 150ms ease-out both;
+}
+
+.workspace-footer-popover strong {
+  font-size: 12px;
+}
+
+.workspace-footer-popover label {
+  display: grid;
+  grid-template-columns: 1fr 96px;
+  align-items: center;
+  gap: 8px;
+  color: #506562;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.workspace-footer-popover input[type="number"] {
+  width: 100%;
+  min-height: 32px;
+  padding: 0 8px;
+  border: 1px solid #c8d2cd;
+  border-radius: 6px;
+  color: #203b39;
+  background: white;
+}
+
+.workspace-footer-popover > button {
+  min-height: 32px;
+  border: 1px solid #b8c8c3;
+  border-radius: 6px;
+  color: #176b67;
+  background: #edf5f3;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.workspace-footer-popover .footer-check {
+  display: flex;
+}
+
+.canvas-color-popover label:first-of-type {
+  grid-template-columns: 44px 1fr;
+}
+
+.canvas-color-popover input[type="color"] {
+  width: 42px;
+  height: 32px;
+  padding: 3px;
+  border: 1px solid #c8d2cd;
+  border-radius: 6px;
+  background: white;
+}
+
+.category-strip button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
 }
 
 @media (max-width: 820px) {

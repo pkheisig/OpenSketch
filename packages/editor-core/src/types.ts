@@ -85,9 +85,22 @@ export interface ProjectFolderRecord {
 }
 
 export type ConnectorAnchor = "top" | "right" | "bottom" | "left" | "center";
-export type ConnectorArrowhead = "none" | "triangle" | "open" | "circle";
+export type ConnectorArrowhead =
+  "none" | "triangle" | "open" | "circle" | "open-circle" | "bar" | "neuron";
 export type ConnectorLineStyle = "solid" | "dashed" | "dotted";
 export type ConnectorRouting = "direct" | "orthogonal";
+export type ConnectorPathShape =
+  | "straight"
+  | "elbow"
+  | "rounded-elbow"
+  | "step"
+  | "arc"
+  | "wave"
+  | "pulse"
+  | "circular"
+  | "bracket-square"
+  | "bracket-round"
+  | "bracket-curly";
 
 export interface ConnectorBinding {
   fromObjectId: string;
@@ -98,5 +111,6 @@ export interface ConnectorBinding {
   endArrowhead: ConnectorArrowhead;
   lineStyle: ConnectorLineStyle;
   routing?: ConnectorRouting;
+  pathShape?: ConnectorPathShape;
   curvature: number;
 }

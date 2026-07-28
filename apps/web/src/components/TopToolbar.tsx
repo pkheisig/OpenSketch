@@ -1,14 +1,5 @@
 import { useState } from "react";
-import {
-  ArrowLeft,
-  ChevronDown,
-  Download,
-  HelpCircle,
-  Redo2,
-  Undo2,
-  ZoomIn,
-  ZoomOut
-} from "lucide-react";
+import { ArrowLeft, ChevronDown, Download, HelpCircle, Redo2, Undo2 } from "lucide-react";
 import type { ProjectRecord } from "@workspace/editor-core";
 import { GLOBAL_CREDIT } from "@/assets/credit";
 import { useEditor } from "@/editor/EditorContext";
@@ -89,30 +80,6 @@ export function TopToolbar({ project, onHome }: { project: ProjectRecord; onHome
           >
             <Redo2 size={17} />
           </button>
-          <span className="toolbar-rule" />
-          <button className="compact-control" onClick={editor.fitCanvas}>
-            {editor.canvasSettings.width} × {editor.canvasSettings.height}
-            <ChevronDown size={13} />
-          </button>
-          <span className="zoom-group">
-            <button
-              className="icon-button"
-              onClick={() => editor.setZoom(editor.zoom - 0.1)}
-              aria-label="Zoom out"
-            >
-              <ZoomOut size={16} />
-            </button>
-            <button className="zoom-value" onClick={editor.fitCanvas} aria-label="Fit canvas">
-              {Math.round(editor.zoom * 100)}%
-            </button>
-            <button
-              className="icon-button"
-              onClick={() => editor.setZoom(editor.zoom + 0.1)}
-              aria-label="Zoom in"
-            >
-              <ZoomIn size={16} />
-            </button>
-          </span>
         </div>
         <div className="toolbar-actions">
           <button className="icon-button" onClick={() => setHelpOpen(true)} aria-label="Help">

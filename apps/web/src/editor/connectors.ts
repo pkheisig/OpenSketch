@@ -12,7 +12,8 @@ import type {
   ConnectorAnchor,
   ConnectorArrowhead,
   ConnectorBinding,
-  ConnectorLineStyle
+  ConnectorLineStyle,
+  ConnectorPathShape
 } from "@workspace/editor-core";
 import type { Bounds, Point } from "./geometry";
 
@@ -299,7 +300,9 @@ function connectorPath(
   appearance: ConnectorAppearance,
   obstacles: Bounds[]
 ) {
-  if (binding.routing === "orthogonal") {
+  const pathShape: ConnectorPathShape =
+    binding.pathShape ?? (binding.routing === "orthogonal" ? "elbow" : "straight");
+  if (binding.routing === "orthogonal" && !binding.pathShape) {
     const points = routeOrthogonal(from, to, binding.fromAnchor, binding.toAnchor, obstacles);
     const data = points
       .map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`)
@@ -327,15 +330,67 @@ function connectorPath(
   const length = Math.max(1, Math.hypot(dx, dy));
   const normalX = -dy / length;
   const normalY = dx / length;
-  const bend = binding.curvature * Math.min(length, 280);
+  const point = (progress: number, normal = 0) => ({
+    x: from.x + dx * progress + normalX * normal,
+    y: from.y + dy * progress + normalY * normal
+  });
+  const bend =
+    (binding.curvature || (["arc", "circular"].includes(pathShape) ? 0.3 : 0)) *
+    Math.min(length, 280);
   const control = {
     x: (from.x + to.x) / 2 + normalX * bend,
     y: (from.y + to.y) / 2 + normalY * bend
   };
-  const data =
-    Math.abs(binding.curvature) < 0.001
-      ? `M ${from.x} ${from.y} L ${to.x} ${to.y}`
-      : `M ${from.x} ${from.y} Q ${control.x} ${control.y} ${to.x} ${to.y}`;
+  const amplitude = Math.min(46, length * 0.18);
+  const p = (value: Point) => `${value.x} ${value.y}`;
+  let data = `M ${p(from)} L ${p(to)}`;
+  if (pathShape === "elbow") {
+    const first = point(0.46);
+    const second = point(0.46, amplitude);
+    const third = point(0.72, amplitude);
+    data = `M ${p(from)} L ${p(first)} L ${p(second)} L ${p(third)} L ${p(to)}`;
+  } else if (pathShape === "rounded-elbow") {
+    const first = point(0.4);
+    const corner = point(0.5, amplitude);
+    const last = point(0.72, amplitude);
+    data = `M ${p(from)} L ${p(first)} Q ${p(point(0.5))} ${p(corner)} L ${p(last)} Q ${p(
+      point(0.82, amplitude)
+    )} ${p(to)}`;
+  } else if (pathShape === "step") {
+    data = `M ${p(from)} L ${p(point(0.28))} L ${p(point(0.28, amplitude))} L ${p(
+      point(0.72, amplitude)
+    )} L ${p(point(0.72))} L ${p(to)}`;
+  } else if (pathShape === "arc" || pathShape === "circular") {
+    data = `M ${p(from)} Q ${p(control)} ${p(to)}`;
+  } else if (pathShape === "wave") {
+    data = `M ${p(from)} C ${p(point(0.12, -amplitude))} ${p(
+      point(0.22, -amplitude)
+    )} ${p(point(0.33))} S ${p(point(0.55, amplitude))} ${p(point(0.66))} S ${p(
+      point(0.9, -amplitude)
+    )} ${p(to)}`;
+  } else if (pathShape === "pulse") {
+    data = `M ${p(from)} L ${p(point(0.26))} C ${p(point(0.34))} ${p(
+      point(0.38, -amplitude * 1.45)
+    )} ${p(point(0.5, -amplitude * 1.45))} S ${p(point(0.66))} ${p(point(0.74))} L ${p(to)}`;
+  } else if (pathShape === "bracket-square") {
+    data = `M ${p(point(0, amplitude * 0.5))} L ${p(from)} L ${p(to)} L ${p(
+      point(1, amplitude * 0.5)
+    )}`;
+  } else if (pathShape === "bracket-round") {
+    data = `M ${p(point(0, amplitude * 0.55))} Q ${p(point(0))} ${p(
+      point(0.16)
+    )} L ${p(point(0.84))} Q ${p(to)} ${p(point(1, amplitude * 0.55))}`;
+  } else if (pathShape === "bracket-curly") {
+    data = `M ${p(point(0, amplitude * 0.7))} C ${p(point(0.12, amplitude * 0.7))} ${p(
+      point(0.08)
+    )} ${p(point(0.25))} C ${p(point(0.42))} ${p(point(0.38, -amplitude * 0.35))} ${p(
+      point(0.5, -amplitude * 0.35)
+    )} C ${p(point(0.62, -amplitude * 0.35))} ${p(point(0.58))} ${p(
+      point(0.75)
+    )} C ${p(point(0.92))} ${p(point(0.88, amplitude * 0.7))} ${p(point(1, amplitude * 0.7))}`;
+  } else if (Math.abs(binding.curvature) >= 0.001) {
+    data = `M ${p(from)} Q ${p(control)} ${p(to)}`;
+  }
   const path = new Path(data, {
     fill: "",
     stroke: appearance.color,
@@ -346,14 +401,13 @@ function connectorPath(
     selectable: false,
     evented: false
   });
-  const startAngle =
-    Math.abs(binding.curvature) < 0.001
-      ? Math.atan2(from.y - to.y, from.x - to.x)
-      : Math.atan2(from.y - control.y, from.x - control.x);
-  const endAngle =
-    Math.abs(binding.curvature) < 0.001
-      ? Math.atan2(to.y - from.y, to.x - from.x)
-      : Math.atan2(to.y - control.y, to.x - control.x);
+  const curved = ["arc", "circular"].includes(pathShape) || Math.abs(binding.curvature) >= 0.001;
+  const startAngle = !curved
+    ? Math.atan2(from.y - to.y, from.x - to.x)
+    : Math.atan2(from.y - control.y, from.x - control.x);
+  const endAngle = !curved
+    ? Math.atan2(to.y - from.y, to.x - from.x)
+    : Math.atan2(to.y - control.y, to.x - control.x);
   return { path, startAngle, endAngle };
 }
 
@@ -381,6 +435,42 @@ function arrowhead(
       fill: color,
       stroke: color,
       strokeWidth: Math.max(1, width * 0.4)
+    });
+  }
+  if (kind === "open-circle") {
+    return new Circle({
+      ...common,
+      radius: size * 0.34,
+      fill: "transparent",
+      stroke: color,
+      strokeWidth: Math.max(1.5, width * 0.6)
+    });
+  }
+  if (kind === "bar") {
+    const half = size * 0.55;
+    const tangent = angle + Math.PI / 2;
+    return new Path(
+      `M ${point.x - Math.cos(tangent) * half} ${point.y - Math.sin(tangent) * half} L ${
+        point.x + Math.cos(tangent) * half
+      } ${point.y + Math.sin(tangent) * half}`,
+      {
+        ...common,
+        fill: "",
+        stroke: color,
+        strokeWidth: width,
+        strokeLineCap: "round"
+      }
+    );
+  }
+  if (kind === "neuron") {
+    return new Triangle({
+      ...common,
+      width: size * 0.78,
+      height: size * 0.78,
+      fill: color,
+      stroke: color,
+      strokeWidth: Math.max(1, width * 0.25),
+      angle: (angle * 180) / Math.PI - 90
     });
   }
   if (kind === "triangle") {
