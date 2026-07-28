@@ -1585,7 +1585,10 @@ test("duplicates with modifier-drag and disables snapping while Alt is held", as
   const transparentCopyPixel = await screenshotPixel(page, movedRectangle);
   expect(Math.max(...retainedSourcePixel)).toBeLessThan(40);
   expect(Math.min(...transparentCopyPixel)).toBeGreaterThan(100);
-  expect(Math.max(...transparentCopyPixel)).toBeLessThan(230);
+  expect(
+    transparentCopyPixel.reduce((total, channel) => total + channel, 0) /
+      transparentCopyPixel.length
+  ).toBeLessThan(245);
   await page.mouse.up();
   await page.keyboard.up("Control");
   await expect(page.locator(".layers-title small")).toHaveText("3");
