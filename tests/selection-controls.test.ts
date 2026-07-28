@@ -5,7 +5,11 @@ import {
   GROUP_SELECTION_COLOR,
   ROTATION_SNAP_ANGLE,
   ROTATION_SNAP_THRESHOLD,
+  SELECTION_CORNER_MAX_PX,
+  SELECTION_CORNER_MIN_PX,
+  SELECTION_CORNER_TOUCH_PX,
   SELECTION_STROKE_WIDTH_PX,
+  selectionCornerSizeForObject,
   selectionStrokeWidthAtZoom,
   SINGLE_OBJECT_SELECTION_COLOR,
   nextDeepSelection
@@ -18,7 +22,9 @@ describe("selection control colors", () => {
     configureSelectionControls(group);
 
     expect(group.borderColor).toBe(GROUP_SELECTION_COLOR);
-    expect(group.cornerColor).toBe(GROUP_SELECTION_COLOR);
+    expect(group.cornerColor).toBe("#ffffff");
+    expect(group.cornerStrokeColor).toBe(GROUP_SELECTION_COLOR);
+    expect(group.transparentCorners).toBe(false);
   });
 
   it("keeps single objects and temporary multi-selections blue", () => {
@@ -30,9 +36,11 @@ describe("selection control colors", () => {
     configureSelectionControls(selection);
 
     expect(first.borderColor).toBe(SINGLE_OBJECT_SELECTION_COLOR);
-    expect(first.cornerColor).toBe(SINGLE_OBJECT_SELECTION_COLOR);
+    expect(first.cornerColor).toBe("#ffffff");
+    expect(first.cornerStrokeColor).toBe(SINGLE_OBJECT_SELECTION_COLOR);
     expect(selection.borderColor).toBe(SINGLE_OBJECT_SELECTION_COLOR);
-    expect(selection.cornerColor).toBe(SINGLE_OBJECT_SELECTION_COLOR);
+    expect(selection.cornerColor).toBe("#ffffff");
+    expect(selection.cornerStrokeColor).toBe(SINGLE_OBJECT_SELECTION_COLOR);
   });
 
   it("snaps rotation to every quarter turn for all selection types", () => {
@@ -48,16 +56,29 @@ describe("selection control colors", () => {
     }
   });
 
-  it("keeps selection strokes at two pixels across zoom levels", () => {
+  it("keeps selection strokes at one pixel across zoom levels", () => {
     const shape = new Rect({ width: 20, height: 20 });
 
     configureSelectionControls(shape, 2);
 
-    expect(SELECTION_STROKE_WIDTH_PX).toBe(2);
+    expect(SELECTION_STROKE_WIDTH_PX).toBe(1);
     expect(shape.borderScaleFactor).toBe(SELECTION_STROKE_WIDTH_PX);
     expect(selectionStrokeWidthAtZoom(0.1)).toBe(SELECTION_STROKE_WIDTH_PX);
     expect(selectionStrokeWidthAtZoom(1)).toBe(SELECTION_STROKE_WIDTH_PX);
     expect(selectionStrokeWidthAtZoom(4)).toBe(SELECTION_STROKE_WIDTH_PX);
+  });
+
+  it("shrinks visible handles for small on-screen objects without shrinking touch targets", () => {
+    const tiny = new Rect({ width: 20, height: 20 });
+    const large = new Rect({ width: 200, height: 200 });
+
+    configureSelectionControls(tiny, 0.25);
+    configureSelectionControls(large, 1);
+
+    expect(selectionCornerSizeForObject(tiny, 0.25)).toBe(SELECTION_CORNER_MIN_PX);
+    expect(tiny.cornerSize).toBe(SELECTION_CORNER_MIN_PX);
+    expect(tiny.touchCornerSize).toBe(SELECTION_CORNER_TOUCH_PX);
+    expect(large.cornerSize).toBe(SELECTION_CORNER_MAX_PX);
   });
 });
 

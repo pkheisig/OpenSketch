@@ -1234,7 +1234,9 @@ export function EditorProvider({
       rememberNestedPosition();
     };
     const transform = ({ target }: { target?: FabricObject }) => {
-      if (target?.objectId) refreshConnectors(target.objectId);
+      if (!target) return;
+      configureSelectionControls(target, latestZoom.current);
+      if (target.objectId) refreshConnectors(target.objectId);
     };
     const clearGuides = () => {
       snapSession.current = {};
