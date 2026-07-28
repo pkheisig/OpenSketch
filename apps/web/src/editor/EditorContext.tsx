@@ -2414,7 +2414,7 @@ export function EditorProvider({
       }
       const response = await fetch(dataUrl);
       const blob = await setPngDpi(await response.blob(), dpi);
-      downloadBlob(blob, `${safeFilename(latestProject.current.name)}-${scale}x.png`);
+      downloadBlob(blob, `${safeFilename(latestProject.current.name)}-${dpi}dpi.png`);
     },
     [canvas, canvasSettings]
   );

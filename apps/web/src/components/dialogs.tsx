@@ -2,23 +2,19 @@ import { useState } from "react";
 import { Download, FileImage, FileText, FileType2, X } from "lucide-react";
 import { useEditor } from "@/editor/EditorContext";
 import { UiSelect } from "@/components/UiSelect";
+import { EXPORT_DPI_OPTIONS, loadExportDpi, saveExportDpi } from "@/export/preferences";
 import { useModalDialog } from "./useModalDialog";
 
 export function ExportDialog({ onClose }: { onClose: () => void }) {
   const editor = useEditor();
   const dialogRef = useModalDialog(true, onClose);
   const [format, setFormat] = useState<"svg" | "png" | "pdf">("svg");
-  const [scale, setScale] = useState(2);
-  const [dpi, setDpi] = useState(editor.canvasSettings.dpi);
-  const [customMultiplier, setCustomMultiplier] = useState<number | null>(null);
+  const [dpi, setDpi] = useState(() => loadExportDpi(editor.canvasSettings.dpi));
   const [transparent, setTransparent] = useState(false);
   const [background, setBackground] = useState(editor.canvasSettings.background);
-  const [description, setDescription] = useState(editor.projectDescription);
   const [exportError, setExportError] = useState("");
   const [exporting, setExporting] = useState(false);
-  const pngMultiplier = customMultiplier ?? scale * (dpi / editor.canvasSettings.dpi);
-  const pixelWidth = Math.round(editor.canvasSettings.width * pngMultiplier);
-  const pixelHeight = Math.round(editor.canvasSettings.height * pngMultiplier);
+  const pngMultiplier = dpi / editor.canvasSettings.dpi;
   return (
     <div className="dialog-backdrop" onMouseDown={onClose}>
       <section
@@ -74,83 +70,20 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
             </span>
           </button>
         </div>
-        {format !== "png" ? (
-          <label className="field">
-            Accessible description
-            <textarea
-              value={description}
-              onChange={(event) => {
-                setDescription(event.target.value);
-                editor.setProjectDescription(event.target.value);
-              }}
-              placeholder="Describe the scientific content of this figure…"
-            />
-            <small>
-              Embedded with OpenSketch provenance in the{" "}
-              {format === "svg" ? "SVG document" : "PDF document properties"}.
-            </small>
-          </label>
-        ) : (
+        {format === "png" ? (
           <>
-            <UiSelect
-              className="field"
-              label="Pixel scaling"
-              value={scale}
-              options={[
-                { value: 1, label: "1× · screen" },
-                { value: 2, label: "2× · high resolution" },
-                { value: 4, label: "4× · publication" }
-              ]}
-              onChange={(scale) => {
-                setScale(scale);
-                setCustomMultiplier(null);
-              }}
-            />
             <UiSelect
               className="field"
               label="Output DPI"
               value={dpi}
-              options={[72, 150, 300, 600].map((value) => ({
+              options={EXPORT_DPI_OPTIONS.map((value) => ({
                 value,
                 label: `${value} DPI`
               }))}
               onChange={(dpi) => {
-                setDpi(dpi);
-                setCustomMultiplier(null);
+                setDpi(saveExportDpi(dpi));
               }}
             />
-            <div className="field-row two">
-              <label className="field">
-                Pixel width
-                <input
-                  type="number"
-                  min={1}
-                  max={32000}
-                  value={pixelWidth}
-                  onChange={(event) => {
-                    const width = Number(event.target.value);
-                    if (Number.isFinite(width) && width > 0) {
-                      setCustomMultiplier(width / editor.canvasSettings.width);
-                    }
-                  }}
-                />
-              </label>
-              <label className="field">
-                Pixel height
-                <input
-                  type="number"
-                  min={1}
-                  max={32000}
-                  value={pixelHeight}
-                  onChange={(event) => {
-                    const height = Number(event.target.value);
-                    if (Number.isFinite(height) && height > 0) {
-                      setCustomMultiplier(height / editor.canvasSettings.height);
-                    }
-                  }}
-                />
-              </label>
-            </div>
             <label className="check-field">
               <input
                 type="checkbox"
@@ -173,18 +106,7 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
               </label>
             )}
           </>
-        )}
-        <div className="export-summary">
-          <span>
-            {format === "png" ? pixelWidth : editor.canvasSettings.width} ×{" "}
-            {format === "png" ? pixelHeight : editor.canvasSettings.height} px
-          </span>
-          <span>
-            {format === "pdf"
-              ? "Vector page"
-              : `${format === "png" ? dpi : editor.canvasSettings.dpi} DPI`}
-          </span>
-        </div>
+        ) : null}
         {exportError ? (
           <p className="panel-error" role="alert">
             {exportError}
@@ -197,8 +119,8 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
             setExporting(true);
             setExportError("");
             try {
-              if (format === "svg") editor.exportSvg(undefined, description);
-              else if (format === "pdf") await editor.exportPdf(undefined, description);
+              if (format === "svg") editor.exportSvg();
+              else if (format === "pdf") await editor.exportPdf();
               else await editor.exportPng(pngMultiplier, transparent, dpi, background);
               onClose();
             } catch (reason) {

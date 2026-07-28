@@ -174,13 +174,6 @@ function CanvasInspector() {
             onChange={(unit) => editor.setCanvasSettings({ unit: unit as CanvasUnit })}
           />
         </div>
-        <NumberField
-          label="Export DPI"
-          value={settings.dpi}
-          min={72}
-          max={1200}
-          onChange={(dpi) => editor.setCanvasSettings({ dpi })}
-        />
         <label className="check-field compact">
           <input
             type="checkbox"

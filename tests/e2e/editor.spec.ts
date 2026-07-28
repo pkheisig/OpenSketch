@@ -96,7 +96,6 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
 
   await page.getByRole("button", { name: "Export" }).click();
   await page.getByRole("tab", { name: /PNG/ }).click();
-  await selectUiOption(page, "Pixel scaling", "1× · screen");
   await selectUiOption(page, "Output DPI", "150 DPI");
   const pngDownloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export PNG" }).click();
@@ -212,16 +211,14 @@ test("builds and persists a styled object-attached connector", async ({ page }) 
 
   await expect(page.getByRole("button", { name: "Project information" })).toHaveCount(0);
   await page.getByRole("button", { name: "Export" }).click();
-  await page
-    .getByLabel("Accessible description")
-    .fill("Two biological objects connected by a directional signaling path.");
+  await expect(page.getByLabel("Accessible description")).toHaveCount(0);
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export SVG" }).click();
   const path = await (await downloadPromise).path();
   expect(path).not.toBeNull();
   const svg = await readFile(path!, "utf8");
   expect(svg).toContain("stroke-dasharray");
-  expect(svg).toContain("directional signaling path");
+  expect(svg).not.toContain("directional signaling path");
 
   await expect(page.locator(".save-state")).toHaveCount(0);
   await page.getByRole("button", { name: "Back to projects" }).click();
@@ -695,19 +692,34 @@ test("uses accessible in-app dropdowns with keyboard and outside-click behavior"
   await expect(page.getByRole("listbox", { name: "Unit" })).toBeVisible();
   await page.getByText("Canvas", { exact: true }).first().click();
   await expect(page.getByRole("listbox", { name: "Unit" })).toHaveCount(0);
+  await expect(page.getByText("Export DPI", { exact: true })).toHaveCount(0);
 
   await page.getByRole("button", { name: "Export", exact: true }).click();
+  await expect(page.getByLabel("Accessible description")).toHaveCount(0);
   await page.getByRole("tab", { name: /PNG/ }).click();
-  const scaling = page.getByRole("combobox", { name: "Pixel scaling" });
   const outputDpi = page.getByRole("combobox", { name: "Output DPI" });
-  await scaling.click();
+  await expect(page.getByRole("combobox", { name: "Pixel scaling" })).toHaveCount(0);
+  await expect(page.getByLabel("Pixel width")).toHaveCount(0);
+  await expect(page.getByLabel("Pixel height")).toHaveCount(0);
+  await expect(page.locator(".export-summary")).toHaveCount(0);
+  await outputDpi.click();
+  await expect(page.getByRole("option", { name: "150 DPI" })).toBeVisible();
+  await expect(page.getByRole("option", { name: "1200 DPI" })).toBeVisible();
+  await expect(page.getByRole("option", { name: "72 DPI" })).toHaveCount(0);
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog", { name: "Export figure" })).toBeVisible();
-  await expect(page.getByRole("listbox", { name: "Pixel scaling" })).toHaveCount(0);
+  await expect(page.getByRole("listbox", { name: "Output DPI" })).toHaveCount(0);
 
-  await scaling.click();
-  await page.keyboard.press("Tab");
-  await expect(outputDpi).toBeFocused();
+  await selectUiOption(page, "Output DPI", "1200 DPI");
+  await page.getByRole("button", { name: "Close export dialog" }).click();
+  await page.getByRole("button", { name: "Export", exact: true }).click();
+  await page.getByRole("tab", { name: /PNG/ }).click();
+  await expect(page.getByRole("combobox", { name: "Output DPI" })).toHaveAttribute(
+    "data-value",
+    "1200"
+  );
+  await page.getByRole("tab", { name: /PDF/ }).click();
+  await expect(page.getByLabel("Accessible description")).toHaveCount(0);
 });
 
 test("offers selection-aware canvas context actions", async ({ page }) => {

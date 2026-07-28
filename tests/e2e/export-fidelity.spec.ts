@@ -66,7 +66,6 @@ test("preserves editable color, gradients, clipping, fonts, and raster dimension
 
   await page.getByRole("button", { name: "Export", exact: true }).click();
   await page.getByRole("tab", { name: /PNG/ }).click();
-  await selectUiOption(page, "Pixel scaling", "1× · screen");
   await selectUiOption(page, "Output DPI", "150 DPI");
   const pngDownloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export PNG" }).click();
