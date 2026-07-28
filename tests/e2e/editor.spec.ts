@@ -112,6 +112,8 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   await page.getByRole("button", { name: "Ungroup", exact: true }).click();
   await expect(page.locator(".layers-title small")).toHaveText("3");
   await page.getByRole("button", { name: "Undo" }).click();
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await ensureLayersOpen(page);
   await expect(page.locator(".layers-title small")).toHaveText("1");
   await page.getByRole("button", { name: "Redo" }).click();
   await expect(page.locator(".layers-title small")).toHaveText("3");
@@ -437,7 +439,7 @@ test("places text and shapes from active tools and persists line creation defaul
   await expect(
     textInspector
       .locator("label.color-field")
-      .filter({ hasText: "Fill" })
+      .filter({ hasText: "Color" })
       .locator('input[type="color"]')
   ).toHaveValue("#3157a4");
 });
@@ -468,6 +470,44 @@ test("places text from the first Shapes tool without blanking the editor", async
   await expect(page.getByText("Section label", { exact: true })).toHaveCount(0);
   await expect(page.getByText(/Body annotation/)).toHaveCount(0);
   expect(pageErrors).toEqual([]);
+});
+
+test("shows only controls supported by each editor object type", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  const inspector = page.locator(".inspector-embedded");
+
+  await placeTool(page, "Rectangle", 0.35, 0.45);
+  await expect(inspector.getByRole("button", { name: "Shape", exact: true })).toHaveAttribute(
+    "aria-expanded",
+    "true"
+  );
+  await expect(inspector.getByRole("button", { name: "Style", exact: true })).toHaveCount(0);
+  await expect(inspector.getByRole("button", { name: "Variant", exact: true })).toHaveCount(0);
+  await expect(inspector.getByRole("button", { name: "Line", exact: true })).toHaveCount(0);
+
+  await placeTool(page, "Line", 0.55, 0.45);
+  await expect(inspector.getByRole("button", { name: "Line", exact: true })).toHaveAttribute(
+    "aria-expanded",
+    "true"
+  );
+  await expect(inspector.getByRole("button", { name: "Shape", exact: true })).toHaveCount(0);
+  await expect(inspector.getByRole("button", { name: "Style", exact: true })).toHaveCount(0);
+  await expect(inspector.getByRole("button", { name: "Variant", exact: true })).toHaveCount(0);
+
+  await placeTool(page, "Text", 0.7, 0.35);
+  await expect(inspector.getByRole("button", { name: "Text", exact: true })).toHaveAttribute(
+    "aria-expanded",
+    "true"
+  );
+  await expect(inspector.getByRole("button", { name: "Shape", exact: true })).toHaveCount(0);
+  await expect(inspector.getByRole("button", { name: "Line", exact: true })).toHaveCount(0);
+  await expect(inspector.getByRole("button", { name: "Style", exact: true })).toHaveCount(0);
+  await expect(inspector.getByRole("button", { name: "Variant", exact: true })).toHaveCount(0);
+  await expect(
+    inspector.locator("label.inspector-value-range").filter({ hasText: "Transparency" })
+  ).toBeVisible();
+  await page.keyboard.press("Escape");
 });
 
 test("optionally creates Text on an empty-artboard double-click and persists the preference", async ({

@@ -43,20 +43,6 @@ function number(value: number | undefined, digits = 0) {
   return Number(value ?? 0).toFixed(digits);
 }
 
-const STYLE_PRESETS = [
-  { fill: "#dfe9f7", stroke: "#546b9e" },
-  { fill: "#dfe9f2", stroke: "#34658c" },
-  { fill: "#d8eef0", stroke: "#397982" },
-  { fill: "#d9efe8", stroke: "#286b5d" },
-  { fill: "#e6f4d8", stroke: "#397126" },
-  { fill: "#edf0d6", stroke: "#647f2a" },
-  { fill: "#f8edc9", stroke: "#aa8127" },
-  { fill: "#f6dfbd", stroke: "#a76f26" },
-  { fill: "#f2d6bd", stroke: "#985823" },
-  { fill: "#ead8ed", stroke: "#724080" },
-  { fill: "#f4dde3", stroke: "#98516a" }
-] as const;
-
 export function InspectorContent({ onClose }: { onClose?: () => void }) {
   const editor = useEditor();
   const selected = editor.selection[0];
@@ -92,6 +78,7 @@ export function InspectorContent({ onClose }: { onClose?: () => void }) {
 function ObjectInspector({ object }: { object: FabricObject }) {
   const editor = useEditor();
   const [aspectLocked, setAspectLocked] = useState(true);
+  const objectType = object.OpenSketchType ?? "";
   const isText = object instanceof Text;
   const isLineLike = [
     "connector",
@@ -100,8 +87,9 @@ function ObjectInspector({ object }: { object: FabricObject }) {
     "arrow",
     "double-arrow",
     "curved-arrow"
-  ].includes(object.OpenSketchType ?? "");
-  const isSvgPart = object.OpenSketchType === "svg-part";
+  ].includes(objectType);
+  const isShape = objectType === "shape";
+  const isSvgPart = objectType === "svg-part";
   const assetFamily =
     object instanceof FabricGroup && object.familyId
       ? assetManifest.families.find((family) => family.familyId === object.familyId)
@@ -223,33 +211,8 @@ function ObjectInspector({ object }: { object: FabricObject }) {
             {transparencyControl}
           </div>
         )
-      ) : (
-        <InspectorSection title="Style" open>
-          <div className="inspector-style-presets" aria-label="Style presets">
-            {STYLE_PRESETS.map((preset) => (
-              <button
-                key={`${preset.fill}-${preset.stroke}`}
-                style={{
-                  background: isLineLike ? preset.stroke : preset.fill,
-                  borderColor: preset.stroke
-                }}
-                aria-label={`Apply ${preset.stroke} style`}
-                onClick={() =>
-                  editor.setObject(
-                    isLineLike
-                      ? { stroke: preset.stroke }
-                      : { fill: preset.fill, stroke: preset.stroke }
-                  )
-                }
-              >
-                {isText ? "Aa" : null}
-              </button>
-            ))}
-          </div>
-          {transparencyControl}
-        </InspectorSection>
-      )}
-      {!assetFamily && (isLineLike ? (
+      ) : null}
+      {isLineLike ? (
         <InspectorSection title="Line" open>
           <label className="inspector-color-row color-field">
             <span>Color</span>
@@ -324,9 +287,10 @@ function ObjectInspector({ object }: { object: FabricObject }) {
               />
             </>
           ) : null}
+          {transparencyControl}
         </InspectorSection>
-      ) : (
-        <InspectorSection title={isText ? "Text color" : "Shape"} open>
+      ) : isShape || isSvgPart ? (
+        <InspectorSection title={isSvgPart ? "Part" : "Shape"} open>
           {typeof object.fill === "string" ? (
             <label className="inspector-color-row color-field">
               <span>Fill</span>
@@ -399,8 +363,9 @@ function ObjectInspector({ object }: { object: FabricObject }) {
               }}
             />
           </label>
+          {transparencyControl}
         </InspectorSection>
-      ))}
+      ) : null}
       {object.connector ? (
         <InspectorSection title="Arrow" open>
           <button
@@ -463,6 +428,22 @@ function ObjectInspector({ object }: { object: FabricObject }) {
       ) : null}
       {isText && (
         <InspectorSection title="Text" open>
+          {typeof object.fill === "string" ? (
+            <label className="inspector-color-row color-field">
+              <span>Color</span>
+              <input
+                type="color"
+                value={normalizeHex(object.fill)}
+                onChange={(event) => editor.setObject({ fill: event.target.value })}
+              />
+              <input
+                value={normalizeHex(object.fill)}
+                onChange={(event) => editor.setObject({ fill: event.target.value })}
+                aria-label="Text color value"
+              />
+            </label>
+          ) : null}
+          {transparencyControl}
           <UiSelect
             className="field"
             label="Font"
@@ -543,6 +524,11 @@ function ObjectInspector({ object }: { object: FabricObject }) {
           </div>
         </InspectorSection>
       )}
+      {!assetFamily && !isLineLike && !isShape && !isSvgPart && !isText ? (
+        <div className="inspector-section-body inspector-transparency-only">
+          {transparencyControl}
+        </div>
+      ) : null}
       <InspectorSection title="Align & distribute">
         <div className="icon-grid alignment-grid">
           <button onClick={() => editor.align("left")} aria-label="Align left">
