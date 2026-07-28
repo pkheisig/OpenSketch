@@ -942,7 +942,49 @@ export function CanvasWorkspace() {
           <strong>Place illustration on canvas</strong>
         </div>
       )}
+      {editor.selection.length > 0 ? (
+        <div className="selection-quick-toolbar" role="toolbar" aria-label="Selection actions">
+          <button onClick={() => void editor.duplicateSelection()} aria-label="Duplicate selection">
+            <Copy size={15} />
+            <span>Duplicate</span>
+          </button>
+          {editor.selection.length > 1 ? (
+            <button onClick={editor.groupSelection} aria-label="Group selection">
+              <GroupIcon size={15} />
+              <span>Group</span>
+            </button>
+          ) : editor.selection[0] instanceof FabricGroup ? (
+            <button onClick={editor.ungroupSelection} aria-label="Ungroup selection">
+              <Ungroup size={15} />
+              <span>Ungroup</span>
+            </button>
+          ) : null}
+          <button onClick={() => editor.arrange("front")} aria-label="Bring to front">
+            <ArrowUpToLine size={15} />
+            <span>Front</span>
+          </button>
+          <button onClick={() => editor.arrange("back")} aria-label="Send to back">
+            <ArrowDownToLine size={15} />
+            <span>Back</span>
+          </button>
+          <button
+            className="danger"
+            onClick={editor.deleteSelection}
+            aria-label="Delete selection"
+          >
+            <Trash2 size={15} />
+          </button>
+        </div>
+      ) : null}
       <div className="workspace-controls">
+        <button
+          className={rulerVisible ? "active" : ""}
+          onClick={toggleRuler}
+          aria-label={rulerVisible ? "Hide ruler" : "Show ruler"}
+        >
+          <Ruler size={14} />
+        </button>
+        <span />
         <button onClick={() => setZoom(zoom - 0.1)} aria-label="Zoom out">
           <Minus size={14} />
         </button>

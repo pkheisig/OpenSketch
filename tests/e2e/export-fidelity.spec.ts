@@ -26,7 +26,7 @@ test("preserves editable color, gradients, clipping, fonts, and raster dimension
   await page.getByRole("button", { name: "Untitled figure" }).click();
   await expect(page.locator(".layers-title small")).toHaveText("1");
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
-  await page.getByRole("button", { name: "Rectangle", exact: true }).click();
+  await page.getByRole("menuitem", { name: "Rectangle", exact: true }).click();
   const canvasBounds = await page.locator(".artboard-stage").boundingBox();
   if (!canvasBounds) throw new Error("Artboard is not visible.");
   await page.mouse.click(

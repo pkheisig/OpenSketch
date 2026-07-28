@@ -7,10 +7,19 @@ export type ShapeKind =
   | "rounded-rectangle"
   | "ellipse"
   | "circle"
+  | "pill"
+  | "donut"
   | "triangle"
+  | "right-triangle"
   | "pentagon"
   | "polygon"
+  | "octagon"
+  | "diamond"
+  | "trapezoid"
+  | "parallelogram"
+  | "star"
   | "line"
+  | "curved-line"
   | "arrow"
   | "double-arrow"
   | "curved-arrow"
@@ -117,6 +126,7 @@ export function normalizeCreationDefaults(value: unknown): CreationDefaults {
 
 export function isLinearCreationTool(tool: CreationTool | null): boolean {
   return (
-    tool?.type === "shape" && ["line", "arrow", "double-arrow", "curved-arrow"].includes(tool.kind)
+    tool?.type === "shape" &&
+    ["line", "curved-line", "arrow", "double-arrow", "curved-arrow"].includes(tool.kind)
   );
 }

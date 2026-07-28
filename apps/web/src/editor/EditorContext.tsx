@@ -1424,9 +1424,14 @@ export function EditorProvider({
         fromAnchor: horizontal ? (forward ? "right" : "left") : forward ? "bottom" : "top",
         toObjectId: toObject.objectId!,
         toAnchor: horizontal ? (forward ? "left" : "right") : forward ? "top" : "bottom",
-        startArrowhead: kind === "double-arrow" ? "triangle" : "none",
-        endArrowhead: kind === "line" ? "none" : "triangle",
-        lineStyle: "solid",
+        startArrowhead:
+          kind === "line"
+            ? "none"
+            : kind === "double-arrow"
+              ? creationDefaults.line.startArrowhead || "triangle"
+              : creationDefaults.line.startArrowhead,
+        endArrowhead: kind === "line" ? "none" : creationDefaults.line.endArrowhead,
+        lineStyle: creationDefaults.line.lineStyle,
         routing: kind === "curved-arrow" ? "direct" : "orthogonal",
         curvature: kind === "curved-arrow" ? 0.24 : 0
       };
@@ -1444,7 +1449,7 @@ export function EditorProvider({
         anchorPoint(fromObject.getBoundingRect(), binding.fromAnchor),
         anchorPoint(toObject.getBoundingRect(), binding.toAnchor),
         binding,
-        { color: "#25494b", width: 4, opacity: 1 },
+        { color: creationDefaults.line.color, width: creationDefaults.line.width, opacity: 1 },
         obstacles
       );
       assignIdentity(connector, "Connector", "connector");
@@ -1457,12 +1462,13 @@ export function EditorProvider({
       commit("Add connector");
       return true;
     },
-    [canvas, commit, prepareElementStyle]
+    [canvas, commit, creationDefaults.line, prepareElementStyle]
   );
 
   const addShape = useCallback(
     (kind: ShapeKind, point?: Point) => {
       if (
+        kind !== "curved-line" &&
         ["line", "arrow", "double-arrow", "curved-arrow"].includes(kind) &&
         addAttachedConnector(kind as "line" | "arrow" | "double-arrow" | "curved-arrow")
       ) {
@@ -1482,8 +1488,24 @@ export function EditorProvider({
         object = new Circle({ ...common, radius: 95 });
       } else if (kind === "ellipse") {
         object = new Circle({ ...common, radius: 100, scaleX: 1.5, scaleY: 0.85 });
+      } else if (kind === "pill") {
+        object = new Rect({ ...common, width: 280, height: 120, rx: 60, ry: 60 });
+      } else if (kind === "donut") {
+        object = new Path(
+          "M 100 0 A 100 100 0 1 1 99.9 0 M 100 42 A 58 58 0 1 0 100.1 42 Z",
+          { ...common, fillRule: "evenodd" }
+        );
       } else if (kind === "triangle") {
         object = new Triangle({ ...common, width: 210, height: 190 });
+      } else if (kind === "right-triangle") {
+        object = new Polygon(
+          [
+            { x: 0, y: 0 },
+            { x: 0, y: 190 },
+            { x: 220, y: 190 }
+          ],
+          common
+        );
       } else if (kind === "pentagon") {
         object = new Polygon(
           [
@@ -1507,6 +1529,57 @@ export function EditorProvider({
           ],
           common
         );
+      } else if (kind === "octagon") {
+        object = new Polygon(
+          [
+            { x: 60, y: 0 },
+            { x: 160, y: 0 },
+            { x: 220, y: 60 },
+            { x: 220, y: 160 },
+            { x: 160, y: 220 },
+            { x: 60, y: 220 },
+            { x: 0, y: 160 },
+            { x: 0, y: 60 }
+          ],
+          common
+        );
+      } else if (kind === "diamond") {
+        object = new Polygon(
+          [
+            { x: 110, y: 0 },
+            { x: 220, y: 90 },
+            { x: 110, y: 180 },
+            { x: 0, y: 90 }
+          ],
+          common
+        );
+      } else if (kind === "trapezoid") {
+        object = new Polygon(
+          [
+            { x: 50, y: 0 },
+            { x: 190, y: 0 },
+            { x: 240, y: 170 },
+            { x: 0, y: 170 }
+          ],
+          common
+        );
+      } else if (kind === "parallelogram") {
+        object = new Polygon(
+          [
+            { x: 50, y: 0 },
+            { x: 250, y: 0 },
+            { x: 200, y: 170 },
+            { x: 0, y: 170 }
+          ],
+          common
+        );
+      } else if (kind === "star") {
+        const points = Array.from({ length: 10 }, (_, index) => {
+          const angle = -Math.PI / 2 + (Math.PI * index) / 5;
+          const radius = index % 2 === 0 ? 110 : 48;
+          return { x: 110 + Math.cos(angle) * radius, y: 110 + Math.sin(angle) * radius };
+        });
+        object = new Polygon(points, common);
       } else if (kind === "line") {
         object = new Line([0, 0, 220, 0], {
           stroke: creationDefaults.line.color,
@@ -1561,7 +1634,7 @@ export function EditorProvider({
 
   const addFreeConnector = useCallback(
     (
-      kind: "line" | "arrow" | "double-arrow" | "curved-arrow",
+      kind: "line" | "curved-line" | "arrow" | "double-arrow" | "curved-arrow",
       from: Point,
       requestedTo?: Point
     ) => {
@@ -1583,11 +1656,15 @@ export function EditorProvider({
         toObjectId: "",
         toAnchor: "center",
         startArrowhead:
-          kind === "double-arrow" ? creationDefaults.line.startArrowhead || "triangle" : "none",
-        endArrowhead: kind === "line" ? "none" : creationDefaults.line.endArrowhead,
+          kind === "line" || kind === "curved-line"
+            ? "none"
+            : kind === "double-arrow"
+              ? creationDefaults.line.startArrowhead || "triangle"
+              : creationDefaults.line.startArrowhead,
+        endArrowhead: kind === "line" || kind === "curved-line" ? "none" : creationDefaults.line.endArrowhead,
         lineStyle: creationDefaults.line.lineStyle,
         routing: "direct",
-        curvature: kind === "curved-arrow" ? 0.24 : 0
+        curvature: kind === "curved-arrow" || kind === "curved-line" ? 0.24 : 0
       };
       if (kind === "double-arrow" && binding.startArrowhead === "none") {
         binding.startArrowhead = "triangle";
@@ -1622,19 +1699,20 @@ export function EditorProvider({
         addText(tool.kind, point, tool.fontSize, tool.fontWeight);
         return;
       }
-      if (["line", "arrow", "double-arrow", "curved-arrow"].includes(tool.kind)) {
+      if (["line", "curved-line", "arrow", "double-arrow", "curved-arrow"].includes(tool.kind)) {
         const dragged =
           endPoint &&
           Math.hypot(endPoint.x - point.x, endPoint.y - point.y) >=
             4 / Math.max(canvas?.getZoom() ?? 1, 0.1);
         if (
           !dragged &&
+          tool.kind !== "curved-line" &&
           addAttachedConnector(tool.kind as "line" | "arrow" | "double-arrow" | "curved-arrow")
         ) {
           return;
         }
         addFreeConnector(
-          tool.kind as "line" | "arrow" | "double-arrow" | "curved-arrow",
+          tool.kind as "line" | "curved-line" | "arrow" | "double-arrow" | "curved-arrow",
           point,
           endPoint
         );
@@ -2016,7 +2094,7 @@ export function EditorProvider({
         object.set(properties);
         if (
           object instanceof Group &&
-          ["line", "arrow", "double-arrow", "curved-arrow"].includes(object.OpenSketchType ?? "") &&
+          ["line", "curved-line", "arrow", "double-arrow", "curved-arrow"].includes(object.OpenSketchType ?? "") &&
           !object.connector
         ) {
           object.getObjects().forEach((part) => {
@@ -2107,7 +2185,7 @@ export function EditorProvider({
           opacity: 1
         });
         changed = true;
-      } else if (["line", "arrow", "double-arrow", "curved-arrow"].includes(type)) {
+      } else if (["line", "curved-line", "arrow", "double-arrow", "curved-arrow"].includes(type)) {
         object.set({
           stroke: DEFAULT_CREATION_DEFAULTS.line.color,
           strokeWidth: DEFAULT_CREATION_DEFAULTS.line.width,

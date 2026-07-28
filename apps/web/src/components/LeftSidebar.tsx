@@ -9,23 +9,15 @@ import {
 } from "react";
 import { FixedSizeList as List, type ListChildComponentProps } from "react-window";
 import {
-  ArrowLeftRight,
   ArrowRight,
-  Circle,
+  Edit3,
   FileInput,
   Heart,
-  Hexagon,
   ImagePlus,
   Minus,
-  PanelLeftClose,
-  PanelLeftOpen,
-  Pentagon,
-  Redo2,
   Search,
   Shapes,
   Sparkles,
-  Square,
-  Triangle,
   Type,
   X
 } from "lucide-react";
@@ -54,45 +46,207 @@ import {
   saveAssetVariantDefault
 } from "@/editor/assetVariantDefaults";
 import { AssetVariantPicker } from "@/components/AssetVariantPicker";
+import { InspectorContent, LayersPanel } from "@/components/Inspector";
 import { UiSelect } from "@/components/UiSelect";
-import { useSidebarHover } from "./useSidebarHover";
 
-type Tab = "assets" | "shapes" | "imports";
+type Tab = "assets" | "imports" | "edit";
+type Flyout = "lines" | "shapes" | "defaults" | null;
 
-function RoundedRectangleIcon({ size = 24 }: { size?: number }) {
+const SHAPE_GROUPS = {
+  basic: [
+    ["rectangle", "rectangle", "Rectangle"],
+    ["rounded-rectangle", "rounded-rectangle", "Rounded rectangle"],
+    ["pill", "pill", "Pill"],
+    ["circle", "circle", "Circle"],
+    ["ellipse", "ellipse", "Ellipse"],
+    ["donut", "donut", "Donut"]
+  ],
+  polygons: [
+    ["triangle", "triangle", "Triangle"],
+    ["right-triangle", "right-triangle", "Right triangle"],
+    ["pentagon", "pentagon", "Pentagon"],
+    ["polygon", "hexagon", "Hexagon"],
+    ["octagon", "octagon", "Octagon"],
+    ["diamond", "diamond", "Diamond"],
+    ["trapezoid", "trapezoid", "Trapezoid"],
+    ["parallelogram", "parallelogram", "Parallelogram"],
+    ["star", "star", "Star"]
+  ]
+} as const;
+
+const LINE_PRESETS = [
+  {
+    label: "Line",
+    kind: "line",
+    glyph: "solid",
+    defaults: { lineStyle: "solid", startArrowhead: "none", endArrowhead: "none" }
+  },
+  {
+    label: "Dashed line",
+    kind: "line",
+    glyph: "dashed",
+    defaults: { lineStyle: "dashed", startArrowhead: "none", endArrowhead: "none" }
+  },
+  {
+    label: "Dotted line",
+    kind: "line",
+    glyph: "dotted",
+    defaults: { lineStyle: "dotted", startArrowhead: "none", endArrowhead: "none" }
+  },
+  {
+    label: "Curved line",
+    kind: "curved-line",
+    glyph: "curved-line",
+    defaults: { lineStyle: "solid", startArrowhead: "none", endArrowhead: "none" }
+  },
+  {
+    label: "Dashed curved line",
+    kind: "curved-line",
+    glyph: "dashed-curved-line",
+    defaults: { lineStyle: "dashed", startArrowhead: "none", endArrowhead: "none" }
+  },
+  {
+    label: "Dotted curved line",
+    kind: "curved-line",
+    glyph: "dotted-curved-line",
+    defaults: { lineStyle: "dotted", startArrowhead: "none", endArrowhead: "none" }
+  }
+] as const;
+
+const ARROW_PRESETS = [
+  {
+    label: "Arrow",
+    kind: "arrow",
+    glyph: "arrow",
+    defaults: { lineStyle: "solid", startArrowhead: "none", endArrowhead: "triangle" }
+  },
+  {
+    label: "Open arrow",
+    kind: "arrow",
+    glyph: "open-arrow",
+    defaults: { lineStyle: "solid", startArrowhead: "none", endArrowhead: "open" }
+  },
+  {
+    label: "Double arrow",
+    kind: "double-arrow",
+    glyph: "double-arrow",
+    defaults: { lineStyle: "solid", startArrowhead: "triangle", endArrowhead: "triangle" }
+  },
+  {
+    label: "Curved arrow",
+    kind: "curved-arrow",
+    glyph: "curved-arrow",
+    defaults: { lineStyle: "solid", startArrowhead: "none", endArrowhead: "triangle" }
+  },
+  {
+    label: "Dashed arrow",
+    kind: "arrow",
+    glyph: "dashed-arrow",
+    defaults: { lineStyle: "dashed", startArrowhead: "none", endArrowhead: "triangle" }
+  },
+  {
+    label: "Circle-ended line",
+    kind: "line",
+    glyph: "circle-ended",
+    defaults: { lineStyle: "solid", startArrowhead: "circle", endArrowhead: "circle" }
+  },
+  {
+    label: "Circle-start arrow",
+    kind: "arrow",
+    glyph: "circle-start-arrow",
+    defaults: { lineStyle: "solid", startArrowhead: "circle", endArrowhead: "triangle" }
+  },
+  {
+    label: "Dotted arrow",
+    kind: "arrow",
+    glyph: "dotted-arrow",
+    defaults: { lineStyle: "dotted", startArrowhead: "none", endArrowhead: "triangle" }
+  }
+] as const;
+
+function LinePresetIcon({ glyph }: { glyph: string }) {
+  const line = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.8,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const
+  };
   return (
-    <svg
-      className="tool-rounded-rectangle-icon"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.25"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <rect x="3" y="5" width="18" height="14" rx="4" />
+    <svg width="31" height="24" viewBox="0 0 32 24" aria-hidden="true">
+      {glyph === "solid" && <path {...line} d="M3 12h26" />}
+      {glyph === "dashed" && <path {...line} strokeDasharray="6 4" d="M3 12h26" />}
+      {glyph === "dotted" && <path {...line} strokeDasharray="1 4" d="M3 12h26" />}
+      {glyph === "curved-line" && <path {...line} d="M3 18C8 4 22 4 29 16" />}
+      {glyph === "dashed-curved-line" && (
+        <path {...line} strokeDasharray="5 3" d="M3 18C8 4 22 4 29 16" />
+      )}
+      {glyph === "dotted-curved-line" && (
+        <path {...line} strokeDasharray="1 4" d="M3 18C8 4 22 4 29 16" />
+      )}
+      {glyph === "arrow" && <path {...line} d="M3 12h24m-6-6 6 6-6 6" />}
+      {glyph === "open-arrow" && <path {...line} d="M3 12h23m-5-5 5 5-5 5" />}
+      {glyph === "double-arrow" && (
+        <path {...line} d="M6 6 1 12l5 6M1 12h30M26 6l5 6-5 6" />
+      )}
+      {glyph === "curved-arrow" && <path {...line} d="M3 17C5 4 21 4 27 12m-5-1 5 1-2 5" />}
+      {glyph === "dashed-arrow" && (
+        <path {...line} strokeDasharray="5 3" d="M3 12h24m-6-6 6 6-6 6" />
+      )}
+      {glyph === "circle-ended" && (
+        <>
+          <circle {...line} cx="4" cy="12" r="2.5" />
+          <path {...line} d="M7 12h18" />
+          <circle {...line} cx="28" cy="12" r="2.5" />
+        </>
+      )}
+      {glyph === "circle-start-arrow" && (
+        <>
+          <circle {...line} cx="4" cy="12" r="2.5" />
+          <path {...line} d="M7 12h20m-6-6 6 6-6 6" />
+        </>
+      )}
+      {glyph === "dotted-arrow" && (
+        <path {...line} strokeDasharray="1 4" d="M3 12h24m-6-6 6 6-6 6" />
+      )}
     </svg>
   );
 }
 
-function EllipseIcon({ size = 24 }: { size?: number }) {
+function ShapePresetIcon({ glyph }: { glyph: string }) {
+  const outline = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 1.8,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const
+  };
   return (
-    <svg
-      className="tool-ellipse-icon"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.25"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <ellipse cx="12" cy="12" rx="9.5" ry="6.5" />
+    <svg width="30" height="26" viewBox="0 0 32 28" aria-hidden="true">
+      {glyph === "rectangle" && <rect {...outline} x="4" y="5" width="24" height="18" />}
+      {glyph === "rounded-rectangle" && (
+        <rect {...outline} x="4" y="5" width="24" height="18" rx="4" />
+      )}
+      {glyph === "pill" && <rect {...outline} x="2" y="7" width="28" height="14" rx="7" />}
+      {glyph === "circle" && <circle {...outline} cx="16" cy="14" r="10" />}
+      {glyph === "ellipse" && <ellipse {...outline} cx="16" cy="14" rx="13" ry="8" />}
+      {glyph === "donut" && (
+        <>
+          <circle {...outline} cx="16" cy="14" r="11" />
+          <circle {...outline} cx="16" cy="14" r="5" />
+        </>
+      )}
+      {glyph === "triangle" && <path {...outline} d="M16 3 29 24H3Z" />}
+      {glyph === "right-triangle" && <path {...outline} d="M4 4v20h24Z" />}
+      {glyph === "pentagon" && <path {...outline} d="m16 2 13 9-5 15H8L3 11Z" />}
+      {glyph === "hexagon" && <path {...outline} d="m9 3 14 0 7 11-7 11H9L2 14Z" />}
+      {glyph === "octagon" && <path {...outline} d="m9 2 14 0 7 7v10l-7 7H9l-7-7V9Z" />}
+      {glyph === "diamond" && <path {...outline} d="m16 2 14 12-14 12L2 14Z" />}
+      {glyph === "trapezoid" && <path {...outline} d="M8 5h16l6 18H2Z" />}
+      {glyph === "parallelogram" && <path {...outline} d="M9 5h21l-7 18H2Z" />}
+      {glyph === "star" && (
+        <path {...outline} d="m16 2 3.5 7.6 8.5.9-6.3 5.7 1.8 8.3-7.5-4.2-7.5 4.2 1.8-8.3L4 10.5l8.5-.9Z" />
+      )}
     </svg>
   );
 }
@@ -163,72 +317,233 @@ async function styledAssetPreview(
 
 export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const [tab, setTab] = useState<Tab>("assets");
-  const { hoverExpanded, show, scheduleHide, hideNow } = useSidebarHover(collapsed);
+  const [flyout, setFlyout] = useState<Flyout>(null);
+  const [lineFamily, setLineFamily] = useState<"lines" | "arrows">("lines");
+  const [shapeFamily, setShapeFamily] = useState<keyof typeof SHAPE_GROUPS>("basic");
+  const closeTimer = useRef<number | undefined>(undefined);
   const editor = useEditor();
-  const expanded = !collapsed || hoverExpanded;
+  const openPanel = (next: Tab) => {
+    setTab(next);
+    setFlyout(null);
+    editor.setCreationTool(null);
+    if (collapsed) onToggle();
+  };
+  const openFlyout = (next: Exclude<Flyout, null>) => {
+    window.clearTimeout(closeTimer.current);
+    setFlyout(next);
+  };
+  const scheduleFlyoutClose = () => {
+    window.clearTimeout(closeTimer.current);
+    closeTimer.current = window.setTimeout(() => setFlyout(null), 180);
+  };
+  const chooseLinePreset = (preset: (typeof LINE_PRESETS)[number] | (typeof ARROW_PRESETS)[number]) => {
+    editor.setCreationDefaults({
+      ...editor.creationDefaults,
+      line: { ...editor.creationDefaults.line, ...preset.defaults }
+    });
+    editor.setCreationTool({ type: "shape", kind: preset.kind });
+    setFlyout(null);
+  };
+  useEffect(() => {
+    if (editor.selection.length === 0 || editor.creationTool) return;
+    setTab("edit");
+    if (collapsed) onToggle();
+  }, [collapsed, editor.creationTool, editor.selection.length, onToggle]);
+  useEffect(() => {
+    if (!editor.creationTool || collapsed) return;
+    onToggle();
+  }, [collapsed, editor.creationTool, onToggle]);
+  useEffect(() => () => window.clearTimeout(closeTimer.current), []);
   return (
-    <aside
-      className={`left-sidebar ${collapsed ? "collapsed" : ""} ${
-        collapsed && hoverExpanded ? "hover-expanded" : ""
-      }`}
-      onPointerLeave={scheduleHide}
-    >
-      <div
-        className="sidebar-hover-trigger"
-        aria-hidden="true"
-        onPointerEnter={(event) => {
-          if (event.pointerType !== "touch") show();
-        }}
-      />
-      <div className="sidebar-rail" inert={expanded} aria-hidden={expanded}>
+    <aside className={`left-sidebar floating-sidebar ${collapsed ? "panel-closed" : ""}`}>
+      <nav className="floating-tool-rail" aria-label="Editor tools" role="tablist">
         <button
-          className="sidebar-expand"
-          onClick={onToggle}
-          aria-label="Expand left sidebar"
-          title="Expand sidebar"
+          className={tab === "assets" && !collapsed ? "active" : ""}
+          onClick={() => openPanel("assets")}
+          role="tab"
+          aria-label="Assets"
+          aria-selected={tab === "assets" && !collapsed}
+          title="Assets"
+          data-label="Assets"
         >
-          <PanelLeftOpen size={18} />
+          <Search size={20} />
         </button>
-      </div>
-      <div className="sidebar-expanded" inert={!expanded} aria-hidden={!expanded}>
-        <div className="sidebar-tabs-shell">
-          <nav className="sidebar-tabs" aria-label="Insert tools" role="tablist">
-            {(
-              [
-                ["assets", Sparkles, "Assets"],
-                ["shapes", Shapes, "Shapes"],
-                ["imports", FileInput, "Imports"]
-              ] as const
-            ).map(([value, Icon, label]) => (
+        <button
+          onClick={() => {
+            editor.setCreationTool({ type: "text", kind: "point" });
+            setFlyout(null);
+          }}
+          className={editor.creationTool?.type === "text" ? "active" : ""}
+          aria-label="Text"
+          aria-pressed={editor.creationTool?.type === "text"}
+          title="Text"
+          data-label="Text"
+        >
+          <Type size={20} />
+        </button>
+        <button
+          onPointerEnter={() => openFlyout("lines")}
+          onPointerLeave={scheduleFlyoutClose}
+          onClick={() => openFlyout("lines")}
+          className={flyout === "lines" ? "active" : ""}
+          aria-label="Lines"
+          aria-expanded={flyout === "lines"}
+          title="Lines"
+          data-label="Lines"
+        >
+          <ArrowRight size={20} />
+        </button>
+        <button
+          onPointerEnter={() => openFlyout("shapes")}
+          onPointerLeave={scheduleFlyoutClose}
+          onClick={() => openFlyout("shapes")}
+          className={flyout === "shapes" ? "active" : ""}
+          role="tab"
+          aria-label="Shapes"
+          aria-selected={flyout === "shapes"}
+          aria-expanded={flyout === "shapes"}
+          title="Shapes"
+          data-label="Shapes"
+        >
+          <Shapes size={20} />
+        </button>
+        <button
+          className={tab === "imports" && !collapsed ? "active" : ""}
+          onClick={() => openPanel("imports")}
+          role="tab"
+          aria-label="Imports"
+          aria-selected={tab === "imports" && !collapsed}
+          title="Imports"
+          data-label="Imports"
+        >
+          <FileInput size={20} />
+        </button>
+        <button
+          className={tab === "edit" && !collapsed ? "active" : ""}
+          onClick={() => openPanel("edit")}
+          aria-label="Edit"
+          title="Edit"
+          data-label="Edit"
+        >
+          <Edit3 size={20} />
+        </button>
+      </nav>
+      {flyout === "lines" ? (
+        <div
+          className="tool-flyout line-tool-flyout"
+          role="menu"
+          aria-label="Line and arrow tools"
+          onPointerEnter={() => window.clearTimeout(closeTimer.current)}
+          onPointerLeave={scheduleFlyoutClose}
+        >
+          <div className="tool-flyout-primary">
+            <button
+              className={lineFamily === "lines" ? "active" : ""}
+              onPointerEnter={() => setLineFamily("lines")}
+              onClick={() => setLineFamily("lines")}
+              role="menuitem"
+            >
+              <Minus size={18} /> Lines <ArrowRight size={14} />
+            </button>
+            <button
+              className={lineFamily === "arrows" ? "active" : ""}
+              onPointerEnter={() => setLineFamily("arrows")}
+              onClick={() => setLineFamily("arrows")}
+              role="menuitem"
+            >
+              <ArrowRight size={18} /> Arrows <ArrowRight size={14} />
+            </button>
+            <button onClick={() => setFlyout("defaults")} role="menuitem">
+              <Sparkles size={18} /> Defaults <ArrowRight size={14} />
+            </button>
+          </div>
+          <div className="tool-flyout-secondary">
+            {(lineFamily === "lines" ? LINE_PRESETS : ARROW_PRESETS).map((preset) => {
+              return (
+                <button
+                  key={preset.label}
+                  onClick={() => chooseLinePreset(preset)}
+                  role="menuitem"
+                  aria-label={preset.label}
+                  title={preset.label}
+                >
+                  <LinePresetIcon glyph={preset.glyph} />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      ) : null}
+      {flyout === "shapes" ? (
+        <div
+          className="tool-flyout shape-tool-flyout"
+          role="menu"
+          aria-label="Shape tools"
+          onPointerEnter={() => window.clearTimeout(closeTimer.current)}
+          onPointerLeave={scheduleFlyoutClose}
+        >
+          <div className="tool-flyout-primary">
+            <button
+              className={shapeFamily === "basic" ? "active" : ""}
+              onPointerEnter={() => setShapeFamily("basic")}
+              onClick={() => setShapeFamily("basic")}
+              role="menuitem"
+            >
+              <ShapePresetIcon glyph="rectangle" /> Shapes <ArrowRight size={14} />
+            </button>
+            <button
+              className={shapeFamily === "polygons" ? "active" : ""}
+              onPointerEnter={() => setShapeFamily("polygons")}
+              onClick={() => setShapeFamily("polygons")}
+              role="menuitem"
+            >
+              <ShapePresetIcon glyph="hexagon" /> Polygons <ArrowRight size={14} />
+            </button>
+            <button onClick={() => setFlyout("defaults")} role="menuitem">
+              <Sparkles size={18} /> Defaults <ArrowRight size={14} />
+            </button>
+          </div>
+          <div className="tool-flyout-secondary shape-flyout-grid">
+            {SHAPE_GROUPS[shapeFamily].map(([kind, glyph, label]) => (
               <button
-                key={value}
-                className={tab === value ? "active" : ""}
+                key={kind}
                 onClick={() => {
-                  setTab(value);
-                  editor.setCreationTool(null);
+                  editor.setCreationTool({ type: "shape", kind });
+                  setFlyout(null);
                 }}
-                role="tab"
+                role="menuitem"
                 aria-label={label}
-                aria-selected={tab === value}
-                aria-controls={`insert-panel-${value}`}
                 title={label}
               >
-                <Icon size={19} aria-hidden="true" />
+                <ShapePresetIcon glyph={glyph} />
               </button>
             ))}
-          </nav>
-          <button
-            className="sidebar-collapse"
-            onClick={() => {
-              hideNow();
-              onToggle();
-            }}
-            aria-label={collapsed ? "Keep left sidebar open" : "Minimize left sidebar"}
-            title={collapsed ? "Keep sidebar open" : "Minimize sidebar"}
-          >
-            {collapsed ? <PanelLeftOpen size={16} /> : <PanelLeftClose size={16} />}
-          </button>
+          </div>
         </div>
+      ) : null}
+      {flyout === "defaults" ? (
+        <div
+          className="tool-flyout tool-defaults-flyout"
+          role="dialog"
+          aria-label="New object defaults"
+          onPointerEnter={() => window.clearTimeout(closeTimer.current)}
+          onPointerLeave={scheduleFlyoutClose}
+        >
+          <ShapesPanel />
+        </div>
+      ) : null}
+      {!collapsed ? (
+        <div className="sidebar-expanded floating-panel">
+          {tab !== "edit" ? (
+            <div className="floating-panel-header">
+              <strong>
+                {tab === "assets" ? "Assets" : "Imports"}
+              </strong>
+              <button className="panel-close-button" onClick={onToggle} aria-label="Close panel">
+                ×
+              </button>
+            </div>
+          ) : null}
         <div
           key={tab}
           className={`sidebar-content sidebar-content-${tab}`}
@@ -237,10 +552,12 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
           aria-label={`${tab} tools`}
         >
           {tab === "assets" && <AssetsPanel />}
-          {tab === "shapes" && <ShapesPanel />}
           {tab === "imports" && <ImportsPanel />}
+          {tab === "edit" && <InspectorContent onClose={onToggle} />}
         </div>
-      </div>
+          <LayersPanel />
+        </div>
+      ) : null}
     </aside>
   );
 }
@@ -526,8 +843,6 @@ function AssetCard({
 
 function ShapesPanel() {
   const editor = useEditor();
-  const active = (kind: (typeof shapes)[number][0]) =>
-    editor.creationTool?.type === "shape" && editor.creationTool.kind === kind;
   const updateTextDefaults = (properties: Partial<typeof editor.creationDefaults.text>) =>
     editor.setCreationDefaults({
       ...editor.creationDefaults,
@@ -543,50 +858,8 @@ function ShapesPanel() {
       ...editor.creationDefaults,
       line: { ...editor.creationDefaults.line, ...properties }
     });
-  const shapes = [
-    ["line", Minus, "Line"],
-    ["arrow", ArrowRight, "Arrow"],
-    ["double-arrow", ArrowLeftRight, "Double arrow"],
-    ["curved-arrow", Redo2, "Curved arrow"],
-    ["rectangle", Square, "Rectangle"],
-    ["rounded-rectangle", RoundedRectangleIcon, "Rounded"],
-    ["circle", Circle, "Circle"],
-    ["ellipse", EllipseIcon, "Ellipse"],
-    ["triangle", Triangle, "Triangle"],
-    ["pentagon", Pentagon, "Pentagon"],
-    ["polygon", Hexagon, "Hexagon"]
-  ] as const;
   return (
     <>
-      <div className="shape-grid">
-        <button
-          className={
-            editor.creationTool?.type === "text" && editor.creationTool.kind === "point"
-              ? "active"
-              : ""
-          }
-          aria-label="Text"
-          title="Text"
-          aria-pressed={
-            editor.creationTool?.type === "text" && editor.creationTool.kind === "point"
-          }
-          onClick={() => editor.setCreationTool({ type: "text", kind: "point" })}
-        >
-          <Type size={25} aria-hidden="true" />
-          <span>Text</span>
-        </button>
-        {shapes.map(([kind, Icon, label]) => (
-          <button
-            key={kind}
-            className={active(kind) ? "active" : ""}
-            aria-pressed={active(kind)}
-            onClick={() => editor.setCreationTool({ type: "shape", kind })}
-          >
-            <Icon size={25} />
-            <span>{label}</span>
-          </button>
-        ))}
-      </div>
       <details className="creation-defaults" open>
         <summary>New text defaults</summary>
         <div className="creation-defaults-body">

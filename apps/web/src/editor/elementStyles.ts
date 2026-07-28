@@ -83,7 +83,7 @@ export function elementStyleKey(object: FabricObject | undefined): string | unde
   }
   if (type === "text") return "text:point";
   if (type === "shape" && target.name) return `shape:${target.name.trim().toLowerCase()}`;
-  if (["connector", "line", "arrow", "double-arrow", "curved-arrow"].includes(type)) {
+  if (["connector", "line", "curved-line", "arrow", "double-arrow", "curved-arrow"].includes(type)) {
     return `connector:${type}`;
   }
   return undefined;

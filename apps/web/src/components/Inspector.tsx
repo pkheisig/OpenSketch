@@ -20,8 +20,6 @@ import {
   Lock,
   MoveDown,
   MoveUp,
-  PanelRightClose,
-  PanelRightOpen,
   RotateCw,
   Trash2,
   Ungroup,
@@ -45,73 +43,39 @@ import { useEditor } from "@/editor/EditorContext";
 import { TEXT_FONT_FAMILIES } from "@/editor/fonts";
 import { AssetVariantPicker } from "@/components/AssetVariantPicker";
 import { UiSelect } from "@/components/UiSelect";
-import { useSidebarHover } from "./useSidebarHover";
 
 function number(value: number | undefined, digits = 0) {
   return Number(value ?? 0).toFixed(digits);
 }
 
-export function Inspector({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
-  const { hoverExpanded, show, scheduleHide, hideNow } = useSidebarHover(collapsed);
+export function InspectorContent({ onClose }: { onClose?: () => void }) {
   const editor = useEditor();
   const selected = editor.selection[0];
   const isSvgPart = selected?.OpenSketchType === "svg-part";
   const parentAsset = isSvgPart ? svgPartParent(selected) : null;
-  const expanded = !collapsed || hoverExpanded;
   return (
-    <aside
-      className={`right-sidebar ${collapsed ? "collapsed" : ""} ${
-        collapsed && hoverExpanded ? "hover-expanded" : ""
-      }`}
-      onPointerLeave={scheduleHide}
-    >
-      <div
-        className="sidebar-hover-trigger"
-        aria-hidden="true"
-        onPointerEnter={(event) => {
-          if (event.pointerType !== "touch") show();
-        }}
-      />
-      <div className="sidebar-rail" inert={expanded} aria-hidden={expanded}>
-        <button
-          className="sidebar-expand"
-          onClick={onToggle}
-          aria-label="Expand right sidebar"
-          title="Expand inspector"
-        >
-          <PanelRightOpen size={18} />
-        </button>
-      </div>
-      <div className="inspector-expanded" inert={!expanded} aria-hidden={!expanded}>
-        <div className="inspector-header">
-          <h2>{selected?.name ?? "Canvas"}</h2>
-          <span>{editor.selection.length > 1 ? `${editor.selection.length} selected` : ""}</span>
-          <button
-            className="inspector-collapse"
-            onClick={() => {
-              hideNow();
-              onToggle();
-            }}
-            aria-label={collapsed ? "Keep right sidebar open" : "Minimize right sidebar"}
-            title={collapsed ? "Keep inspector open" : "Minimize inspector"}
-          >
-            {collapsed ? <PanelRightOpen size={16} /> : <PanelRightClose size={16} />}
+    <div className="inspector-embedded">
+      <div className="inspector-header">
+        <h2>{selected?.name ?? "Canvas"}</h2>
+        <span>{editor.selection.length > 1 ? `${editor.selection.length} selected` : ""}</span>
+        {onClose ? (
+          <button className="panel-close-button" onClick={onClose} aria-label="Close properties">
+            ×
           </button>
-        </div>
-        <div className="inspector-scroll">
-          {isSvgPart && (
-            <div className="svg-part-context">
-              <span>Inside {parentAsset?.name ?? "SVG asset"}</span>
-              <button onClick={editor.selectParentAsset}>
-                <CornerUpLeft size={13} /> Done
-              </button>
-            </div>
-          )}
-          {selected ? <ObjectInspector object={selected} /> : <CanvasInspector />}
-          <LayersPanel />
-        </div>
+        ) : null}
       </div>
-    </aside>
+      <div className="inspector-scroll">
+        {isSvgPart && (
+          <div className="svg-part-context">
+            <span>Inside {parentAsset?.name ?? "SVG asset"}</span>
+            <button onClick={editor.selectParentAsset}>
+              <CornerUpLeft size={13} /> Done
+            </button>
+          </div>
+        )}
+        {selected ? <ObjectInspector object={selected} /> : <CanvasInspector />}
+      </div>
+    </div>
   );
 }
 
@@ -621,7 +585,7 @@ function svgPartParent(object: FabricObject): FabricGroup | null {
   return null;
 }
 
-function LayersPanel() {
+export function LayersPanel() {
   const editor = useEditor();
   const [open, setOpen] = useState(true);
   const objects = [...(editor.canvas?.getObjects() ?? [])].reverse();
