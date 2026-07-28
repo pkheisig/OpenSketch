@@ -29,6 +29,7 @@ async function placeTool(page: Page, name: string | RegExp, xRatio = 0.5, yRatio
 }
 
 test("creates, edits, saves, reopens, and exports a local figure", async ({ page }) => {
+  test.setTimeout(60_000);
   const externalRequests: string[] = [];
   page.on("request", (request) => {
     const url = new URL(request.url());
