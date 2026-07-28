@@ -43,6 +43,8 @@ export interface ConnectorCreationPreset {
   curvature?: number;
   opacity?: number;
   widthScale?: number;
+  /** Default click-created endpoint delta. Drag creation still uses the pointer. */
+  defaultOffset?: { x: number; y: number };
 }
 
 export interface CreationDefaults {

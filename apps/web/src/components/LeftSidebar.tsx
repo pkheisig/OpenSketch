@@ -1,6 +1,5 @@
 import {
   useEffect,
-  useId,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -26,13 +25,19 @@ import {
   type AssetFamily,
   type AssetVariant,
   type ConnectorArrowhead,
-  type ConnectorLineStyle,
-  type ConnectorPathShape
+  type ConnectorLineStyle
 } from "@workspace/editor-core";
 import { Group, StaticCanvas, util, type FabricObject } from "fabric";
 import { ASSET_CATEGORIES, assetManifest } from "@/assets/manifest";
 import { useEditor } from "@/editor/EditorContext";
 import { buildConnectorGeometry } from "@/editor/connectorGeometry";
+import {
+  CONNECTOR_FAMILIES,
+  CONNECTOR_PRESETS,
+  connectorPreviewEndpoints,
+  type ConnectorFamily,
+  type ConnectorPreset
+} from "@/editor/connectorPresets";
 import {
   applyElementStyle,
   loadSavedElementStyles,
@@ -53,8 +58,6 @@ import { UiSelect } from "@/components/UiSelect";
 
 type Tab = "assets" | "imports" | "edit";
 type Flyout = "lines" | "shapes" | "defaults" | null;
-type ConnectorFamily =
-  "lines" | "arrows" | "inhibitor" | "dots" | "neurons" | "circular" | "brackets";
 
 const SHAPE_GROUPS = {
   basic: [
@@ -78,149 +81,8 @@ const SHAPE_GROUPS = {
   ]
 } as const;
 
-interface ConnectorPreset {
-  label: string;
-  pathShape: ConnectorPathShape;
-  lineStyle: ConnectorLineStyle;
-  startArrowhead: ConnectorArrowhead;
-  endArrowhead: ConnectorArrowhead;
-  curvature?: number;
-  opacity?: number;
-  widthScale?: number;
-}
-
-const preset = (
-  label: string,
-  pathShape: ConnectorPathShape,
-  lineStyle: ConnectorLineStyle = "solid",
-  startArrowhead: ConnectorArrowhead = "none",
-  endArrowhead: ConnectorArrowhead = "none",
-  extra: Partial<Pick<ConnectorPreset, "curvature" | "opacity" | "widthScale">> = {}
-): ConnectorPreset => ({
-  label,
-  pathShape,
-  lineStyle,
-  startArrowhead,
-  endArrowhead,
-  ...extra
-});
-
-const CONNECTOR_PRESETS: Record<ConnectorFamily, ConnectorPreset[]> = {
-  lines: [
-    preset("Straight line", "straight"),
-    preset("Faded line", "straight", "solid", "none", "none", { opacity: 0.35 }),
-    preset("Dashed line", "straight", "dashed"),
-    preset("Square elbow", "elbow"),
-    preset("Rounded elbow", "rounded-elbow"),
-    preset("Dashed elbow", "elbow", "dashed"),
-    preset("Step line", "step"),
-    preset("Rounded step", "rounded-step"),
-    preset("Dashed step", "step", "dashed"),
-    preset("Arc", "arc", "solid", "none", "none", { curvature: -0.35 }),
-    preset("Faded arc", "arc", "solid", "none", "none", {
-      curvature: -0.35,
-      opacity: 0.35
-    }),
-    preset("Dashed arc", "arc", "dashed", "none", "none", { curvature: -0.35 }),
-    preset("Wave", "wave"),
-    preset("Faded wave", "wave", "solid", "none", "none", { opacity: 0.35 }),
-    preset("Dashed wave", "wave", "dashed"),
-    preset("Pulse", "pulse"),
-    preset("Faded pulse", "pulse", "solid", "none", "none", { opacity: 0.35 }),
-    preset("Dashed pulse", "pulse", "dashed")
-  ],
-  arrows: [
-    preset("Straight arrow", "straight", "solid", "none", "triangle"),
-    preset("Open arrow", "straight", "solid", "none", "open"),
-    preset("Double arrow", "straight", "solid", "triangle", "triangle"),
-    preset("Dashed arrow", "straight", "dashed", "none", "triangle"),
-    preset("Curved arrow", "arc", "solid", "none", "triangle", { curvature: 0.3 }),
-    preset("Rounded arrow", "rounded-elbow", "solid", "none", "triangle"),
-    preset("Elbow arrow", "elbow", "solid", "none", "triangle"),
-    preset("Dashed elbow arrow", "elbow", "dashed", "none", "triangle"),
-    preset("Step arrow", "step", "solid", "none", "triangle"),
-    preset("Double step arrow", "step", "solid", "triangle", "triangle"),
-    preset("Wave arrow", "wave", "solid", "none", "triangle"),
-    preset("Dashed wave arrow", "wave", "dashed", "none", "triangle"),
-    preset("Broad arrow", "straight", "solid", "none", "triangle", { widthScale: 2 }),
-    preset("Broad double arrow", "straight", "solid", "triangle", "triangle", {
-      widthScale: 2
-    })
-  ],
-  inhibitor: [
-    preset("Inhibitor", "straight", "solid", "none", "bar"),
-    preset("Faded inhibitor", "straight", "solid", "none", "bar", { opacity: 0.35 }),
-    preset("Dashed inhibitor", "straight", "dashed", "none", "bar"),
-    preset("Elbow inhibitor", "elbow", "solid", "none", "bar"),
-    preset("Rounded inhibitor", "rounded-elbow", "solid", "none", "bar"),
-    preset("Dashed elbow inhibitor", "elbow", "dashed", "none", "bar"),
-    preset("Step inhibitor", "step", "solid", "none", "bar"),
-    preset("Rounded step inhibitor", "rounded-step", "solid", "none", "bar"),
-    preset("Dashed step inhibitor", "step", "dashed", "none", "bar"),
-    preset("Curved inhibitor", "arc", "solid", "none", "bar", { curvature: -0.32 }),
-    preset("Faded curved inhibitor", "arc", "solid", "none", "bar", {
-      curvature: -0.32,
-      opacity: 0.35
-    }),
-    preset("Dashed curved inhibitor", "arc", "dashed", "none", "bar", {
-      curvature: -0.32
-    })
-  ],
-  dots: [
-    preset("Dot endpoint", "straight", "solid", "none", "circle"),
-    preset("Dashed dot endpoint", "straight", "dashed", "none", "circle"),
-    preset("Elbow dot endpoint", "elbow", "solid", "none", "circle"),
-    preset("Dashed elbow dot endpoint", "elbow", "dashed", "none", "circle")
-  ],
-  neurons: [
-    preset("Neuron connector", "straight", "solid", "neuron", "circle"),
-    preset("Neuron open endpoint", "straight", "solid", "neuron", "open-circle"),
-    preset("Reverse neuron connector", "straight", "solid", "circle", "neuron"),
-    preset("Reverse open neuron", "straight", "solid", "open-circle", "neuron"),
-    preset("Curved neuron", "arc", "solid", "neuron", "circle", { curvature: -0.3 }),
-    preset("Wave neuron", "wave", "solid", "neuron", "circle"),
-    preset("Arc neuron", "arc", "solid", "neuron", "open-circle", { curvature: 0.3 }),
-    preset("Elbow neuron", "elbow", "solid", "neuron", "circle"),
-    preset("Rounded neuron", "rounded-elbow", "solid", "neuron", "circle"),
-    preset("Step neuron", "step", "solid", "neuron", "circle")
-  ],
-  circular: [
-    preset("Circular line", "circular", "solid", "none", "none", { curvature: 0.8 }),
-    preset("Reverse circular line", "circular", "solid", "none", "none", {
-      curvature: -0.8
-    }),
-    preset("Short arc", "arc", "solid", "none", "none", { curvature: 0.5 }),
-    preset("Circular arrow", "circular", "solid", "none", "triangle", { curvature: 0.8 }),
-    preset("Reverse circular arrow", "circular", "solid", "none", "triangle", {
-      curvature: -0.8
-    }),
-    preset("Double circular arrow", "circular", "solid", "triangle", "triangle", {
-      curvature: 0.8
-    }),
-    preset("Open circular arrow", "circular", "solid", "none", "open", { curvature: 0.8 }),
-    preset("Dashed circular line", "circular", "dashed", "none", "none", {
-      curvature: 0.8
-    }),
-    preset("Dashed circular arrow", "circular", "dashed", "none", "triangle", {
-      curvature: 0.8
-    })
-  ],
-  brackets: [
-    preset("Square bracket", "bracket-square"),
-    preset("Round bracket", "bracket-round"),
-    preset("Square brace", "bracket-square-center"),
-    preset("Curly brace", "bracket-curly"),
-    preset("Reverse curly brace", "bracket-curly", "solid", "none", "none", {
-      curvature: 0.25
-    })
-  ]
-};
-
 function ConnectorPresetIcon({ value }: { value: ConnectorPreset }) {
-  const markerRoot = useId().replaceAll(":", "");
-  const vertical = value.pathShape.startsWith("bracket-");
-  const from = vertical ? { x: 16, y: 3 } : { x: 4, y: 12 };
-  const to = vertical ? { x: 16, y: 21 } : { x: 28, y: 12 };
+  const { from, to } = connectorPreviewEndpoints(value);
   const geometry = buildConnectorGeometry(from, to, value.pathShape, value.curvature);
   const line = {
     fill: "none",
@@ -231,65 +93,45 @@ function ConnectorPresetIcon({ value }: { value: ConnectorPreset }) {
   };
   const dash =
     value.lineStyle === "dashed" ? "5 3" : value.lineStyle === "dotted" ? "1 4" : undefined;
-  const endHead = value.endArrowhead;
-  const startHead = value.startArrowhead;
-  const markerId = (kind: ConnectorArrowhead, position: "start" | "end") =>
-    `${markerRoot}-${position}-${kind}`;
-  const marker = (kind: ConnectorArrowhead, position: "start" | "end") => {
+  const head = (
+    kind: ConnectorArrowhead,
+    point: { x: number; y: number },
+    angle: number
+  ) => {
     if (kind === "none") return null;
-    const id = markerId(kind, position);
-    const common = {
-      id,
-      markerUnits: "userSpaceOnUse" as const,
-      markerWidth: 10,
-      markerHeight: 10,
-      viewBox: "0 0 10 10",
-      orient: "auto-start-reverse" as const,
-      overflow: "visible" as const
-    };
+    const degrees = (angle * 180) / Math.PI;
     if (kind === "circle" || kind === "open-circle") {
       return (
-        <marker {...common} refX="5" refY="5">
-          <circle
-            cx="5"
-            cy="5"
-            r="2.7"
-            fill={kind === "circle" ? "currentColor" : "#fffefa"}
-            stroke={kind === "open-circle" ? "currentColor" : "none"}
-            strokeWidth="1.6"
-          />
-        </marker>
-      );
-    }
-    if (kind === "bar") {
-      return (
-        <marker {...common} refX="5" refY="5">
-          <path d="M5 .8V9.2" fill="none" stroke="currentColor" strokeWidth="1.8" />
-        </marker>
-      );
-    }
-    if (kind === "neuron") {
-      return (
-        <marker {...common} refX="8.5" refY="5">
-          <path d="M1 1 9 5 1 9 2.7 5Z" fill="currentColor" />
-        </marker>
-      );
-    }
-    return (
-      <marker {...common} refX="8.5" refY="5">
-        <path
-          d="M1 1 9 5 1 9"
-          fill={kind === "triangle" ? "currentColor" : "none"}
+        <circle
+          cx={point.x}
+          cy={point.y}
+          r="2.4"
+          fill={kind === "circle" ? "currentColor" : "#fffefa"}
           stroke="currentColor"
-          strokeWidth={kind === "triangle" ? "1.2" : "1.8"}
-          strokeLinecap="round"
-          strokeLinejoin="round"
+          strokeWidth={kind === "open-circle" ? "1.45" : "0"}
         />
-      </marker>
+      );
+    }
+    const pathData =
+      kind === "bar"
+        ? "M0 -4.5V4.5"
+        : kind === "neuron"
+          ? "M 0 0 L -6 -3.4 L -4.6 0 L -6 3.4 Z"
+          : kind === "triangle"
+            ? "M 0 0 L -6 -3.7 L -6 3.7 Z"
+            : "M -6 -3.8 L 0 0 L -6 3.8";
+    return (
+      <path
+        d={pathData}
+        transform={`translate(${point.x} ${point.y}) rotate(${degrees})`}
+        fill={kind === "triangle" || kind === "neuron" ? "currentColor" : "none"}
+        stroke="currentColor"
+        strokeWidth={kind === "triangle" || kind === "neuron" ? "1.1" : "1.7"}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     );
   };
-  const markerStart = startHead === "none" ? undefined : `url(#${markerId(startHead, "start")})`;
-  const markerEnd = endHead === "none" ? undefined : `url(#${markerId(endHead, "end")})`;
   return (
     <svg
       width="43"
@@ -299,17 +141,9 @@ function ConnectorPresetIcon({ value }: { value: ConnectorPreset }) {
       style={{ opacity: value.opacity ?? 1 }}
     >
       <title>{value.label}</title>
-      <defs>
-        {marker(startHead, "start")}
-        {marker(endHead, "end")}
-      </defs>
-      <path
-        {...line}
-        strokeDasharray={dash}
-        markerStart={markerStart}
-        markerEnd={markerEnd}
-        d={geometry.pathData}
-      />
+      <path {...line} strokeDasharray={dash} d={geometry.pathData} />
+      {head(value.startArrowhead, geometry.startPoint, geometry.startAngle)}
+      {head(value.endArrowhead, geometry.endPoint, geometry.endAngle)}
     </svg>
   );
 }
@@ -568,17 +402,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
           onPointerLeave={scheduleFlyoutClose}
         >
           <div className="tool-flyout-primary">
-            {(
-              [
-                ["lines", "Lines"],
-                ["arrows", "Arrows"],
-                ["inhibitor", "Inhibitor"],
-                ["dots", "Dots"],
-                ["neurons", "Neurons"],
-                ["circular", "Circular"],
-                ["brackets", "Brackets"]
-              ] as const
-            ).map(([family, label]) => {
+            {CONNECTOR_FAMILIES.map(({ id: family, label }) => {
               const sample = CONNECTOR_PRESETS[family][0];
               return (
                 <button

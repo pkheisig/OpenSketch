@@ -356,7 +356,8 @@ function arrowhead(
   width: number
 ): FabricObject | null {
   if (kind === "none") return null;
-  const size = Math.max(12, width * 4);
+  const size = Math.max(10, width * 3.2);
+  const direction = { x: Math.cos(angle), y: Math.sin(angle) };
   const common: TOptions<FabricObject> = {
     left: point.x,
     top: point.y,
@@ -368,7 +369,7 @@ function arrowhead(
   if (kind === "circle") {
     return new Circle({
       ...common,
-      radius: size * 0.32,
+      radius: size * 0.28,
       fill: color,
       stroke: color,
       strokeWidth: Math.max(1, width * 0.4)
@@ -377,7 +378,7 @@ function arrowhead(
   if (kind === "open-circle") {
     return new Circle({
       ...common,
-      radius: size * 0.34,
+      radius: size * 0.3,
       fill: "transparent",
       stroke: color,
       strokeWidth: Math.max(1.5, width * 0.6)
@@ -385,23 +386,20 @@ function arrowhead(
   }
   if (kind === "bar") {
     const half = size * 0.55;
-    const tangent = angle + Math.PI / 2;
-    return new Path(
-      `M ${point.x - Math.cos(tangent) * half} ${point.y - Math.sin(tangent) * half} L ${
-        point.x + Math.cos(tangent) * half
-      } ${point.y + Math.sin(tangent) * half}`,
-      {
-        ...common,
-        fill: "",
-        stroke: color,
-        strokeWidth: width,
-        strokeLineCap: "round"
-      }
-    );
+    return new Path(`M 0 ${-half} L 0 ${half}`, {
+      ...common,
+      fill: "",
+      stroke: color,
+      strokeWidth: width,
+      strokeLineCap: "round",
+      angle: (angle * 180) / Math.PI
+    });
   }
   if (kind === "neuron") {
     return new Triangle({
       ...common,
+      left: point.x - direction.x * size * 0.36,
+      top: point.y - direction.y * size * 0.36,
       width: size * 0.78,
       height: size * 0.78,
       fill: color,
@@ -413,6 +411,8 @@ function arrowhead(
   if (kind === "triangle") {
     return new Triangle({
       ...common,
+      left: point.x - direction.x * size * 0.5,
+      top: point.y - direction.y * size * 0.5,
       width: size,
       height: size,
       fill: color,
@@ -424,20 +424,21 @@ function arrowhead(
   const wing = size * 0.85;
   const spread = 0.55;
   const first = {
-    x: point.x - Math.cos(angle - spread) * wing,
-    y: point.y - Math.sin(angle - spread) * wing
+    x: -Math.cos(-spread) * wing,
+    y: -Math.sin(-spread) * wing
   };
   const second = {
-    x: point.x - Math.cos(angle + spread) * wing,
-    y: point.y - Math.sin(angle + spread) * wing
+    x: -Math.cos(spread) * wing,
+    y: -Math.sin(spread) * wing
   };
-  return new Path(`M ${first.x} ${first.y} L ${point.x} ${point.y} L ${second.x} ${second.y}`, {
+  return new Path(`M ${first.x} ${first.y} L 0 0 L ${second.x} ${second.y}`, {
     ...common,
     fill: "",
     stroke: color,
     strokeWidth: width,
     strokeLineCap: "round",
-    strokeLineJoin: "round"
+    strokeLineJoin: "round",
+    angle: (angle * 180) / Math.PI
   });
 }
 
@@ -493,6 +494,18 @@ export function createFreeConnectorObject(
   binding: ConnectorBinding,
   appearance: ConnectorAppearance
 ): Group {
+  const pathShape = binding.pathShape ?? "straight";
+  const screenAligned =
+    pathShape === "elbow" ||
+    pathShape === "rounded-elbow" ||
+    pathShape === "step" ||
+    pathShape === "rounded-step" ||
+    pathShape.startsWith("bracket-");
+  if (screenAligned) {
+    const group = createConnectorObject(from, to, binding, appearance);
+    group.setCoords();
+    return group;
+  }
   const angle = Math.atan2(to.y - from.y, to.x - from.x);
   const length = Math.max(1, Math.hypot(to.x - from.x, to.y - from.y));
   const group = createConnectorObject({ x: 0, y: 0 }, { x: length, y: 0 }, binding, appearance);

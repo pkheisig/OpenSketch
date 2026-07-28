@@ -3349,10 +3349,14 @@ input[type="color"] {
 .connector-family-arrows.tool-flyout-secondary,
 .connector-family-dots.tool-flyout-secondary,
 .connector-family-neurons.tool-flyout-secondary,
-.connector-family-circular.tool-flyout-secondary,
-.connector-family-brackets.tool-flyout-secondary {
+.connector-family-circular.tool-flyout-secondary {
   width: 246px;
   grid-template-columns: repeat(4, 1fr);
+}
+
+.connector-family-brackets.tool-flyout-secondary {
+  width: 300px;
+  grid-template-columns: repeat(5, 1fr);
 }
 
 .tool-flyout-secondary button {

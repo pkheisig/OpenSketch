@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { createFreeConnectorObject, routeOrthogonal } from "../apps/web/src/editor/connectors";
 import { buildConnectorGeometry } from "../apps/web/src/editor/connectorGeometry";
+import {
+  CONNECTOR_PRESETS,
+  connectorPreviewEndpoints
+} from "../apps/web/src/editor/connectorPresets";
 import type { ConnectorBinding, ConnectorPathShape } from "../packages/editor-core/src/types";
 
 const PATH_SHAPES: ConnectorPathShape[] = [
@@ -10,6 +14,7 @@ const PATH_SHAPES: ConnectorPathShape[] = [
   "step",
   "rounded-step",
   "arc",
+  "arch",
   "wave",
   "pulse",
   "circular",
@@ -101,14 +106,83 @@ describe("free connector geometry", () => {
   it("keeps rounded steps distinct and gives circular connectors a true arc", () => {
     const from = { x: 0, y: 0 };
     const to = { x: 240, y: 0 };
-    const roundedStep = buildConnectorGeometry(from, to, "rounded-step");
-    const roundedElbow = buildConnectorGeometry(from, to, "rounded-elbow");
+    const diagonalTo = { x: 240, y: -120 };
+    const roundedStep = buildConnectorGeometry(from, diagonalTo, "rounded-step");
+    const roundedElbow = buildConnectorGeometry(from, diagonalTo, "rounded-elbow");
     const circular = buildConnectorGeometry(from, to, "circular", 0.8);
 
     expect(roundedStep.pathData).toContain(" Q ");
     expect(roundedStep.pathData).not.toBe(roundedElbow.pathData);
     expect(circular.pathData).toContain(" A ");
     expect(Math.abs(circular.startAngle - circular.endAngle)).toBeGreaterThan(0.5);
+  });
+
+  it("matches the reference family sizes and builds every visible preset", () => {
+    expect(
+      Object.fromEntries(
+        Object.entries(CONNECTOR_PRESETS).map(([family, values]) => [family, values.length])
+      )
+    ).toEqual({
+      lines: 21,
+      arrows: 28,
+      inhibitor: 12,
+      dots: 4,
+      neurons: 10,
+      circular: 16,
+      brackets: 5
+    });
+
+    Object.values(CONNECTOR_PRESETS)
+      .flat()
+      .forEach((preset) => {
+        const { from, to } = connectorPreviewEndpoints(preset);
+        const geometry = buildConnectorGeometry(from, to, preset.pathShape, preset.curvature);
+        const binding: ConnectorBinding = {
+          fromObjectId: "",
+          fromAnchor: "center",
+          toObjectId: "",
+          toAnchor: "center",
+          startArrowhead: preset.startArrowhead,
+          endArrowhead: preset.endArrowhead,
+          lineStyle: preset.lineStyle,
+          pathShape: preset.pathShape,
+          routing: "direct",
+          curvature: preset.curvature ?? 0
+        };
+        const offset = preset.defaultOffset ?? { x: 220, y: 0 };
+        const object = createFreeConnectorObject(
+          { x: 0, y: 0 },
+          offset,
+          binding,
+          {
+            color: "#244947",
+            width: 5 * (preset.widthScale ?? 1),
+            opacity: preset.opacity ?? 1
+          }
+        );
+
+        expect(geometry.pathData, preset.label).not.toMatch(/NaN|Infinity/);
+        expect(object.toSVG(), preset.label).not.toMatch(/NaN|Infinity/);
+        expect(object.getObjects().length, preset.label).toBe(
+          1 +
+            Number(preset.startArrowhead !== "none") +
+            Number(preset.endArrowhead !== "none")
+        );
+      });
+  });
+
+  it("uses true one-bend and two-bend topology for elbow and step families", () => {
+    const from = { x: 0, y: 120 };
+    const to = { x: 240, y: 0 };
+    const elbow = buildConnectorGeometry(from, to, "elbow");
+    const step = buildConnectorGeometry(from, to, "step");
+    const roundedElbow = buildConnectorGeometry(from, to, "rounded-elbow");
+    const roundedStep = buildConnectorGeometry(from, to, "rounded-step");
+
+    expect(elbow.pathData.match(/ L /g)).toHaveLength(2);
+    expect(step.pathData.match(/ L /g)).toHaveLength(3);
+    expect(roundedElbow.pathData.match(/ Q /g)).toHaveLength(1);
+    expect(roundedStep.pathData.match(/ Q /g)).toHaveLength(2);
   });
 
   it("rotates triangle and neuron heads along their actual endpoint tangents", () => {

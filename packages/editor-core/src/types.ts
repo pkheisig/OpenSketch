@@ -96,6 +96,7 @@ export type ConnectorPathShape =
   | "step"
   | "rounded-step"
   | "arc"
+  | "arch"
   | "wave"
   | "pulse"
   | "circular"

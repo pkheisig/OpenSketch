@@ -1658,21 +1658,27 @@ export function EditorProvider({
     ) => {
       if (!canvas) return;
       const distance = requestedTo ? Math.hypot(requestedTo.x - from.x, requestedTo.y - from.y) : 0;
-      const verticalDefault = preset?.pathShape.startsWith("bracket-") ?? false;
-      const defaultTo = verticalDefault
-        ? {
-            x: from.x,
-            y:
-              from.y + 220 <= latestCanvasSettings.current.height
-                ? from.y + 220
-                : Math.max(0, from.y - 220)
-          }
+      const requestedOffset =
+        preset?.defaultOffset ??
+        (preset?.pathShape.startsWith("bracket-") ? { x: 0, y: 220 } : { x: 220, y: 0 });
+      const directDefault = {
+        x: from.x + requestedOffset.x,
+        y: from.y + requestedOffset.y
+      };
+      const defaultFits =
+        directDefault.x >= 0 &&
+        directDefault.x <= latestCanvasSettings.current.width &&
+        directDefault.y >= 0 &&
+        directDefault.y <= latestCanvasSettings.current.height;
+      const mirroredDefault = {
+        x: from.x - requestedOffset.x,
+        y: from.y - requestedOffset.y
+      };
+      const defaultTo = defaultFits
+        ? directDefault
         : {
-            x:
-              from.x + 220 <= latestCanvasSettings.current.width
-                ? from.x + 220
-                : Math.max(0, from.x - 220),
-            y: from.y
+            x: Math.max(0, Math.min(latestCanvasSettings.current.width, mirroredDefault.x)),
+            y: Math.max(0, Math.min(latestCanvasSettings.current.height, mirroredDefault.y))
           };
       const to =
         requestedTo && distance >= 4 / Math.max(latestZoom.current, 0.1) ? requestedTo : defaultTo;

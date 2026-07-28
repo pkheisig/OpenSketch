@@ -36,7 +36,8 @@ export function buildConnectorGeometry(
   const direction = bracket ? (curvature > 0 ? 1 : -1) : curvature < 0 ? -1 : 1;
   const amplitude = Math.min(46, length * 0.18) * direction;
   const bend =
-    (curvature || (["arc", "circular"].includes(pathShape) ? 0.3 : 0)) * Math.min(length, 280);
+    (curvature || (["arc", "arch", "circular"].includes(pathShape) ? 0.3 : 0)) *
+    Math.min(length, 280);
   const control = {
     x: (from.x + to.x) / 2 + normalX * bend,
     y: (from.y + to.y) / 2 + normalY * bend
@@ -49,62 +50,69 @@ export function buildConnectorGeometry(
   let endTangent = from;
 
   if (pathShape === "elbow") {
-    const first = point(0.46);
-    const second = point(0.46, amplitude);
-    const third = point(0.72, amplitude);
-    pathData = `M ${pointText(from)} L ${pointText(first)} L ${pointText(second)} L ${pointText(
-      third
-    )} L ${pointText(to)}`;
-    startTangent = first;
-    endTangent = third;
+    const corner = { x: from.x, y: to.y };
+    pathData = `M ${pointText(from)} L ${pointText(corner)} L ${pointText(to)}`;
+    startTangent = corner;
+    endTangent = corner;
   } else if (pathShape === "rounded-elbow") {
-    const first = point(0.4);
-    const corner = point(0.5, amplitude);
-    const last = point(0.72, amplitude);
-    const endControl = point(0.82, amplitude);
-    pathData = `M ${pointText(from)} L ${pointText(first)} Q ${pointText(
-      point(0.5)
-    )} ${pointText(corner)} L ${pointText(last)} Q ${pointText(endControl)} ${pointText(to)}`;
-    startTangent = first;
-    endTangent = endControl;
+    const corner = { x: from.x, y: to.y };
+    const radius = Math.min(Math.abs(dx), Math.abs(dy), length * 0.16);
+    if (radius < 0.5) {
+      pathData = `M ${pointText(from)} L ${pointText(to)}`;
+    } else {
+      const before = { x: corner.x, y: corner.y - Math.sign(dy) * radius };
+      const after = { x: corner.x + Math.sign(dx) * radius, y: corner.y };
+      pathData = `M ${pointText(from)} L ${pointText(before)} Q ${pointText(
+        corner
+      )} ${pointText(after)} L ${pointText(to)}`;
+      startTangent = before;
+      endTangent = after;
+    }
   } else if (pathShape === "step") {
-    const first = point(0.28);
-    const second = point(0.28, amplitude);
-    const third = point(0.72, amplitude);
-    const fourth = point(0.72);
+    const middleY = from.y + dy * 0.5;
+    const first = { x: from.x, y: middleY };
+    const second = { x: to.x, y: middleY };
     pathData = `M ${pointText(from)} L ${pointText(first)} L ${pointText(second)} L ${pointText(
-      third
-    )} L ${pointText(fourth)} L ${pointText(to)}`;
+      to
+    )}`;
     startTangent = first;
-    endTangent = fourth;
+    endTangent = second;
   } else if (pathShape === "rounded-step") {
-    const first = point(0.24);
-    const firstCorner = point(0.28);
-    const firstRise = point(0.28, amplitude * 0.18);
-    const firstTop = point(0.28, amplitude * 0.82);
-    const secondCorner = point(0.28, amplitude);
-    const secondTop = point(0.32, amplitude);
-    const thirdTop = point(0.68, amplitude);
-    const thirdCorner = point(0.72, amplitude);
-    const secondRise = point(0.72, amplitude * 0.82);
-    const secondBottom = point(0.72, amplitude * 0.18);
-    const fourthCorner = point(0.72);
-    const last = point(0.76);
-    pathData = `M ${pointText(from)} L ${pointText(first)} Q ${pointText(
-      firstCorner
-    )} ${pointText(firstRise)} L ${pointText(firstTop)} Q ${pointText(
-      secondCorner
-    )} ${pointText(secondTop)} L ${pointText(thirdTop)} Q ${pointText(
-      thirdCorner
-    )} ${pointText(secondRise)} L ${pointText(secondBottom)} Q ${pointText(
-      fourthCorner
-    )} ${pointText(last)} L ${pointText(to)}`;
-    startTangent = first;
-    endTangent = last;
+    const middleY = from.y + dy * 0.5;
+    const radius = Math.min(Math.abs(dx) * 0.16, Math.abs(dy) * 0.45, length * 0.12);
+    if (radius < 0.5) {
+      pathData = `M ${pointText(from)} L ${pointText(to)}`;
+    } else {
+      const xDirection = Math.sign(dx) || 1;
+      const yDirection = Math.sign(dy) || 1;
+      const firstBefore = { x: from.x, y: middleY - yDirection * radius };
+      const firstAfter = { x: from.x + xDirection * radius, y: middleY };
+      const secondBefore = { x: to.x - xDirection * radius, y: middleY };
+      const secondAfter = { x: to.x, y: middleY + yDirection * radius };
+      const firstCorner = { x: from.x, y: middleY };
+      const secondCorner = { x: to.x, y: middleY };
+      pathData = `M ${pointText(from)} L ${pointText(firstBefore)} Q ${pointText(
+        firstCorner
+      )} ${pointText(firstAfter)} L ${pointText(secondBefore)} Q ${pointText(
+        secondCorner
+      )} ${pointText(secondAfter)} L ${pointText(to)}`;
+      startTangent = firstBefore;
+      endTangent = secondAfter;
+    }
   } else if (pathShape === "arc") {
     pathData = `M ${pointText(from)} Q ${pointText(control)} ${pointText(to)}`;
     startTangent = control;
     endTangent = control;
+  } else if (pathShape === "arch") {
+    const archBend =
+      (curvature || -0.82) * Math.min(length, 280);
+    const archControl = {
+      x: (from.x + to.x) / 2 + normalX * archBend,
+      y: (from.y + to.y) / 2 + normalY * archBend
+    };
+    pathData = `M ${pointText(from)} Q ${pointText(archControl)} ${pointText(to)}`;
+    startTangent = archControl;
+    endTangent = archControl;
   } else if (pathShape === "circular") {
     const radius = length * 0.58;
     const sweep = curvature < 0 ? 0 : 1;

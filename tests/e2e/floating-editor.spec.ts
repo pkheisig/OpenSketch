@@ -17,23 +17,32 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   await lineMenu.getByRole("menuitem", { name: /^Lines/ }).hover();
   const lineGlyphs = await lineMenu
     .locator(".tool-flyout-secondary button svg")
-    .evaluateAll((icons) => icons.map((icon) => icon.innerHTML));
+    .evaluateAll((icons) => icons.map((icon) => icon.outerHTML));
+  await expect(lineMenu.locator(".connector-family-lines button")).toHaveCount(21);
   await lineMenu.getByRole("menuitem", { name: /Arrows/ }).hover();
-  await expect(lineMenu.getByRole("menuitem", { name: "Curved arrow" })).toBeVisible();
-  await expect(lineMenu.getByRole("menuitem", { name: "Dashed arrow" })).toBeVisible();
+  await expect(
+    lineMenu.getByRole("menuitem", { name: "Shallow curved arrow", exact: true })
+  ).toBeVisible();
+  await expect(
+    lineMenu.getByRole("menuitem", { name: "Dashed arrow", exact: true })
+  ).toBeVisible();
+  await expect(lineMenu.locator(".connector-family-arrows button")).toHaveCount(28);
   const arrowGlyphs = await lineMenu
     .locator(".tool-flyout-secondary button svg")
-    .evaluateAll((icons) => icons.map((icon) => icon.innerHTML));
+    .evaluateAll((icons) => icons.map((icon) => icon.outerHTML));
   const arrowGeometry = await lineMenu
-    .locator(".tool-flyout-secondary button svg > path")
-    .evaluateAll((paths) =>
-      paths.map((path) => ({
-        start: path.getAttribute("marker-start"),
-        end: path.getAttribute("marker-end")
+    .locator(".tool-flyout-secondary button")
+    .evaluateAll((buttons) =>
+      buttons.map((button) => ({
+        paths: button.querySelectorAll("svg > path").length,
+        transformedHeads: button.querySelectorAll('svg > path[transform*="rotate"]').length
       }))
     );
-  expect(arrowGeometry.every(({ end }) => end?.startsWith("url(#"))).toBe(true);
-  expect(arrowGeometry.filter(({ start }) => start?.startsWith("url(#")).length).toBeGreaterThan(1);
+  expect(arrowGeometry.every(({ paths }) => paths >= 2)).toBe(true);
+  expect(arrowGeometry.every(({ transformedHeads }) => transformedHeads >= 1)).toBe(true);
+  expect(arrowGeometry.filter(({ transformedHeads }) => transformedHeads > 1).length).toBeGreaterThan(
+    1
+  );
   await expect(lineMenu.locator(".tool-flyout-secondary button svg > circle")).toHaveCount(0);
   await lineMenu.getByRole("menuitem", { name: /Inhibitor/ }).hover();
   await expect(
@@ -65,11 +74,11 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   await expect(shapeMenu.getByRole("menuitem")).toHaveCount(9);
   const basicGlyphs = await shapeMenu
     .locator(".tool-flyout-secondary button svg")
-    .evaluateAll((icons) => icons.map((icon) => icon.innerHTML));
+    .evaluateAll((icons) => icons.map((icon) => icon.outerHTML));
   await shapeMenu.getByRole("menuitem", { name: /Polygons/ }).hover();
   const polygonGlyphs = await shapeMenu
     .locator(".tool-flyout-secondary button svg")
-    .evaluateAll((icons) => icons.map((icon) => icon.innerHTML));
+    .evaluateAll((icons) => icons.map((icon) => icon.outerHTML));
   expect(new Set([...basicGlyphs, ...polygonGlyphs]).size).toBe(
     basicGlyphs.length + polygonGlyphs.length
   );
@@ -198,6 +207,7 @@ test("creates every connector path and endpoint family with valid canvas geometr
     ["Lines", "Step line"],
     ["Lines", "Rounded step"],
     ["Lines", "Arc"],
+    ["Lines", "Arch"],
     ["Lines", "Wave"],
     ["Lines", "Pulse"],
     ["Arrows", "Open arrow"],
