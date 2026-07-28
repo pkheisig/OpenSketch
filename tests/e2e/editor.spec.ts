@@ -1725,11 +1725,33 @@ test("selects across the artboard and previews collapsed sidebars without shifti
   await page.mouse.down();
   await page.mouse.move(start.x + 12, start.y + 12);
   await expect(page.locator(".workspace-marquee")).toBeVisible();
-  await page.mouse.move(stage!.x + stage!.width / 2 + 120, stage!.y + stage!.height / 2 + 120, {
-    steps: 8
+  await page.mouse.move(stage!.x + stage!.width * 0.5, stage!.y + stage!.height * 0.7, {
+    steps: 4
   });
+  await expect(page.locator(".inspector-header h2")).toHaveText("rectangle");
+  await page.mouse.move(stage!.x + stage!.width * 0.8, stage!.y + stage!.height * 0.7, {
+    steps: 4
+  });
+  await expect(page.locator(".inspector-header")).toContainText("2 selected");
   await page.mouse.up();
   await expect(page.locator(".inspector-header")).toContainText("2 selected");
+
+  const insideStart = {
+    x: stage!.x + stage!.width * 0.1,
+    y: stage!.y + stage!.height * 0.2
+  };
+  await page.mouse.move(insideStart.x, insideStart.y);
+  await page.mouse.down();
+  await page.mouse.move(stage!.x + stage!.width * 0.5, stage!.y + stage!.height * 0.7, {
+    steps: 4
+  });
+  await expect(page.locator(".workspace-marquee")).toBeVisible();
+  await expect(page.locator(".inspector-header h2")).toHaveText("rectangle");
+  await page.mouse.move(stage!.x + stage!.width * 0.8, stage!.y + stage!.height * 0.7, {
+    steps: 4
+  });
+  await expect(page.locator(".inspector-header")).toContainText("2 selected");
+  await page.mouse.up();
 
   const sidebarMotion = await page.locator(".editor-grid").evaluate((element) => {
     const style = getComputedStyle(element);

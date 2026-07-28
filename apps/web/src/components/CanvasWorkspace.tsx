@@ -195,6 +195,8 @@ export function CanvasWorkspace() {
   const spacePressed = useRef(false);
   const panOrigin = useRef<{ x: number; y: number; left: number; top: number } | null>(null);
   const marqueeOrigin = useRef<{ x: number; y: number } | null>(null);
+  const marqueeSelection = useRef<FabricObject[]>([]);
+  const marqueeCanvasSelection = useRef<boolean | null>(null);
   const creationOrigin = useRef<{
     canvas: Point;
     workspace: Point;
@@ -528,6 +530,54 @@ export function CanvasWorkspace() {
     };
   };
 
+  const updateMarqueeSelection = (
+    selectionOrigin: { x: number; y: number },
+    clientX: number,
+    clientY: number
+  ) => {
+    if (!canvas) return;
+    const stage = stageRef.current?.getBoundingClientRect();
+    const left = Math.min(selectionOrigin.x, clientX);
+    const top = Math.min(selectionOrigin.y, clientY);
+    const right = Math.max(selectionOrigin.x, clientX);
+    const bottom = Math.max(selectionOrigin.y, clientY);
+    const selectionBounds = stage
+      ? {
+          left: (left - stage.left) / zoom,
+          top: (top - stage.top) / zoom,
+          right: (right - stage.left) / zoom,
+          bottom: (bottom - stage.top) / zoom
+        }
+      : null;
+    const selected =
+      selectionBounds && right - left >= 3 && bottom - top >= 3
+        ? canvas.getObjects().filter((object) => {
+            if (object.selectable === false || object.visible === false) return false;
+            const bounds = object.getBoundingRect();
+            return (
+              bounds.left < selectionBounds.right &&
+              bounds.left + bounds.width > selectionBounds.left &&
+              bounds.top < selectionBounds.bottom &&
+              bounds.top + bounds.height > selectionBounds.top
+            );
+          })
+        : [];
+    const previous = marqueeSelection.current;
+    if (
+      previous.length === selected.length &&
+      previous.every((object, index) => object === selected[index])
+    ) {
+      return;
+    }
+    canvas.discardActiveObject();
+    if (selected.length === 1) canvas.setActiveObject(selected[0]);
+    else if (selected.length > 1) {
+      canvas.setActiveObject(new ActiveSelection(selected, { canvas }));
+    }
+    marqueeSelection.current = selected;
+    canvas.requestRenderAll();
+  };
+
   const beginWorkspaceGesture = (event: PointerEvent<HTMLDivElement>) => {
     const host = scrollRef.current;
     if (!host) return;
@@ -563,13 +613,25 @@ export function CanvasWorkspace() {
       }
       return;
     }
-    if (event.button !== 0 || stageRef.current?.contains(event.target as Node) || !canvas) {
+    if (event.button !== 0 || !canvas) return;
+    const insideStage = stageRef.current?.contains(event.target as Node);
+    const scenePoint = canvas.getScenePoint(event.nativeEvent);
+    if (
+      insideStage &&
+      canvas.searchPossibleTargets(canvas.getObjects(), scenePoint).target
+    ) {
       return;
     }
-    event.preventDefault();
-    event.stopPropagation();
-    event.currentTarget.setPointerCapture(event.pointerId);
+    if (insideStage) {
+      marqueeCanvasSelection.current = canvas.selection;
+      canvas.selection = false;
+    } else {
+      event.preventDefault();
+      event.stopPropagation();
+      event.currentTarget.setPointerCapture(event.pointerId);
+    }
     marqueeOrigin.current = { x: event.clientX, y: event.clientY };
+    marqueeSelection.current = [];
     const point = workspacePoint(event.clientX, event.clientY);
     setMarquee({ left: point.x, top: point.y, width: 0, height: 0 });
     canvas.discardActiveObject();
@@ -593,6 +655,9 @@ export function CanvasWorkspace() {
     }
     const selectionOrigin = marqueeOrigin.current;
     if (!selectionOrigin) return;
+    if (!event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    }
     const first = workspacePoint(selectionOrigin.x, selectionOrigin.y);
     const current = workspacePoint(event.clientX, event.clientY);
     setMarquee({
@@ -601,6 +666,7 @@ export function CanvasWorkspace() {
       width: Math.abs(current.x - first.x),
       height: Math.abs(current.y - first.y)
     });
+    updateMarqueeSelection(selectionOrigin, event.clientX, event.clientY);
   };
 
   const endWorkspaceGesture = (event: PointerEvent<HTMLDivElement>) => {
@@ -617,36 +683,14 @@ export function CanvasWorkspace() {
     }
     const selectionOrigin = marqueeOrigin.current;
     if (selectionOrigin && canvas) {
-      const stage = stageRef.current?.getBoundingClientRect();
-      const left = Math.min(selectionOrigin.x, event.clientX);
-      const top = Math.min(selectionOrigin.y, event.clientY);
-      const right = Math.max(selectionOrigin.x, event.clientX);
-      const bottom = Math.max(selectionOrigin.y, event.clientY);
-      if (stage && right - left >= 3 && bottom - top >= 3) {
-        const selectionBounds = {
-          left: (left - stage.left) / zoom,
-          top: (top - stage.top) / zoom,
-          right: (right - stage.left) / zoom,
-          bottom: (bottom - stage.top) / zoom
-        };
-        const selected = canvas.getObjects().filter((object) => {
-          if (object.selectable === false || object.visible === false) return false;
-          const bounds = object.getBoundingRect();
-          return (
-            bounds.left < selectionBounds.right &&
-            bounds.left + bounds.width > selectionBounds.left &&
-            bounds.top < selectionBounds.bottom &&
-            bounds.top + bounds.height > selectionBounds.top
-          );
-        });
-        if (selected.length === 1) canvas.setActiveObject(selected[0]);
-        else if (selected.length > 1) {
-          canvas.setActiveObject(new ActiveSelection(selected, { canvas }));
-        }
-      }
-      canvas.requestRenderAll();
+      updateMarqueeSelection(selectionOrigin, event.clientX, event.clientY);
       marqueeOrigin.current = null;
+      marqueeSelection.current = [];
       setMarquee(null);
+    }
+    if (marqueeCanvasSelection.current !== null && canvas) {
+      canvas.selection = marqueeCanvasSelection.current;
+      marqueeCanvasSelection.current = null;
     }
     if (!panOrigin.current && !selectionOrigin) return;
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
