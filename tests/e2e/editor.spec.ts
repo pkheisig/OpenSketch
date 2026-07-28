@@ -22,6 +22,11 @@ async function artboardPoint(page: Page, xRatio = 0.5, yRatio = 0.5) {
   };
 }
 
+async function ensureLayersOpen(page: Page) {
+  const toggle = page.locator(".layers-title");
+  if ((await toggle.getAttribute("aria-expanded")) !== "true") await toggle.click();
+}
+
 async function placeTool(page: Page, name: string | RegExp, xRatio = 0.5, yRatio = 0.5) {
   if (name === "Text") {
     await page.getByRole("button", { name: "Text", exact: true }).click();
@@ -162,6 +167,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   await page.getByRole("button", { name: "Back to projects" }).click();
   await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
   await page.getByRole("button", { name: "Untitled figure" }).click();
+  await ensureLayersOpen(page);
   await expect(page.getByText("rectangle", { exact: true }).last()).toBeVisible();
   await expect(page.locator(".layers-title small")).toHaveText("3");
 
@@ -267,6 +273,7 @@ test("builds and persists a styled object-attached connector", async ({ page }) 
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
   await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await ensureLayersOpen(page);
   await page.locator(".layer-list button").filter({ hasText: "Connector" }).click();
   await expect(page.getByRole("combobox", { name: "Line style" })).toHaveAttribute(
     "data-value",
@@ -416,15 +423,17 @@ test("places text and shapes from active tools and persists line creation defaul
   await page.keyboard.type("Placed label");
   await page.keyboard.press("Escape");
   await expect(page.locator(".layers-title small")).toHaveText("6");
+  await ensureLayersOpen(page);
   await expect(page.locator(".layer-list button").filter({ hasText: "Text" })).toBeVisible();
   const textInspector = page.locator(".inspector-scroll");
-  await expect(textInspector.getByRole("combobox", { name: "Typeface" })).toHaveText(
-    /Source Serif 4/i
-  );
+  await expect(textInspector.getByRole("combobox", { name: "Font" })).toHaveText(/Source Serif 4/i);
   await expect(textInspector.getByLabel("Size", { exact: true })).toHaveValue("28");
   await expect(textInspector.getByRole("combobox", { name: "Weight" })).toHaveText(/Semibold/i);
   await expect(
-    textInspector.locator("label.color-field").filter({ hasText: "Fill" }).locator("input")
+    textInspector
+      .locator("label.color-field")
+      .filter({ hasText: "Fill" })
+      .locator('input[type="color"]')
   ).toHaveValue("#3157a4");
 });
 
@@ -448,6 +457,7 @@ test("places text from the first Shapes tool without blanking the editor", async
   await expect(pointText).toHaveAttribute("aria-pressed", "false");
   await expect(page.locator("main")).toBeVisible();
   await expect(page.getByLabel("OpenSketch figure artboard")).toBeVisible();
+  await ensureLayersOpen(page);
   await expect(page.locator(".layer-list button").filter({ hasText: "Text" })).toBeVisible();
   await expect(page.getByText("Figure title", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Section label", { exact: true })).toHaveCount(0);
@@ -467,11 +477,12 @@ test("optionally creates Text on an empty-artboard double-click and persists the
   const point = await artboardPoint(page, 0.68, 0.3);
   await page.mouse.dblclick(point.x, point.y);
   await expect(page.locator(".layers-title small")).toHaveText("1");
-  await expect(page.locator(".layer-list button").filter({ hasText: "Text" })).toBeVisible();
   const fabricTextarea = page.locator('textarea[data-fabric="textarea"]');
   await expect(fabricTextarea).toBeFocused();
   await expect(fabricTextarea).toHaveValue("Text");
   await page.keyboard.press("Escape");
+  await ensureLayersOpen(page);
+  await expect(page.locator(".layer-list button").filter({ hasText: "Text" })).toBeVisible();
 
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
@@ -627,6 +638,7 @@ test("previews bundled variants and inserts nested-clip-path assets", async ({ p
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
   await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await ensureLayersOpen(page);
   await page.locator(".layer-list button").filter({ hasText: "Immune Cell" }).click();
   await expect(
     page.locator(".inspector-embedded").getByRole("combobox", { name: "Immune Cell variant" })
@@ -768,8 +780,12 @@ test("offers selection-aware canvas context actions", async ({ page }) => {
   await groupMenu.getByRole("menuitem", { name: "Ungroup" }).click();
   await expect(page.locator(".layers-title small")).toHaveText("2");
 
+  await ensureLayersOpen(page);
   await page.locator(".layer-list > button").first().click();
-  const fill = page.locator("label.color-field").filter({ hasText: "Fill" }).locator("input");
+  const fill = page
+    .locator("label.color-field")
+    .filter({ hasText: "Fill" })
+    .locator('input[type="color"]');
   await fill.fill("#ff0000");
   await expect(fill).toHaveValue("#ff0000");
   const secondRectangle = await artboardPoint(page, 0.65, 0.5);
@@ -794,7 +810,10 @@ test("offers selection-aware canvas context actions", async ({ page }) => {
   await placeTool(page, "Text", 0.5, 0.25);
   await page.keyboard.type("Context label");
   await page.keyboard.press("Escape");
-  const textFill = page.locator("label.color-field").filter({ hasText: "Fill" }).locator("input");
+  const textFill = page
+    .locator("label.color-field")
+    .filter({ hasText: "Fill" })
+    .locator('input[type="color"]');
   await textFill.fill("#00ff00");
   await page.mouse.click(textPoint.x, textPoint.y, { button: "right" });
   const textMenu = page.getByRole("menu", { name: "Text actions" });
@@ -811,7 +830,10 @@ test("saves and resets per-element styling for future sidebar shapes", async ({ 
 
   const firstPoint = await artboardPoint(page, 0.35, 0.5);
   await placeTool(page, "Rectangle", 0.35, 0.5);
-  const fill = page.locator("label.color-field").filter({ hasText: "Fill" }).locator("input");
+  const fill = page
+    .locator("label.color-field")
+    .filter({ hasText: "Fill" })
+    .locator('input[type="color"]');
   await fill.fill("#ff0000");
   await page.mouse.click(firstPoint.x, firstPoint.y, { button: "right" });
   await page
@@ -869,6 +891,7 @@ test("ungroups exactly one level of a nested group hierarchy", async ({ page }) 
   await outerGroupMenu.getByRole("menuitem", { name: "Ungroup" }).click();
 
   await expect(page.locator(".layers-title small")).toHaveText("2");
+  await ensureLayersOpen(page);
   const innerGroupLayer = page
     .locator(".layer-list > button")
     .filter({ has: page.getByText("Group", { exact: true }) });
@@ -1062,6 +1085,7 @@ test("moves objects exactly one layer through the canvas context menu", async ({
   await placeTool(page, "Circle", 0.5, 0.5);
   await placeTool(page, "Triangle", 0.75, 0.5);
 
+  await ensureLayersOpen(page);
   const layerNames = page.locator(".layer-copy strong");
   await expect(layerNames).toHaveText(["triangle", "circle", "rectangle"]);
 
@@ -1592,7 +1616,10 @@ test("duplicates with modifier-drag and disables snapping while Alt is held", as
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
   await placeTool(page, "Rectangle", 0.65, 0.5);
-  const fill = page.locator("label.color-field").filter({ hasText: "Fill" }).locator("input");
+  const fill = page
+    .locator("label.color-field")
+    .filter({ hasText: "Fill" })
+    .locator('input[type="color"]');
   await fill.fill("#000000");
   await expect(page.locator(".layers-title small")).toHaveText("2");
 
@@ -1606,15 +1633,15 @@ test("duplicates with modifier-drag and disables snapping while Alt is held", as
   await page.mouse.down();
   await page.mouse.move(movedRectangle.x, movedRectangle.y, { steps: 8 });
   await expect(page.locator(".layers-title small")).toHaveText("3");
-  const opacity = page
-    .locator("label.range-field")
-    .filter({ hasText: "Opacity" })
+  const transparency = page
+    .locator("label.inspector-value-range")
+    .filter({ hasText: "Transparency" })
     .locator('input[type="range"]');
-  await expect(opacity).toHaveValue("0.35");
+  await expect(transparency).toHaveValue("65");
   await page.mouse.up();
   await page.keyboard.up("Control");
   await expect(page.locator(".layers-title small")).toHaveText("3");
-  await expect(opacity).toHaveValue("1");
+  await expect(transparency).toHaveValue("0");
 
   const redGuidePixels = () =>
     page.locator(".canvas-container").evaluate((container) => {
@@ -1672,6 +1699,7 @@ test("preserves an asset's rendered size when duplicating by modifier-drag", asy
     .poll(async () => Number(await dimensions.nth(1).inputValue()))
     .toBeCloseTo(originalHeight, 0);
 
+  await ensureLayersOpen(page);
   await page.locator(".layer-list > button").last().click();
   await expect
     .poll(async () => Number(await dimensions.nth(0).inputValue()))
@@ -2015,7 +2043,7 @@ test("uses title-free insert panels and supports the expanded offline font catal
   await expect(page.getByRole("tab", { name: "Text", exact: true })).toHaveCount(0);
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Text", 0.5, 0.5);
-  const typeface = page.locator(".inspector-embedded").getByRole("combobox", { name: "Typeface" });
+  const typeface = page.locator(".inspector-embedded").getByRole("combobox", { name: "Font" });
   await typeface.click();
   await expect(page.getByRole("option")).toHaveCount(13);
   for (const font of [
@@ -2213,12 +2241,14 @@ test("restores an asset's semantic identity when its exact parts are regrouped",
 
   await expect(page.locator(".inspector-header h2")).toHaveText("T Cell");
   await expect(page.getByText("Edit individual parts", { exact: true })).toHaveCount(0);
+  await ensureLayersOpen(page);
   await expect(page.locator(".layer-list > button").filter({ hasText: "T Cell" })).toHaveCount(1);
 
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("Canvas");
+  await ensureLayersOpen(page);
   await page.locator(".layer-list > button").filter({ hasText: "T Cell" }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("T Cell");
 });
@@ -2256,6 +2286,7 @@ test("applies profile-aware shade presets to grouped biological assets", async (
 
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
+  await ensureLayersOpen(page);
   await page.locator(".layer-list > button").filter({ hasText: "Cajal-Retzius Cell" }).click();
   await expect(page.getByRole("button", { name: "Apply Green preset" })).toHaveAttribute(
     "aria-pressed",
@@ -2451,6 +2482,7 @@ test("saves an inserted SVG before immediately leaving the editor", async ({ pag
   await page.getByRole("button", { name: "Untitled figure" }).click();
 
   await expect(page.locator(".layers-title small")).toHaveText("1");
+  await ensureLayersOpen(page);
   await expect(
     page.locator(".layer-list button").filter({ hasText: "Dendritic Cell" })
   ).toHaveCount(1);
@@ -2475,9 +2507,13 @@ test("drills into an SVG asset and persists an independently edited part", async
   });
 
   await expect(page.getByText("Inside Dendritic Cell", { exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Transform", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Appearance", exact: true })).toBeVisible();
-  const fill = page.locator("label.color-field").filter({ hasText: "Fill" }).locator("input");
+  const editTools = page.getByLabel("edit tools");
+  await expect(editTools.getByRole("button", { name: "Transform", exact: true })).toBeVisible();
+  await expect(editTools.getByRole("button", { name: "Shape", exact: true })).toBeVisible();
+  const fill = page
+    .locator("label.color-field")
+    .filter({ hasText: "Fill" })
+    .locator('input[type="color"]');
   await expect(fill).toBeVisible();
   await fill.fill("#00ff00");
   await page

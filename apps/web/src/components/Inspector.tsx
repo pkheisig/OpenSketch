@@ -48,6 +48,20 @@ function number(value: number | undefined, digits = 0) {
   return Number(value ?? 0).toFixed(digits);
 }
 
+const STYLE_PRESETS = [
+  { fill: "#dfe9f7", stroke: "#546b9e" },
+  { fill: "#dfe9f2", stroke: "#34658c" },
+  { fill: "#d8eef0", stroke: "#397982" },
+  { fill: "#d9efe8", stroke: "#286b5d" },
+  { fill: "#e6f4d8", stroke: "#397126" },
+  { fill: "#edf0d6", stroke: "#647f2a" },
+  { fill: "#f8edc9", stroke: "#aa8127" },
+  { fill: "#f6dfbd", stroke: "#a76f26" },
+  { fill: "#f2d6bd", stroke: "#985823" },
+  { fill: "#ead8ed", stroke: "#724080" },
+  { fill: "#f4dde3", stroke: "#98516a" }
+] as const;
+
 export function InspectorContent({ onClose }: { onClose?: () => void }) {
   const editor = useEditor();
   const selected = editor.selection[0];
@@ -183,6 +197,14 @@ function ObjectInspector({ object }: { object: FabricObject }) {
   const editor = useEditor();
   const [aspectLocked, setAspectLocked] = useState(true);
   const isText = object instanceof Text;
+  const isLineLike = [
+    "connector",
+    "line",
+    "curved-line",
+    "arrow",
+    "double-arrow",
+    "curved-arrow"
+  ].includes(object.OpenSketchType ?? "");
   const isSvgPart = object.OpenSketchType === "svg-part";
   const assetFamily =
     object instanceof FabricGroup && object.familyId
@@ -262,11 +284,268 @@ function ObjectInspector({ object }: { object: FabricObject }) {
           </button>
         </div>
       </InspectorSection>
+      <InspectorSection title="Style" open>
+        <div className="inspector-style-presets" aria-label="Style presets">
+          {STYLE_PRESETS.map((preset) => (
+            <button
+              key={`${preset.fill}-${preset.stroke}`}
+              style={{
+                background: isLineLike ? preset.stroke : preset.fill,
+                borderColor: preset.stroke
+              }}
+              aria-label={`Apply ${preset.stroke} style`}
+              onClick={() =>
+                editor.setObject(
+                  isLineLike
+                    ? { stroke: preset.stroke }
+                    : { fill: preset.fill, stroke: preset.stroke }
+                )
+              }
+            >
+              {isText ? "Aa" : null}
+            </button>
+          ))}
+        </div>
+        <label className="inspector-value-range">
+          <span>Transparency</span>
+          <input
+            className="compact-value"
+            type="number"
+            min="0"
+            max="100"
+            value={Math.round((1 - (object.opacity ?? 1)) * 100)}
+            onChange={(event) =>
+              editor.setObject({ opacity: 1 - Number(event.target.value) / 100 })
+            }
+          />
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={Math.round((1 - (object.opacity ?? 1)) * 100)}
+            onChange={(event) =>
+              editor.setObject({ opacity: 1 - Number(event.target.value) / 100 })
+            }
+          />
+        </label>
+      </InspectorSection>
+      {isLineLike ? (
+        <InspectorSection title="Line" open>
+          <label className="inspector-color-row color-field">
+            <span>Color</span>
+            <input
+              type="color"
+              value={normalizeHex(typeof object.stroke === "string" ? object.stroke : "#232323")}
+              onChange={(event) => editor.setObject({ stroke: event.target.value })}
+            />
+            <input
+              value={normalizeHex(typeof object.stroke === "string" ? object.stroke : "#232323")}
+              onChange={(event) => editor.setObject({ stroke: event.target.value })}
+              aria-label="Line color value"
+            />
+          </label>
+          <label className="inspector-value-range">
+            <span>Width</span>
+            <input
+              className="compact-value"
+              type="number"
+              min="0.25"
+              max="40"
+              step="0.25"
+              value={object.strokeWidth ?? 2}
+              onChange={(event) => editor.setObject({ strokeWidth: Number(event.target.value) })}
+            />
+            <input
+              type="range"
+              min="0.25"
+              max="20"
+              step="0.25"
+              value={object.strokeWidth ?? 2}
+              onChange={(event) => editor.setObject({ strokeWidth: Number(event.target.value) })}
+            />
+          </label>
+          <label className="inspector-value-range">
+            <span>Dash</span>
+            <input
+              className="compact-value"
+              type="number"
+              min="0"
+              max="40"
+              value={object.strokeDashArray?.[0] ?? 0}
+              onChange={(event) => {
+                const dash = Number(event.target.value);
+                editor.setObject({ strokeDashArray: dash > 0 ? [dash, dash] : null });
+              }}
+            />
+            <input
+              type="range"
+              min="0"
+              max="40"
+              value={object.strokeDashArray?.[0] ?? 0}
+              onChange={(event) => {
+                const dash = Number(event.target.value);
+                editor.setObject({ strokeDashArray: dash > 0 ? [dash, dash] : null });
+              }}
+            />
+          </label>
+          {object.connector ? (
+            <>
+              <ConnectorSelect
+                label="Line style"
+                value={object.connector.lineStyle}
+                values={["solid", "dashed", "dotted"]}
+                onChange={(lineStyle) => editor.updateConnector({ lineStyle })}
+              />
+              <ConnectorSelect
+                label="Routing"
+                value={object.connector.routing ?? "direct"}
+                values={["direct", "orthogonal"]}
+                onChange={(routing) => editor.updateConnector({ routing })}
+              />
+            </>
+          ) : null}
+        </InspectorSection>
+      ) : (
+        <InspectorSection title={isText ? "Text color" : "Shape"} open>
+          {typeof object.fill === "string" ? (
+            <label className="inspector-color-row color-field">
+              <span>Fill</span>
+              <input
+                type="color"
+                value={normalizeHex(object.fill)}
+                onChange={(event) => editor.setObject({ fill: event.target.value })}
+              />
+              <input
+                value={normalizeHex(object.fill)}
+                onChange={(event) => editor.setObject({ fill: event.target.value })}
+                aria-label="Fill color value"
+              />
+            </label>
+          ) : null}
+          <label className="inspector-color-row color-field">
+            <span>Stroke</span>
+            <input
+              type="color"
+              value={normalizeHex(typeof object.stroke === "string" ? object.stroke : "#13367a")}
+              onChange={(event) => editor.setObject({ stroke: event.target.value })}
+            />
+            <input
+              value={normalizeHex(typeof object.stroke === "string" ? object.stroke : "#13367a")}
+              onChange={(event) => editor.setObject({ stroke: event.target.value })}
+              aria-label="Stroke color value"
+            />
+          </label>
+          <label className="inspector-value-range">
+            <span>Border width</span>
+            <input
+              className="compact-value"
+              type="number"
+              min="0"
+              max="40"
+              step="0.25"
+              value={object.strokeWidth ?? 0}
+              onChange={(event) => editor.setObject({ strokeWidth: Number(event.target.value) })}
+            />
+            <input
+              type="range"
+              min="0"
+              max="20"
+              step="0.25"
+              value={object.strokeWidth ?? 0}
+              onChange={(event) => editor.setObject({ strokeWidth: Number(event.target.value) })}
+            />
+          </label>
+          <label className="inspector-value-range">
+            <span>Border dash</span>
+            <input
+              className="compact-value"
+              type="number"
+              min="0"
+              max="40"
+              value={object.strokeDashArray?.[0] ?? 0}
+              onChange={(event) => {
+                const dash = Number(event.target.value);
+                editor.setObject({ strokeDashArray: dash > 0 ? [dash, dash] : null });
+              }}
+            />
+            <input
+              type="range"
+              min="0"
+              max="40"
+              value={object.strokeDashArray?.[0] ?? 0}
+              onChange={(event) => {
+                const dash = Number(event.target.value);
+                editor.setObject({ strokeDashArray: dash > 0 ? [dash, dash] : null });
+              }}
+            />
+          </label>
+        </InspectorSection>
+      )}
+      {object.connector ? (
+        <InspectorSection title="Arrow" open>
+          <button
+            className="inspector-inline-action"
+            onClick={() =>
+              editor.updateConnector({
+                startArrowhead: object.connector!.endArrowhead,
+                endArrowhead: object.connector!.startArrowhead
+              })
+            }
+          >
+            <FlipHorizontal2 size={14} /> Flip start and end
+          </button>
+          <div className="field-row two">
+            <ConnectorSelect
+              label="Start head"
+              value={object.connector.startArrowhead}
+              values={["none", "triangle", "open", "circle", "open-circle", "bar", "neuron"]}
+              onChange={(startArrowhead) => editor.updateConnector({ startArrowhead })}
+            />
+            <ConnectorSelect
+              label="End head"
+              value={object.connector.endArrowhead}
+              values={["none", "triangle", "open", "circle", "open-circle", "bar", "neuron"]}
+              onChange={(endArrowhead) => editor.updateConnector({ endArrowhead })}
+            />
+          </div>
+          <div className="field-row two">
+            <ConnectorSelect
+              label="Start anchor"
+              value={object.connector.fromAnchor}
+              values={["top", "right", "bottom", "left", "center"]}
+              onChange={(fromAnchor) => editor.updateConnector({ fromAnchor })}
+            />
+            <ConnectorSelect
+              label="End anchor"
+              value={object.connector.toAnchor}
+              values={["top", "right", "bottom", "left", "center"]}
+              onChange={(toAnchor) => editor.updateConnector({ toAnchor })}
+            />
+          </div>
+          {(object.connector.routing ?? "direct") === "direct" ? (
+            <label className="range-field">
+              <span>
+                Curvature <output>{Math.round(object.connector.curvature * 100)}%</output>
+              </span>
+              <input
+                type="range"
+                min="-0.8"
+                max="0.8"
+                step="0.02"
+                value={object.connector.curvature}
+                onChange={(event) =>
+                  editor.updateConnector({ curvature: Number(event.target.value) })
+                }
+              />
+            </label>
+          ) : null}
+        </InspectorSection>
+      ) : null}
       {isText && (
-        <InspectorSection title="Typography" open>
+        <InspectorSection title="Text" open>
           <UiSelect
             className="field"
-            label="Typeface"
+            label="Font"
             value={object.fontFamily}
             options={TEXT_FONT_FAMILIES.map((font) => ({ value: font, label: font }))}
             onChange={(fontFamily) => editor.setObject({ fontFamily })}
@@ -344,156 +623,52 @@ function ObjectInspector({ object }: { object: FabricObject }) {
           </div>
         </InspectorSection>
       )}
-      {object.connector && (
-        <InspectorSection title="Connector" open>
-          <div className="field-row two">
-            <ConnectorSelect
-              label="Start anchor"
-              value={object.connector.fromAnchor}
-              values={["top", "right", "bottom", "left", "center"]}
-              onChange={(fromAnchor) => editor.updateConnector({ fromAnchor })}
-            />
-            <ConnectorSelect
-              label="End anchor"
-              value={object.connector.toAnchor}
-              values={["top", "right", "bottom", "left", "center"]}
-              onChange={(toAnchor) => editor.updateConnector({ toAnchor })}
-            />
-          </div>
-          <div className="field-row two">
-            <ConnectorSelect
-              label="Start head"
-              value={object.connector.startArrowhead}
-              values={["none", "triangle", "open", "circle", "open-circle", "bar", "neuron"]}
-              onChange={(startArrowhead) => editor.updateConnector({ startArrowhead })}
-            />
-            <ConnectorSelect
-              label="End head"
-              value={object.connector.endArrowhead}
-              values={["none", "triangle", "open", "circle", "open-circle", "bar", "neuron"]}
-              onChange={(endArrowhead) => editor.updateConnector({ endArrowhead })}
-            />
-          </div>
-          <ConnectorSelect
-            label="Line style"
-            value={object.connector.lineStyle}
-            values={["solid", "dashed", "dotted"]}
-            onChange={(lineStyle) => editor.updateConnector({ lineStyle })}
-          />
-          <ConnectorSelect
-            label="Routing"
-            value={object.connector.routing ?? "direct"}
-            values={["direct", "orthogonal"]}
-            onChange={(routing) => editor.updateConnector({ routing })}
-          />
-          {(object.connector.routing ?? "direct") === "direct" && (
-            <label className="range-field">
-              <span>
-                Curvature <output>{Math.round(object.connector.curvature * 100)}%</output>
-              </span>
-              <input
-                type="range"
-                min="-0.8"
-                max="0.8"
-                step="0.02"
-                value={object.connector.curvature}
-                onChange={(event) =>
-                  editor.updateConnector({ curvature: Number(event.target.value) })
-                }
+      {assetFamily ? (
+        <InspectorSection title="Asset colors" open>
+          {hasStoredVariants && assetFamily && object.assetId && (
+            <div className="color-presets asset-variants">
+              <div className="color-presets-title">
+                <span>Variants</span>
+              </div>
+              <AssetVariantPicker
+                family={assetFamily}
+                value={object.assetId}
+                onChange={(variantId) => {
+                  saveAssetVariantDefault(assetFamily.familyId, variantId);
+                  void editor.setAssetVariant(variantId);
+                }}
               />
-            </label>
+            </div>
+          )}
+          {!hasStoredVariants && colorProfile && (
+            <div className="color-presets">
+              <div className="color-presets-title">
+                <span>Color presets</span>
+                <button onClick={editor.resetColors}>Original</button>
+              </div>
+              <div className="color-preset-grid">
+                {ASSET_COLOR_PRESETS.map((preset) => (
+                  <button
+                    key={preset.id}
+                    className={object.assetColorPreset === preset.id ? "active" : ""}
+                    onClick={() => editor.applyColorPreset(preset.id)}
+                    aria-label={`Apply ${preset.label} preset`}
+                    aria-pressed={object.assetColorPreset === preset.id}
+                    title={preset.label}
+                  >
+                    <span className="color-preset-ramp" aria-hidden="true">
+                      {preset.ramps[colorProfile].map((color) => (
+                        <i key={color} style={{ background: color }} />
+                      ))}
+                    </span>
+                    <span>{preset.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           )}
         </InspectorSection>
-      )}
-      <InspectorSection title="Appearance" open>
-        <label className="range-field">
-          <span>
-            Opacity <output>{Math.round((object.opacity ?? 1) * 100)}%</output>
-          </span>
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            value={object.opacity ?? 1}
-            onChange={(event) => editor.setObject({ opacity: Number(event.target.value) })}
-          />
-        </label>
-        {hasStoredVariants && assetFamily && object.assetId && (
-          <div className="color-presets asset-variants">
-            <div className="color-presets-title">
-              <span>Variants</span>
-            </div>
-            <AssetVariantPicker
-              family={assetFamily}
-              value={object.assetId}
-              onChange={(variantId) => {
-                saveAssetVariantDefault(assetFamily.familyId, variantId);
-                void editor.setAssetVariant(variantId);
-              }}
-            />
-          </div>
-        )}
-        {!hasStoredVariants && colorProfile && (
-          <div className="color-presets">
-            <div className="color-presets-title">
-              <span>Color presets</span>
-              <button onClick={editor.resetColors}>Original</button>
-            </div>
-            <div className="color-preset-grid">
-              {ASSET_COLOR_PRESETS.map((preset) => (
-                <button
-                  key={preset.id}
-                  className={object.assetColorPreset === preset.id ? "active" : ""}
-                  onClick={() => editor.applyColorPreset(preset.id)}
-                  aria-label={`Apply ${preset.label} preset`}
-                  aria-pressed={object.assetColorPreset === preset.id}
-                  title={preset.label}
-                >
-                  <span className="color-preset-ramp" aria-hidden="true">
-                    {preset.ramps[colorProfile].map((color) => (
-                      <i key={color} style={{ background: color }} />
-                    ))}
-                  </span>
-                  <span>{preset.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-        {typeof object.fill === "string" && (
-          <label className="color-field">
-            Fill
-            <span>
-              <input
-                type="color"
-                value={normalizeHex(object.fill)}
-                onChange={(event) => editor.setObject({ fill: event.target.value })}
-              />
-              {object.fill}
-            </span>
-          </label>
-        )}
-        <div className="field-row two">
-          <label className="color-field mini">
-            Stroke
-            <span>
-              <input
-                type="color"
-                value={normalizeHex(typeof object.stroke === "string" ? object.stroke : "#000000")}
-                onChange={(event) => editor.setObject({ stroke: event.target.value })}
-              />
-            </span>
-          </label>
-          <NumberField
-            label="Weight"
-            value={object.strokeWidth ?? 0}
-            min={0}
-            max={40}
-            onChange={(strokeWidth) => editor.setObject({ strokeWidth })}
-          />
-        </div>
-      </InspectorSection>
+      ) : null}
       <InspectorSection title="Align & distribute">
         <div className="icon-grid alignment-grid">
           <button onClick={() => editor.align("left")} aria-label="Align left">
@@ -525,7 +700,7 @@ function ObjectInspector({ object }: { object: FabricObject }) {
           </button>
         </div>
       </InspectorSection>
-      <InspectorSection title="Object actions" open>
+      <InspectorSection title="Object actions">
         <div className="action-grid">
           <button onClick={() => void editor.duplicateSelection()}>
             <Copy size={15} /> Duplicate
@@ -587,11 +762,11 @@ function svgPartParent(object: FabricObject): FabricGroup | null {
 
 export function LayersPanel() {
   const editor = useEditor();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const objects = [...(editor.canvas?.getObjects() ?? [])].reverse();
   return (
     <section className="layers-panel">
-      <button className="layers-title" onClick={() => setOpen(!open)}>
+      <button className="layers-title" onClick={() => setOpen(!open)} aria-expanded={open}>
         <span>
           {open ? <ChevronDown size={15} /> : <ChevronRight size={15} />}
           <Layers3 size={15} /> Layers
@@ -655,7 +830,11 @@ function InspectorSection({
   const [open, setOpen] = useState(initial);
   return (
     <section className="inspector-section">
-      <button className="inspector-section-title" onClick={() => setOpen(!open)}>
+      <button
+        className="inspector-section-title"
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+      >
         {title}
         {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
       </button>

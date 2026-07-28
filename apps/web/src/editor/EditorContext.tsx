@@ -261,6 +261,7 @@ interface EditorContextValue {
   deleteSelection: () => void;
   duplicateSelection: () => Promise<void>;
   copySelectionToClipboard: (format?: SelectionClipboardFormat, cut?: boolean) => Promise<void>;
+  pasteSelection: () => Promise<void>;
   groupSelection: () => void;
   ungroupSelection: () => void;
   arrange: (action: "front" | "forward" | "backward" | "back") => void;
@@ -1979,6 +1980,32 @@ export function EditorProvider({
     [canvas, deleteSelection]
   );
 
+  const pasteSelection = useCallback(async () => {
+    if (!canvas || clipboard.current.length === 0) return;
+    const [clones, nextClipboard] = await Promise.all([
+      Promise.all(clipboard.current.map((object) => object.clone())),
+      Promise.all(clipboard.current.map((object) => object.clone()))
+    ]);
+    clones.forEach((clone) => {
+      clone.set({
+        left: (clone.left ?? 0) + 24,
+        top: (clone.top ?? 0) + 24
+      });
+      clone.objectId = crypto.randomUUID();
+      canvas.add(clone);
+    });
+    nextClipboard.forEach((clone) => {
+      clone.set({ left: (clone.left ?? 0) + 24, top: (clone.top ?? 0) + 24 });
+    });
+    clipboard.current = nextClipboard;
+    canvas.setActiveObject(
+      clones.length === 1 ? clones[0] : new ActiveSelection(clones, { canvas })
+    );
+    setSelection(clones);
+    canvas.requestRenderAll();
+    commit("Paste");
+  }, [canvas, commit]);
+
   const groupSelection = useCallback(() => {
     if (!canvas || !(canvas.getActiveObject() instanceof ActiveSelection)) return;
     const active = canvas.getActiveObject() as ActiveSelection;
@@ -2137,6 +2164,9 @@ export function EditorProvider({
                   ? properties.strokeWidth
                   : Math.max(1, properties.strokeWidth * 0.4)
               );
+            }
+            if (Array.isArray(properties.strokeDashArray) || properties.strokeDashArray === null) {
+              part.set("strokeDashArray", properties.strokeDashArray as number[] | null);
             }
           });
           object.dirty = true;
@@ -2524,31 +2554,6 @@ export function EditorProvider({
   );
 
   useEffect(() => {
-    const pasteSelection = async () => {
-      if (!canvas || clipboard.current.length === 0) return;
-      const [clones, nextClipboard] = await Promise.all([
-        Promise.all(clipboard.current.map((object) => object.clone())),
-        Promise.all(clipboard.current.map((object) => object.clone()))
-      ]);
-      clones.forEach((clone) => {
-        clone.set({
-          left: (clone.left ?? 0) + 24,
-          top: (clone.top ?? 0) + 24
-        });
-        clone.objectId = crypto.randomUUID();
-        canvas.add(clone);
-      });
-      nextClipboard.forEach((clone) => {
-        clone.set({ left: (clone.left ?? 0) + 24, top: (clone.top ?? 0) + 24 });
-      });
-      clipboard.current = nextClipboard;
-      canvas.setActiveObject(
-        clones.length === 1 ? clones[0] : new ActiveSelection(clones, { canvas })
-      );
-      setSelection(clones);
-      canvas.requestRenderAll();
-      commit("Paste");
-    };
     const onKeyDown = (event: KeyboardEvent) => {
       if (
         !canvas ||
@@ -2657,6 +2662,7 @@ export function EditorProvider({
     duplicateSelection,
     fitCanvas,
     groupSelection,
+    pasteSelection,
     redo,
     refreshConnectors,
     selectParentAsset,
@@ -2694,6 +2700,7 @@ export function EditorProvider({
       deleteSelection,
       duplicateSelection,
       copySelectionToClipboard,
+      pasteSelection,
       groupSelection,
       ungroupSelection,
       arrange,
@@ -2732,6 +2739,7 @@ export function EditorProvider({
       alignmentEnabled,
       commit,
       copySelectionToClipboard,
+      pasteSelection,
       deleteSelection,
       distribute,
       duplicateSelection,

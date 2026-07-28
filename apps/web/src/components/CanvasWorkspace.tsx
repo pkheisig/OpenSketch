@@ -13,12 +13,24 @@ import { createPortal } from "react-dom";
 import {
   ArrowDownToLine,
   ArrowUpToLine,
+  AlignCenter,
+  AlignHorizontalDistributeCenter,
+  AlignLeft,
+  AlignRight,
+  AlignVerticalDistributeCenter,
   ChevronDown,
+  Clipboard,
   Copy,
+  Crop,
+  EllipsisVertical,
   FileImage,
   FileType2,
+  FlipHorizontal2,
+  FlipVertical2,
   Grid3X3,
   Group as GroupIcon,
+  Layers3,
+  Lock,
   Maximize2,
   Minus,
   MoveDown,
@@ -27,12 +39,15 @@ import {
   Plus,
   Palette,
   RotateCcw,
+  RotateCw,
   Ruler,
   Save,
   Scaling,
   ScanLine,
+  Scissors,
   Trash2,
-  Ungroup
+  Ungroup,
+  Unlock
 } from "lucide-react";
 import { ActiveSelection, Group as FabricGroup, type FabricObject } from "fabric";
 import { assetManifest } from "@/assets/manifest";
@@ -59,6 +74,7 @@ interface ContextMenuAction {
   label: string;
   icon: ReactNode;
   action: () => void;
+  shortcut?: string;
   danger?: boolean;
   separatorBefore?: boolean;
 }
@@ -150,6 +166,7 @@ function CanvasContextMenu({
         >
           {item.icon}
           <span>{item.label}</span>
+          {item.shortcut ? <kbd>{item.shortcut}</kbd> : null}
         </button>
       ))}
     </div>,
@@ -229,6 +246,9 @@ export function CanvasWorkspace() {
     }
   });
   const [footerPanel, setFooterPanel] = useState<"size" | "color" | null>(null);
+  const [selectionMenu, setSelectionMenu] = useState<
+    "align" | "arrange" | "flip" | "transform" | "more" | null
+  >(null);
   const [panning, setPanning] = useState(false);
   const [marquee, setMarquee] = useState<{
     left: number;
@@ -249,6 +269,10 @@ export function CanvasWorkspace() {
   useEffect(() => {
     setCanvasElement(canvasRef.current);
   }, [setCanvasElement]);
+
+  useEffect(() => {
+    if (editor.selection.length === 0) setSelectionMenu(null);
+  }, [editor.selection.length]);
 
   const applyViewportFocus = useCallback(
     (focus: { x: number; y: number }) => {
@@ -772,18 +796,45 @@ export function CanvasWorkspace() {
     }
 
     const styleable = objects.length === 1 && Boolean(elementStyleKey(objects[0]));
-    const actions: ContextMenuAction[] = [];
+    const actions: ContextMenuAction[] = [
+      {
+        label: "Cut",
+        icon: <Scissors size={15} />,
+        action: () => void editor.copySelectionToClipboard("png", true),
+        shortcut: "Cmd/Ctrl X"
+      },
+      {
+        label: "Copy",
+        icon: <Copy size={15} />,
+        action: () => void editor.copySelectionToClipboard("png"),
+        shortcut: "Cmd/Ctrl C"
+      },
+      {
+        label: "Duplicate",
+        icon: <Copy size={15} />,
+        action: () => void editor.duplicateSelection(),
+        shortcut: "Cmd/Ctrl D"
+      },
+      {
+        label: "Paste",
+        icon: <Clipboard size={15} />,
+        action: () => void editor.pasteSelection(),
+        shortcut: "Cmd/Ctrl V"
+      }
+    ];
     if (objects.length > 1) {
       actions.push({
         label: "Group",
         icon: <GroupIcon size={15} />,
-        action: editor.groupSelection
+        action: editor.groupSelection,
+        separatorBefore: true
       });
     } else if (objects[0] instanceof FabricGroup) {
       actions.push({
         label: "Ungroup",
         icon: <Ungroup size={15} />,
-        action: editor.ungroupSelection
+        action: editor.ungroupSelection,
+        separatorBefore: true
       });
     }
     if (styleable) {
@@ -811,12 +862,6 @@ export function CanvasWorkspace() {
         label: "Copy as PNG",
         icon: <FileImage size={15} />,
         action: () => void editor.copySelectionToClipboard("png")
-      },
-      {
-        label: "Duplicate",
-        icon: <Copy size={15} />,
-        action: () => void editor.duplicateSelection(),
-        separatorBefore: true
       },
       {
         label: "Bring one up",
@@ -950,33 +995,230 @@ export function CanvasWorkspace() {
         </div>
       )}
       {editor.selection.length > 0 ? (
-        <div className="selection-quick-toolbar" role="toolbar" aria-label="Selection actions">
-          <button onClick={() => void editor.duplicateSelection()} aria-label="Duplicate selection">
-            <Copy size={15} />
-            <span>Duplicate</span>
-          </button>
-          {editor.selection.length > 1 ? (
-            <button onClick={editor.groupSelection} aria-label="Group selection">
-              <GroupIcon size={15} />
-              <span>Group</span>
+        <div className="selection-toolbar-shell">
+          <div className="selection-quick-toolbar" role="toolbar" aria-label="Selection actions">
+            <button
+              className={selectionMenu === "align" ? "active" : ""}
+              onClick={() => setSelectionMenu((current) => (current === "align" ? null : "align"))}
+              aria-expanded={selectionMenu === "align"}
+            >
+              <AlignLeft size={18} />
+              <span>Align</span>
             </button>
-          ) : editor.selection[0] instanceof FabricGroup ? (
-            <button onClick={editor.ungroupSelection} aria-label="Ungroup selection">
-              <Ungroup size={15} />
-              <span>Ungroup</span>
+            <button
+              onClick={
+                editor.selection.length > 1
+                  ? editor.groupSelection
+                  : editor.selection[0] instanceof FabricGroup
+                    ? editor.ungroupSelection
+                    : undefined
+              }
+              disabled={
+                editor.selection.length === 1 && !(editor.selection[0] instanceof FabricGroup)
+              }
+            >
+              {editor.selection.length === 1 && editor.selection[0] instanceof FabricGroup ? (
+                <Ungroup size={18} />
+              ) : (
+                <GroupIcon size={18} />
+              )}
+              <span>
+                {editor.selection.length === 1 && editor.selection[0] instanceof FabricGroup
+                  ? "Ungroup"
+                  : "Group"}
+              </span>
             </button>
+            <button
+              className={selectionMenu === "arrange" ? "active" : ""}
+              onClick={() =>
+                setSelectionMenu((current) => (current === "arrange" ? null : "arrange"))
+              }
+              aria-expanded={selectionMenu === "arrange"}
+            >
+              <Layers3 size={18} />
+              <span>Arrange</span>
+            </button>
+            <button
+              className={selectionMenu === "flip" ? "active" : ""}
+              onClick={() => setSelectionMenu((current) => (current === "flip" ? null : "flip"))}
+              aria-expanded={selectionMenu === "flip"}
+            >
+              <FlipHorizontal2 size={18} />
+              <span>Flip</span>
+            </button>
+            <button disabled title="Crop is available for imported raster images">
+              <Crop size={18} />
+              <span>Crop</span>
+            </button>
+            <button
+              className={selectionMenu === "transform" ? "active" : ""}
+              onClick={() =>
+                setSelectionMenu((current) => (current === "transform" ? null : "transform"))
+              }
+              aria-expanded={selectionMenu === "transform"}
+            >
+              <Scaling size={18} />
+              <span>Transform</span>
+            </button>
+            <button
+              onClick={() => {
+                const locked = editor.selection.every((object) => object.lockMovementX);
+                editor.setObject({
+                  lockMovementX: !locked,
+                  lockMovementY: !locked,
+                  lockScalingX: !locked,
+                  lockScalingY: !locked,
+                  lockRotation: !locked
+                });
+              }}
+            >
+              {editor.selection.every((object) => object.lockMovementX) ? (
+                <Unlock size={18} />
+              ) : (
+                <Lock size={18} />
+              )}
+              <span>
+                {editor.selection.every((object) => object.lockMovementX) ? "Unlock" : "Lock"}
+              </span>
+            </button>
+            <button
+              className={selectionMenu === "more" ? "active icon-only" : "icon-only"}
+              onClick={() => setSelectionMenu((current) => (current === "more" ? null : "more"))}
+              aria-label="More selection actions"
+              aria-expanded={selectionMenu === "more"}
+            >
+              <EllipsisVertical size={19} />
+            </button>
+          </div>
+          {selectionMenu ? (
+            <div className={`selection-toolbar-menu ${selectionMenu}`} role="menu">
+              {selectionMenu === "align" ? (
+                <>
+                  <button onClick={() => editor.align("left")}>
+                    <AlignLeft size={16} />
+                    Left
+                  </button>
+                  <button onClick={() => editor.align("center")}>
+                    <AlignCenter size={16} />
+                    Center
+                  </button>
+                  <button onClick={() => editor.align("right")}>
+                    <AlignRight size={16} />
+                    Right
+                  </button>
+                  <button onClick={() => editor.align("top")}>
+                    <ArrowUpToLine size={16} />
+                    Top
+                  </button>
+                  <button onClick={() => editor.align("middle")}>
+                    <AlignVerticalDistributeCenter size={16} />
+                    Middle
+                  </button>
+                  <button onClick={() => editor.align("bottom")}>
+                    <ArrowDownToLine size={16} />
+                    Bottom
+                  </button>
+                  <button onClick={() => editor.distribute("horizontal")}>
+                    <AlignHorizontalDistributeCenter size={16} />
+                    Distribute H
+                  </button>
+                  <button onClick={() => editor.distribute("vertical")}>
+                    <AlignVerticalDistributeCenter size={16} />
+                    Distribute V
+                  </button>
+                </>
+              ) : null}
+              {selectionMenu === "arrange" ? (
+                <>
+                  <button onClick={() => editor.arrange("front")}>
+                    <ArrowUpToLine size={16} />
+                    Bring to front
+                  </button>
+                  <button onClick={() => editor.arrange("forward")}>
+                    <MoveUp size={16} />
+                    Bring one up
+                  </button>
+                  <button onClick={() => editor.arrange("backward")}>
+                    <MoveDown size={16} />
+                    Send one down
+                  </button>
+                  <button onClick={() => editor.arrange("back")}>
+                    <ArrowDownToLine size={16} />
+                    Send to back
+                  </button>
+                </>
+              ) : null}
+              {selectionMenu === "flip" ? (
+                <>
+                  <button onClick={() => editor.flip("x")}>
+                    <FlipHorizontal2 size={16} />
+                    Horizontal
+                  </button>
+                  <button onClick={() => editor.flip("y")}>
+                    <FlipVertical2 size={16} />
+                    Vertical
+                  </button>
+                </>
+              ) : null}
+              {selectionMenu === "transform" ? (
+                <>
+                  <button onClick={() => editor.setObject({ angle: 0 })}>
+                    <RotateCcw size={16} />
+                    Reset rotation
+                  </button>
+                  <button
+                    onClick={() =>
+                      editor.setObject({ angle: (editor.selection[0]?.angle ?? 0) - 90 })
+                    }
+                  >
+                    <RotateCcw size={16} />
+                    Rotate left 90°
+                  </button>
+                  <button
+                    onClick={() =>
+                      editor.setObject({ angle: (editor.selection[0]?.angle ?? 0) + 90 })
+                    }
+                  >
+                    <RotateCw size={16} />
+                    Rotate right 90°
+                  </button>
+                  <button onClick={() => editor.setObject({ scaleX: 1, scaleY: 1 })}>
+                    <Scaling size={16} />
+                    Reset scale
+                  </button>
+                </>
+              ) : null}
+              {selectionMenu === "more" ? (
+                <>
+                  <button onClick={() => void editor.copySelectionToClipboard("png", true)}>
+                    <Scissors size={16} />
+                    <span>Cut</span>
+                    <kbd>Cmd/Ctrl X</kbd>
+                  </button>
+                  <button onClick={() => void editor.copySelectionToClipboard("png")}>
+                    <Copy size={16} />
+                    <span>Copy</span>
+                    <kbd>Cmd/Ctrl C</kbd>
+                  </button>
+                  <button onClick={() => void editor.duplicateSelection()}>
+                    <Copy size={16} />
+                    <span>Duplicate</span>
+                    <kbd>Cmd/Ctrl D</kbd>
+                  </button>
+                  <button onClick={() => void editor.pasteSelection()}>
+                    <Clipboard size={16} />
+                    <span>Paste</span>
+                    <kbd>Cmd/Ctrl V</kbd>
+                  </button>
+                  <button className="danger separator-before" onClick={editor.deleteSelection}>
+                    <Trash2 size={16} />
+                    <span>Delete</span>
+                    <kbd>Delete</kbd>
+                  </button>
+                </>
+              ) : null}
+            </div>
           ) : null}
-          <button onClick={() => editor.arrange("front")} aria-label="Bring to front">
-            <ArrowUpToLine size={15} />
-            <span>Front</span>
-          </button>
-          <button onClick={() => editor.arrange("back")} aria-label="Send to back">
-            <ArrowDownToLine size={15} />
-            <span>Back</span>
-          </button>
-          <button className="danger" onClick={editor.deleteSelection} aria-label="Delete selection">
-            <Trash2 size={15} />
-          </button>
         </div>
       ) : null}
       <div className="workspace-footer">

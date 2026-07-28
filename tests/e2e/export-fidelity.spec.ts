@@ -44,7 +44,10 @@ test("preserves editable color, gradients, clipping, fonts, and raster dimension
       y: artboardBounds!.height / 2 + 78 * (artboardBounds!.width / 1920)
     }
   });
-  const fill = page.locator("label.color-field").filter({ hasText: "Fill" }).locator("input");
+  const fill = page
+    .locator("label.color-field")
+    .filter({ hasText: "Fill" })
+    .locator('input[type="color"]');
   await expect(fill).toBeVisible();
   const originalColor = await fill.inputValue();
   const replacement = originalColor.toLowerCase() === "#c2185b" ? "#00796b" : "#c2185b";

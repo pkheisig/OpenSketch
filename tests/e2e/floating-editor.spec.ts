@@ -71,7 +71,28 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
 
   await expect(page.locator(".inspector-embedded")).toBeVisible();
   await expect(page.locator(".selection-quick-toolbar")).toBeVisible();
-  await expect(page.getByRole("toolbar", { name: "Selection actions" })).toContainText("Duplicate");
+  const selectionToolbar = page.getByRole("toolbar", { name: "Selection actions" });
+  await expect(selectionToolbar).toContainText("Align");
+  await expect(selectionToolbar).toContainText("Arrange");
+  await expect(selectionToolbar).toContainText("Flip");
+  await expect(selectionToolbar).toContainText("Transform");
+  await expect(selectionToolbar).toContainText("Lock");
+  await expect(page.locator(".layers-title")).toHaveAttribute("aria-expanded", "false");
+  await expect(page.getByRole("button", { name: "Object actions" })).toHaveAttribute(
+    "aria-expanded",
+    "false"
+  );
+  await selectionToolbar.getByRole("button", { name: "More selection actions" }).click();
+  await expect(page.locator(".selection-toolbar-menu.more")).toContainText("Duplicate");
+  await expect(page.locator(".selection-toolbar-menu.more")).toContainText("Cmd/Ctrl C");
+  await expect(page.getByRole("button", { name: "Style", exact: true })).toHaveAttribute(
+    "aria-expanded",
+    "true"
+  );
+  await expect(page.getByRole("button", { name: "Shape" })).toHaveAttribute(
+    "aria-expanded",
+    "true"
+  );
   await expect(page.locator(".workspace-controls")).toBeVisible();
   await expect(page.locator(".top-toolbar").getByRole("button", { name: "Zoom in" })).toHaveCount(
     0
