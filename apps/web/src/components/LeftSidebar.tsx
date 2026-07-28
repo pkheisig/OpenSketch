@@ -30,7 +30,7 @@ import {
 import { Group, StaticCanvas, util, type FabricObject } from "fabric";
 import { ASSET_CATEGORIES, assetManifest } from "@/assets/manifest";
 import { useEditor } from "@/editor/EditorContext";
-import { buildConnectorGeometry } from "@/editor/connectorGeometry";
+import { buildConnectorGeometry, connectorStrokeLineCap } from "@/editor/connectorGeometry";
 import {
   CONNECTOR_FAMILIES,
   CONNECTOR_PRESETS,
@@ -90,7 +90,7 @@ function ConnectorPresetIcon({ value }: { value: ConnectorPreset }) {
     fill: "none",
     stroke: "currentColor",
     strokeWidth: 1.8 * Math.min(value.widthScale ?? 1, 1.45),
-    strokeLinecap: "round" as const,
+    strokeLinecap: connectorStrokeLineCap(value.startArrowhead, value.endArrowhead),
     strokeLinejoin: "round" as const
   };
   const dash =

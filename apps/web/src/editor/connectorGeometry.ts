@@ -1,4 +1,4 @@
-import type { ConnectorPathShape } from "@workspace/editor-core";
+import type { ConnectorArrowhead, ConnectorPathShape } from "@workspace/editor-core";
 import type { Point } from "./geometry";
 
 export interface ConnectorGeometry {
@@ -11,6 +11,17 @@ export interface ConnectorGeometry {
 
 const angleFrom = (from: Point, to: Point) => Math.atan2(to.y - from.y, to.x - from.x);
 const pointText = (point: Point) => `${point.x} ${point.y}`;
+
+/**
+ * A round centerline cap projects beyond its endpoint. That is correct for a
+ * bare line, but creates a visible nose past triangle/open/bar arrowheads.
+ */
+export function connectorStrokeLineCap(
+  startArrowhead: ConnectorArrowhead,
+  endArrowhead: ConnectorArrowhead
+): "round" | "butt" {
+  return startArrowhead === "none" && endArrowhead === "none" ? "round" : "butt";
+}
 
 /**
  * Produces the single source of truth for connector paths and endpoint

@@ -69,6 +69,10 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   expect(arrowGeometry.filter(({ transformedHeads }) => transformedHeads > 1).length).toBeGreaterThan(
     1
   );
+  const arrowCenterlineCaps = await lineMenu
+    .locator(".connector-family-arrows button svg > g > path:first-child")
+    .evaluateAll((paths) => paths.map((path) => path.getAttribute("stroke-linecap")));
+  expect(arrowCenterlineCaps.every((lineCap) => lineCap === "butt")).toBe(true);
   await expect(lineMenu.locator(".tool-flyout-secondary button svg circle")).toHaveCount(0);
   await lineMenu.getByRole("menuitem", { name: /Inhibitor/ }).hover();
   await expect(
@@ -158,10 +162,7 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   await selectionToolbar.getByRole("button", { name: "More selection actions" }).click();
   await expect(page.locator(".selection-toolbar-menu.more")).toContainText("Duplicate");
   await expect(page.locator(".selection-toolbar-menu.more")).toContainText("Cmd/Ctrl C");
-  await expect(page.getByRole("button", { name: "Style", exact: true })).toHaveAttribute(
-    "aria-expanded",
-    "true"
-  );
+  await expect(page.getByRole("button", { name: "Style", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Shape" })).toHaveAttribute(
     "aria-expanded",
     "true"

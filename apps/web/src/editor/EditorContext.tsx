@@ -46,6 +46,7 @@ import {
   createConnectorObject,
   createFreeConnectorObject
 } from "@/editor/connectors";
+import { connectorStrokeLineCap } from "@/editor/connectorGeometry";
 import {
   ASSET_COLOR_PRESETS,
   colorProfileForFamily,
@@ -369,6 +370,16 @@ function configureNestedSelection(object: FabricObject): void {
 function configureCanvasAssets(objects: FabricObject[]): void {
   objects.forEach((object) => {
     if (object.OpenSketchType === "upload") object.OpenSketchType = "import";
+    if (object.connector && object instanceof Group) {
+      const centerline = object.getObjects()[0];
+      centerline?.set({
+        strokeLineCap: connectorStrokeLineCap(
+          object.connector.startArrowhead,
+          object.connector.endArrowhead
+        )
+      });
+      object.dirty = true;
+    }
     if (
       object.OpenSketchType === "nih-asset" ||
       object.OpenSketchType === "import" ||

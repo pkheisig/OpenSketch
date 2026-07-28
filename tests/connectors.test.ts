@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { createFreeConnectorObject, routeOrthogonal } from "../apps/web/src/editor/connectors";
-import { buildConnectorGeometry } from "../apps/web/src/editor/connectorGeometry";
+import {
+  buildConnectorGeometry,
+  connectorStrokeLineCap
+} from "../apps/web/src/editor/connectorGeometry";
 import {
   CONNECTOR_PRESETS,
   connectorPreviewEndpoints
@@ -163,6 +166,9 @@ describe("free connector geometry", () => {
 
         expect(geometry.pathData, preset.label).not.toMatch(/NaN|Infinity/);
         expect(object.toSVG(), preset.label).not.toMatch(/NaN|Infinity/);
+        expect(object.getObjects()[0].strokeLineCap, preset.label).toBe(
+          connectorStrokeLineCap(preset.startArrowhead, preset.endArrowhead)
+        );
         expect(object.getObjects().length, preset.label).toBe(
           1 +
             Number(preset.startArrowhead !== "none") +

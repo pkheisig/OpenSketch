@@ -16,7 +16,7 @@ import type {
   ConnectorPathShape
 } from "@workspace/editor-core";
 import type { Bounds, Point } from "./geometry";
-import { buildConnectorGeometry } from "./connectorGeometry";
+import { buildConnectorGeometry, connectorStrokeLineCap } from "./connectorGeometry";
 
 export interface ConnectorAppearance {
   color: string;
@@ -312,7 +312,10 @@ function connectorPath(
       fill: "",
       stroke: appearance.color,
       strokeWidth: appearance.width,
-      strokeLineCap: "round",
+      strokeLineCap: connectorStrokeLineCap(
+        binding.startArrowhead,
+        binding.endArrowhead
+      ),
       strokeLineJoin: "round",
       strokeDashArray: dashFor(binding.lineStyle, appearance.width),
       selectable: false,
@@ -333,7 +336,10 @@ function connectorPath(
     fill: "",
     stroke: appearance.color,
     strokeWidth: appearance.width,
-    strokeLineCap: "round",
+    strokeLineCap: connectorStrokeLineCap(
+      binding.startArrowhead,
+      binding.endArrowhead
+    ),
     strokeLineJoin: "round",
     strokeDashArray: dashFor(binding.lineStyle, appearance.width),
     selectable: false,
