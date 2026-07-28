@@ -385,22 +385,36 @@ function assignFreshCloneIds(object: FabricObject): void {
   if (object instanceof Group) object.getObjects().forEach(assignFreshCloneIds);
 }
 
-function deepHitObjects(canvas: Canvas, point: FabricPoint): FabricObject[] {
-  const hits: FabricObject[] = [];
-  const visit = (objects: FabricObject[]) => {
-    [...objects].reverse().forEach((object) => {
-      if (object.visible === false || object.selectable === false) return;
-      const hit = canvas.searchPossibleTargets([object], point);
-      if (!hit.target) return;
-      if (object instanceof Group && !(object instanceof ActiveSelection)) {
-        visit(object.getObjects());
-      } else {
-        hits.push(object);
-      }
-    });
-  };
-  visit(canvas.getObjects());
-  return hits;
+function hitObjectsAtLevel(
+  canvas: Canvas,
+  objects: FabricObject[],
+  point: FabricPoint
+): FabricObject[] {
+  return [...objects].reverse().filter((object) => {
+    if (object.visible === false || object.selectable === false) return false;
+    return Boolean(canvas.searchPossibleTargets([object], point).target);
+  });
+}
+
+function deepHitObjects(
+  canvas: Canvas,
+  point: FabricPoint,
+  activeObject?: FabricObject
+): FabricObject[] {
+  const topLevelHits = hitObjectsAtLevel(canvas, canvas.getObjects(), point);
+  if (!activeObject || activeObject instanceof ActiveSelection) return topLevelHits;
+
+  if (activeObject instanceof Group) {
+    const childHits = hitObjectsAtLevel(canvas, activeObject.getObjects(), point);
+    if (childHits.length > 0) return childHits;
+  }
+
+  const parent = activeObject.group;
+  if (parent instanceof Group && !(parent instanceof ActiveSelection)) {
+    const siblingHits = hitObjectsAtLevel(canvas, parent.getObjects(), point);
+    if (siblingHits.length > 0) return siblingHits;
+  }
+  return topLevelHits;
 }
 
 function refreshParentGroups(object: FabricObject | undefined): void {
@@ -675,10 +689,23 @@ export function EditorProvider({
     | undefined
   >(undefined);
   const deepSelectionStackOverride = useRef(false);
+  const nestedDrag = useRef<
+    | {
+        target: FabricObject;
+        parent: Group;
+        startPointer: FabricPoint;
+        startLeft: number;
+        startTop: number;
+        lastLeft: number;
+        lastTop: number;
+      }
+    | undefined
+  >(undefined);
   const dragDuplicate = useRef<
     | {
         target: FabricObject;
         sources: FabricObject[];
+        sourceTransforms: ReturnType<FabricObject["calcTransformMatrix"]>[];
         parent?: Group;
         clones: Promise<FabricObject[]>;
         activated: boolean;
@@ -912,21 +939,21 @@ export function EditorProvider({
     };
     const selectDeeperObject = ({ scenePoint }: { scenePoint?: FabricPoint }) => {
       if (!scenePoint) return;
-      const hitObjects = deepHitObjects(canvas, scenePoint);
+      const previousCycle = deepSelectionCycle.current;
+      const activeObject = canvas.getActiveObject();
+      const samePoint =
+        previousCycle &&
+        Math.hypot(previousCycle.point.x - scenePoint.x, previousCycle.point.y - scenePoint.y) <=
+          4 / Math.max(latestZoom.current, 0.1);
+      const cycleFrom = samePoint ? previousCycle.selected : activeObject;
+      const hitObjects = deepHitObjects(canvas, scenePoint, cycleFrom);
       if (hitObjects.length === 0) {
         if (latestCanvasSettings.current.doubleClickCreatesText) {
           createPointText.current(scenePoint);
         }
         return;
       }
-      const previousCycle = deepSelectionCycle.current;
-      const samePoint =
-        previousCycle &&
-        Math.hypot(previousCycle.point.x - scenePoint.x, previousCycle.point.y - scenePoint.y) <=
-          4 / Math.max(latestZoom.current, 0.1) &&
-        hitObjects.includes(previousCycle.selected);
-      const activeObject = samePoint ? previousCycle.selected : canvas.getActiveObject();
-      const selected = nextDeepSelection(activeObject, hitObjects);
+      const selected = nextDeepSelection(cycleFrom, hitObjects);
       if (!selected) return;
       configureSelectionControls(selected, latestZoom.current);
       canvas.setActiveObject(selected);
@@ -953,6 +980,18 @@ export function EditorProvider({
       // just long enough for Fabric to initialize its drag transform.
       canvas.preserveObjectStacking = false;
       deepSelectionStackOverride.current = true;
+      const parent = activeObject.group;
+      if (parent instanceof Group && !(parent instanceof ActiveSelection)) {
+        nestedDrag.current = {
+          target: activeObject,
+          parent,
+          startPointer: scenePoint,
+          startLeft: activeObject.left ?? 0,
+          startTop: activeObject.top ?? 0,
+          lastLeft: activeObject.left ?? 0,
+          lastTop: activeObject.top ?? 0
+        };
+      }
     };
     const restoreObjectStacking = () => {
       if (!deepSelectionStackOverride.current) return;
@@ -986,6 +1025,7 @@ export function EditorProvider({
       dragDuplicate.current = {
         target,
         sources,
+        sourceTransforms: sources.map((source) => source.calcTransformMatrix()),
         parent,
         clones: Promise.all(sources.map((source) => source.clone())),
         activated: false
@@ -995,12 +1035,17 @@ export function EditorProvider({
       const session = dragDuplicate.current;
       if (!session || session.target !== target || session.activated) return;
       session.activated = true;
-      session.pendingAdd = session.clones.then((clones) => {
+    };
+    const addDragDuplicate = (
+      session: NonNullable<typeof dragDuplicate.current>
+    ): Promise<void> =>
+      session.clones.then((clones) => {
         clones.forEach((clone, index) => {
           assignFreshCloneIds(clone);
           const source = session.sources[index];
           clone.name = `${source.name ?? "Object"} copy`;
           if (session.parent) {
+            util.applyTransformToObject(clone, session.sourceTransforms[index]);
             const sourceIndex = session.parent.getObjects().indexOf(source);
             session.parent.insertAt(Math.max(sourceIndex, 0), clone);
           } else {
@@ -1015,9 +1060,19 @@ export function EditorProvider({
         configureCanvasAssets(clones);
         canvas.requestRenderAll();
       });
-    };
     const modified = ({ target }: { target?: FabricObject } = {}) => {
       const changed = target ?? canvas.getActiveObject();
+      const nestedSession =
+        changed && nestedDrag.current?.target === changed
+          ? nestedDrag.current
+          : undefined;
+      if (changed && nestedSession) {
+        changed.set({
+          left: nestedSession.lastLeft,
+          top: nestedSession.lastTop
+        });
+        changed.setCoords();
+      }
       const duplicateSession =
         changed && dragDuplicate.current?.target === changed && dragDuplicate.current.activated
           ? dragDuplicate.current
@@ -1051,6 +1106,9 @@ export function EditorProvider({
           .load(`${weight} ${changed.fontSize ?? 54}px "${family}"`)
           .then(finish, finish);
       };
+      if (duplicateSession && !duplicateSession.pendingAdd) {
+        duplicateSession.pendingAdd = addDragDuplicate(duplicateSession);
+      }
       if (duplicateSession?.pendingAdd) {
         void duplicateSession.pendingAdd.then(finishAfterFonts, finishAfterFonts);
       } else {
@@ -1067,8 +1125,37 @@ export function EditorProvider({
       e?: MouseEvent | PointerEvent | TouchEvent;
     }) => {
       if (!target?.objectId) return;
+      const nestedSession =
+        nestedDrag.current?.target === target ? nestedDrag.current : undefined;
+      const rememberNestedPosition = () => {
+        if (!nestedSession) return;
+        nestedSession.lastLeft = target.left ?? nestedSession.lastLeft;
+        nestedSession.lastTop = target.top ?? nestedSession.lastTop;
+      };
+      if (nestedSession && scenePoint) {
+        const parentInverse = util.invertTransform(
+          nestedSession.parent.calcTransformMatrix()
+        );
+        const localStart = util.transformPoint(
+          nestedSession.startPointer,
+          parentInverse
+        );
+        const localCurrent = util.transformPoint(
+          new FabricPoint(scenePoint.x, scenePoint.y),
+          parentInverse
+        );
+        target.set({
+          left: nestedSession.startLeft + localCurrent.x - localStart.x,
+          top: nestedSession.startTop + localCurrent.y - localStart.y
+        });
+        target.setCoords();
+        nestedSession.parent.dirty = true;
+      }
       activateDragDuplicate(target);
-      if (target.connector) return;
+      if (target.connector) {
+        rememberNestedPosition();
+        return;
+      }
       if (snapSession.current.target !== target) {
         snapSession.current = { target };
       }
@@ -1077,6 +1164,7 @@ export function EditorProvider({
         guides.current = {};
         refreshConnectors(target.objectId);
         canvas.requestRenderAll();
+        rememberNestedPosition();
         return;
       }
       const zoom = Math.max(latestZoom.current, 0.1);
@@ -1131,6 +1219,7 @@ export function EditorProvider({
       };
       refreshConnectors(target.objectId);
       canvas.requestRenderAll();
+      rememberNestedPosition();
     };
     const transform = ({ target }: { target?: FabricObject }) => {
       if (target?.objectId) refreshConnectors(target.objectId);
@@ -1143,6 +1232,7 @@ export function EditorProvider({
     };
     const finishDragGesture = () => {
       dragDuplicate.current = undefined;
+      nestedDrag.current = undefined;
     };
     const drawGuides = ({ ctx: context }: { ctx: CanvasRenderingContext2D }) => {
       const { vertical, horizontal } = guides.current;

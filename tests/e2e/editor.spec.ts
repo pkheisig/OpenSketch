@@ -896,6 +896,95 @@ test("double-clicks through overlapping objects and into grouped children", asyn
   await expect(page.locator(".inspector-header h2")).toHaveText("rectangle");
 });
 
+test("double-clicks into nested groups one hierarchy level at a time", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  await placeTool(page, "Rectangle", 0.4, 0.5);
+  await placeTool(page, "Circle", 0.4, 0.5);
+  await page.keyboard.press("ControlOrMeta+A");
+  await page.getByRole("button", { name: "Group", exact: true }).click();
+
+  const widthField = page.locator(".inspector-scroll").getByLabel("W", { exact: true });
+  const innerGroupWidth = Number(await widthField.inputValue());
+  await placeTool(page, "Triangle", 0.7, 0.5);
+  await page.keyboard.press("ControlOrMeta+A");
+  await page.getByRole("button", { name: "Group", exact: true }).click();
+  await expect(page.locator(".inspector-header h2")).toHaveText("Group");
+
+  const nestedGroupPoint = await artboardPoint(page, 0.4, 0.5);
+  await page.mouse.dblclick(nestedGroupPoint.x, nestedGroupPoint.y);
+  await expect(page.locator(".inspector-header h2")).toHaveText("Group");
+  await expect
+    .poll(async () => Number(await widthField.inputValue()))
+    .toBeCloseTo(innerGroupWidth, 0);
+
+  await page.mouse.dblclick(nestedGroupPoint.x, nestedGroupPoint.y);
+  await expect(page.locator(".inspector-header h2")).not.toHaveText("Group");
+});
+
+test("preserves nested group dimensions when duplicating by modifier-drag", async ({
+  page
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  await placeTool(page, "Rectangle", 0.4, 0.5);
+  await placeTool(page, "Circle", 0.4, 0.5);
+  await page.keyboard.press("ControlOrMeta+A");
+  await page.getByRole("button", { name: "Group", exact: true }).click();
+
+  const widthField = page.locator(".inspector-scroll").getByLabel("W", { exact: true });
+  const innerGroupWidth = Number(await widthField.inputValue());
+  await placeTool(page, "Triangle", 0.7, 0.5);
+  await page.keyboard.press("ControlOrMeta+A");
+  await page.getByRole("button", { name: "Group", exact: true }).click();
+
+  const nestedGroupPoint = await artboardPoint(page, 0.4, 0.5);
+  await page.mouse.dblclick(nestedGroupPoint.x, nestedGroupPoint.y);
+  await expect(page.locator(".inspector-header h2")).toHaveText("Group");
+  await page.mouse.move(nestedGroupPoint.x, nestedGroupPoint.y);
+  await page.keyboard.down("Control");
+  await page.mouse.down();
+  await page.mouse.move(nestedGroupPoint.x + 220, nestedGroupPoint.y - 100, { steps: 10 });
+  await page.mouse.up();
+  await page.keyboard.up("Control");
+  await expect
+    .poll(async () => Number(await widthField.inputValue()))
+    .toBeCloseTo(innerGroupWidth, 0);
+
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  const nestedGroupWidths = await page.evaluate(
+    () =>
+      new Promise<number[]>((resolve, reject) => {
+        const open = indexedDB.open("OpenSketch");
+        open.onerror = () => reject(open.error);
+        open.onsuccess = () => {
+          const request = open.result.transaction("projects").objectStore("projects").getAll();
+          request.onerror = () => reject(request.error);
+          request.onsuccess = () => {
+            const outer = request.result[0]?.objects?.objects?.[0] as
+              | {
+                  objects?: Array<{
+                    type?: string;
+                    width?: number;
+                    scaleX?: number;
+                  }>;
+                }
+              | undefined;
+            resolve(
+              (outer?.objects ?? [])
+                .filter((object) => object.type === "Group")
+                .map((object) => (object.width ?? 0) * (object.scaleX ?? 1))
+            );
+          };
+        };
+      })
+  );
+  expect(nestedGroupWidths).toHaveLength(2);
+  nestedGroupWidths.forEach((width) => expect(width).toBeCloseTo(innerGroupWidth, 0));
+});
+
 test("shows every visible layer of a grouped stack in the project preview", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
@@ -1508,6 +1597,46 @@ test("duplicates with modifier-drag and disables snapping while Alt is held", as
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
   await expect(page.locator(".layers-title small")).toHaveText("3");
+});
+
+test("preserves an asset's rendered size when duplicating by modifier-drag", async ({
+  page
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page
+    .getByPlaceholder("Search cells, proteins, equipment…")
+    .fill("Cajal-Retzius Cell");
+  await page
+    .getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true })
+    .click();
+
+  const dimensions = page.locator(".field-row.dimensions input");
+  const originalWidth = Number(await dimensions.nth(0).inputValue());
+  const originalHeight = Number(await dimensions.nth(1).inputValue());
+  const center = await artboardPoint(page, 0.5, 0.5);
+  await page.mouse.move(center.x, center.y);
+  await page.keyboard.down("Control");
+  await page.mouse.down();
+  await page.mouse.move(center.x + 130, center.y - 80, { steps: 8 });
+  await page.mouse.up();
+  await page.keyboard.up("Control");
+
+  await expect(page.locator(".layers-title small")).toHaveText("2");
+  await expect
+    .poll(async () => Number(await dimensions.nth(0).inputValue()))
+    .toBeCloseTo(originalWidth, 0);
+  await expect
+    .poll(async () => Number(await dimensions.nth(1).inputValue()))
+    .toBeCloseTo(originalHeight, 0);
+
+  await page.locator(".layer-list > button").last().click();
+  await expect
+    .poll(async () => Number(await dimensions.nth(0).inputValue()))
+    .toBeCloseTo(originalWidth, 0);
+  await expect
+    .poll(async () => Number(await dimensions.nth(1).inputValue()))
+    .toBeCloseTo(originalHeight, 0);
 });
 
 test("documents large cross-platform shortcuts and accepts Ctrl commands", async ({ page }) => {
