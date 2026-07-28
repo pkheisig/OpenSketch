@@ -3781,9 +3781,9 @@ input[type="range"] {
   z-index: 12;
   bottom: calc(100% + 13px);
   display: grid;
-  width: 288px;
-  gap: 9px;
-  padding: 13px;
+  width: min(340px, calc(100vw - 32px));
+  gap: 10px;
+  padding: 15px;
   border: 1px solid #c4cfca;
   border-radius: 9px;
   background: #fffefb;
@@ -3800,7 +3800,9 @@ input[type="range"] {
 }
 
 .workspace-footer-popover strong {
-  font-size: 12px;
+  color: #203b39;
+  font-size: 13px;
+  line-height: 1.2;
 }
 
 .workspace-footer-popover label {
@@ -3809,7 +3811,7 @@ input[type="range"] {
   align-items: center;
   gap: 8px;
   color: #506562;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
 }
 
@@ -3821,6 +3823,8 @@ input[type="range"] {
   border-radius: 6px;
   color: #203b39;
   background: white;
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .workspace-footer-popover > button {
@@ -3835,13 +3839,25 @@ input[type="range"] {
 
 .workspace-footer-popover .footer-check {
   display: flex;
+  min-height: 25px;
+  font-size: 10px;
 }
 
 .workspace-footer-popover .footer-select {
   display: grid;
-  grid-template-columns: 1fr 156px;
+  grid-template-columns: 76px minmax(0, 1fr);
   align-items: center;
   gap: 8px;
+  color: #506562;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.workspace-footer-popover .ui-select-trigger {
+  min-height: 32px;
+  padding: 0 9px;
+  font-size: 11px;
+  font-weight: 600;
 }
 
 .workspace-footer-popover .footer-select.compact {
@@ -3850,7 +3866,7 @@ input[type="range"] {
 
 .canvas-settings-dimensions {
   display: grid;
-  grid-template-columns: 1fr 1fr 72px;
+  grid-template-columns: 1fr 1fr 82px;
   gap: 7px;
 }
 
@@ -3859,6 +3875,14 @@ input[type="range"] {
   display: grid;
   grid-template-columns: 1fr;
   gap: 5px;
+}
+
+.canvas-color-control {
+  display: grid;
+  gap: 5px;
+  color: #506562;
+  font-size: 10px;
+  font-weight: 700;
 }
 
 .canvas-color-control span,
