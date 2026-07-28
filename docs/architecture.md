@@ -17,8 +17,8 @@ The browser owns all application behavior and state:
 - Imported media is stored as data URLs inside the project.
 - `.OpenSketch` is versioned JSON and passes through an explicit migration gate.
 - SVG, PNG, and PDF exports are calculated and generated locally.
-- Direct project-folder writes use the File System Access API when available;
-  file-picker and download paths remain the cross-browser fallback.
+- Project and figure exports use browser-generated downloads, while project and
+  media imports use browser file pickers.
 
 The production content security policy limits fetches to the same site origin.
 The browser receives only static HTML, JavaScript, CSS, fonts, and bundled
@@ -99,8 +99,8 @@ an accessible title, description, generator, used asset IDs, per-asset
 source/author/license records, and global NIH BioArt credit.
 
 PNG is rendered from a neutral logical viewport so editor zoom never changes
-output dimensions. Preset or custom pixel scaling receives a valid PNG
-physical-resolution (`pHYs`) chunk.
+output dimensions. The selected 150–1200 DPI value determines raster scaling
+and is embedded as a valid PNG physical-resolution (`pHYs`) chunk.
 
 PDF consumes the same generated SVG through `svg2pdf.js` and jsPDF, preserving
 supported vector paths and text. Bundled Source Sans 3 fonts keep default text

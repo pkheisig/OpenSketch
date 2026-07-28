@@ -9,9 +9,10 @@ BioArt Source. It has no application server, account system, analytics, or
 telemetry.
 
 Built-in and imported multi-element SVGs remain grouped as one movable layer.
-Double-click a visible SVG region to edit that source element independently,
-including its fill, stroke, opacity, position, scale, and rotation. Press
-Escape or choose **Done** to return to the complete asset.
+Double-clicking drills through overlapping and nested groups one hierarchy
+level at a time. A visible SVG part can then be edited independently, including
+its fill, stroke, opacity, position, scale, and rotation. Press Escape or choose
+**Done** to return to the complete asset.
 
 > Biological artwork sourced from the NIAID NIH BioArt Source and obtained via
 > Wikimedia Commons. OpenSketch is an independent project and is not affiliated
@@ -25,8 +26,10 @@ public-domain status and is not licensed under the OpenSketch software license.
 Everything after the static site download happens on the device:
 
 - Projects and canvas settings are stored in browser IndexedDB.
-- Favorite and recently used assets plus each project's last zoom and pan
-  position are stored in `localStorage`.
+- Editor preferences and project-scoped view state are stored in
+  `localStorage`. This includes favorites, recently used assets, preferred
+  variants, creation defaults, disclosure states, export DPI, ruler and
+  alignment preferences, and each project's last zoom and pan position.
 - Imported images are sanitized or decoded locally and embedded in the project.
 - SVG, PNG, PDF, and `.OpenSketch` files are generated in the browser.
 - No project, image, filename, or project metadata is sent to OpenSketch or any
@@ -55,13 +58,12 @@ The regression suite covers current Chromium, Firefox, and WebKit desktop
 engines. Current Chrome, Edge, Firefox, and Safari are supported.
 
 Project import uses the browser file picker and accepts existing version-1
-`.OpenSketch` files. Project and figure exports use browser-generated downloads,
-which work even when direct folder access is unavailable. Browsers implementing
-the File System Access API also show **Save to folder** for direct project-file
-writes; the portable download remains available as the cross-browser fallback.
-Mobile browsers can run the editor, but desktop browsers are recommended for
-large canvases and high-resolution exports because mobile memory and download
-handling vary by platform.
+`.OpenSketch` files. Project and figure exports use browser-generated downloads
+without requiring direct folder access. Selected canvas elements can also be
+copied to another application as PNG or SVG through the browser clipboard;
+Cmd/Ctrl+C defaults to PNG. Mobile browsers can run the editor, but desktop
+browsers are recommended for large canvases and high-resolution exports because
+mobile memory and download handling vary by platform.
 
 ## Local Node development
 
@@ -107,8 +109,9 @@ and imported assets, SVG/PNG/PDF exports, cross-browser editor workflows, the
 Vite is configured with `base: "/OpenSketch/"`. A GitHub Actions workflow runs
 linting, type checks, unit tests, asset validation, the production build,
 Chromium/Firefox/WebKit workflows, and the offline PWA test for every change to
-`main`. Only the generated `dist/` directory is uploaded as a GitHub Pages
-artifact and deployed to the `github-pages` environment.
+`main`. Runs are allowed to finish when newer commits arrive instead of being
+reported as cancelled. Only the generated `dist/` directory is uploaded as a
+GitHub Pages artifact and deployed to the `github-pages` environment.
 
 GitHub Pages serves immutable application files. There is no server-side
 application runtime in production. The service worker precaches the same static
@@ -167,17 +170,24 @@ dist/                      generated production site; never committed
 
 - Local project home with newest-first rails, folders, drag-and-drop filing,
   archive/restore, autosave, duplicate/delete, and `.OpenSketch` portability
-- Searchable asset-family browser with variants and source provenance
-- Fabric canvas selection, resize, rotation, group, align, distribution, smart
-  guides, pan/zoom, flip, lock/hide, layers, keyboard nudging, undo, and redo
-- Editable text, text boxes, scientific sub/superscripts, shapes, callouts,
-  brackets, membrane primitives, and vector arrows
-- Object-attached connectors with anchors, arrowheads, styles, curvature,
-  automatic updates, and collision-aware orthogonal routing
-- Palette recoloring, gradient-aware tint, saturation, brightness, opacity, and
-  reset
+- Floating left tool rail with searchable assets, a dedicated Favorites view,
+  persisted asset variants, pop-out line/shape galleries, imports, and an
+  object-specific editor
+- Footer controls for artboard size and color, fit/zoom, alignment guides, grid,
+  and rulers
+- Fabric canvas selection, live marquee selection, resize, rotation, nested
+  grouping, align, distribution, smart guides, pan/zoom, flip, lock/hide,
+  layers, keyboard nudging, undo, and redo
+- Editable point text with a broad offline font catalog and scientific
+  sub/superscripts, plus geometric shapes and independently editable SVG parts
+- Straight, stepped, curved, wave, circular, inhibitor, dot, neuron, bracket,
+  and arrow connectors with anchors, endpoint styles, automatic updates, and
+  collision-aware orthogonal routing
+- Theme and standard color palettes for text, shapes, lines, and SVG parts,
+  alongside preview grids for multi-variant biological assets
+- System-clipboard copy as PNG or SVG, including cross-application paste
 - Sanitized SVG plus PNG/JPEG/WebP imports embedded in project data
-- Vector SVG/PDF and high-resolution, physical-DPI PNG export
+- Vector SVG/PDF and 150–1200 DPI PNG export with a remembered DPI preference
 - A4, Letter, presentation, square, and custom artboard dimensions
 
 ## Example figures
