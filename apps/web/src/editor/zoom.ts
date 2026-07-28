@@ -1,5 +1,5 @@
-export const GESTURE_ZOOM_SENSITIVITY = 0.015;
-export const WHEEL_ZOOM_STEP = 0.06;
+export const GESTURE_ZOOM_SENSITIVITY = 0.0075;
+export const WHEEL_ZOOM_STEP = 0.03;
 
 const MOUSE_WHEEL_DELTA_THRESHOLD = 40;
 
