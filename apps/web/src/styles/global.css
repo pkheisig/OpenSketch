@@ -2806,7 +2806,7 @@ input[type="color"] {
 
 .shortcut-grid {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(120px, 1fr) minmax(0, 300px);
   align-items: center;
   gap: 10px 20px;
   padding: 14px 0;
@@ -2815,8 +2815,43 @@ input[type="color"] {
   font-size: 12px;
 }
 
+.shortcut-keys {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px 8px;
+}
+
+.shortcut-choice,
+.shortcut-combo,
+.shortcut-key-part {
+  display: inline-flex;
+  align-items: center;
+}
+
+.shortcut-choice {
+  gap: 8px;
+}
+
+.shortcut-combo,
+.shortcut-key-part {
+  gap: 5px;
+}
+
+.shortcut-plus,
+.shortcut-or {
+  color: #6e7d79;
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.shortcut-or {
+  font-weight: 600;
+}
+
 .shortcut-grid kbd {
-  min-width: 180px;
   padding: 7px 10px;
   border: 1px solid #cbd2ce;
   border-bottom-width: 3px;
@@ -2827,6 +2862,7 @@ input[type="color"] {
   font-weight: 700;
   line-height: 1.35;
   text-align: center;
+  white-space: nowrap;
 }
 
 .dialog-note {

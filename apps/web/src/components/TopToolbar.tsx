@@ -15,6 +15,35 @@ import { useEditor } from "@/editor/EditorContext";
 import { ExportDialog } from "./dialogs";
 import { useModalDialog } from "./useModalDialog";
 
+function ShortcutKeys({ combinations }: { combinations: string[][] }) {
+  const label = combinations.map((keys) => keys.join(" plus ")).join(" or ");
+  return (
+    <span className="shortcut-keys" aria-label={label}>
+      {combinations.map((keys, combinationIndex) => (
+        <span className="shortcut-choice" key={`${keys.join("-")}-${combinationIndex}`}>
+          {combinationIndex > 0 && (
+            <span className="shortcut-or" aria-hidden="true">
+              or
+            </span>
+          )}
+          <span className="shortcut-combo">
+            {keys.map((key, keyIndex) => (
+              <span className="shortcut-key-part" key={`${key}-${keyIndex}`}>
+                {keyIndex > 0 && (
+                  <span className="shortcut-plus" aria-hidden="true">
+                    +
+                  </span>
+                )}
+                <kbd>{key}</kbd>
+              </span>
+            ))}
+          </span>
+        </span>
+      ))}
+    </span>
+  );
+}
+
 export function TopToolbar({ project, onHome }: { project: ProjectRecord; onHome: () => void }) {
   const editor = useEditor();
   const [leaving, setLeaving] = useState(false);
@@ -110,21 +139,43 @@ export function TopToolbar({ project, onHome }: { project: ProjectRecord; onHome
             <h2 id="shortcut-title">Keyboard shortcuts</h2>
             <div className="shortcut-grid">
               <span>Undo / redo</span>
-              <kbd>Cmd/Ctrl + Z / Shift + Cmd/Ctrl + Z</kbd>
+              <ShortcutKeys
+                combinations={[
+                  ["Cmd/Ctrl", "Z"],
+                  ["Shift", "Cmd/Ctrl", "Z"]
+                ]}
+              />
               <span>Duplicate</span>
-              <kbd>Cmd/Ctrl + D</kbd>
+              <ShortcutKeys combinations={[["Cmd/Ctrl", "D"]]} />
               <span>Cut / copy / paste</span>
-              <kbd>Cmd/Ctrl + X / C / V</kbd>
+              <ShortcutKeys
+                combinations={[
+                  ["Cmd/Ctrl", "X"],
+                  ["Cmd/Ctrl", "C"],
+                  ["Cmd/Ctrl", "V"]
+                ]}
+              />
               <span>Select all</span>
-              <kbd>Cmd/Ctrl + A</kbd>
+              <ShortcutKeys combinations={[["Cmd/Ctrl", "A"]]} />
               <span>Group / ungroup</span>
-              <kbd>Cmd/Ctrl + G / Shift + Cmd/Ctrl + G</kbd>
+              <ShortcutKeys
+                combinations={[
+                  ["Cmd/Ctrl", "G"],
+                  ["Shift", "Cmd/Ctrl", "G"]
+                ]}
+              />
               <span>Nudge / large nudge</span>
-              <kbd>Arrow key / Shift + Arrow key</kbd>
+              <ShortcutKeys combinations={[["Arrow key"], ["Shift", "Arrow key"]]} />
               <span>Zoom / fit canvas</span>
-              <kbd>Cmd/Ctrl + + / − / 0</kbd>
+              <ShortcutKeys
+                combinations={[
+                  ["Cmd/Ctrl", "+"],
+                  ["Cmd/Ctrl", "−"],
+                  ["Cmd/Ctrl", "0"]
+                ]}
+              />
               <span>Delete</span>
-              <kbd>Backspace / Delete</kbd>
+              <ShortcutKeys combinations={[["Backspace"], ["Delete"]]} />
             </div>
             <p className="dialog-note">
               Hold Space and drag, use the middle mouse button, or use the workspace scrollbars to

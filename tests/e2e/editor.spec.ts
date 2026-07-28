@@ -1453,9 +1453,14 @@ test("documents large cross-platform shortcuts and accepts Ctrl commands", async
 
   const dialog = page.getByRole("dialog", { name: "Keyboard shortcuts" });
   await expect(dialog).toBeVisible();
-  await expect(dialog.getByText("Cmd/Ctrl + Z / Shift + Cmd/Ctrl + Z")).toBeVisible();
-  await expect(dialog.getByText("Cmd/Ctrl + X / C / V")).toBeVisible();
-  await expect(dialog.getByText("Backspace / Delete")).toBeVisible();
+  await expect(dialog.getByLabel("Cmd/Ctrl plus Z or Shift plus Cmd/Ctrl plus Z")).toBeVisible();
+  await expect(
+    dialog.getByLabel("Cmd/Ctrl plus X or Cmd/Ctrl plus C or Cmd/Ctrl plus V")
+  ).toBeVisible();
+  await expect(dialog.getByLabel("Backspace or Delete")).toBeVisible();
+  const zoomShortcut = dialog.getByLabel("Cmd/Ctrl plus + or Cmd/Ctrl plus − or Cmd/Ctrl plus 0");
+  await expect(zoomShortcut.locator("kbd").filter({ hasText: /^\+$/ })).toHaveCount(1);
+  await expect(zoomShortcut.locator(".shortcut-plus")).toHaveCount(3);
   await expect(dialog.getByText(/Hold Cmd\/Ctrl while scrolling to zoom/)).toBeVisible();
   const keyStyle = await dialog
     .locator("kbd")
