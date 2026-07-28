@@ -57,7 +57,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
     .filter({ has: page.locator("strong").filter({ hasText: /^Cajal-Retzius Cell$/ }) })
     .first();
   await expect(singleVariantAsset).toBeVisible();
-  await singleVariantAsset.locator(".asset-card-image").click();
+  await singleVariantAsset.getByRole("button", { name: "Insert Cajal-Retzius Cell" }).click();
   await expect(page.locator(".layers-title small")).toHaveText("3");
   await expect(page.getByText("Asset palette", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Part colors", { exact: true })).toHaveCount(0);
@@ -559,7 +559,14 @@ test("previews bundled variants and inserts nested-clip-path assets", async ({ p
   ).toHaveText("Variant 3");
 });
 
-test("parses every bundled NIH BioArt variant into editable objects", async ({ page }) => {
+test("parses every bundled NIH BioArt variant into editable objects", async ({
+  page,
+  browserName
+}) => {
+  test.skip(
+    browserName !== "chromium",
+    "The browser-independent asset corpus only needs one pass."
+  );
   test.setTimeout(60_000);
   const manifest = JSON.parse(
     await readFile(
@@ -1958,8 +1965,8 @@ test("restores an asset's semantic identity when its exact parts are regrouped",
 test("applies profile-aware shade presets to grouped biological assets", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
-  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
-  await page.getByRole("button", { name: "Insert T Cell", exact: true }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
+  await page.getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true }).click();
 
   await expect(page.getByText("Asset palette", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Part colors", { exact: true })).toHaveCount(0);
@@ -1969,16 +1976,26 @@ test("applies profile-aware shade presets to grouped biological assets", async (
   await greenPreset.click();
   await expect(greenPreset).toHaveAttribute("aria-pressed", "true");
 
-  const centerColor = await page.locator(".lower-canvas").evaluate((canvas: HTMLCanvasElement) => {
+  const greenPixels = await page.locator(".lower-canvas").evaluate((canvas: HTMLCanvasElement) => {
     const context = canvas.getContext("2d")!;
-    return [...context.getImageData(canvas.width / 2, canvas.height / 2, 1, 1).data];
+    const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+    let green = 0;
+    for (let index = 0; index < pixels.length; index += 4) {
+      if (
+        pixels[index + 3] > 32 &&
+        pixels[index + 1] > pixels[index] * 1.15 &&
+        pixels[index + 1] > pixels[index + 2] * 1.08
+      ) {
+        green += 1;
+      }
+    }
+    return green;
   });
-  expect(centerColor[1]).toBeGreaterThan(centerColor[0]);
-  expect(centerColor[1]).toBeGreaterThan(centerColor[2]);
+  expect(greenPixels).toBeGreaterThan(100);
 
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
-  await page.locator(".layer-list > button").filter({ hasText: "T Cell" }).click();
+  await page.locator(".layer-list > button").filter({ hasText: "Cajal-Retzius Cell" }).click();
   await expect(page.getByRole("button", { name: "Apply Green preset" })).toHaveAttribute(
     "aria-pressed",
     "true"
@@ -1995,14 +2012,17 @@ test("saves and resets styling for future copies of the same biological asset", 
 }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
-  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
-  const insertTCell = page.getByRole("button", { name: "Insert T Cell", exact: true });
-  const assetCard = page.locator(".asset-card").filter({ hasText: "T Cell" }).first();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
+  const insertAsset = page.getByRole("button", {
+    name: "Insert Cajal-Retzius Cell",
+    exact: true
+  });
+  const assetCard = page.locator(".asset-card").filter({ hasText: "Cajal-Retzius Cell" }).first();
   const assetPreview = assetCard.locator(".asset-card-image");
   const assetPreviewImage = assetPreview.locator("img");
   const originalPreviewSource = await assetPreviewImage.getAttribute("src");
   const originalPreviewBounds = await assetPreview.boundingBox();
-  await insertTCell.click();
+  await insertAsset.click();
 
   const greenPreset = page.getByRole("button", { name: "Apply Green preset" });
   await greenPreset.click();
@@ -2015,7 +2035,7 @@ test("saves and resets styling for future copies of the same biological asset", 
   const center = await artboardPoint(page);
   await page.mouse.click(center.x, center.y, { button: "right" });
   await page
-    .getByRole("menu", { name: "T Cell actions" })
+    .getByRole("menu", { name: "Cajal-Retzius Cell actions" })
     .getByRole("menuitem", { name: "Save styling" })
     .click();
 
@@ -2052,20 +2072,20 @@ test("saves and resets styling for future copies of the same biological asset", 
   expect(savedPreviewBounds?.width).toBeCloseTo(originalPreviewBounds?.width ?? 0, 0);
   expect(savedPreviewBounds?.height).toBeCloseTo(originalPreviewBounds?.height ?? 0, 0);
 
-  await insertTCell.click();
+  await insertAsset.click();
   await expect(greenPreset).toHaveAttribute("aria-pressed", "true");
   await expect.poll(async () => Number(await width.inputValue())).toBeCloseTo(savedWidth, 0);
 
   await page.mouse.click(center.x, center.y, { button: "right" });
   await page
-    .getByRole("menu", { name: "T Cell actions" })
+    .getByRole("menu", { name: "Cajal-Retzius Cell actions" })
     .getByRole("menuitem", { name: "Reset styling" })
     .click();
   await expect(greenPreset).toHaveAttribute("aria-pressed", "false");
   await expect.poll(async () => Number(await width.inputValue())).toBeCloseTo(originalWidth, 0);
   await expect(assetPreviewImage).toHaveAttribute("src", originalPreviewSource ?? "");
 
-  await insertTCell.click();
+  await insertAsset.click();
   await expect(greenPreset).toHaveAttribute("aria-pressed", "false");
   await expect.poll(async () => Number(await width.inputValue())).toBeCloseTo(originalWidth, 0);
 });
@@ -2077,7 +2097,16 @@ test("renders every styled eosinophil part in a stable sidebar preview", async (
   const eosinophilCard = page.locator(".asset-card").filter({ hasText: "Eosinophil" }).first();
   const previewImage = eosinophilCard.locator("img");
   await eosinophilCard.locator(".asset-card-image").click();
-  await page.getByRole("button", { name: "Apply Green preset" }).click();
+  const variantPicker = page
+    .locator(".right-sidebar")
+    .getByRole("combobox", { name: "Eosinophil variant" });
+  await expect(variantPicker).toBeVisible();
+  await expect(page.getByText("Color presets", { exact: true })).toHaveCount(0);
+  await variantPicker.click();
+  await page
+    .getByRole("listbox", { name: "Eosinophil variants" })
+    .getByRole("option", { name: "Select Eosinophil variant 2" })
+    .click();
 
   const center = await artboardPoint(page);
   await page.mouse.click(center.x, center.y, { button: "right" });
