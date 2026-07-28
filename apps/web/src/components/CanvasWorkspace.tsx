@@ -37,7 +37,6 @@ import {
   MoveUp,
   MousePointer2,
   Plus,
-  Palette,
   RotateCcw,
   RotateCw,
   Ruler,
@@ -50,7 +49,14 @@ import {
   Unlock
 } from "lucide-react";
 import { ActiveSelection, Group as FabricGroup, type FabricObject } from "fabric";
+import {
+  CANVAS_PRESETS,
+  pixelsToUnit,
+  unitToPixels,
+  type CanvasUnit
+} from "@workspace/editor-core";
 import { assetManifest } from "@/assets/manifest";
+import { UiSelect } from "@/components/UiSelect";
 import { useEditor } from "@/editor/EditorContext";
 import {
   captureZoomAnchor,
@@ -245,7 +251,7 @@ export function CanvasWorkspace() {
       return true;
     }
   });
-  const [footerPanel, setFooterPanel] = useState<"size" | "color" | null>(null);
+  const [footerPanel, setFooterPanel] = useState<"size" | null>(null);
   const [selectionMenu, setSelectionMenu] = useState<
     "align" | "arrange" | "flip" | "transform" | "more" | null
   >(null);
@@ -265,6 +271,23 @@ export function CanvasWorkspace() {
     y: number;
     objects: FabricObject[];
   } | null>(null);
+  const canvasUnit = editor.canvasSettings.unit;
+  const canvasWidth = pixelsToUnit(
+    editor.canvasSettings.width,
+    canvasUnit,
+    editor.canvasSettings.dpi
+  );
+  const canvasHeight = pixelsToUnit(
+    editor.canvasSettings.height,
+    canvasUnit,
+    editor.canvasSettings.dpi
+  );
+  const activeCanvasPreset =
+    Object.entries(CANVAS_PRESETS).find(
+      ([, preset]) =>
+        preset.width === editor.canvasSettings.width &&
+        preset.height === editor.canvasSettings.height
+    )?.[0] ?? "";
 
   useEffect(() => {
     setCanvasElement(canvasRef.current);
@@ -273,6 +296,22 @@ export function CanvasWorkspace() {
   useEffect(() => {
     if (editor.selection.length === 0) setSelectionMenu(null);
   }, [editor.selection.length]);
+
+  useEffect(() => {
+    if (!footerPanel) return;
+    const closeFooterPanel = (event: globalThis.PointerEvent) => {
+      const target = event.target;
+      if (
+        target instanceof Element &&
+        (target.closest(".canvas-controls") || target.closest(".ui-select-menu"))
+      ) {
+        return;
+      }
+      setFooterPanel(null);
+    };
+    document.addEventListener("pointerdown", closeFooterPanel);
+    return () => document.removeEventListener("pointerdown", closeFooterPanel);
+  }, [footerPanel]);
 
   const applyViewportFocus = useCallback(
     (focus: { x: number; y: number }) => {
@@ -1221,7 +1260,7 @@ export function CanvasWorkspace() {
           ) : null}
         </div>
       ) : null}
-      <div className="workspace-footer">
+      <div className={`workspace-footer ${footerPanel ? "footer-panel-open" : ""}`}>
         <div className="workspace-footer-section canvas-controls">
           <button
             className={footerPanel === "size" ? "active labeled" : "labeled"}
@@ -1231,57 +1270,100 @@ export function CanvasWorkspace() {
             <Scaling size={15} />
             Canvas size
           </button>
-          <button
-            className={footerPanel === "color" ? "active labeled" : "labeled"}
-            onClick={() => setFooterPanel((current) => (current === "color" ? null : "color"))}
-            aria-expanded={footerPanel === "color"}
-          >
-            <Palette size={15} />
-            Canvas color
-          </button>
           {footerPanel === "size" ? (
-            <div className="workspace-footer-popover canvas-size-popover">
-              <strong>Canvas size</strong>
-              <label>
-                Width
-                <input
-                  type="number"
-                  min="1"
-                  value={editor.canvasSettings.width}
-                  onChange={(event) =>
-                    editor.setCanvasSettings({
-                      width: Math.max(1, Number(event.target.value) || 1)
-                    })
+            <div
+              className="workspace-footer-popover canvas-size-popover"
+              role="dialog"
+              aria-label="Canvas settings"
+            >
+              <strong>Canvas settings</strong>
+              <UiSelect
+                className="footer-select"
+                label="Preset"
+                value={activeCanvasPreset}
+                options={[
+                  { value: "", label: "Custom dimensions" },
+                  ...Object.keys(CANVAS_PRESETS).map((name) => ({ value: name, label: name }))
+                ]}
+                onChange={(name) => {
+                  const preset = CANVAS_PRESETS[name];
+                  if (preset) editor.setCanvasSettings(preset);
+                }}
+              />
+              <div className="canvas-settings-dimensions">
+                <label>
+                  Width
+                  <input
+                    type="number"
+                    min="0.1"
+                    step={canvasUnit === "px" ? 1 : 0.1}
+                    value={Number(canvasWidth.toFixed(canvasUnit === "px" ? 0 : 2))}
+                    onChange={(event) =>
+                      editor.setCanvasSettings({
+                        width: Math.max(
+                          1,
+                          Math.round(
+                            unitToPixels(
+                              Number(event.target.value) || 0.1,
+                              canvasUnit,
+                              editor.canvasSettings.dpi
+                            )
+                          )
+                        )
+                      })
+                    }
+                  />
+                </label>
+                <label>
+                  Height
+                  <input
+                    type="number"
+                    min="0.1"
+                    step={canvasUnit === "px" ? 1 : 0.1}
+                    value={Number(canvasHeight.toFixed(canvasUnit === "px" ? 0 : 2))}
+                    onChange={(event) =>
+                      editor.setCanvasSettings({
+                        height: Math.max(
+                          1,
+                          Math.round(
+                            unitToPixels(
+                              Number(event.target.value) || 0.1,
+                              canvasUnit,
+                              editor.canvasSettings.dpi
+                            )
+                          )
+                        )
+                      })
+                    }
+                  />
+                </label>
+                <UiSelect
+                  className="footer-select compact"
+                  label="Unit"
+                  value={canvasUnit}
+                  options={[
+                    { value: "px", label: "px" },
+                    { value: "mm", label: "mm" },
+                    { value: "in", label: "in" }
+                  ]}
+                  onChange={(unit) =>
+                    editor.setCanvasSettings({ unit: unit as CanvasUnit })
                   }
                 />
-              </label>
-              <label>
-                Height
-                <input
-                  type="number"
-                  min="1"
-                  value={editor.canvasSettings.height}
-                  onChange={(event) =>
-                    editor.setCanvasSettings({
-                      height: Math.max(1, Number(event.target.value) || 1)
-                    })
-                  }
-                />
-              </label>
-              <button onClick={editor.fitCanvas}>Fit canvas</button>
-            </div>
-          ) : null}
-          {footerPanel === "color" ? (
-            <div className="workspace-footer-popover canvas-color-popover">
-              <strong>Canvas color</strong>
-              <label>
-                <input
-                  type="color"
-                  value={editor.canvasSettings.background}
-                  disabled={editor.canvasSettings.transparent}
-                  onChange={(event) => editor.setCanvasSettings({ background: event.target.value })}
-                />
-                {editor.canvasSettings.background}
+              </div>
+              <label className="canvas-color-control">
+                Background
+                <span>
+                  <input
+                    type="color"
+                    value={editor.canvasSettings.background}
+                    disabled={editor.canvasSettings.transparent}
+                    onChange={(event) =>
+                      editor.setCanvasSettings({ background: event.target.value })
+                    }
+                  />
+                  {editor.canvasSettings.background}
+                </span>
               </label>
               <label className="footer-check">
                 <input
@@ -1291,8 +1373,19 @@ export function CanvasWorkspace() {
                     editor.setCanvasSettings({ transparent: event.target.checked })
                   }
                 />
-                Transparent
+                Transparent background
               </label>
+              <label className="footer-check">
+                <input
+                  type="checkbox"
+                  checked={Boolean(editor.canvasSettings.doubleClickCreatesText)}
+                  onChange={(event) =>
+                    editor.setCanvasSettings({ doubleClickCreatesText: event.target.checked })
+                  }
+                />
+                Double-click to add text
+              </label>
+              <button onClick={editor.fitCanvas}>Fit canvas</button>
             </div>
           ) : null}
         </div>

@@ -117,11 +117,24 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
     0
   );
   await expect(page.getByRole("button", { name: "Canvas size" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Canvas color" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Canvas color" })).toHaveCount(0);
+  await page.getByRole("button", { name: "Canvas size" }).click();
+  const canvasSettings = page.getByRole("dialog", { name: "Canvas settings" });
+  await expect(canvasSettings.getByRole("combobox", { name: "Preset" })).toBeVisible();
+  await expect(canvasSettings.getByRole("combobox", { name: "Unit" })).toBeVisible();
+  await expect(canvasSettings.locator('input[type="color"]')).toBeVisible();
+  await expect(canvasSettings.getByText("Transparent background", { exact: true })).toBeVisible();
+  await expect(canvasSettings.getByText("Double-click to add text", { exact: true })).toBeVisible();
+  await expect(canvasSettings.locator(".canvas-color-control")).toHaveCount(1);
+  await page.getByRole("button", { name: "Canvas size" }).click();
   await expect(page.locator(".canvas-workspace")).not.toHaveClass(/grid-visible/);
   await expect(page.getByRole("button", { name: "Show grid" })).toBeVisible();
   await page.getByRole("button", { name: "Show grid" }).click();
   await expect(page.locator(".canvas-workspace")).toHaveClass(/grid-visible/);
+
+  await page.keyboard.press("Delete");
+  await expect(page.locator(".floating-panel")).toHaveCount(0);
+  await expect(page.locator(".inspector-header").getByText("Canvas", { exact: true })).toHaveCount(0);
 });
 
 test("creates every distinct shape variant exposed by the shape pop-out", async ({ page }) => {

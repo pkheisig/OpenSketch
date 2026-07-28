@@ -26,10 +26,6 @@ import {
   Unlock
 } from "lucide-react";
 import {
-  CANVAS_PRESETS,
-  pixelsToUnit,
-  unitToPixels,
-  type CanvasUnit,
   type ConnectorAnchor,
   type ConnectorArrowhead,
   type ConnectorLineStyle,
@@ -65,12 +61,13 @@ const STYLE_PRESETS = [
 export function InspectorContent({ onClose }: { onClose?: () => void }) {
   const editor = useEditor();
   const selected = editor.selection[0];
+  if (!selected) return null;
   const isSvgPart = selected?.OpenSketchType === "svg-part";
   const parentAsset = isSvgPart ? svgPartParent(selected) : null;
   return (
     <div className="inspector-embedded">
       <div className="inspector-header">
-        <h2>{selected?.name ?? "Canvas"}</h2>
+        <h2>{selected.name ?? selected.type}</h2>
         <span>{editor.selection.length > 1 ? `${editor.selection.length} selected` : ""}</span>
         {onClose ? (
           <button className="panel-close-button" onClick={onClose} aria-label="Close properties">
@@ -87,109 +84,9 @@ export function InspectorContent({ onClose }: { onClose?: () => void }) {
             </button>
           </div>
         )}
-        {selected ? <ObjectInspector object={selected} /> : <CanvasInspector />}
+        <ObjectInspector object={selected} />
       </div>
     </div>
-  );
-}
-
-function CanvasInspector() {
-  const editor = useEditor();
-  const settings = editor.canvasSettings;
-  const unit = settings.unit;
-  const width = pixelsToUnit(settings.width, unit, settings.dpi);
-  const height = pixelsToUnit(settings.height, unit, settings.dpi);
-  const activePreset =
-    Object.entries(CANVAS_PRESETS).find(
-      ([, preset]) => preset.width === settings.width && preset.height === settings.height
-    )?.[0] ?? "";
-  return (
-    <>
-      <InspectorSection title="Artboard" open>
-        <UiSelect
-          className="field"
-          label="Preset"
-          value={activePreset}
-          options={[
-            { value: "", label: "Custom dimensions" },
-            ...Object.keys(CANVAS_PRESETS).map((name) => ({ value: name, label: name }))
-          ]}
-          onChange={(name) => {
-            const preset = CANVAS_PRESETS[name];
-            if (preset) editor.setCanvasSettings(preset);
-          }}
-        />
-        <div className="field-row three">
-          <NumberField
-            label="W"
-            value={width}
-            step={unit === "px" ? 1 : 0.1}
-            onChange={(value) =>
-              editor.setCanvasSettings({
-                width: Math.round(unitToPixels(value, unit, settings.dpi))
-              })
-            }
-          />
-          <NumberField
-            label="H"
-            value={height}
-            step={unit === "px" ? 1 : 0.1}
-            onChange={(value) =>
-              editor.setCanvasSettings({
-                height: Math.round(unitToPixels(value, unit, settings.dpi))
-              })
-            }
-          />
-          <UiSelect
-            className="mini-field"
-            label="Unit"
-            value={unit}
-            options={[
-              { value: "px", label: "px" },
-              { value: "mm", label: "mm" },
-              { value: "in", label: "in" }
-            ]}
-            onChange={(unit) => editor.setCanvasSettings({ unit: unit as CanvasUnit })}
-          />
-        </div>
-        <label className="check-field compact">
-          <input
-            type="checkbox"
-            checked={settings.transparent}
-            onChange={(event) => editor.setCanvasSettings({ transparent: event.target.checked })}
-          />
-          Transparent background
-        </label>
-        {!settings.transparent && (
-          <label className="color-field">
-            Background
-            <span>
-              <input
-                type="color"
-                value={settings.background}
-                onChange={(event) => editor.setCanvasSettings({ background: event.target.value })}
-              />
-              {settings.background}
-            </span>
-          </label>
-        )}
-        <label className="check-field compact">
-          <input
-            type="checkbox"
-            checked={Boolean(settings.doubleClickCreatesText)}
-            onChange={(event) =>
-              editor.setCanvasSettings({ doubleClickCreatesText: event.target.checked })
-            }
-          />
-          Double-click to add text
-        </label>
-      </InspectorSection>
-      <div className="canvas-empty-state">
-        <Layers3 size={24} />
-        <strong>Select an object to inspect it</strong>
-        <p>Position, palette, typography, and layer controls appear here.</p>
-      </div>
-    </>
   );
 }
 

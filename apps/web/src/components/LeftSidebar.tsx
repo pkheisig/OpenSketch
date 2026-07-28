@@ -426,6 +426,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const [shapeFamily, setShapeFamily] = useState<keyof typeof SHAPE_GROUPS>("basic");
   const closeTimer = useRef<number | undefined>(undefined);
   const handledSelection = useRef("");
+  const previousSelection = useRef("");
   const editor = useEditor();
   const selectionKey = editor.selection
     .map((object, index) => object.objectId ?? `${object.type}:${object.name ?? index}`)
@@ -467,15 +468,18 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     setFlyout(null);
   };
   useEffect(() => {
+    const previous = previousSelection.current;
+    previousSelection.current = selectionKey;
     if (!selectionKey) {
       handledSelection.current = "";
+      if (previous && tab === "edit" && !collapsed) onToggle();
       return;
     }
     if (editor.creationTool || handledSelection.current === selectionKey) return;
     handledSelection.current = selectionKey;
     setTab("edit");
     if (collapsed) onToggle();
-  }, [collapsed, editor.creationTool, onToggle, selectionKey]);
+  }, [collapsed, editor.creationTool, onToggle, selectionKey, tab]);
   useEffect(() => {
     if (!editor.creationTool || collapsed) return;
     onToggle();

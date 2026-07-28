@@ -329,7 +329,7 @@ test("places text and shapes from active tools and persists line creation defaul
   await placeTool(page, "Pentagon", 0.5, 0.18);
   await expect(page.locator(".inspector-header h2")).toHaveText("pentagon");
   await page.keyboard.press("Delete");
-  await expect(page.locator(".layers-title small")).toHaveText("0");
+  await expect(page.locator(".floating-panel")).toHaveCount(0);
 
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await page
@@ -345,14 +345,20 @@ test("places text and shapes from active tools and persists line creation defaul
   await expect(page.locator(".layers-title small")).toHaveText("1");
   await expect(page.getByRole("menuitem", { name: "Rectangle", exact: true })).toHaveCount(0);
 
-  await page.getByRole("button", { name: "Lines", exact: true }).click();
-  await page.getByRole("menuitem", { name: "Custom defaults" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  await page
+    .getByRole("menu", { name: "Shape tools" })
+    .getByRole("menuitem", { name: /Defaults/ })
+    .click();
   await page.getByLabel("Default line color").fill("#c026d3");
   await page.getByLabel("Default line thickness").fill("9");
   await selectUiOption(page, "Line style", "Dashed");
   await selectUiOption(page, "End head", "Circle");
 
-  await page.getByRole("button", { name: "Use custom connector" }).click();
+  await page.getByRole("button", { name: "Lines", exact: true }).click();
+  const lineMenu = page.getByRole("menu", { name: "Line and arrow tools" });
+  await lineMenu.getByRole("menuitem", { name: /^Dots/ }).hover();
+  await lineMenu.getByRole("menuitem", { name: "Dashed dot endpoint", exact: true }).click();
   await expect(page.locator(".canvas-workspace")).toHaveClass(/is-creating/);
   const from = await artboardPoint(page, 0.25, 0.55);
   const to = await artboardPoint(page, 0.78, 0.72);
@@ -423,6 +429,7 @@ test("places text and shapes from active tools and persists line creation defaul
   await page.keyboard.type("Placed label");
   await page.keyboard.press("Escape");
   await expect(page.locator(".layers-title small")).toHaveText("6");
+  await page.waitForTimeout(250);
   await ensureLayersOpen(page);
   await expect(page.locator(".layer-list button").filter({ hasText: "Text" })).toBeVisible();
   const textInspector = page.locator(".inspector-scroll");
@@ -470,7 +477,7 @@ test("optionally creates Text on an empty-artboard double-click and persists the
 }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
-  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await page.getByRole("button", { name: "Canvas size" }).click();
 
   const preference = page.getByLabel("Double-click to add text");
   await expect(preference).toBeChecked();
@@ -486,7 +493,7 @@ test("optionally creates Text on an empty-artboard double-click and persists the
 
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
-  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await page.getByRole("button", { name: "Canvas size" }).click();
   await expect(page.getByLabel("Double-click to add text")).toBeChecked();
 });
 
@@ -712,7 +719,7 @@ test("uses accessible in-app dropdowns with keyboard and outside-click behavior"
 }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
-  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await page.getByRole("button", { name: "Canvas size" }).click();
 
   await expect(page.locator("select")).toHaveCount(0);
   const unit = page.getByRole("combobox", { name: "Unit" });
@@ -725,7 +732,7 @@ test("uses accessible in-app dropdowns with keyboard and outside-click behavior"
 
   await unit.click();
   await expect(page.getByRole("listbox", { name: "Unit" })).toBeVisible();
-  await page.getByText("Canvas", { exact: true }).first().click();
+  await page.locator(".top-toolbar").click();
   await expect(page.getByRole("listbox", { name: "Unit" })).toHaveCount(0);
   await expect(page.getByText("Export DPI", { exact: true })).toHaveCount(0);
 
@@ -2255,7 +2262,7 @@ test("restores an asset's semantic identity when its exact parts are regrouped",
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
   await page.getByRole("button", { name: "Edit", exact: true }).click();
-  await expect(page.locator(".inspector-header h2")).toHaveText("Canvas");
+  await expect(page.locator(".inspector-embedded")).toHaveCount(0);
   await ensureLayersOpen(page);
   await page.locator(".layer-list > button").filter({ hasText: "T Cell" }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("T Cell");
