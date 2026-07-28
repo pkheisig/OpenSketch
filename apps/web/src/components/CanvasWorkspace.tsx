@@ -1063,6 +1063,10 @@ export function CanvasWorkspace() {
               className={selectionMenu === "align" ? "active" : ""}
               onClick={() => setSelectionMenu((current) => (current === "align" ? null : "align"))}
               aria-expanded={selectionMenu === "align"}
+              disabled={editor.selection.length < 2}
+              title={
+                editor.selection.length < 2 ? "Select at least two objects to align" : undefined
+              }
             >
               <AlignLeft size={18} />
               <span>Align</span>
@@ -1180,11 +1184,27 @@ export function CanvasWorkspace() {
                     <ArrowDownToLine size={16} />
                     Bottom
                   </button>
-                  <button onClick={() => editor.distribute("horizontal")}>
+                  <button
+                    onClick={() => editor.distribute("horizontal")}
+                    disabled={editor.selection.length < 3}
+                    title={
+                      editor.selection.length < 3
+                        ? "Select at least three objects to distribute"
+                        : undefined
+                    }
+                  >
                     <AlignHorizontalDistributeCenter size={16} />
                     Distribute H
                   </button>
-                  <button onClick={() => editor.distribute("vertical")}>
+                  <button
+                    onClick={() => editor.distribute("vertical")}
+                    disabled={editor.selection.length < 3}
+                    title={
+                      editor.selection.length < 3
+                        ? "Select at least three objects to distribute"
+                        : undefined
+                    }
+                  >
                     <AlignVerticalDistributeCenter size={16} />
                     Distribute V
                   </button>
@@ -1283,10 +1303,7 @@ export function CanvasWorkspace() {
           ) : null}
         </div>
       ) : null}
-      <div
-        ref={footerRef}
-        className={`workspace-footer ${footerPanel ? "footer-panel-open" : ""}`}
-      >
+      <div ref={footerRef} className={`workspace-footer ${footerPanel ? "footer-panel-open" : ""}`}>
         <div className="workspace-footer-section canvas-controls">
           <button
             className={footerPanel === "size" ? "active labeled" : "labeled"}
@@ -1372,9 +1389,7 @@ export function CanvasWorkspace() {
                     { value: "mm", label: "mm" },
                     { value: "in", label: "in" }
                   ]}
-                  onChange={(unit) =>
-                    editor.setCanvasSettings({ unit: unit as CanvasUnit })
-                  }
+                  onChange={(unit) => editor.setCanvasSettings({ unit: unit as CanvasUnit })}
                 />
               </div>
               <div className="canvas-color-control">

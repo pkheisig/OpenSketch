@@ -2496,6 +2496,14 @@ a:focus-visible {
   background: #e2efea;
 }
 
+.icon-grid button:disabled,
+.icon-grid button:disabled:hover {
+  color: #83918e;
+  background: #f5f6f3;
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
 .text-style {
   grid-auto-columns: 1fr;
 }
@@ -2603,6 +2611,8 @@ input[type="range"] {
 }
 
 .palette-color-current {
+  position: relative;
+  overflow: hidden;
   width: 23px;
   height: 23px;
   flex: 0 0 23px;
@@ -2627,7 +2637,9 @@ input[type="range"] {
   border: 1px solid #bdc9c4;
   border-radius: 8px;
   background: #fffef9;
-  box-shadow: 0 16px 38px rgba(20, 43, 42, 0.2), 0 3px 9px rgba(20, 43, 42, 0.12);
+  box-shadow:
+    0 16px 38px rgba(20, 43, 42, 0.2),
+    0 3px 9px rgba(20, 43, 42, 0.12);
 }
 
 .color-palette-popover section {
@@ -2656,8 +2668,13 @@ input[type="range"] {
   gap: 2px;
 }
 
+.standard-color-grid.with-transparent {
+  grid-template-columns: repeat(11, minmax(19px, 1fr));
+}
+
 .color-palette-swatch {
   position: relative;
+  overflow: hidden;
   display: grid;
   min-width: 0;
   height: 24px;
@@ -2668,19 +2685,51 @@ input[type="range"] {
   color: #087e7c;
 }
 
+.palette-color-current.transparent,
+.color-palette-swatch.transparent {
+  background-color: #fff;
+  background-image:
+    linear-gradient(45deg, #dfe4e1 25%, transparent 25%),
+    linear-gradient(-45deg, #dfe4e1 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #dfe4e1 75%),
+    linear-gradient(-45deg, transparent 75%, #dfe4e1 75%);
+  background-position:
+    0 0,
+    0 4px,
+    4px -4px,
+    -4px 0;
+  background-size: 8px 8px;
+}
+
+.palette-color-current.transparent::after,
+.color-palette-swatch.transparent::after {
+  position: absolute;
+  width: 140%;
+  height: 2px;
+  background: #c7483f;
+  content: "";
+  transform: rotate(-45deg);
+}
+
 .color-palette-swatch:hover {
   z-index: 1;
   border-color: #087e7c;
-  box-shadow: 0 0 0 2px #fffef9, 0 0 0 3px #12a9a6;
+  box-shadow:
+    0 0 0 2px #fffef9,
+    0 0 0 3px #12a9a6;
 }
 
 .color-palette-swatch.selected {
   z-index: 1;
   border-color: #087e7c;
-  box-shadow: inset 0 0 0 2px #fff, 0 0 0 2px #087e7c;
+  box-shadow:
+    inset 0 0 0 2px #fff,
+    0 0 0 2px #087e7c;
 }
 
 .color-palette-swatch svg {
+  position: relative;
+  z-index: 1;
   padding: 1px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.92);

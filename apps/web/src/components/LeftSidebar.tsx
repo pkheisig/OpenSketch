@@ -123,11 +123,7 @@ function ConnectorPresetIcon({ value }: { value: ConnectorPreset }) {
   };
   const dash =
     value.lineStyle === "dashed" ? "5 3" : value.lineStyle === "dotted" ? "1 4" : undefined;
-  const head = (
-    kind: ConnectorArrowhead,
-    point: { x: number; y: number },
-    angle: number
-  ) => {
+  const head = (kind: ConnectorArrowhead, point: { x: number; y: number }, angle: number) => {
     if (kind === "none") return null;
     const degrees = (angle * 180) / Math.PI;
     const headPoint = connectorArrowheadPoint(kind, point, angle, line.strokeWidth);
@@ -339,15 +335,15 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     closeTimer.current = window.setTimeout(() => setFlyout(null), 180);
   };
   const chooseLinePreset = (value: ConnectorPreset) => {
-    editor.setCreationDefaults({
-      ...editor.creationDefaults,
+    editor.setCreationDefaults((current) => ({
+      ...current,
       line: {
-        ...editor.creationDefaults.line,
+        ...current.line,
         lineStyle: value.lineStyle,
         startArrowhead: value.startArrowhead,
         endArrowhead: value.endArrowhead
       }
-    });
+    }));
     const arrow =
       value.endArrowhead !== "none" ||
       value.startArrowhead !== "none" ||
@@ -881,20 +877,20 @@ function ShapesPanel() {
     });
   };
   const updateTextDefaults = (properties: Partial<typeof editor.creationDefaults.text>) =>
-    editor.setCreationDefaults({
-      ...editor.creationDefaults,
-      text: { ...editor.creationDefaults.text, ...properties }
-    });
+    editor.setCreationDefaults((current) => ({
+      ...current,
+      text: { ...current.text, ...properties }
+    }));
   const updateShapeDefaults = (properties: Partial<typeof editor.creationDefaults.shape>) =>
-    editor.setCreationDefaults({
-      ...editor.creationDefaults,
-      shape: { ...editor.creationDefaults.shape, ...properties }
-    });
+    editor.setCreationDefaults((current) => ({
+      ...current,
+      shape: { ...current.shape, ...properties }
+    }));
   const updateLineDefaults = (properties: Partial<typeof editor.creationDefaults.line>) =>
-    editor.setCreationDefaults({
-      ...editor.creationDefaults,
-      line: { ...editor.creationDefaults.line, ...properties }
-    });
+    editor.setCreationDefaults((current) => ({
+      ...current,
+      line: { ...current.line, ...properties }
+    }));
   return (
     <>
       <details
@@ -962,6 +958,7 @@ function ShapesPanel() {
                 ariaLabel="Default shape fill"
                 value={editor.creationDefaults.shape.fill}
                 onChange={(fill) => updateShapeDefaults({ fill })}
+                allowTransparent
               />
             </div>
             <div className="creation-color-field">
@@ -970,6 +967,7 @@ function ShapesPanel() {
                 ariaLabel="Default shape outline"
                 value={editor.creationDefaults.shape.stroke}
                 onChange={(stroke) => updateShapeDefaults({ stroke })}
+                allowTransparent
               />
             </div>
           </div>

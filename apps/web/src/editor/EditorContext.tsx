@@ -256,7 +256,9 @@ interface EditorContextValue {
   creationTool: CreationTool | null;
   creationDefaults: CreationDefaults;
   setCreationTool: (tool: CreationTool | null) => void;
-  setCreationDefaults: (defaults: CreationDefaults) => void;
+  setCreationDefaults: (
+    defaults: CreationDefaults | ((current: CreationDefaults) => CreationDefaults)
+  ) => void;
   placeCreation: (point: Point, endPoint?: Point) => void;
   addAsset: (family: AssetFamily, variant: AssetVariant, point?: Point) => Promise<void>;
   setAssetVariant: (variantId: string) => Promise<void>;
@@ -1378,11 +1380,18 @@ export function EditorProvider({
     [canvas, centerObject, commit, prepareElementStyle]
   );
 
-  const setCreationDefaults = useCallback((defaults: CreationDefaults) => {
-    const normalized = normalizeCreationDefaults(defaults);
-    setCreationDefaultsState(normalized);
-    localStorage.setItem(CREATION_DEFAULTS_STORAGE_KEY, JSON.stringify(normalized));
-  }, []);
+  const setCreationDefaults = useCallback(
+    (defaults: CreationDefaults | ((current: CreationDefaults) => CreationDefaults)) => {
+      setCreationDefaultsState((current) => {
+        const normalized = normalizeCreationDefaults(
+          typeof defaults === "function" ? defaults(current) : defaults
+        );
+        localStorage.setItem(CREATION_DEFAULTS_STORAGE_KEY, JSON.stringify(normalized));
+        return normalized;
+      });
+    },
+    []
+  );
 
   const addText = useCallback(
     (kind: TextKind = "point", point?: Point, fontSize?: number, fontWeight?: number) => {

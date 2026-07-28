@@ -94,6 +94,11 @@ export const DEFAULT_CREATION_DEFAULTS: CreationDefaults = {
 const color = (value: unknown, fallback: string) =>
   typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value) ? value : fallback;
 
+const shapePaint = (value: unknown, fallback: string) =>
+  typeof value === "string" && value.toLowerCase() === "transparent"
+    ? "transparent"
+    : color(value, fallback);
+
 const number = (value: unknown, fallback: number, minimum: number, maximum: number) =>
   typeof value === "number" && Number.isFinite(value)
     ? Math.max(minimum, Math.min(maximum, value))
@@ -128,8 +133,8 @@ export function normalizeCreationDefaults(value: unknown): CreationDefaults {
       fontWeight: number(text.fontWeight, DEFAULT_CREATION_DEFAULTS.text.fontWeight, 100, 900)
     },
     shape: {
-      fill: color(shape.fill, DEFAULT_CREATION_DEFAULTS.shape.fill),
-      stroke: color(shape.stroke, DEFAULT_CREATION_DEFAULTS.shape.stroke),
+      fill: shapePaint(shape.fill, DEFAULT_CREATION_DEFAULTS.shape.fill),
+      stroke: shapePaint(shape.stroke, DEFAULT_CREATION_DEFAULTS.shape.stroke),
       strokeWidth: number(shape.strokeWidth, DEFAULT_CREATION_DEFAULTS.shape.strokeWidth, 0, 40)
     },
     line: {

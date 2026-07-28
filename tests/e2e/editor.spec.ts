@@ -329,13 +329,25 @@ test("places text and shapes from active tools and persists line creation defaul
   await expect(page.getByRole("button", { name: "Membrane", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Callout", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Bracket", exact: true })).toHaveCount(0);
+  await page.getByRole("button", { name: "Default shape fill", exact: true }).click();
+  await page
+    .getByRole("dialog", { name: "Default shape fill palette" })
+    .getByRole("button", { name: "Transparent", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Default shape outline", exact: true }).click();
+  await page
+    .getByRole("dialog", { name: "Default shape outline palette" })
+    .getByRole("button", { name: "Transparent", exact: true })
+    .click();
   await selectUiOption(page, "Default text typeface", "Source Serif 4");
-  await page.getByLabel("Default text color").fill("#3157a4");
+  await setPaletteColor(page, "Default text color", "#3157a4");
   await page.getByLabel("Default text size").fill("28");
   await selectUiOption(page, "Default text weight", "Semibold");
 
   await placeTool(page, "Pentagon", 0.5, 0.18);
   await expect(page.locator(".inspector-header h2")).toHaveText("pentagon");
+  await expect(page.getByLabel("Fill color value")).toHaveValue("transparent");
+  await expect(page.getByLabel("Stroke color value")).toHaveValue("transparent");
   await page.keyboard.press("Delete");
   await expect(page.locator(".floating-panel")).toHaveCount(0);
 
@@ -358,7 +370,7 @@ test("places text and shapes from active tools and persists line creation defaul
     .getByRole("menu", { name: "Shape tools" })
     .getByRole("menuitem", { name: /Defaults/ })
     .click();
-  await page.getByLabel("Default line color").fill("#c026d3");
+  await setPaletteColor(page, "Default line color", "#c026d3");
   await page.getByLabel("Default line thickness").fill("9");
   await selectUiOption(page, "Line style", "Dashed");
   await selectUiOption(page, "End head", "Circle");
@@ -392,7 +404,7 @@ test("places text and shapes from active tools and persists line creation defaul
   await page.getByRole("button", { name: "Untitled figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await page.getByRole("menuitem", { name: /Defaults/ }).click();
-  await expect(page.getByLabel("Default line color")).toHaveValue("#c026d3");
+  await expect(page.getByLabel("Default line color")).toContainText("#c026d3");
   await expect(page.getByLabel("Default line thickness")).toHaveValue("9");
   await expect(page.getByRole("combobox", { name: "Line style" })).toHaveText(/Dashed/i);
   await expect(page.getByRole("combobox", { name: "Start head" })).toHaveText(/None/i);
@@ -400,7 +412,7 @@ test("places text and shapes from active tools and persists line creation defaul
   await expect(page.getByRole("combobox", { name: "Default text typeface" })).toHaveText(
     /Source Serif 4/i
   );
-  await expect(page.getByLabel("Default text color")).toHaveValue("#3157a4");
+  await expect(page.getByLabel("Default text color")).toContainText("#3157a4");
   await expect(page.getByLabel("Default text size")).toHaveValue("28");
   await expect(page.getByRole("combobox", { name: "Default text weight" })).toHaveText(/Semibold/i);
 
@@ -488,6 +500,21 @@ test("shows only controls supported by each editor object type", async ({ page }
   await expect(inspector.getByRole("button", { name: "Style", exact: true })).toHaveCount(0);
   await expect(inspector.getByRole("button", { name: "Variant", exact: true })).toHaveCount(0);
   await expect(inspector.getByRole("button", { name: "Line", exact: true })).toHaveCount(0);
+  await expect(
+    inspector.getByRole("button", { name: "Align & distribute", exact: true })
+  ).toHaveCount(0);
+  await page.getByRole("button", { name: "Fill color", exact: true }).click();
+  await page
+    .getByRole("dialog", { name: "Fill color palette" })
+    .getByRole("button", { name: "Transparent", exact: true })
+    .click();
+  await page.getByRole("button", { name: "Stroke color", exact: true }).click();
+  await page
+    .getByRole("dialog", { name: "Stroke color palette" })
+    .getByRole("button", { name: "Transparent", exact: true })
+    .click();
+  await expect(page.getByLabel("Fill color value")).toHaveValue("transparent");
+  await expect(page.getByLabel("Stroke color value")).toHaveValue("transparent");
 
   await placeTool(page, "Line", 0.55, 0.45);
   await expect(inspector.getByRole("button", { name: "Line", exact: true })).toHaveAttribute(
@@ -497,6 +524,23 @@ test("shows only controls supported by each editor object type", async ({ page }
   await expect(inspector.getByRole("button", { name: "Shape", exact: true })).toHaveCount(0);
   await expect(inspector.getByRole("button", { name: "Style", exact: true })).toHaveCount(0);
   await expect(inspector.getByRole("button", { name: "Variant", exact: true })).toHaveCount(0);
+  await page.keyboard.press("ControlOrMeta+A");
+  const alignmentSection = inspector.getByRole("button", {
+    name: "Align & distribute",
+    exact: true
+  });
+  await expect(alignmentSection).toBeVisible();
+  await alignmentSection.click();
+  await expect(inspector.getByRole("button", { name: "Align left" })).toBeEnabled();
+  await expect(inspector.getByRole("button", { name: "Distribute horizontally" })).toBeDisabled();
+  await expect(inspector.getByRole("button", { name: "Distribute vertically" })).toBeDisabled();
+
+  await placeTool(page, "Rectangle", 0.68, 0.6);
+  await page.keyboard.press("ControlOrMeta+A");
+  await expect(alignmentSection).toBeVisible();
+  await alignmentSection.click();
+  await expect(inspector.getByRole("button", { name: "Distribute horizontally" })).toBeEnabled();
+  await expect(inspector.getByRole("button", { name: "Distribute vertically" })).toBeEnabled();
 
   await placeTool(page, "Text", 0.7, 0.35);
   await expect(inspector.getByRole("button", { name: "Text", exact: true })).toHaveAttribute(
@@ -510,6 +554,9 @@ test("shows only controls supported by each editor object type", async ({ page }
   await expect(
     inspector.locator("label.inspector-value-range").filter({ hasText: "Transparency" })
   ).toBeVisible();
+  await expect(
+    inspector.getByRole("button", { name: "Align & distribute", exact: true })
+  ).toHaveCount(0);
   await page.keyboard.press("Escape");
 });
 
@@ -689,9 +736,7 @@ test("previews bundled variants and inserts nested-clip-path assets", async ({ p
   await expect(
     inspectorVariants.getByRole("option", { name: "Select Immune Cell variant 2" })
   ).toHaveAttribute("aria-selected", "true");
-  await inspectorVariants
-    .getByRole("option", { name: "Select Immune Cell variant 3" })
-    .click();
+  await inspectorVariants.getByRole("option", { name: "Select Immune Cell variant 3" }).click();
   await expect(
     inspectorVariants.getByRole("option", { name: "Select Immune Cell variant 3" })
   ).toHaveAttribute("aria-selected", "true");
@@ -1526,10 +1571,12 @@ test("keeps mirror controls out of the header and toggles grid and rulers", asyn
   await page.locator(".layers-title").focus();
   await page.keyboard.press("Tab");
   await expect(workspace).toBeFocused();
-  await expect.poll(() => workspace.evaluate((element) => element.matches(":focus-visible"))).toBe(
-    true
+  await expect
+    .poll(() => workspace.evaluate((element) => element.matches(":focus-visible")))
+    .toBe(true);
+  expect(await workspace.evaluate((element) => getComputedStyle(element).outlineStyle)).toBe(
+    "none"
   );
-  expect(await workspace.evaluate((element) => getComputedStyle(element).outlineStyle)).toBe("none");
 
   await expect(page.getByRole("button", { name: "Mirror horizontally" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Mirror vertically" })).toHaveCount(0);

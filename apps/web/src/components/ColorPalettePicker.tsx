@@ -44,6 +44,7 @@ interface ColorPalettePickerProps {
   value: string;
   onChange: (value: string) => void;
   ariaLabel: string;
+  allowTransparent?: boolean;
   disabled?: boolean;
   className?: string;
   showValue?: boolean;
@@ -53,6 +54,7 @@ export function ColorPalettePicker({
   value,
   onChange,
   ariaLabel,
+  allowTransparent = false,
   disabled = false,
   className = "",
   showValue = false
@@ -61,10 +63,18 @@ export function ColorPalettePicker({
   const popoverRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState<CSSProperties>({});
-  const normalizedValue = normalizeHex(value);
-  const [draft, setDraft] = useState(normalizedValue);
+  const normalizedValue =
+    allowTransparent && value.trim().toLowerCase() === "transparent"
+      ? "transparent"
+      : normalizeHex(value);
+  const [draft, setDraft] = useState(
+    normalizedValue === "transparent" ? "#000000" : normalizedValue
+  );
 
-  useEffect(() => setDraft(normalizedValue), [normalizedValue]);
+  useEffect(
+    () => setDraft(normalizedValue === "transparent" ? "#000000" : normalizedValue),
+    [normalizedValue]
+  );
 
   useLayoutEffect(() => {
     if (!open) return;
@@ -72,10 +82,7 @@ export function ColorPalettePicker({
       const trigger = triggerRef.current?.getBoundingClientRect();
       if (!trigger) return;
       const width = Math.min(312, window.innerWidth - 16);
-      const left = Math.min(
-        Math.max(8, trigger.left),
-        Math.max(8, window.innerWidth - width - 8)
-      );
+      const left = Math.min(Math.max(8, trigger.left), Math.max(8, window.innerWidth - width - 8));
       const roomBelow = window.innerHeight - trigger.bottom;
       setPosition({
         position: "fixed",
@@ -123,7 +130,7 @@ export function ColorPalettePicker({
 
   const applyDraft = () => {
     if (!/^#[0-9a-f]{6}$/i.test(draft.trim())) {
-      setDraft(normalizedValue);
+      setDraft(normalizedValue === "transparent" ? "#000000" : normalizedValue);
       return;
     }
     choose(draft.trim());
@@ -145,7 +152,14 @@ export function ColorPalettePicker({
         disabled={disabled}
         onClick={() => setOpen((current) => !current)}
       >
-        <span className="palette-color-current" style={{ backgroundColor: normalizedValue }} />
+        <span
+          className={`palette-color-current ${
+            normalizedValue === "transparent" ? "transparent" : ""
+          }`.trim()}
+          style={
+            normalizedValue === "transparent" ? undefined : { backgroundColor: normalizedValue }
+          }
+        />
         {showValue ? <span className="palette-color-value">{normalizedValue}</span> : null}
       </button>
       {open
@@ -174,7 +188,18 @@ export function ColorPalettePicker({
               </section>
               <section>
                 <h3>Standard colors</h3>
-                <div className="standard-color-grid">
+                <div
+                  className={`standard-color-grid ${
+                    allowTransparent ? "with-transparent" : ""
+                  }`.trim()}
+                >
+                  {allowTransparent ? (
+                    <ColorSwatch
+                      color="transparent"
+                      selected={normalizedValue === "transparent"}
+                      onChoose={choose}
+                    />
+                  ) : null}
                   {STANDARD_COLORS.map((color) => (
                     <ColorSwatch
                       key={color}
@@ -222,9 +247,11 @@ function ColorSwatch({
   return (
     <button
       type="button"
-      className={`color-palette-swatch ${selected ? "selected" : ""}`}
-      style={{ backgroundColor: color }}
-      aria-label={color}
+      className={`color-palette-swatch ${color === "transparent" ? "transparent" : ""} ${
+        selected ? "selected" : ""
+      }`.trim()}
+      style={color === "transparent" ? undefined : { backgroundColor: color }}
+      aria-label={color === "transparent" ? "Transparent" : color}
       aria-pressed={selected}
       onClick={() => onChoose(color)}
     >

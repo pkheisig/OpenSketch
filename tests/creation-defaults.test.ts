@@ -46,4 +46,17 @@ describe("creation tools", () => {
     expect(isLinearCreationTool({ type: "shape", kind: "rectangle" })).toBe(false);
     expect(isLinearCreationTool({ type: "text", kind: "point" })).toBe(false);
   });
+
+  it("preserves transparent shape paint without accepting it for text or lines", () => {
+    const defaults = normalizeCreationDefaults({
+      text: { color: "transparent" },
+      shape: { fill: "transparent", stroke: "TRANSPARENT" },
+      line: { color: "transparent" }
+    });
+
+    expect(defaults.shape.fill).toBe("transparent");
+    expect(defaults.shape.stroke).toBe("transparent");
+    expect(defaults.text.color).toBe(DEFAULT_CREATION_DEFAULTS.text.color);
+    expect(defaults.line.color).toBe(DEFAULT_CREATION_DEFAULTS.line.color);
+  });
 });

@@ -98,6 +98,8 @@ function ObjectInspector({ object }: { object: FabricObject }) {
   const hasStoredVariants = Boolean(assetFamily && assetFamily.variants.length > 1);
   const canGroup = editor.selection.length > 1;
   const canUngroup = !canGroup && object instanceof FabricGroup;
+  const canAlign = editor.selection.length >= 2;
+  const canDistribute = editor.selection.length >= 3;
   const width = (object.width ?? 0) * (object.scaleX ?? 1);
   const height = (object.height ?? 0) * (object.scaleY ?? 1);
   const transparencyControl = (
@@ -109,18 +111,14 @@ function ObjectInspector({ object }: { object: FabricObject }) {
         min="0"
         max="100"
         value={Math.round((1 - (object.opacity ?? 1)) * 100)}
-        onChange={(event) =>
-          editor.setObject({ opacity: 1 - Number(event.target.value) / 100 })
-        }
+        onChange={(event) => editor.setObject({ opacity: 1 - Number(event.target.value) / 100 })}
       />
       <input
         type="range"
         min="0"
         max="100"
         value={Math.round((1 - (object.opacity ?? 1)) * 100)}
-        onChange={(event) =>
-          editor.setObject({ opacity: 1 - Number(event.target.value) / 100 })
-        }
+        onChange={(event) => editor.setObject({ opacity: 1 - Number(event.target.value) / 100 })}
       />
     </label>
   );
@@ -297,11 +295,12 @@ function ObjectInspector({ object }: { object: FabricObject }) {
               <span>Fill</span>
               <ColorPalettePicker
                 ariaLabel="Fill color"
-                value={normalizeHex(object.fill)}
+                value={normalizePaint(object.fill)}
                 onChange={(fill) => editor.setObject({ fill })}
+                allowTransparent={isShape}
               />
               <input
-                value={normalizeHex(object.fill)}
+                value={normalizePaint(object.fill)}
                 onChange={(event) => editor.setObject({ fill: event.target.value })}
                 aria-label="Fill color value"
               />
@@ -311,11 +310,12 @@ function ObjectInspector({ object }: { object: FabricObject }) {
             <span>Stroke</span>
             <ColorPalettePicker
               ariaLabel="Stroke color"
-              value={normalizeHex(typeof object.stroke === "string" ? object.stroke : "#13367a")}
+              value={normalizePaint(typeof object.stroke === "string" ? object.stroke : "#13367a")}
               onChange={(stroke) => editor.setObject({ stroke })}
+              allowTransparent={isShape}
             />
             <input
-              value={normalizeHex(typeof object.stroke === "string" ? object.stroke : "#13367a")}
+              value={normalizePaint(typeof object.stroke === "string" ? object.stroke : "#13367a")}
               onChange={(event) => editor.setObject({ stroke: event.target.value })}
               aria-label="Stroke color value"
             />
@@ -530,37 +530,46 @@ function ObjectInspector({ object }: { object: FabricObject }) {
           {transparencyControl}
         </div>
       ) : null}
-      <InspectorSection title="Align & distribute">
-        <div className="icon-grid alignment-grid">
-          <button onClick={() => editor.align("left")} aria-label="Align left">
-            <AlignLeft size={15} />
-          </button>
-          <button onClick={() => editor.align("center")} aria-label="Align centers">
-            <AlignCenter size={15} />
-          </button>
-          <button onClick={() => editor.align("right")} aria-label="Align right">
-            <AlignRight size={15} />
-          </button>
-          <button
-            onClick={() => editor.distribute("horizontal")}
-            aria-label="Distribute horizontally"
-          >
-            <AlignHorizontalDistributeCenter size={15} />
-          </button>
-          <button onClick={() => editor.align("top")} aria-label="Align top">
-            <ArrowUpToLine size={15} />
-          </button>
-          <button onClick={() => editor.align("middle")} aria-label="Align middles">
-            <AlignVerticalDistributeCenter size={15} />
-          </button>
-          <button onClick={() => editor.align("bottom")} aria-label="Align bottom">
-            <ArrowDownToLine size={15} />
-          </button>
-          <button onClick={() => editor.distribute("vertical")} aria-label="Distribute vertically">
-            <AlignVerticalDistributeCenter size={15} />
-          </button>
-        </div>
-      </InspectorSection>
+      {canAlign ? (
+        <InspectorSection title="Align & distribute">
+          <div className="icon-grid alignment-grid">
+            <button onClick={() => editor.align("left")} aria-label="Align left">
+              <AlignLeft size={15} />
+            </button>
+            <button onClick={() => editor.align("center")} aria-label="Align centers">
+              <AlignCenter size={15} />
+            </button>
+            <button onClick={() => editor.align("right")} aria-label="Align right">
+              <AlignRight size={15} />
+            </button>
+            <button
+              onClick={() => editor.distribute("horizontal")}
+              aria-label="Distribute horizontally"
+              disabled={!canDistribute}
+              title={canDistribute ? undefined : "Select at least three objects"}
+            >
+              <AlignHorizontalDistributeCenter size={15} />
+            </button>
+            <button onClick={() => editor.align("top")} aria-label="Align top">
+              <ArrowUpToLine size={15} />
+            </button>
+            <button onClick={() => editor.align("middle")} aria-label="Align middles">
+              <AlignVerticalDistributeCenter size={15} />
+            </button>
+            <button onClick={() => editor.align("bottom")} aria-label="Align bottom">
+              <ArrowDownToLine size={15} />
+            </button>
+            <button
+              onClick={() => editor.distribute("vertical")}
+              aria-label="Distribute vertically"
+              disabled={!canDistribute}
+              title={canDistribute ? undefined : "Select at least three objects"}
+            >
+              <AlignVerticalDistributeCenter size={15} />
+            </button>
+          </div>
+        </InspectorSection>
+      ) : null}
       <InspectorSection title="Object actions">
         <div className="action-grid">
           <button onClick={() => void editor.duplicateSelection()}>
@@ -775,4 +784,8 @@ function ConnectorSelect<
 function normalizeHex(value: string): string {
   const parsed = new Color(value);
   return parsed.isUnrecognised ? "#000000" : `#${parsed.toHex().toLowerCase()}`;
+}
+
+function normalizePaint(value: string): string {
+  return value.trim().toLowerCase() === "transparent" ? "transparent" : normalizeHex(value);
 }
