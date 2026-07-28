@@ -675,16 +675,23 @@ test("previews bundled variants and inserts nested-clip-path assets", async ({ p
   await expect(page.getByRole("button", { name: "Asset colors", exact: true })).toHaveCount(0);
   await expect(page.getByText("Color presets", { exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Shape", exact: true })).toHaveCount(0);
-  const inspectorVariant = page
+  const inspectorVariants = page
     .locator(".inspector-embedded")
-    .getByRole("combobox", { name: "Immune Cell variant" });
-  await expect(inspectorVariant).toHaveText("Variant 2");
-  await inspectorVariant.click();
-  await page
-    .getByRole("listbox", { name: "Immune Cell variants" })
+    .getByRole("listbox", { name: "Immune Cell variants" });
+  await expect(
+    page.locator(".inspector-embedded").getByRole("combobox", { name: "Immune Cell variant" })
+  ).toHaveCount(0);
+  await expect(inspectorVariants.getByRole("option")).toHaveCount(9);
+  await expect(inspectorVariants.locator("img")).toHaveCount(9);
+  await expect(
+    inspectorVariants.getByRole("option", { name: "Select Immune Cell variant 2" })
+  ).toHaveAttribute("aria-selected", "true");
+  await inspectorVariants
     .getByRole("option", { name: "Select Immune Cell variant 3" })
     .click();
-  await expect(inspectorVariant).toHaveText("Variant 3");
+  await expect(
+    inspectorVariants.getByRole("option", { name: "Select Immune Cell variant 3" })
+  ).toHaveAttribute("aria-selected", "true");
   await expect(page.locator(".layers-title small")).toHaveText("1");
 
   await page.getByRole("button", { name: "Back to projects" }).click();
@@ -693,8 +700,10 @@ test("previews bundled variants and inserts nested-clip-path assets", async ({ p
   await ensureLayersOpen(page);
   await page.locator(".layer-list button").filter({ hasText: "Immune Cell" }).click();
   await expect(
-    page.locator(".inspector-embedded").getByRole("combobox", { name: "Immune Cell variant" })
-  ).toHaveText("Variant 3");
+    page
+      .locator(".inspector-embedded")
+      .getByRole("option", { name: "Select Immune Cell variant 3" })
+  ).toHaveAttribute("aria-selected", "true");
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Immune Cell");

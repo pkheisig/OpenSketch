@@ -36,7 +36,7 @@ import { assetManifest } from "@/assets/manifest";
 import { saveAssetVariantDefault } from "@/editor/assetVariantDefaults";
 import { useEditor } from "@/editor/EditorContext";
 import { TEXT_FONT_FAMILIES } from "@/editor/fonts";
-import { AssetVariantPicker } from "@/components/AssetVariantPicker";
+import { AssetVariantGrid } from "@/components/AssetVariantPicker";
 import { UiSelect } from "@/components/UiSelect";
 
 function number(value: number | undefined, digits = 0) {
@@ -195,7 +195,7 @@ function ObjectInspector({ object }: { object: FabricObject }) {
         hasStoredVariants && object.assetId ? (
           <InspectorSection title="Variant" open>
             <div className="asset-variants">
-              <AssetVariantPicker
+              <AssetVariantGrid
                 family={assetFamily}
                 value={object.assetId}
                 onChange={(variantId) => {

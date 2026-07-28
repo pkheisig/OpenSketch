@@ -3,6 +3,38 @@ import { createPortal } from "react-dom";
 import { Check, ChevronDown } from "lucide-react";
 import type { AssetFamily } from "@workspace/editor-core";
 
+export function AssetVariantGrid({
+  family,
+  value,
+  onChange
+}: {
+  family: AssetFamily;
+  value: string;
+  onChange: (id: string) => void;
+}) {
+  return (
+    <div className="asset-variant-grid" role="listbox" aria-label={`${family.title} variants`}>
+      {family.variants.map((variant, index) => (
+        <button
+          key={variant.id}
+          type="button"
+          className={variant.id === value ? "selected" : ""}
+          role="option"
+          aria-selected={variant.id === value}
+          aria-label={`Select ${family.title} variant ${index + 1}`}
+          onClick={() => onChange(variant.id)}
+        >
+          <span className="asset-variant-preview">
+            <img src={variant.assetPath} alt="" loading="lazy" />
+            {variant.id === value && <Check size={14} aria-hidden="true" />}
+          </span>
+          <span>Variant {index + 1}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export function AssetVariantPicker({
   family,
   value,

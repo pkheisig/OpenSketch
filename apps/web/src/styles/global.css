@@ -1576,6 +1576,47 @@ a:focus-visible {
   background: var(--teal-dark);
 }
 
+.asset-variant-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.asset-variant-grid > button {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid #d3dcd8;
+  border-radius: 7px;
+  color: #526461;
+  background: #fff;
+  font-size: 8px;
+  line-height: 1.2;
+  text-align: center;
+  transition:
+    border-color var(--motion-ui),
+    box-shadow var(--motion-ui),
+    background var(--motion-ui);
+}
+
+.asset-variant-grid > button:hover {
+  border-color: #78a9a3;
+  background: #f7fbf9;
+}
+
+.asset-variant-grid > button.selected {
+  border-color: var(--teal-dark);
+  color: var(--teal-dark);
+  background: #f0f8f5;
+  box-shadow: inset 0 0 0 1px var(--teal-dark);
+  font-weight: 700;
+}
+
+.asset-variant-grid .asset-variant-preview {
+  border: 1px solid #edf0ed;
+}
+
 .empty-library {
   display: grid;
   justify-items: center;
@@ -2564,26 +2605,6 @@ input[type="color"] {
   color: var(--teal-dark);
   background: transparent;
   font-size: 8px;
-}
-
-.asset-variants .asset-variant-picker {
-  overflow: visible;
-  color: #344845;
-  font-size: 10px;
-}
-
-.asset-variants .asset-variant-trigger {
-  min-height: 30px;
-  padding: 0 9px;
-  border: 1px solid #cbd4cf;
-  border-radius: 5px;
-  background: white;
-  font-weight: 700;
-}
-
-.asset-variants .asset-variant-trigger:hover {
-  border-color: #86aaa3;
-  background: #f8fbf9;
 }
 
 .color-preset-grid {
