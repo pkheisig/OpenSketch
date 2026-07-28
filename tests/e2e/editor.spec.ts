@@ -1545,14 +1545,15 @@ test("centers a new artboard and restores each project's zoom and pan", async ({
   await page.getByRole("button", { name: "New figure" }).click();
 
   const viewportGeometry = async () => {
-    const [workspace, stage] = await Promise.all([
+    const [workspace, stage, footer] = await Promise.all([
       page.locator(".workspace-scroll").boundingBox(),
-      page.locator(".artboard-stage").boundingBox()
+      page.locator(".artboard-stage").boundingBox(),
+      page.locator(".workspace-footer").boundingBox()
     ]);
-    if (!workspace || !stage) return null;
+    if (!workspace || !stage || !footer) return null;
     return {
       x: stage.x + stage.width / 2 - (workspace.x + workspace.width / 2),
-      y: stage.y + stage.height / 2 - (workspace.y + workspace.height / 2)
+      y: stage.y + stage.height / 2 - (workspace.y + (footer.y - workspace.y) / 2)
     };
   };
 

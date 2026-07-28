@@ -219,6 +219,7 @@ export function CanvasWorkspace() {
   const workspaceRef = useRef<HTMLElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
   const spacePressed = useRef(false);
   const panOrigin = useRef<{ x: number; y: number; left: number; top: number } | null>(null);
   const marqueeOrigin = useRef<{ x: number; y: number } | null>(null);
@@ -313,27 +314,43 @@ export function CanvasWorkspace() {
     return () => document.removeEventListener("pointerdown", closeFooterPanel);
   }, [footerPanel]);
 
+  const viewportCenterOffset = useCallback(() => {
+    const host = scrollRef.current;
+    if (!host) return { x: 0, y: 0 };
+    const hostRect = host.getBoundingClientRect();
+    const footerRect = footerRef.current?.getBoundingClientRect();
+    const visibleHeight = footerRect
+      ? Math.max(0, Math.min(host.clientHeight, footerRect.top - hostRect.top))
+      : host.clientHeight;
+    return {
+      x: host.clientWidth / 2,
+      y: visibleHeight / 2
+    };
+  }, []);
+
   const applyViewportFocus = useCallback(
     (focus: { x: number; y: number }) => {
       const host = scrollRef.current;
       const stage = stageRef.current;
       if (!host || !stage) return;
+      const center = viewportCenterOffset();
       suppressViewportCaptureUntil.current = performance.now() + 80;
-      host.scrollLeft = stage.offsetLeft + focus.x * zoom - host.clientWidth / 2;
-      host.scrollTop = stage.offsetTop + focus.y * zoom - host.clientHeight / 2;
+      host.scrollLeft = stage.offsetLeft + focus.x * zoom - center.x;
+      host.scrollTop = stage.offsetTop + focus.y * zoom - center.y;
     },
-    [zoom]
+    [viewportCenterOffset, zoom]
   );
 
   const currentViewportFocus = useCallback(() => {
     const host = scrollRef.current;
     const stage = stageRef.current;
     if (!host || !stage) return viewportFocus.current;
+    const center = viewportCenterOffset();
     return {
-      x: (host.scrollLeft + host.clientWidth / 2 - stage.offsetLeft) / zoom,
-      y: (host.scrollTop + host.clientHeight / 2 - stage.offsetTop) / zoom
+      x: (host.scrollLeft + center.x - stage.offsetLeft) / zoom,
+      y: (host.scrollTop + center.y - stage.offsetTop) / zoom
     };
-  }, [zoom]);
+  }, [viewportCenterOffset, zoom]);
 
   const queueViewportSave = useCallback(
     (focus: { x: number; y: number }) => {
@@ -359,11 +376,12 @@ export function CanvasWorkspace() {
 
     if (!initialViewport.current) {
       const saved = storedViewport(projectId);
+      const center = viewportCenterOffset();
       const fittedZoom = Math.max(
         0.1,
         Math.min(
           (host.clientWidth - 120) / canvasSettings.width,
-          (host.clientHeight - 120) / canvasSettings.height,
+          (center.y * 2 - 120) / canvasSettings.height,
           1
         )
       );
@@ -406,6 +424,7 @@ export function CanvasWorkspace() {
     projectId,
     queueViewportSave,
     setZoom,
+    viewportCenterOffset,
     zoom
   ]);
 
@@ -503,9 +522,10 @@ export function CanvasWorkspace() {
       suppressViewportCaptureUntil.current = performance.now() + 80;
       host.scrollLeft += delta.x;
       host.scrollTop += delta.y;
+      const center = viewportCenterOffset();
       viewportFocus.current = {
-        x: (host.scrollLeft + host.clientWidth / 2 - stage.offsetLeft) / nextZoom,
-        y: (host.scrollTop + host.clientHeight / 2 - stage.offsetTop) / nextZoom
+        x: (host.scrollLeft + center.x - stage.offsetLeft) / nextZoom,
+        y: (host.scrollTop + center.y - stage.offsetTop) / nextZoom
       };
     };
     const commitPendingZoom = () => {
@@ -555,7 +575,7 @@ export function CanvasWorkspace() {
       window.clearTimeout(zoomSettleTimer.current);
       pendingZoomAnchor.current = null;
     };
-  }, [previewZoom, setZoom]);
+  }, [previewZoom, setZoom, viewportCenterOffset]);
 
   const onDrop = (event: DragEvent) => {
     event.preventDefault();
@@ -1260,7 +1280,10 @@ export function CanvasWorkspace() {
           ) : null}
         </div>
       ) : null}
-      <div className={`workspace-footer ${footerPanel ? "footer-panel-open" : ""}`}>
+      <div
+        ref={footerRef}
+        className={`workspace-footer ${footerPanel ? "footer-panel-open" : ""}`}
+      >
         <div className="workspace-footer-section canvas-controls">
           <button
             className={footerPanel === "size" ? "active labeled" : "labeled"}
