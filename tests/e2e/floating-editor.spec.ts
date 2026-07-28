@@ -13,6 +13,7 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   await lines.hover();
   const lineMenu = page.getByRole("menu", { name: "Line and arrow tools" });
   await expect(lineMenu).toBeVisible();
+  await expect(lineMenu.getByRole("menuitem", { name: "Custom defaults" })).toHaveCount(0);
   await lineMenu.getByRole("menuitem", { name: /^Lines/ }).hover();
   const lineGlyphs = await lineMenu
     .locator(".tool-flyout-secondary button svg")
@@ -23,6 +24,17 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   const arrowGlyphs = await lineMenu
     .locator(".tool-flyout-secondary button svg")
     .evaluateAll((icons) => icons.map((icon) => icon.innerHTML));
+  const arrowGeometry = await lineMenu
+    .locator(".tool-flyout-secondary button svg > path")
+    .evaluateAll((paths) =>
+      paths.map((path) => ({
+        start: path.getAttribute("marker-start"),
+        end: path.getAttribute("marker-end")
+      }))
+    );
+  expect(arrowGeometry.every(({ end }) => end?.startsWith("url(#"))).toBe(true);
+  expect(arrowGeometry.filter(({ start }) => start?.startsWith("url(#")).length).toBeGreaterThan(1);
+  await expect(lineMenu.locator(".tool-flyout-secondary button svg > circle")).toHaveCount(0);
   await lineMenu.getByRole("menuitem", { name: /Inhibitor/ }).hover();
   await expect(
     lineMenu.getByRole("menuitem", { name: "Inhibitor", exact: true }).last()

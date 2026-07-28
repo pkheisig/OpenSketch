@@ -1,5 +1,6 @@
 import {
   useEffect,
+  useId,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -215,10 +216,11 @@ const CONNECTOR_PRESETS: Record<ConnectorFamily, ConnectorPreset[]> = {
 };
 
 function ConnectorPresetIcon({ value }: { value: ConnectorPreset }) {
+  const markerRoot = useId().replaceAll(":", "");
   const line = {
     fill: "none",
     stroke: "currentColor",
-    strokeWidth: 1.8,
+    strokeWidth: 1.8 * Math.min(value.widthScale ?? 1, 1.45),
     strokeLinecap: "round" as const,
     strokeLinejoin: "round" as const
   };
@@ -239,31 +241,63 @@ function ConnectorPresetIcon({ value }: { value: ConnectorPreset }) {
     value.lineStyle === "dashed" ? "5 3" : value.lineStyle === "dotted" ? "1 4" : undefined;
   const endHead = value.endArrowhead;
   const startHead = value.startArrowhead;
-  const endpoint = (kind: ConnectorArrowhead, atStart: boolean) => {
-    const x = atStart ? 4 : 28;
+  const markerId = (kind: ConnectorArrowhead, position: "start" | "end") =>
+    `${markerRoot}-${position}-${kind}`;
+  const marker = (kind: ConnectorArrowhead, position: "start" | "end") => {
     if (kind === "none") return null;
-    if (kind === "circle")
-      return <circle key={`${kind}-${x}`} cx={x} cy="12" r="2.5" fill="currentColor" />;
-    if (kind === "open-circle")
-      return <circle key={`${kind}-${x}`} cx={x} cy="12" r="3" {...line} />;
-    if (kind === "bar") return <path key={`${kind}-${x}`} {...line} d={`M${x} 6V18`} />;
-    if (kind === "neuron")
+    const id = markerId(kind, position);
+    const common = {
+      id,
+      markerUnits: "userSpaceOnUse" as const,
+      markerWidth: 10,
+      markerHeight: 10,
+      viewBox: "0 0 10 10",
+      orient: "auto-start-reverse" as const,
+      overflow: "visible" as const
+    };
+    if (kind === "circle" || kind === "open-circle") {
       return (
-        <path
-          key={`${kind}-${x}`}
-          fill="currentColor"
-          d={atStart ? "M4 12 10 7v10Z" : "M28 12 22 7v10Z"}
-        />
+        <marker {...common} refX="5" refY="5">
+          <circle
+            cx="5"
+            cy="5"
+            r="2.7"
+            fill={kind === "circle" ? "currentColor" : "#fffefa"}
+            stroke={kind === "open-circle" ? "currentColor" : "none"}
+            strokeWidth="1.6"
+          />
+        </marker>
       );
+    }
+    if (kind === "bar") {
+      return (
+        <marker {...common} refX="5" refY="5">
+          <path d="M5 .8V9.2" fill="none" stroke="currentColor" strokeWidth="1.8" />
+        </marker>
+      );
+    }
+    if (kind === "neuron") {
+      return (
+        <marker {...common} refX="8.5" refY="5">
+          <path d="M1 1 9 5 1 9 2.7 5Z" fill="currentColor" />
+        </marker>
+      );
+    }
     return (
-      <path
-        key={`${kind}-${x}`}
-        {...line}
-        fill={kind === "triangle" ? "currentColor" : "none"}
-        d={atStart ? "M10 6 4 12l6 6" : "m22 6 6 6-6 6"}
-      />
+      <marker {...common} refX="8.5" refY="5">
+        <path
+          d="M1 1 9 5 1 9"
+          fill={kind === "triangle" ? "currentColor" : "none"}
+          stroke="currentColor"
+          strokeWidth={kind === "triangle" ? "1.2" : "1.8"}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </marker>
     );
   };
+  const markerStart = startHead === "none" ? undefined : `url(#${markerId(startHead, "start")})`;
+  const markerEnd = endHead === "none" ? undefined : `url(#${markerId(endHead, "end")})`;
   return (
     <svg
       width="43"
@@ -273,9 +307,17 @@ function ConnectorPresetIcon({ value }: { value: ConnectorPreset }) {
       style={{ opacity: value.opacity ?? 1 }}
     >
       <title>{value.label}</title>
-      <path {...line} strokeDasharray={dash} d={paths[value.pathShape]} />
-      {endpoint(startHead, true)}
-      {endpoint(endHead, false)}
+      <defs>
+        {marker(startHead, "start")}
+        {marker(endHead, "end")}
+      </defs>
+      <path
+        {...line}
+        strokeDasharray={dash}
+        markerStart={markerStart}
+        markerEnd={markerEnd}
+        d={paths[value.pathShape]}
+      />
     </svg>
   );
 }
@@ -390,7 +432,6 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const [flyout, setFlyout] = useState<Flyout>(null);
   const [lineFamily, setLineFamily] = useState<ConnectorFamily>("lines");
   const [shapeFamily, setShapeFamily] = useState<keyof typeof SHAPE_GROUPS>("basic");
-  const [defaultsSource, setDefaultsSource] = useState<"line" | "shape">("line");
   const closeTimer = useRef<number | undefined>(undefined);
   const handledSelection = useRef("");
   const editor = useEditor();
@@ -557,16 +598,6 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
                 </button>
               );
             })}
-            <button
-              aria-label="Custom defaults"
-              onClick={() => {
-                setDefaultsSource("line");
-                setFlyout("defaults");
-              }}
-              role="menuitem"
-            >
-              <Edit3 size={18} /> Custom <ArrowRight size={14} />
-            </button>
           </div>
           <div className={`tool-flyout-secondary connector-family-${lineFamily}`}>
             {CONNECTOR_PRESETS[lineFamily].map((value) => {
@@ -612,7 +643,6 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
             </button>
             <button
               onClick={() => {
-                setDefaultsSource("shape");
                 setFlyout("defaults");
               }}
               role="menuitem"
@@ -647,30 +677,6 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
           onPointerLeave={scheduleFlyoutClose}
         >
           <ShapesPanel />
-          {defaultsSource === "line" ? (
-            <button
-              className="use-custom-connector"
-              onClick={() => {
-                const line = editor.creationDefaults.line;
-                editor.setCreationTool({
-                  type: "shape",
-                  kind:
-                    line.startArrowhead === "none" && line.endArrowhead === "none"
-                      ? "line"
-                      : "arrow",
-                  connectorPreset: {
-                    pathShape: "straight",
-                    lineStyle: line.lineStyle,
-                    startArrowhead: line.startArrowhead,
-                    endArrowhead: line.endArrowhead
-                  }
-                });
-                setFlyout(null);
-              }}
-            >
-              Use custom connector
-            </button>
-          ) : null}
         </div>
       ) : null}
       {!collapsed ? (
