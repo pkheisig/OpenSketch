@@ -110,25 +110,25 @@ export function TopToolbar({ project, onHome }: { project: ProjectRecord; onHome
             <h2 id="shortcut-title">Keyboard shortcuts</h2>
             <div className="shortcut-grid">
               <span>Undo / redo</span>
-              <kbd>⌘ Z / ⇧⌘ Z</kbd>
+              <kbd>Cmd/Ctrl + Z / Shift + Cmd/Ctrl + Z</kbd>
               <span>Duplicate</span>
-              <kbd>⌘ D</kbd>
+              <kbd>Cmd/Ctrl + D</kbd>
               <span>Cut / copy / paste</span>
-              <kbd>⌘ X / C / V</kbd>
+              <kbd>Cmd/Ctrl + X / C / V</kbd>
               <span>Select all</span>
-              <kbd>⌘ A</kbd>
+              <kbd>Cmd/Ctrl + A</kbd>
               <span>Group / ungroup</span>
-              <kbd>⌘ G / ⇧⌘ G</kbd>
+              <kbd>Cmd/Ctrl + G / Shift + Cmd/Ctrl + G</kbd>
               <span>Nudge / large nudge</span>
-              <kbd>↑ / ⇧ ↑</kbd>
+              <kbd>Arrow key / Shift + Arrow key</kbd>
               <span>Zoom / fit canvas</span>
-              <kbd>⌘ + / − / 0</kbd>
+              <kbd>Cmd/Ctrl + + / − / 0</kbd>
               <span>Delete</span>
-              <kbd>⌫</kbd>
+              <kbd>Backspace / Delete</kbd>
             </div>
             <p className="dialog-note">
               Hold Space and drag, use the middle mouse button, or use the workspace scrollbars to
-              pan. Hold Ctrl/⌘ while scrolling to zoom.
+              pan. Hold Cmd/Ctrl while scrolling to zoom.
             </p>
             <p className="dialog-note">{GLOBAL_CREDIT}</p>
             <button className="button primary" onClick={() => setHelpOpen(false)}>

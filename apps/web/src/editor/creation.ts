@@ -8,6 +8,7 @@ export type ShapeKind =
   | "ellipse"
   | "circle"
   | "triangle"
+  | "pentagon"
   | "polygon"
   | "line"
   | "arrow"

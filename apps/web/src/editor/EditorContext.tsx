@@ -55,6 +55,8 @@ import {
 import {
   anchorPoint,
   applySnapResistance,
+  SNAP_CAPTURE_DISTANCE_PX,
+  SNAP_MAX_ORTHOGONAL_GAP_PX,
   SNAP_RELEASE_DISTANCE_PX,
   snapBounds,
   type AxisSnapLock,
@@ -186,6 +188,28 @@ async function bundledSvgSource(assetId: string): Promise<string | null> {
   return source;
 }
 
+async function createBundledAssetGroup(family: AssetFamily, variant: AssetVariant): Promise<Group> {
+  const source = await bundledSvgSource(variant.id);
+  if (!source) throw new Error(`Could not load ${family.title}.`);
+  const result = await loadEditableSvg(source);
+  const objects = result.objects.filter((object): object is FabricObject => Boolean(object));
+  const group = groupSvgElements(objects, result.options);
+  group.assetId = variant.id;
+  group.familyId = family.familyId;
+  group.provenance = {
+    nihSourcePage: family.nihSourcePage,
+    commonsPage: family.commonsPage,
+    author: family.author,
+    license: family.license
+  };
+  group.originalPalette = Object.fromEntries(
+    paletteFromObject(group).map((color) => [color, color])
+  );
+  rememberOriginalColors(group);
+  configureEditableSvgParts(group);
+  return group;
+}
+
 async function restoreBundledSvgBlendModes(objects: FabricObject[]): Promise<void> {
   await Promise.all(
     objects.map(async (object) => {
@@ -224,6 +248,7 @@ interface EditorContextValue {
   setCreationDefaults: (defaults: CreationDefaults) => void;
   placeCreation: (point: Point, endPoint?: Point) => void;
   addAsset: (family: AssetFamily, variant: AssetVariant, point?: Point) => Promise<void>;
+  setAssetVariant: (variantId: string) => Promise<void>;
   importMedia: (file: File) => Promise<void>;
   deleteSelection: () => void;
   duplicateSelection: () => Promise<void>;
@@ -345,6 +370,11 @@ function configureCanvasAssets(objects: FabricObject[]): void {
       configureCanvasAssets(object.getObjects());
     }
   });
+}
+
+function assignFreshCloneIds(object: FabricObject): void {
+  object.objectId = crypto.randomUUID();
+  if (object instanceof Group) object.getObjects().forEach(assignFreshCloneIds);
 }
 
 function deepHitObjects(canvas: Canvas, point: FabricPoint): FabricObject[] {
@@ -637,6 +667,18 @@ export function EditorProvider({
     | undefined
   >(undefined);
   const deepSelectionStackOverride = useRef(false);
+  const dragDuplicate = useRef<
+    | {
+        target: FabricObject;
+        sources: FabricObject[];
+        parent?: Group;
+        clones: Promise<FabricObject[]>;
+        activated: boolean;
+        pendingAdd?: Promise<void>;
+      }
+    | undefined
+  >(undefined);
+  const createPointText = useRef<(point: Point) => void>(() => undefined);
 
   const refreshConnectors = useCallback(
     (changedObjectId?: string) => {
@@ -863,7 +905,12 @@ export function EditorProvider({
     const selectDeeperObject = ({ scenePoint }: { scenePoint?: FabricPoint }) => {
       if (!scenePoint) return;
       const hitObjects = deepHitObjects(canvas, scenePoint);
-      if (hitObjects.length === 0) return;
+      if (hitObjects.length === 0) {
+        if (latestCanvasSettings.current.doubleClickCreatesText) {
+          createPointText.current(scenePoint);
+        }
+        return;
+      }
       const previousCycle = deepSelectionCycle.current;
       const samePoint =
         previousCycle &&
@@ -904,8 +951,69 @@ export function EditorProvider({
       canvas.preserveObjectStacking = true;
       deepSelectionStackOverride.current = false;
     };
+    const prepareDragDuplicate = ({
+      e,
+      target
+    }: {
+      e: MouseEvent | PointerEvent | TouchEvent;
+      target?: FabricObject;
+    }) => {
+      dragDuplicate.current = undefined;
+      if (
+        !target ||
+        !("button" in e) ||
+        e.button !== 0 ||
+        !(e.metaKey || e.ctrlKey) ||
+        (target instanceof IText && target.isEditing)
+      ) {
+        return;
+      }
+      const sources = target instanceof ActiveSelection ? target.getObjects() : [target];
+      const parent =
+        !(target instanceof ActiveSelection) &&
+        target.group instanceof Group &&
+        !(target.group instanceof ActiveSelection)
+          ? target.group
+          : undefined;
+      dragDuplicate.current = {
+        target,
+        sources,
+        parent,
+        clones: Promise.all(sources.map((source) => source.clone())),
+        activated: false
+      };
+    };
+    const activateDragDuplicate = (target: FabricObject) => {
+      const session = dragDuplicate.current;
+      if (!session || session.target !== target || session.activated) return;
+      session.activated = true;
+      session.pendingAdd = session.clones.then((clones) => {
+        clones.forEach((clone, index) => {
+          assignFreshCloneIds(clone);
+          const source = session.sources[index];
+          clone.name = `${source.name ?? "Object"} copy`;
+          if (session.parent) {
+            const sourceIndex = session.parent.getObjects().indexOf(source);
+            session.parent.insertAt(Math.max(sourceIndex, 0), clone);
+          } else {
+            const sourceIndex = canvas.getObjects().indexOf(source);
+            canvas.insertAt(Math.max(sourceIndex, 0), clone);
+          }
+        });
+        if (session.parent) {
+          session.parent.triggerLayout();
+          session.parent.dirty = true;
+        }
+        configureCanvasAssets(clones);
+        canvas.requestRenderAll();
+      });
+    };
     const modified = ({ target }: { target?: FabricObject } = {}) => {
       const changed = target ?? canvas.getActiveObject();
+      const duplicateSession =
+        changed && dragDuplicate.current?.target === changed && dragDuplicate.current.activated
+          ? dragDuplicate.current
+          : undefined;
       const finish = () => {
         if (changed instanceof IText) {
           cache.clearFontCache(changed.fontFamily);
@@ -919,9 +1027,13 @@ export function EditorProvider({
         setSelection(canvas.getActiveObjects());
         if (changed?.objectId) refreshConnectors(changed.objectId);
         canvas.requestRenderAll();
-        commit("Transform");
+        commit(duplicateSession ? "Duplicate drag" : "Transform");
       };
-      if (changed instanceof IText && "fonts" in document) {
+      const finishAfterFonts = () => {
+        if (!(changed instanceof IText) || !("fonts" in document)) {
+          finish();
+          return;
+        }
         const weight = String(changed.fontWeight ?? 400);
         const family = changed.fontFamily
           .split(",")[0]
@@ -930,14 +1042,34 @@ export function EditorProvider({
         void document.fonts
           .load(`${weight} ${changed.fontSize ?? 54}px "${family}"`)
           .then(finish, finish);
+      };
+      if (duplicateSession?.pendingAdd) {
+        void duplicateSession.pendingAdd.then(finishAfterFonts, finishAfterFonts);
       } else {
-        finish();
+        finishAfterFonts();
       }
     };
-    const moving = ({ target, scenePoint }: { target?: FabricObject; scenePoint?: Point }) => {
-      if (!target?.objectId || target.connector) return;
+    const moving = ({
+      target,
+      scenePoint,
+      e
+    }: {
+      target?: FabricObject;
+      scenePoint?: Point;
+      e?: MouseEvent | PointerEvent | TouchEvent;
+    }) => {
+      if (!target?.objectId) return;
+      activateDragDuplicate(target);
+      if (target.connector) return;
       if (snapSession.current.target !== target) {
         snapSession.current = { target };
+      }
+      if (e && "altKey" in e && e.altKey) {
+        snapSession.current = { target };
+        guides.current = {};
+        refreshConnectors(target.objectId);
+        canvas.requestRenderAll();
+        return;
       }
       const zoom = Math.max(latestZoom.current, 0.1);
       const result = snapBounds(
@@ -949,13 +1081,14 @@ export function EditorProvider({
               candidate !== target && !candidate.connector && candidate.visible !== false
           )
           .map((candidate) => candidate.getBoundingRect()),
-        6 / zoom,
+        SNAP_CAPTURE_DISTANCE_PX / zoom,
         {
           left: 0,
           top: 0,
           width: latestCanvasSettings.current.width,
           height: latestCanvasSettings.current.height
-        }
+        },
+        SNAP_MAX_ORTHOGONAL_GAP_PX / zoom
       );
       const proposedLeft = target.left ?? 0;
       const proposedTop = target.top ?? 0;
@@ -1000,6 +1133,9 @@ export function EditorProvider({
       guides.current = {};
       canvas.requestRenderAll();
     };
+    const finishDragGesture = () => {
+      dragDuplicate.current = undefined;
+    };
     const drawGuides = ({ ctx: context }: { ctx: CanvasRenderingContext2D }) => {
       const { vertical, horizontal } = guides.current;
       if (vertical === undefined && horizontal === undefined) return;
@@ -1029,6 +1165,7 @@ export function EditorProvider({
     canvas.on("selection:cleared", select);
     canvas.upperCanvasEl.addEventListener("mousedown", preserveDeepSelectionForDrag, true);
     canvas.on("mouse:dblclick", selectDeeperObject);
+    canvas.on("mouse:down", prepareDragDuplicate);
     canvas.on("object:modified", modified);
     canvas.on("object:moving", moving);
     canvas.on("object:scaling", transform);
@@ -1036,6 +1173,7 @@ export function EditorProvider({
     canvas.on("after:render", drawGuides);
     canvas.on("mouse:up", clearGuides);
     canvas.on("mouse:up", restoreObjectStacking);
+    canvas.on("mouse:up", finishDragGesture);
     canvas.on("text:editing:exited", modified);
     return () => {
       canvas.upperCanvasEl.removeEventListener("mousedown", preserveDeepSelectionForDrag, true);
@@ -1125,8 +1263,8 @@ export function EditorProvider({
       const object =
         kind === "box"
           ? new Textbox("Text box", { ...options, width: 420 })
-          : new IText("Label", options);
-      addObject(object, kind === "box" ? "Text box" : "Label", "text", point);
+          : new IText("Text", options);
+      addObject(object, kind === "box" ? "Text box" : "Text", "text", point);
       // Entering Fabric text editing during the canvas pointer-down handler can
       // race the React tool-state render and Fabric's hidden textarea setup.
       // Wait until the object and canvas have completed that frame first.
@@ -1145,6 +1283,9 @@ export function EditorProvider({
     },
     [addObject, canvas, creationDefaults.text]
   );
+  useEffect(() => {
+    createPointText.current = (point) => addText("point", point);
+  }, [addText]);
 
   const addAttachedConnector = useCallback(
     (kind: "line" | "arrow" | "double-arrow" | "curved-arrow") => {
@@ -1227,6 +1368,17 @@ export function EditorProvider({
         object = new Circle({ ...common, radius: 100, scaleX: 1.5, scaleY: 0.85 });
       } else if (kind === "triangle") {
         object = new Triangle({ ...common, width: 210, height: 190 });
+      } else if (kind === "pentagon") {
+        object = new Polygon(
+          [
+            { x: 100, y: 0 },
+            { x: 195, y: 69 },
+            { x: 159, y: 181 },
+            { x: 41, y: 181 },
+            { x: 5, y: 69 }
+          ],
+          common
+        );
       } else if (kind === "polygon") {
         object = new Polygon(
           [
@@ -1283,7 +1435,7 @@ export function EditorProvider({
       }
       addObject(
         object,
-        kind.replace("-", " "),
+        kind === "polygon" ? "hexagon" : kind.replace("-", " "),
         kind.includes("arrow") ? "connector" : "shape",
         point
       );
@@ -1381,33 +1533,67 @@ export function EditorProvider({
     (family: AssetFamily, variant: AssetVariant, point?: Point) => {
       const operation = assetInsertQueue.current.then(async () => {
         if (!canvas) return;
-        const source = await bundledSvgSource(variant.id);
-        if (!source) throw new Error(`Could not load ${family.title}.`);
-        const result = await loadEditableSvg(source);
-        const objects = result.objects.filter((object): object is FabricObject => Boolean(object));
-        const group = groupSvgElements(objects, result.options);
+        const group = await createBundledAssetGroup(family, variant);
         const maxSide = Math.max(group.width || 1, group.height || 1);
         const scale = Math.min(1, ASSET_INSERT_MAX_SIDE / maxSide);
         group.scale(scale);
-        group.assetId = variant.id;
-        group.familyId = family.familyId;
-        group.provenance = {
-          nihSourcePage: family.nihSourcePage,
-          commonsPage: family.commonsPage,
-          author: family.author,
-          license: family.license
-        };
-        group.originalPalette = Object.fromEntries(
-          paletteFromObject(group).map((color) => [color, color])
-        );
-        rememberOriginalColors(group);
-        configureEditableSvgParts(group);
         addObject(group, family.title, "nih-asset", point);
       });
       assetInsertQueue.current = operation.catch(() => undefined);
       return operation;
     },
     [addObject, canvas]
+  );
+
+  const setAssetVariant = useCallback(
+    (variantId: string) => {
+      const operation = assetInsertQueue.current.then(async () => {
+        if (!canvas) return;
+        const current = canvas.getActiveObject();
+        if (!(current instanceof Group) || !current.familyId || current.assetId === variantId)
+          return;
+        const family = assetManifest.families.find(
+          (candidate) => candidate.familyId === current.familyId
+        );
+        const variant = family?.variants.find((candidate) => candidate.id === variantId);
+        if (!family || !variant) return;
+
+        const replacement = await createBundledAssetGroup(family, variant);
+        if (!canvas.getObjects().includes(current)) return;
+        const center = current.getCenterPoint();
+        const renderedMaxSide = Math.max(current.getScaledWidth(), current.getScaledHeight());
+        const replacementMaxSide = Math.max(replacement.width || 1, replacement.height || 1);
+        const scale = renderedMaxSide / replacementMaxSide;
+        replacement.set({
+          objectId: current.objectId,
+          name: current.name ?? family.title,
+          OpenSketchType: "nih-asset",
+          scaleX: scale,
+          scaleY: scale,
+          angle: current.angle,
+          flipX: current.flipX,
+          flipY: current.flipY,
+          opacity: current.opacity,
+          visible: current.visible,
+          selectable: current.selectable,
+          evented: current.evented
+        });
+        replacement.setPositionByOrigin(center, "center", "center");
+        replacement.setCoords();
+
+        const index = canvas.getObjects().indexOf(current);
+        canvas.remove(current);
+        canvas.insertAt(index, replacement);
+        canvas.setActiveObject(replacement);
+        setSelection([replacement]);
+        if (replacement.objectId) refreshConnectors(replacement.objectId);
+        canvas.requestRenderAll();
+        commit("Change asset variant");
+      });
+      assetInsertQueue.current = operation.catch(() => undefined);
+      return operation;
+    },
+    [canvas, commit, refreshConnectors]
   );
 
   const importMedia = useCallback(
@@ -2266,6 +2452,7 @@ export function EditorProvider({
       setCreationDefaults,
       placeCreation,
       addAsset,
+      setAssetVariant,
       importMedia,
       deleteSelection,
       duplicateSelection,
@@ -2295,6 +2482,7 @@ export function EditorProvider({
     }),
     [
       addAsset,
+      setAssetVariant,
       creationDefaults,
       creationTool,
       importMedia,

@@ -9,23 +9,24 @@ import {
 } from "react";
 import { FixedSizeList as List, type ListChildComponentProps } from "react-window";
 import {
+  ArrowLeftRight,
   ArrowRight,
-  Box,
-  Brackets,
   Circle,
   FileInput,
   Heart,
+  Hexagon,
   ImagePlus,
   Minus,
-  MessageSquare,
   PanelLeftClose,
   PanelLeftOpen,
+  Pentagon,
+  Redo2,
   Search,
   Shapes,
   Sparkles,
   Square,
+  Triangle,
   Type,
-  Waves,
   X
 } from "lucide-react";
 import {
@@ -45,11 +46,56 @@ import {
   type ElementStyleSnapshot,
   type SavedElementStyles
 } from "@/editor/elementStyles";
+import { TEXT_FONT_FAMILIES } from "@/editor/fonts";
 import { loadEditableSvg } from "@/editor/svg";
+import {
+  ASSET_VARIANT_DEFAULTS_CHANGED_EVENT,
+  loadAssetVariantDefaults,
+  saveAssetVariantDefault
+} from "@/editor/assetVariantDefaults";
+import { AssetVariantPicker } from "@/components/AssetVariantPicker";
 import { UiSelect } from "@/components/UiSelect";
 import { useSidebarHover } from "./useSidebarHover";
 
 type Tab = "assets" | "shapes" | "imports";
+
+function RoundedRectangleIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg
+      className="tool-rounded-rectangle-icon"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <rect x="3" y="5" width="18" height="14" rx="4" />
+    </svg>
+  );
+}
+
+function EllipseIcon({ size = 24 }: { size?: number }) {
+  return (
+    <svg
+      className="tool-ellipse-icon"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.25"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <ellipse cx="12" cy="12" rx="9.5" ry="6.5" />
+    </svg>
+  );
+}
 
 const styledAssetPreviewCache = new Map<string, Promise<string>>();
 const styledAssetPreviewSources = new Map<string, string>();
@@ -204,7 +250,7 @@ function AssetsPanel() {
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [category, setCategory] = useState("All");
-  const [variants, setVariants] = useState<Record<string, string>>({});
+  const [variants, setVariants] = useState(loadAssetVariantDefaults);
   const [favorites, setFavorites] = useState<Set<string>>(
     () => new Set(JSON.parse(localStorage.getItem("OpenSketch:favorites") ?? "[]") as string[])
   );
@@ -234,6 +280,11 @@ function AssetsPanel() {
     const updateSavedStyles = () => setSavedStyles(loadSavedElementStyles());
     window.addEventListener(SAVED_ELEMENT_STYLES_CHANGED_EVENT, updateSavedStyles);
     return () => window.removeEventListener(SAVED_ELEMENT_STYLES_CHANGED_EVENT, updateSavedStyles);
+  }, []);
+  useEffect(() => {
+    const updateVariants = () => setVariants(loadAssetVariantDefaults());
+    window.addEventListener(ASSET_VARIANT_DEFAULTS_CHANGED_EVENT, updateVariants);
+    return () => window.removeEventListener(ASSET_VARIANT_DEFAULTS_CHANGED_EVENT, updateVariants);
   }, []);
   useLayoutEffect(() => {
     const list = assetListRef.current;
@@ -284,9 +335,7 @@ function AssetsPanel() {
             favorite={favorites.has(family.familyId)}
             onFavorite={() => toggleFavorite(family.familyId)}
             onInsert={() => insert(family, variant)}
-            onVariant={(variantId) =>
-              setVariants((current) => ({ ...current, [family.familyId]: variantId }))
-            }
+            onVariant={(variantId) => saveAssetVariantDefault(family.familyId, variantId)}
           />
         );
       })}
@@ -466,16 +515,7 @@ function AssetCard({
       <div className="asset-card-copy">
         <strong title={family.title}>{family.title}</strong>
         {family.variants.length > 1 ? (
-          <UiSelect
-            className="asset-variant-select"
-            ariaLabel={`${family.title} variant`}
-            value={variant.id}
-            options={family.variants.map((item, index) => ({
-              value: item.id,
-              label: `Variant ${index + 1}`
-            }))}
-            onChange={onVariant}
-          />
+          <AssetVariantPicker family={family} value={variant.id} onChange={onVariant} />
         ) : (
           <small>{family.category}</small>
         )}
@@ -488,6 +528,11 @@ function ShapesPanel() {
   const editor = useEditor();
   const active = (kind: (typeof shapes)[number][0]) =>
     editor.creationTool?.type === "shape" && editor.creationTool.kind === kind;
+  const updateTextDefaults = (properties: Partial<typeof editor.creationDefaults.text>) =>
+    editor.setCreationDefaults({
+      ...editor.creationDefaults,
+      text: { ...editor.creationDefaults.text, ...properties }
+    });
   const updateShapeDefaults = (properties: Partial<typeof editor.creationDefaults.shape>) =>
     editor.setCreationDefaults({
       ...editor.creationDefaults,
@@ -499,19 +544,17 @@ function ShapesPanel() {
       line: { ...editor.creationDefaults.line, ...properties }
     });
   const shapes = [
-    ["rectangle", Square, "Rectangle"],
-    ["rounded-rectangle", Box, "Rounded"],
-    ["circle", Circle, "Circle"],
-    ["ellipse", Circle, "Ellipse"],
-    ["triangle", Shapes, "Triangle"],
-    ["polygon", Shapes, "Polygon"],
     ["line", Minus, "Line"],
     ["arrow", ArrowRight, "Arrow"],
-    ["double-arrow", ArrowRight, "Double arrow"],
-    ["curved-arrow", ArrowRight, "Curved arrow"],
-    ["bracket", Brackets, "Bracket"],
-    ["callout", MessageSquare, "Callout"],
-    ["membrane", Waves, "Membrane"]
+    ["double-arrow", ArrowLeftRight, "Double arrow"],
+    ["curved-arrow", Redo2, "Curved arrow"],
+    ["rectangle", Square, "Rectangle"],
+    ["rounded-rectangle", RoundedRectangleIcon, "Rounded"],
+    ["circle", Circle, "Circle"],
+    ["ellipse", EllipseIcon, "Ellipse"],
+    ["triangle", Triangle, "Triangle"],
+    ["pentagon", Pentagon, "Pentagon"],
+    ["polygon", Hexagon, "Hexagon"]
   ] as const;
   return (
     <>
@@ -544,6 +587,56 @@ function ShapesPanel() {
           </button>
         ))}
       </div>
+      <details className="creation-defaults" open>
+        <summary>New text defaults</summary>
+        <div className="creation-defaults-body">
+          <UiSelect
+            className="field"
+            label="Typeface"
+            ariaLabel="Default text typeface"
+            value={editor.creationDefaults.text.fontFamily}
+            options={TEXT_FONT_FAMILIES.map((font) => ({ value: font, label: font }))}
+            onChange={(fontFamily) => updateTextDefaults({ fontFamily })}
+          />
+          <div className="creation-default-grid">
+            <label className="creation-color-field">
+              Color
+              <span>
+                <input
+                  aria-label="Default text color"
+                  type="color"
+                  value={editor.creationDefaults.text.color}
+                  onChange={(event) => updateTextDefaults({ color: event.target.value })}
+                />
+                {editor.creationDefaults.text.color}
+              </span>
+            </label>
+            <label className="creation-number-field">
+              Size
+              <input
+                aria-label="Default text size"
+                type="number"
+                min="6"
+                max="400"
+                value={editor.creationDefaults.text.fontSize}
+                onChange={(event) => updateTextDefaults({ fontSize: Number(event.target.value) })}
+              />
+            </label>
+          </div>
+          <UiSelect
+            className="field"
+            label="Weight"
+            ariaLabel="Default text weight"
+            value={String(editor.creationDefaults.text.fontWeight)}
+            options={[
+              { value: "400", label: "Regular" },
+              { value: "600", label: "Semibold" },
+              { value: "700", label: "Bold" }
+            ]}
+            onChange={(fontWeight) => updateTextDefaults({ fontWeight: Number(fontWeight) })}
+          />
+        </div>
+      </details>
       <details className="creation-defaults">
         <summary>New shape defaults</summary>
         <div className="creation-defaults-body">

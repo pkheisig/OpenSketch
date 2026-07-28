@@ -10,6 +10,7 @@ export interface CanvasSettings {
   background: string;
   transparent: boolean;
   grid: boolean;
+  doubleClickCreatesText: boolean;
 }
 
 export interface AssetVariant {

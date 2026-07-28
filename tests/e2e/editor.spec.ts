@@ -51,9 +51,13 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   await page.keyboard.press("Escape");
 
   await page.getByRole("tab", { name: "Assets", exact: true }).click();
-  const firstAsset = page.locator(".asset-card-image").first();
-  await expect(firstAsset).toBeVisible();
-  await firstAsset.click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
+  const singleVariantAsset = page
+    .locator(".asset-card")
+    .filter({ has: page.locator("strong").filter({ hasText: /^Cajal-Retzius Cell$/ }) })
+    .first();
+  await expect(singleVariantAsset).toBeVisible();
+  await singleVariantAsset.locator(".asset-card-image").click();
   await expect(page.locator(".layers-title small")).toHaveText("3");
   await expect(page.getByText("Asset palette", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Part colors", { exact: true })).toHaveCount(0);
@@ -246,6 +250,60 @@ test("places text and shapes from active tools and persists line creation defaul
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  await expect(page.locator(".creation-defaults summary")).toHaveText([
+    "New text defaults",
+    "New shape defaults",
+    "New line & arrow defaults"
+  ]);
+  await expect(
+    page.getByRole("button", { name: "Double arrow", exact: true }).locator("svg")
+  ).toHaveClass(/lucide-arrow-left-right/);
+  await expect(
+    page.getByRole("button", { name: "Curved arrow", exact: true }).locator("svg")
+  ).toHaveClass(/lucide-redo-2/);
+  await expect(
+    page.getByRole("button", { name: "Triangle", exact: true }).locator("svg")
+  ).toHaveClass(/lucide-triangle/);
+  await expect(
+    page.getByRole("button", { name: "Rounded", exact: true }).locator("svg")
+  ).toHaveClass(/tool-rounded-rectangle-icon/);
+  await expect(
+    page.getByRole("button", { name: "Ellipse", exact: true }).locator("svg")
+  ).toHaveClass(/tool-ellipse-icon/);
+  await expect(
+    page.getByRole("button", { name: "Pentagon", exact: true }).locator("svg")
+  ).toHaveClass(/lucide-pentagon/);
+  await expect(
+    page.getByRole("button", { name: "Hexagon", exact: true }).locator("svg")
+  ).toHaveClass(/lucide-hexagon/);
+  const shapeLabels = await page.locator(".shape-grid > button").allTextContents();
+  expect(shapeLabels).toEqual([
+    "Text",
+    "Line",
+    "Arrow",
+    "Double arrow",
+    "Curved arrow",
+    "Rectangle",
+    "Rounded",
+    "Circle",
+    "Ellipse",
+    "Triangle",
+    "Pentagon",
+    "Hexagon"
+  ]);
+  await expect(page.getByRole("button", { name: "Polygon", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Membrane", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Callout", exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Bracket", exact: true })).toHaveCount(0);
+  await selectUiOption(page, "Default text typeface", "Source Serif 4");
+  await page.getByLabel("Default text color").fill("#3157a4");
+  await page.getByLabel("Default text size").fill("28");
+  await selectUiOption(page, "Default text weight", "Semibold");
+
+  await placeTool(page, "Pentagon", 0.18, 0.18);
+  await expect(page.locator(".inspector-header h2")).toHaveText("pentagon");
+  await page.keyboard.press("Delete");
+  await expect(page.locator(".layers-title small")).toHaveText("0");
 
   const rectangle = page.getByRole("button", { name: "Rectangle", exact: true });
   await rectangle.click();
@@ -291,6 +349,12 @@ test("places text and shapes from active tools and persists line creation defaul
   await expect(page.getByLabel("Default line thickness")).toHaveValue("9");
   await expect(page.getByRole("combobox", { name: "Line style" })).toHaveText(/Dashed/i);
   await expect(page.getByRole("combobox", { name: "End head" })).toHaveText(/Circle/i);
+  await expect(page.getByRole("combobox", { name: "Default text typeface" })).toHaveText(
+    /Source Serif 4/i
+  );
+  await expect(page.getByLabel("Default text color")).toHaveValue("#3157a4");
+  await expect(page.getByLabel("Default text size")).toHaveValue("28");
+  await expect(page.getByRole("combobox", { name: "Default text weight" })).toHaveText(/Semibold/i);
 
   await placeTool(page, "Line", 0.3, 0.28);
   await expect(page.locator(".layers-title small")).toHaveText("3");
@@ -320,7 +384,16 @@ test("places text and shapes from active tools and persists line creation defaul
   await page.keyboard.type("Placed label");
   await page.keyboard.press("Escape");
   await expect(page.locator(".layers-title small")).toHaveText("6");
-  await expect(page.locator(".layer-list button").filter({ hasText: "Label" })).toBeVisible();
+  await expect(page.locator(".layer-list button").filter({ hasText: "Text" })).toBeVisible();
+  const textInspector = page.locator(".inspector-scroll");
+  await expect(textInspector.getByRole("combobox", { name: "Typeface" })).toHaveText(
+    /Source Serif 4/i
+  );
+  await expect(textInspector.getByLabel("Size", { exact: true })).toHaveValue("28");
+  await expect(textInspector.getByRole("combobox", { name: "Weight" })).toHaveText(/Semibold/i);
+  await expect(
+    textInspector.locator("label.color-field").filter({ hasText: "Fill" }).locator("input")
+  ).toHaveValue("#3157a4");
 });
 
 test("places text from the first Shapes tool without blanking the editor", async ({ page }) => {
@@ -356,11 +429,33 @@ test("places text from the first Shapes tool without blanking the editor", async
   await expect(pointText).toHaveAttribute("aria-pressed", "false");
   await expect(page.locator("main")).toBeVisible();
   await expect(page.getByLabel("OpenSketch figure artboard")).toBeVisible();
-  await expect(page.locator(".layer-list button").filter({ hasText: "Label" })).toBeVisible();
+  await expect(page.locator(".layer-list button").filter({ hasText: "Text" })).toBeVisible();
   await expect(page.getByText("Figure title", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Section label", { exact: true })).toHaveCount(0);
   await expect(page.getByText(/Body annotation/)).toHaveCount(0);
   expect(pageErrors).toEqual([]);
+});
+
+test("optionally creates Text on an empty-artboard double-click and persists the preference", async ({
+  page
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+
+  const preference = page.getByLabel("Double-click to add text");
+  await expect(preference).toBeChecked();
+  const point = await artboardPoint(page, 0.68, 0.3);
+  await page.mouse.dblclick(point.x, point.y);
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+  await expect(page.locator(".layer-list button").filter({ hasText: "Text" })).toBeVisible();
+  const fabricTextarea = page.locator('textarea[data-fabric="textarea"]');
+  await expect(fabricTextarea).toBeFocused();
+  await expect(fabricTextarea).toHaveValue("Text");
+  await page.keyboard.press("Escape");
+
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await page.getByRole("button", { name: "Untitled figure" }).click();
+  await expect(page.getByLabel("Double-click to add text")).toBeChecked();
 });
 
 test("preserves clipboard object size across repeated pastes", async ({ page }) => {
@@ -392,6 +487,122 @@ test("inserts assets from the sidebar at the reduced default size", async ({ pag
   const width = Number(await dimensions.nth(0).inputValue());
   const height = Number(await dimensions.nth(1).inputValue());
   expect(Math.max(width, height)).toBeCloseTo(180, 0);
+});
+
+test("previews bundled variants and inserts nested-clip-path assets", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Immune Cell");
+  const immuneCell = page
+    .locator(".asset-card")
+    .filter({ has: page.locator("strong").filter({ hasText: /^Immune Cell$/ }) });
+  await expect(immuneCell).toBeVisible();
+
+  await immuneCell.getByRole("combobox", { name: "Immune Cell variant" }).click();
+  const variants = page.getByRole("listbox", { name: "Immune Cell variants" });
+  await expect(variants).toBeVisible();
+  await expect(variants.getByRole("option")).toHaveCount(9);
+  await expect(variants.locator("img")).toHaveCount(9);
+  for (const source of await variants
+    .locator("img")
+    .evaluateAll((images) =>
+      images.map((image) => (image as HTMLImageElement).getAttribute("src"))
+    )) {
+    expect(source).toMatch(/\/assets\/nih-bioart\/.+\.svg$/);
+  }
+  await variants.getByRole("option", { name: "Select Immune Cell variant 2" }).click();
+  await expect(immuneCell.getByRole("combobox", { name: "Immune Cell variant" })).toHaveText(
+    "Variant 2"
+  );
+
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  await page.getByRole("tab", { name: "Assets", exact: true }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Immune Cell");
+  const persistedImmuneCell = page
+    .locator(".asset-card")
+    .filter({ has: page.locator("strong").filter({ hasText: /^Immune Cell$/ }) });
+  await expect(
+    persistedImmuneCell.getByRole("combobox", { name: "Immune Cell variant" })
+  ).toHaveText("Variant 2");
+
+  await persistedImmuneCell.getByRole("button", { name: "Insert Immune Cell" }).click();
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+  await expect(page.locator('[role="alert"]')).toHaveCount(0);
+  await expect(page.locator(".inspector-header h2")).toHaveText("Immune Cell");
+  await expect(page.getByText("Color presets", { exact: true })).toHaveCount(0);
+  const inspectorVariant = page
+    .locator(".right-sidebar")
+    .getByRole("combobox", { name: "Immune Cell variant" });
+  await expect(inspectorVariant).toHaveText("Variant 2");
+  await inspectorVariant.click();
+  await page
+    .getByRole("listbox", { name: "Immune Cell variants" })
+    .getByRole("option", { name: "Select Immune Cell variant 3" })
+    .click();
+  await expect(inspectorVariant).toHaveText("Variant 3");
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await page.getByRole("button", { name: "Untitled figure" }).click();
+  await page.locator(".layer-list button").filter({ hasText: "Immune Cell" }).click();
+  await expect(
+    page.locator(".right-sidebar").getByRole("combobox", { name: "Immune Cell variant" })
+  ).toHaveText("Variant 3");
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Immune Cell");
+  const newProjectImmuneCell = page
+    .locator(".asset-card")
+    .filter({ has: page.locator("strong").filter({ hasText: /^Immune Cell$/ }) });
+  await expect(
+    newProjectImmuneCell.getByRole("combobox", { name: "Immune Cell variant" })
+  ).toHaveText("Variant 3");
+});
+
+test("parses every bundled NIH BioArt variant into editable objects", async ({ page }) => {
+  test.setTimeout(60_000);
+  const manifest = JSON.parse(
+    await readFile(
+      new URL("../../apps/web/src/generated/nih-bioart-manifest.json", import.meta.url),
+      "utf8"
+    )
+  ) as {
+    families: Array<{
+      title: string;
+      variants: Array<{ id: string; assetPath: string }>;
+    }>;
+  };
+  const variants = manifest.families.flatMap((family) =>
+    family.variants.map((variant) => ({ ...variant, family: family.title }))
+  );
+  await page.goto("/");
+  const failures = await page.evaluate(async (items) => {
+    const { loadEditableSvg } = await import("/OpenSketch/src/editor/svg.ts");
+    const failed: Array<{ id: string; family: string; error: string }> = [];
+    for (let offset = 0; offset < items.length; offset += 40) {
+      const results = await Promise.all(
+        items.slice(offset, offset + 40).map(async (item) => {
+          try {
+            const response = await fetch(`/OpenSketch${item.assetPath}`);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const parsed = await loadEditableSvg(await response.text());
+            if (!parsed.objects.some(Boolean)) throw new Error("No editable objects");
+            return null;
+          } catch (reason) {
+            return { ...item, error: String(reason) };
+          }
+        })
+      );
+      failed.push(
+        ...results.filter((result): result is { id: string; family: string; error: string } =>
+          Boolean(result)
+        )
+      );
+    }
+    return failed;
+  }, variants);
+
+  expect(failures).toEqual([]);
 });
 
 test("uses accessible in-app dropdowns with keyboard and outside-click behavior", async ({
@@ -478,7 +689,7 @@ test("offers selection-aware canvas context actions", async ({ page }) => {
   const textFill = page.locator("label.color-field").filter({ hasText: "Fill" }).locator("input");
   await textFill.fill("#00ff00");
   await page.mouse.click(textPoint.x, textPoint.y, { button: "right" });
-  const textMenu = page.getByRole("menu", { name: "Label actions" });
+  const textMenu = page.getByRole("menu", { name: "Text actions" });
   await expect(textMenu.getByRole("menuitem", { name: "Save styling" })).toBeVisible();
   await expect(textMenu.getByRole("menuitem", { name: "Reset styling" })).toBeVisible();
   await textMenu.getByRole("menuitem", { name: "Reset styling" }).click();
@@ -1181,6 +1392,93 @@ test("shows alignment guides only while an object is moving", async ({ page }) =
   await expect.poll(redGuidePixels).toBeGreaterThan(20);
   await page.mouse.up();
   await expect.poll(redGuidePixels).toBe(0);
+});
+
+test("duplicates with modifier-drag and disables snapping while Alt is held", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  await placeTool(page, "Rectangle", 0.35, 0.5);
+  await placeTool(page, "Rectangle", 0.65, 0.5);
+  await expect(page.locator(".layers-title small")).toHaveText("2");
+
+  const secondRectangle = await artboardPoint(page, 0.65, 0.5);
+  await page.mouse.move(secondRectangle.x, secondRectangle.y);
+  await page.keyboard.down("Control");
+  await page.mouse.down();
+  await page.mouse.move(secondRectangle.x + 110, secondRectangle.y - 70, { steps: 8 });
+  await page.mouse.up();
+  await page.keyboard.up("Control");
+  await expect(page.locator(".layers-title small")).toHaveText("3");
+
+  const redGuidePixels = () =>
+    page.locator(".canvas-container").evaluate((container) => {
+      let redPixels = 0;
+      container.querySelectorAll("canvas").forEach((element) => {
+        const canvas = element as HTMLCanvasElement;
+        const pixels = canvas
+          .getContext("2d")!
+          .getImageData(0, 0, canvas.width, canvas.height).data;
+        for (let index = 0; index < pixels.length; index += 4) {
+          const [red, green, blue, alpha] = pixels.slice(index, index + 4);
+          if (alpha > 0 && red > 180 && green < 130 && blue < 130) redPixels += 1;
+        }
+      });
+      return redPixels;
+    });
+
+  const movedRectangle = {
+    x: secondRectangle.x + 110,
+    y: secondRectangle.y - 70
+  };
+  const canvasCenter = await artboardPoint(page, 0.5, 0.5);
+  await page.mouse.move(movedRectangle.x, movedRectangle.y);
+  await page.keyboard.down("Alt");
+  await page.mouse.down();
+  await page.mouse.move(canvasCenter.x, canvasCenter.y, { steps: 8 });
+  await expect.poll(redGuidePixels).toBe(0);
+  await page.mouse.up();
+  await page.keyboard.up("Alt");
+  await expect(page.locator(".layers-title small")).toHaveText("3");
+
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await page.getByRole("button", { name: "Untitled figure" }).click();
+  await expect(page.locator(".layers-title small")).toHaveText("3");
+});
+
+test("documents large cross-platform shortcuts and accepts Ctrl commands", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "Help" }).click();
+
+  const dialog = page.getByRole("dialog", { name: "Keyboard shortcuts" });
+  await expect(dialog).toBeVisible();
+  await expect(dialog.getByText("Cmd/Ctrl + Z / Shift + Cmd/Ctrl + Z")).toBeVisible();
+  await expect(dialog.getByText("Cmd/Ctrl + X / C / V")).toBeVisible();
+  await expect(dialog.getByText("Backspace / Delete")).toBeVisible();
+  await expect(dialog.getByText(/Hold Cmd\/Ctrl while scrolling to zoom/)).toBeVisible();
+  const keyStyle = await dialog
+    .locator("kbd")
+    .first()
+    .evaluate((element) => {
+      const style = getComputedStyle(element);
+      return {
+        fontSize: Number.parseFloat(style.fontSize),
+        paddingTop: Number.parseFloat(style.paddingTop)
+      };
+    });
+  expect(keyStyle.fontSize).toBeGreaterThanOrEqual(11);
+  expect(keyStyle.paddingTop).toBeGreaterThanOrEqual(7);
+  await dialog.getByRole("button", { name: "Got it" }).click();
+
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  await placeTool(page, "Rectangle", 0.5, 0.5);
+  await page.keyboard.press("Control+D");
+  await expect(page.locator(".layers-title small")).toHaveText("2");
+  await page.keyboard.press("Control+Z");
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+  await page.keyboard.press("Control+Shift+Z");
+  await expect(page.locator(".layers-title small")).toHaveText("2");
 });
 
 test("selects across the artboard and previews collapsed sidebars without shifting the canvas", async ({

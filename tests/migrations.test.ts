@@ -20,6 +20,26 @@ describe("project migrations", () => {
     expect(migrateProject(project).name).toBe("Figure");
   });
 
+  it("adds the enabled double-click text preference to older projects", () => {
+    const legacyCanvas = { ...project.canvas } as Partial<typeof project.canvas>;
+    delete legacyCanvas.doubleClickCreatesText;
+    expect(
+      migrateProject({
+        ...project,
+        canvas: legacyCanvas
+      }).canvas.doubleClickCreatesText
+    ).toBe(true);
+  });
+
+  it("preserves an explicitly disabled double-click text preference", () => {
+    expect(
+      migrateProject({
+        ...project,
+        canvas: { ...project.canvas, doubleClickCreatesText: false }
+      }).canvas.doubleClickCreatesText
+    ).toBe(false);
+  });
+
   it("rejects unknown future formats", () => {
     expect(() => migrateProject({ format: "OpenSketch", formatVersion: 99 })).toThrow(
       "not supported"

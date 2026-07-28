@@ -40,8 +40,10 @@ import {
 import { Color, FabricObject, Group as FabricGroup, Text } from "fabric";
 import { assetManifest } from "@/assets/manifest";
 import { ASSET_COLOR_PRESETS, colorProfileForFamily } from "@/editor/assetColorPresets";
+import { saveAssetVariantDefault } from "@/editor/assetVariantDefaults";
 import { useEditor } from "@/editor/EditorContext";
 import { TEXT_FONT_FAMILIES } from "@/editor/fonts";
+import { AssetVariantPicker } from "@/components/AssetVariantPicker";
 import { UiSelect } from "@/components/UiSelect";
 import { useSidebarHover } from "./useSidebarHover";
 
@@ -200,6 +202,16 @@ function CanvasInspector() {
             </span>
           </label>
         )}
+        <label className="check-field compact">
+          <input
+            type="checkbox"
+            checked={Boolean(settings.doubleClickCreatesText)}
+            onChange={(event) =>
+              editor.setCanvasSettings({ doubleClickCreatesText: event.target.checked })
+            }
+          />
+          Double-click to add text
+        </label>
       </InspectorSection>
       <div className="canvas-empty-state">
         <Layers3 size={24} />
@@ -219,6 +231,7 @@ function ObjectInspector({ object }: { object: FabricObject }) {
     object instanceof FabricGroup && object.familyId
       ? assetManifest.families.find((family) => family.familyId === object.familyId)
       : undefined;
+  const hasStoredVariants = Boolean(assetFamily && assetFamily.variants.length > 1);
   const colorProfile = assetFamily ? colorProfileForFamily(assetFamily) : undefined;
   const canGroup = editor.selection.length > 1;
   const canUngroup = !canGroup && object instanceof FabricGroup;
@@ -449,7 +462,22 @@ function ObjectInspector({ object }: { object: FabricObject }) {
             onChange={(event) => editor.setObject({ opacity: Number(event.target.value) })}
           />
         </label>
-        {colorProfile && (
+        {hasStoredVariants && assetFamily && object.assetId && (
+          <div className="color-presets asset-variants">
+            <div className="color-presets-title">
+              <span>Variants</span>
+            </div>
+            <AssetVariantPicker
+              family={assetFamily}
+              value={object.assetId}
+              onChange={(variantId) => {
+                saveAssetVariantDefault(assetFamily.familyId, variantId);
+                void editor.setAssetVariant(variantId);
+              }}
+            />
+          </div>
+        )}
+        {!hasStoredVariants && colorProfile && (
           <div className="color-presets">
             <div className="color-presets-title">
               <span>Color presets</span>

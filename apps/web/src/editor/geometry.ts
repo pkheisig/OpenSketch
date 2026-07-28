@@ -34,6 +34,8 @@ export interface ResistantSnapResult {
 }
 
 export const SNAP_RELEASE_DISTANCE_PX = 12;
+export const SNAP_CAPTURE_DISTANCE_PX = 3;
+export const SNAP_MAX_ORTHOGONAL_GAP_PX = 180;
 
 export function applySnapResistance({
   proposedPosition,
@@ -112,36 +114,57 @@ function axes(bounds: Bounds) {
   };
 }
 
+function axisGap(startA: number, lengthA: number, startB: number, lengthB: number): number {
+  const endA = startA + lengthA;
+  const endB = startB + lengthB;
+  if (endA < startB) return startB - endA;
+  if (endB < startA) return startA - endB;
+  return 0;
+}
+
 export function snapBounds(
   moving: Bounds,
   targets: Bounds[],
   threshold: number,
-  artboard?: Bounds
+  artboard?: Bounds,
+  maxOrthogonalGap = Number.POSITIVE_INFINITY
 ): SnapResult {
   const source = axes(moving);
-  const candidates = artboard ? [...targets, artboard] : targets;
   let bestX: { delta: number; guide: number } | undefined;
   let bestY: { delta: number; guide: number } | undefined;
 
-  for (const target of candidates) {
+  const inspect = (target: Bounds, ignoreOrthogonalGap = false) => {
     const targetAxes = axes(target);
-    for (const sourceX of source.x) {
-      for (const targetX of targetAxes.x) {
-        const delta = targetX - sourceX;
-        if (Math.abs(delta) <= threshold && (!bestX || Math.abs(delta) < Math.abs(bestX.delta))) {
-          bestX = { delta, guide: targetX };
+    if (
+      ignoreOrthogonalGap ||
+      axisGap(moving.top, moving.height, target.top, target.height) <= maxOrthogonalGap
+    ) {
+      for (const sourceX of source.x) {
+        for (const targetX of targetAxes.x) {
+          const delta = targetX - sourceX;
+          if (Math.abs(delta) <= threshold && (!bestX || Math.abs(delta) < Math.abs(bestX.delta))) {
+            bestX = { delta, guide: targetX };
+          }
         }
       }
     }
-    for (const sourceY of source.y) {
-      for (const targetY of targetAxes.y) {
-        const delta = targetY - sourceY;
-        if (Math.abs(delta) <= threshold && (!bestY || Math.abs(delta) < Math.abs(bestY.delta))) {
-          bestY = { delta, guide: targetY };
+    if (
+      ignoreOrthogonalGap ||
+      axisGap(moving.left, moving.width, target.left, target.width) <= maxOrthogonalGap
+    ) {
+      for (const sourceY of source.y) {
+        for (const targetY of targetAxes.y) {
+          const delta = targetY - sourceY;
+          if (Math.abs(delta) <= threshold && (!bestY || Math.abs(delta) < Math.abs(bestY.delta))) {
+            bestY = { delta, guide: targetY };
+          }
         }
       }
     }
-  }
+  };
+
+  targets.forEach((target) => inspect(target));
+  if (artboard) inspect(artboard, true);
 
   return {
     dx: bestX?.delta ?? 0,

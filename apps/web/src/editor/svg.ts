@@ -23,6 +23,33 @@ interface BlendRule {
   mode: GlobalCompositeOperation;
 }
 
+export function normalizeSvgForFabric(source: string): string {
+  if (!/<clipPath\b/i.test(source) || !/clip-path\s*(?::|=)/i.test(source)) return source;
+  const document = new DOMParser().parseFromString(source, "image/svg+xml");
+  if (document.querySelector("parsererror")) return source;
+  let changed = false;
+  for (const element of document.querySelectorAll("clipPath, clipPath *")) {
+    if (element.hasAttribute("clip-path")) {
+      element.removeAttribute("clip-path");
+      changed = true;
+    }
+    const style = element.getAttribute("style");
+    if (!style) continue;
+    const declarations = style
+      .split(";")
+      .map((declaration) => declaration.trim())
+      .filter(Boolean);
+    const compatible = declarations.filter(
+      (declaration) => declaration.split(":", 1)[0]?.trim().toLowerCase() !== "clip-path"
+    );
+    if (compatible.length === declarations.length) continue;
+    changed = true;
+    if (compatible.length > 0) element.setAttribute("style", compatible.join(";"));
+    else element.removeAttribute("style");
+  }
+  return changed ? new XMLSerializer().serializeToString(document.documentElement) : source;
+}
+
 function parseBlendMode(value: string | null | undefined): GlobalCompositeOperation | null {
   const mode = value?.trim().toLowerCase() as GlobalCompositeOperation | undefined;
   return mode && SVG_BLEND_MODES.has(mode) ? mode : null;
@@ -77,8 +104,9 @@ export function svgBlendMode(
 }
 
 export function loadEditableSvg(source: string) {
-  const rules = blendRules(source);
-  return loadSVGFromString(source, (element, object) => {
+  const compatibleSource = normalizeSvgForFabric(source);
+  const rules = blendRules(compatibleSource);
+  return loadSVGFromString(compatibleSource, (element, object) => {
     const blendMode = svgBlendMode(element, rules);
     if (blendMode) {
       object.globalCompositeOperation = blendMode;

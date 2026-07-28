@@ -1,3 +1,4 @@
+import { DEFAULT_CANVAS } from "./presets";
 import { OpenSketch_FORMAT_VERSION, type PortableProject } from "./types";
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -78,6 +79,11 @@ export function migrateProject(input: unknown): PortableProject {
   return {
     ...project,
     version: 1,
+    canvas: {
+      ...DEFAULT_CANVAS,
+      ...project.canvas,
+      doubleClickCreatesText: project.canvas.doubleClickCreatesText !== false
+    },
     uploads: importedMedia,
     usedAssetIds
   } as PortableProject;

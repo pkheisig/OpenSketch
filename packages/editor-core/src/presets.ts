@@ -22,7 +22,8 @@ export const DEFAULT_CANVAS: CanvasSettings = {
   dpi: DEFAULT_DPI,
   background: "#ffffff",
   transparent: false,
-  grid: false
+  grid: false,
+  doubleClickCreatesText: true
 };
 
 export function pixelsToUnit(pixels: number, unit: CanvasUnit, dpi = DEFAULT_DPI): number {
