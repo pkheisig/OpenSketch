@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { createFreeConnectorObject, routeOrthogonal } from "../apps/web/src/editor/connectors";
+import {
+  createFreeConnectorObject,
+  normalizeConnectorHeadOffsets,
+  routeOrthogonal
+} from "../apps/web/src/editor/connectors";
 import {
   buildConnectorGeometry,
+  connectorArrowheadPoint,
   connectorStrokeLineCap
 } from "../apps/web/src/editor/connectorGeometry";
 import {
@@ -175,6 +180,53 @@ describe("free connector geometry", () => {
             Number(preset.endArrowhead !== "none")
         );
       });
+  });
+
+  it("projects filled arrowheads beyond the centerline without moving other endpoints", () => {
+    expect(connectorArrowheadPoint("triangle", { x: 220, y: 40 }, 0, 10)).toEqual({
+      x: 230,
+      y: 40
+    });
+    expect(
+      connectorArrowheadPoint("neuron", { x: 220, y: 40 }, Math.PI / 2, 10)
+    ).toEqual({
+      x: 220,
+      y: 50
+    });
+    expect(connectorArrowheadPoint("open", { x: 220, y: 40 }, 0, 10)).toEqual({
+      x: 220,
+      y: 40
+    });
+  });
+
+  it("repairs old filled-head offsets once when loading saved connectors", () => {
+    const binding: ConnectorBinding = {
+      fromObjectId: "",
+      fromAnchor: "center",
+      toObjectId: "",
+      toAnchor: "center",
+      startArrowhead: "none",
+      endArrowhead: "triangle",
+      lineStyle: "solid",
+      pathShape: "straight",
+      routing: "direct",
+      curvature: 0
+    };
+    const object = createFreeConnectorObject({ x: 0, y: 0 }, { x: 220, y: 0 }, binding, {
+      color: "#244947",
+      width: 10,
+      opacity: 1
+    });
+    const head = object.getObjects()[1];
+    const correctedCenter = head.getCenterPoint();
+    head.set({ left: (head.left ?? 0) - 10 });
+    object.connectorHeadOffsetVersion = undefined;
+
+    expect(normalizeConnectorHeadOffsets(object)).toBe(true);
+    expect(head.getCenterPoint().x).toBeCloseTo(correctedCenter.x, 6);
+    expect(head.getCenterPoint().y).toBeCloseTo(correctedCenter.y, 6);
+    expect(normalizeConnectorHeadOffsets(object)).toBe(false);
+    expect(head.getCenterPoint().x).toBeCloseTo(correctedCenter.x, 6);
   });
 
   it("uses true one-bend and two-bend topology for elbow and step families", () => {

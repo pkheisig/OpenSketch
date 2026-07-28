@@ -24,6 +24,23 @@ export function connectorStrokeLineCap(
 }
 
 /**
+ * Filled heads must project past the centerline endpoint by one stroke width.
+ * Otherwise the line remains visible around the narrowing triangle tip.
+ */
+export function connectorArrowheadPoint(
+  kind: ConnectorArrowhead,
+  point: Point,
+  angle: number,
+  strokeWidth: number
+): Point {
+  const offset = kind === "triangle" || kind === "neuron" ? strokeWidth : 0;
+  return {
+    x: point.x + Math.cos(angle) * offset,
+    y: point.y + Math.sin(angle) * offset
+  };
+}
+
+/**
  * Produces the single source of truth for connector paths and endpoint
  * tangents. Both the sidebar previews and Fabric canvas objects use this
  * geometry so an arrowhead cannot disagree with the line shown beneath it.

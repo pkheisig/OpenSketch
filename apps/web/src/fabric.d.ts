@@ -21,6 +21,7 @@ declare module "fabric" {
     effectBaseGradientFill?: Record<string, unknown>;
     effectBaseGradientStroke?: Record<string, unknown>;
     connector?: ConnectorBinding;
+    connectorHeadOffsetVersion?: number;
     assetTint?: string;
     assetTintAmount?: number;
     assetSaturation?: number;

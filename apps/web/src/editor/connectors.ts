@@ -16,7 +16,11 @@ import type {
   ConnectorPathShape
 } from "@workspace/editor-core";
 import type { Bounds, Point } from "./geometry";
-import { buildConnectorGeometry, connectorStrokeLineCap } from "./connectorGeometry";
+import {
+  buildConnectorGeometry,
+  connectorArrowheadPoint,
+  connectorStrokeLineCap
+} from "./connectorGeometry";
 
 export interface ConnectorAppearance {
   color: string;
@@ -364,9 +368,10 @@ function arrowhead(
   if (kind === "none") return null;
   const size = Math.max(10, width * 3.2);
   const direction = { x: Math.cos(angle), y: Math.sin(angle) };
+  const headPoint = connectorArrowheadPoint(kind, point, angle, width);
   const common: TOptions<FabricObject> = {
-    left: point.x,
-    top: point.y,
+    left: headPoint.x,
+    top: headPoint.y,
     originX: "center",
     originY: "center",
     selectable: false,
@@ -404,8 +409,8 @@ function arrowhead(
   if (kind === "neuron") {
     return new Triangle({
       ...common,
-      left: point.x - direction.x * size * 0.36,
-      top: point.y - direction.y * size * 0.36,
+      left: headPoint.x - direction.x * size * 0.36,
+      top: headPoint.y - direction.y * size * 0.36,
       width: size * 0.78,
       height: size * 0.78,
       fill: color,
@@ -417,8 +422,8 @@ function arrowhead(
   if (kind === "triangle") {
     return new Triangle({
       ...common,
-      left: point.x - direction.x * size * 0.5,
-      top: point.y - direction.y * size * 0.5,
+      left: headPoint.x - direction.x * size * 0.5,
+      top: headPoint.y - direction.y * size * 0.5,
       width: size,
       height: size,
       fill: color,
@@ -446,6 +451,34 @@ function arrowhead(
     strokeLineJoin: "round",
     angle: (angle * 180) / Math.PI
   });
+}
+
+const CONNECTOR_HEAD_OFFSET_VERSION = 1;
+
+export function normalizeConnectorHeadOffsets(group: Group): boolean {
+  if (!group.connector || group.connectorHeadOffsetVersion === CONNECTOR_HEAD_OFFSET_VERSION) {
+    return false;
+  }
+  const width = typeof group.strokeWidth === "number" ? group.strokeWidth : 2;
+  const children = group.getObjects();
+  let childIndex = 1;
+  let changed = false;
+  for (const kind of [group.connector.startArrowhead, group.connector.endArrowhead]) {
+    if (kind === "none") continue;
+    const child = children[childIndex];
+    childIndex += 1;
+    if (!child || (kind !== "triangle" && kind !== "neuron")) continue;
+    const angle = (((child.angle ?? 90) - 90) * Math.PI) / 180;
+    child.set({
+      left: (child.left ?? 0) + Math.cos(angle) * width,
+      top: (child.top ?? 0) + Math.sin(angle) * width
+    });
+    changed = true;
+  }
+  group.connectorHeadOffsetVersion = CONNECTOR_HEAD_OFFSET_VERSION;
+  if (changed) group.triggerLayout();
+  group.dirty = true;
+  return changed;
 }
 
 export function createConnectorObject(
@@ -489,6 +522,7 @@ export function createConnectorObject(
     lockScalingY: true
   });
   group.connector = { ...binding };
+  group.connectorHeadOffsetVersion = CONNECTOR_HEAD_OFFSET_VERSION;
   group.OpenSketchType = "connector";
   group.name = "Connector";
   return group;

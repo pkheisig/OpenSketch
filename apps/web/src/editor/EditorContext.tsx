@@ -44,7 +44,8 @@ import { GLOBAL_CREDIT } from "@/assets/credit";
 import {
   connectorAppearance,
   createConnectorObject,
-  createFreeConnectorObject
+  createFreeConnectorObject,
+  normalizeConnectorHeadOffsets
 } from "@/editor/connectors";
 import { connectorStrokeLineCap } from "@/editor/connectorGeometry";
 import {
@@ -118,6 +119,7 @@ FabricObject.customProperties = [
   "effectBaseGradientFill",
   "effectBaseGradientStroke",
   "connector",
+  "connectorHeadOffsetVersion",
   "assetTint",
   "assetTintAmount",
   "assetSaturation",
@@ -371,6 +373,7 @@ function configureCanvasAssets(objects: FabricObject[]): void {
   objects.forEach((object) => {
     if (object.OpenSketchType === "upload") object.OpenSketchType = "import";
     if (object.connector && object instanceof Group) {
+      normalizeConnectorHeadOffsets(object);
       const centerline = object.getObjects()[0];
       centerline?.set({
         strokeLineCap: connectorStrokeLineCap(

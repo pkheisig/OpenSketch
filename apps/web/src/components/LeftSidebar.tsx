@@ -30,7 +30,11 @@ import {
 import { Group, StaticCanvas, util, type FabricObject } from "fabric";
 import { ASSET_CATEGORIES, assetManifest } from "@/assets/manifest";
 import { useEditor } from "@/editor/EditorContext";
-import { buildConnectorGeometry, connectorStrokeLineCap } from "@/editor/connectorGeometry";
+import {
+  buildConnectorGeometry,
+  connectorArrowheadPoint,
+  connectorStrokeLineCap
+} from "@/editor/connectorGeometry";
 import {
   CONNECTOR_FAMILIES,
   CONNECTOR_PRESETS,
@@ -103,11 +107,12 @@ function ConnectorPresetIcon({ value }: { value: ConnectorPreset }) {
   ) => {
     if (kind === "none") return null;
     const degrees = (angle * 180) / Math.PI;
+    const headPoint = connectorArrowheadPoint(kind, point, angle, line.strokeWidth);
     if (kind === "circle" || kind === "open-circle") {
       return (
         <circle
-          cx={point.x}
-          cy={point.y}
+          cx={headPoint.x}
+          cy={headPoint.y}
           r="2.4"
           fill={kind === "circle" ? "currentColor" : "#fffefa"}
           stroke="currentColor"
@@ -126,7 +131,7 @@ function ConnectorPresetIcon({ value }: { value: ConnectorPreset }) {
     return (
       <path
         d={pathData}
-        transform={`translate(${point.x} ${point.y}) rotate(${degrees})`}
+        transform={`translate(${headPoint.x} ${headPoint.y}) rotate(${degrees})`}
         fill={kind === "triangle" || kind === "neuron" ? "currentColor" : "none"}
         stroke={kind === "triangle" || kind === "neuron" ? "none" : "currentColor"}
         strokeWidth={kind === "triangle" || kind === "neuron" ? "0" : "1.7"}
