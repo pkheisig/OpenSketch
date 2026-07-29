@@ -48,23 +48,57 @@ describe("top-view labware assets", () => {
   });
 
   it.each([
+    ["6 Well Plate Top View", 2, 3],
+    ["12 Well Plate Top View", 3, 4],
+    ["24 Well Plate Top View", 4, 6],
+    ["48 Well Plate Top View", 6, 8],
+    ["96 Well Plate Top View", 8, 12],
+    ["384 Well Plate Top View", 16, 24]
+  ])("labels every row and column of %s", (title, rows, columns) => {
+    const family = TOP_VIEW_LABWARE_FAMILIES.find((candidate) => candidate.title === title);
+    const source = decodeSvg(family!.variants[0].assetPath);
+
+    expect(source.match(/id="row-label-/g)).toHaveLength(rows);
+    expect(source.match(/id="column-label-/g)).toHaveLength(columns);
+    expect(source).toContain(`>${String.fromCharCode(64 + rows)}</text>`);
+    expect(source).toContain(`>${columns}</text>`);
+  });
+
+  it.each([
     "6 Well Plate Top View",
     "12 Well Plate Top View",
     "24 Well Plate Top View",
     "48 Well Plate Top View",
     "96 Well Plate Top View",
     "384 Well Plate Top View"
-  ])("keeps the outer wells of %s evenly inside the plate border", (title) => {
+  ])("centers the well field of %s within its labeled grid", (title) => {
     const family = TOP_VIEW_LABWARE_FAMILIES.find((candidate) => candidate.title === title);
     const wells = wellGeometry(decodeSvg(family!.variants[0].assetPath));
-    const left = Math.min(...wells.map((well) => well.cx - well.radius - well.strokeWidth / 2));
-    const right = Math.max(...wells.map((well) => well.cx + well.radius + well.strokeWidth / 2));
-    const top = Math.min(...wells.map((well) => well.cy - well.radius - well.strokeWidth / 2));
-    const bottom = Math.max(...wells.map((well) => well.cy + well.radius + well.strokeWidth / 2));
-    const nearestPlateGap = Math.min(left - 8, 352 - right, top - 8, 232 - bottom);
+    const left = Math.min(...wells.map((well) => well.cx - well.radius));
+    const right = Math.max(...wells.map((well) => well.cx + well.radius));
+    const top = Math.min(...wells.map((well) => well.cy - well.radius));
+    const bottom = Math.max(...wells.map((well) => well.cy + well.radius));
 
-    expect(nearestPlateGap).toBeGreaterThanOrEqual(8);
-    expect(nearestPlateGap).toBeLessThanOrEqual(16);
+    expect(left - 48).toBeCloseTo(336 - right, 1);
+    expect(top - 48).toBeCloseTo(216 - bottom, 1);
+    expect(left).toBeGreaterThan(48);
+    expect(top).toBeGreaterThan(48);
+  });
+
+  it.each([
+    "6 Well Plate Top View",
+    "12 Well Plate Top View",
+    "24 Well Plate Top View",
+    "48 Well Plate Top View",
+    "96 Well Plate Top View",
+    "384 Well Plate Top View"
+  ])("includes raised face and depth layers in %s", (title) => {
+    const family = TOP_VIEW_LABWARE_FAMILIES.find((candidate) => candidate.title === title);
+    const source = decodeSvg(family!.variants[0].assetPath);
+
+    expect(source).toContain('id="plate-depth"');
+    expect(source).toContain('id="plate-side"');
+    expect(source).toContain('id="plate-highlight"');
   });
 
   it("does not prefix generated data URLs with the GitHub Pages base path", () => {

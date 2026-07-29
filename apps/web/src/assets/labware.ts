@@ -3,14 +3,14 @@ import type { AssetFamily } from "@workspace/editor-core";
 const WIDTH = 360;
 const HEIGHT = 240;
 const SOURCE_PAGE = "https://github.com/pkheisig/OpenSketch";
-const PLATE_INSET = { left: 18, top: 18, width: 324, height: 204 };
+const WELL_GRID = { left: 48, top: 48, width: 288, height: 168 };
 const WELL_RADIUS_RATIO: Record<number, number> = {
-  6: 0.48,
-  12: 0.45,
-  24: 0.4,
-  48: 0.36,
+  6: 0.42,
+  12: 0.41,
+  24: 0.38,
+  48: 0.35,
   96: 0.34,
-  384: 0.32
+  384: 0.3
 };
 
 function svgDataUrl(source: string): string {
@@ -19,21 +19,46 @@ function svgDataUrl(source: string): string {
 
 function wellPlateSvg(rows: number, columns: number): string {
   const wellCount = rows * columns;
-  const xStep = PLATE_INSET.width / columns;
-  const yStep = PLATE_INSET.height / rows;
+  const xStep = WELL_GRID.width / columns;
+  const yStep = WELL_GRID.height / rows;
   const radius = Math.max(3.2, Math.min(xStep, yStep) * (WELL_RADIUS_RATIO[wellCount] ?? 0.36));
   const wells = Array.from({ length: rows * columns }, (_, index) => {
     const row = Math.floor(index / columns);
     const column = index % columns;
-    const cx = PLATE_INSET.left + (column + 0.5) * xStep;
-    const cy = PLATE_INSET.top + (row + 0.5) * yStep;
-    return `<circle id="well-${row + 1}-${column + 1}" cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="${radius.toFixed(2)}" fill="#ffffff" stroke="#78918f" stroke-width="${Math.max(1.2, radius * 0.12).toFixed(2)}"/>`;
+    const cx = WELL_GRID.left + (column + 0.5) * xStep;
+    const cy = WELL_GRID.top + (row + 0.5) * yStep;
+    const strokeWidth = Math.max(0.8, Math.min(1.8, radius * 0.1));
+    const rimWidth = Math.max(1.4, Math.min(3.4, radius * 0.18));
+    return [
+      `<circle data-well-shadow="${row + 1}-${column + 1}" cx="${cx.toFixed(2)}" cy="${(cy + Math.max(0.8, radius * 0.08)).toFixed(2)}" r="${(radius + rimWidth * 0.55).toFixed(2)}" fill="#c8d7d5"/>`,
+      `<circle data-well-rim="${row + 1}-${column + 1}" cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="${(radius + rimWidth * 0.4).toFixed(2)}" fill="#f8fbfa" stroke="#b6c9c7" stroke-width="${rimWidth.toFixed(2)}"/>`,
+      `<circle id="well-${row + 1}-${column + 1}" cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="${radius.toFixed(2)}" fill="#d9eef4" stroke="#5f858a" stroke-width="${strokeWidth.toFixed(2)}"/>`
+    ].join("");
+  }).join("");
+  const columnFontSize = columns <= 6 ? 12 : columns <= 12 ? 8.5 : 5.2;
+  const rowFontSize = rows <= 4 ? 12 : rows <= 8 ? 8.5 : 5.2;
+  const columnLabels = Array.from({ length: columns }, (_, column) => {
+    const x = WELL_GRID.left + (column + 0.5) * xStep;
+    return `<text id="column-label-${column + 1}" x="${x.toFixed(2)}" y="39" text-anchor="middle">${column + 1}</text>`;
+  }).join("");
+  const rowLabels = Array.from({ length: rows }, (_, row) => {
+    const y = WELL_GRID.top + (row + 0.5) * yStep;
+    return `<text id="row-label-${row + 1}" x="34" y="${y.toFixed(2)}" text-anchor="middle" dominant-baseline="central">${String.fromCharCode(65 + row)}</text>`;
   }).join("");
 
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${WIDTH} ${HEIGHT}">`,
-    '<rect id="plate" x="8" y="8" width="344" height="224" rx="20" fill="#eef4f2" stroke="#536d6b" stroke-width="4"/>',
-    `<rect id="plate-inset" x="${PLATE_INSET.left}" y="${PLATE_INSET.top}" width="${PLATE_INSET.width}" height="${PLATE_INSET.height}" rx="14" fill="none" stroke="#b8c8c5" stroke-width="2"/>`,
+    '<path id="plate-depth" d="M28 12H338c10 0 18 8 18 18v190c0 10-8 18-18 18H30L10 218V32Z" fill="#bed1d2" stroke="#6f9295" stroke-width="2"/>',
+    '<path id="plate-side" d="M350 24l6 6v190c0 10-8 18-18 18H30l-6-6h310c9 0 16-7 16-16Z" fill="#abc4c7" stroke="#6f9295" stroke-width="1.5"/>',
+    '<path id="plate" d="M28 4H334c9 0 16 7 16 16v194c0 9-7 16-16 16H28L4 206V28Z" fill="#eef5f5" stroke="#587d82" stroke-width="2.4"/>',
+    '<path id="plate-inset" d="M30 13H331c6 0 10 4 10 10v187c0 6-4 10-10 10H30L14 204V31Z" fill="#e5eff1" stroke="#a8c2c5" stroke-width="2"/>',
+    '<path id="plate-highlight" d="M31 17H329c5 0 8 3 8 8" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" opacity=".9"/>',
+    `<g id="column-labels" fill="#315f76" font-family="'Source Sans 3', sans-serif" font-size="${columnFontSize}" font-weight="600">`,
+    columnLabels,
+    "</g>",
+    `<g id="row-labels" fill="#315f76" font-family="'Source Sans 3', sans-serif" font-size="${rowFontSize}" font-weight="600">`,
+    rowLabels,
+    "</g>",
     wells,
     "</svg>"
   ].join("");
