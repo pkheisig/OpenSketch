@@ -29,7 +29,6 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
       >
         <div className="dialog-titlebar">
           <div>
-            <p className="eyebrow">PUBLICATION OUTPUT</p>
             <h2 id="export-title">Export figure</h2>
           </div>
           <button className="icon-button" onClick={onClose} aria-label="Close export dialog">
