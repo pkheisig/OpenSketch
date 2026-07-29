@@ -4,7 +4,9 @@ test("reopens the production app and a saved project while offline", async ({ co
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
-  await page.getByRole("button", { name: "Rectangle", exact: true }).click();
+  const shapeMenu = page.getByRole("menu", { name: "Shape tools" });
+  await shapeMenu.getByRole("menuitem", { name: /Shapes/ }).hover();
+  await shapeMenu.getByRole("menuitem", { name: "Rectangle", exact: true }).click();
   const artboard = await page.locator(".artboard-stage").boundingBox();
   if (!artboard) throw new Error("Artboard is not visible.");
   await page.mouse.click(artboard.x + artboard.width / 2, artboard.y + artboard.height / 2);
