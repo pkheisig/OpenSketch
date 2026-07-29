@@ -251,6 +251,7 @@ interface EditorContextValue {
   projectId: string;
   canvas: Canvas | null;
   selection: FabricObject[];
+  editingGroup: Group | null;
   zoom: number;
   historyState: { canUndo: boolean; canRedo: boolean };
   canvasSettings: CanvasSettings;
@@ -264,6 +265,7 @@ interface EditorContextValue {
   setProjectName: (name: string) => void;
   setProjectDescription: (description: string) => void;
   selectParentAsset: () => void;
+  closeGroupEdit: () => void;
   flushSave: () => Promise<void>;
   creationTool: CreationTool | null;
   creationDefaults: CreationDefaults;
@@ -679,6 +681,8 @@ export function EditorProvider({
 }) {
   const [canvas, setCanvas] = useState<Canvas | null>(null);
   const [selection, setSelection] = useState<FabricObject[]>([]);
+  const [editingGroup, setEditingGroup] = useState<Group | null>(null);
+  const editingGroupRef = useRef<Group | null>(null);
   const [zoom, setZoomState] = useState(1);
   const [fitRequest, setFitRequest] = useState(0);
   const [creationTool, setCreationTool] = useState<CreationTool | null>(null);
@@ -1028,6 +1032,40 @@ export function EditorProvider({
       scenePoint?: FabricPoint;
     }) => {
       if (!scenePoint) return;
+      const currentEditingGroup = editingGroupRef.current;
+      if (currentEditingGroup) {
+        const nestedGroup = hitObjectsAtLevel(
+          canvas,
+          currentEditingGroup.getObjects(),
+          scenePoint
+        ).find(
+          (object): object is Group =>
+            object instanceof Group && !(object instanceof ActiveSelection)
+        );
+        if (!nestedGroup) return;
+        editingGroupRef.current = nestedGroup;
+        setEditingGroup(nestedGroup);
+        canvas.discardActiveObject();
+        setSelection([]);
+        modifierDeepSelection.current = undefined;
+        deepSelectionCycle.current = undefined;
+        canvas.requestRenderAll();
+        return;
+      }
+      const group = hitObjectsAtLevel(canvas, canvas.getObjects(), scenePoint).find(
+        (object): object is Group =>
+          object instanceof Group && !(object instanceof ActiveSelection)
+      );
+      if (group) {
+        editingGroupRef.current = group;
+        setEditingGroup(group);
+        canvas.discardActiveObject();
+        setSelection([]);
+        modifierDeepSelection.current = undefined;
+        deepSelectionCycle.current = undefined;
+        canvas.requestRenderAll();
+        return;
+      }
       const additiveModifier = e.metaKey || e.ctrlKey || e.altKey;
       const additiveObjects = additiveModifier ? modifierDeepSelection.current : undefined;
       const previousCycle = deepSelectionCycle.current;
@@ -1090,6 +1128,56 @@ export function EditorProvider({
       if (event.button !== 0) return;
       const additiveModifier = event.metaKey || event.ctrlKey || event.altKey;
       const scenePoint = canvas.getScenePoint(event);
+      const currentEditingGroup = editingGroupRef.current;
+      if (currentEditingGroup) {
+        const selected = hitObjectsAtLevel(
+          canvas,
+          currentEditingGroup.getObjects(),
+          scenePoint
+        )[0];
+        if (!selected) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          canvas.discardActiveObject();
+          setSelection([]);
+          modifierDeepSelection.current = undefined;
+          canvas.requestRenderAll();
+          return;
+        }
+        const currentObjects = additiveModifier
+          ? canvas
+              .getActiveObjects()
+              .filter((object) => directNestedParent(object) === currentEditingGroup)
+          : [];
+        const addsToSelection = additiveModifier && !currentObjects.includes(selected);
+        const objects =
+          addsToSelection
+            ? [...currentObjects, selected]
+            : additiveModifier
+              ? currentObjects
+              : [selected];
+        canvas.discardActiveObject();
+        if (objects.length > 1) {
+          const activeSelection = new ActiveSelection(objects, { canvas });
+          configureSelectionControls(activeSelection, latestZoom.current);
+          canvas.setActiveObject(activeSelection);
+        } else {
+          configureSelectionControls(selected, latestZoom.current);
+          canvas.setActiveObject(selected);
+        }
+        setSelection(objects);
+        modifierDeepSelection.current = objects;
+        deepSelectionCycle.current = {
+          point: new FabricPoint(scenePoint.x, scenePoint.y),
+          selected
+        };
+        canvas.requestRenderAll();
+        if (addsToSelection) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          return;
+        }
+      }
       if (additiveModifier && !modifierDeepSelection.current) {
         const selectedObjects = canvas.getActiveObjects();
         const parent = selectedObjects.length > 0 ? directNestedParent(selectedObjects[0]) : null;
@@ -1421,6 +1509,45 @@ export function EditorProvider({
       }
       context.restore();
     };
+    const drawGroupEditFocus = ({ ctx: context }: { ctx: CanvasRenderingContext2D }) => {
+      const group = editingGroupRef.current;
+      if (!group) return;
+      const bounds = group.getBoundingRect();
+      const viewport = canvas.viewportTransform;
+      const left = bounds.left * viewport[0] + viewport[4];
+      const top = bounds.top * viewport[3] + viewport[5];
+      const width = bounds.width * viewport[0];
+      const height = bounds.height * viewport[3];
+      const padding = 48;
+      context.save();
+      context.fillStyle = "rgba(247, 248, 245, 0.68)";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.globalCompositeOperation = "destination-out";
+      context.fillRect(
+        left - padding,
+        top - padding,
+        width + padding * 2,
+        height + padding * 2
+      );
+      context.restore();
+      const selectedObjects = canvas.getActiveObjects();
+      if (selectedObjects.length < 2) return;
+      context.save();
+      context.strokeStyle = "#7657e8";
+      context.fillStyle = "rgba(118, 87, 232, 0.08)";
+      context.lineWidth = 1.25;
+      selectedObjects.forEach((object) => {
+        if (directNestedParent(object) !== group) return;
+        const objectBounds = object.getBoundingRect();
+        const objectLeft = objectBounds.left * viewport[0] + viewport[4];
+        const objectTop = objectBounds.top * viewport[3] + viewport[5];
+        const objectWidth = objectBounds.width * viewport[0];
+        const objectHeight = objectBounds.height * viewport[3];
+        context.fillRect(objectLeft, objectTop, objectWidth, objectHeight);
+        context.strokeRect(objectLeft, objectTop, objectWidth, objectHeight);
+      });
+      context.restore();
+    };
     canvas.on("selection:created", select);
     canvas.on("selection:updated", select);
     canvas.on("selection:cleared", select);
@@ -1432,6 +1559,7 @@ export function EditorProvider({
     canvas.on("object:moving", moving);
     canvas.on("object:scaling", transform);
     canvas.on("object:rotating", transform);
+    canvas.on("after:render", drawGroupEditFocus);
     canvas.on("after:render", drawGuides);
     canvas.on("mouse:up", clearGuides);
     canvas.on("mouse:up", restoreObjectStacking);
@@ -2081,6 +2209,19 @@ export function EditorProvider({
     if (!parent) return;
     canvas.setActiveObject(parent);
     setSelection([parent]);
+    canvas.requestRenderAll();
+  }, [canvas]);
+
+  const closeGroupEdit = useCallback(() => {
+    const group = editingGroupRef.current;
+    editingGroupRef.current = null;
+    setEditingGroup(null);
+    modifierDeepSelection.current = undefined;
+    deepSelectionCycle.current = undefined;
+    if (!canvas || !group) return;
+    configureSelectionControls(group, latestZoom.current);
+    canvas.setActiveObject(group);
+    setSelection([group]);
     canvas.requestRenderAll();
   }, [canvas]);
 
@@ -2911,6 +3052,7 @@ export function EditorProvider({
       projectId: project.id,
       canvas,
       selection,
+      editingGroup,
       zoom,
       historyState,
       canvasSettings,
@@ -2924,6 +3066,7 @@ export function EditorProvider({
       setProjectName,
       setProjectDescription,
       selectParentAsset,
+      closeGroupEdit,
       flushSave,
       creationTool,
       creationDefaults,
@@ -2991,6 +3134,7 @@ export function EditorProvider({
       applyColorPreset,
       groupSelection,
       historyState,
+      editingGroup,
       projectDescription,
       project.id,
       previewZoom,
@@ -3009,6 +3153,7 @@ export function EditorProvider({
       setProjectName,
       setProjectDescription,
       selectParentAsset,
+      closeGroupEdit,
       flushSave,
       setZoom,
       undo,

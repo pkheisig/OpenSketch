@@ -729,7 +729,6 @@ test("copies canvas objects to the system clipboard as PNG and SVG", async ({
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
-  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.5, 0.5);
 
   await page.keyboard.press("ControlOrMeta+C");
@@ -1228,7 +1227,6 @@ test("ungroups exactly one level of a nested group hierarchy", async ({ page }) 
 test("double-clicks through overlapping objects and into grouped children", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
-  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.5, 0.5);
   await placeTool(page, "Circle", 0.5, 0.5);
 
@@ -1237,6 +1235,7 @@ test("double-clicks through overlapping objects and into grouped children", asyn
   await expect(page.locator(".inspector-header h2")).toHaveText("circle");
 
   await page.mouse.dblclick(overlap.x, overlap.y);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("rectangle");
   const ungroupedX = page.locator(".inspector-scroll").getByLabel("X", { exact: true });
   const ungroupedStartX = Number(await ungroupedX.inputValue());
@@ -1244,6 +1243,7 @@ test("double-clicks through overlapping objects and into grouped children", asyn
   await page.mouse.down();
   await page.mouse.move(overlap.x + 140, overlap.y, { steps: 5 });
   await page.mouse.up();
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("rectangle");
   await expect
     .poll(async () => Number(await ungroupedX.inputValue()))
@@ -1254,6 +1254,7 @@ test("double-clicks through overlapping objects and into grouped children", asyn
   await page.mouse.move(overlap.x, overlap.y, { steps: 5 });
   await page.mouse.up();
   await page.mouse.dblclick(overlap.x, overlap.y);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("circle");
 
   await page.keyboard.press("ControlOrMeta+A");
@@ -1261,6 +1262,10 @@ test("double-clicks through overlapping objects and into grouped children", asyn
   await expect(page.locator(".inspector-header h2")).toHaveText("Group");
 
   await page.mouse.dblclick(overlap.x, overlap.y);
+  const groupBanner = page.getByRole("status").filter({ hasText: "Editing a group" });
+  await expect(groupBanner).toBeVisible();
+  await page.mouse.click(overlap.x, overlap.y);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("circle");
   const groupedX = page.locator(".inspector-scroll").getByLabel("X", { exact: true });
   const groupedStartX = Number(await groupedX.inputValue());
@@ -1268,20 +1273,25 @@ test("double-clicks through overlapping objects and into grouped children", asyn
   await page.mouse.down();
   await page.mouse.move(overlap.x + 140, overlap.y, { steps: 5 });
   await page.mouse.up();
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("circle");
   await expect(page.locator(".layers-title small")).toHaveText("1");
   await expect
     .poll(async () => Number(await groupedX.inputValue()))
     .toBeGreaterThan(groupedStartX + 100);
 
-  await page.mouse.dblclick(overlap.x, overlap.y);
+  await page.mouse.click(overlap.x, overlap.y);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("rectangle");
+  await groupBanner.getByRole("button", { name: "Close" }).click();
+  await expect(groupBanner).toHaveCount(0);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await expect(page.locator(".inspector-header h2")).toHaveText("Group");
 });
 
 test("double-clicks into nested groups one hierarchy level at a time", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
-  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.4, 0.5);
   await placeTool(page, "Circle", 0.4, 0.5);
   await page.keyboard.press("ControlOrMeta+A");
@@ -1298,16 +1308,25 @@ test("double-clicks into nested groups one hierarchy level at a time", async ({ 
 
   const nestedGroupPoint = await artboardPoint(page, 0.4, 0.5);
   await page.mouse.dblclick(nestedGroupPoint.x, nestedGroupPoint.y);
+  const groupBanner = page.getByRole("status").filter({ hasText: "Editing a group" });
+  await expect(groupBanner).toBeVisible();
+  await page.mouse.click(nestedGroupPoint.x, nestedGroupPoint.y);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("Group");
   await expect
     .poll(async () => Number(await widthField.inputValue()))
     .toBeCloseTo(innerGroupWidth, 0);
 
   await page.mouse.dblclick(nestedGroupPoint.x, nestedGroupPoint.y);
+  await expect(groupBanner).toBeVisible();
+  await page.mouse.click(nestedGroupPoint.x, nestedGroupPoint.y);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).not.toHaveText("Group");
+  await groupBanner.getByRole("button", { name: "Close" }).click();
+  await expect(groupBanner).toHaveCount(0);
 });
 
-test("modifier-double-click adds individual children within the same group", async ({ page }) => {
+test("edits a group with single-click and modifier multi-selection", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.3, 0.5);
@@ -1320,35 +1339,42 @@ test("modifier-double-click adds individual children within the same group", asy
   const circle = await artboardPoint(page, 0.5, 0.5);
   const triangle = await artboardPoint(page, 0.7, 0.5);
   await page.mouse.dblclick(rectangle.x, rectangle.y);
+  const groupBanner = page.getByRole("status").filter({ hasText: "Editing a group" });
+  await expect(groupBanner).toBeVisible();
+  await expect(page.locator(".canvas-workspace")).toHaveClass(/group-editing/);
+  await page.mouse.click(rectangle.x, rectangle.y);
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("rectangle");
 
   await page.keyboard.down("Meta");
   await page.mouse.click(circle.x, circle.y);
-  await page.mouse.click(circle.x, circle.y);
   await page.keyboard.up("Meta");
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header span")).toHaveText("2 selected");
 
   await page.keyboard.down("Alt");
   await page.mouse.click(triangle.x, triangle.y);
-  await page.mouse.click(triangle.x, triangle.y);
   await page.keyboard.up("Alt");
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header span")).toHaveText("3 selected");
   await expect(page.getByRole("button", { name: "Group", exact: true })).toBeEnabled();
 
-  await page.mouse.dblclick(rectangle.x, rectangle.y);
-  await expect(page.locator(".inspector-header span")).toHaveText("");
+  await groupBanner.getByRole("button", { name: "Close" }).click();
+  await expect(groupBanner).toHaveCount(0);
+  await expect(page.locator(".canvas-workspace")).not.toHaveClass(/group-editing/);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await expect(page.locator(".inspector-header h2")).toHaveText("Group");
 });
 
 test("preserves nested group dimensions when duplicating by modifier-drag", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
-  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.4, 0.5);
   await placeTool(page, "Circle", 0.4, 0.5);
   await page.keyboard.press("ControlOrMeta+A");
   await page.getByRole("button", { name: "Group", exact: true }).click();
 
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   const widthField = page.locator(".inspector-scroll").getByLabel("W", { exact: true });
   const innerGroupWidth = Number(await widthField.inputValue());
   await placeTool(page, "Triangle", 0.7, 0.5);
@@ -1357,6 +1383,9 @@ test("preserves nested group dimensions when duplicating by modifier-drag", asyn
 
   const nestedGroupPoint = await artboardPoint(page, 0.4, 0.5);
   await page.mouse.dblclick(nestedGroupPoint.x, nestedGroupPoint.y);
+  await expect(page.getByRole("status")).toContainText("Editing a group");
+  await page.mouse.click(nestedGroupPoint.x, nestedGroupPoint.y);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("Group");
   await page.mouse.move(nestedGroupPoint.x, nestedGroupPoint.y);
   await page.keyboard.down("Control");
@@ -1364,6 +1393,7 @@ test("preserves nested group dimensions when duplicating by modifier-drag", asyn
   await page.mouse.move(nestedGroupPoint.x + 220, nestedGroupPoint.y - 100, { steps: 10 });
   await page.mouse.up();
   await page.keyboard.up("Control");
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect
     .poll(async () => Number(await widthField.inputValue()))
     .toBeCloseTo(innerGroupWidth, 0);

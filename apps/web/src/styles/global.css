@@ -1923,6 +1923,50 @@ a:focus-visible {
   opacity: 1;
 }
 
+.group-edit-banner {
+  position: absolute;
+  z-index: 16;
+  top: 34px;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 34px;
+  padding: 4px 5px 4px 13px;
+  border: 1px solid rgba(27, 69, 67, 0.22);
+  border-radius: 999px;
+  color: #173c3a;
+  background: rgba(255, 254, 249, 0.96);
+  box-shadow: 0 5px 18px rgba(21, 53, 51, 0.14);
+  transform: translateX(-50%);
+  backdrop-filter: blur(8px);
+}
+
+.group-edit-banner strong {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.group-edit-banner button {
+  min-height: 26px;
+  padding: 0 11px;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  background: #167f7b;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.group-edit-banner button:hover {
+  background: #116d69;
+}
+
+.ruler-hidden .group-edit-banner {
+  top: 12px;
+}
+
 .workspace-scroll {
   position: absolute;
   inset: 21px 0 0 21px;

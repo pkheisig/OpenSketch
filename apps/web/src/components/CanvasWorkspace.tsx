@@ -806,6 +806,7 @@ export function CanvasWorkspace() {
   const openContextMenu = (event: ReactMouseEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
+    if (editor.editingGroup && (event.metaKey || event.ctrlKey || event.altKey)) return;
     if (!canvas) return;
     const { target } = canvas.findTarget(event.nativeEvent as never);
     const selected = canvas.getActiveObjects();
@@ -976,7 +977,9 @@ export function CanvasWorkspace() {
       ref={workspaceRef}
       className={`canvas-workspace ${dragging ? "drop-active" : ""} ${
         editor.creationTool ? "is-creating" : ""
-      } ${rulerVisible ? "" : "ruler-hidden"} ${editor.canvasSettings.grid ? "grid-visible" : ""}`}
+      } ${rulerVisible ? "" : "ruler-hidden"} ${
+        editor.canvasSettings.grid ? "grid-visible" : ""
+      } ${editor.editingGroup ? "group-editing" : ""}`}
       onDragOver={(event) => {
         if (
           event.dataTransfer.types.includes("application/x-scientific-asset") ||
@@ -992,6 +995,14 @@ export function CanvasWorkspace() {
       }}
       onDrop={onDrop}
     >
+      {editor.editingGroup ? (
+        <div className="group-edit-banner" role="status">
+          <strong>Editing a group</strong>
+          <button type="button" onClick={editor.closeGroupEdit}>
+            Close
+          </button>
+        </div>
+      ) : null}
       {rulerVisible ? (
         <>
           <div className="canvas-ruler ruler-horizontal">
