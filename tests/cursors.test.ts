@@ -12,7 +12,7 @@ import {
 
 describe("OpenSketch canvas cursors", () => {
   it("provides vector UI cursors for canvas transforms", () => {
-    for (const cursor of [
+    const cursors = [
       CURSOR_GRAB,
       CURSOR_GRABBING,
       CURSOR_ROTATE,
@@ -20,9 +20,16 @@ describe("OpenSketch canvas cursors", () => {
       CURSOR_RESIZE_VERTICAL,
       CURSOR_RESIZE_NW_SE,
       CURSOR_RESIZE_NE_SW
-    ]) {
+    ];
+    for (const cursor of cursors) {
       expect(cursor).toContain("data:image/svg+xml");
+      const source = decodeURIComponent(cursor);
+      expect(source).toContain('width="28"');
+      expect(source).toContain('stroke="#183133"');
+      expect(source).toContain('stroke-width="2"');
+      expect(source).toContain('stroke-width="4.5"');
     }
+    expect(new Set(cursors).size).toBe(cursors.length);
   });
 
   it("maps every native resize direction to an OpenSketch cursor", () => {

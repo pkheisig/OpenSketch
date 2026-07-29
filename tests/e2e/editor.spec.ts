@@ -235,6 +235,7 @@ test("rotates an object by dragging its rotation handle", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle");
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
 
   const center = await artboardPoint(page);
   const zoom =
@@ -260,6 +261,7 @@ test("rotates an object by dragging its rotation handle", async ({ page }) => {
   await page.mouse.move(center.x + 120, center.y, { steps: 12 });
   await page.mouse.up();
 
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.getByLabel("Rotation")).toHaveValue("90");
 });
 
@@ -267,6 +269,7 @@ test("resizes through the enlarged invisible control hitbox with a UI cursor", a
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle");
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
 
   const center = await artboardPoint(page);
   const zoom =
@@ -293,7 +296,17 @@ test("resizes through the enlarged invisible control hitbox with a UI cursor", a
   await page.mouse.move(outsideVisibleCorner.x + 60, outsideVisibleCorner.y + 40, { steps: 10 });
   await page.mouse.up();
 
-  await expect.poll(async () => Number(await widthField.inputValue())).toBeGreaterThan(width);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await expect
+    .poll(async () =>
+      Number(
+        await page
+          .locator(".inspector-scroll")
+          .getByRole("spinbutton", { name: "W", exact: true })
+          .inputValue()
+      )
+    )
+    .toBeGreaterThan(width);
 });
 
 test("inserts editable standard top-view labware", async ({ page }) => {

@@ -1,55 +1,78 @@
-const CURSOR_SIZE = 32;
-const CURSOR_HOTSPOT = 16;
-const INK = "#173f3d";
+const CURSOR_SIZE = 28;
+const CURSOR_HOTSPOT = 14;
+const INK = "#183133";
 const HALO = "#ffffff";
 
-function svgCursor(body: string, fallback: string, hotspot = CURSOR_HOTSPOT): string {
-  const source = [
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${CURSOR_SIZE}" height="${CURSOR_SIZE}" viewBox="0 0 ${CURSOR_SIZE} ${CURSOR_SIZE}">`,
-    body,
-    "</svg>"
+// Path data adapted from Lucide v0.536.0 (ISC). Keeping every transform cursor
+// in the same icon family avoids mixing browser-native and bespoke silhouettes.
+const LUCIDE_HAND = [
+  '<path d="M18 11V6a2 2 0 0 0-4 0"/>',
+  '<path d="M14 10V4a2 2 0 0 0-4 0v2"/>',
+  '<path d="M10 10.5V6a2 2 0 0 0-4 0v8"/>',
+  '<path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>'
+].join("");
+
+const LUCIDE_HAND_GRAB = [
+  '<path d="M18 11.5V9a2 2 0 0 0-4 0v1.4"/>',
+  '<path d="M14 10V8a2 2 0 0 0-4 0v2"/>',
+  '<path d="M10 9.9V9a2 2 0 0 0-4 0v5"/>',
+  '<path d="M6 14a2 2 0 0 0-4 0"/>',
+  '<path d="M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-4a8 8 0 0 1-8-8 2 2 0 1 1 4 0"/>'
+].join("");
+
+const LUCIDE_MOVE_HORIZONTAL = [
+  '<path d="m18 8 4 4-4 4"/>',
+  '<path d="M2 12h20"/>',
+  '<path d="m6 8-4 4 4 4"/>'
+].join("");
+
+const LUCIDE_ROTATE_CW = [
+  '<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>',
+  '<path d="M21 3v5h-5"/>'
+].join("");
+
+function iconLayers(paths: string, transform = ""): string {
+  const transformAttribute = transform ? ` transform="${transform}"` : "";
+  return [
+    `<g${transformAttribute} fill="none" stroke="${HALO}" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">${paths}</g>`,
+    `<g${transformAttribute} fill="none" stroke="${INK}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths}</g>`
   ].join("");
-  return `url("data:image/svg+xml,${encodeURIComponent(source)}") ${hotspot} ${hotspot}, ${fallback}`;
 }
 
-function outlinedPath(path: string, attributes = ""): string {
-  return [
-    `<path d="${path}" ${attributes} fill="none" stroke="${HALO}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`,
-    `<path d="${path}" ${attributes} fill="none" stroke="${INK}" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/>`
+function svgCursor(
+  paths: string,
+  fallback: string,
+  {
+    hotspotX = CURSOR_HOTSPOT,
+    hotspotY = CURSOR_HOTSPOT,
+    transform = ""
+  }: { hotspotX?: number; hotspotY?: number; transform?: string } = {}
+): string {
+  const source = [
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${CURSOR_SIZE}" height="${CURSOR_SIZE}" viewBox="0 0 28 28">`,
+    `<g transform="translate(2 2)">${iconLayers(paths, transform)}</g>`,
+    "</svg>"
   ].join("");
+  return `url("data:image/svg+xml,${encodeURIComponent(source)}") ${hotspotX} ${hotspotY}, ${fallback}`;
 }
 
 function resizeCursor(angle: number, fallback: string): string {
-  const arrow = outlinedPath("M5 16h22M5 16l5-5M5 16l5 5M27 16l-5-5M27 16l-5 5");
-  return svgCursor(`<g transform="rotate(${angle} 16 16)">${arrow}</g>`, fallback);
+  return svgCursor(LUCIDE_MOVE_HORIZONTAL, fallback, {
+    transform: `rotate(${angle} 12 12)`
+  });
 }
 
-export const CURSOR_GRAB = svgCursor(
-  [
-    `<path d="M11.5 15.5V8.8a2 2 0 0 1 4 0v4.4-6a2 2 0 0 1 4 0v6-3.8a2 2 0 0 1 4 0v7.1l1.2-1.5a2.2 2.2 0 0 1 3.5 2.6l-4.5 6.3a6 6 0 0 1-4.9 2.6h-2.5a6 6 0 0 1-5.2-3L8 18.1a2.2 2.2 0 0 1 3.5-2.6Z" fill="${HALO}" stroke="${HALO}" stroke-width="4" stroke-linejoin="round"/>`,
-    `<path d="M11.5 15.5V8.8a2 2 0 0 1 4 0v4.4-6a2 2 0 0 1 4 0v6-3.8a2 2 0 0 1 4 0v7.1l1.2-1.5a2.2 2.2 0 0 1 3.5 2.6l-4.5 6.3a6 6 0 0 1-4.9 2.6h-2.5a6 6 0 0 1-5.2-3L8 18.1a2.2 2.2 0 0 1 3.5-2.6Z" fill="#f8fbfa" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/>`
-  ].join(""),
-  "grab",
-  15
-);
+export const CURSOR_GRAB = svgCursor(LUCIDE_HAND, "grab", {
+  hotspotX: 12,
+  hotspotY: 13
+});
 
-export const CURSOR_GRABBING = svgCursor(
-  [
-    `<path d="M9 15.4V12a2 2 0 0 1 3.8-.9V8.8a2 2 0 0 1 4 0V8a2 2 0 0 1 4 0v2a2 2 0 0 1 4 .1v7.2l1.2-1.5a2.1 2.1 0 0 1 3.4 2.5l-4.6 6.2a6 6 0 0 1-4.8 2.4h-3.1a6 6 0 0 1-5.2-3L8.1 18a2 2 0 0 1 .9-2.6Z" fill="${HALO}" stroke="${HALO}" stroke-width="4" stroke-linejoin="round"/>`,
-    `<path d="M9 15.4V12a2 2 0 0 1 3.8-.9V8.8a2 2 0 0 1 4 0V8a2 2 0 0 1 4 0v2a2 2 0 0 1 4 .1v7.2l1.2-1.5a2.1 2.1 0 0 1 3.4 2.5l-4.6 6.2a6 6 0 0 1-4.8 2.4h-3.1a6 6 0 0 1-5.2-3L8.1 18a2 2 0 0 1 .9-2.6Z" fill="#eaf3f1" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/>`
-  ].join(""),
-  "grabbing",
-  15
-);
+export const CURSOR_GRABBING = svgCursor(LUCIDE_HAND_GRAB, "grabbing", {
+  hotspotX: 12,
+  hotspotY: 13
+});
 
-export const CURSOR_ROTATE = svgCursor(
-  [
-    outlinedPath("M24.5 12.5A9.5 9.5 0 1 0 25 21"),
-    `<path d="M20.5 8.5h5v5" fill="${HALO}" stroke="${HALO}" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`,
-    `<path d="M20.5 8.5h5v5" fill="none" stroke="${INK}" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"/>`
-  ].join(""),
-  "crosshair"
-);
+export const CURSOR_ROTATE = svgCursor(LUCIDE_ROTATE_CW, "crosshair");
 
 export const CURSOR_RESIZE_HORIZONTAL = resizeCursor(0, "ew-resize");
 export const CURSOR_RESIZE_VERTICAL = resizeCursor(90, "ns-resize");
