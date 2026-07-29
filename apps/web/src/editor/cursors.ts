@@ -3,22 +3,12 @@ const CURSOR_HOTSPOT = 14;
 const INK = "#183133";
 const HALO = "#ffffff";
 
-// Path data adapted from Lucide v0.536.0 (ISC). Keeping every transform cursor
-// in the same icon family avoids mixing browser-native and bespoke silhouettes.
-const LUCIDE_HAND = [
-  '<path d="M18 11V6a2 2 0 0 0-4 0"/>',
-  '<path d="M14 10V4a2 2 0 0 0-4 0v2"/>',
-  '<path d="M10 10.5V6a2 2 0 0 0-4 0v8"/>',
-  '<path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>'
-].join("");
-
-const LUCIDE_HAND_GRAB = [
-  '<path d="M18 11.5V9a2 2 0 0 0-4 0v1.4"/>',
-  '<path d="M14 10V8a2 2 0 0 0-4 0v2"/>',
-  '<path d="M10 9.9V9a2 2 0 0 0-4 0v5"/>',
-  '<path d="M6 14a2 2 0 0 0-4 0"/>',
-  '<path d="M18 11a2 2 0 1 1 4 0v3a8 8 0 0 1-8 8h-4a8 8 0 0 1-8-8 2 2 0 1 1 4 0"/>'
-].join("");
+// Closed silhouette from Google's rounded Material Icons `pan_tool`
+// (Apache-2.0). A single closed path is intentional: filling Lucide's former
+// multi-path outline implicitly closed each finger path and produced the white
+// wedges/"leaks" visible inside the cursor.
+const MATERIAL_HAND =
+  '<path d="M21.5 4c-.83 0-1.5.67-1.5 1.5v5c0 .28-.22.5-.5.5s-.5-.22-.5-.5v-8c0-.83-.67-1.5-1.5-1.5S16 1.67 16 2.5v8c0 .28-.22.5-.5.5s-.5-.22-.5-.5v-9c0-.83-.67-1.5-1.5-1.5S12 .67 12 1.5v8.99c0 .28-.22.5-.5.5s-.5-.22-.5-.5V4.5c0-.83-.67-1.5-1.5-1.5S8 3.67 8 4.5v11.41l-4.12-2.35c-.58-.33-1.3-.24-1.78.22-.6.58-.62 1.54-.03 2.13l6.78 6.89c.75.77 1.77 1.2 2.85 1.2H19c2.21 0 4-1.79 4-4V5.5c0-.83-.67-1.5-1.5-1.5z"/>';
 
 const LUCIDE_MOVE_HORIZONTAL = [
   '<path d="m18 8 4 4-4 4"/>',
@@ -66,15 +56,16 @@ function resizeCursor(angle: number, fallback: string): string {
   });
 }
 
-export const CURSOR_GRAB = svgCursor(LUCIDE_HAND, "grab", {
+export const CURSOR_GRAB = svgCursor(MATERIAL_HAND, "grab", {
   hotspotX: 12,
   hotspotY: 13,
   filled: true
 });
 
-export const CURSOR_GRABBING = svgCursor(LUCIDE_HAND_GRAB, "grabbing", {
+export const CURSOR_GRABBING = svgCursor(MATERIAL_HAND, "grabbing", {
   hotspotX: 12,
   hotspotY: 13,
+  transform: "translate(1.08 1.35) scale(.91)",
   filled: true
 });
 

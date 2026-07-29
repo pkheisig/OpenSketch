@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import sharp from "sharp";
 import {
   CURSOR_GRAB,
   CURSOR_GRABBING,
@@ -45,8 +46,31 @@ describe("OpenSketch canvas cursors", () => {
       const source = decodeURIComponent(cursor);
       expect(source).toContain('fill="#ffffff" stroke="#183133" stroke-width="2"');
       expect(source).not.toContain("<rect");
+      expect(source.match(/<path\b/g)).toHaveLength(1);
+      expect(source).toContain("M21.5 4c-.83 0-1.5.67-1.5 1.5");
     }
+    expect(CURSOR_GRABBING).not.toBe(CURSOR_GRAB);
     expect(decodeURIComponent(CURSOR_ROTATE)).toContain('fill="none"');
+  });
+
+  it("rasterizes the hand as a solid white palm on transparency", async () => {
+    for (const cursor of [CURSOR_GRAB, CURSOR_GRABBING]) {
+      const decoded = decodeURIComponent(cursor);
+      const svg = decoded.slice(decoded.indexOf("<svg"), decoded.indexOf("</svg>") + 6);
+      const { data, info } = await sharp(Buffer.from(svg))
+        .ensureAlpha()
+        .raw()
+        .toBuffer({ resolveWithObject: true });
+      const pixel = (x: number, y: number) => {
+        const offset = (y * info.width + x) * 4;
+        return [...data.subarray(offset, offset + 4)];
+      };
+
+      expect(pixel(16, 18)).toEqual([255, 255, 255, 255]);
+      expect(pixel(14, 18)).toEqual([255, 255, 255, 255]);
+      expect(pixel(17, 20)).toEqual([255, 255, 255, 255]);
+      expect(pixel(1, 1)).toEqual([0, 0, 0, 0]);
+    }
   });
 
   it("maps every native resize direction to an OpenSketch cursor", () => {
