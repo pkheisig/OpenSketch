@@ -1554,6 +1554,24 @@ test("double-clicking outside exits one group hierarchy level", async ({ page })
 });
 
 test("edits a group with single-click and modifier multi-selection", async ({ page }) => {
+  const opaqueBlueSelectionPixels = () =>
+    page.locator("canvas.lower-canvas").evaluate((canvas: HTMLCanvasElement) => {
+      const pixels = canvas
+        .getContext("2d")!
+        .getImageData(0, 0, canvas.width, canvas.height).data;
+      let count = 0;
+      for (let index = 0; index < pixels.length; index += 4) {
+        if (
+          pixels[index] === 59 &&
+          pixels[index + 1] === 130 &&
+          pixels[index + 2] === 246 &&
+          pixels[index + 3] === 255
+        ) {
+          count += 1;
+        }
+      }
+      return count;
+    });
   const renderedPixelAt = (point: { x: number; y: number }) =>
     page.locator("canvas.lower-canvas").evaluate(
       (canvas: HTMLCanvasElement, clientPoint) => {
@@ -1599,6 +1617,7 @@ test("edits a group with single-click and modifier multi-selection", async ({ pa
       )
   ).toBeGreaterThan(20);
   await page.mouse.click(rectangle.x, rectangle.y);
+  expect(await opaqueBlueSelectionPixels()).toBeGreaterThan(0);
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("rectangle");
 
@@ -1615,10 +1634,9 @@ test("edits a group with single-click and modifier multi-selection", async ({ pa
   await expect(page.locator(".inspector-header span")).toHaveText("3 selected");
   await expect(page.getByRole("button", { name: "Group", exact: true })).toBeEnabled();
 
-  await groupBanner.getByRole("button", { name: "Exit group" }).click();
+  await page.keyboard.press("Escape");
   await expect(groupBanner).toHaveCount(0);
   await expect(page.locator(".canvas-workspace")).not.toHaveClass(/group-editing/);
-  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("Group");
 });
 

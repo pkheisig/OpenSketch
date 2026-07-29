@@ -1570,7 +1570,7 @@ export function EditorProvider({
     };
     const drawGroupEditFocus = ({ ctx: context }: { ctx: CanvasRenderingContext2D }) => {
       const currentGroup = editingGroupRef.current;
-      if (!currentGroup) return;
+      if (!currentGroup || context !== canvas.getContext()) return;
       context.save();
       context.fillStyle = "rgba(255, 255, 255, 0.82)";
       context.fillRect(0, 0, canvas.width, canvas.height);
@@ -1580,6 +1580,9 @@ export function EditorProvider({
       if (parent) context.transform(...parent.calcTransformMatrix());
       currentGroup.render(context);
       context.restore();
+      // Fabric draws selection controls before `after:render`. Redraw them after
+      // the focus veil so group-edit handles remain fully opaque and legible.
+      canvas.drawControls(context);
     };
     canvas.on("selection:created", select);
     canvas.on("selection:updated", select);
@@ -3030,6 +3033,20 @@ export function EditorProvider({
         event.preventDefault();
         deleteSelection();
       } else if (event.key === "Escape") {
+        const groupPath = editingGroupPathRef.current;
+        if (groupPath.length > 0) {
+          event.preventDefault();
+          const rootGroup = groupPath[0];
+          setEditingGroupPath([]);
+          modifierDeepSelection.current = undefined;
+          deepSelectionCycle.current = undefined;
+          canvas.discardActiveObject();
+          configureSelectionControls(rootGroup, latestZoom.current);
+          canvas.setActiveObject(rootGroup);
+          setSelection([rootGroup]);
+          canvas.requestRenderAll();
+          return;
+        }
         if (creationTool) {
           setCreationTool(null);
           return;
@@ -3092,6 +3109,7 @@ export function EditorProvider({
     redo,
     refreshConnectors,
     selectParentAsset,
+    setEditingGroupPath,
     setZoom,
     undo,
     ungroupSelection,
