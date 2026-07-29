@@ -387,6 +387,27 @@ test("shows variant grids with viewport margins and invisible scrollbars", async
   await expect.poll(() => menu.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
 });
 
+test("hides scrollbar chrome globally without disabling scrolling", async ({ page }) => {
+  await page.setViewportSize({ width: 1200, height: 700 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+
+  const assetList = page.locator(".asset-list");
+  await expect(assetList).toBeVisible();
+  await expect(assetList).toHaveCSS("scrollbar-width", "none");
+  await expect
+    .poll(() =>
+      assetList.evaluate((element) => element.scrollHeight > element.clientHeight)
+    )
+    .toBe(true);
+  await assetList.evaluate((element) => {
+    element.scrollTop = 120;
+  });
+  await expect.poll(() => assetList.evaluate((element) => element.scrollTop)).toBeGreaterThan(0);
+
+  await expect(page.locator(".workspace-scroll")).toHaveCSS("scrollbar-width", "none");
+});
+
 test("creates every distinct shape variant exposed by the shape pop-out", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
