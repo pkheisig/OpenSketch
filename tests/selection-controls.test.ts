@@ -1,4 +1,4 @@
-import { ActiveSelection, Group, Rect } from "../apps/web/node_modules/fabric";
+import { ActiveSelection, Canvas, Group, Point, Rect } from "../apps/web/node_modules/fabric";
 import { describe, expect, it } from "vitest";
 import {
   configureSelectionControls,
@@ -8,7 +8,10 @@ import {
   SELECTION_CORNER_MAX_PX,
   SELECTION_CORNER_MIN_PX,
   SELECTION_CORNER_TOUCH_PX,
+  SELECTION_CONTROL_HIT_MAX_PX,
+  SELECTION_CONTROL_HIT_MIN_PX,
   SELECTION_STROKE_WIDTH_PX,
+  selectionControlHitSizeForObject,
   selectionCornerSizeForObject,
   selectionStrokeWidthAtZoom,
   SINGLE_OBJECT_SELECTION_COLOR,
@@ -79,6 +82,30 @@ describe("selection control colors", () => {
     expect(tiny.cornerSize).toBe(SELECTION_CORNER_MIN_PX);
     expect(tiny.touchCornerSize).toBe(SELECTION_CORNER_TOUCH_PX);
     expect(large.cornerSize).toBe(SELECTION_CORNER_MAX_PX);
+  });
+
+  it("uses larger invisible mouse targets without enlarging the visible squares", () => {
+    const canvas = new Canvas();
+    const shape = new Rect({ width: 200, height: 120 });
+    canvas.add(shape);
+    canvas.setActiveObject(shape);
+    configureSelectionControls(shape, 1);
+
+    const control = shape.controls.br;
+    const visibleCorners = control.calcCornerCoords(0, shape.cornerSize, 100, 100, false, shape);
+    const pointerOutsideVisibleSquare = new Point(110, 100);
+
+    expect(shape.cornerSize).toBe(SELECTION_CORNER_MAX_PX);
+    expect(selectionControlHitSizeForObject(shape, 1)).toBe(SELECTION_CONTROL_HIT_MAX_PX);
+    expect(control.shouldActivate("br", shape, pointerOutsideVisibleSquare, visibleCorners)).toBe(
+      true
+    );
+  });
+
+  it("limits hit targets for very small on-screen objects to reduce overlap", () => {
+    const tiny = new Rect({ width: 20, height: 20 });
+
+    expect(selectionControlHitSizeForObject(tiny, 0.25)).toBe(SELECTION_CONTROL_HIT_MIN_PX);
   });
 });
 

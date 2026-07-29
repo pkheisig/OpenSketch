@@ -108,18 +108,56 @@ test("rotates an object by dragging its rotation handle", async ({ page }) => {
         ""
       )
     ) / 100;
-  const height = Number(await page.getByRole("spinbutton", { name: "H", exact: true }).inputValue());
+  const height = Number(
+    await page.getByRole("spinbutton", { name: "H", exact: true }).inputValue()
+  );
   const rotationHandle = {
     x: center.x,
     y: center.y - (height * zoom) / 2 - 40
   };
 
   await page.mouse.move(rotationHandle.x, rotationHandle.y);
+  await expect
+    .poll(() => page.locator(".upper-canvas").evaluate((element) => element.style.cursor))
+    .toContain("data:image/svg+xml");
   await page.mouse.down();
   await page.mouse.move(center.x + 120, center.y, { steps: 12 });
   await page.mouse.up();
 
   await expect(page.getByLabel("Rotation")).toHaveValue("90");
+});
+
+test("resizes through the enlarged invisible control hitbox with a UI cursor", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await placeTool(page, "Rectangle");
+
+  const center = await artboardPoint(page);
+  const zoom =
+    Number(
+      ((await page.locator(".workspace-controls .zoom-readout").textContent()) ?? "100").replace(
+        /[^0-9.]/g,
+        ""
+      )
+    ) / 100;
+  const widthField = page.getByRole("spinbutton", { name: "W", exact: true });
+  const heightField = page.getByRole("spinbutton", { name: "H", exact: true });
+  const width = Number(await widthField.inputValue());
+  const height = Number(await heightField.inputValue());
+  const outsideVisibleCorner = {
+    x: center.x + (width * zoom) / 2 + 8,
+    y: center.y + (height * zoom) / 2 + 8
+  };
+
+  await page.mouse.move(outsideVisibleCorner.x, outsideVisibleCorner.y);
+  await expect
+    .poll(() => page.locator(".upper-canvas").evaluate((element) => element.style.cursor))
+    .toContain("data:image/svg+xml");
+  await page.mouse.down();
+  await page.mouse.move(outsideVisibleCorner.x + 60, outsideVisibleCorner.y + 40, { steps: 10 });
+  await page.mouse.up();
+
+  await expect.poll(async () => Number(await widthField.inputValue())).toBeGreaterThan(width);
 });
 
 test("inserts editable standard top-view labware", async ({ page }) => {

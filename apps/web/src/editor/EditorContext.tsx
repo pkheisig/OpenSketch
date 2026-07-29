@@ -70,6 +70,7 @@ import {
   SELECTION_STROKE_WIDTH_PX,
   selectionStrokeWidthAtZoom
 } from "@/editor/selection";
+import { CURSOR_GRAB, CURSOR_GRABBING } from "@/editor/cursors";
 import { copySvgBlendModes, loadEditableSvg } from "@/editor/svg";
 import { zoomedCanvasDimensions } from "@/editor/zoom";
 import {
@@ -936,6 +937,8 @@ export function EditorProvider({
       canvasElement.current = element;
       const instance = new Canvas(element, {
         preserveObjectStacking: true,
+        hoverCursor: CURSOR_GRAB,
+        moveCursor: CURSOR_GRABBING,
         selectionColor: "rgba(18, 178, 175, 0.12)",
         selectionBorderColor: "#12b2af",
         selectionLineWidth: SELECTION_STROKE_WIDTH_PX

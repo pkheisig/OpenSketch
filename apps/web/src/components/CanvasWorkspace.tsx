@@ -67,6 +67,7 @@ import {
 } from "@/editor/zoom";
 import { isLinearCreationTool } from "@/editor/creation";
 import { elementStyleKey } from "@/editor/elementStyles";
+import { CURSOR_GRABBING } from "@/editor/cursors";
 import type { Point } from "@/editor/geometry";
 
 interface StoredViewport {
@@ -994,6 +995,7 @@ export function CanvasWorkspace() {
       <div
         ref={scrollRef}
         className={`workspace-scroll ${panning ? "is-panning" : ""}`}
+        style={{ cursor: panning ? CURSOR_GRABBING : undefined }}
         tabIndex={0}
         aria-label="Scrollable canvas workspace. Hold Space and drag, or use the middle mouse button, to pan."
         onPointerDownCapture={beginWorkspaceGesture}
