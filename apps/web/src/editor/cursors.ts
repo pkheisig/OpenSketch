@@ -2,6 +2,8 @@ const CURSOR_SIZE = 28;
 const CURSOR_HOTSPOT = 14;
 const INK = "#183133";
 const HALO = "#ffffff";
+const HAND_BACKGROUND =
+  '<rect x="1" y="1" width="26" height="26" rx="8" fill="#ffffff" stroke="#cbd5d3" stroke-width="1"/>';
 
 // Path data adapted from Lucide v0.536.0 (ISC). Keeping every transform cursor
 // in the same icon family avoids mixing browser-native and bespoke silhouettes.
@@ -45,11 +47,13 @@ function svgCursor(
   {
     hotspotX = CURSOR_HOTSPOT,
     hotspotY = CURSOR_HOTSPOT,
-    transform = ""
-  }: { hotspotX?: number; hotspotY?: number; transform?: string } = {}
+    transform = "",
+    background = ""
+  }: { hotspotX?: number; hotspotY?: number; transform?: string; background?: string } = {}
 ): string {
   const source = [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${CURSOR_SIZE}" height="${CURSOR_SIZE}" viewBox="0 0 28 28">`,
+    background,
     `<g transform="translate(2 2)">${iconLayers(paths, transform)}</g>`,
     "</svg>"
   ].join("");
@@ -64,12 +68,14 @@ function resizeCursor(angle: number, fallback: string): string {
 
 export const CURSOR_GRAB = svgCursor(LUCIDE_HAND, "grab", {
   hotspotX: 12,
-  hotspotY: 13
+  hotspotY: 13,
+  background: HAND_BACKGROUND
 });
 
 export const CURSOR_GRABBING = svgCursor(LUCIDE_HAND_GRAB, "grabbing", {
   hotspotX: 12,
-  hotspotY: 13
+  hotspotY: 13,
+  background: HAND_BACKGROUND
 });
 
 export const CURSOR_ROTATE = svgCursor(LUCIDE_ROTATE_CW, "crosshair");

@@ -32,6 +32,16 @@ describe("OpenSketch canvas cursors", () => {
     expect(new Set(cursors).size).toBe(cursors.length);
   });
 
+  it("gives both hand cursors an opaque white UI background", () => {
+    for (const cursor of [CURSOR_GRAB, CURSOR_GRABBING]) {
+      const source = decodeURIComponent(cursor);
+      expect(source).toContain(
+        '<rect x="1" y="1" width="26" height="26" rx="8" fill="#ffffff"'
+      );
+    }
+    expect(decodeURIComponent(CURSOR_ROTATE)).not.toContain('width="26" height="26"');
+  });
+
   it("maps every native resize direction to an OpenSketch cursor", () => {
     expect(uiTransformCursor("e-resize")).toBe(CURSOR_RESIZE_HORIZONTAL);
     expect(uiTransformCursor("s-resize")).toBe(CURSOR_RESIZE_VERTICAL);
