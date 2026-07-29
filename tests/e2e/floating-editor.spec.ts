@@ -303,6 +303,7 @@ test("@smoke uses floating BioRender-style tools, flyouts, and left-side propert
 test("expands all creation defaults initially and restores each disclosure state", async ({
   page
 }) => {
+  await page.setViewportSize({ width: 1200, height: 1000 });
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("button", { name: "Defaults", exact: true }).click();
@@ -310,6 +311,14 @@ test("expands all creation defaults initially and restores each disclosure state
   const defaults = page.getByRole("dialog", { name: "New object defaults" });
   const sections = defaults.locator("details.creation-defaults");
   await expect(sections).toHaveCount(3);
+  await expect(defaults).toHaveCSS("max-height", "760px");
+  await expect(sections.first().locator("summary")).toHaveCSS("font-size", "12px");
+  const sectionGap = await sections.evaluateAll((cards) => {
+    const first = cards[0]?.getBoundingClientRect();
+    const second = cards[1]?.getBoundingClientRect();
+    return first && second ? second.top - first.bottom : 0;
+  });
+  expect(sectionGap).toBeGreaterThanOrEqual(13.5);
   await expect(sections.nth(0)).toHaveAttribute("open", "");
   await expect(sections.nth(1)).toHaveAttribute("open", "");
   await expect(sections.nth(2)).toHaveAttribute("open", "");

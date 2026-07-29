@@ -1785,9 +1785,9 @@ a:focus-visible {
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 10px 11px;
+  padding: 11px 12px;
   color: #405b58;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.04em;
   cursor: pointer;
@@ -3954,12 +3954,17 @@ input[type="range"] {
 .tool-defaults-flyout {
   top: 222px;
   display: block;
-  max-height: min(580px, calc(100vh - 360px));
+  max-height: min(760px, calc(100vh - 240px));
 }
 
 .tool-defaults-inline .creation-defaults,
 .tool-defaults-flyout .creation-defaults {
-  margin: 0 0 8px;
+  margin: 0 0 14px;
+}
+
+.tool-defaults-inline .creation-defaults:last-child,
+.tool-defaults-flyout .creation-defaults:last-child {
+  margin-bottom: 0;
 }
 
 .selection-toolbar-shell {
