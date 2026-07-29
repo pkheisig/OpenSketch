@@ -21,7 +21,6 @@ export type ShapeKind =
   | "diamond"
   | "trapezoid"
   | "parallelogram"
-  | "star"
   | "line"
   | "curved-line"
   | "arrow"

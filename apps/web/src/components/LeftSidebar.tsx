@@ -109,8 +109,7 @@ const SHAPE_GROUPS = {
     ["octagon", "octagon", "Octagon"],
     ["diamond", "diamond", "Diamond"],
     ["trapezoid", "trapezoid", "Trapezoid"],
-    ["parallelogram", "parallelogram", "Parallelogram"],
-    ["star", "star", "Star"]
+    ["parallelogram", "parallelogram", "Parallelogram"]
   ]
 } as const;
 
@@ -239,12 +238,6 @@ function ShapePresetIcon({ glyph }: { glyph: string }) {
       {glyph === "diamond" && <path {...outline} d="m16 2 14 12-14 12L2 14Z" />}
       {glyph === "trapezoid" && <path {...outline} d="M8 5h16l6 18H2Z" />}
       {glyph === "parallelogram" && <path {...outline} d="M9 5h21l-7 18H2Z" />}
-      {glyph === "star" && (
-        <path
-          {...outline}
-          d="m16 2 3.5 7.6 8.5.9-6.3 5.7 1.8 8.3-7.5-4.2-7.5 4.2 1.8-8.3L4 10.5l8.5-.9Z"
-        />
-      )}
     </svg>
   );
 }
@@ -252,9 +245,9 @@ function ShapePresetIcon({ glyph }: { glyph: string }) {
 export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   const [tab, setTab] = useState<Tab>("assets");
   const [flyout, setFlyout] = useState<Flyout>(null);
-  const [lineFamily, setLineFamily] = useState<ConnectorFamily>("lines");
-  const [shapeFamily, setShapeFamily] = useState<keyof typeof SHAPE_GROUPS>("basic");
-  const closeTimer = useRef<number | undefined>(undefined);
+  const [lineFamily, setLineFamily] = useState<ConnectorFamily | null>(null);
+  const [shapeFamily, setShapeFamily] = useState<keyof typeof SHAPE_GROUPS | null>(null);
+  const sidebarRef = useRef<HTMLElement>(null);
   const handledSelection = useRef("");
   const previousSelection = useRef("");
   const editor = useEditor();
@@ -262,21 +255,22 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     .map((object, index) => object.objectId ?? `${object.type}:${object.name ?? index}`)
     .join("|");
   const openPanel = (next: Tab) => {
+    const shouldClose = !collapsed && tab === next;
     setTab(next);
     setFlyout(null);
+    setLineFamily(null);
+    setShapeFamily(null);
     editor.setCreationTool(null);
-    if (collapsed) onToggle();
+    if (shouldClose || collapsed) onToggle();
   };
   const openFlyout = (next: Exclude<Flyout, null>) => {
-    window.clearTimeout(closeTimer.current);
-    setFlyout(next);
-    if (!collapsed) onToggle();
+    const shouldClose = flyout === next;
+    setFlyout(shouldClose ? null : next);
+    setLineFamily(null);
+    setShapeFamily(null);
+    if (!shouldClose && !collapsed) onToggle();
   };
-  const scheduleFlyoutClose = () => {
-    window.clearTimeout(closeTimer.current);
-    closeTimer.current = window.setTimeout(() => setFlyout(null), 180);
-  };
-  const chooseLinePreset = (value: ConnectorPreset) => {
+  const chooseLinePreset = (value: ConnectorPreset, family: ConnectorFamily) => {
     editor.setCreationDefaults((current) => ({
       ...current,
       line: {
@@ -289,7 +283,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     const arrow =
       value.endArrowhead !== "none" ||
       value.startArrowhead !== "none" ||
-      lineFamily !== "lines" ||
+      family !== "lines" ||
       value.pathShape === "circular";
     editor.setCreationTool({
       type: "shape",
@@ -297,6 +291,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
       connectorPreset: value
     });
     setFlyout(null);
+    setLineFamily(null);
   };
   useEffect(() => {
     const previous = previousSelection.current;
@@ -316,9 +311,32 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     if (!editor.creationTool || collapsed) return;
     onToggle();
   }, [collapsed, editor.creationTool, onToggle]);
-  useEffect(() => () => window.clearTimeout(closeTimer.current), []);
+  useEffect(() => {
+    const closeOutsideSidebar = (event: PointerEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (sidebarRef.current?.contains(target)) return;
+      if (
+        target.closest(
+          ".ui-select-menu, .color-palette-popover, .asset-variant-menu, " +
+            ".selection-quick-toolbar, .selection-toolbar-menu"
+        )
+      ) {
+        return;
+      }
+      setFlyout(null);
+      setLineFamily(null);
+      setShapeFamily(null);
+      if (!collapsed) onToggle();
+    };
+    document.addEventListener("pointerdown", closeOutsideSidebar, true);
+    return () => document.removeEventListener("pointerdown", closeOutsideSidebar, true);
+  }, [collapsed, onToggle]);
   return (
-    <aside className={`left-sidebar floating-sidebar ${collapsed ? "panel-closed" : ""}`}>
+    <aside
+      ref={sidebarRef}
+      className={`left-sidebar floating-sidebar ${collapsed ? "panel-closed" : ""}`}
+    >
       <nav className="floating-tool-rail" aria-label="Editor tools" role="tablist">
         <button
           className={tab === "assets" && !collapsed ? "active" : ""}
@@ -335,6 +353,8 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
           onClick={() => {
             editor.setCreationTool({ type: "text", kind: "point" });
             setFlyout(null);
+            setLineFamily(null);
+            setShapeFamily(null);
           }}
           className={editor.creationTool?.type === "text" ? "active" : ""}
           aria-label="Text"
@@ -402,8 +422,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
           className="tool-flyout line-tool-flyout"
           role="menu"
           aria-label="Line and arrow tools"
-          onPointerEnter={() => window.clearTimeout(closeTimer.current)}
-          onPointerLeave={scheduleFlyoutClose}
+          onPointerLeave={() => setLineFamily(null)}
         >
           <div className="tool-flyout-primary">
             {CONNECTOR_FAMILIES.map(({ id: family, label }) => {
@@ -423,21 +442,23 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
               );
             })}
           </div>
-          <div className={`tool-flyout-secondary connector-family-${lineFamily}`}>
-            {CONNECTOR_PRESETS[lineFamily].map((value) => {
-              return (
-                <button
-                  key={value.label}
-                  onClick={() => chooseLinePreset(value)}
-                  role="menuitem"
-                  aria-label={value.label}
-                  title={value.label}
-                >
-                  <ConnectorPresetIcon value={value} />
-                </button>
-              );
-            })}
-          </div>
+          {lineFamily ? (
+            <div className={`tool-flyout-secondary connector-family-${lineFamily}`}>
+              {CONNECTOR_PRESETS[lineFamily].map((value) => {
+                return (
+                  <button
+                    key={value.label}
+                    onClick={() => chooseLinePreset(value, lineFamily)}
+                    role="menuitem"
+                    aria-label={value.label}
+                    title={value.label}
+                  >
+                    <ConnectorPresetIcon value={value} />
+                  </button>
+                );
+              })}
+            </div>
+          ) : null}
         </div>
       ) : null}
       {flyout === "shapes" ? (
@@ -445,8 +466,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
           className="tool-flyout shape-tool-flyout"
           role="menu"
           aria-label="Shape tools"
-          onPointerEnter={() => window.clearTimeout(closeTimer.current)}
-          onPointerLeave={scheduleFlyoutClose}
+          onPointerLeave={() => setShapeFamily(null)}
         >
           <div className="tool-flyout-primary">
             <button
@@ -466,22 +486,25 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
               <ShapePresetIcon glyph="hexagon" /> Polygons <ArrowRight size={14} />
             </button>
           </div>
-          <div className="tool-flyout-secondary shape-flyout-grid">
-            {SHAPE_GROUPS[shapeFamily].map(([kind, glyph, label]) => (
-              <button
-                key={kind}
-                onClick={() => {
-                  editor.setCreationTool({ type: "shape", kind });
-                  setFlyout(null);
-                }}
-                role="menuitem"
-                aria-label={label}
-                title={label}
-              >
-                <ShapePresetIcon glyph={glyph} />
-              </button>
-            ))}
-          </div>
+          {shapeFamily ? (
+            <div className="tool-flyout-secondary shape-flyout-grid">
+              {SHAPE_GROUPS[shapeFamily].map(([kind, glyph, label]) => (
+                <button
+                  key={kind}
+                  onClick={() => {
+                    editor.setCreationTool({ type: "shape", kind });
+                    setFlyout(null);
+                    setShapeFamily(null);
+                  }}
+                  role="menuitem"
+                  aria-label={label}
+                  title={label}
+                >
+                  <ShapePresetIcon glyph={glyph} />
+                </button>
+              ))}
+            </div>
+          ) : null}
         </div>
       ) : null}
       {flyout === "defaults" ? (
@@ -489,8 +512,6 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
           className="tool-flyout tool-defaults-flyout"
           role="dialog"
           aria-label="New object defaults"
-          onPointerEnter={() => window.clearTimeout(closeTimer.current)}
-          onPointerLeave={scheduleFlyoutClose}
         >
           <ShapesPanel />
         </div>

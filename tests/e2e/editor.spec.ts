@@ -74,8 +74,7 @@ async function placeTool(page: Page, name: string | RegExp, xRatio = 0.5, yRatio
       "Octagon",
       "Diamond",
       "Trapezoid",
-      "Parallelogram",
-      "Star"
+      "Parallelogram"
     ].includes(String(name))
       ? /Polygons/
       : /Shapes/;
@@ -428,7 +427,7 @@ test("places text and shapes from active tools and persists line creation defaul
   await shapeMenu.getByRole("menuitem", { name: /Polygons/ }).hover();
   await expect(shapeMenu.getByRole("menuitem", { name: "Right triangle" })).toBeVisible();
   await expect(shapeMenu.getByRole("menuitem", { name: "Octagon" })).toBeVisible();
-  await expect(shapeMenu.getByRole("menuitem", { name: "Star" })).toBeVisible();
+  await expect(shapeMenu.getByRole("menuitem", { name: "Star" })).toHaveCount(0);
   await page.getByRole("button", { name: "Defaults", exact: true }).click();
   await expect(page.locator(".creation-defaults summary")).toHaveText([
     "New text defaults",
@@ -459,6 +458,7 @@ test("places text and shapes from active tools and persists line creation defaul
   await selectUiOption(page, "Default text weight", "Semibold");
 
   await placeTool(page, "Pentagon", 0.5, 0.18);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("pentagon");
   await expect(page.getByLabel("Fill color value")).toHaveValue("transparent");
   await expect(page.getByLabel("Stroke color value")).toHaveValue("transparent");
@@ -476,6 +476,7 @@ test("places text and shapes from active tools and persists line creation defaul
   await expect(page.locator(".floating-panel")).toHaveCount(0);
   const rectanglePoint = await artboardPoint(page, 0.25, 0.3);
   await page.mouse.click(rectanglePoint.x, rectanglePoint.y);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".layers-title small")).toHaveText("1");
   await expect(page.getByRole("menuitem", { name: "Rectangle", exact: true })).toHaveCount(0);
 
@@ -496,6 +497,7 @@ test("places text and shapes from active tools and persists line creation defaul
   await page.mouse.down();
   await page.mouse.move(to.x, to.y, { steps: 12 });
   await page.mouse.up();
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".layers-title small")).toHaveText("2");
   const drawnWidth = Number(await page.locator(".field-row.dimensions input").first().inputValue());
   expect(drawnWidth).toBeGreaterThan(300);
@@ -526,12 +528,14 @@ test("places text and shapes from active tools and persists line creation defaul
   await expect(page.getByRole("combobox", { name: "Default text weight" })).toHaveText(/Semibold/i);
 
   await placeTool(page, "Line", 0.3, 0.28);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".layers-title small")).toHaveText("3");
   expect(
     Number(await page.locator(".field-row.dimensions input").first().inputValue())
   ).toBeGreaterThan(150);
 
   await placeTool(page, "Arrow", 0.44, 0.42);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".layers-title small")).toHaveText("4");
 
   await page.getByRole("button", { name: "Lines", exact: true }).click();
@@ -548,6 +552,7 @@ test("places text and shapes from active tools and persists line creation defaul
   await page.mouse.down();
   await page.mouse.move(lineTo.x, lineTo.y, { steps: 10 });
   await page.mouse.up();
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".layers-title small")).toHaveText("5");
 
   const pointText = page

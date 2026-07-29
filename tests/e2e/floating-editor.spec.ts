@@ -9,11 +9,30 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   await expect(page.locator(".right-sidebar")).toHaveCount(0);
   await expect(page.getByRole("tab")).toHaveCount(3);
 
+  const assets = page.getByRole("tab", { name: "Assets", exact: true });
+  await assets.click();
+  await expect(page.locator(".floating-panel")).toHaveCount(0);
+  await assets.click();
+  await expect(page.locator(".floating-panel")).toBeVisible();
+  await page.mouse.click(900, 500);
+  await expect(page.locator(".floating-panel")).toHaveCount(0);
+
   const lines = page.getByRole("button", { name: "Lines", exact: true });
   await lines.hover();
   await expect(page.getByRole("menu", { name: "Line and arrow tools" })).toHaveCount(0);
   await lines.click();
   const lineMenu = page.getByRole("menu", { name: "Line and arrow tools" });
+  await expect(lineMenu).toBeVisible();
+  await page.mouse.move(900, 500);
+  await expect(lineMenu).toBeVisible();
+  await expect(lineMenu.locator(".tool-flyout-secondary")).toHaveCount(0);
+  await page.mouse.click(900, 500);
+  await expect(lineMenu).toHaveCount(0);
+  await lines.click();
+  await expect(lineMenu).toBeVisible();
+  await lines.click();
+  await expect(lineMenu).toHaveCount(0);
+  await lines.click();
   await expect(lineMenu).toBeVisible();
   await expect(lineMenu.getByRole("menuitem", { name: "Custom defaults" })).toHaveCount(0);
   await lineMenu.getByRole("menuitem", { name: /^Lines/ }).hover();
@@ -114,7 +133,10 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   const shapeMenu = page.getByRole("menu", { name: "Shape tools" });
   await expect(shapeMenu).toBeVisible();
-  await expect(shapeMenu.getByRole("menuitem")).toHaveCount(8);
+  await expect(shapeMenu.getByRole("menuitem")).toHaveCount(2);
+  await page.mouse.move(900, 500);
+  await expect(shapeMenu).toBeVisible();
+  await expect(shapeMenu.locator(".tool-flyout-secondary")).toHaveCount(0);
   const shapeFamilySpacing = await shapeMenu
     .locator(".tool-flyout-primary button")
     .first()
@@ -127,6 +149,7 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
       return range.getBoundingClientRect().left - icon.right;
     });
   expect(shapeFamilySpacing).toBeGreaterThanOrEqual(8);
+  await shapeMenu.getByRole("menuitem", { name: /Shapes/ }).hover();
   const basicGlyphs = await shapeMenu
     .locator(".tool-flyout-secondary button svg")
     .evaluateAll((icons) => icons.map((icon) => icon.outerHTML));
@@ -249,7 +272,7 @@ test("expands all creation defaults initially and restores each disclosure state
   await defaults.getByText("New line & arrow defaults", { exact: true }).click();
   await expect(sections.nth(2)).not.toHaveAttribute("open", "");
 
-  await page.mouse.move(900, 500);
+  await page.getByRole("button", { name: "Defaults", exact: true }).click();
   await expect(defaults).toHaveCount(0);
   await page.getByRole("button", { name: "Defaults", exact: true }).click();
 
@@ -314,8 +337,7 @@ test("creates every distinct shape variant exposed by the shape pop-out", async 
         "Octagon",
         "Diamond",
         "Trapezoid",
-        "Parallelogram",
-        "Star"
+        "Parallelogram"
       ]
     }
   ];

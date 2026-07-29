@@ -1741,13 +1741,6 @@ export function EditorProvider({
           ],
           common
         );
-      } else if (kind === "star") {
-        const points = Array.from({ length: 10 }, (_, index) => {
-          const angle = -Math.PI / 2 + (Math.PI * index) / 5;
-          const radius = index % 2 === 0 ? 110 : 48;
-          return { x: 110 + Math.cos(angle) * radius, y: 110 + Math.sin(angle) * radius };
-        });
-        object = new Polygon(points, common);
       } else if (kind === "line") {
         object = new Line([0, 0, 220, 0], {
           stroke: creationDefaults.line.color,
