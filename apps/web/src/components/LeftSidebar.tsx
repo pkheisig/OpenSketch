@@ -249,8 +249,8 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const [shapeFamily, setShapeFamily] = useState<keyof typeof SHAPE_GROUPS | null>(null);
   const sidebarRef = useRef<HTMLElement>(null);
   const handledSelection = useRef("");
-  const previousSelection = useRef("");
   const editor = useEditor();
+  const canEdit = editor.selection.length > 0;
   const selectionKey = editor.selection
     .map((object, index) => object.objectId ?? `${object.type}:${object.name ?? index}`)
     .join("|");
@@ -294,11 +294,9 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     setLineFamily(null);
   };
   useEffect(() => {
-    const previous = previousSelection.current;
-    previousSelection.current = selectionKey;
     if (!selectionKey) {
       handledSelection.current = "";
-      if (previous && tab === "edit" && !collapsed) onToggle();
+      if (tab === "edit" && !collapsed) onToggle();
       return;
     }
     if (!editor.autoEditEnabled) return;
@@ -407,15 +405,17 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
         >
           <FileInput size={20} />
         </button>
-        <button
-          className={tab === "edit" && !collapsed ? "active" : ""}
-          onClick={() => openPanel("edit")}
-          aria-label="Edit"
-          title="Edit"
-          data-label="Edit"
-        >
-          <Edit3 size={20} />
-        </button>
+        {canEdit ? (
+          <button
+            className={tab === "edit" && !collapsed ? "active" : ""}
+            onClick={() => openPanel("edit")}
+            aria-label="Edit"
+            title="Edit"
+            data-label="Edit"
+          >
+            <Edit3 size={20} />
+          </button>
+        ) : null}
       </nav>
       {flyout === "lines" ? (
         <div
@@ -516,7 +516,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
           <ShapesPanel />
         </div>
       ) : null}
-      {!collapsed ? (
+      {!collapsed && (tab !== "edit" || canEdit) ? (
         <div className="sidebar-expanded floating-panel">
           {tab !== "edit" ? (
             <div className="floating-panel-header">

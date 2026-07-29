@@ -8,6 +8,7 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   await expect(page.locator(".floating-panel")).toBeVisible();
   await expect(page.locator(".right-sidebar")).toHaveCount(0);
   await expect(page.getByRole("tab")).toHaveCount(3);
+  await expect(page.getByRole("button", { name: "Edit", exact: true })).toHaveCount(0);
 
   const assets = page.getByRole("tab", { name: "Assets", exact: true });
   await assets.click();
@@ -173,6 +174,7 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   if (!artboard) throw new Error("Artboard is not visible.");
   await page.mouse.click(artboard.x + artboard.width / 2, artboard.y + artboard.height / 2);
 
+  await expect(page.getByRole("button", { name: "Edit", exact: true })).toBeVisible();
   const autoEdit = page.getByRole("button", { name: "Enable automatic edit panel" });
   await expect(autoEdit).toHaveAttribute("aria-pressed", "false");
   await expect(page.locator(".inspector-embedded")).toHaveCount(0);
@@ -253,6 +255,7 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
 
   await page.keyboard.press("Delete");
   await expect(page.locator(".floating-panel")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Edit", exact: true })).toHaveCount(0);
   await expect(page.locator(".inspector-header").getByText("Canvas", { exact: true })).toHaveCount(
     0
   );
