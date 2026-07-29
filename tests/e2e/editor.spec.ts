@@ -40,6 +40,65 @@ async function artboardPoint(page: Page, xRatio = 0.5, yRatio = 0.5) {
   };
 }
 
+async function renderedArtworkCenter(page: Page) {
+  return page.locator(".lower-canvas").evaluate((canvas: HTMLCanvasElement) => {
+    const pixels = canvas.getContext("2d")!.getImageData(0, 0, canvas.width, canvas.height).data;
+    let left = canvas.width;
+    let top = canvas.height;
+    let right = -1;
+    let bottom = -1;
+    let sumX = 0;
+    let sumY = 0;
+    let count = 0;
+    for (let y = 0; y < canvas.height; y += 1) {
+      for (let x = 0; x < canvas.width; x += 1) {
+        const offset = (y * canvas.width + x) * 4;
+        if (
+          pixels[offset + 3] === 0 ||
+          (pixels[offset] > 245 && pixels[offset + 1] > 245 && pixels[offset + 2] > 245)
+        ) {
+          continue;
+        }
+        left = Math.min(left, x);
+        top = Math.min(top, y);
+        right = Math.max(right, x);
+        bottom = Math.max(bottom, y);
+        sumX += x;
+        sumY += y;
+        count += 1;
+      }
+    }
+    if (right < left || bottom < top) throw new Error("No rendered artwork is visible.");
+    const centroidX = sumX / count;
+    const centroidY = sumY / count;
+    let closestX = left;
+    let closestY = top;
+    let closestDistance = Number.POSITIVE_INFINITY;
+    for (let y = top; y <= bottom; y += 1) {
+      for (let x = left; x <= right; x += 1) {
+        const offset = (y * canvas.width + x) * 4;
+        if (
+          pixels[offset + 3] === 0 ||
+          (pixels[offset] > 245 && pixels[offset + 1] > 245 && pixels[offset + 2] > 245)
+        ) {
+          continue;
+        }
+        const distance = (x - centroidX) ** 2 + (y - centroidY) ** 2;
+        if (distance < closestDistance) {
+          closestX = x;
+          closestY = y;
+          closestDistance = distance;
+        }
+      }
+    }
+    const bounds = canvas.getBoundingClientRect();
+    return {
+      x: bounds.left + (closestX / canvas.width) * bounds.width,
+      y: bounds.top + (closestY / canvas.height) * bounds.height
+    };
+  });
+}
+
 async function ensureLayersOpen(page: Page) {
   const toggle = page.locator(".layers-title");
   if (!(await toggle.isVisible().catch(() => false))) {
@@ -59,13 +118,18 @@ async function placeTool(page: Page, name: string | RegExp, xRatio = 0.5, yRatio
   if (name === "Text") {
     await page.getByRole("button", { name: "Text", exact: true }).click();
   } else if (name === "Line" || name === "Arrow") {
-    await page.getByRole("button", { name: "Lines", exact: true }).click();
-    await page
-      .getByRole("menu", { name: "Line and arrow tools" })
+    const lineMenu = page.getByRole("menu", { name: "Line and arrow tools" });
+    if (!(await lineMenu.isVisible().catch(() => false))) {
+      await page.getByRole("button", { name: "Lines", exact: true }).click();
+    }
+    await lineMenu
       .getByRole("menuitem", { name: name === "Arrow" ? /Arrows/ : /^Lines/ })
       .hover();
   } else {
-    await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+    const shapeMenu = page.getByRole("menu", { name: "Shape tools" });
+    if (!(await shapeMenu.isVisible().catch(() => false))) {
+      await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+    }
     const family = [
       "Triangle",
       "Right triangle",
@@ -78,10 +142,7 @@ async function placeTool(page: Page, name: string | RegExp, xRatio = 0.5, yRatio
     ].includes(String(name))
       ? /Polygons/
       : /Shapes/;
-    await page
-      .getByRole("menu", { name: "Shape tools" })
-      .getByRole("menuitem", { name: family })
-      .hover();
+    await shapeMenu.getByRole("menuitem", { name: family }).hover();
   }
   if (name !== "Text") {
     const menuName = name === "Line" ? "Straight line" : name === "Arrow" ? "Straight arrow" : name;
@@ -825,14 +886,15 @@ test("copies canvas objects to the system clipboard as PNG and SVG", async ({
   expect(pngSignature).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
 
   await page.keyboard.press("ControlOrMeta+V");
+  await ensureLayersOpen(page);
   await expect(page.locator(".layers-title small")).toHaveText("2");
+  await page.keyboard.press("ControlOrMeta+A");
+  await page.keyboard.press("Backspace");
 
   await page.getByRole("tab", { name: "Assets", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
   await page.getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true }).click();
-  await page.getByLabel("X", { exact: true }).fill("1400");
-  await page.getByLabel("X", { exact: true }).press("Enter");
-  const point = await artboardPoint(page, 1400 / 1920, 0.5);
+  const point = await renderedArtworkCenter(page);
   await page.mouse.click(point.x, point.y, { button: "right" });
   const menu = page.getByRole("menu", { name: "Cajal-Retzius Cell actions" });
   await expect(menu.getByRole("menuitem", { name: "Copy as SVG" })).toBeVisible();
@@ -841,11 +903,14 @@ test("copies canvas objects to the system clipboard as PNG and SVG", async ({
 
   await expect
     .poll(() =>
-      page.evaluate(async () =>
-        (await navigator.clipboard.read()).some((item) => item.types.includes("text/plain"))
-      )
+      page.evaluate(async () => {
+        const item = (await navigator.clipboard.read()).find((entry) =>
+          entry.types.includes("text/plain")
+        );
+        return item ? (await item.getType("text/plain")).text() : "";
+      })
     )
-    .toBe(true);
+    .toContain("<svg");
   const clipboardSvg = await page.evaluate(async () => {
     const item = (await navigator.clipboard.read()).find((entry) =>
       entry.types.includes("text/plain")
@@ -1011,6 +1076,7 @@ test("previews bundled variants and inserts nested-clip-path assets", async ({ p
   await persistedImmuneCell.getByRole("button", { name: "Insert Immune Cell" }).click();
   await expect(page.locator(".layers-title small")).toHaveText("1");
   await expect(page.locator('[role="alert"]')).toHaveCount(0);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("Immune Cell");
   await expect(page.getByRole("button", { name: "Style", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Variant", exact: true })).toHaveAttribute(
@@ -1039,6 +1105,8 @@ test("previews bundled variants and inserts nested-clip-path assets", async ({ p
 
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
+  const restoredImmuneCell = await artboardPoint(page);
+  await page.mouse.click(restoredImmuneCell.x, restoredImmuneCell.y);
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await ensureLayersOpen(page);
   await page.locator(".layer-list button").filter({ hasText: "Immune Cell" }).click();
@@ -1049,6 +1117,7 @@ test("previews bundled variants and inserts nested-clip-path assets", async ({ p
   ).toHaveAttribute("aria-selected", "true");
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Assets", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Immune Cell");
   const newProjectImmuneCell = page
     .locator(".asset-card")
@@ -1274,9 +1343,11 @@ test("ungroups exactly one level of a nested group hierarchy", async ({ page }) 
 
   await page.keyboard.press("ControlOrMeta+A");
   await page.getByRole("button", { name: "Group", exact: true }).click();
+  await ensureLayersOpen(page);
   await expect(page.locator(".layers-title small")).toHaveText("1");
 
   await placeTool(page, "Triangle", 0.7, 0.5);
+  await ensureLayersOpen(page);
   await expect(page.locator(".layers-title small")).toHaveText("2");
   await page.keyboard.press("ControlOrMeta+A");
   await page.getByRole("button", { name: "Group", exact: true }).click();
@@ -1288,8 +1359,8 @@ test("ungroups exactly one level of a nested group hierarchy", async ({ page }) 
   await expect(outerGroupMenu.getByRole("menuitem", { name: "Ungroup" })).toBeVisible();
   await outerGroupMenu.getByRole("menuitem", { name: "Ungroup" }).click();
 
-  await expect(page.locator(".layers-title small")).toHaveText("2");
   await ensureLayersOpen(page);
+  await expect(page.locator(".layers-title small")).toHaveText("2");
   const innerGroupLayer = page
     .locator(".layer-list > button")
     .filter({ has: page.getByText("Group", { exact: true }) });
@@ -1300,9 +1371,7 @@ test("ungroups exactly one level of a nested group hierarchy", async ({ page }) 
   await expect(page.locator(".layers-title small")).toHaveText("3");
 });
 
-test("preserves imported SVG group hierarchy across successive ungroup actions", async ({
-  page
-}) => {
+test("treats an imported SVG as one atomic canvas object", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Imports", exact: true }).click();
@@ -1313,26 +1382,14 @@ test("preserves imported SVG group hierarchy across successive ungroup actions",
 
   const center = await artboardPoint(page);
   await page.mouse.click(center.x, center.y, { button: "right" });
-  await page
-    .getByRole("menu", { name: "nested-groups.svg actions" })
-    .getByRole("menuitem", { name: "Ungroup" })
-    .click();
-  await page.getByRole("button", { name: "Edit", exact: true }).click();
-  await expect(page.locator(".layers-title small")).toHaveText("2");
+  const importMenu = page.getByRole("menu", { name: "nested-groups.svg actions" });
+  await expect(importMenu.getByRole("menuitem", { name: "Ungroup" })).toHaveCount(0);
+  await page.keyboard.press("Escape");
 
+  await page.mouse.dblclick(center.x, center.y);
+  await expect(page.getByRole("status").filter({ hasText: "Editing a group" })).toHaveCount(0);
   await ensureLayersOpen(page);
-  const firstSourceGroup = page
-    .locator(".layer-list > button")
-    .filter({ has: page.getByText(/^Group \d+$/, { exact: true }) });
-  await expect(firstSourceGroup).toHaveCount(1);
-  await firstSourceGroup.click();
-  await page.getByRole("button", { name: "Ungroup", exact: true }).click();
-  await expect(page.locator(".layers-title small")).toHaveText("3");
-
-  const preservedSubgroups = page
-    .locator(".layer-list > button")
-    .filter({ has: page.getByText(/^Group \d+$/, { exact: true }) });
-  await expect(preservedSubgroups).toHaveCount(2);
+  await expect(page.locator(".layers-title small")).toHaveText("1");
 });
 
 test("double-clicks through overlapping objects and into grouped children", async ({ page }) => {
@@ -1447,10 +1504,13 @@ test("double-clicks into nested groups one hierarchy level at a time", async ({ 
   const exitGroup = groupBanner.getByRole("button", { name: "Exit group" });
   await exitGroup.click();
   await expect(groupBanner).toBeVisible();
+  await expect(page.locator(".selection-toolbar-shell")).toHaveCount(0);
   await exitGroup.click();
   await expect(groupBanner).toBeVisible();
+  await expect(page.locator(".selection-toolbar-shell")).toHaveCount(0);
   await exitGroup.click();
   await expect(groupBanner).toHaveCount(0);
+  await expect(page.locator(".selection-toolbar-shell")).toBeVisible();
 });
 
 test("double-clicking outside exits one group hierarchy level", async ({ page }) => {
@@ -1620,6 +1680,7 @@ test("shows every visible layer of a grouped stack in the project preview", asyn
 
   for (const width of [400, 300, 200]) {
     await placeTool(page, "Circle", 0.5, 0.5);
+    await page.getByRole("button", { name: "Edit", exact: true }).click();
     const widthField = page.locator(".inspector-scroll").getByLabel("W", { exact: true });
     await widthField.fill(String(width));
     await widthField.blur();
@@ -2269,6 +2330,7 @@ test("preserves an asset's rendered size when duplicating by modifier-drag", asy
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
   await page.getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true }).click();
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
 
   const dimensions = page.locator(".field-row.dimensions input");
   if ((await dimensions.count()) < 2) {
@@ -2796,8 +2858,10 @@ test("renders and persists complex NIH illustrations without losing their colors
   const dendriticCenter = await artboardPoint(page);
   await page.mouse.click(dendriticCenter.x, dendriticCenter.y, { button: "right" });
   const dendriticMenu = page.getByRole("menu", { name: "Dendritic Cell actions" });
-  await expect(dendriticMenu.getByRole("menuitem", { name: "Ungroup" })).toBeVisible();
+  await expect(dendriticMenu.getByRole("menuitem", { name: "Ungroup" })).toHaveCount(0);
   await page.keyboard.press("Escape");
+  await page.mouse.dblclick(dendriticCenter.x, dendriticCenter.y);
+  await expect(page.getByRole("status").filter({ hasText: "Editing a group" })).toHaveCount(0);
 
   const visibleCellColors = async () =>
     page.locator(".lower-canvas").evaluate((canvas: HTMLCanvasElement) => {
@@ -2827,32 +2891,34 @@ test("renders and persists complex NIH illustrations without losing their colors
 
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
+  const restoredCenter = await artboardPoint(page);
+  await page.mouse.click(restoredCenter.x, restoredCenter.y);
+  await ensureLayersOpen(page);
   await expect(page.locator(".layers-title small")).toHaveText("21");
   await expect.poll(async () => (await visibleCellColors()).peach).toBeGreaterThan(100);
 });
 
-test("restores an asset's semantic identity when its exact parts are regrouped", async ({
-  page
-}) => {
+test("treats a bundled biological SVG as one atomic canvas object", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
   await page.getByRole("button", { name: "Insert T Cell", exact: true }).click();
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("T Cell");
-
-  await page.getByRole("button", { name: "Ungroup", exact: true }).click();
-  await expect(page.getByRole("button", { name: "Group", exact: true })).toBeVisible();
-  await page.getByRole("button", { name: "Group", exact: true }).click();
-
-  await expect(page.locator(".inspector-header h2")).toHaveText("T Cell");
+  await expect(page.getByRole("button", { name: "Ungroup", exact: true })).toHaveCount(0);
+  const center = await artboardPoint(page);
+  await page.mouse.dblclick(center.x, center.y);
+  await expect(page.getByRole("status").filter({ hasText: "Editing a group" })).toHaveCount(0);
   await expect(page.getByText("Edit individual parts", { exact: true })).toHaveCount(0);
   await ensureLayersOpen(page);
   await expect(page.locator(".layer-list > button").filter({ hasText: "T Cell" })).toHaveCount(1);
 
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
+  const restoredCenter = await artboardPoint(page);
+  await page.mouse.click(restoredCenter.x, restoredCenter.y);
   await page.getByRole("button", { name: "Edit", exact: true }).click();
-  await expect(page.locator(".inspector-embedded")).toHaveCount(0);
+  await expect(page.locator(".inspector-header h2")).toHaveText("T Cell");
   await ensureLayersOpen(page);
   await page.locator(".layer-list > button").filter({ hasText: "T Cell" }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("T Cell");
@@ -2865,6 +2931,7 @@ test("shows no synthetic style or variant menu for a single-variant biological a
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
   await page.getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true }).click();
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
 
   await expect(page.getByRole("button", { name: "Style", exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Variant", exact: true })).toHaveCount(0);
@@ -3050,69 +3117,31 @@ test("saves an inserted SVG before immediately leaving the editor", async ({ pag
   await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
   await page.getByRole("button", { name: "Untitled figure" }).click();
 
-  await expect(page.locator(".layers-title small")).toHaveText("1");
+  const restoredCenter = await artboardPoint(page);
+  await page.mouse.click(restoredCenter.x, restoredCenter.y);
   await ensureLayersOpen(page);
+  await expect(page.locator(".layers-title small")).toHaveText("1");
   await expect(
     page.locator(".layer-list button").filter({ hasText: "Dendritic Cell" })
   ).toHaveCount(1);
 });
 
-test("drills into an SVG asset and persists an independently edited part", async ({ page }) => {
+test("exports an atomic SVG asset with its vector parts intact", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("dendritic");
   const dendriticCell = page.locator(".asset-card").filter({ hasText: "Dendritic Cell" }).first();
   await dendriticCell.locator(".asset-card-image").click();
   await expect(page.locator(".layers-title small")).toHaveText("1");
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.getByText("Edit individual parts", { exact: true })).toHaveCount(0);
   await expect(page.locator(".inspector-header h2")).toHaveText("Dendritic Cell");
   await expect(page.locator(".inspector-header .eyebrow")).toHaveCount(0);
 
-  const canvas = page.locator(".upper-canvas");
-  const bounds = await canvas.boundingBox();
-  expect(bounds).not.toBeNull();
-  await canvas.dblclick({
-    position: { x: bounds!.width / 2, y: bounds!.height / 2 }
-  });
-
-  await expect(page.getByText("Inside Dendritic Cell", { exact: true })).toBeVisible();
-  const editTools = page.getByLabel("edit tools");
-  await expect(editTools.getByRole("button", { name: "Transform", exact: true })).toBeVisible();
-  await expect(editTools.getByRole("button", { name: "Shape", exact: true })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Fill color", exact: true })).toBeVisible();
-  await setPaletteColor(page, "Fill color", "#00ff00");
-  await page
-    .locator("label.inspector-value-range")
-    .filter({ hasText: "Transparency" })
-    .locator('input[type="range"]')
-    .fill("35");
-
-  const visibleColors = async () =>
-    page.locator(".lower-canvas").evaluate((element: HTMLCanvasElement) => {
-      const pixels = element
-        .getContext("2d")!
-        .getImageData(0, 0, element.width, element.height).data;
-      let green = 0;
-      for (let index = 0; index < pixels.length; index += 4) {
-        const [red, greenChannel, blue, alpha] = pixels.slice(index, index + 4);
-        if (alpha > 0 && greenChannel > 180 && red < 80 && blue < 80) green += 1;
-      }
-      return green;
-    });
-
-  await expect.poll(visibleColors).toBeGreaterThan(20);
-  await page.getByRole("button", { name: "Undo" }).click();
-  await page.getByRole("button", { name: "Undo" }).click();
-  await expect.poll(visibleColors).toBe(0);
-  await page.getByRole("button", { name: "Redo" }).click();
-  await page.getByRole("button", { name: "Redo" }).click();
-  await expect.poll(visibleColors).toBeGreaterThan(20);
-  await canvas.dblclick({
-    position: { x: bounds!.width / 2, y: bounds!.height / 2 }
-  });
-  await expect(page.locator(".inspector-header .eyebrow")).toHaveCount(0);
-  await page.getByRole("button", { name: "Done", exact: true }).click();
-  await expect(page.locator(".inspector-header h2")).toHaveText("Dendritic Cell");
+  const center = await artboardPoint(page);
+  await page.mouse.dblclick(center.x, center.y);
+  await expect(page.getByText("Inside Dendritic Cell", { exact: true })).toHaveCount(0);
+  await expect(page.getByRole("status").filter({ hasText: "Editing a group" })).toHaveCount(0);
 
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByLabel("Project actions for Untitled figure").click();
@@ -3121,19 +3150,19 @@ test("drills into an SVG asset and persists an independently edited part", async
   const projectPath = await (await downloadPromise).path();
   expect(projectPath).not.toBeNull();
   const portable = JSON.parse(await readFile(projectPath!, "utf8")) as {
-    objects: { objects: Array<{ objects?: Array<{ fill?: unknown; opacity?: number }> }> };
+    objects: {
+      objects: Array<{
+        OpenSketchType?: string;
+        objects?: Array<{ fill?: unknown; opacity?: number }>;
+      }>;
+    };
   };
-  const parts = portable.objects.objects[0].objects ?? [];
-  const editedPart = parts.find((part) => part.fill === "#00ff00");
-  expect(editedPart?.opacity).toBe(0.65);
+  const exportedAsset = portable.objects.objects[0];
+  expect(exportedAsset.OpenSketchType).toBe("nih-asset");
+  expect(exportedAsset.objects?.length).toBeGreaterThan(1);
   expect(
-    parts.some(
-      (part) => typeof part.fill === "string" && part.fill !== "" && part.fill !== "#00ff00"
-    )
+    exportedAsset.objects?.some((part) => typeof part.fill === "string" && part.fill !== "")
   ).toBe(true);
-
-  await page.getByRole("button", { name: "Untitled figure" }).click();
-  await expect.poll(visibleColors).toBeGreaterThan(20);
 });
 
 test("keeps the canvas responsive with one hundred ordinary objects", async ({

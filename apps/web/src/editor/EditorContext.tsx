@@ -88,6 +88,7 @@ import {
   rememberRecognizedGroup,
   type RecognizedGroup
 } from "@/editor/groupRecognition";
+import { isAtomicSvgAsset, isManualGroup } from "@/editor/grouping";
 import {
   SELECTION_CLIPBOARD_MARKER_PREFIX,
   type SelectionClipboardFormat,
@@ -225,7 +226,7 @@ async function createBundledAssetGroup(family: AssetFamily, variant: AssetVarian
     paletteFromObject(group).map((color) => [color, color])
   );
   rememberOriginalColors(group);
-  configureEditableSvgParts(group);
+  configureAtomicSvgAsset(group);
   return group;
 }
 
@@ -368,25 +369,32 @@ function directNestedParent(object: FabricObject | undefined): Group | null {
   return parent instanceof Group && !(parent instanceof ActiveSelection) ? parent : null;
 }
 
-function configureEditableSvgParts(object: FabricObject): void {
+function configureAtomicSvgAsset(object: FabricObject): void {
   if (!(object instanceof Group)) return;
-  object.subTargetCheck = true;
+  object.subTargetCheck = false;
   object.interactive = false;
-  object.getObjects().forEach((part, index) => {
-    const typeName = part.type.charAt(0).toUpperCase() + part.type.slice(1);
-    assignIdentity(part, `${typeName} ${index + 1}`, "svg-part");
-    part.hoverCursor = "crosshair";
-    part.perPixelTargetFind = true;
-    if (part instanceof Group) configureEditableSvgParts(part);
+  object.perPixelTargetFind = true;
+  object.getObjects().forEach((part) => {
+    part.selectable = false;
+    part.evented = false;
+    part.perPixelTargetFind = false;
+    if (part instanceof Group) configureAtomicSvgAsset(part);
   });
   object.setCoords();
 }
 
 function configureNestedSelection(object: FabricObject): void {
-  if (!(object instanceof Group) || object instanceof ActiveSelection) return;
+  if (!isManualGroup(object)) return;
   object.subTargetCheck = true;
   object.interactive = false;
-  object.getObjects().forEach(configureNestedSelection);
+  object.getObjects().forEach((child) => {
+    if (isAtomicSvgAsset(child)) configureAtomicSvgAsset(child);
+    else if (isManualGroup(child)) configureNestedSelection(child);
+    else if (child instanceof Group) {
+      child.subTargetCheck = false;
+      child.interactive = false;
+    }
+  });
   object.setCoords();
 }
 
@@ -404,15 +412,14 @@ function configureCanvasAssets(objects: FabricObject[]): void {
       });
       object.dirty = true;
     }
-    if (
-      object.OpenSketchType === "nih-asset" ||
-      object.OpenSketchType === "import" ||
-      object.OpenSketchType === "upload"
-    ) {
-      configureEditableSvgParts(object);
-    } else if (object instanceof Group) {
+    if (isAtomicSvgAsset(object)) {
+      configureAtomicSvgAsset(object);
+    } else if (isManualGroup(object)) {
       configureNestedSelection(object);
       configureCanvasAssets(object.getObjects());
+    } else if (object instanceof Group) {
+      object.subTargetCheck = false;
+      object.interactive = false;
     }
   });
 }
@@ -441,7 +448,7 @@ function deepHitObjects(
   const topLevelHits = hitObjectsAtLevel(canvas, canvas.getObjects(), point);
   if (!activeObject || activeObject instanceof ActiveSelection) return topLevelHits;
 
-  if (activeObject instanceof Group) {
+  if (isManualGroup(activeObject)) {
     const childHits = hitObjectsAtLevel(canvas, activeObject.getObjects(), point);
     if (childHits.length > 0) return childHits;
   }
@@ -1021,9 +1028,13 @@ export function EditorProvider({
     deepSelectionCycle.current = undefined;
     if (!canvas) return;
     canvas.discardActiveObject();
-    configureSelectionControls(exitedGroup, latestZoom.current);
-    canvas.setActiveObject(exitedGroup);
-    setSelection([exitedGroup]);
+    if (parentPath.length === 0) {
+      configureSelectionControls(exitedGroup, latestZoom.current);
+      canvas.setActiveObject(exitedGroup);
+      setSelection([exitedGroup]);
+    } else {
+      setSelection([]);
+    }
     canvas.requestRenderAll();
   }, [canvas, setEditingGroupPath]);
 
@@ -1050,10 +1061,7 @@ export function EditorProvider({
           currentEditingGroup.getObjects(),
           scenePoint
         );
-        const nestedGroup = directHits.find(
-          (object): object is Group =>
-            object instanceof Group && !(object instanceof ActiveSelection)
-        );
+        const nestedGroup = directHits.find(isManualGroup);
         if (nestedGroup) {
           setEditingGroupPath([...editingGroupPathRef.current, nestedGroup]);
           canvas.discardActiveObject();
@@ -1077,8 +1085,7 @@ export function EditorProvider({
         return;
       }
       const group = hitObjectsAtLevel(canvas, canvas.getObjects(), scenePoint).find(
-        (object): object is Group =>
-          object instanceof Group && !(object instanceof ActiveSelection)
+        isManualGroup
       );
       if (group) {
         setEditingGroupPath([group]);
@@ -2132,7 +2139,7 @@ export function EditorProvider({
         paletteFromObject(object).map((color) => [color, color])
       );
       rememberOriginalColors(object);
-      configureEditableSvgParts(object);
+      configureAtomicSvgAsset(object);
       latestProject.current = {
         ...latestProject.current,
         uploads: [
@@ -2353,10 +2360,11 @@ export function EditorProvider({
     const group = new Group(objects);
     const recognition = findRecognizedGroup(objects);
     if (recognition) restoreRecognizedGroup(group, objects, recognition);
+    assignIdentity(group, "Group", "group");
+    group.OpenSketchType = "group";
     configureCanvasAssets([group]);
     canvas.add(group);
     canvas.setActiveObject(group);
-    assignIdentity(group, "Group", "group");
     deepSelectionCycle.current = undefined;
     setSelection([group]);
     canvas.requestRenderAll();
@@ -2364,7 +2372,7 @@ export function EditorProvider({
   }, [canvas, commit]);
 
   const ungroupSelection = useCallback(() => {
-    if (!canvas || !(canvas.getActiveObject() instanceof Group)) return;
+    if (!canvas || !isManualGroup(canvas.getActiveObject())) return;
     const group = canvas.getActiveObject() as Group;
     const parent = directNestedParent(group);
     const index = parent?.getObjects().indexOf(group) ?? -1;

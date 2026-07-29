@@ -36,6 +36,7 @@ import { assetManifest } from "@/assets/manifest";
 import { saveAssetVariantDefault } from "@/editor/assetVariantDefaults";
 import { useEditor } from "@/editor/EditorContext";
 import { TEXT_FONT_FAMILIES } from "@/editor/fonts";
+import { isManualGroup } from "@/editor/grouping";
 import { AssetVariantGrid } from "@/components/AssetVariantPicker";
 import { ColorPalettePicker } from "@/components/ColorPalettePicker";
 import { UiSelect } from "@/components/UiSelect";
@@ -97,7 +98,7 @@ function ObjectInspector({ object }: { object: FabricObject }) {
       : undefined;
   const hasStoredVariants = Boolean(assetFamily && assetFamily.variants.length > 1);
   const canGroup = editor.selection.length > 1;
-  const canUngroup = !canGroup && object instanceof FabricGroup;
+  const canUngroup = !canGroup && isManualGroup(object);
   const canAlign = editor.selection.length >= 2;
   const canDistribute = editor.selection.length >= 3;
   const width = (object.width ?? 0) * (object.scaleX ?? 1);

@@ -48,7 +48,7 @@ import {
   Ungroup,
   Unlock
 } from "lucide-react";
-import { ActiveSelection, Group as FabricGroup, type FabricObject } from "fabric";
+import { ActiveSelection, type FabricObject } from "fabric";
 import {
   CANVAS_PRESETS,
   pixelsToUnit,
@@ -59,6 +59,7 @@ import { assetManifest } from "@/assets/manifest";
 import { ColorPalettePicker } from "@/components/ColorPalettePicker";
 import { UiSelect } from "@/components/UiSelect";
 import { useEditor } from "@/editor/EditorContext";
+import { isManualGroup } from "@/editor/grouping";
 import {
   captureZoomAnchor,
   type ZoomAnchor,
@@ -909,7 +910,7 @@ export function CanvasWorkspace() {
         action: editor.groupSelection,
         separatorBefore: true
       });
-    } else if (objects[0] instanceof FabricGroup) {
+    } else if (isManualGroup(objects[0])) {
       actions.push({
         label: "Ungroup",
         icon: <Ungroup size={15} />,
@@ -1083,12 +1084,6 @@ export function CanvasWorkspace() {
           }}
         />
       )}
-      {dragging && (
-        <div className="drop-indicator">
-          <Plus size={24} />
-          <strong>Place illustration on canvas</strong>
-        </div>
-      )}
       {editor.selection.length > 0 ? (
         <div className="selection-toolbar-shell">
           <div className="selection-quick-toolbar" role="toolbar" aria-label="Selection actions">
@@ -1108,21 +1103,19 @@ export function CanvasWorkspace() {
               onClick={
                 editor.selection.length > 1
                   ? editor.groupSelection
-                  : editor.selection[0] instanceof FabricGroup
+                  : isManualGroup(editor.selection[0])
                     ? editor.ungroupSelection
                     : undefined
               }
-              disabled={
-                editor.selection.length === 1 && !(editor.selection[0] instanceof FabricGroup)
-              }
+              disabled={editor.selection.length === 1 && !isManualGroup(editor.selection[0])}
             >
-              {editor.selection.length === 1 && editor.selection[0] instanceof FabricGroup ? (
+              {editor.selection.length === 1 && isManualGroup(editor.selection[0]) ? (
                 <Ungroup size={18} />
               ) : (
                 <GroupIcon size={18} />
               )}
               <span>
-                {editor.selection.length === 1 && editor.selection[0] instanceof FabricGroup
+                {editor.selection.length === 1 && isManualGroup(editor.selection[0])
                   ? "Ungroup"
                   : "Group"}
               </span>
