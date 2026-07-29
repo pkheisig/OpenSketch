@@ -255,10 +255,12 @@ interface EditorContextValue {
   historyState: { canUndo: boolean; canRedo: boolean };
   canvasSettings: CanvasSettings;
   alignmentEnabled: boolean;
+  autoEditEnabled: boolean;
   projectDescription: string;
   setCanvasElement: (element: HTMLCanvasElement | null) => void;
   setCanvasSettings: (settings: Partial<CanvasSettings>) => void;
   setAlignmentEnabled: (enabled: boolean) => void;
+  setAutoEditEnabled: (enabled: boolean) => void;
   setProjectName: (name: string) => void;
   setProjectDescription: (description: string) => void;
   selectParentAsset: () => void;
@@ -696,6 +698,21 @@ export function EditorProvider({
     setAlignmentEnabledState(enabled);
     try {
       localStorage.setItem("OpenSketch:alignment-enabled", String(enabled));
+    } catch {
+      // Keep the session setting when storage is unavailable.
+    }
+  }, []);
+  const [autoEditEnabled, setAutoEditEnabledState] = useState(() => {
+    try {
+      return localStorage.getItem("OpenSketch:auto-edit-enabled") === "true";
+    } catch {
+      return false;
+    }
+  });
+  const setAutoEditEnabled = useCallback((enabled: boolean) => {
+    setAutoEditEnabledState(enabled);
+    try {
+      localStorage.setItem("OpenSketch:auto-edit-enabled", String(enabled));
     } catch {
       // Keep the session setting when storage is unavailable.
     }
@@ -2821,10 +2838,12 @@ export function EditorProvider({
       historyState,
       canvasSettings,
       alignmentEnabled,
+      autoEditEnabled,
       projectDescription,
       setCanvasElement,
       setCanvasSettings,
       setAlignmentEnabled,
+      setAutoEditEnabled,
       setProjectName,
       setProjectDescription,
       selectParentAsset,
@@ -2879,6 +2898,7 @@ export function EditorProvider({
       canvas,
       canvasSettings,
       alignmentEnabled,
+      autoEditEnabled,
       commit,
       copySelectionToClipboard,
       pasteSelection,
@@ -2902,6 +2922,7 @@ export function EditorProvider({
       resetColors,
       selection,
       setAlignmentEnabled,
+      setAutoEditEnabled,
       setCanvasElement,
       setCanvasSettings,
       setCreationDefaults,

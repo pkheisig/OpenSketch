@@ -145,6 +145,14 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   if (!artboard) throw new Error("Artboard is not visible.");
   await page.mouse.click(artboard.x + artboard.width / 2, artboard.y + artboard.height / 2);
 
+  const autoEdit = page.getByRole("button", { name: "Enable automatic edit panel" });
+  await expect(autoEdit).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator(".inspector-embedded")).toHaveCount(0);
+  await autoEdit.click();
+  await expect(page.getByRole("button", { name: "Disable automatic edit panel" })).toHaveAttribute(
+    "aria-pressed",
+    "true"
+  );
   await expect(page.locator(".inspector-embedded")).toBeVisible();
   await expect(page.locator(".selection-quick-toolbar")).toBeVisible();
   const selectionToolbar = page.getByRole("toolbar", { name: "Selection actions" });
@@ -171,6 +179,11 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   await expect(selectionToolbar).toBeVisible();
   await page.waitForTimeout(250);
   await expect(page.locator(".floating-panel")).toHaveCount(0);
+  await page.getByRole("button", { name: "Disable automatic edit panel" }).click();
+  await expect(page.getByRole("button", { name: "Enable automatic edit panel" })).toHaveAttribute(
+    "aria-pressed",
+    "false"
+  );
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-embedded")).toBeVisible();
   await expect(page.locator(".workspace-controls")).toBeVisible();
@@ -324,6 +337,7 @@ test("creates every distinct shape variant exposed by the shape pop-out", async 
         artboard.y + artboard.height * (0.25 + row * 0.23)
       );
       inserted += 1;
+      await page.getByRole("button", { name: "Edit", exact: true }).click();
       await expect(page.locator(".layers-title small")).toHaveText(String(inserted));
     }
   }

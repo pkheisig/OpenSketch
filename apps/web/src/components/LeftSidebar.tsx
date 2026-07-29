@@ -306,11 +306,12 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
       if (previous && tab === "edit" && !collapsed) onToggle();
       return;
     }
+    if (!editor.autoEditEnabled) return;
     if (editor.creationTool || handledSelection.current === selectionKey) return;
     handledSelection.current = selectionKey;
     setTab("edit");
     if (collapsed) onToggle();
-  }, [collapsed, editor.creationTool, onToggle, selectionKey, tab]);
+  }, [collapsed, editor.autoEditEnabled, editor.creationTool, onToggle, selectionKey, tab]);
   useEffect(() => {
     if (!editor.creationTool || collapsed) return;
     onToggle();

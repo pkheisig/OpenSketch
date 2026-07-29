@@ -23,6 +23,7 @@ import {
   Copy,
   Crop,
   EllipsisVertical,
+  Edit3,
   FileImage,
   FileType2,
   FlipHorizontal2,
@@ -1469,6 +1470,19 @@ export function CanvasWorkspace() {
             title="Alignment guides"
           >
             <ScanLine size={15} />
+          </button>
+          <button
+            className={editor.autoEditEnabled ? "active" : ""}
+            onClick={() => editor.setAutoEditEnabled(!editor.autoEditEnabled)}
+            aria-label={
+              editor.autoEditEnabled
+                ? "Disable automatic edit panel"
+                : "Enable automatic edit panel"
+            }
+            aria-pressed={editor.autoEditEnabled}
+            title="Auto-open edit panel"
+          >
+            <Edit3 size={15} />
           </button>
           <button
             className={editor.canvasSettings.grid ? "active" : ""}
