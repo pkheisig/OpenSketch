@@ -2429,6 +2429,17 @@ test("fills the asset sidebar and presents laboratory assets before organisms", 
     "rgb(255, 255, 255)"
   );
   await expect(firstAsset.locator(".asset-card-image")).toHaveCSS("background-image", "none");
+  const previewInset = await firstAsset.locator(".asset-card-image").evaluate((button) => {
+    const image = button.querySelector("img")!;
+    const buttonBounds = button.getBoundingClientRect();
+    const imageBounds = image.getBoundingClientRect();
+    return {
+      widthRatio: imageBounds.width / buttonBounds.width,
+      heightRatio: imageBounds.height / buttonBounds.height
+    };
+  });
+  expect(previewInset.widthRatio).toBeLessThanOrEqual(0.9);
+  expect(previewInset.heightRatio).toBeLessThanOrEqual(0.9);
   const restingAssetBounds = await firstAsset.boundingBox();
   expect(restingAssetBounds).not.toBeNull();
   await page.mouse.move(
