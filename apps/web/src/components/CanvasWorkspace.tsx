@@ -69,6 +69,7 @@ import {
 import { isLinearCreationTool } from "@/editor/creation";
 import { elementStyleKey } from "@/editor/elementStyles";
 import { CURSOR_GRABBING } from "@/editor/cursors";
+import { importedMediaFilesFromDataTransfer } from "@/editor/clipboardImport";
 import type { Point } from "@/editor/geometry";
 import { IMPORTED_MEDIA_DRAG_TYPE } from "@/editor/assetDrag";
 import { getImportedMedia } from "@/persistence/database";
@@ -610,6 +611,24 @@ export function CanvasWorkspace() {
       void getImportedMedia(importId).then((media) => {
         if (media) void editor.addImportedMedia(media, point);
       });
+      return;
+    }
+    const files = importedMediaFilesFromDataTransfer(event.dataTransfer);
+    if (files.length > 0) {
+      void Promise.allSettled(
+        files.map((file, index) => {
+          const offset = Math.min(index, 8) * 24;
+          return editor.importMedia(
+            file,
+            point
+              ? {
+                  x: Math.max(0, Math.min(canvasSettings.width, point.x + offset)),
+                  y: Math.max(0, Math.min(canvasSettings.height, point.y + offset))
+                }
+              : undefined
+          );
+        })
+      );
     }
   };
 
@@ -986,7 +1005,8 @@ export function CanvasWorkspace() {
       onDragOver={(event) => {
         if (
           event.dataTransfer.types.includes("application/x-scientific-asset") ||
-          event.dataTransfer.types.includes(IMPORTED_MEDIA_DRAG_TYPE)
+          event.dataTransfer.types.includes(IMPORTED_MEDIA_DRAG_TYPE) ||
+          event.dataTransfer.types.includes("Files")
         ) {
           event.preventDefault();
           event.dataTransfer.dropEffect = "copy";

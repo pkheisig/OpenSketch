@@ -4,6 +4,7 @@ const SUPPORTED_CLIPBOARD_IMAGE_TYPES = new Set([
   "image/jpeg",
   "image/webp"
 ]);
+const SUPPORTED_IMAGE_EXTENSIONS = new Set(["svg", "png", "jpg", "jpeg", "webp"]);
 
 function svgSourceFromClipboard(data: DataTransfer): string | undefined {
   const candidates = [
@@ -26,27 +27,93 @@ function extensionForMimeType(mimeType: string): string {
   return "png";
 }
 
-export function importedMediaFileFromClipboard(data: DataTransfer): File | undefined {
-  const svgSource = svgSourceFromClipboard(data);
-  if (svgSource) {
-    return new File([svgSource], "Clipboard SVG.svg", { type: "image/svg+xml" });
-  }
+function extensionForFile(file: File): string {
+  return file.name.toLowerCase().split(".").at(-1) ?? "";
+}
 
-  for (const item of data.items) {
-    if (item.kind !== "file" || !SUPPORTED_CLIPBOARD_IMAGE_TYPES.has(item.type)) continue;
-    const file = item.getAsFile();
-    if (!file) continue;
-    const extension = extensionForMimeType(item.type);
-    return new File(
-      [file],
-      item.type === "image/svg+xml" ? "Clipboard SVG.svg" : `Clipboard image.${extension}`,
-      {
-        type: item.type,
-        lastModified: file.lastModified
-      }
+export function isSupportedImportedImageFile(file: File): boolean {
+  return (
+    SUPPORTED_CLIPBOARD_IMAGE_TYPES.has(file.type.toLowerCase()) ||
+    SUPPORTED_IMAGE_EXTENSIONS.has(extensionForFile(file))
+  );
+}
+
+export function importedMediaFilesFromDataTransfer(data: DataTransfer): File[] {
+  const files = Array.from(data.files).filter(isSupportedImportedImageFile);
+  if (files.length > 0) return files;
+  return Array.from(data.items)
+    .filter((item) => item.kind === "file")
+    .map((item) => item.getAsFile())
+    .filter((file): file is File => file !== null && isSupportedImportedImageFile(file));
+}
+
+function embeddedImageDataUrl(data: DataTransfer): string | undefined {
+  const candidates = [data.getData("text/html"), data.getData("text/plain")];
+  for (const candidate of candidates) {
+    const match = candidate.match(
+      /(?:src\s*=\s*["']\s*)?(data:image\/(?:png|jpeg|webp|svg\+xml)(?:;charset=[^;,]+)?(?:;base64)?,[^"'\s<>]+)/i
     );
+    if (match) return match[1];
   }
   return undefined;
+}
+
+function fileFromDataUrl(dataUrl: string): File | undefined {
+  const match = dataUrl.match(
+    /^data:(image\/(?:png|jpeg|webp|svg\+xml))(?:;charset=[^;,]+)?(;base64)?,(.*)$/is
+  );
+  if (!match) return undefined;
+  const [, mimeType, base64, encoded] = match;
+  try {
+    const decoded = base64 ? atob(encoded) : decodeURIComponent(encoded);
+    const bytes = Uint8Array.from(decoded, (character) => character.charCodeAt(0));
+    const extension = extensionForMimeType(mimeType.toLowerCase());
+    return new File([bytes], `Clipboard image.${extension}`, { type: mimeType.toLowerCase() });
+  } catch {
+    return undefined;
+  }
+}
+
+export function importedMediaFilesFromClipboard(data: DataTransfer): File[] {
+  const svgSource = svgSourceFromClipboard(data);
+  if (svgSource) {
+    return [new File([svgSource], "Clipboard SVG.svg", { type: "image/svg+xml" })];
+  }
+
+  const transferredItems = Array.from(data.items)
+    .filter((item) => item.kind === "file")
+    .map((item) => item.getAsFile())
+    .filter((file): file is File => file !== null && isSupportedImportedImageFile(file));
+  const transferredFiles =
+    transferredItems.length > 0 ? transferredItems : importedMediaFilesFromDataTransfer(data);
+  if (transferredFiles.length > 0) {
+    return transferredFiles.map((file) => {
+      const declaredMimeType = file.type.toLowerCase();
+      const mimeType = SUPPORTED_CLIPBOARD_IMAGE_TYPES.has(declaredMimeType)
+        ? declaredMimeType
+        : "";
+      const extension = mimeType
+        ? extensionForMimeType(mimeType)
+        : extensionForFile(file) || "png";
+      const isSvg = mimeType === "image/svg+xml" || extension === "svg";
+      return new File(
+        [file],
+        isSvg ? "Clipboard SVG.svg" : `Clipboard image.${extension}`,
+        {
+          type: mimeType,
+          lastModified: file.lastModified
+        }
+      );
+    });
+  }
+
+  const dataUrl = embeddedImageDataUrl(data);
+  const embeddedFile = dataUrl ? fileFromDataUrl(dataUrl) : undefined;
+  return embeddedFile ? [embeddedFile] : [];
+}
+
+export function importedMediaFileFromClipboard(data: DataTransfer): File | undefined {
+  return importedMediaFilesFromClipboard(data)[0];
 }
 
 export function clipboardContainsSelectionMarker(data: DataTransfer, marker?: string): boolean {

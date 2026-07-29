@@ -96,7 +96,7 @@ import {
 } from "@/editor/selectionClipboard";
 import {
   clipboardContainsSelectionMarker,
-  importedMediaFileFromClipboard
+  importedMediaFilesFromClipboard
 } from "@/editor/clipboardImport";
 import {
   rememberProjectImports,
@@ -2912,30 +2912,37 @@ export function EditorProvider({
 
   useEffect(() => {
     const onPaste = (event: ClipboardEvent) => {
-      if (
-        !canvas ||
-        event.target instanceof HTMLInputElement ||
-        event.target instanceof HTMLTextAreaElement
-      ) {
-        return;
-      }
+      if (!canvas) return;
       const activeObject = canvas.getActiveObject();
       if (activeObject instanceof IText && activeObject.isEditing) return;
       const data = event.clipboardData;
       if (!data) return;
-      if (clipboardContainsSelectionMarker(data, clipboardMarker.current)) {
+      const targetIsTextInput =
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement;
+      if (
+        !targetIsTextInput &&
+        clipboardContainsSelectionMarker(data, clipboardMarker.current)
+      ) {
         event.preventDefault();
         void pasteSelection();
         return;
       }
-      const media = importedMediaFileFromClipboard(data);
-      if (media) {
+      const media = importedMediaFilesFromClipboard(data);
+      if (media.length > 0) {
         event.preventDefault();
         clipboard.current = [];
         clipboardMarker.current = undefined;
-        void importMedia(media);
+        media.forEach((file, index) => {
+          const offset = Math.min(index, 8) * 24;
+          void importMedia(file, {
+            x: canvasSettings.width / 2 + offset,
+            y: canvasSettings.height / 2 + offset
+          });
+        });
         return;
       }
+      if (targetIsTextInput) return;
       if (clipboard.current.length > 0) {
         event.preventDefault();
         void pasteSelection();
@@ -3041,6 +3048,8 @@ export function EditorProvider({
     };
   }, [
     canvas,
+    canvasSettings.height,
+    canvasSettings.width,
     commit,
     copySelectionToClipboard,
     creationTool,

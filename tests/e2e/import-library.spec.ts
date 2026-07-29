@@ -1,7 +1,11 @@
 import { expect, test } from "@playwright/test";
 
-async function pasteImage(page: import("@playwright/test").Page, mimeType: string) {
-  await page.evaluate(async (type) => {
+async function pasteImage(
+  page: import("@playwright/test").Page,
+  mimeType: string,
+  targetSelector?: string
+) {
+  await page.evaluate(async ({ type, targetSelector }) => {
     let file: File;
     if (type === "image/svg+xml") {
       file = new File(
@@ -29,8 +33,50 @@ async function pasteImage(page: import("@playwright/test").Page, mimeType: strin
     transfer.items.add(file);
     const pasteEvent = new Event("paste", { bubbles: true, cancelable: true });
     Object.defineProperty(pasteEvent, "clipboardData", { value: transfer });
-    window.dispatchEvent(pasteEvent);
-  }, mimeType);
+    (targetSelector ? document.querySelector(targetSelector) : window)?.dispatchEvent(pasteEvent);
+  }, { type: mimeType, targetSelector });
+}
+
+async function dropSvgFile(page: import("@playwright/test").Page) {
+  await page.locator(".canvas-workspace").evaluate((element) => {
+    const file = new File(
+      [
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 80"><rect x="5" y="5" width="110" height="70" rx="12" fill="#d6b6ff"/><path d="M22 40h76" stroke="#44296e" stroke-width="8"/></svg>'
+      ],
+      "dragged-diagram.svg",
+      { type: "" }
+    );
+    const transfer = new DataTransfer();
+    transfer.items.add(file);
+    for (const type of ["dragover", "drop"]) {
+      element.dispatchEvent(
+        new DragEvent(type, {
+          bubbles: true,
+          cancelable: true,
+          dataTransfer: transfer,
+          clientX: 420,
+          clientY: 320
+        })
+      );
+    }
+  });
+}
+
+async function pasteEmbeddedPng(page: import("@playwright/test").Page) {
+  await page.evaluate(async () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 16;
+    canvas.height = 10;
+    const context = canvas.getContext("2d")!;
+    context.fillStyle = "#f5a742";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    const dataUrl = canvas.toDataURL("image/png");
+    const transfer = new DataTransfer();
+    transfer.setData("text/html", `<img alt="copied experiment" src="${dataUrl}">`);
+    const pasteEvent = new Event("paste", { bubbles: true, cancelable: true });
+    Object.defineProperty(pasteEvent, "clipboardData", { value: transfer });
+    document.querySelector('input[aria-label="Document title"]')?.dispatchEvent(pasteEvent);
+  });
 }
 
 test("stores imported media permanently and pastes SVG, PNG, and JPEG from the clipboard", async ({
@@ -56,7 +102,6 @@ test("stores imported media permanently and pastes SVG, PNG, and JPEG from the c
 
   await pasteImage(page, "image/svg+xml");
   await expect(page.locator(".layers-title small")).toHaveText("5");
-  await page.getByRole("tab", { name: "Imports", exact: true }).click();
   await expect(
     page.getByLabel("Imported media library").locator(".import-library-card")
   ).toHaveCount(3);
@@ -88,4 +133,29 @@ test("stores imported media permanently and pastes SVG, PNG, and JPEG from the c
   await expect(
     page.getByLabel("Imported media library").locator(".import-library-card")
   ).toHaveCount(3);
+});
+
+test("accepts image paste while a text input is focused and SVG files dropped from the desktop", async ({
+  page
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await expect(page.locator(".upper-canvas")).toBeVisible();
+
+  const title = page.getByRole("textbox", { name: "Document title" });
+  await title.focus();
+  await pasteImage(page, "image/png", 'input[aria-label="Document title"]');
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+
+  await pasteEmbeddedPng(page);
+  await expect(page.locator(".layers-title small")).toHaveText("2");
+
+  await dropSvgFile(page);
+  await expect(page.locator(".layers-title small")).toHaveText("3");
+
+  await page.getByRole("tab", { name: "Imports", exact: true }).click();
+  const library = page.getByLabel("Imported media library");
+  await expect(library.locator(".import-library-card")).toHaveCount(3);
+  await expect(library).toContainText("Clipboard image.png");
+  await expect(library).toContainText("dragged-diagram.svg");
 });
