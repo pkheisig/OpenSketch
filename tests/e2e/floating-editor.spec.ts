@@ -40,6 +40,11 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
     .locator(".tool-flyout-secondary button svg")
     .evaluateAll((icons) => icons.map((icon) => icon.outerHTML));
   await expect(lineMenu.locator(".connector-family-lines button")).toHaveCount(21);
+  const linePanelHeights = await lineMenu.evaluate((menu) => ({
+    categories: menu.querySelector(".tool-flyout-primary")?.getBoundingClientRect().height ?? 0,
+    subtypes: menu.querySelector(".tool-flyout-secondary")?.getBoundingClientRect().height ?? 0
+  }));
+  expect(linePanelHeights.categories).toBeLessThan(linePanelHeights.subtypes);
   await lineMenu.getByRole("menuitem", { name: /Arrows/ }).hover();
   await expect(
     lineMenu.getByRole("menuitem", { name: "Shallow curved arrow", exact: true })

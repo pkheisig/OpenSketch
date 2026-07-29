@@ -3568,6 +3568,7 @@ input[type="range"] {
   z-index: 5;
   left: 66px;
   display: flex;
+  align-items: flex-start;
   gap: 6px;
   pointer-events: auto;
   animation: tool-flyout-in 150ms cubic-bezier(0.22, 1, 0.36, 1) both;
