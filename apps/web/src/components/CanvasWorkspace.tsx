@@ -23,6 +23,7 @@ import {
   Copy,
   Crop,
   EllipsisVertical,
+  Edit3,
   FileImage,
   FileType2,
   FlipHorizontal2,
@@ -42,7 +43,6 @@ import {
   Ruler,
   Save,
   Scaling,
-  ScanLine,
   Scissors,
   Trash2,
   Ungroup,
@@ -1489,14 +1489,17 @@ export function CanvasWorkspace() {
         </div>
         <div className="workspace-footer-section view-controls">
           <button
-            className={editor.alignmentEnabled ? "active" : ""}
-            onClick={() => editor.setAlignmentEnabled(!editor.alignmentEnabled)}
+            className={editor.autoEditEnabled ? "active" : ""}
+            onClick={() => editor.setAutoEditEnabled(!editor.autoEditEnabled)}
             aria-label={
-              editor.alignmentEnabled ? "Disable alignment guides" : "Enable alignment guides"
+              editor.autoEditEnabled
+                ? "Disable automatic edit panel"
+                : "Enable automatic edit panel"
             }
-            title="Alignment guides"
+            aria-pressed={editor.autoEditEnabled}
+            title="Auto-open edit panel"
           >
-            <ScanLine size={15} />
+            <Edit3 size={15} />
           </button>
           <button
             className={editor.canvasSettings.grid ? "active" : ""}

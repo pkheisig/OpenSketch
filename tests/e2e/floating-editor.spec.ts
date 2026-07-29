@@ -176,9 +176,15 @@ test("@smoke uses floating BioRender-style tools, flyouts, and left-side propert
   await page.mouse.click(artboard.x + artboard.width / 2, artboard.y + artboard.height / 2);
 
   await expect(page.getByRole("button", { name: "Edit", exact: true })).toBeVisible();
-  await expect(page.getByRole("button", { name: /automatic edit panel/i })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /alignment guides/i })).toHaveCount(0);
+  const autoEdit = page.getByRole("button", { name: "Enable automatic edit panel" });
+  await expect(autoEdit).toHaveAttribute("aria-pressed", "false");
   await expect(page.locator(".inspector-embedded")).toHaveCount(0);
-  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await autoEdit.click();
+  await expect(page.getByRole("button", { name: "Disable automatic edit panel" })).toHaveAttribute(
+    "aria-pressed",
+    "true"
+  );
   await expect(page.locator(".inspector-embedded")).toBeVisible();
   await expect(page.locator(".selection-quick-toolbar")).toBeVisible();
   const selectionToolbar = page.getByRole("toolbar", { name: "Selection actions" });
@@ -205,6 +211,11 @@ test("@smoke uses floating BioRender-style tools, flyouts, and left-side propert
   await expect(selectionToolbar).toBeVisible();
   await page.waitForTimeout(250);
   await expect(page.locator(".floating-panel")).toHaveCount(0);
+  await page.getByRole("button", { name: "Disable automatic edit panel" }).click();
+  await expect(page.getByRole("button", { name: "Enable automatic edit panel" })).toHaveAttribute(
+    "aria-pressed",
+    "false"
+  );
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-embedded")).toBeVisible();
   await expect(page.locator(".workspace-controls")).toBeVisible();
