@@ -46,8 +46,9 @@ describe("OpenSketch canvas cursors", () => {
     for (const cursor of [CURSOR_GRAB, CURSOR_GRABBING]) {
       const source = decodeURIComponent(cursor);
       expect(source).toContain(
-        'fill="#ffffff" stroke="#183133" stroke-width="2.2" stroke-linecap="round"'
+        'fill="#ffffff" stroke="#183133" stroke-width="1.8" vector-effect="non-scaling-stroke"'
       );
+      expect(source).toContain('transform="translate(3.1 2) scale(.92 1)"');
       expect(source).not.toContain("<rect");
       expect(source.match(/<path\b/g)).toHaveLength(1);
       expect(source).toContain("M9 20c-1.8-1.2-2.8-3-3.5-5");

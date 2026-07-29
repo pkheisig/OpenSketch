@@ -55,8 +55,8 @@ function resizeCursor(angle: number, fallback: string): string {
 function handCursor(fallback: string): string {
   const source = [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${CURSOR_SIZE}" height="${CURSOR_SIZE}" viewBox="0 0 28 28">`,
-    '<g transform="translate(2 2)">',
-    `<path fill="${HALO}" stroke="${INK}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="${HAND_PATH}"/>`,
+    '<g transform="translate(3.1 2) scale(.92 1)">',
+    `<path fill="${HALO}" stroke="${INK}" stroke-width="1.8" vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" d="${HAND_PATH}"/>`,
     "</g>",
     "</svg>"
   ].join("");
