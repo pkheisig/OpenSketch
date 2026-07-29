@@ -213,6 +213,7 @@ export function CanvasWorkspace() {
   const {
     setCanvasElement,
     canvas,
+    canvasReady,
     canvasSettings,
     fitRequest,
     previewZoom,
@@ -250,6 +251,7 @@ export function CanvasWorkspace() {
   const pendingZoom = useRef(zoom);
   const pendingZoomAnchor = useRef<ZoomAnchor | null>(null);
   const [dragging, setDragging] = useState(false);
+  const [viewportReady, setViewportReady] = useState(false);
   const [rulerVisible, setRulerVisible] = useState(() => {
     try {
       return localStorage.getItem(RULER_VISIBILITY_KEY) !== "false";
@@ -410,6 +412,7 @@ export function CanvasWorkspace() {
       applyViewportFocus(focus);
       handledFitRequest.current = fitRequest;
       initializedViewport.current = true;
+      setViewportReady(true);
       queueViewportSave(focus);
       return;
     }
@@ -1042,6 +1045,7 @@ export function CanvasWorkspace() {
       >
         <div
           className="workspace-plane"
+          data-canvas-ready={canvasReady && viewportReady ? "true" : "false"}
           style={{
             width: Math.max(2400, canvasSettings.width * zoom + 1600),
             height: Math.max(1800, canvasSettings.height * zoom + 1200)

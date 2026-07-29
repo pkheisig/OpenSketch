@@ -6,6 +6,8 @@ import { loadEditableSvg } from "@/editor/svg";
 const PREVIEW_SIZE = 448;
 const PREVIEW_PADDING = 36;
 const PREVIEW_CACHE_LIMIT = 96;
+const TRANSPARENT_PREVIEW =
+  "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
 const previewPromises = new Map<string, Promise<string>>();
 const previewSources = new Map<string, string>();
 
@@ -97,23 +99,44 @@ export function AssetPreviewImage({
   className?: string;
 }) {
   const key = previewKey(assetPath, savedStyle);
-  const [source, setSource] = useState(() => previewSources.get(key) ?? fallbackPath ?? assetPath);
+  const cachedSource = previewSources.get(key);
+  const [preview, setPreview] = useState(() => ({
+    key,
+    source: cachedSource ?? TRANSPARENT_PREVIEW,
+    ready: Boolean(cachedSource)
+  }));
 
   useEffect(() => {
     let active = true;
     const cached = previewSources.get(key);
-    setSource(cached ?? fallbackPath ?? assetPath);
+    setPreview({
+      key,
+      source: cached ?? TRANSPARENT_PREVIEW,
+      ready: Boolean(cached)
+    });
     void renderAssetPreview(assetPath, savedStyle)
       .then((nextSource) => {
-        if (active) setSource(nextSource);
+        if (active) setPreview({ key, source: nextSource, ready: true });
       })
       .catch(() => {
-        if (active) setSource(fallbackPath ?? assetPath);
+        if (active) {
+          setPreview({ key, source: fallbackPath ?? assetPath, ready: true });
+        }
       });
     return () => {
       active = false;
     };
   }, [assetPath, fallbackPath, key, savedStyle]);
 
-  return <img className={className} src={source} alt="" loading="lazy" draggable={false} />;
+  const current = preview.key === key ? preview : null;
+  return (
+    <img
+      className={className}
+      src={current?.source ?? TRANSPARENT_PREVIEW}
+      alt=""
+      loading="lazy"
+      draggable={false}
+      data-preview-ready={current?.ready ? "true" : "false"}
+    />
+  );
 }

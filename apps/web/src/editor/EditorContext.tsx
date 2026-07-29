@@ -250,6 +250,7 @@ async function restoreBundledSvgBlendModes(objects: FabricObject[]): Promise<voi
 interface EditorContextValue {
   projectId: string;
   canvas: Canvas | null;
+  canvasReady: boolean;
   selection: FabricObject[];
   editingGroup: Group | null;
   zoom: number;
@@ -680,6 +681,7 @@ export function EditorProvider({
   children: ReactNode;
 }) {
   const [canvas, setCanvas] = useState<Canvas | null>(null);
+  const [canvasReady, setCanvasReady] = useState(false);
   const [selection, setSelection] = useState<FabricObject[]>([]);
   const [editingGroup, setEditingGroup] = useState<Group | null>(null);
   const editingGroupRef = useRef<Group | null>(null);
@@ -995,6 +997,7 @@ export function EditorProvider({
       });
       instance.setDimensions({ width: project.canvas.width, height: project.canvas.height });
       instance.backgroundColor = project.canvas.transparent ? "" : project.canvas.background;
+      setCanvasReady(false);
       instance.loadFromJSON(project.objects).then(async () => {
         await restoreBundledSvgBlendModes(instance.getObjects());
         instance.getObjects().forEach((object) => {
@@ -1010,6 +1013,7 @@ export function EditorProvider({
         history.current = [initial];
         historyIndex.current = 0;
         updateHistoryState();
+        setCanvasReady(true);
       });
       setCanvas(instance);
     },
@@ -1557,6 +1561,7 @@ export function EditorProvider({
       canvas.upperCanvasEl.removeEventListener("mousedown", preserveDeepSelectionForDrag, true);
       canvas.upperCanvasEl.removeEventListener("contextmenu", suppressModifierContextMenu, true);
       void enqueuePendingSave();
+      setCanvasReady(false);
       canvas.dispose();
       setCanvas(null);
     };
@@ -3050,6 +3055,7 @@ export function EditorProvider({
     () => ({
       projectId: project.id,
       canvas,
+      canvasReady,
       selection,
       editingGroup,
       zoom,
@@ -3115,6 +3121,7 @@ export function EditorProvider({
       applyTextScript,
       arrange,
       canvas,
+      canvasReady,
       canvasSettings,
       alignmentEnabled,
       autoEditEnabled,

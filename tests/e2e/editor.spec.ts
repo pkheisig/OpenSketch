@@ -94,6 +94,64 @@ async function placeTool(page: Page, name: string | RegExp, xRatio = 0.5, yRatio
   await page.mouse.click(point.x, point.y);
 }
 
+test("never paints fallback asset sizing or uninitialized canvas geometry", async ({ page }) => {
+  await page.goto("/");
+  await page.evaluate(() => {
+    const states: Array<{ ready: string | null; visibility: string; width: number; height: number }> =
+      [];
+    const capture = () => {
+      const plane = document.querySelector<HTMLElement>(".workspace-plane");
+      const stage = document.querySelector<HTMLElement>(".artboard-stage");
+      if (!plane || !stage) return;
+      const bounds = stage.getBoundingClientRect();
+      states.push({
+        ready: plane.dataset.canvasReady ?? null,
+        visibility: getComputedStyle(plane).visibility,
+        width: bounds.width,
+        height: bounds.height
+      });
+    };
+    const observer = new MutationObserver(capture);
+    observer.observe(document.body, {
+      attributes: true,
+      childList: true,
+      subtree: true
+    });
+    (window as typeof window & { __canvasPaintStates?: typeof states }).__canvasPaintStates = states;
+  });
+
+  await page.getByRole("button", { name: "New figure" }).click();
+  const plane = page.locator(".workspace-plane");
+  await expect(plane).toHaveAttribute("data-canvas-ready", "true");
+  await expect(plane).toBeVisible();
+
+  const paintStates = await page.evaluate(
+    () =>
+      (window as typeof window & {
+        __canvasPaintStates?: Array<{
+          ready: string | null;
+          visibility: string;
+          width: number;
+          height: number;
+        }>;
+      }).__canvasPaintStates ?? []
+  );
+  expect(
+    paintStates.filter((state) => state.ready !== "true" && state.visibility === "visible")
+  ).toEqual([]);
+
+  const preview = page.locator(".asset-card-image img").first();
+  const initialBounds = await preview.boundingBox();
+  expect(initialBounds).not.toBeNull();
+  if ((await preview.getAttribute("data-preview-ready")) === "false") {
+    await expect(preview).toHaveCSS("visibility", "hidden");
+  }
+  await expect(preview).toHaveAttribute("data-preview-ready", "true");
+  await expect(preview).toHaveCSS("visibility", "visible");
+  const finalBounds = await preview.boundingBox();
+  expect(finalBounds).toEqual(initialBounds);
+});
+
 test("rotates an object by dragging its rotation handle", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();

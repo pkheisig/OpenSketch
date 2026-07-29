@@ -1430,6 +1430,10 @@ a:focus-visible {
   object-fit: contain;
 }
 
+.asset-card-image img[data-preview-ready="false"] {
+  visibility: hidden;
+}
+
 .asset-favorite {
   position: absolute;
   top: 6px;
@@ -2089,6 +2093,10 @@ a:focus-visible {
   min-width: 100%;
   min-height: 100%;
   place-items: center;
+}
+
+.workspace-plane[data-canvas-ready="false"] {
+  visibility: hidden;
 }
 
 .artboard-stage {
