@@ -683,6 +683,7 @@ export function EditorProvider({
   const [selection, setSelection] = useState<FabricObject[]>([]);
   const [editingGroup, setEditingGroup] = useState<Group | null>(null);
   const editingGroupRef = useRef<Group | null>(null);
+  const editingGroupPathRef = useRef<Group[]>([]);
   const [zoom, setZoomState] = useState(1);
   const [fitRequest, setFitRequest] = useState(0);
   const [creationTool, setCreationTool] = useState<CreationTool | null>(null);
@@ -777,6 +778,13 @@ export function EditorProvider({
     | undefined
   >(undefined);
   const createPointText = useRef<(point: Point) => void>(() => undefined);
+
+  const setEditingGroupPath = useCallback((path: Group[]) => {
+    editingGroupPathRef.current = path;
+    const currentGroup = path.at(-1) ?? null;
+    editingGroupRef.current = currentGroup;
+    setEditingGroup(currentGroup);
+  }, []);
 
   useEffect(() => {
     void rememberProjectImports(
@@ -1003,6 +1011,22 @@ export function EditorProvider({
     [project, updateHistoryState]
   );
 
+  const closeGroupEdit = useCallback(() => {
+    const path = editingGroupPathRef.current;
+    const exitedGroup = path.at(-1);
+    if (!exitedGroup) return;
+    const parentPath = path.slice(0, -1);
+    setEditingGroupPath(parentPath);
+    modifierDeepSelection.current = undefined;
+    deepSelectionCycle.current = undefined;
+    if (!canvas) return;
+    canvas.discardActiveObject();
+    configureSelectionControls(exitedGroup, latestZoom.current);
+    canvas.setActiveObject(exitedGroup);
+    setSelection([exitedGroup]);
+    canvas.requestRenderAll();
+  }, [canvas, setEditingGroupPath]);
+
   useEffect(() => {
     if (!canvas) return;
     const select = () => {
@@ -1021,22 +1045,35 @@ export function EditorProvider({
       if (!scenePoint) return;
       const currentEditingGroup = editingGroupRef.current;
       if (currentEditingGroup) {
-        const nestedGroup = hitObjectsAtLevel(
+        const directHits = hitObjectsAtLevel(
           canvas,
           currentEditingGroup.getObjects(),
           scenePoint
-        ).find(
+        );
+        const nestedGroup = directHits.find(
           (object): object is Group =>
             object instanceof Group && !(object instanceof ActiveSelection)
         );
-        if (!nestedGroup) return;
-        editingGroupRef.current = nestedGroup;
-        setEditingGroup(nestedGroup);
-        canvas.discardActiveObject();
-        setSelection([]);
-        modifierDeepSelection.current = undefined;
-        deepSelectionCycle.current = undefined;
-        canvas.requestRenderAll();
+        if (nestedGroup) {
+          setEditingGroupPath([...editingGroupPathRef.current, nestedGroup]);
+          canvas.discardActiveObject();
+          setSelection([]);
+          modifierDeepSelection.current = undefined;
+          deepSelectionCycle.current = undefined;
+          canvas.requestRenderAll();
+          return;
+        }
+        if (!currentEditingGroup.containsPoint(scenePoint)) {
+          closeGroupEdit();
+          return;
+        }
+        if (directHits.length === 0) {
+          canvas.discardActiveObject();
+          setSelection([]);
+          modifierDeepSelection.current = undefined;
+          deepSelectionCycle.current = undefined;
+          canvas.requestRenderAll();
+        }
         return;
       }
       const group = hitObjectsAtLevel(canvas, canvas.getObjects(), scenePoint).find(
@@ -1044,8 +1081,7 @@ export function EditorProvider({
           object instanceof Group && !(object instanceof ActiveSelection)
       );
       if (group) {
-        editingGroupRef.current = group;
-        setEditingGroup(group);
+        setEditingGroupPath([group]);
         canvas.discardActiveObject();
         setSelection([]);
         modifierDeepSelection.current = undefined;
@@ -1497,30 +1533,16 @@ export function EditorProvider({
       context.restore();
     };
     const drawGroupEditFocus = ({ ctx: context }: { ctx: CanvasRenderingContext2D }) => {
-      const group = editingGroupRef.current;
-      if (!group) return;
-      const bounds = group.getBoundingRect();
-      const viewport = canvas.viewportTransform;
-      const left = bounds.left * viewport[0] + viewport[4];
-      const top = bounds.top * viewport[3] + viewport[5];
-      const width = bounds.width * viewport[0];
-      const height = bounds.height * viewport[3];
-      const padding = 48;
-      const focusLeft = Math.max(0, left - padding);
-      const focusTop = Math.max(0, top - padding);
-      const focusRight = Math.min(canvas.width, left + width + padding);
-      const focusBottom = Math.min(canvas.height, top + height + padding);
+      const currentGroup = editingGroupRef.current;
+      if (!currentGroup) return;
       context.save();
-      context.fillStyle = "rgba(247, 248, 245, 0.68)";
-      context.fillRect(0, 0, canvas.width, focusTop);
-      context.fillRect(0, focusBottom, canvas.width, canvas.height - focusBottom);
-      context.fillRect(0, focusTop, focusLeft, focusBottom - focusTop);
-      context.fillRect(
-        focusRight,
-        focusTop,
-        canvas.width - focusRight,
-        focusBottom - focusTop
-      );
+      context.fillStyle = "rgba(255, 255, 255, 0.82)";
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      const viewport = canvas.viewportTransform;
+      context.transform(...viewport);
+      const parent = directNestedParent(currentGroup);
+      if (parent) context.transform(...parent.calcTransformMatrix());
+      currentGroup.render(context);
       context.restore();
     };
     canvas.on("selection:created", select);
@@ -1548,7 +1570,15 @@ export function EditorProvider({
       canvas.dispose();
       setCanvas(null);
     };
-  }, [alignmentEnabled, canvas, commit, enqueuePendingSave, refreshConnectors]);
+  }, [
+    alignmentEnabled,
+    canvas,
+    closeGroupEdit,
+    commit,
+    enqueuePendingSave,
+    refreshConnectors,
+    setEditingGroupPath
+  ]);
 
   const restoreAt = useCallback(
     async (index: number) => {
@@ -2185,19 +2215,6 @@ export function EditorProvider({
     if (!parent) return;
     canvas.setActiveObject(parent);
     setSelection([parent]);
-    canvas.requestRenderAll();
-  }, [canvas]);
-
-  const closeGroupEdit = useCallback(() => {
-    const group = editingGroupRef.current;
-    editingGroupRef.current = null;
-    setEditingGroup(null);
-    modifierDeepSelection.current = undefined;
-    deepSelectionCycle.current = undefined;
-    if (!canvas || !group) return;
-    configureSelectionControls(group, latestZoom.current);
-    canvas.setActiveObject(group);
-    setSelection([group]);
     canvas.requestRenderAll();
   }, [canvas]);
 

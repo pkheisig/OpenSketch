@@ -1001,7 +1001,7 @@ export function CanvasWorkspace() {
         <div className="group-edit-banner" role="status">
           <strong>Editing a group</strong>
           <button type="button" onClick={editor.closeGroupEdit}>
-            Close
+            Exit group
           </button>
         </div>
       ) : null}

@@ -1394,7 +1394,7 @@ test("double-clicks through overlapping objects and into grouped children", asyn
   await page.mouse.click(overlap.x, overlap.y);
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("rectangle");
-  await groupBanner.getByRole("button", { name: "Close" }).click();
+  await groupBanner.getByRole("button", { name: "Exit group" }).click();
   await expect(groupBanner).toHaveCount(0);
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("Group");
@@ -1417,9 +1417,19 @@ test("double-clicks into nested groups one hierarchy level at a time", async ({ 
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("Group");
 
+  await placeTool(page, "Rectangle", 0.86, 0.2);
+  await page.keyboard.press("ControlOrMeta+A");
+  await page.getByRole("button", { name: "Group", exact: true }).click();
+
   const nestedGroupPoint = await artboardPoint(page, 0.4, 0.5);
   await page.mouse.dblclick(nestedGroupPoint.x, nestedGroupPoint.y);
   const groupBanner = page.getByRole("status").filter({ hasText: "Editing a group" });
+  await expect(groupBanner).toBeVisible();
+  await page.mouse.click(nestedGroupPoint.x, nestedGroupPoint.y);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await expect(page.locator(".inspector-header h2")).toHaveText("Group");
+
+  await page.mouse.dblclick(nestedGroupPoint.x, nestedGroupPoint.y);
   await expect(groupBanner).toBeVisible();
   await page.mouse.click(nestedGroupPoint.x, nestedGroupPoint.y);
   await page.getByRole("button", { name: "Edit", exact: true }).click();
@@ -1433,7 +1443,40 @@ test("double-clicks into nested groups one hierarchy level at a time", async ({ 
   await page.mouse.click(nestedGroupPoint.x, nestedGroupPoint.y);
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).not.toHaveText("Group");
-  await groupBanner.getByRole("button", { name: "Close" }).click();
+
+  const exitGroup = groupBanner.getByRole("button", { name: "Exit group" });
+  await exitGroup.click();
+  await expect(groupBanner).toBeVisible();
+  await exitGroup.click();
+  await expect(groupBanner).toBeVisible();
+  await exitGroup.click();
+  await expect(groupBanner).toHaveCount(0);
+});
+
+test("double-clicking outside exits one group hierarchy level", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await placeTool(page, "Rectangle", 0.35, 0.5);
+  await placeTool(page, "Circle", 0.35, 0.5);
+  await page.keyboard.press("ControlOrMeta+A");
+  await page.getByRole("button", { name: "Group", exact: true }).click();
+  await placeTool(page, "Triangle", 0.68, 0.5);
+  await page.keyboard.press("ControlOrMeta+A");
+  await page.getByRole("button", { name: "Group", exact: true }).click();
+
+  const nestedGroupPoint = await artboardPoint(page, 0.35, 0.5);
+  const parentSiblingPoint = await artboardPoint(page, 0.68, 0.5);
+  const outsideGroupPoint = await artboardPoint(page, 0.92, 0.86);
+  const groupBanner = page.getByRole("status").filter({ hasText: "Editing a group" });
+
+  await page.mouse.dblclick(nestedGroupPoint.x, nestedGroupPoint.y);
+  await expect(groupBanner).toBeVisible();
+  await page.mouse.dblclick(nestedGroupPoint.x, nestedGroupPoint.y);
+  await expect(groupBanner).toBeVisible();
+
+  await page.mouse.dblclick(parentSiblingPoint.x, parentSiblingPoint.y);
+  await expect(groupBanner).toBeVisible();
+  await page.mouse.dblclick(outsideGroupPoint.x, outsideGroupPoint.y);
   await expect(groupBanner).toHaveCount(0);
 });
 
@@ -1455,7 +1498,7 @@ test("edits a group with single-click and modifier multi-selection", async ({ pa
   await placeTool(page, "Triangle", 0.7, 0.5);
   await page.keyboard.press("ControlOrMeta+A");
   await page.getByRole("button", { name: "Group", exact: true }).click();
-  await placeTool(page, "Pentagon", 0.86, 0.2);
+  await placeTool(page, "Rectangle", 0.86, 0.2);
 
   const rectangle = await artboardPoint(page, 0.3, 0.5);
   const circle = await artboardPoint(page, 0.5, 0.5);
@@ -1499,7 +1542,7 @@ test("edits a group with single-click and modifier multi-selection", async ({ pa
   await expect(page.locator(".inspector-header span")).toHaveText("3 selected");
   await expect(page.getByRole("button", { name: "Group", exact: true })).toBeEnabled();
 
-  await groupBanner.getByRole("button", { name: "Close" }).click();
+  await groupBanner.getByRole("button", { name: "Exit group" }).click();
   await expect(groupBanner).toHaveCount(0);
   await expect(page.locator(".canvas-workspace")).not.toHaveClass(/group-editing/);
   await page.getByRole("button", { name: "Edit", exact: true }).click();
