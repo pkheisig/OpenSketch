@@ -1519,33 +1519,21 @@ export function EditorProvider({
       const width = bounds.width * viewport[0];
       const height = bounds.height * viewport[3];
       const padding = 48;
+      const focusLeft = Math.max(0, left - padding);
+      const focusTop = Math.max(0, top - padding);
+      const focusRight = Math.min(canvas.width, left + width + padding);
+      const focusBottom = Math.min(canvas.height, top + height + padding);
       context.save();
       context.fillStyle = "rgba(247, 248, 245, 0.68)";
-      context.fillRect(0, 0, canvas.width, canvas.height);
-      context.globalCompositeOperation = "destination-out";
+      context.fillRect(0, 0, canvas.width, focusTop);
+      context.fillRect(0, focusBottom, canvas.width, canvas.height - focusBottom);
+      context.fillRect(0, focusTop, focusLeft, focusBottom - focusTop);
       context.fillRect(
-        left - padding,
-        top - padding,
-        width + padding * 2,
-        height + padding * 2
+        focusRight,
+        focusTop,
+        canvas.width - focusRight,
+        focusBottom - focusTop
       );
-      context.restore();
-      const selectedObjects = canvas.getActiveObjects();
-      if (selectedObjects.length < 2) return;
-      context.save();
-      context.strokeStyle = "#7657e8";
-      context.fillStyle = "rgba(118, 87, 232, 0.08)";
-      context.lineWidth = 1.25;
-      selectedObjects.forEach((object) => {
-        if (directNestedParent(object) !== group) return;
-        const objectBounds = object.getBoundingRect();
-        const objectLeft = objectBounds.left * viewport[0] + viewport[4];
-        const objectTop = objectBounds.top * viewport[3] + viewport[5];
-        const objectWidth = objectBounds.width * viewport[0];
-        const objectHeight = objectBounds.height * viewport[3];
-        context.fillRect(objectLeft, objectTop, objectWidth, objectHeight);
-        context.strokeRect(objectLeft, objectTop, objectWidth, objectHeight);
-      });
       context.restore();
     };
     canvas.on("selection:created", select);

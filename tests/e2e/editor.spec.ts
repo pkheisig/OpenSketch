@@ -1327,6 +1327,16 @@ test("double-clicks into nested groups one hierarchy level at a time", async ({ 
 });
 
 test("edits a group with single-click and modifier multi-selection", async ({ page }) => {
+  const renderedPixelAt = (point: { x: number; y: number }) =>
+    page.locator("canvas.lower-canvas").evaluate(
+      (canvas: HTMLCanvasElement, clientPoint) => {
+        const bounds = canvas.getBoundingClientRect();
+        const x = Math.round((clientPoint.x - bounds.left) * (canvas.width / bounds.width));
+        const y = Math.round((clientPoint.y - bounds.top) * (canvas.height / bounds.height));
+        return [...canvas.getContext("2d")!.getImageData(x, y, 1, 1).data];
+      },
+      point
+    );
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.3, 0.5);
@@ -1334,14 +1344,33 @@ test("edits a group with single-click and modifier multi-selection", async ({ pa
   await placeTool(page, "Triangle", 0.7, 0.5);
   await page.keyboard.press("ControlOrMeta+A");
   await page.getByRole("button", { name: "Group", exact: true }).click();
+  await placeTool(page, "Pentagon", 0.86, 0.2);
 
   const rectangle = await artboardPoint(page, 0.3, 0.5);
   const circle = await artboardPoint(page, 0.5, 0.5);
   const triangle = await artboardPoint(page, 0.7, 0.5);
+  const outsideObject = await artboardPoint(page, 0.86, 0.2);
+  const groupPixelBefore = await renderedPixelAt(rectangle);
+  const outsidePixelBefore = await renderedPixelAt(outsideObject);
   await page.mouse.dblclick(rectangle.x, rectangle.y);
   const groupBanner = page.getByRole("status").filter({ hasText: "Editing a group" });
   await expect(groupBanner).toBeVisible();
   await expect(page.locator(".canvas-workspace")).toHaveClass(/group-editing/);
+  const groupPixelDuring = await renderedPixelAt(rectangle);
+  const outsidePixelDuring = await renderedPixelAt(outsideObject);
+  expect(
+    groupPixelDuring
+      .slice(0, 3)
+      .reduce((difference, channel, index) => difference + Math.abs(channel - groupPixelBefore[index]), 0)
+  ).toBeLessThanOrEqual(6);
+  expect(
+    outsidePixelDuring
+      .slice(0, 3)
+      .reduce(
+        (difference, channel, index) => difference + Math.abs(channel - outsidePixelBefore[index]),
+        0
+      )
+  ).toBeGreaterThan(20);
   await page.mouse.click(rectangle.x, rectangle.y);
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("rectangle");
