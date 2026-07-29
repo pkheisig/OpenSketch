@@ -3,9 +3,6 @@ const CURSOR_HOTSPOT = 14;
 const INK = "#183133";
 const HALO = "#ffffff";
 
-const HAND_PATH =
-  "M9 20c-1.8-1.2-2.8-3-3.5-5L3.9 10.8c-.35-.95.15-2 1.1-2.35s2 .1 2.45 1l1.05 2.05V3.2C8.5 2 9.45 1 10.65 1s2.15 1 2.15 2.2V8c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v.8c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v1c0-1 .8-1.8 1.8-1.8 1.1 0 1.9.9 1.9 2v4c0 4.9-3.7 8.5-8.5 8.5h-2c-1.5 0-3-.9-4.2-2.5Z";
-
 const LUCIDE_MOVE_HORIZONTAL = [
   '<path d="m18 8 4 4-4 4"/>',
   '<path d="M2 12h20"/>',
@@ -17,11 +14,8 @@ const LUCIDE_ROTATE_CW = [
   '<path d="M21 3v5h-5"/>'
 ].join("");
 
-function iconLayers(paths: string, transform = "", filled = false): string {
+function iconLayers(paths: string, transform = ""): string {
   const transformAttribute = transform ? ` transform="${transform}"` : "";
-  if (filled) {
-    return `<g${transformAttribute} fill="${HALO}" stroke="${INK}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths}</g>`;
-  }
   return [
     `<g${transformAttribute} fill="none" stroke="${HALO}" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">${paths}</g>`,
     `<g${transformAttribute} fill="none" stroke="${INK}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths}</g>`
@@ -34,13 +28,12 @@ function svgCursor(
   {
     hotspotX = CURSOR_HOTSPOT,
     hotspotY = CURSOR_HOTSPOT,
-    transform = "",
-    filled = false
-  }: { hotspotX?: number; hotspotY?: number; transform?: string; filled?: boolean } = {}
+    transform = ""
+  }: { hotspotX?: number; hotspotY?: number; transform?: string } = {}
 ): string {
   const source = [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${CURSOR_SIZE}" height="${CURSOR_SIZE}" viewBox="0 0 28 28">`,
-    `<g transform="translate(2 2)">${iconLayers(paths, transform, filled)}</g>`,
+    `<g transform="translate(2 2)">${iconLayers(paths, transform)}</g>`,
     "</svg>"
   ].join("");
   return `url("data:image/svg+xml,${encodeURIComponent(source)}") ${hotspotX} ${hotspotY}, ${fallback}`;
@@ -52,20 +45,12 @@ function resizeCursor(angle: number, fallback: string): string {
   });
 }
 
-function handCursor(fallback: string): string {
-  const source = [
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${CURSOR_SIZE}" height="${CURSOR_SIZE}" viewBox="0 0 28 28">`,
-    '<g transform="translate(3.1 2) scale(.92 1)">',
-    `<path fill="${HALO}" stroke="${INK}" stroke-width="1.8" vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" d="${HAND_PATH}"/>`,
-    "</g>",
-    "</svg>"
-  ].join("");
-  return `url("data:image/svg+xml,${encodeURIComponent(source)}") 12 13, ${fallback}`;
-}
+// Native CSS cursors intentionally delegate to the host operating system.
+// On macOS this renders the exact current macOS grab/grabbing artwork at the
+// system-selected scale instead of an approximation embedded by OpenSketch.
+export const CURSOR_GRAB = "grab";
 
-export const CURSOR_GRAB = handCursor("grab");
-
-export const CURSOR_GRABBING = handCursor("grabbing");
+export const CURSOR_GRABBING = "grabbing";
 
 export const CURSOR_ROTATE = svgCursor(LUCIDE_ROTATE_CW, "crosshair");
 
