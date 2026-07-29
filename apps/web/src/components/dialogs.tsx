@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Download, FileImage, FileText, FileType2, X } from "lucide-react";
 import { ColorPalettePicker } from "@/components/ColorPalettePicker";
+import { MotionCollapse } from "@/components/MotionCollapse";
 import { useEditor } from "@/editor/EditorContext";
 import { UiSelect } from "@/components/UiSelect";
 import { EXPORT_DPI_OPTIONS, loadExportDpi, saveExportDpi } from "@/export/preferences";
@@ -70,8 +71,8 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
             </span>
           </button>
         </div>
-        {format === "png" ? (
-          <>
+        <MotionCollapse open={format === "png"} className="export-format-options">
+          <div className="export-format-options-content">
             <UiSelect
               className="field"
               label="Output DPI"
@@ -92,7 +93,7 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
               />
               Transparent background
             </label>
-            {!transparent && (
+            <MotionCollapse open={!transparent} className="export-background-options">
               <div className="color-field">
                 Export background
                 <ColorPalettePicker
@@ -102,9 +103,9 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
                   showValue
                 />
               </div>
-            )}
-          </>
-        ) : null}
+            </MotionCollapse>
+          </div>
+        </MotionCollapse>
         {exportError ? (
           <p className="panel-error" role="alert">
             {exportError}

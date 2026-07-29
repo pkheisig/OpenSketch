@@ -1217,7 +1217,15 @@ test("uses accessible in-app dropdowns with keyboard and outside-click behavior"
 
   await page.getByRole("button", { name: "Export", exact: true }).click();
   await expect(page.getByLabel("Accessible description")).toHaveCount(0);
+  const pngOptions = page.locator(".export-format-options");
+  await expect(pngOptions).toHaveAttribute("aria-hidden", "true");
+  await expect(pngOptions).not.toHaveClass(/open/);
+  expect(
+    await pngOptions.evaluate((element) => getComputedStyle(element).transitionProperty)
+  ).toContain("grid-template-rows");
   await page.getByRole("tab", { name: /PNG/ }).click();
+  await expect(pngOptions).toHaveClass(/open/);
+  await expect(pngOptions).toHaveAttribute("aria-hidden", "false");
   const outputDpi = page.getByRole("combobox", { name: "Output DPI" });
   await expect(page.getByRole("combobox", { name: "Pixel scaling" })).toHaveCount(0);
   await expect(page.getByLabel("Pixel width")).toHaveCount(0);
@@ -1240,6 +1248,8 @@ test("uses accessible in-app dropdowns with keyboard and outside-click behavior"
     "1200"
   );
   await page.getByRole("tab", { name: /PDF/ }).click();
+  await expect(pngOptions).not.toHaveClass(/open/);
+  await expect(pngOptions).toHaveAttribute("aria-hidden", "true");
   await expect(page.getByLabel("Accessible description")).toHaveCount(0);
 });
 

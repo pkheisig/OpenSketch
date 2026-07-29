@@ -7,7 +7,6 @@ import {
   AlignVerticalDistributeCenter,
   ArrowDownToLine,
   ArrowUpToLine,
-  ChevronDown,
   ChevronRight,
   Copy,
   CornerUpLeft,
@@ -25,6 +24,7 @@ import {
   Ungroup,
   Unlock
 } from "lucide-react";
+import { MotionCollapse } from "@/components/MotionCollapse";
 import {
   type ConnectorAnchor,
   type ConnectorArrowhead,
@@ -639,13 +639,14 @@ export function LayersPanel() {
     <section className="layers-panel">
       <button className="layers-title" onClick={() => setOpen(!open)} aria-expanded={open}>
         <span>
-          {open ? <ChevronDown size={15} /> : <ChevronRight size={15} />}
+          <ChevronRight size={15} />
           <Layers3 size={15} /> Layers
         </span>
         <small>{objects.length}</small>
       </button>
-      {open && (
-        <div className="layer-list">
+      <MotionCollapse open={open} className="layers-collapse">
+        <div>
+          <div className="layer-list">
           {objects.length === 0 && <p>No objects yet</p>}
           {objects.map((object, index) => (
             <button
@@ -667,24 +668,25 @@ export function LayersPanel() {
               {object.visible === false ? <EyeOff size={13} /> : <Eye size={13} />}
             </button>
           ))}
+          </div>
+          {objects.length > 0 ? (
+            <div className="layer-controls">
+              <button onClick={() => editor.arrange("front")} aria-label="Bring to front">
+                <ArrowUpToLine size={14} />
+              </button>
+              <button onClick={() => editor.arrange("forward")} aria-label="Bring forward">
+                <MoveUp size={14} />
+              </button>
+              <button onClick={() => editor.arrange("backward")} aria-label="Send backward">
+                <MoveDown size={14} />
+              </button>
+              <button onClick={() => editor.arrange("back")} aria-label="Send to back">
+                <ArrowDownToLine size={14} />
+              </button>
+            </div>
+          ) : null}
         </div>
-      )}
-      {open && objects.length > 0 && (
-        <div className="layer-controls">
-          <button onClick={() => editor.arrange("front")} aria-label="Bring to front">
-            <ArrowUpToLine size={14} />
-          </button>
-          <button onClick={() => editor.arrange("forward")} aria-label="Bring forward">
-            <MoveUp size={14} />
-          </button>
-          <button onClick={() => editor.arrange("backward")} aria-label="Send backward">
-            <MoveDown size={14} />
-          </button>
-          <button onClick={() => editor.arrange("back")} aria-label="Send to back">
-            <ArrowDownToLine size={14} />
-          </button>
-        </div>
-      )}
+      </MotionCollapse>
     </section>
   );
 }
@@ -707,9 +709,11 @@ function InspectorSection({
         aria-expanded={open}
       >
         {title}
-        {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+        <ChevronRight size={14} />
       </button>
-      {open && <div className="inspector-section-body">{children}</div>}
+      <MotionCollapse open={open}>
+        <div className="inspector-section-body">{children}</div>
+      </MotionCollapse>
     </section>
   );
 }

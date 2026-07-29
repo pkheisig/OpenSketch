@@ -20,6 +20,8 @@
   --motion-panel: 260ms cubic-bezier(0.22, 1, 0.36, 1);
   --motion-sidebar-hover: 340ms cubic-bezier(0.22, 1, 0.36, 1);
   --motion-ui: 160ms cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-disclosure: 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  interpolate-size: allow-keywords;
 }
 
 * {
@@ -136,6 +138,32 @@ a:focus-visible {
 .icon-button:disabled {
   opacity: 0.3;
   cursor: default;
+}
+
+.motion-collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition:
+    grid-template-rows var(--motion-disclosure),
+    opacity 140ms ease,
+    transform var(--motion-disclosure),
+    visibility 0s linear 220ms;
+}
+
+.motion-collapse.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+  transition-delay: 0s;
+}
+
+.motion-collapse-inner {
+  min-height: 0;
+  overflow: hidden;
 }
 
 .brand {
@@ -518,6 +546,19 @@ a:focus-visible {
   place-items: center;
   border-radius: 5px;
   list-style: none;
+  transition:
+    color var(--motion-ui),
+    background var(--motion-ui),
+    transform var(--motion-ui);
+}
+
+.project-card summary:hover {
+  color: var(--teal-dark);
+  background: #edf3f0;
+}
+
+.project-card summary:active {
+  transform: scale(0.94);
 }
 
 .project-card summary::-webkit-details-marker {
@@ -541,6 +582,8 @@ a:focus-visible {
   border-radius: 7px;
   background: white;
   box-shadow: var(--shadow);
+  transform-origin: bottom right;
+  animation: ui-popover-in var(--motion-ui) both;
 }
 
 .menu button {
@@ -553,6 +596,14 @@ a:focus-visible {
   background: transparent;
   text-align: left;
   font-size: 12px;
+  transition:
+    color var(--motion-ui),
+    background var(--motion-ui),
+    transform var(--motion-ui);
+}
+
+.menu button:active {
+  transform: translateX(2px);
 }
 
 .menu button:hover {
@@ -1337,6 +1388,15 @@ a:focus-visible {
   color: #64736f;
   font-size: 9px;
   white-space: nowrap;
+  transition:
+    color var(--motion-ui),
+    border-color var(--motion-ui),
+    background var(--motion-ui),
+    transform var(--motion-ui);
+}
+
+.category-strip button:active {
+  transform: scale(0.96);
 }
 
 .category-strip button.active {
@@ -1634,6 +1694,7 @@ a:focus-visible {
   border-radius: 8px;
   color: #6a7976;
   text-align: center;
+  animation: feedback-in var(--motion-disclosure) both;
 }
 
 .empty-library svg {
@@ -1669,6 +1730,7 @@ a:focus-visible {
   background: #fff0ed;
   font-size: 9px;
   line-height: 1.4;
+  animation: feedback-in var(--motion-ui) both;
 }
 
 .shape-grid button.active {
@@ -1695,6 +1757,16 @@ a:focus-visible {
   background: white;
   color: #315856;
   font-size: 9px;
+  transition:
+    color var(--motion-ui),
+    border-color var(--motion-ui),
+    background var(--motion-ui),
+    box-shadow var(--motion-ui),
+    transform var(--motion-ui);
+}
+
+.shape-grid button:active {
+  transform: scale(0.97);
 }
 
 .shape-grid button:hover {
@@ -1710,12 +1782,56 @@ a:focus-visible {
 }
 
 .creation-defaults summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   padding: 10px 11px;
   color: #405b58;
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.04em;
   cursor: pointer;
+  list-style: none;
+  transition:
+    color var(--motion-ui),
+    background var(--motion-ui);
+}
+
+.creation-defaults summary::-webkit-details-marker {
+  display: none;
+}
+
+.creation-defaults summary::before {
+  width: 8px;
+  color: #5d7470;
+  content: "›";
+  font-size: 15px;
+  line-height: 1;
+  transform: rotate(0deg);
+  transition: transform var(--motion-disclosure);
+}
+
+.creation-defaults[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.creation-defaults summary:hover {
+  color: var(--teal-dark);
+  background: #f0f6f3;
+}
+
+.creation-defaults::details-content {
+  block-size: 0;
+  overflow: clip;
+  opacity: 0;
+  transition:
+    block-size var(--motion-disclosure),
+    opacity 140ms ease;
+}
+
+.creation-defaults[open]::details-content {
+  block-size: auto;
+  opacity: 1;
 }
 
 .creation-defaults-body {
@@ -1944,6 +2060,15 @@ a:focus-visible {
   box-shadow: 0 5px 18px rgba(21, 53, 51, 0.14);
   transform: translateX(-50%);
   backdrop-filter: blur(8px);
+  animation: group-banner-in var(--motion-disclosure) both;
+  transition: top var(--motion-disclosure);
+}
+
+@keyframes group-banner-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -7px) scale(0.98);
+  }
 }
 
 .group-edit-banner strong {
@@ -2291,6 +2416,28 @@ a:focus-visible {
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.inspector-section-title svg,
+.layers-title svg:first-child {
+  transition: transform var(--motion-disclosure);
+}
+
+.inspector-section-title[aria-expanded="true"] svg,
+.layers-title[aria-expanded="true"] svg:first-child {
+  transform: rotate(90deg);
+}
+
+.inspector-section-title {
+  transition:
+    color var(--motion-ui),
+    background var(--motion-ui);
+}
+
+.inspector-section-title:hover,
+.layers-title:hover {
+  color: var(--teal-dark);
+  background: #f0f6f3;
 }
 
 .inspector-section-body {
@@ -2725,6 +2872,14 @@ input[type="range"] {
   border-radius: 6px;
   color: var(--ink);
   background: #fff;
+  transition:
+    border-color var(--motion-ui),
+    box-shadow var(--motion-ui),
+    transform var(--motion-ui);
+}
+
+.palette-color-trigger:active {
+  transform: scale(0.96);
 }
 
 .palette-color-trigger:hover,
@@ -2768,6 +2923,8 @@ input[type="range"] {
   box-shadow:
     0 16px 38px rgba(20, 43, 42, 0.2),
     0 3px 9px rgba(20, 43, 42, 0.12);
+  transform-origin: top left;
+  animation: ui-popover-in var(--motion-ui) both;
 }
 
 .color-palette-popover section {
@@ -3117,6 +3274,14 @@ input[type="range"] {
   padding: 30px;
   background: rgba(18, 38, 38, 0.52);
   backdrop-filter: blur(5px);
+  animation: dialog-backdrop-in 180ms ease-out both;
+}
+
+@keyframes dialog-backdrop-in {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
 }
 
 .dialog {
@@ -3176,6 +3341,16 @@ input[type="range"] {
   border-radius: 7px;
   background: white;
   text-align: left;
+  transition:
+    color var(--motion-ui),
+    border-color var(--motion-ui),
+    background var(--motion-ui),
+    box-shadow var(--motion-ui),
+    transform var(--motion-ui);
+}
+
+.format-tabs button:active {
+  transform: scale(0.97);
 }
 
 .format-tabs button.active {
@@ -3197,9 +3372,21 @@ input[type="range"] {
   font-weight: 500;
 }
 
-.export-dialog > .field,
-.export-dialog > .check-field {
+.export-format-options-content > .field,
+.export-format-options-content > .check-field {
   margin: 12px 0;
+}
+
+.export-format-options-content {
+  padding: 1px 0 3px;
+}
+
+.export-background-options .color-field {
+  margin: 12px 0;
+}
+
+.layers-collapse .motion-collapse-inner {
+  overflow: clip;
 }
 
 .export-summary {
@@ -3300,6 +3487,7 @@ input[type="range"] {
   background: #fff1ee;
   box-shadow: var(--shadow);
   font-size: 11px;
+  animation: feedback-in var(--motion-disclosure) both;
 }
 
 .error-toast button {
@@ -3321,6 +3509,20 @@ input[type="range"] {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+@keyframes feedback-in {
+  from {
+    opacity: 0;
+    transform: translateY(5px) scale(0.99);
+  }
+}
+
+@keyframes ui-popover-in {
+  from {
+    opacity: 0;
+    transform: translateY(-5px) scale(0.985);
+  }
 }
 
 .loading-mark {
@@ -3788,6 +3990,14 @@ input[type="range"] {
   background: transparent;
   font-size: 9px;
   font-weight: 700;
+  transition:
+    color var(--motion-ui),
+    background var(--motion-ui),
+    transform var(--motion-ui);
+}
+
+.selection-quick-toolbar button:active {
+  transform: scale(0.94);
 }
 
 .selection-quick-toolbar button:hover,
@@ -3861,6 +4071,14 @@ input[type="range"] {
   background: transparent;
   font-size: 10px;
   text-align: left;
+  transition:
+    color var(--motion-ui),
+    background var(--motion-ui),
+    transform var(--motion-ui);
+}
+
+.selection-toolbar-menu button:active {
+  transform: translateX(2px);
 }
 
 .selection-toolbar-menu button:hover {
@@ -3946,6 +4164,15 @@ input[type="range"] {
   background: transparent;
   font-size: 11px;
   font-weight: 700;
+  transition:
+    color var(--motion-ui),
+    background var(--motion-ui),
+    transform var(--motion-ui);
+}
+
+.workspace-footer-section > button:active,
+.workspace-footer .workspace-controls button:active {
+  transform: scale(0.94);
 }
 
 .workspace-footer-section > button:hover,
