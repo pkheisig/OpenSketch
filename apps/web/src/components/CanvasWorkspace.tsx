@@ -706,8 +706,11 @@ export function CanvasWorkspace() {
     }
     if (event.button !== 0 || !canvas) return;
     const insideStage = stageRef.current?.contains(event.target as Node);
-    const scenePoint = canvas.getScenePoint(event.nativeEvent);
-    if (insideStage && canvas.searchPossibleTargets(canvas.getObjects(), scenePoint).target) {
+    // `searchPossibleTargets` only checks object geometry. Rotation and other
+    // transform controls can sit outside those bounds, so treating that area as
+    // empty starts our marquee gesture and steals the pointer from Fabric.
+    // `findTarget` also resolves controls on the active object.
+    if (insideStage && canvas.findTarget(event.nativeEvent as never).target) {
       return;
     }
     if (insideStage) {

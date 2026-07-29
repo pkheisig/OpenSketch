@@ -5,8 +5,9 @@ hosted application at **[pkheisig.github.io/OpenSketch](https://pkheisig.github.
 
 The editor is a static React 19, TypeScript, Vite, and Fabric.js application with
 an offline bundle of public-domain illustrations imported from the NIAID NIH
-BioArt Source. It has no application server, account system, analytics, or
-telemetry.
+BioArt Source, plus locally authored editable top-view plates and culture
+dishes for experiment layouts. It has no application server, account system,
+analytics, or telemetry.
 
 Built-in and imported multi-element SVGs remain grouped as one movable layer.
 Double-clicking drills through overlapping and nested groups one hierarchy
@@ -180,6 +181,8 @@ dist/                      generated production site; never committed
   layers, keyboard nudging, undo, and redo
 - Editable point text with a broad offline font catalog and scientific
   sub/superscripts, plus geometric shapes and independently editable SVG parts
+- Editable top-view 6-, 12-, 24-, 48-, 96-, and 384-well plates plus a Petri
+  dish, with every well retained as an individual SVG part
 - Straight, stepped, curved, wave, circular, inhibitor, dot, neuron, bracket,
   and arrow connectors with anchors, endpoint styles, automatic updates, and
   collision-aware orthogonal routing

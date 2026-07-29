@@ -95,6 +95,50 @@ async function placeTool(page: Page, name: string | RegExp, xRatio = 0.5, yRatio
   await page.mouse.click(point.x, point.y);
 }
 
+test("rotates an object by dragging its rotation handle", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await placeTool(page, "Rectangle");
+
+  const center = await artboardPoint(page);
+  const zoom =
+    Number(
+      ((await page.locator(".workspace-controls .zoom-readout").textContent()) ?? "100").replace(
+        /[^0-9.]/g,
+        ""
+      )
+    ) / 100;
+  const height = Number(await page.getByRole("spinbutton", { name: "H", exact: true }).inputValue());
+  const rotationHandle = {
+    x: center.x,
+    y: center.y - (height * zoom) / 2 - 40
+  };
+
+  await page.mouse.move(rotationHandle.x, rotationHandle.y);
+  await page.mouse.down();
+  await page.mouse.move(center.x + 120, center.y, { steps: 12 });
+  await page.mouse.up();
+
+  await expect(page.getByLabel("Rotation")).toHaveValue("90");
+});
+
+test("inserts editable standard top-view labware", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Assets", exact: true }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("24 well plate top view");
+
+  const card = page
+    .locator(".asset-card")
+    .filter({ has: page.locator("strong").filter({ hasText: /^24 Well Plate Top View$/ }) })
+    .first();
+  await expect(card).toBeVisible();
+  await card.getByRole("button", { name: "Insert 24 Well Plate Top View" }).click();
+
+  await expect(page.locator(".inspector-header h2")).toHaveText("24 Well Plate Top View");
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+});
+
 test("creates, edits, saves, reopens, and exports a local figure", async ({ page }) => {
   test.setTimeout(60_000);
   const externalRequests: string[] = [];
