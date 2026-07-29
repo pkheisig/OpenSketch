@@ -248,13 +248,9 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const [lineFamily, setLineFamily] = useState<ConnectorFamily | null>(null);
   const [shapeFamily, setShapeFamily] = useState<keyof typeof SHAPE_GROUPS | null>(null);
   const sidebarRef = useRef<HTMLElement>(null);
-  const handledSelection = useRef("");
   const editor = useEditor();
   const setCreationTool = editor.setCreationTool;
   const canEdit = editor.selection.length > 0;
-  const selectionKey = editor.selection
-    .map((object, index) => object.objectId ?? `${object.type}:${object.name ?? index}`)
-    .join("|");
   const openPanel = (next: Tab) => {
     const shouldClose = !collapsed && tab === next;
     setTab(next);
@@ -296,17 +292,9 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     setLineFamily(null);
   };
   useEffect(() => {
-    if (!selectionKey) {
-      handledSelection.current = "";
-      if (tab === "edit" && !collapsed) onToggle();
-      return;
-    }
-    if (!editor.autoEditEnabled) return;
-    if (editor.creationTool || handledSelection.current === selectionKey) return;
-    handledSelection.current = selectionKey;
-    setTab("edit");
-    if (collapsed) onToggle();
-  }, [collapsed, editor.autoEditEnabled, editor.creationTool, onToggle, selectionKey, tab]);
+    if (canEdit || tab !== "edit" || collapsed) return;
+    onToggle();
+  }, [canEdit, collapsed, onToggle, tab]);
   useEffect(() => {
     if (!editor.creationTool || collapsed) return;
     onToggle();
@@ -335,7 +323,13 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   useEffect(() => {
     const clearCreationToolOutsideSidebar = (event: MouseEvent) => {
       const target = event.target;
-      if (!(target instanceof Element) || sidebarRef.current?.contains(target)) return;
+      const sidebar = sidebarRef.current;
+      if (
+        !(target instanceof Element) ||
+        (sidebar && event.composedPath().includes(sidebar))
+      ) {
+        return;
+      }
       if (
         target.closest(
           ".ui-select-menu, .color-palette-popover, .asset-variant-menu, " +
