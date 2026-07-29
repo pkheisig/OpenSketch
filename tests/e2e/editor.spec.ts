@@ -333,6 +333,38 @@ test("inserts editable standard top-view labware", async ({ page }) => {
     .toBeCloseTo(250, 0);
 });
 
+test("uses the complete SVG selector bounds as its canvas hitbox", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await expect(page.locator(".upper-canvas")).toBeVisible();
+  await page.evaluate(() => {
+    const file = new File(
+      [
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120"><circle cx="12" cy="12" r="10" fill="#183133"/><circle cx="188" cy="108" r="10" fill="#183133"/></svg>'
+      ],
+      "transparent-bounds.svg",
+      { type: "image/svg+xml" }
+    );
+    const transfer = new DataTransfer();
+    transfer.items.add(file);
+    const event = new Event("paste", { bubbles: true, cancelable: true });
+    Object.defineProperty(event, "clipboardData", { value: transfer });
+    window.dispatchEvent(event);
+  });
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+
+  const center = await artboardPoint(page);
+  await page.mouse.click(center.x + 220, center.y);
+  await expect(page.getByRole("button", { name: "Edit", exact: true })).toHaveCount(0);
+
+  // The SVG center contains no painted pixels, but it is inside the rectangular
+  // selector bounds and must select the complete object.
+  await page.mouse.click(center.x, center.y);
+  await expect(page.getByRole("button", { name: "Edit", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await expect(page.locator(".inspector-header h2")).toHaveText("Clipboard SVG.svg");
+});
+
 test("creates, edits, saves, reopens, and exports a local figure", async ({ page }) => {
   test.setTimeout(60_000);
   const externalRequests: string[] = [];

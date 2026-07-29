@@ -377,7 +377,9 @@ function configureAtomicSvgAsset(object: FabricObject): void {
   if (!(object instanceof Group)) return;
   object.subTargetCheck = false;
   object.interactive = false;
-  object.perPixelTargetFind = true;
+  // An illustration behaves as one canvas object. Its complete selector bounds
+  // are therefore its hitbox, including transparent gaps between SVG paths.
+  object.perPixelTargetFind = false;
   object.getObjects().forEach((part) => {
     part.selectable = false;
     part.evented = false;
