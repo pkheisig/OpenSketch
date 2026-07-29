@@ -250,6 +250,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const sidebarRef = useRef<HTMLElement>(null);
   const handledSelection = useRef("");
   const editor = useEditor();
+  const autoEditWasEnabled = useRef(editor.autoEditEnabled);
   const setCreationTool = editor.setCreationTool;
   const canEdit = editor.selection.length > 0;
   const selectionKey = editor.selection
@@ -307,6 +308,14 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     setTab("edit");
     if (collapsed) onToggle();
   }, [collapsed, editor.autoEditEnabled, editor.creationTool, onToggle, selectionKey, tab]);
+  useEffect(() => {
+    const wasEnabled = autoEditWasEnabled.current;
+    autoEditWasEnabled.current = editor.autoEditEnabled;
+    if (wasEnabled && !editor.autoEditEnabled) {
+      handledSelection.current = "";
+      if (tab === "edit" && !collapsed) onToggle();
+    }
+  }, [collapsed, editor.autoEditEnabled, onToggle, tab]);
   useEffect(() => {
     if (!editor.creationTool || collapsed) return;
     onToggle();

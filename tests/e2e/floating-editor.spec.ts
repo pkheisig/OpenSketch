@@ -206,6 +206,16 @@ test("@smoke uses floating BioRender-style tools, flyouts, and left-side propert
     "aria-expanded",
     "true"
   );
+  await page.getByRole("button", { name: "Disable automatic edit panel" }).click();
+  await expect(page.getByRole("button", { name: "Enable automatic edit panel" })).toHaveAttribute(
+    "aria-pressed",
+    "false"
+  );
+  await expect(page.locator(".inspector-embedded")).toHaveCount(0);
+  await expect(page.locator(".canvas-workspace")).toBeVisible();
+  await expect(page.locator("canvas.lower-canvas")).toBeVisible();
+  await page.getByRole("button", { name: "Enable automatic edit panel" }).click();
+  await expect(page.locator(".inspector-embedded")).toBeVisible();
   await page.getByRole("button", { name: "Close properties" }).click();
   await expect(page.locator(".floating-panel")).toHaveCount(0);
   await expect(selectionToolbar).toBeVisible();
