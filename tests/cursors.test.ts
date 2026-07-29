@@ -11,37 +11,22 @@ import {
 } from "../apps/web/src/editor/cursors";
 
 describe("OpenSketch canvas cursors", () => {
-  it("provides vector UI cursors for canvas transforms", () => {
-    const cursors = [
-      CURSOR_ROTATE,
-      CURSOR_RESIZE_HORIZONTAL,
-      CURSOR_RESIZE_VERTICAL,
-      CURSOR_RESIZE_NW_SE,
-      CURSOR_RESIZE_NE_SW
-    ];
-    for (const cursor of cursors) {
-      expect(cursor).toContain("data:image/svg+xml");
-      const source = decodeURIComponent(cursor);
-      expect(source).toContain('width="28"');
-      expect(source).toContain('stroke="#183133"');
-    }
-    for (const cursor of [
-      CURSOR_ROTATE,
-      CURSOR_RESIZE_HORIZONTAL,
-      CURSOR_RESIZE_VERTICAL,
-      CURSOR_RESIZE_NW_SE,
-      CURSOR_RESIZE_NE_SW
-    ]) {
-      const source = decodeURIComponent(cursor);
-      expect(source).toContain('stroke-width="2"');
-      expect(source).toContain('stroke-width="4.5"');
-    }
-    expect(new Set(cursors).size).toBe(cursors.length);
+  it("keeps a vector UI cursor only for rotation", () => {
+    expect(CURSOR_ROTATE).toContain("data:image/svg+xml");
+    const source = decodeURIComponent(CURSOR_ROTATE);
+    expect(source).toContain('width="28"');
+    expect(source).toContain('stroke="#183133"');
+    expect(source).toContain('stroke-width="2"');
+    expect(source).toContain('stroke-width="4.5"');
   });
 
-  it("delegates hand cursors to the host operating system", () => {
+  it("delegates standard interaction cursors to the host operating system", () => {
     expect(CURSOR_GRAB).toBe("grab");
     expect(CURSOR_GRABBING).toBe("grabbing");
+    expect(CURSOR_RESIZE_HORIZONTAL).toBe("ew-resize");
+    expect(CURSOR_RESIZE_VERTICAL).toBe("ns-resize");
+    expect(CURSOR_RESIZE_NW_SE).toBe("nwse-resize");
+    expect(CURSOR_RESIZE_NE_SW).toBe("nesw-resize");
     expect(decodeURIComponent(CURSOR_ROTATE)).toContain('fill="none"');
   });
 
