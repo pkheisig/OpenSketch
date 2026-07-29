@@ -7,17 +7,20 @@ on:
 
 permissions:
   contents: read
+  pull-requests: read
 
 concurrency:
   group: pages-${{ github.ref }}
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   test-and-build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       contents: read
       pages: read
+      pull-requests: read
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6
@@ -28,14 +31,49 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - name: Detect expensive validation paths
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            assets:
+              - "apps/web/public/assets/**"
+              - "apps/web/src/assets/**"
+              - "data/**"
+              - "scripts/assets/**"
+            pwa:
+              - "apps/web/index.html"
+              - "apps/web/public/**"
+              - "apps/web/src/main.tsx"
+              - "apps/web/vite.config.ts"
+              - "package.json"
+              - "playwright.pwa.config.ts"
+              - "pnpm-lock.yaml"
+              - "tests/pwa/**"
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
-      - run: pnpm assets:validate
+      - name: Validate bundled assets
+        if: steps.changes.outputs.assets == 'true'
+        run: pnpm assets:validate
       - run: pnpm build
-      - run: pnpm exec playwright install --with-deps chromium firefox webkit
-      - run: pnpm test:e2e
-      - run: pnpm test:pwa
+      - name: Restore Chromium cache
+        id: chromium-cache
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-chromium-${{ hashFiles('pnpm-lock.yaml') }}
+      - name: Install Chromium
+        if: steps.chromium-cache.outputs.cache-hit != 'true'
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Install Chromium system dependencies
+        if: steps.chromium-cache.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps chromium
+      - name: Run Chromium smoke workflows
+        run: pnpm test:e2e:smoke
+      - name: Verify offline PWA
+        if: steps.changes.outputs.pwa == 'true'
+        run: pnpm test:pwa
       - name: Configure GitHub Pages
         if: github.event_name == 'push'
         uses: actions/configure-pages@v5
@@ -49,6 +87,7 @@ jobs:
     if: github.event_name == 'push'
     needs: test-and-build
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     permissions:
       pages: write
       id-token: write

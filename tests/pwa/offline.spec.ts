@@ -28,5 +28,12 @@ test("reopens the production app and a saved project while offline", async ({ co
   await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
   await page.getByRole("button", { name: "Untitled figure" }).click();
   await expect(page.getByLabel("OpenSketch figure artboard")).toBeVisible();
+  const reopenedArtboard = await page.locator(".artboard-stage").boundingBox();
+  if (!reopenedArtboard) throw new Error("Reopened artboard is not visible.");
+  await page.mouse.click(
+    reopenedArtboard.x + reopenedArtboard.width / 2,
+    reopenedArtboard.y + reopenedArtboard.height / 2
+  );
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".layers-title small")).toHaveText("1");
 });

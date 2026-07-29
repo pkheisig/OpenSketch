@@ -108,11 +108,15 @@ and imported assets, SVG/PNG/PDF exports, cross-browser editor workflows, the
 ## Deployment architecture
 
 Vite is configured with `base: "/OpenSketch/"`. A GitHub Actions workflow runs
-linting, type checks, unit tests, asset validation, the production build,
-Chromium/Firefox/WebKit workflows, and the offline PWA test for every change to
-`main`. Runs are allowed to finish when newer commits arrive instead of being
-reported as cancelled. Only the generated `dist/` directory is uploaded as a
-GitHub Pages artifact and deployed to the `github-pages` environment.
+linting, type checks, unit tests, the production build, and representative
+Chromium workflows for every change to `main`. New pushes cancel obsolete runs,
+so only the latest commit occupies the Pages deployment queue. Asset validation
+and the offline PWA workflow run only when their source paths change.
+
+The complete Chromium, Firefox, and WebKit suite runs nightly and can also be
+started manually. Its browser jobs run in parallel and cache their Playwright
+binaries. Only the generated `dist/` directory is uploaded as a GitHub Pages
+artifact and deployed to the `github-pages` environment.
 
 GitHub Pages serves immutable application files. There is no server-side
 application runtime in production. The service worker precaches the same static

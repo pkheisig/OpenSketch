@@ -155,7 +155,7 @@ async function placeTool(page: Page, name: string | RegExp, xRatio = 0.5, yRatio
   await page.mouse.click(point.x, point.y);
 }
 
-test("never paints fallback asset sizing or uninitialized canvas geometry", async ({ page }) => {
+test("@smoke never paints fallback asset sizing or uninitialized canvas geometry", async ({ page }) => {
   await page.goto("/");
   await page.evaluate(() => {
     const states: Array<{ ready: string | null; visibility: string; width: number; height: number }> =
@@ -1835,7 +1835,7 @@ test("renders project previews with Fabric and upgrades legacy raster thumbnails
     .toBe(true);
 });
 
-test("supports visible and native navigation for new figures", async ({ page }) => {
+test("@smoke supports visible and native navigation for new figures", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "New figure" })).toHaveCount(0);
   await expect(page.getByText(/Local only|Preparing offline copy/)).toHaveCount(0);

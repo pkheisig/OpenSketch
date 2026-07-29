@@ -79,7 +79,7 @@ async function pasteEmbeddedPng(page: import("@playwright/test").Page) {
   });
 }
 
-test("stores imported media permanently and pastes SVG, PNG, and JPEG from the clipboard", async ({
+test("@smoke stores imported media permanently and pastes SVG, PNG, and JPEG from the clipboard", async ({
   page
 }) => {
   await page.goto("/");

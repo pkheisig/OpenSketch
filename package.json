@@ -12,6 +12,7 @@
     "typecheck": "pnpm -r typecheck && tsc --project scripts/tsconfig.json",
     "test": "vitest run",
     "test:e2e": "playwright test",
+    "test:e2e:smoke": "playwright test --project=chromium --grep @smoke",
     "test:pwa": "playwright test --config playwright.pwa.config.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

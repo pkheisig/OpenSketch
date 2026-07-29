@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("uses floating BioRender-style tools, flyouts, and left-side properties", async ({ page }) => {
+test("@smoke uses floating BioRender-style tools, flyouts, and left-side properties", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
 
