@@ -3,12 +3,8 @@ const CURSOR_HOTSPOT = 14;
 const INK = "#183133";
 const HALO = "#ffffff";
 
-// Closed silhouette from Google's rounded Material Icons `pan_tool`
-// (Apache-2.0). A single closed path is intentional: filling Lucide's former
-// multi-path outline implicitly closed each finger path and produced the white
-// wedges/"leaks" visible inside the cursor.
-const MATERIAL_HAND =
-  '<path d="M21.5 4c-.83 0-1.5.67-1.5 1.5v5c0 .28-.22.5-.5.5s-.5-.22-.5-.5v-8c0-.83-.67-1.5-1.5-1.5S16 1.67 16 2.5v8c0 .28-.22.5-.5.5s-.5-.22-.5-.5v-9c0-.83-.67-1.5-1.5-1.5S12 .67 12 1.5v8.99c0 .28-.22.5-.5.5s-.5-.22-.5-.5V4.5c0-.83-.67-1.5-1.5-1.5S8 3.67 8 4.5v11.41l-4.12-2.35c-.58-.33-1.3-.24-1.78.22-.6.58-.62 1.54-.03 2.13l6.78 6.89c.75.77 1.77 1.2 2.85 1.2H19c2.21 0 4-1.79 4-4V5.5c0-.83-.67-1.5-1.5-1.5z"/>';
+const HAND_PATH =
+  "M10 2a1.5 1.5 0 0 0-1.5 1.5v7.8l-1.2-1.2a1.5 1.5 0 0 0-2.1 0 1.5 1.5 0 0 0 0 2.1l4.8 4.8c1.5 1.5 3.5 2.5 5.7 2.5h2.8c3.3 0 6-2.7 6-6V9.5a1.5 1.5 0 0 0-3 0V11M16 8.5a1.5 1.5 0 0 0-3 0M13 6.5a1.5 1.5 0 0 0-3 0";
 
 const LUCIDE_MOVE_HORIZONTAL = [
   '<path d="m18 8 4 4-4 4"/>',
@@ -56,18 +52,21 @@ function resizeCursor(angle: number, fallback: string): string {
   });
 }
 
-export const CURSOR_GRAB = svgCursor(MATERIAL_HAND, "grab", {
-  hotspotX: 12,
-  hotspotY: 13,
-  filled: true
-});
+function handCursor(fallback: string): string {
+  const source = [
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${CURSOR_SIZE}" height="${CURSOR_SIZE}" viewBox="0 0 28 28">`,
+    '<g transform="translate(2 2)">',
+    `<path fill="none" stroke="${HALO}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="${HAND_PATH}"/>`,
+    `<path fill="${INK}" stroke="${INK}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="${HAND_PATH}"/>`,
+    "</g>",
+    "</svg>"
+  ].join("");
+  return `url("data:image/svg+xml,${encodeURIComponent(source)}") 12 13, ${fallback}`;
+}
 
-export const CURSOR_GRABBING = svgCursor(MATERIAL_HAND, "grabbing", {
-  hotspotX: 12,
-  hotspotY: 13,
-  transform: "translate(1.08 1.35) scale(.91)",
-  filled: true
-});
+export const CURSOR_GRAB = handCursor("grab");
+
+export const CURSOR_GRABBING = handCursor("grabbing");
 
 export const CURSOR_ROTATE = svgCursor(LUCIDE_ROTATE_CW, "crosshair");
 

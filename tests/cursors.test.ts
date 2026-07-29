@@ -27,7 +27,6 @@ describe("OpenSketch canvas cursors", () => {
       const source = decodeURIComponent(cursor);
       expect(source).toContain('width="28"');
       expect(source).toContain('stroke="#183133"');
-      expect(source).toContain('stroke-width="2"');
     }
     for (const cursor of [
       CURSOR_ROTATE,
@@ -36,24 +35,31 @@ describe("OpenSketch canvas cursors", () => {
       CURSOR_RESIZE_NW_SE,
       CURSOR_RESIZE_NE_SW
     ]) {
-      expect(decodeURIComponent(cursor)).toContain('stroke-width="4.5"');
+      const source = decodeURIComponent(cursor);
+      expect(source).toContain('stroke-width="2"');
+      expect(source).toContain('stroke-width="4.5"');
     }
     expect(new Set(cursors).size).toBe(cursors.length);
   });
 
-  it("fills the hand itself white without drawing a background tile", () => {
+  it("draws the supplied dark hand with a white contrast halo", () => {
     for (const cursor of [CURSOR_GRAB, CURSOR_GRABBING]) {
       const source = decodeURIComponent(cursor);
-      expect(source).toContain('fill="#ffffff" stroke="#183133" stroke-width="2"');
+      expect(source).toContain(
+        'fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"'
+      );
+      expect(source).toContain(
+        'fill="#183133" stroke="#183133" stroke-width="1.5" stroke-linecap="round"'
+      );
       expect(source).not.toContain("<rect");
-      expect(source.match(/<path\b/g)).toHaveLength(1);
-      expect(source).toContain("M21.5 4c-.83 0-1.5.67-1.5 1.5");
+      expect(source.match(/<path\b/g)).toHaveLength(2);
+      expect(source).toContain("M10 2a1.5 1.5 0 0 0-1.5 1.5");
     }
     expect(CURSOR_GRABBING).not.toBe(CURSOR_GRAB);
     expect(decodeURIComponent(CURSOR_ROTATE)).toContain('fill="none"');
   });
 
-  it("rasterizes the hand as a solid white palm on transparency", async () => {
+  it("rasterizes the hand as dark ink with a transparent exterior", async () => {
     for (const cursor of [CURSOR_GRAB, CURSOR_GRABBING]) {
       const decoded = decodeURIComponent(cursor);
       const svg = decoded.slice(decoded.indexOf("<svg"), decoded.indexOf("</svg>") + 6);
@@ -66,9 +72,9 @@ describe("OpenSketch canvas cursors", () => {
         return [...data.subarray(offset, offset + 4)];
       };
 
-      expect(pixel(16, 18)).toEqual([255, 255, 255, 255]);
-      expect(pixel(14, 18)).toEqual([255, 255, 255, 255]);
-      expect(pixel(17, 20)).toEqual([255, 255, 255, 255]);
+      expect(pixel(16, 18)).toEqual([24, 49, 51, 255]);
+      expect(pixel(14, 18)).toEqual([24, 49, 51, 255]);
+      expect(pixel(17, 20)).toEqual([24, 49, 51, 255]);
       expect(pixel(1, 1)).toEqual([0, 0, 0, 0]);
     }
   });
