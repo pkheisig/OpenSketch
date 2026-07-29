@@ -266,6 +266,18 @@ test("expands all creation defaults initially and restores each disclosure state
   await expect(sections.nth(1)).toHaveAttribute("open", "");
   await expect(sections.nth(2)).toHaveAttribute("open", "");
 
+  const textSize = defaults.getByRole("spinbutton", { name: "Default text size" });
+  await textSize.fill("2");
+  await expect(textSize).toHaveValue("2");
+  await textSize.press("8");
+  await expect(textSize).toHaveValue("28");
+  await textSize.press("Enter");
+  await expect(textSize).toHaveValue("28");
+
+  await textSize.fill("35");
+  await defaults.getByText("Weight", { exact: true }).click();
+  await expect(textSize).toHaveValue("35");
+
   await defaults.getByText("New shape defaults", { exact: true }).click();
   await expect(sections.nth(1)).not.toHaveAttribute("open", "");
   await defaults.getByText("New line & arrow defaults", { exact: true }).click();

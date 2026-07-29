@@ -805,6 +805,56 @@ function AssetCard({
   );
 }
 
+function CommittedNumberInput({
+  ariaLabel,
+  value,
+  min,
+  max,
+  onCommit
+}: {
+  ariaLabel: string;
+  value: number;
+  min: number;
+  max: number;
+  onCommit: (value: number) => void;
+}) {
+  const [draft, setDraft] = useState(String(value));
+
+  useEffect(() => {
+    setDraft(String(value));
+  }, [value]);
+
+  const commit = () => {
+    const parsed = Number(draft);
+    if (!Number.isFinite(parsed)) {
+      setDraft(String(value));
+      return;
+    }
+    const next = Math.max(min, Math.min(max, parsed));
+    setDraft(String(next));
+    if (next !== value) onCommit(next);
+  };
+
+  return (
+    <input
+      aria-label={ariaLabel}
+      type="number"
+      min={min}
+      max={max}
+      value={draft}
+      onChange={(event) => setDraft(event.target.value)}
+      onBlur={commit}
+      onKeyDown={(event) => {
+        if (event.key === "Enter") event.currentTarget.blur();
+        if (event.key === "Escape") {
+          setDraft(String(value));
+          event.currentTarget.blur();
+        }
+      }}
+    />
+  );
+}
+
 function ShapesPanel() {
   const editor = useEditor();
   const [openSections, setOpenSections] = useState(loadCreationDefaultsDisclosures);
@@ -864,13 +914,12 @@ function ShapesPanel() {
             </div>
             <label className="creation-number-field">
               Size
-              <input
-                aria-label="Default text size"
-                type="number"
-                min="6"
-                max="400"
+              <CommittedNumberInput
+                ariaLabel="Default text size"
+                min={6}
+                max={400}
                 value={editor.creationDefaults.text.fontSize}
-                onChange={(event) => updateTextDefaults({ fontSize: Number(event.target.value) })}
+                onCommit={(fontSize) => updateTextDefaults({ fontSize })}
               />
             </label>
           </div>
@@ -917,13 +966,12 @@ function ShapesPanel() {
           </div>
           <label className="creation-number-field">
             Outline weight
-            <input
-              aria-label="Default shape outline weight"
-              type="number"
-              min="0"
-              max="40"
+            <CommittedNumberInput
+              ariaLabel="Default shape outline weight"
+              min={0}
+              max={40}
               value={editor.creationDefaults.shape.strokeWidth}
-              onChange={(event) => updateShapeDefaults({ strokeWidth: Number(event.target.value) })}
+              onCommit={(strokeWidth) => updateShapeDefaults({ strokeWidth })}
             />
           </label>
         </div>
@@ -947,13 +995,12 @@ function ShapesPanel() {
             </div>
             <label className="creation-number-field">
               Thickness
-              <input
-                aria-label="Default line thickness"
-                type="number"
-                min="1"
-                max="40"
+              <CommittedNumberInput
+                ariaLabel="Default line thickness"
+                min={1}
+                max={40}
                 value={editor.creationDefaults.line.width}
-                onChange={(event) => updateLineDefaults({ width: Number(event.target.value) })}
+                onCommit={(width) => updateLineDefaults({ width })}
               />
             </label>
           </div>
