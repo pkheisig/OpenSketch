@@ -2,6 +2,7 @@ import { ActiveSelection, Canvas, Group, Point, Rect } from "../apps/web/node_mo
 import { describe, expect, it } from "vitest";
 import {
   configureSelectionControls,
+  enableSelectionBoundsTarget,
   GROUP_SELECTION_COLOR,
   ROTATION_SNAP_ANGLE,
   ROTATION_SNAP_THRESHOLD,
@@ -15,12 +16,14 @@ import {
   selectionCornerSizeForObject,
   selectionStrokeWidthAtZoom,
   SINGLE_OBJECT_SELECTION_COLOR,
-  nextDeepSelection
+  nextDeepSelection,
+  restoreObjectTargeting
 } from "../apps/web/src/editor/selection";
 
 describe("selection control colors", () => {
-  it("uses purple controls for a grouped element", () => {
+  it("uses orange controls for a manually grouped element", () => {
     const group = new Group([new Rect({ width: 20, height: 20 })]);
+    group.OpenSketchType = "group";
 
     configureSelectionControls(group);
 
@@ -30,13 +33,16 @@ describe("selection control colors", () => {
     expect(group.transparentCorners).toBe(false);
   });
 
-  it("keeps single objects and temporary multi-selections blue", () => {
+  it("keeps single objects, atomic SVGs, and temporary multi-selections blue", () => {
     const first = new Rect({ width: 20, height: 20 });
     const second = new Rect({ width: 20, height: 20, left: 30 });
     const selection = new ActiveSelection([first, second]);
+    const atomicAsset = new Group([new Rect({ width: 20, height: 20 })]);
+    atomicAsset.OpenSketchType = "nih-asset";
 
     configureSelectionControls(first);
     configureSelectionControls(selection);
+    configureSelectionControls(atomicAsset);
 
     expect(first.borderColor).toBe(SINGLE_OBJECT_SELECTION_COLOR);
     expect(first.cornerColor).toBe("#ffffff");
@@ -44,6 +50,21 @@ describe("selection control colors", () => {
     expect(selection.borderColor).toBe(SINGLE_OBJECT_SELECTION_COLOR);
     expect(selection.cornerColor).toBe("#ffffff");
     expect(selection.cornerStrokeColor).toBe(SINGLE_OBJECT_SELECTION_COLOR);
+    expect(atomicAsset.borderColor).toBe(SINGLE_OBJECT_SELECTION_COLOR);
+    expect(atomicAsset.cornerStrokeColor).toBe(SINGLE_OBJECT_SELECTION_COLOR);
+  });
+
+  it("uses the full selection bounds as the drag target only while selected", () => {
+    const asset = new Group([new Rect({ width: 20, height: 20 })]);
+    asset.perPixelTargetFind = true;
+
+    enableSelectionBoundsTarget(asset);
+
+    expect(asset.perPixelTargetFind).toBe(false);
+
+    restoreObjectTargeting(asset);
+
+    expect(asset.perPixelTargetFind).toBe(true);
   });
 
   it("snaps rotation to every quarter turn for all selection types", () => {

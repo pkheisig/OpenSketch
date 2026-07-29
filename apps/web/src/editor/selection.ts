@@ -1,8 +1,9 @@
-import { ActiveSelection, FabricObject, Group, type Control, type TCornerPoint } from "fabric";
+import { FabricObject, type Control, type TCornerPoint } from "fabric";
 import { CURSOR_ROTATE, uiTransformCursor } from "@/editor/cursors";
+import { isManualGroup } from "@/editor/grouping";
 
-export const SINGLE_OBJECT_SELECTION_COLOR = "rgb(178,204,255)";
-export const GROUP_SELECTION_COLOR = "#9b6cf0";
+export const SINGLE_OBJECT_SELECTION_COLOR = "#3b82f6";
+export const GROUP_SELECTION_COLOR = "#f28c28";
 export const SELECTION_STROKE_WIDTH_PX = 1;
 export const SELECTION_CORNER_MAX_PX = 9;
 export const SELECTION_CORNER_MIN_PX = 4;
@@ -15,6 +16,20 @@ export const ROTATION_SNAP_THRESHOLD = 5;
 const selectionShadowInstalled = new WeakSet<FabricObject>();
 const expandedHitboxInstalled = new WeakSet<Control>();
 const selectionHitSize = new WeakMap<object, number>();
+const selectionPerPixelTargetFind = new WeakMap<FabricObject, boolean>();
+
+export function enableSelectionBoundsTarget(object: FabricObject): void {
+  if (!selectionPerPixelTargetFind.has(object)) {
+    selectionPerPixelTargetFind.set(object, object.perPixelTargetFind);
+  }
+  object.perPixelTargetFind = false;
+}
+
+export function restoreObjectTargeting(object: FabricObject): void {
+  if (!selectionPerPixelTargetFind.has(object)) return;
+  object.perPixelTargetFind = selectionPerPixelTargetFind.get(object) ?? false;
+  selectionPerPixelTargetFind.delete(object);
+}
 
 export function selectionStrokeWidthAtZoom(zoom: number): number {
   void zoom;
@@ -124,10 +139,7 @@ function installSelectionBorderShadow(object: FabricObject): void {
 }
 
 export function configureSelectionControls(object: FabricObject, zoom = 1): void {
-  const color =
-    object instanceof Group && !(object instanceof ActiveSelection)
-      ? GROUP_SELECTION_COLOR
-      : SINGLE_OBJECT_SELECTION_COLOR;
+  const color = isManualGroup(object) ? GROUP_SELECTION_COLOR : SINGLE_OBJECT_SELECTION_COLOR;
   installSelectionBorderShadow(object);
   selectionHitSize.set(object, selectionControlHitSizeForObject(object, zoom));
   Object.values(object.controls).forEach(installControlInteraction);

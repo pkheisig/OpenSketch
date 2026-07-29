@@ -66,7 +66,9 @@ import {
 } from "@/editor/geometry";
 import {
   configureSelectionControls,
+  enableSelectionBoundsTarget,
   nextDeepSelection,
+  restoreObjectTargeting,
   SELECTION_STROKE_WIDTH_PX,
   selectionStrokeWidthAtZoom
 } from "@/editor/selection";
@@ -1057,9 +1059,18 @@ export function EditorProvider({
 
   useEffect(() => {
     if (!canvas) return;
+    let boundsTarget: FabricObject | undefined;
     const select = () => {
       const activeObject = canvas.getActiveObject();
-      if (activeObject) configureSelectionControls(activeObject, latestZoom.current);
+      if (boundsTarget && boundsTarget !== activeObject) {
+        restoreObjectTargeting(boundsTarget);
+        boundsTarget = undefined;
+      }
+      if (activeObject) {
+        configureSelectionControls(activeObject, latestZoom.current);
+        enableSelectionBoundsTarget(activeObject);
+        boundsTarget = activeObject;
+      }
       setSelection(canvas.getActiveObjects());
       canvas.requestRenderAll();
     };
@@ -1587,6 +1598,7 @@ export function EditorProvider({
     canvas.on("mouse:up", finishDragGesture);
     canvas.on("text:editing:exited", modified);
     return () => {
+      if (boundsTarget) restoreObjectTargeting(boundsTarget);
       canvas.upperCanvasEl.removeEventListener("mousedown", preserveDeepSelectionForDrag, true);
       canvas.upperCanvasEl.removeEventListener("contextmenu", suppressModifierContextMenu, true);
       void enqueuePendingSave();
