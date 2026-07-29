@@ -408,6 +408,28 @@ test("hides scrollbar chrome globally without disabling scrolling", async ({ pag
   await expect(page.locator(".workspace-scroll")).toHaveCSS("scrollbar-width", "none");
 });
 
+test("does not draw teal focus selector lines around fields and controls", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+
+  const search = page.getByPlaceholder("Search cells, proteins, equipment…");
+  await search.click();
+  await expect(search).toBeFocused();
+  await expect(search).toHaveCSS("outline-style", "none");
+  await expect(search.locator("..")).toHaveCSS("box-shadow", "none");
+
+  const title = page.getByRole("textbox", { name: "Document title" });
+  await title.click();
+  await expect(title).toBeFocused();
+  await expect(title).toHaveCSS("outline-style", "none");
+
+  await page.getByRole("button", { name: "Defaults", exact: true }).click();
+  const textSize = page.getByRole("spinbutton", { name: "Default text size" });
+  await textSize.click();
+  await expect(textSize).toBeFocused();
+  await expect(textSize).toHaveCSS("outline-style", "none");
+});
+
 test("creates every distinct shape variant exposed by the shape pop-out", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
