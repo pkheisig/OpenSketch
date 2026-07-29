@@ -71,6 +71,7 @@ import {
   selectionStrokeWidthAtZoom
 } from "@/editor/selection";
 import { CURSOR_GRAB, CURSOR_GRABBING } from "@/editor/cursors";
+import { assetInsertionScale } from "@/editor/assetInsertion";
 import { copySvgBlendModes, loadEditableSvg } from "@/editor/svg";
 import { zoomedCanvasDimensions } from "@/editor/zoom";
 import {
@@ -166,8 +167,6 @@ const RESTORABLE_GROUP_PROPERTIES = [
 
 const MAX_HISTORY = 120;
 const SVG_CACHE_LIMIT = 64;
-const ASSET_INSERT_MAX_SIDE = 180;
-const LABWARE_INSERT_MAX_SIDE = 220;
 const DRAG_DUPLICATE_OPACITY = 0.35;
 const svgStringCache = new Map<string, string>();
 const bundledVariants = new Map(
@@ -1913,11 +1912,7 @@ export function EditorProvider({
       const operation = assetInsertQueue.current.then(async () => {
         if (!canvas) return;
         const group = await createBundledAssetGroup(family, variant);
-        const maxSide = Math.max(group.width || 1, group.height || 1);
-        const insertMaxSide = family.title.endsWith("Well Plate Top View")
-          ? LABWARE_INSERT_MAX_SIDE
-          : ASSET_INSERT_MAX_SIDE;
-        const scale = Math.min(1, insertMaxSide / maxSide);
+        const scale = assetInsertionScale(family.title, group.width || 1, group.height || 1);
         group.scale(scale);
         addObject(group, family.title, "nih-asset", point);
       });

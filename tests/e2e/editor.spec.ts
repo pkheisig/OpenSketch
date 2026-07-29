@@ -180,7 +180,7 @@ test("inserts editable standard top-view labware", async ({ page }) => {
         await page.locator(".inspector-scroll").getByRole("spinbutton", { name: "W" }).inputValue()
       )
     )
-    .toBeCloseTo(220, 0);
+    .toBeCloseTo(250, 0);
 });
 
 test("creates, edits, saves, reopens, and exports a local figure", async ({ page }) => {
