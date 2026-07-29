@@ -2,6 +2,8 @@ import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from
 import { createPortal } from "react-dom";
 import { Check, ChevronDown } from "lucide-react";
 import type { AssetFamily } from "@workspace/editor-core";
+import { AssetPreviewImage } from "@/components/AssetPreviewImage";
+import { setAssetDragPayload } from "@/editor/assetDrag";
 
 export function AssetVariantGrid({
   family,
@@ -23,9 +25,13 @@ export function AssetVariantGrid({
           aria-selected={variant.id === value}
           aria-label={`Select ${family.title} variant ${index + 1}`}
           onClick={() => onChange(variant.id)}
+          draggable
+          onDragStart={(event) =>
+            setAssetDragPayload(event.dataTransfer, family.familyId, variant.id)
+          }
         >
           <span className="asset-variant-preview">
-            <img src={variant.assetPath} alt="" loading="lazy" />
+            <AssetPreviewImage assetPath={variant.assetPath} fallbackPath={variant.thumbnailPath} />
             {variant.id === value && <Check size={14} aria-hidden="true" />}
           </span>
           <span>Variant {index + 1}</span>
@@ -151,6 +157,10 @@ export function AssetVariantPicker({
                 role="option"
                 aria-selected={variant.id === value}
                 aria-label={`Select ${family.title} variant ${index + 1}`}
+                draggable
+                onDragStart={(event) =>
+                  setAssetDragPayload(event.dataTransfer, family.familyId, variant.id)
+                }
                 onClick={() => {
                   onChange(variant.id);
                   setOpen(false);
@@ -158,7 +168,10 @@ export function AssetVariantPicker({
                 }}
               >
                 <span className="asset-variant-preview">
-                  <img src={variant.assetPath} alt="" loading="lazy" />
+                  <AssetPreviewImage
+                    assetPath={variant.assetPath}
+                    fallbackPath={variant.thumbnailPath}
+                  />
                   {variant.id === value && <Check size={14} aria-hidden="true" />}
                 </span>
                 <span>Variant {index + 1}</span>

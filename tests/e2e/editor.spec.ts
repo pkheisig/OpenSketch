@@ -704,6 +704,91 @@ test("inserts assets from the sidebar at the reduced default size", async ({ pag
   expect(Math.max(width, height)).toBeCloseTo(180, 0);
 });
 
+test("keeps family variant previews normalized and drags the selected variant", async ({
+  page
+}) => {
+  const visibleArtworkBounds = async (image: Locator) => {
+    await expect.poll(() => image.getAttribute("src")).toMatch(/^data:image\/png/);
+    await expect
+      .poll(() =>
+        image.evaluate(
+          (element: HTMLImageElement) =>
+            element.complete && element.naturalWidth === 448 && element.naturalHeight === 448
+        )
+      )
+      .toBe(true);
+    return image.evaluate((element: HTMLImageElement) => {
+      const canvas = document.createElement("canvas");
+      canvas.width = element.naturalWidth;
+      canvas.height = element.naturalHeight;
+      const context = canvas.getContext("2d", { willReadFrequently: true });
+      if (!context) throw new Error("Could not inspect the normalized asset preview.");
+      context.drawImage(element, 0, 0);
+      const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+      let left = canvas.width;
+      let top = canvas.height;
+      let right = -1;
+      let bottom = -1;
+      for (let y = 0; y < canvas.height; y += 1) {
+        for (let x = 0; x < canvas.width; x += 1) {
+          if (pixels[(y * canvas.width + x) * 4 + 3] <= 8) continue;
+          left = Math.min(left, x);
+          top = Math.min(top, y);
+          right = Math.max(right, x);
+          bottom = Math.max(bottom, y);
+        }
+      }
+      return {
+        width: right - left + 1,
+        height: bottom - top + 1,
+        centerX: (left + right) / 2,
+        centerY: (top + bottom) / 2
+      };
+    });
+  };
+
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Activated Neutrophil");
+  await expect(page.locator(".asset-card")).toHaveCount(1);
+  const card = page
+    .locator(".asset-card")
+    .filter({ has: page.locator("strong").filter({ hasText: /^Activated Neutrophil$/ }) });
+  const preview = card.locator(".asset-card-image img");
+  const firstBounds = await visibleArtworkBounds(preview);
+  const firstSource = await preview.getAttribute("src");
+
+  await card.getByRole("combobox", { name: "Activated Neutrophil variant" }).click();
+  await page
+    .getByRole("listbox", { name: "Activated Neutrophil variants" })
+    .getByRole("option", { name: "Select Activated Neutrophil variant 2" })
+    .click({ force: true });
+  await expect(card.getByRole("combobox", { name: "Activated Neutrophil variant" })).toHaveText(
+    "Variant 2"
+  );
+  await expect.poll(() => preview.getAttribute("src")).not.toBe(firstSource);
+  const secondBounds = await visibleArtworkBounds(preview);
+
+  expect(Math.max(firstBounds.width, firstBounds.height)).toBeGreaterThanOrEqual(410);
+  expect(Math.max(secondBounds.width, secondBounds.height)).toBeGreaterThanOrEqual(410);
+  expect(
+    Math.abs(
+      Math.max(firstBounds.width, firstBounds.height) -
+        Math.max(secondBounds.width, secondBounds.height)
+    )
+  ).toBeLessThanOrEqual(2);
+  expect(Math.abs(firstBounds.centerX - secondBounds.centerX)).toBeLessThanOrEqual(2);
+  expect(Math.abs(firstBounds.centerY - secondBounds.centerY)).toBeLessThanOrEqual(2);
+
+  await card.dragTo(page.locator(".artboard-stage"));
+  await expect(page.locator(".inspector-header h2")).toHaveText("Activated Neutrophil");
+  await expect(
+    page
+      .locator(".inspector-embedded")
+      .getByRole("option", { name: "Select Activated Neutrophil variant 2" })
+  ).toHaveAttribute("aria-selected", "true");
+});
+
 test("previews bundled variants and inserts nested-clip-path assets", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
@@ -718,13 +803,21 @@ test("previews bundled variants and inserts nested-clip-path assets", async ({ p
   await expect(variants).toBeVisible();
   await expect(variants.getByRole("option")).toHaveCount(9);
   await expect(variants.locator("img")).toHaveCount(9);
-  for (const source of await variants
-    .locator("img")
-    .evaluateAll((images) =>
-      images.map((image) => (image as HTMLImageElement).getAttribute("src"))
-    )) {
-    expect(source).toMatch(/\/assets\/nih-bioart\/.+\.svg$/);
-  }
+  await expect
+    .poll(() =>
+      variants.locator("img").evaluateAll((images) =>
+        images.every((image) => {
+          const element = image as HTMLImageElement;
+          return (
+            element.getAttribute("src")?.startsWith("data:image/png") &&
+            element.complete &&
+            element.naturalWidth === 448 &&
+            element.naturalHeight === 448
+          );
+        })
+      )
+    )
+    .toBe(true);
   await variants.getByRole("option", { name: "Select Immune Cell variant 2" }).click();
   await expect(immuneCell.getByRole("combobox", { name: "Immune Cell variant" })).toHaveText(
     "Variant 2"
@@ -2429,6 +2522,7 @@ test("saves and resets styling for future copies of the same biological asset", 
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
+  await expect(page.locator(".asset-card")).toHaveCount(1);
   const insertAsset = page.getByRole("button", {
     name: "Insert Cajal-Retzius Cell",
     exact: true
@@ -2436,8 +2530,18 @@ test("saves and resets styling for future copies of the same biological asset", 
   const assetCard = page.locator(".asset-card").filter({ hasText: "Cajal-Retzius Cell" }).first();
   const assetPreview = assetCard.locator(".asset-card-image");
   const assetPreviewImage = assetPreview.locator("img");
+  await expect(assetPreview).toBeVisible();
+  await expect
+    .poll(() =>
+      assetPreviewImage.evaluate(
+        (image: HTMLImageElement) =>
+          image.complete && image.naturalWidth === 448 && image.naturalHeight === 448
+      )
+    )
+    .toBe(true);
   const originalPreviewSource = await assetPreviewImage.getAttribute("src");
   const originalPreviewBounds = await assetPreview.boundingBox();
+  expect(originalPreviewBounds).not.toBeNull();
   await insertAsset.click();
 
   const transparency = page
@@ -2511,9 +2615,7 @@ test("renders every styled eosinophil part in a stable sidebar preview", async (
     .getByRole("listbox", { name: "Eosinophil variants" });
   await expect(variantGrid).toBeVisible();
   await expect(page.getByText("Color presets", { exact: true })).toHaveCount(0);
-  await variantGrid
-    .getByRole("option", { name: "Select Eosinophil variant 2" })
-    .click();
+  await variantGrid.getByRole("option", { name: "Select Eosinophil variant 2" }).click();
 
   const center = await artboardPoint(page);
   await page.mouse.click(center.x, center.y, { button: "right" });
