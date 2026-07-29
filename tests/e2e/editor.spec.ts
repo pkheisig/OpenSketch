@@ -1622,6 +1622,23 @@ test("edits a group with single-click and modifier multi-selection", async ({ pa
   await expect(page.locator(".inspector-header h2")).toHaveText("Group");
 });
 
+test("adds independent canvas objects to the selection with Ctrl-click", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await placeTool(page, "Rectangle", 0.35, 0.5);
+  await placeTool(page, "Circle", 0.65, 0.5);
+
+  const rectangle = await artboardPoint(page, 0.35, 0.5);
+  const circle = await artboardPoint(page, 0.65, 0.5);
+  await page.mouse.click(rectangle.x, rectangle.y);
+  await page.keyboard.down("Control");
+  await page.mouse.click(circle.x, circle.y);
+  await page.keyboard.up("Control");
+
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await expect(page.locator(".inspector-header span")).toHaveText("2 selected");
+});
+
 test("preserves nested group dimensions when duplicating by modifier-drag", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();

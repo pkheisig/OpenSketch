@@ -1006,6 +1006,7 @@ export function EditorProvider({
       canvasElement.current = element;
       const instance = new Canvas(element, {
         preserveObjectStacking: true,
+        selectionKey: ["metaKey", "ctrlKey"],
         hoverCursor: CURSOR_GRAB,
         moveCursor: CURSOR_GRABBING,
         selectionColor: "rgba(18, 178, 175, 0.12)",
