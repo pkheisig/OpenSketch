@@ -343,7 +343,7 @@ test("builds and persists a styled object-attached connector", async ({ page }) 
   await placeTool(page, "Rectangle", 0.35, 0.5);
   await placeTool(page, "Rectangle", 0.65, 0.5);
   await page.keyboard.press("ControlOrMeta+A");
-  await page.getByRole("button", { name: "Lines", exact: true }).hover();
+  await page.getByRole("button", { name: "Lines", exact: true }).click();
   await page
     .getByRole("menu", { name: "Line and arrow tools" })
     .getByRole("menuitem", { name: /Arrows/ })
@@ -421,7 +421,7 @@ test("places text and shapes from active tools and persists line creation defaul
   await expect(shapeMenu.getByRole("menuitem", { name: "Right triangle" })).toBeVisible();
   await expect(shapeMenu.getByRole("menuitem", { name: "Octagon" })).toBeVisible();
   await expect(shapeMenu.getByRole("menuitem", { name: "Star" })).toBeVisible();
-  await shapeMenu.getByRole("menuitem", { name: /Defaults/ }).click();
+  await page.getByRole("button", { name: "Defaults", exact: true }).click();
   await expect(page.locator(".creation-defaults summary")).toHaveText([
     "New text defaults",
     "New shape defaults",
@@ -471,11 +471,7 @@ test("places text and shapes from active tools and persists line creation defaul
   await expect(page.locator(".layers-title small")).toHaveText("1");
   await expect(page.getByRole("menuitem", { name: "Rectangle", exact: true })).toHaveCount(0);
 
-  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
-  await page
-    .getByRole("menu", { name: "Shape tools" })
-    .getByRole("menuitem", { name: /Defaults/ })
-    .click();
+  await page.getByRole("button", { name: "Defaults", exact: true }).click();
   await setPaletteColor(page, "Default line color", "#c026d3");
   await page.getByLabel("Default line thickness").fill("9");
   await selectUiOption(page, "Line style", "Dashed");
@@ -508,8 +504,7 @@ test("places text and shapes from active tools and persists line creation defaul
 
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
-  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
-  await page.getByRole("menuitem", { name: /Defaults/ }).click();
+  await page.getByRole("button", { name: "Defaults", exact: true }).click();
   await expect(page.getByLabel("Default line color")).toContainText("#c026d3");
   await expect(page.getByLabel("Default line thickness")).toHaveValue("9");
   await expect(page.getByRole("combobox", { name: "Line style" })).toHaveText(/Dashed/i);

@@ -16,6 +16,7 @@ import {
   ImagePlus,
   Search,
   Shapes,
+  SlidersHorizontal,
   Sparkles,
   Type,
   X
@@ -49,7 +50,7 @@ import {
   type SavedElementStyles
 } from "@/editor/elementStyles";
 import { TEXT_FONT_FAMILIES } from "@/editor/fonts";
-import { setAssetDragPayload } from "@/editor/assetDrag";
+import { setAssetDragPayload, setImportedMediaDragPayload } from "@/editor/assetDrag";
 import {
   ASSET_VARIANT_DEFAULTS_CHANGED_EVENT,
   loadAssetVariantDefaults,
@@ -59,6 +60,11 @@ import { AssetVariantPicker } from "@/components/AssetVariantPicker";
 import { ColorPalettePicker } from "@/components/ColorPalettePicker";
 import { InspectorContent, LayersPanel } from "@/components/Inspector";
 import { UiSelect } from "@/components/UiSelect";
+import {
+  IMPORT_LIBRARY_CHANGED_EVENT,
+  listImportedMedia,
+  type ImportedMediaLibraryRecord
+} from "@/persistence/database";
 
 type Tab = "assets" | "imports" | "edit";
 type Flyout = "lines" | "shapes" | "defaults" | null;
@@ -264,6 +270,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const openFlyout = (next: Exclude<Flyout, null>) => {
     window.clearTimeout(closeTimer.current);
     setFlyout(next);
+    if (!collapsed) onToggle();
   };
   const scheduleFlyoutClose = () => {
     window.clearTimeout(closeTimer.current);
@@ -337,8 +344,6 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
           <Type size={20} />
         </button>
         <button
-          onPointerEnter={() => openFlyout("lines")}
-          onPointerLeave={scheduleFlyoutClose}
           onClick={() => openFlyout("lines")}
           className={flyout === "lines" ? "active" : ""}
           aria-label="Lines"
@@ -349,8 +354,6 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
           <ArrowRight size={20} />
         </button>
         <button
-          onPointerEnter={() => openFlyout("shapes")}
-          onPointerLeave={scheduleFlyoutClose}
           onClick={() => openFlyout("shapes")}
           className={flyout === "shapes" ? "active" : ""}
           role="tab"
@@ -361,6 +364,16 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
           data-label="Shapes"
         >
           <Shapes size={20} />
+        </button>
+        <button
+          onClick={() => openFlyout("defaults")}
+          className={flyout === "defaults" ? "active" : ""}
+          aria-label="Defaults"
+          aria-expanded={flyout === "defaults"}
+          title="Defaults"
+          data-label="Defaults"
+        >
+          <SlidersHorizontal size={20} />
         </button>
         <button
           className={tab === "imports" && !collapsed ? "active" : ""}
@@ -450,14 +463,6 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
               role="menuitem"
             >
               <ShapePresetIcon glyph="hexagon" /> Polygons <ArrowRight size={14} />
-            </button>
-            <button
-              onClick={() => {
-                setFlyout("defaults");
-              }}
-              role="menuitem"
-            >
-              <Sparkles size={18} /> Defaults <ArrowRight size={14} />
             </button>
           </div>
           <div className="tool-flyout-secondary shape-flyout-grid">
@@ -980,8 +985,23 @@ function ImportsPanel() {
   const editor = useEditor();
   const input = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
+  const [imports, setImports] = useState<ImportedMediaLibraryRecord[]>([]);
+  useEffect(() => {
+    let active = true;
+    const refresh = () => {
+      void listImportedMedia().then((records) => {
+        if (active) setImports(records);
+      });
+    };
+    refresh();
+    window.addEventListener(IMPORT_LIBRARY_CHANGED_EVENT, refresh);
+    return () => {
+      active = false;
+      window.removeEventListener(IMPORT_LIBRARY_CHANGED_EVENT, refresh);
+    };
+  }, []);
   return (
-    <>
+    <div className="imports-panel">
       <button className="import-dropzone" onClick={() => input.current?.click()}>
         <span>
           <ImagePlus size={24} />
@@ -1010,6 +1030,41 @@ function ImportsPanel() {
           {error}
         </p>
       ) : null}
-    </>
+      {imports.length > 0 ? (
+        <div className="import-library-grid" aria-label="Imported media library">
+          {imports.map((media) => (
+            <article
+              className="import-library-card"
+              key={media.id}
+              draggable
+              onDragStart={(event) => setImportedMediaDragPayload(event.dataTransfer, media.id)}
+            >
+              <button
+                className="import-library-preview"
+                onClick={() => void editor.addImportedMedia(media)}
+                aria-label={`Insert ${media.name}`}
+              >
+                <img src={media.dataUrl} alt="" draggable={false} />
+              </button>
+              <div>
+                <strong title={media.name}>{media.name}</strong>
+                <small>
+                  {media.mimeType === "image/svg+xml"
+                    ? "SVG"
+                    : media.mimeType === "image/jpeg"
+                      ? "JPEG"
+                      : media.mimeType.replace("image/", "").toUpperCase()}
+                </small>
+              </div>
+            </article>
+          ))}
+        </div>
+      ) : (
+        <div className="empty-import-library">
+          <ImagePlus size={22} />
+          <strong>No imports yet</strong>
+        </div>
+      )}
+    </div>
   );
 }

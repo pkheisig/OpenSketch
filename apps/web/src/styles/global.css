@@ -1777,7 +1777,7 @@ a:focus-visible {
 .import-dropzone {
   display: grid;
   width: 100%;
-  min-height: 176px;
+  min-height: 132px;
   place-content: center;
   justify-items: center;
   gap: 7px;
@@ -1800,6 +1800,96 @@ a:focus-visible {
 .import-dropzone small {
   color: #7b8885;
   font-size: 9px;
+}
+
+.imports-panel {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.import-library-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding-bottom: 8px;
+}
+
+.import-library-card {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #d2d7d3;
+  border-radius: 8px;
+  background: #fff;
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.import-library-card:hover {
+  border-color: #74aaa6;
+  box-shadow: 0 6px 18px rgba(25, 62, 60, 0.1);
+}
+
+.import-library-preview {
+  display: grid;
+  width: 100%;
+  height: 104px;
+  place-items: center;
+  padding: 9px;
+  border: 0;
+  border-bottom: 1px solid #e0e5e2;
+  background:
+    linear-gradient(45deg, #f2f4f2 25%, transparent 25%),
+    linear-gradient(-45deg, #f2f4f2 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #f2f4f2 75%),
+    linear-gradient(-45deg, transparent 75%, #f2f4f2 75%), #fff;
+  background-position:
+    0 0,
+    0 5px,
+    5px -5px,
+    -5px 0;
+  background-size: 10px 10px;
+}
+
+.import-library-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.import-library-card > div {
+  display: grid;
+  gap: 2px;
+  padding: 9px 10px 10px;
+}
+
+.import-library-card strong {
+  overflow: hidden;
+  color: #183533;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.import-library-card small {
+  color: #748481;
+  font-size: 9px;
+}
+
+.empty-import-library {
+  display: grid;
+  min-height: 116px;
+  place-content: center;
+  justify-items: center;
+  gap: 7px;
+  color: #71827e;
+}
+
+.empty-import-library strong {
+  font-size: 11px;
+  font-weight: 600;
 }
 
 /* Canvas */
@@ -3613,8 +3703,9 @@ input[type="range"] {
 }
 
 .tool-defaults-flyout {
-  top: 56px;
+  top: 222px;
   display: block;
+  max-height: min(580px, calc(100vh - 360px));
 }
 
 .tool-defaults-inline .creation-defaults,

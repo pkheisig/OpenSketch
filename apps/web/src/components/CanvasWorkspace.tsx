@@ -69,6 +69,8 @@ import { isLinearCreationTool } from "@/editor/creation";
 import { elementStyleKey } from "@/editor/elementStyles";
 import { CURSOR_GRABBING } from "@/editor/cursors";
 import type { Point } from "@/editor/geometry";
+import { IMPORTED_MEDIA_DRAG_TYPE } from "@/editor/assetDrag";
+import { getImportedMedia } from "@/persistence/database";
 
 interface StoredViewport {
   zoom: number;
@@ -592,11 +594,19 @@ export function CanvasWorkspace() {
         }
       : undefined;
     const encoded = event.dataTransfer.getData("application/x-scientific-asset");
-    if (!encoded) return;
-    const data = JSON.parse(encoded) as { familyId: string; variantId: string };
-    const family = assetManifest.families.find((item) => item.familyId === data.familyId);
-    const variant = family?.variants.find((item) => item.id === data.variantId);
-    if (family && variant) void editor.addAsset(family, variant, point);
+    if (encoded) {
+      const data = JSON.parse(encoded) as { familyId: string; variantId: string };
+      const family = assetManifest.families.find((item) => item.familyId === data.familyId);
+      const variant = family?.variants.find((item) => item.id === data.variantId);
+      if (family && variant) void editor.addAsset(family, variant, point);
+      return;
+    }
+    const importId = event.dataTransfer.getData(IMPORTED_MEDIA_DRAG_TYPE);
+    if (importId) {
+      void getImportedMedia(importId).then((media) => {
+        if (media) void editor.addImportedMedia(media, point);
+      });
+    }
   };
 
   const workspacePoint = (clientX: number, clientY: number) => {
@@ -967,7 +977,10 @@ export function CanvasWorkspace() {
         editor.creationTool ? "is-creating" : ""
       } ${rulerVisible ? "" : "ruler-hidden"} ${editor.canvasSettings.grid ? "grid-visible" : ""}`}
       onDragOver={(event) => {
-        if (event.dataTransfer.types.includes("application/x-scientific-asset")) {
+        if (
+          event.dataTransfer.types.includes("application/x-scientific-asset") ||
+          event.dataTransfer.types.includes(IMPORTED_MEDIA_DRAG_TYPE)
+        ) {
           event.preventDefault();
           event.dataTransfer.dropEffect = "copy";
           setDragging(true);

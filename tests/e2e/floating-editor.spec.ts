@@ -11,6 +11,8 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
 
   const lines = page.getByRole("button", { name: "Lines", exact: true });
   await lines.hover();
+  await expect(page.getByRole("menu", { name: "Line and arrow tools" })).toHaveCount(0);
+  await lines.click();
   const lineMenu = page.getByRole("menu", { name: "Line and arrow tools" });
   await expect(lineMenu).toBeVisible();
   await expect(lineMenu.getByRole("menuitem", { name: "Custom defaults" })).toHaveCount(0);
@@ -23,9 +25,7 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   await expect(
     lineMenu.getByRole("menuitem", { name: "Shallow curved arrow", exact: true })
   ).toBeVisible();
-  await expect(
-    lineMenu.getByRole("menuitem", { name: "Dashed arrow", exact: true })
-  ).toBeVisible();
+  await expect(lineMenu.getByRole("menuitem", { name: "Dashed arrow", exact: true })).toBeVisible();
   await expect(lineMenu.locator(".connector-family-arrows button")).toHaveCount(28);
   const fittedArrowIcons = await lineMenu
     .locator(".connector-family-arrows button svg")
@@ -36,12 +36,8 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
         const bounds = graphic.getBBox();
         const viewBox = svg.viewBox.baseVal;
         return {
-          centeredX: Math.abs(
-            bounds.x + bounds.width / 2 - (viewBox.x + viewBox.width / 2)
-          ),
-          centeredY: Math.abs(
-            bounds.y + bounds.height / 2 - (viewBox.y + viewBox.height / 2)
-          ),
+          centeredX: Math.abs(bounds.x + bounds.width / 2 - (viewBox.x + viewBox.width / 2)),
+          centeredY: Math.abs(bounds.y + bounds.height / 2 - (viewBox.y + viewBox.height / 2)),
           contained:
             bounds.x >= viewBox.x - 0.01 &&
             bounds.y >= viewBox.y - 0.01 &&
@@ -51,8 +47,9 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
       })
     );
   expect(fittedArrowIcons.every(({ contained }) => contained)).toBe(true);
-  expect(fittedArrowIcons.every(({ centeredX, centeredY }) => centeredX < 0.01 && centeredY < 0.01))
-    .toBe(true);
+  expect(
+    fittedArrowIcons.every(({ centeredX, centeredY }) => centeredX < 0.01 && centeredY < 0.01)
+  ).toBe(true);
   const arrowGlyphs = await lineMenu
     .locator(".tool-flyout-secondary button svg")
     .evaluateAll((icons) => icons.map((icon) => icon.outerHTML));
@@ -66,9 +63,9 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
     );
   expect(arrowGeometry.every(({ paths }) => paths >= 2)).toBe(true);
   expect(arrowGeometry.every(({ transformedHeads }) => transformedHeads >= 1)).toBe(true);
-  expect(arrowGeometry.filter(({ transformedHeads }) => transformedHeads > 1).length).toBeGreaterThan(
-    1
-  );
+  expect(
+    arrowGeometry.filter(({ transformedHeads }) => transformedHeads > 1).length
+  ).toBeGreaterThan(1);
   const arrowCenterlineCaps = await lineMenu
     .locator(".connector-family-arrows button svg > g > path:first-child")
     .evaluateAll((paths) => paths.map((path) => path.getAttribute("stroke-linecap")));
@@ -113,9 +110,11 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
   );
 
   await page.getByRole("tab", { name: "Shapes", exact: true }).hover();
+  await expect(page.getByRole("menu", { name: "Shape tools" })).toHaveCount(0);
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   const shapeMenu = page.getByRole("menu", { name: "Shape tools" });
   await expect(shapeMenu).toBeVisible();
-  await expect(shapeMenu.getByRole("menuitem")).toHaveCount(9);
+  await expect(shapeMenu.getByRole("menuitem")).toHaveCount(8);
   const shapeFamilySpacing = await shapeMenu
     .locator(".tool-flyout-primary button")
     .first()
@@ -213,7 +212,9 @@ test("uses floating BioRender-style tools, flyouts, and left-side properties", a
 
   await page.keyboard.press("Delete");
   await expect(page.locator(".floating-panel")).toHaveCount(0);
-  await expect(page.locator(".inspector-header").getByText("Canvas", { exact: true })).toHaveCount(0);
+  await expect(page.locator(".inspector-header").getByText("Canvas", { exact: true })).toHaveCount(
+    0
+  );
 });
 
 test("expands all creation defaults initially and restores each disclosure state", async ({
@@ -221,9 +222,7 @@ test("expands all creation defaults initially and restores each disclosure state
 }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
-  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
-  const shapeMenu = page.getByRole("menu", { name: "Shape tools" });
-  await shapeMenu.getByRole("menuitem", { name: /Defaults/ }).click();
+  await page.getByRole("button", { name: "Defaults", exact: true }).click();
 
   const defaults = page.getByRole("dialog", { name: "New object defaults" });
   const sections = defaults.locator("details.creation-defaults");
@@ -239,11 +238,7 @@ test("expands all creation defaults initially and restores each disclosure state
 
   await page.mouse.move(900, 500);
   await expect(defaults).toHaveCount(0);
-  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
-  await page
-    .getByRole("menu", { name: "Shape tools" })
-    .getByRole("menuitem", { name: /Defaults/ })
-    .click();
+  await page.getByRole("button", { name: "Defaults", exact: true }).click();
 
   const restored = page
     .getByRole("dialog", { name: "New object defaults" })
@@ -367,7 +362,7 @@ test("creates every connector path and endpoint family with valid canvas geometr
   if (!artboard) throw new Error("Artboard is not visible.");
 
   for (const [index, [family, tool]] of tools.entries()) {
-    await page.getByRole("button", { name: "Lines", exact: true }).hover();
+    await page.getByRole("button", { name: "Lines", exact: true }).click();
     const menu = page.getByRole("menu", { name: "Line and arrow tools" });
     await menu
       .locator(".tool-flyout-primary")

@@ -2,13 +2,21 @@ import Dexie, { type EntityTable } from "dexie";
 import {
   OpenSketch_FORMAT_VERSION,
   DEFAULT_CANVAS,
+  type ImportedMediaRecord,
   type ProjectFolderRecord,
   type ProjectRecord
 } from "@workspace/editor-core";
 
+export interface ImportedMediaLibraryRecord extends ImportedMediaRecord {
+  createdAt: string;
+  updatedAt: string;
+  contentHash: string;
+}
+
 class OpenSketchDatabase extends Dexie {
   projects!: EntityTable<ProjectRecord, "id">;
   folders!: EntityTable<ProjectFolderRecord, "id">;
+  imports!: EntityTable<ImportedMediaLibraryRecord, "id">;
 
   constructor() {
     super("OpenSketch");
@@ -19,10 +27,71 @@ class OpenSketchDatabase extends Dexie {
       projects: "id, updatedAt, name, archivedAt, folderId",
       folders: "id, updatedAt, name"
     });
+    this.version(3).stores({
+      projects: "id, updatedAt, name, archivedAt, folderId",
+      folders: "id, updatedAt, name",
+      imports: "id, updatedAt, name, mimeType, contentHash"
+    });
   }
 }
 
 export const db = new OpenSketchDatabase();
+export const IMPORT_LIBRARY_CHANGED_EVENT = "OpenSketch:import-library-changed";
+
+async function importedMediaHash(media: ImportedMediaRecord): Promise<string> {
+  const bytes = new TextEncoder().encode(`${media.mimeType}\0${media.dataUrl}`);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
+}
+
+function notifyImportLibraryChanged(): void {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event(IMPORT_LIBRARY_CHANGED_EVENT));
+  }
+}
+
+export async function listImportedMedia(): Promise<ImportedMediaLibraryRecord[]> {
+  return db.imports.orderBy("updatedAt").reverse().toArray();
+}
+
+export async function getImportedMedia(
+  id: string
+): Promise<ImportedMediaLibraryRecord | undefined> {
+  return db.imports.get(id);
+}
+
+export async function saveImportedMedia(
+  media: ImportedMediaRecord,
+  timestamp = new Date().toISOString()
+): Promise<ImportedMediaLibraryRecord> {
+  const contentHash = await importedMediaHash(media);
+  const matching = await db.imports.where("contentHash").equals(contentHash).first();
+  const record: ImportedMediaLibraryRecord = matching
+    ? { ...matching, name: media.name, updatedAt: timestamp }
+    : {
+        ...media,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+        contentHash
+      };
+  await db.imports.put(record);
+  notifyImportLibraryChanged();
+  return record;
+}
+
+export async function rememberProjectImports(
+  imports: ImportedMediaRecord[],
+  timestamp: string
+): Promise<void> {
+  for (const media of imports) {
+    await saveImportedMedia(media, timestamp);
+  }
+}
+
+export async function deleteImportedMedia(id: string): Promise<void> {
+  await db.imports.delete(id);
+  notifyImportLibraryChanged();
+}
 
 export function createProject(name = "Untitled figure"): ProjectRecord {
   const now = new Date().toISOString();

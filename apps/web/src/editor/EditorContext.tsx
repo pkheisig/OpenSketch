@@ -88,9 +88,18 @@ import {
   type RecognizedGroup
 } from "@/editor/groupRecognition";
 import {
+  SELECTION_CLIPBOARD_MARKER_PREFIX,
   type SelectionClipboardFormat,
   writeSelectionToSystemClipboard
 } from "@/editor/selectionClipboard";
+import {
+  clipboardContainsSelectionMarker,
+  importedMediaFileFromClipboard
+} from "@/editor/clipboardImport";
+import {
+  rememberProjectImports,
+  saveImportedMedia as saveImportedMediaToLibrary
+} from "@/persistence/database";
 import { assetManifest } from "@/assets/manifest";
 import {
   CREATION_DEFAULTS_STORAGE_KEY,
@@ -263,7 +272,8 @@ interface EditorContextValue {
   placeCreation: (point: Point, endPoint?: Point) => void;
   addAsset: (family: AssetFamily, variant: AssetVariant, point?: Point) => Promise<void>;
   setAssetVariant: (variantId: string) => Promise<void>;
-  importMedia: (file: File) => Promise<void>;
+  addImportedMedia: (media: ImportedMediaRecord, point?: Point) => Promise<void>;
+  importMedia: (file: File, point?: Point) => Promise<ImportedMediaRecord>;
   deleteSelection: () => void;
   duplicateSelection: () => Promise<void>;
   copySelectionToClipboard: (format?: SelectionClipboardFormat, cut?: boolean) => Promise<void>;
@@ -697,6 +707,7 @@ export function EditorProvider({
   const lastCommit = useRef<{ label: string; at: number } | null>(null);
   const restoring = useRef(false);
   const clipboard = useRef<FabricObject[]>([]);
+  const clipboardMarker = useRef<string | undefined>(undefined);
   const savedElementStyles = useRef(loadSavedElementStyles());
   const pendingSnapshot = useRef<{ snapshot: string; revision: number } | undefined>(undefined);
   const saveQueue = useRef<Promise<void>>(Promise.resolve());
@@ -706,6 +717,10 @@ export function EditorProvider({
   const assetInsertQueue = useRef<Promise<void>>(Promise.resolve());
   const importQueue = useRef<Promise<void>>(Promise.resolve());
   const latestProject = useRef(project);
+  const initialProjectImports = useRef({
+    imports: project.uploads,
+    updatedAt: project.updatedAt
+  });
   const latestCanvasSettings = useRef(project.canvas);
   const latestZoom = useRef(1);
   const canvasElement = useRef<HTMLCanvasElement | null>(null);
@@ -749,6 +764,13 @@ export function EditorProvider({
     | undefined
   >(undefined);
   const createPointText = useRef<(point: Point) => void>(() => undefined);
+
+  useEffect(() => {
+    void rememberProjectImports(
+      initialProjectImports.current.imports,
+      initialProjectImports.current.updatedAt
+    );
+  }, []);
 
   const refreshConnectors = useCallback(
     (changedObjectId?: string) => {
@@ -1857,12 +1879,78 @@ export function EditorProvider({
     [canvas, commit, refreshConnectors]
   );
 
-  const importMedia = useCallback(
-    (file: File) => {
+  const placeImportedMedia = useCallback(
+    async (media: ImportedMediaRecord, point?: Point) => {
+      if (!canvas) return media;
+      const stored = await saveImportedMediaToLibrary(media);
+      let object: FabricObject;
+      if (stored.mimeType === "image/svg+xml") {
+        const source = sanitizeImportedSvg(
+          await (await fetch(stored.dataUrl)).text(),
+          `import-${stored.id}`
+        );
+        const result = await loadEditableSvg(source);
+        object = groupSvgElements(
+          result.objects.filter((item): item is FabricObject => Boolean(item)),
+          result.options
+        );
+      } else {
+        object = await FabricImage.fromURL(stored.dataUrl);
+      }
+      const maxSide = Math.max(object.width || 1, object.height || 1);
+      object.scale(Math.min(1, 420 / maxSide));
+      object.assetId = stored.id;
+      object.originalPalette = Object.fromEntries(
+        paletteFromObject(object).map((color) => [color, color])
+      );
+      rememberOriginalColors(object);
+      configureEditableSvgParts(object);
+      latestProject.current = {
+        ...latestProject.current,
+        uploads: [
+          ...latestProject.current.uploads.filter((candidate) => candidate.id !== stored.id),
+          {
+            id: stored.id,
+            name: stored.name,
+            mimeType: stored.mimeType,
+            dataUrl: stored.dataUrl
+          }
+        ]
+      };
+      addObject(object, stored.name, "import", point);
+      return stored;
+    },
+    [addObject, canvas]
+  );
+
+  const addImportedMedia = useCallback(
+    (media: ImportedMediaRecord, point?: Point) => {
       const operation = importQueue.current.then(async () => {
-        if (!canvas) return;
+        await placeImportedMedia(media, point);
+      });
+      importQueue.current = operation.catch(() => undefined);
+      return operation;
+    },
+    [placeImportedMedia]
+  );
+
+  const importMedia = useCallback(
+    (file: File, point?: Point) => {
+      const operation = importQueue.current.then(async () => {
         const extension = file.name.toLowerCase().split(".").at(-1);
-        if (!["svg", "png", "jpg", "jpeg", "webp"].includes(extension ?? "")) {
+        const inferredMimeType =
+          extension === "svg"
+            ? "image/svg+xml"
+            : extension === "jpg" || extension === "jpeg"
+              ? "image/jpeg"
+              : extension === "png"
+                ? "image/png"
+                : extension === "webp"
+                  ? "image/webp"
+                  : file.type;
+        if (
+          !["image/svg+xml", "image/png", "image/jpeg", "image/webp"].includes(inferredMimeType)
+        ) {
           throw new Error("Choose an SVG, PNG, JPEG, or WebP image.");
         }
         if (file.size > 25 * 1024 * 1024) {
@@ -1875,42 +1963,22 @@ export function EditorProvider({
           reader.onerror = () => reject(reader.error);
           reader.readAsDataURL(file);
         });
-        let object: FabricObject;
-        if (file.type === "image/svg+xml" || file.name.toLowerCase().endsWith(".svg")) {
+        if (inferredMimeType === "image/svg+xml") {
           const source = sanitizeImportedSvg(await file.text(), `import-${importId}`);
           dataUrl = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(source)))}`;
-          const result = await loadEditableSvg(source);
-          object = groupSvgElements(
-            result.objects.filter((item): item is FabricObject => Boolean(item)),
-            result.options
-          );
-        } else {
-          object = await FabricImage.fromURL(dataUrl);
         }
-        const maxSide = Math.max(object.width || 1, object.height || 1);
-        object.scale(Math.min(1, 420 / maxSide));
-        object.assetId = importId;
-        object.originalPalette = Object.fromEntries(
-          paletteFromObject(object).map((color) => [color, color])
-        );
-        rememberOriginalColors(object);
-        configureEditableSvgParts(object);
-        const importedMedia: ImportedMediaRecord = {
+        const media: ImportedMediaRecord = {
           id: importId,
           name: file.name,
-          mimeType: file.type,
+          mimeType: inferredMimeType,
           dataUrl
         };
-        latestProject.current = {
-          ...latestProject.current,
-          uploads: [...latestProject.current.uploads, importedMedia]
-        };
-        addObject(object, file.name, "import");
+        return placeImportedMedia(media, point);
       });
-      importQueue.current = operation.catch(() => undefined);
+      importQueue.current = operation.then(() => undefined).catch(() => undefined);
       return operation;
     },
-    [addObject, canvas]
+    [placeImportedMedia]
   );
 
   const selectParentAsset = useCallback(() => {
@@ -2008,7 +2076,9 @@ export function EditorProvider({
       const selectedObjects = canvas.getActiveObjects();
       if (!activeObject || selectedObjects.length === 0) return;
 
-      const systemWrite = writeSelectionToSystemClipboard(activeObject, format).catch(
+      const marker = `${SELECTION_CLIPBOARD_MARKER_PREFIX}${crypto.randomUUID()}`;
+      clipboardMarker.current = marker;
+      const systemWrite = writeSelectionToSystemClipboard(activeObject, format, marker).catch(
         (error: unknown) => {
           console.warn(`Could not copy the selection as ${format.toUpperCase()}.`, error);
         }
@@ -2594,6 +2664,36 @@ export function EditorProvider({
   );
 
   useEffect(() => {
+    const onPaste = (event: ClipboardEvent) => {
+      if (
+        !canvas ||
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
+      const activeObject = canvas.getActiveObject();
+      if (activeObject instanceof IText && activeObject.isEditing) return;
+      const data = event.clipboardData;
+      if (!data) return;
+      if (clipboardContainsSelectionMarker(data, clipboardMarker.current)) {
+        event.preventDefault();
+        void pasteSelection();
+        return;
+      }
+      const media = importedMediaFileFromClipboard(data);
+      if (media) {
+        event.preventDefault();
+        clipboard.current = [];
+        clipboardMarker.current = undefined;
+        void importMedia(media);
+        return;
+      }
+      if (clipboard.current.length > 0) {
+        event.preventDefault();
+        void pasteSelection();
+      }
+    };
     const onKeyDown = (event: KeyboardEvent) => {
       if (
         !canvas ||
@@ -2625,9 +2725,6 @@ export function EditorProvider({
       } else if (modifier && event.key.toLowerCase() === "x") {
         event.preventDefault();
         void copySelectionToClipboard("png", true);
-      } else if (modifier && event.key.toLowerCase() === "v") {
-        event.preventDefault();
-        void pasteSelection();
       } else if (modifier && event.key.toLowerCase() === "a") {
         event.preventDefault();
         const objects = canvas.getObjects().filter((object) => object.visible !== false);
@@ -2687,9 +2784,11 @@ export function EditorProvider({
       if (activeObject instanceof IText && activeObject.isEditing) return;
       if (event.key.startsWith("Arrow")) commit("Nudge");
     };
+    window.addEventListener("paste", onPaste);
     window.addEventListener("keydown", onKeyDown);
     window.addEventListener("keyup", onKeyUp);
     return () => {
+      window.removeEventListener("paste", onPaste);
       window.removeEventListener("keydown", onKeyDown);
       window.removeEventListener("keyup", onKeyUp);
     };
@@ -2702,6 +2801,7 @@ export function EditorProvider({
     duplicateSelection,
     fitCanvas,
     groupSelection,
+    importMedia,
     pasteSelection,
     redo,
     refreshConnectors,
@@ -2736,6 +2836,7 @@ export function EditorProvider({
       placeCreation,
       addAsset,
       setAssetVariant,
+      addImportedMedia,
       importMedia,
       deleteSelection,
       duplicateSelection,
@@ -2767,6 +2868,7 @@ export function EditorProvider({
     }),
     [
       addAsset,
+      addImportedMedia,
       setAssetVariant,
       creationDefaults,
       creationTool,
