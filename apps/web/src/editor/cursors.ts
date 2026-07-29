@@ -4,7 +4,7 @@ const INK = "#183133";
 const HALO = "#ffffff";
 
 const HAND_PATH =
-  "M10 2a1.5 1.5 0 0 0-1.5 1.5v7.8l-1.2-1.2a1.5 1.5 0 0 0-2.1 0 1.5 1.5 0 0 0 0 2.1l4.8 4.8c1.5 1.5 3.5 2.5 5.7 2.5h2.8c3.3 0 6-2.7 6-6V9.5a1.5 1.5 0 0 0-3 0V11M16 8.5a1.5 1.5 0 0 0-3 0M13 6.5a1.5 1.5 0 0 0-3 0";
+  "M9 20c-1.8-1.2-2.8-3-3.5-5L3.9 10.8c-.35-.95.15-2 1.1-2.35s2 .1 2.45 1l1.05 2.05V3.2C8.5 2 9.45 1 10.65 1s2.15 1 2.15 2.2V8c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v.8c0-1 .8-1.8 1.8-1.8s1.8.8 1.8 1.8v1c0-1 .8-1.8 1.8-1.8 1.1 0 1.9.9 1.9 2v4c0 4.9-3.7 8.5-8.5 8.5h-2c-1.5 0-3-.9-4.2-2.5Z";
 
 const LUCIDE_MOVE_HORIZONTAL = [
   '<path d="m18 8 4 4-4 4"/>',
@@ -56,8 +56,7 @@ function handCursor(fallback: string): string {
   const source = [
     `<svg xmlns="http://www.w3.org/2000/svg" width="${CURSOR_SIZE}" height="${CURSOR_SIZE}" viewBox="0 0 28 28">`,
     '<g transform="translate(2 2)">',
-    `<path fill="none" stroke="${HALO}" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" d="${HAND_PATH}"/>`,
-    `<path fill="${INK}" stroke="${INK}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="${HAND_PATH}"/>`,
+    `<path fill="${HALO}" stroke="${INK}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="${HAND_PATH}"/>`,
     "</g>",
     "</svg>"
   ].join("");
