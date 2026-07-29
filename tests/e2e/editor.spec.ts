@@ -1224,6 +1224,41 @@ test("ungroups exactly one level of a nested group hierarchy", async ({ page }) 
   await expect(page.locator(".layers-title small")).toHaveText("3");
 });
 
+test("preserves imported SVG group hierarchy across successive ungroup actions", async ({
+  page
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Imports", exact: true }).click();
+  await page
+    .locator('input[type="file"][accept*="image/svg+xml"]')
+    .setInputFiles("tests/fixtures/nested-groups.svg");
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+
+  const center = await artboardPoint(page);
+  await page.mouse.click(center.x, center.y, { button: "right" });
+  await page
+    .getByRole("menu", { name: "nested-groups.svg actions" })
+    .getByRole("menuitem", { name: "Ungroup" })
+    .click();
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await expect(page.locator(".layers-title small")).toHaveText("2");
+
+  await ensureLayersOpen(page);
+  const firstSourceGroup = page
+    .locator(".layer-list > button")
+    .filter({ has: page.getByText(/^Group \d+$/, { exact: true }) });
+  await expect(firstSourceGroup).toHaveCount(1);
+  await firstSourceGroup.click();
+  await page.getByRole("button", { name: "Ungroup", exact: true }).click();
+  await expect(page.locator(".layers-title small")).toHaveText("3");
+
+  const preservedSubgroups = page
+    .locator(".layer-list > button")
+    .filter({ has: page.getByText(/^Group \d+$/, { exact: true }) });
+  await expect(preservedSubgroups).toHaveCount(2);
+});
+
 test("double-clicks through overlapping objects and into grouped children", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();

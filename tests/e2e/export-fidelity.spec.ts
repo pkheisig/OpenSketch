@@ -24,8 +24,19 @@ test("preserves editable color, gradients, clipping, fonts, and raster dimension
   await page.locator('input[type="file"][accept*="image/svg+xml"]').setInputFiles(fixturePath);
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
+  const persistedArtboard = await page.locator(".artboard-stage").boundingBox();
+  if (!persistedArtboard) throw new Error("Persisted artboard is not visible.");
+  await page.mouse.click(
+    persistedArtboard.x + persistedArtboard.width / 2,
+    persistedArtboard.y + persistedArtboard.height / 2
+  );
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".layers-title small")).toHaveText("1");
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  await page
+    .getByRole("menu", { name: "Shape tools" })
+    .getByRole("menuitem", { name: /Shapes/ })
+    .hover();
   await page.getByRole("menuitem", { name: "Rectangle", exact: true }).click();
   const canvasBounds = await page.locator(".artboard-stage").boundingBox();
   if (!canvasBounds) throw new Error("Artboard is not visible.");
@@ -33,6 +44,7 @@ test("preserves editable color, gradients, clipping, fonts, and raster dimension
     canvasBounds.x + canvasBounds.width * 0.68,
     canvasBounds.y + canvasBounds.height * 0.65
   );
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".layers-title small")).toHaveText("2");
 
   const artboard = page.locator(".artboard-stage");
@@ -44,6 +56,19 @@ test("preserves editable color, gradients, clipping, fonts, and raster dimension
       y: artboardBounds!.height / 2 + 78 * (artboardBounds!.width / 1920)
     }
   });
+  await artboard.dblclick({
+    position: {
+      x: artboardBounds!.width / 2,
+      y: artboardBounds!.height / 2 + 78 * (artboardBounds!.width / 1920)
+    }
+  });
+  await artboard.click({
+    position: {
+      x: artboardBounds!.width / 2,
+      y: artboardBounds!.height / 2 + 78 * (artboardBounds!.width / 1920)
+    }
+  });
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   const fill = page.getByLabel("Fill color value");
   await expect(fill).toBeVisible();
   const originalColor = await fill.inputValue();

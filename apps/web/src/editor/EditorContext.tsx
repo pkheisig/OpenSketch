@@ -2361,11 +2361,22 @@ export function EditorProvider({
   const ungroupSelection = useCallback(() => {
     if (!canvas || !(canvas.getActiveObject() instanceof Group)) return;
     const group = canvas.getActiveObject() as Group;
+    const parent = directNestedParent(group);
+    const index = parent?.getObjects().indexOf(group) ?? -1;
+    canvas.discardActiveObject();
     const objects = group.removeAll();
     rememberRecognizedGroup(objects, recognizedGroupRecord(group, objects));
-    canvas.remove(group);
-    canvas.add(...objects);
+    if (parent && index >= 0) {
+      parent.remove(group);
+      parent.insertAt(index, ...objects);
+      parent.setCoords();
+      parent.dirty = true;
+    } else {
+      canvas.remove(group);
+      canvas.add(...objects);
+    }
     const selectionObject = new ActiveSelection(objects, { canvas });
+    configureSelectionControls(selectionObject, latestZoom.current);
     canvas.setActiveObject(selectionObject);
     deepSelectionCycle.current = undefined;
     setSelection(selectionObject.getObjects());

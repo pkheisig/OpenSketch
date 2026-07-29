@@ -1,4 +1,4 @@
-import { loadSVGFromString, type FabricObject } from "fabric";
+import { Group, loadSVGFromString, type FabricObject } from "fabric";
 
 const SVG_BLEND_MODES = new Set<GlobalCompositeOperation>([
   "multiply",
@@ -21,6 +21,20 @@ const SVG_BLEND_MODES = new Set<GlobalCompositeOperation>([
 interface BlendRule {
   selectors: string[];
   mode: GlobalCompositeOperation;
+}
+
+interface SvgHierarchyNode {
+  kind: "svg-hierarchy";
+  children: Array<SvgHierarchyNode | FabricObject>;
+  groups: Map<string, SvgHierarchyNode>;
+}
+
+const SVG_GROUP_ATTRIBUTE = "data-opensketch-group";
+
+function isSvgHierarchyNode(
+  value: SvgHierarchyNode | FabricObject
+): value is SvgHierarchyNode {
+  return (value as Partial<SvgHierarchyNode>).kind === "svg-hierarchy";
 }
 
 export function normalizeSvgForFabric(source: string): string {
@@ -103,25 +117,93 @@ export function svgBlendMode(
   return null;
 }
 
-export function loadEditableSvg(source: string) {
+function annotateSvgGroups(source: string): string {
+  const document = new DOMParser().parseFromString(source, "image/svg+xml");
+  if (document.querySelector("parsererror")) return source;
+  document.querySelectorAll("g").forEach((group, index) => {
+    group.setAttribute(SVG_GROUP_ATTRIBUTE, String(index));
+  });
+  return new XMLSerializer().serializeToString(document.documentElement);
+}
+
+function sourceGroupPath(element: Element): string[] {
+  const path: string[] = [];
+  for (let parent = element.parentElement; parent; parent = parent.parentElement) {
+    if (parent.localName.toLowerCase() !== "g") continue;
+    const id = parent.getAttribute(SVG_GROUP_ATTRIBUTE);
+    if (id) path.unshift(id);
+  }
+  return path;
+}
+
+function groupSvgHierarchy(
+  objects: Array<FabricObject | null>,
+  paths: WeakMap<FabricObject, string[]>
+): Array<FabricObject | null> {
+  const root: SvgHierarchyNode = {
+    kind: "svg-hierarchy",
+    children: [],
+    groups: new Map()
+  };
+  objects.forEach((object) => {
+    if (!object) return;
+    let node = root;
+    for (const id of paths.get(object) ?? []) {
+      let child = node.groups.get(id);
+      if (!child) {
+        child = {
+          kind: "svg-hierarchy",
+          children: [],
+          groups: new Map()
+        };
+        node.groups.set(id, child);
+        node.children.push(child);
+      }
+      node = child;
+    }
+    node.children.push(object);
+  });
+  const materialize = (child: SvgHierarchyNode | FabricObject): FabricObject =>
+    isSvgHierarchyNode(child)
+      ? new Group(child.children.map(materialize))
+      : child;
+  return root.children.map(materialize);
+}
+
+function svgLeafObjects(objects: FabricObject[]): FabricObject[] {
+  return objects.flatMap((object) =>
+    object instanceof Group ? svgLeafObjects(object.getObjects()) : [object]
+  );
+}
+
+export async function loadEditableSvg(source: string) {
   const compatibleSource = normalizeSvgForFabric(source);
-  const rules = blendRules(compatibleSource);
-  return loadSVGFromString(compatibleSource, (element, object) => {
+  const annotatedSource = annotateSvgGroups(compatibleSource);
+  const rules = blendRules(annotatedSource);
+  const hierarchyPaths = new WeakMap<FabricObject, string[]>();
+  const parsed = await loadSVGFromString(annotatedSource, (element, object) => {
+    hierarchyPaths.set(object, sourceGroupPath(element));
     const blendMode = svgBlendMode(element, rules);
     if (blendMode) {
       object.globalCompositeOperation = blendMode;
       object.objectCaching = false;
     }
   });
+  return {
+    ...parsed,
+    objects: groupSvgHierarchy(parsed.objects, hierarchyPaths)
+  };
 }
 
 export function copySvgBlendModes(source: FabricObject[], target: FabricObject[]): void {
-  if (source.length !== target.length) return;
-  source.forEach((sourceObject, index) => {
+  const sourceLeaves = svgLeafObjects(source);
+  const targetLeaves = svgLeafObjects(target);
+  if (sourceLeaves.length !== targetLeaves.length) return;
+  sourceLeaves.forEach((sourceObject, index) => {
     if (sourceObject.globalCompositeOperation !== "source-over") {
-      target[index].globalCompositeOperation = sourceObject.globalCompositeOperation;
-      target[index].objectCaching = false;
-      target[index].dirty = true;
+      targetLeaves[index].globalCompositeOperation = sourceObject.globalCompositeOperation;
+      targetLeaves[index].objectCaching = false;
+      targetLeaves[index].dirty = true;
     }
   });
 }
