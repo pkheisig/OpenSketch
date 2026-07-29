@@ -172,9 +172,17 @@ test("inserts editable standard top-view labware", async ({ page }) => {
     .first();
   await expect(card).toBeVisible();
   await card.getByRole("button", { name: "Insert 24 Well Plate Top View" }).click();
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
 
   await expect(page.locator(".inspector-header h2")).toHaveText("24 Well Plate Top View");
   await expect(page.locator(".layers-title small")).toHaveText("1");
+  await expect
+    .poll(async () =>
+      Number(
+        await page.locator(".inspector-scroll").getByRole("spinbutton", { name: "W" }).inputValue()
+      )
+    )
+    .toBeCloseTo(220, 0);
 });
 
 test("creates, edits, saves, reopens, and exports a local figure", async ({ page }) => {

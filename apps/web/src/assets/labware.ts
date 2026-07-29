@@ -5,12 +5,20 @@ const HEIGHT = 240;
 const SOURCE_PAGE = "https://github.com/pkheisig/OpenSketch";
 const WELL_GRID = { left: 48, top: 48, width: 288, height: 168 };
 const WELL_RADIUS_RATIO: Record<number, number> = {
-  6: 0.42,
-  12: 0.41,
-  24: 0.38,
+  6: 0.46,
+  12: 0.44,
+  24: 0.41,
   48: 0.35,
   96: 0.34,
   384: 0.3
+};
+const LABEL_FONT_SIZE: Record<number, number> = {
+  6: 16,
+  12: 14,
+  24: 11,
+  48: 8.5,
+  96: 7,
+  384: 5.2
 };
 
 function svgDataUrl(source: string): string {
@@ -35,8 +43,7 @@ function wellPlateSvg(rows: number, columns: number): string {
       `<circle id="well-${row + 1}-${column + 1}" cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="${radius.toFixed(2)}" fill="#d9eef4" stroke="#5f858a" stroke-width="${strokeWidth.toFixed(2)}"/>`
     ].join("");
   }).join("");
-  const columnFontSize = columns <= 6 ? 12 : columns <= 12 ? 8.5 : 5.2;
-  const rowFontSize = rows <= 4 ? 12 : rows <= 8 ? 8.5 : 5.2;
+  const labelFontSize = LABEL_FONT_SIZE[wellCount] ?? 8.5;
   const columnLabels = Array.from({ length: columns }, (_, column) => {
     const x = WELL_GRID.left + (column + 0.5) * xStep;
     return `<text id="column-label-${column + 1}" x="${x.toFixed(2)}" y="39" text-anchor="middle">${column + 1}</text>`;
@@ -53,10 +60,10 @@ function wellPlateSvg(rows: number, columns: number): string {
     '<path id="plate" d="M28 4H334c9 0 16 7 16 16v194c0 9-7 16-16 16H28L4 206V28Z" fill="#eef5f5" stroke="#587d82" stroke-width="2.4"/>',
     '<path id="plate-inset" d="M30 13H331c6 0 10 4 10 10v187c0 6-4 10-10 10H30L14 204V31Z" fill="#e5eff1" stroke="#a8c2c5" stroke-width="2"/>',
     '<path id="plate-highlight" d="M31 17H329c5 0 8 3 8 8" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" opacity=".9"/>',
-    `<g id="column-labels" fill="#315f76" font-family="'Source Sans 3', sans-serif" font-size="${columnFontSize}" font-weight="600">`,
+    `<g id="column-labels" fill="#315f76" font-family="'Source Sans 3', sans-serif" font-size="${labelFontSize}" font-weight="600">`,
     columnLabels,
     "</g>",
-    `<g id="row-labels" fill="#315f76" font-family="'Source Sans 3', sans-serif" font-size="${rowFontSize}" font-weight="600">`,
+    `<g id="row-labels" fill="#315f76" font-family="'Source Sans 3', sans-serif" font-size="${labelFontSize}" font-weight="600">`,
     rowLabels,
     "</g>",
     wells,

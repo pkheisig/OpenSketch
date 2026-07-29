@@ -65,6 +65,25 @@ describe("top-view labware assets", () => {
   });
 
   it.each([
+    ["6 Well Plate Top View", 16, 35],
+    ["12 Well Plate Top View", 14, 23],
+    ["24 Well Plate Top View", 11, 16]
+  ])(
+    "keeps labels and wells prominent in the low-density %s layout",
+    (title, minimumLabelSize, minimumRadius) => {
+      const family = TOP_VIEW_LABWARE_FAMILIES.find((candidate) => candidate.title === title);
+      const source = decodeSvg(family!.variants[0].assetPath);
+      const labelSize = Number(
+        source.match(/id="column-labels"[^>]+font-size="([^"]+)"/)?.[1] ?? 0
+      );
+      const wells = wellGeometry(source);
+
+      expect(labelSize).toBeGreaterThanOrEqual(minimumLabelSize);
+      expect(Math.min(...wells.map((well) => well.radius))).toBeGreaterThanOrEqual(minimumRadius);
+    }
+  );
+
+  it.each([
     "6 Well Plate Top View",
     "12 Well Plate Top View",
     "24 Well Plate Top View",
