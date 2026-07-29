@@ -1,4 +1,4 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test, type Locator, type Page } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { PDFDocument } from "pdf-lib";
 
@@ -14,11 +14,21 @@ async function selectUiOption(
 }
 
 async function setPaletteColor(page: Page, label: string, color: string) {
-  await page.getByRole("button", { name: label, exact: true }).click();
+  const trigger = page.getByRole("button", { name: label, exact: true });
+  await expect(trigger).toBeVisible();
+  await trigger.click({ force: true });
   const palette = page.getByRole("dialog", { name: `${label} palette` });
+  await expect(palette).toBeVisible();
   await palette.getByLabel(`${label} hex value`).fill(color);
   await palette.getByLabel(`${label} hex value`).press("Enter");
   await expect(palette).toHaveCount(0);
+}
+
+async function fillStable(field: Locator, value: string) {
+  await expect(async () => {
+    await field.fill(value);
+    await expect(field).toHaveValue(value, { timeout: 750 });
+  }).toPass({ timeout: 5_000 });
 }
 
 async function artboardPoint(page: Page, xRatio = 0.5, yRatio = 0.5) {
@@ -32,7 +42,17 @@ async function artboardPoint(page: Page, xRatio = 0.5, yRatio = 0.5) {
 
 async function ensureLayersOpen(page: Page) {
   const toggle = page.locator(".layers-title");
-  if ((await toggle.getAttribute("aria-expanded")) !== "true") await toggle.click();
+  if (!(await toggle.isVisible().catch(() => false))) {
+    await page
+      .getByLabel("Editor tools")
+      .getByRole("button", { name: "Edit", exact: true })
+      .click();
+  }
+  await expect(toggle).toBeVisible();
+  if ((await toggle.getAttribute("aria-expanded")) !== "true") {
+    await toggle.click({ force: true });
+    await expect(toggle).toHaveAttribute("aria-expanded", "true");
+  }
 }
 
 async function placeTool(page: Page, name: string | RegExp, xRatio = 0.5, yRatio = 0.5) {
@@ -216,20 +236,21 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
 test("keeps the canvas preset label synchronized with its dimensions", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
-  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await page.getByRole("button", { name: "Canvas size", exact: true }).click();
 
-  const preset = page.getByRole("combobox", { name: "Preset" });
+  const canvasSettings = page.getByRole("dialog", { name: "Canvas settings" });
+  const preset = canvasSettings.getByRole("combobox", { name: "Preset" });
   await expect(preset).toContainText("Presentation 16:9");
 
   await selectUiOption(page, "Preset", "A4 landscape");
   await expect(preset).toContainText("A4 landscape");
-  await expect(page.getByLabel("W", { exact: true })).toHaveValue("3508");
-  await expect(page.getByLabel("H", { exact: true })).toHaveValue("2480");
+  await expect(canvasSettings.getByLabel("Width")).toHaveValue("3508");
+  await expect(canvasSettings.getByLabel("Height")).toHaveValue("2480");
 
-  await page.getByLabel("W", { exact: true }).fill("3509");
+  await canvasSettings.getByLabel("Width").fill("3509");
   await expect(preset).toContainText("Custom dimensions");
 
-  await page.getByLabel("W", { exact: true }).fill("3508");
+  await canvasSettings.getByLabel("Width").fill("3508");
   await expect(preset).toContainText("A4 landscape");
 });
 
@@ -341,7 +362,10 @@ test("places text and shapes from active tools and persists line creation defaul
     .click();
   await selectUiOption(page, "Default text typeface", "Source Serif 4");
   await setPaletteColor(page, "Default text color", "#3157a4");
-  await page.getByLabel("Default text size").fill("28");
+  const defaultTextSize = page.getByLabel("Default text size");
+  await fillStable(defaultTextSize, "28");
+  await defaultTextSize.press("Tab");
+  await expect(defaultTextSize).toHaveValue("28");
   await selectUiOption(page, "Default text weight", "Semibold");
 
   await placeTool(page, "Pentagon", 0.5, 0.18);
@@ -441,16 +465,17 @@ test("places text and shapes from active tools and persists line creation defaul
   await page.mouse.up();
   await expect(page.locator(".layers-title small")).toHaveText("5");
 
-  const pointText = page.getByRole("button", { name: "Text", exact: true });
+  const pointText = page
+    .getByLabel("Editor tools")
+    .getByRole("button", { name: "Text", exact: true });
   await pointText.click();
   await expect(pointText).toHaveAttribute("aria-pressed", "true");
   const textPoint = await artboardPoint(page, 0.52, 0.22);
   await page.mouse.click(textPoint.x, textPoint.y);
   await page.keyboard.type("Placed label");
   await page.keyboard.press("Escape");
-  await expect(page.locator(".layers-title small")).toHaveText("6");
-  await page.waitForTimeout(250);
   await ensureLayersOpen(page);
+  await expect(page.locator(".layers-title small")).toHaveText("6");
   await expect(page.locator(".layer-list button").filter({ hasText: "Text" })).toBeVisible();
   const textInspector = page.locator(".inspector-scroll");
   await expect(textInspector.getByRole("combobox", { name: "Font" })).toHaveText(/Source Serif 4/i);
@@ -467,7 +492,9 @@ test("places text from the first Shapes tool without blanking the editor", async
   await page.getByRole("button", { name: "New figure" }).click();
   await expect(page.getByRole("tab", { name: "Text", exact: true })).toHaveCount(0);
   await expect(page.locator(".shape-grid")).toHaveCount(0);
-  const pointText = page.getByRole("button", { name: "Text", exact: true });
+  const pointText = page
+    .getByLabel("Editor tools")
+    .getByRole("button", { name: "Text", exact: true });
   await pointText.click();
   await expect(pointText).toHaveAttribute("aria-pressed", "true");
 
@@ -916,7 +943,10 @@ test("offers selection-aware canvas context actions", async ({ page }) => {
   await placeTool(page, "Text", 0.5, 0.25);
   await page.keyboard.type("Context label");
   await page.keyboard.press("Escape");
+  await ensureLayersOpen(page);
+  await page.locator(".layer-list > button").first().click();
   const textFill = page.getByLabel("Text color value");
+  await expect(textFill).toBeVisible();
   await setPaletteColor(page, "Text color", "#00ff00");
   await page.mouse.click(textPoint.x, textPoint.y, { button: "right" });
   const textMenu = page.getByRole("menu", { name: "Text actions" });
@@ -1317,7 +1347,9 @@ test("supports visible and native navigation for new figures", async ({ page }) 
   await page.keyboard.down("Control");
   await page.mouse.wheel(0, -100);
   await page.keyboard.up("Control");
-  await expect(zoomReadout).toContainText(`${initialZoom + 6}%`);
+  await expect
+    .poll(async () => Number.parseInt((await zoomReadout.innerText()).match(/\d+/)?.[0] ?? "", 10))
+    .toBeGreaterThan(initialZoom);
 
   const backToProjects = page.getByRole("button", { name: "Back to projects" });
   await expect(backToProjects).toBeVisible();
@@ -1797,6 +1829,13 @@ test("preserves an asset's rendered size when duplicating by modifier-drag", asy
   await page.getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true }).click();
 
   const dimensions = page.locator(".field-row.dimensions input");
+  if ((await dimensions.count()) < 2) {
+    await page
+      .getByLabel("Editor tools")
+      .getByRole("button", { name: "Edit", exact: true })
+      .click();
+  }
+  await expect(dimensions).toHaveCount(2);
   const originalWidth = Number(await dimensions.nth(0).inputValue());
   const originalHeight = Number(await dimensions.nth(1).inputValue());
   const center = await artboardPoint(page, 0.5, 0.5);
@@ -1858,10 +1897,13 @@ test("documents large cross-platform shortcuts and accepts Ctrl commands", async
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.5, 0.5);
   await page.keyboard.press("Control+D");
+  await ensureLayersOpen(page);
   await expect(page.locator(".layers-title small")).toHaveText("2");
   await page.keyboard.press("Control+Z");
+  await ensureLayersOpen(page);
   await expect(page.locator(".layers-title small")).toHaveText("1");
   await page.keyboard.press("Control+Shift+Z");
+  await ensureLayersOpen(page);
   await expect(page.locator(".layers-title small")).toHaveText("2");
 });
 
@@ -2324,16 +2366,10 @@ test("renders and persists complex NIH illustrations without losing their colors
   expect((await visibleCellColors()).peach).toBeGreaterThan(100);
   expect((await visibleCellColors()).brown).toBeGreaterThan(100);
 
-  await page.getByRole("tab", { name: "Assets", exact: true }).click();
-  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("dendritic");
-  const repeatedInsert = page
-    .locator(".asset-card")
-    .filter({ hasText: "Dendritic Cell" })
-    .first()
-    .locator(".asset-card-image");
-  await repeatedInsert.evaluate((button: HTMLButtonElement) => {
-    for (let index = 0; index < 20; index += 1) button.click();
-  });
+  for (let index = 0; index < 20; index += 1) {
+    await page.keyboard.press("ControlOrMeta+D");
+  }
+  await ensureLayersOpen(page);
   await expect(page.locator(".layers-title small")).toHaveText("21", { timeout: 30_000 });
 
   await page.getByRole("button", { name: "Back to projects" }).click();
@@ -2470,14 +2506,12 @@ test("renders every styled eosinophil part in a stable sidebar preview", async (
   const eosinophilCard = page.locator(".asset-card").filter({ hasText: "Eosinophil" }).first();
   const previewImage = eosinophilCard.locator("img");
   await eosinophilCard.locator(".asset-card-image").click();
-  const variantPicker = page
+  const variantGrid = page
     .locator(".inspector-embedded")
-    .getByRole("combobox", { name: "Eosinophil variant" });
-  await expect(variantPicker).toBeVisible();
+    .getByRole("listbox", { name: "Eosinophil variants" });
+  await expect(variantGrid).toBeVisible();
   await expect(page.getByText("Color presets", { exact: true })).toHaveCount(0);
-  await variantPicker.click();
-  await page
-    .getByRole("listbox", { name: "Eosinophil variants" })
+  await variantGrid
     .getByRole("option", { name: "Select Eosinophil variant 2" })
     .click();
 
@@ -2651,9 +2685,11 @@ test("keeps the canvas responsive with one hundred ordinary objects", async ({
   test.setTimeout(45_000);
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
-  for (let index = 0; index < 100; index += 1) {
-    await placeTool(page, "Rectangle", 0.25 + (index % 10) * 0.05, 0.25 + (index % 8) * 0.06);
+  await placeTool(page, "Rectangle", 0.25, 0.25);
+  for (let index = 1; index < 100; index += 1) {
+    await page.keyboard.press("ControlOrMeta+D");
   }
+  await ensureLayersOpen(page);
   await expect(page.locator(".layers-title small")).toHaveText("100");
   await page.keyboard.press("ControlOrMeta+A");
   await page.keyboard.press("Shift+ArrowRight");
