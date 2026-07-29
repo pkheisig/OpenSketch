@@ -92,16 +92,36 @@ describe("top-view labware assets", () => {
     "384 Well Plate Top View"
   ])("centers the well field of %s within its labeled grid", (title) => {
     const family = TOP_VIEW_LABWARE_FAMILIES.find((candidate) => candidate.title === title);
-    const wells = wellGeometry(decodeSvg(family!.variants[0].assetPath));
+    const source = decodeSvg(family!.variants[0].assetPath);
+    const wells = wellGeometry(source);
+    const grid = {
+      left: Number(source.match(/data-grid-left="([^"]+)"/)?.[1]),
+      top: Number(source.match(/data-grid-top="([^"]+)"/)?.[1]),
+      width: Number(source.match(/data-grid-width="([^"]+)"/)?.[1]),
+      height: Number(source.match(/data-grid-height="([^"]+)"/)?.[1])
+    };
     const left = Math.min(...wells.map((well) => well.cx - well.radius));
     const right = Math.max(...wells.map((well) => well.cx + well.radius));
     const top = Math.min(...wells.map((well) => well.cy - well.radius));
     const bottom = Math.max(...wells.map((well) => well.cy + well.radius));
 
-    expect(left - 48).toBeCloseTo(336 - right, 1);
-    expect(top - 48).toBeCloseTo(216 - bottom, 1);
-    expect(left).toBeGreaterThan(48);
-    expect(top).toBeGreaterThan(48);
+    expect(left - grid.left).toBeCloseTo(grid.left + grid.width - right, 1);
+    expect(top - grid.top).toBeCloseTo(grid.top + grid.height - bottom, 1);
+    expect(left).toBeGreaterThan(grid.left);
+    expect(top).toBeGreaterThan(grid.top);
+  });
+
+  it("progressively reduces the label gutters as well density increases", () => {
+    const layouts = TOP_VIEW_LABWARE_FAMILIES.slice(0, 6).map((family) => {
+      const source = decodeSvg(family.variants[0].assetPath);
+      return {
+        left: Number(source.match(/data-grid-left="([^"]+)"/)?.[1]),
+        top: Number(source.match(/data-grid-top="([^"]+)"/)?.[1])
+      };
+    });
+
+    expect(layouts.map(({ left }) => left)).toEqual([48, 44, 40, 36, 32, 28]);
+    expect(layouts.map(({ top }) => top)).toEqual([48, 44, 40, 36, 32, 28]);
   });
 
   it.each([

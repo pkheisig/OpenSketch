@@ -162,7 +162,6 @@ test("resizes through the enlarged invisible control hitbox with a UI cursor", a
 test("inserts editable standard top-view labware", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
-  await page.getByRole("tab", { name: "Assets", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("24 well plate top view");
 
   const card = page

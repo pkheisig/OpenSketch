@@ -3,7 +3,17 @@ import type { AssetFamily } from "@workspace/editor-core";
 const WIDTH = 360;
 const HEIGHT = 240;
 const SOURCE_PAGE = "https://github.com/pkheisig/OpenSketch";
-const WELL_GRID = { left: 48, top: 48, width: 288, height: 168 };
+const WELL_GRID: Record<
+  number,
+  { left: number; top: number; width: number; height: number }
+> = {
+  6: { left: 48, top: 48, width: 288, height: 168 },
+  12: { left: 44, top: 44, width: 296, height: 176 },
+  24: { left: 40, top: 40, width: 304, height: 184 },
+  48: { left: 36, top: 36, width: 312, height: 188 },
+  96: { left: 32, top: 32, width: 320, height: 192 },
+  384: { left: 28, top: 28, width: 324, height: 196 }
+};
 const WELL_RADIUS_RATIO: Record<number, number> = {
   6: 0.46,
   12: 0.44,
@@ -27,14 +37,15 @@ function svgDataUrl(source: string): string {
 
 function wellPlateSvg(rows: number, columns: number): string {
   const wellCount = rows * columns;
-  const xStep = WELL_GRID.width / columns;
-  const yStep = WELL_GRID.height / rows;
+  const grid = WELL_GRID[wellCount] ?? WELL_GRID[96];
+  const xStep = grid.width / columns;
+  const yStep = grid.height / rows;
   const radius = Math.max(3.2, Math.min(xStep, yStep) * (WELL_RADIUS_RATIO[wellCount] ?? 0.36));
   const wells = Array.from({ length: rows * columns }, (_, index) => {
     const row = Math.floor(index / columns);
     const column = index % columns;
-    const cx = WELL_GRID.left + (column + 0.5) * xStep;
-    const cy = WELL_GRID.top + (row + 0.5) * yStep;
+    const cx = grid.left + (column + 0.5) * xStep;
+    const cy = grid.top + (row + 0.5) * yStep;
     const strokeWidth = Math.max(0.8, Math.min(1.8, radius * 0.1));
     const rimWidth = Math.max(1.4, Math.min(3.4, radius * 0.18));
     return [
@@ -44,17 +55,19 @@ function wellPlateSvg(rows: number, columns: number): string {
     ].join("");
   }).join("");
   const labelFontSize = LABEL_FONT_SIZE[wellCount] ?? 8.5;
+  const columnLabelY = grid.top - Math.max(7, labelFontSize * 0.65);
+  const rowLabelX = grid.left - Math.max(8, labelFontSize * 0.85);
   const columnLabels = Array.from({ length: columns }, (_, column) => {
-    const x = WELL_GRID.left + (column + 0.5) * xStep;
-    return `<text id="column-label-${column + 1}" x="${x.toFixed(2)}" y="39" text-anchor="middle">${column + 1}</text>`;
+    const x = grid.left + (column + 0.5) * xStep;
+    return `<text id="column-label-${column + 1}" x="${x.toFixed(2)}" y="${columnLabelY.toFixed(2)}" text-anchor="middle">${column + 1}</text>`;
   }).join("");
   const rowLabels = Array.from({ length: rows }, (_, row) => {
-    const y = WELL_GRID.top + (row + 0.5) * yStep;
-    return `<text id="row-label-${row + 1}" x="34" y="${y.toFixed(2)}" text-anchor="middle" dominant-baseline="central">${String.fromCharCode(65 + row)}</text>`;
+    const y = grid.top + (row + 0.5) * yStep;
+    return `<text id="row-label-${row + 1}" x="${rowLabelX.toFixed(2)}" y="${y.toFixed(2)}" text-anchor="middle" dominant-baseline="central">${String.fromCharCode(65 + row)}</text>`;
   }).join("");
 
   return [
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${WIDTH} ${HEIGHT}">`,
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${WIDTH} ${HEIGHT}" data-grid-left="${grid.left}" data-grid-top="${grid.top}" data-grid-width="${grid.width}" data-grid-height="${grid.height}">`,
     '<path id="plate-depth" d="M28 12H338c10 0 18 8 18 18v190c0 10-8 18-18 18H30L10 218V32Z" fill="#bed1d2" stroke="#6f9295" stroke-width="2"/>',
     '<path id="plate-side" d="M350 24l6 6v190c0 10-8 18-18 18H30l-6-6h310c9 0 16-7 16-16Z" fill="#abc4c7" stroke="#6f9295" stroke-width="1.5"/>',
     '<path id="plate" d="M28 4H334c9 0 16 7 16 16v194c0 9-7 16-16 16H28L4 206V28Z" fill="#eef5f5" stroke="#587d82" stroke-width="2.4"/>',
