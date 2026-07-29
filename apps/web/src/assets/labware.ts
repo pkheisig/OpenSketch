@@ -3,29 +3,37 @@ import type { AssetFamily } from "@workspace/editor-core";
 const WIDTH = 360;
 const HEIGHT = 240;
 const SOURCE_PAGE = "https://github.com/pkheisig/OpenSketch";
+const PLATE_INSET = { left: 18, top: 18, width: 324, height: 204 };
+const WELL_RADIUS_RATIO: Record<number, number> = {
+  6: 0.48,
+  12: 0.45,
+  24: 0.4,
+  48: 0.36,
+  96: 0.34,
+  384: 0.32
+};
 
 function svgDataUrl(source: string): string {
   return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(source)}`;
 }
 
 function wellPlateSvg(rows: number, columns: number): string {
-  const xMargin = 34;
-  const yMargin = 30;
-  const xStep = (WIDTH - xMargin * 2) / Math.max(columns - 1, 1);
-  const yStep = (HEIGHT - yMargin * 2) / Math.max(rows - 1, 1);
-  const radius = Math.max(3.2, Math.min(xStep, yStep) * 0.34);
+  const wellCount = rows * columns;
+  const xStep = PLATE_INSET.width / columns;
+  const yStep = PLATE_INSET.height / rows;
+  const radius = Math.max(3.2, Math.min(xStep, yStep) * (WELL_RADIUS_RATIO[wellCount] ?? 0.36));
   const wells = Array.from({ length: rows * columns }, (_, index) => {
     const row = Math.floor(index / columns);
     const column = index % columns;
-    const cx = xMargin + column * xStep;
-    const cy = yMargin + row * yStep;
+    const cx = PLATE_INSET.left + (column + 0.5) * xStep;
+    const cy = PLATE_INSET.top + (row + 0.5) * yStep;
     return `<circle id="well-${row + 1}-${column + 1}" cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="${radius.toFixed(2)}" fill="#ffffff" stroke="#78918f" stroke-width="${Math.max(1.2, radius * 0.12).toFixed(2)}"/>`;
   }).join("");
 
   return [
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${WIDTH} ${HEIGHT}">`,
     '<rect id="plate" x="8" y="8" width="344" height="224" rx="20" fill="#eef4f2" stroke="#536d6b" stroke-width="4"/>',
-    '<rect id="plate-inset" x="18" y="18" width="324" height="204" rx="14" fill="none" stroke="#b8c8c5" stroke-width="2"/>',
+    `<rect id="plate-inset" x="${PLATE_INSET.left}" y="${PLATE_INSET.top}" width="${PLATE_INSET.width}" height="${PLATE_INSET.height}" rx="14" fill="none" stroke="#b8c8c5" stroke-width="2"/>`,
     wells,
     "</svg>"
   ].join("");
