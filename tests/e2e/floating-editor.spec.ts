@@ -36,6 +36,19 @@ test("@smoke uses floating BioRender-style tools, flyouts, and left-side propert
   await lines.click();
   await expect(lineMenu).toBeVisible();
   await expect(lineMenu.getByRole("menuitem", { name: "Custom defaults" })).toHaveCount(0);
+  await expect(lineMenu.locator(".tool-flyout-primary")).toHaveCSS("width", "136px");
+  await expect(lineMenu.locator(".tool-flyout-primary button svg")).toHaveCount(7);
+  const lineCategoryStroke = await lineMenu
+    .locator(".tool-flyout-primary button svg")
+    .first()
+    .evaluate((icon) => {
+      const svg = icon as SVGSVGElement;
+      const path = svg.querySelector("path");
+      return path
+        ? Number.parseFloat(getComputedStyle(path).strokeWidth) *
+            (svg.getBoundingClientRect().width / svg.viewBox.baseVal.width)
+        : 0;
+    });
   await lineMenu.getByRole("menuitem", { name: /^Lines/ }).hover();
   const lineGlyphs = await lineMenu
     .locator(".tool-flyout-secondary button svg")
@@ -140,6 +153,20 @@ test("@smoke uses floating BioRender-style tools, flyouts, and left-side propert
   const shapeMenu = page.getByRole("menu", { name: "Shape tools" });
   await expect(shapeMenu).toBeVisible();
   await expect(shapeMenu.getByRole("menuitem")).toHaveCount(2);
+  await expect(shapeMenu.locator(".tool-flyout-primary")).toHaveCSS("width", "136px");
+  await expect(shapeMenu.locator(".tool-flyout-primary button svg")).toHaveCount(2);
+  const shapeCategoryStroke = await shapeMenu
+    .locator(".tool-flyout-primary button svg")
+    .first()
+    .evaluate((icon) => {
+      const svg = icon as SVGSVGElement;
+      const shape = svg.querySelector("rect, path");
+      return shape
+        ? Number.parseFloat(getComputedStyle(shape).strokeWidth) *
+            (svg.getBoundingClientRect().width / svg.viewBox.baseVal.width)
+        : 0;
+    });
+  expect(Math.abs(shapeCategoryStroke - lineCategoryStroke)).toBeLessThan(0.08);
   await page.mouse.move(900, 500);
   await expect(shapeMenu).toBeVisible();
   await expect(shapeMenu.locator(".tool-flyout-secondary")).toHaveCount(0);

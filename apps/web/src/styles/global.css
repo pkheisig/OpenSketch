@@ -3844,13 +3844,13 @@ input[type="range"] {
 
 .tool-flyout-primary {
   display: grid;
-  width: 166px;
+  width: 136px;
   align-content: start;
 }
 
 .tool-flyout-primary button {
   display: grid;
-  grid-template-columns: 24px 1fr 16px;
+  grid-template-columns: 24px 1fr;
   min-height: 38px;
   align-items: center;
   gap: 6px;
@@ -3864,19 +3864,23 @@ input[type="range"] {
 }
 
 .shape-tool-flyout .tool-flyout-primary {
-  width: 190px;
+  width: 136px;
 }
 
 .shape-tool-flyout .tool-flyout-primary button {
-  grid-template-columns: 38px 1fr 16px;
-  min-height: 46px;
-  gap: 9px;
-  padding: 0 10px;
+  grid-template-columns: 24px 1fr;
+  min-height: 40px;
+  gap: 8px;
+  padding: 0 8px;
 }
 
 .shape-tool-flyout .tool-flyout-primary button > svg:first-child {
-  width: 34px;
-  height: 30px;
+  width: 22px;
+  height: 18px;
+}
+
+.shape-tool-flyout .tool-flyout-primary button > svg:first-child * {
+  stroke-width: 1.7;
 }
 
 .line-tool-flyout .tool-flyout-primary button > svg:first-child {

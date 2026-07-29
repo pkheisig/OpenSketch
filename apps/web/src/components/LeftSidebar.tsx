@@ -471,7 +471,6 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
                 >
                   <ConnectorPresetIcon value={sample} />
                   {label}
-                  <ArrowRight size={14} />
                 </button>
               );
             })}
@@ -509,7 +508,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
               onClick={() => setShapeFamily("basic")}
               role="menuitem"
             >
-              <ShapePresetIcon glyph="rectangle" /> Shapes <ArrowRight size={14} />
+              <ShapePresetIcon glyph="rectangle" /> Shapes
             </button>
             <button
               className={shapeFamily === "polygons" ? "active" : ""}
@@ -517,7 +516,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
               onClick={() => setShapeFamily("polygons")}
               role="menuitem"
             >
-              <ShapePresetIcon glyph="hexagon" /> Polygons <ArrowRight size={14} />
+              <ShapePresetIcon glyph="hexagon" /> Polygons
             </button>
           </div>
           {shapeFamily ? (
