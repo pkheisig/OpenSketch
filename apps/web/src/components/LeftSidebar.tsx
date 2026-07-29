@@ -250,6 +250,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const sidebarRef = useRef<HTMLElement>(null);
   const handledSelection = useRef("");
   const editor = useEditor();
+  const setCreationTool = editor.setCreationTool;
   const canEdit = editor.selection.length > 0;
   const selectionKey = editor.selection
     .map((object, index) => object.objectId ?? `${object.type}:${object.name ?? index}`)
@@ -268,6 +269,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     setFlyout(shouldClose ? null : next);
     setLineFamily(null);
     setShapeFamily(null);
+    editor.setCreationTool(null);
     if (!shouldClose && !collapsed) onToggle();
   };
   const chooseLinePreset = (value: ConnectorPreset, family: ConnectorFamily) => {
@@ -330,6 +332,23 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     document.addEventListener("pointerdown", closeOutsideSidebar, true);
     return () => document.removeEventListener("pointerdown", closeOutsideSidebar, true);
   }, [collapsed, onToggle]);
+  useEffect(() => {
+    const clearCreationToolOutsideSidebar = (event: MouseEvent) => {
+      const target = event.target;
+      if (!(target instanceof Element) || sidebarRef.current?.contains(target)) return;
+      if (
+        target.closest(
+          ".ui-select-menu, .color-palette-popover, .asset-variant-menu, " +
+            ".selection-quick-toolbar, .selection-toolbar-menu"
+        )
+      ) {
+        return;
+      }
+      setCreationTool(null);
+    };
+    document.addEventListener("click", clearCreationToolOutsideSidebar);
+    return () => document.removeEventListener("click", clearCreationToolOutsideSidebar);
+  }, [setCreationTool]);
   return (
     <aside
       ref={sidebarRef}

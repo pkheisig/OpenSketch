@@ -152,6 +152,24 @@ test("never paints fallback asset sizing or uninitialized canvas geometry", asyn
   expect(finalBounds).toEqual(initialBounds);
 });
 
+test("clears the text tool when another sidebar section or the page is clicked", async ({
+  page
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  const textTool = page.getByRole("button", { name: "Text", exact: true });
+
+  await textTool.click();
+  await expect(textTool).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("button", { name: "Lines", exact: true }).click();
+  await expect(textTool).toHaveAttribute("aria-pressed", "false");
+
+  await textTool.click();
+  await expect(textTool).toHaveAttribute("aria-pressed", "true");
+  await page.getByRole("textbox", { name: "Document title" }).click();
+  await expect(textTool).toHaveAttribute("aria-pressed", "false");
+});
+
 test("rotates an object by dragging its rotation handle", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
