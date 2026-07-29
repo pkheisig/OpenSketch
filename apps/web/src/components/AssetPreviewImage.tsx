@@ -4,7 +4,7 @@ import { applyElementStyle, type ElementStyleSnapshot } from "@/editor/elementSt
 import { loadEditableSvg } from "@/editor/svg";
 
 const PREVIEW_SIZE = 448;
-const PREVIEW_PADDING = 18;
+const PREVIEW_PADDING = 36;
 const PREVIEW_CACHE_LIMIT = 96;
 const previewPromises = new Map<string, Promise<string>>();
 const previewSources = new Map<string, string>();

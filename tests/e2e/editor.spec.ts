@@ -828,6 +828,10 @@ test("keeps family variant previews normalized and drags the selected variant", 
         }
       }
       return {
+        left,
+        top,
+        right,
+        bottom,
         width: right - left + 1,
         height: bottom - top + 1,
         centerX: (left + right) / 2,
@@ -858,8 +862,14 @@ test("keeps family variant previews normalized and drags the selected variant", 
   await expect.poll(() => preview.getAttribute("src")).not.toBe(firstSource);
   const secondBounds = await visibleArtworkBounds(preview);
 
-  expect(Math.max(firstBounds.width, firstBounds.height)).toBeGreaterThanOrEqual(410);
-  expect(Math.max(secondBounds.width, secondBounds.height)).toBeGreaterThanOrEqual(410);
+  expect(Math.max(firstBounds.width, firstBounds.height)).toBeGreaterThanOrEqual(370);
+  expect(Math.max(secondBounds.width, secondBounds.height)).toBeGreaterThanOrEqual(370);
+  expect(Math.max(firstBounds.width, firstBounds.height)).toBeLessThanOrEqual(378);
+  expect(Math.max(secondBounds.width, secondBounds.height)).toBeLessThanOrEqual(378);
+  expect(Math.min(firstBounds.left, firstBounds.top)).toBeGreaterThanOrEqual(34);
+  expect(Math.min(secondBounds.left, secondBounds.top)).toBeGreaterThanOrEqual(34);
+  expect(Math.max(firstBounds.right, firstBounds.bottom)).toBeLessThanOrEqual(413);
+  expect(Math.max(secondBounds.right, secondBounds.bottom)).toBeLessThanOrEqual(413);
   expect(
     Math.abs(
       Math.max(firstBounds.width, firstBounds.height) -
@@ -870,6 +880,7 @@ test("keeps family variant previews normalized and drags the selected variant", 
   expect(Math.abs(firstBounds.centerY - secondBounds.centerY)).toBeLessThanOrEqual(2);
 
   await card.dragTo(page.locator(".artboard-stage"));
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("Activated Neutrophil");
   await expect(
     page
