@@ -3385,6 +3385,10 @@ input[type="range"] {
   margin: 12px 0;
 }
 
+.export-dialog > .button.primary {
+  margin-top: 12px;
+}
+
 .layers-collapse .motion-collapse-inner {
   overflow: clip;
 }
