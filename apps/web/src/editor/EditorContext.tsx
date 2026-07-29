@@ -362,6 +362,11 @@ function editableAssetParent(object: FabricObject | undefined): Group | null {
   return null;
 }
 
+function directNestedParent(object: FabricObject | undefined): Group | null {
+  const parent = object?.parent ?? object?.group;
+  return parent instanceof Group && !(parent instanceof ActiveSelection) ? parent : null;
+}
+
 function configureEditableSvgParts(object: FabricObject): void {
   if (!(object instanceof Group)) return;
   object.subTargetCheck = true;
@@ -754,6 +759,8 @@ export function EditorProvider({
       }
     | undefined
   >(undefined);
+  const modifierDeepSelection = useRef<FabricObject[] | undefined>(undefined);
+  const modifierClick = useRef<{ at: number; point: FabricPoint } | undefined>(undefined);
   const deepSelectionStackOverride = useRef(false);
   const nestedDrag = useRef<
     | {
@@ -1013,15 +1020,28 @@ export function EditorProvider({
       setSelection(canvas.getActiveObjects());
       canvas.requestRenderAll();
     };
-    const selectDeeperObject = ({ scenePoint }: { scenePoint?: FabricPoint }) => {
+    const selectDeeperObject = ({
+      e,
+      scenePoint
+    }: {
+      e: MouseEvent | PointerEvent | TouchEvent;
+      scenePoint?: FabricPoint;
+    }) => {
       if (!scenePoint) return;
+      const additiveModifier = e.metaKey || e.ctrlKey || e.altKey;
+      const additiveObjects = additiveModifier ? modifierDeepSelection.current : undefined;
       const previousCycle = deepSelectionCycle.current;
       const activeObject = canvas.getActiveObject();
       const samePoint =
         previousCycle &&
         Math.hypot(previousCycle.point.x - scenePoint.x, previousCycle.point.y - scenePoint.y) <=
           4 / Math.max(latestZoom.current, 0.1);
-      const cycleFrom = samePoint ? previousCycle.selected : activeObject;
+      const cycleFrom =
+        additiveObjects && additiveObjects.length > 0
+          ? additiveObjects[additiveObjects.length - 1]
+          : samePoint
+            ? previousCycle.selected
+            : activeObject;
       const hitObjects = deepHitObjects(canvas, scenePoint, cycleFrom);
       if (hitObjects.length === 0) {
         if (latestCanvasSettings.current.doubleClickCreatesText) {
@@ -1031,6 +1051,32 @@ export function EditorProvider({
       }
       const selected = nextDeepSelection(cycleFrom, hitObjects);
       if (!selected) return;
+      const additiveParent =
+        additiveObjects && additiveObjects.length > 0
+          ? directNestedParent(additiveObjects[0])
+          : null;
+      if (
+        additiveParent &&
+        additiveObjects?.every((object) => directNestedParent(object) === additiveParent) &&
+        directNestedParent(selected) === additiveParent
+      ) {
+        const objects = additiveObjects.includes(selected)
+          ? additiveObjects
+          : [...additiveObjects, selected];
+        canvas.discardActiveObject();
+        const activeSelection = new ActiveSelection(objects, { canvas });
+        configureSelectionControls(activeSelection, latestZoom.current);
+        canvas.setActiveObject(activeSelection);
+        const nestedObjects = activeSelection.getObjects();
+        setSelection(nestedObjects);
+        modifierDeepSelection.current = nestedObjects;
+        deepSelectionCycle.current = {
+          point: new FabricPoint(scenePoint.x, scenePoint.y),
+          selected
+        };
+        canvas.requestRenderAll();
+        return;
+      }
       configureSelectionControls(selected, latestZoom.current);
       canvas.setActiveObject(selected);
       setSelection([selected]);
@@ -1042,8 +1088,39 @@ export function EditorProvider({
     };
     const preserveDeepSelectionForDrag = (event: MouseEvent) => {
       if (event.button !== 0) return;
-      const activeObject = canvas.getActiveObject();
+      const additiveModifier = event.metaKey || event.ctrlKey || event.altKey;
       const scenePoint = canvas.getScenePoint(event);
+      if (additiveModifier && !modifierDeepSelection.current) {
+        const selectedObjects = canvas.getActiveObjects();
+        const parent = selectedObjects.length > 0 ? directNestedParent(selectedObjects[0]) : null;
+        modifierDeepSelection.current =
+          parent && selectedObjects.every((object) => directNestedParent(object) === parent)
+            ? selectedObjects
+            : undefined;
+      } else if (!additiveModifier) {
+        modifierDeepSelection.current = undefined;
+        modifierClick.current = undefined;
+      }
+      if (additiveModifier && modifierDeepSelection.current) {
+        const previousClick = modifierClick.current;
+        const now = performance.now();
+        const samePoint =
+          previousClick &&
+          Math.hypot(previousClick.point.x - scenePoint.x, previousClick.point.y - scenePoint.y) <=
+            4 / Math.max(latestZoom.current, 0.1);
+        if (previousClick && now - previousClick.at <= 500 && samePoint) {
+          modifierClick.current = undefined;
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          selectDeeperObject({ e: event, scenePoint });
+          return;
+        }
+        modifierClick.current = {
+          at: now,
+          point: new FabricPoint(scenePoint.x, scenePoint.y)
+        };
+      }
+      const activeObject = canvas.getActiveObject();
       if (
         !activeObject ||
         activeObject !== deepSelectionCycle.current?.selected ||
@@ -1067,6 +1144,12 @@ export function EditorProvider({
           lastLeft: activeObject.left ?? 0,
           lastTop: activeObject.top ?? 0
         };
+      }
+    };
+    const suppressModifierContextMenu = (event: MouseEvent) => {
+      if (modifierDeepSelection.current && (event.metaKey || event.ctrlKey || event.altKey)) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
       }
     };
     const restoreObjectStacking = () => {
@@ -1342,6 +1425,7 @@ export function EditorProvider({
     canvas.on("selection:updated", select);
     canvas.on("selection:cleared", select);
     canvas.upperCanvasEl.addEventListener("mousedown", preserveDeepSelectionForDrag, true);
+    canvas.upperCanvasEl.addEventListener("contextmenu", suppressModifierContextMenu, true);
     canvas.on("mouse:dblclick", selectDeeperObject);
     canvas.on("mouse:down", prepareDragDuplicate);
     canvas.on("object:modified", modified);
@@ -1355,6 +1439,7 @@ export function EditorProvider({
     canvas.on("text:editing:exited", modified);
     return () => {
       canvas.upperCanvasEl.removeEventListener("mousedown", preserveDeepSelectionForDrag, true);
+      canvas.upperCanvasEl.removeEventListener("contextmenu", suppressModifierContextMenu, true);
       void enqueuePendingSave();
       canvas.dispose();
       setCanvas(null);
