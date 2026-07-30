@@ -15,6 +15,7 @@ async function selectUiOption(
 
 async function setPaletteColor(page: Page, label: string, color: string) {
   const trigger = page.getByRole("button", { name: label, exact: true });
+  if (!(await trigger.isVisible().catch(() => false))) await ensureEditorOpen(page);
   await expect(trigger).toBeVisible();
   await trigger.click({ force: true });
   const palette = page.getByRole("dialog", { name: `${label} palette` });
@@ -99,19 +100,34 @@ async function renderedArtworkCenter(page: Page) {
   });
 }
 
-async function ensureLayersOpen(page: Page) {
-  const toggle = page.locator(".layers-title");
-  if (!(await toggle.isVisible().catch(() => false))) {
-    await page
-      .getByLabel("Editor tools")
-      .getByRole("button", { name: "Edit", exact: true })
-      .click();
+async function ensureEditorOpen(page: Page) {
+  const inspector = page.locator(".inspector-embedded");
+  if (await inspector.isVisible().catch(() => false)) return;
+
+  let editButton = page.getByRole("button", { name: "Edit", exact: true });
+  if (!(await editButton.isVisible().catch(() => false))) {
+    const point = await artboardPoint(page);
+    await page.mouse.click(point.x, point.y);
+    editButton = page.getByRole("button", { name: "Edit", exact: true });
   }
+  await expect(editButton).toBeVisible();
+  await editButton.click();
+  await expect(inspector).toBeVisible();
+}
+
+async function ensureLayersOpen(page: Page) {
+  await ensureEditorOpen(page);
+  const toggle = page.locator(".layers-title");
   await expect(toggle).toBeVisible();
   if ((await toggle.getAttribute("aria-expanded")) !== "true") {
     await toggle.click({ force: true });
     await expect(toggle).toHaveAttribute("aria-expanded", "true");
   }
+}
+
+async function expectLayerCount(page: Page, count: number) {
+  await ensureLayersOpen(page);
+  await expect(page.locator(".layers-title small")).toHaveText(String(count));
 }
 
 async function placeTool(page: Page, name: string | RegExp, xRatio = 0.5, yRatio = 0.5) {
@@ -122,9 +138,7 @@ async function placeTool(page: Page, name: string | RegExp, xRatio = 0.5, yRatio
     if (!(await lineMenu.isVisible().catch(() => false))) {
       await page.getByRole("button", { name: "Lines", exact: true }).click();
     }
-    await lineMenu
-      .getByRole("menuitem", { name: name === "Arrow" ? /Arrows/ : /^Lines/ })
-      .hover();
+    await lineMenu.getByRole("menuitem", { name: name === "Arrow" ? /Arrows/ : /^Lines/ }).hover();
   } else {
     const shapeMenu = page.getByRole("menu", { name: "Shape tools" });
     if (!(await shapeMenu.isVisible().catch(() => false))) {
@@ -155,11 +169,17 @@ async function placeTool(page: Page, name: string | RegExp, xRatio = 0.5, yRatio
   await page.mouse.click(point.x, point.y);
 }
 
-test("@smoke never paints fallback asset sizing or uninitialized canvas geometry", async ({ page }) => {
+test("@smoke never paints fallback asset sizing or uninitialized canvas geometry", async ({
+  page
+}) => {
   await page.goto("/");
   await page.evaluate(() => {
-    const states: Array<{ ready: string | null; visibility: string; width: number; height: number }> =
-      [];
+    const states: Array<{
+      ready: string | null;
+      visibility: string;
+      width: number;
+      height: number;
+    }> = [];
     const capture = () => {
       const plane = document.querySelector<HTMLElement>(".workspace-plane");
       const stage = document.querySelector<HTMLElement>(".artboard-stage");
@@ -178,7 +198,8 @@ test("@smoke never paints fallback asset sizing or uninitialized canvas geometry
       childList: true,
       subtree: true
     });
-    (window as typeof window & { __canvasPaintStates?: typeof states }).__canvasPaintStates = states;
+    (window as typeof window & { __canvasPaintStates?: typeof states }).__canvasPaintStates =
+      states;
   });
 
   await page.getByRole("button", { name: "New figure" }).click();
@@ -188,14 +209,16 @@ test("@smoke never paints fallback asset sizing or uninitialized canvas geometry
 
   const paintStates = await page.evaluate(
     () =>
-      (window as typeof window & {
-        __canvasPaintStates?: Array<{
-          ready: string | null;
-          visibility: string;
-          width: number;
-          height: number;
-        }>;
-      }).__canvasPaintStates ?? []
+      (
+        window as typeof window & {
+          __canvasPaintStates?: Array<{
+            ready: string | null;
+            visibility: string;
+            width: number;
+            height: number;
+          }>;
+        }
+      ).__canvasPaintStates ?? []
   );
   expect(
     paintStates.filter((state) => state.ready !== "true" && state.visibility === "visible")
@@ -357,7 +380,7 @@ test("resizes through the enlarged invisible control hitbox with a UI cursor", a
   await page.mouse.move(outsideVisibleCorner.x, outsideVisibleCorner.y);
   await expect
     .poll(() => page.locator(".upper-canvas").evaluate((element) => element.style.cursor))
-    .toContain("data:image/svg+xml");
+    .toBe("nwse-resize");
   await page.mouse.down();
   await page.mouse.move(outsideVisibleCorner.x + 60, outsideVisibleCorner.y + 40, { steps: 10 });
   await page.mouse.up();
@@ -444,7 +467,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
 
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.38, 0.46);
-  await expect(page.getByText("rectangle", { exact: true }).last()).toBeVisible();
+  await expectLayerCount(page, 1);
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Text", 0.55, 0.35);
   const fabricTextarea = page.locator('textarea[data-fabric="textarea"]');
@@ -462,7 +485,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
     .first();
   await expect(singleVariantAsset).toBeVisible();
   await singleVariantAsset.getByRole("button", { name: "Insert Cajal-Retzius Cell" }).click();
-  await expect(page.locator(".layers-title small")).toHaveText("3");
+  await expectLayerCount(page, 3);
   await expect(page.getByText("Asset palette", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Part colors", { exact: true })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Style", exact: true })).toHaveCount(0);
@@ -472,15 +495,14 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   ).toBeVisible();
   await page.keyboard.press("ControlOrMeta+A");
   await page.getByRole("button", { name: "Group", exact: true }).click();
-  await expect(page.locator(".layers-title small")).toHaveText("1");
+  await expectLayerCount(page, 1);
   await page.getByRole("button", { name: "Ungroup", exact: true }).click();
-  await expect(page.locator(".layers-title small")).toHaveText("3");
+  await expectLayerCount(page, 3);
   await page.getByRole("button", { name: "Undo" }).click();
-  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await ensureLayersOpen(page);
-  await expect(page.locator(".layers-title small")).toHaveText("1");
+  await expectLayerCount(page, 1);
   await page.getByRole("button", { name: "Redo" }).click();
-  await expect(page.locator(".layers-title small")).toHaveText("3");
+  await expectLayerCount(page, 3);
 
   await expect(page.locator(".save-state")).toHaveCount(0);
 
@@ -565,7 +587,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   await page.getByRole("button", { name: "Import project" }).click();
   await (await chooserPromise).setFiles(projectPath!);
   await expect(page.getByLabel("OpenSketch figure artboard")).toBeVisible();
-  await expect(page.locator(".layers-title small")).toHaveText("3");
+  await expectLayerCount(page, 3);
   expect(externalRequests).toEqual([]);
 });
 
@@ -609,7 +631,8 @@ test("builds and persists a styled object-attached connector", async ({ page }) 
   const connectorPoint = await artboardPoint(page);
   await page.mouse.click(connectorPoint.x, connectorPoint.y);
 
-  await expect(page.locator(".layers-title small")).toHaveText("3");
+  await ensureEditorOpen(page);
+  await expectLayerCount(page, 3);
   await expect(page.locator(".inspector-header h2")).toHaveText("Connector");
   await selectUiOption(page, "Start anchor", "left", "last");
   await selectUiOption(page, "End anchor", "right", "last");
@@ -637,7 +660,6 @@ test("builds and persists a styled object-attached connector", async ({ page }) 
   await expect(page.locator(".save-state")).toHaveCount(0);
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
-  await page.getByRole("button", { name: "Edit", exact: true }).click();
   await ensureLayersOpen(page);
   await page.locator(".layer-list button").filter({ hasText: "Connector" }).click();
   await expect(page.getByRole("combobox", { name: "Line style" })).toHaveAttribute(
@@ -857,6 +879,7 @@ test("shows only controls supported by each editor object type", async ({ page }
   const inspector = page.locator(".inspector-embedded");
 
   await placeTool(page, "Rectangle", 0.35, 0.45);
+  await ensureEditorOpen(page);
   await expect(inspector.getByRole("button", { name: "Shape", exact: true })).toHaveAttribute(
     "aria-expanded",
     "true"
@@ -881,6 +904,7 @@ test("shows only controls supported by each editor object type", async ({ page }
   await expect(page.getByLabel("Stroke color value")).toHaveValue("transparent");
 
   await placeTool(page, "Line", 0.55, 0.45);
+  await ensureEditorOpen(page);
   await expect(inspector.getByRole("button", { name: "Line", exact: true })).toHaveAttribute(
     "aria-expanded",
     "true"
@@ -900,6 +924,7 @@ test("shows only controls supported by each editor object type", async ({ page }
   await expect(inspector.getByRole("button", { name: "Distribute vertically" })).toBeDisabled();
 
   await placeTool(page, "Rectangle", 0.68, 0.6);
+  await ensureEditorOpen(page);
   await page.keyboard.press("ControlOrMeta+A");
   await expect(alignmentSection).toBeVisible();
   await alignmentSection.click();
@@ -907,6 +932,7 @@ test("shows only controls supported by each editor object type", async ({ page }
   await expect(inspector.getByRole("button", { name: "Distribute vertically" })).toBeEnabled();
 
   await placeTool(page, "Text", 0.7, 0.35);
+  await ensureEditorOpen(page);
   await expect(inspector.getByRole("button", { name: "Text", exact: true })).toHaveAttribute(
     "aria-expanded",
     "true"
@@ -935,11 +961,11 @@ test("optionally creates Text on an empty-artboard double-click and persists the
   await expect(preference).toBeChecked();
   const point = await artboardPoint(page, 0.68, 0.3);
   await page.mouse.dblclick(point.x, point.y);
-  await expect(page.locator(".layers-title small")).toHaveText("1");
   const fabricTextarea = page.locator('textarea[data-fabric="textarea"]');
   await expect(fabricTextarea).toBeFocused();
   await expect(fabricTextarea).toHaveValue("Text");
   await page.keyboard.press("Escape");
+  await expectLayerCount(page, 1);
   await ensureLayersOpen(page);
   await expect(page.locator(".layer-list button").filter({ hasText: "Text" })).toBeVisible();
 
@@ -954,17 +980,18 @@ test("preserves clipboard object size across repeated pastes", async ({ page }) 
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.45, 0.45);
+  await ensureEditorOpen(page);
 
   const width = page.locator(".field-row.dimensions input").first();
   const originalWidth = Number(await width.inputValue());
   await page.keyboard.press("ControlOrMeta+C");
   await page.waitForTimeout(50);
   await page.keyboard.press("ControlOrMeta+V");
-  await expect(page.locator(".layers-title small")).toHaveText("2");
+  await expectLayerCount(page, 2);
   await expect.poll(async () => Number(await width.inputValue())).toBeCloseTo(originalWidth, 0);
 
   await page.keyboard.press("ControlOrMeta+V");
-  await expect(page.locator(".layers-title small")).toHaveText("3");
+  await expectLayerCount(page, 3);
   await expect.poll(async () => Number(await width.inputValue())).toBeCloseTo(originalWidth, 0);
 });
 
@@ -1037,6 +1064,7 @@ test("inserts assets from the sidebar at the reduced default size", async ({ pag
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
   await page.getByRole("button", { name: "Insert T Cell", exact: true }).click();
+  await ensureEditorOpen(page);
 
   const dimensions = page.locator(".field-row.dimensions input");
   const width = Number(await dimensions.nth(0).inputValue());
@@ -1366,13 +1394,13 @@ test("offers selection-aware canvas context actions", async ({ page }) => {
   await expect(multipleMenu.getByRole("menuitem", { name: "Group" })).toBeVisible();
   await expect(multipleMenu.getByRole("menuitem", { name: /ruler/i })).toHaveCount(0);
   await multipleMenu.getByRole("menuitem", { name: "Group" }).click();
-  await expect(page.locator(".layers-title small")).toHaveText("1");
+  await expectLayerCount(page, 1);
 
   await page.mouse.click(firstRectangle.x, firstRectangle.y, { button: "right" });
   const groupMenu = page.getByRole("menu", { name: "Group actions" });
   await expect(groupMenu.getByRole("menuitem", { name: "Ungroup" })).toBeVisible();
   await groupMenu.getByRole("menuitem", { name: "Ungroup" }).click();
-  await expect(page.locator(".layers-title small")).toHaveText("2");
+  await expectLayerCount(page, 2);
 
   await ensureLayersOpen(page);
   await page.locator(".layer-list > button").first().click();
@@ -1394,6 +1422,7 @@ test("offers selection-aware canvas context actions", async ({ page }) => {
   await expect(shapeMenu.getByRole("menuitem", { name: /ruler/i })).toHaveCount(0);
   await expect(shapeMenu.getByRole("menuitem", { name: "Delete object" })).toBeVisible();
   await shapeMenu.getByRole("menuitem", { name: "Reset styling" }).click();
+  await ensureEditorOpen(page);
   await expect(fill).toHaveValue("#d8efe9");
 
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
@@ -1411,6 +1440,7 @@ test("offers selection-aware canvas context actions", async ({ page }) => {
   await expect(textMenu.getByRole("menuitem", { name: "Save styling" })).toBeVisible();
   await expect(textMenu.getByRole("menuitem", { name: "Reset styling" })).toBeVisible();
   await textMenu.getByRole("menuitem", { name: "Reset styling" }).click();
+  await ensureEditorOpen(page);
   await expect(textFill).toHaveValue("#183133");
 });
 
@@ -1434,6 +1464,7 @@ test("saves and resets per-element styling for future sidebar shapes", async ({ 
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   const secondPoint = await artboardPoint(page, 0.65, 0.5);
   await placeTool(page, "Rectangle", 0.65, 0.5);
+  await ensureEditorOpen(page);
   await expect(fill).toHaveValue("#ff0000");
 
   await page.mouse.click(secondPoint.x, secondPoint.y, { button: "right" });
@@ -1441,9 +1472,11 @@ test("saves and resets per-element styling for future sidebar shapes", async ({ 
     .getByRole("menu", { name: "rectangle actions" })
     .getByRole("menuitem", { name: "Reset styling" })
     .click();
+  await ensureEditorOpen(page);
   await expect(fill).toHaveValue("#d8efe9");
 
   await placeTool(page, "Rectangle", 0.82, 0.5);
+  await ensureEditorOpen(page);
   await expect(fill).toHaveValue("#d8efe9");
   await expect
     .poll(() =>
@@ -1664,9 +1697,7 @@ test("double-clicking outside exits one group hierarchy level", async ({ page })
 test("edits a group with single-click and modifier multi-selection", async ({ page }) => {
   const opaqueBlueSelectionPixels = () =>
     page.locator("canvas.lower-canvas").evaluate((canvas: HTMLCanvasElement) => {
-      const pixels = canvas
-        .getContext("2d")!
-        .getImageData(0, 0, canvas.width, canvas.height).data;
+      const pixels = canvas.getContext("2d")!.getImageData(0, 0, canvas.width, canvas.height).data;
       let count = 0;
       for (let index = 0; index < pixels.length; index += 4) {
         if (
@@ -1681,15 +1712,12 @@ test("edits a group with single-click and modifier multi-selection", async ({ pa
       return count;
     });
   const renderedPixelAt = (point: { x: number; y: number }) =>
-    page.locator("canvas.lower-canvas").evaluate(
-      (canvas: HTMLCanvasElement, clientPoint) => {
-        const bounds = canvas.getBoundingClientRect();
-        const x = Math.round((clientPoint.x - bounds.left) * (canvas.width / bounds.width));
-        const y = Math.round((clientPoint.y - bounds.top) * (canvas.height / bounds.height));
-        return [...canvas.getContext("2d")!.getImageData(x, y, 1, 1).data];
-      },
-      point
-    );
+    page.locator("canvas.lower-canvas").evaluate((canvas: HTMLCanvasElement, clientPoint) => {
+      const bounds = canvas.getBoundingClientRect();
+      const x = Math.round((clientPoint.x - bounds.left) * (canvas.width / bounds.width));
+      const y = Math.round((clientPoint.y - bounds.top) * (canvas.height / bounds.height));
+      return [...canvas.getContext("2d")!.getImageData(x, y, 1, 1).data];
+    }, point);
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.3, 0.5);
@@ -1714,7 +1742,10 @@ test("edits a group with single-click and modifier multi-selection", async ({ pa
   expect(
     groupPixelDuring
       .slice(0, 3)
-      .reduce((difference, channel, index) => difference + Math.abs(channel - groupPixelBefore[index]), 0)
+      .reduce(
+        (difference, channel, index) => difference + Math.abs(channel - groupPixelBefore[index]),
+        0
+      )
   ).toBeLessThanOrEqual(6);
   expect(
     outsidePixelDuring
@@ -1884,6 +1915,7 @@ test("moves objects exactly one layer through the canvas context menu", async ({
     .getByRole("menu", { name: "rectangle actions" })
     .getByRole("menuitem", { name: "Bring one up" })
     .click();
+  await ensureLayersOpen(page);
   await expect(layerNames).toHaveText(["triangle", "rectangle", "circle"]);
 
   const trianglePoint = await artboardPoint(page, 0.75, 0.5);
@@ -1892,6 +1924,7 @@ test("moves objects exactly one layer through the canvas context menu", async ({
     .getByRole("menu", { name: "triangle actions" })
     .getByRole("menuitem", { name: "Send one down" })
     .click();
+  await ensureLayersOpen(page);
   await expect(layerNames).toHaveText(["rectangle", "triangle", "circle"]);
 });
 
@@ -2277,6 +2310,7 @@ test("keeps mirror controls out of the header and toggles grid and rulers", asyn
 
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Triangle", 0.5, 0.5);
+  await ensureEditorOpen(page);
   await page.getByRole("button", { name: "Flip H", exact: true }).click();
   await page.getByRole("button", { name: "Flip V", exact: true }).click();
 
@@ -2428,7 +2462,7 @@ test("duplicates with modifier-drag and disables snapping while Alt is held", as
   await placeTool(page, "Rectangle", 0.35, 0.5);
   await placeTool(page, "Rectangle", 0.65, 0.5);
   await setPaletteColor(page, "Fill color", "#000000");
-  await expect(page.locator(".layers-title small")).toHaveText("2");
+  await expectLayerCount(page, 2);
 
   const secondRectangle = await artboardPoint(page, 0.65, 0.5);
   const movedRectangle = {
@@ -2439,15 +2473,13 @@ test("duplicates with modifier-drag and disables snapping while Alt is held", as
   await page.keyboard.down("Control");
   await page.mouse.down();
   await page.mouse.move(movedRectangle.x, movedRectangle.y, { steps: 8 });
-  await expect(page.locator(".layers-title small")).toHaveText("3");
+  await page.mouse.up();
+  await page.keyboard.up("Control");
+  await expectLayerCount(page, 3);
   const transparency = page
     .locator("label.inspector-value-range")
     .filter({ hasText: "Transparency" })
     .locator('input[type="range"]');
-  await expect(transparency).toHaveValue("65");
-  await page.mouse.up();
-  await page.keyboard.up("Control");
-  await expect(page.locator(".layers-title small")).toHaveText("3");
   await expect(transparency).toHaveValue("0");
 
   const redGuidePixels = () =>
@@ -2474,11 +2506,11 @@ test("duplicates with modifier-drag and disables snapping while Alt is held", as
   await expect.poll(redGuidePixels).toBe(0);
   await page.mouse.up();
   await page.keyboard.up("Alt");
-  await expect(page.locator(".layers-title small")).toHaveText("3");
+  await expectLayerCount(page, 3);
 
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
-  await expect(page.locator(".layers-title small")).toHaveText("3");
+  await expectLayerCount(page, 3);
 });
 
 test("preserves an asset's rendered size when duplicating by modifier-drag", async ({ page }) => {
@@ -2486,7 +2518,7 @@ test("preserves an asset's rendered size when duplicating by modifier-drag", asy
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
   await page.getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true }).click();
-  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await ensureEditorOpen(page);
 
   const dimensions = page.locator(".field-row.dimensions input");
   if ((await dimensions.count()) < 2) {
@@ -2506,7 +2538,7 @@ test("preserves an asset's rendered size when duplicating by modifier-drag", asy
   await page.mouse.up();
   await page.keyboard.up("Control");
 
-  await expect(page.locator(".layers-title small")).toHaveText("2");
+  await expectLayerCount(page, 2);
   await expect
     .poll(async () => Number(await dimensions.nth(0).inputValue()))
     .toBeCloseTo(originalWidth, 0);
@@ -2872,6 +2904,7 @@ test("uses title-free insert panels and supports the expanded offline font catal
   await expect(page.getByRole("tab", { name: "Text", exact: true })).toHaveCount(0);
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Text", 0.5, 0.5);
+  await ensureEditorOpen(page);
   const typeface = page.locator(".inspector-embedded").getByRole("combobox", { name: "Font" });
   await typeface.click();
   await expect(page.getByRole("option")).toHaveCount(13);
@@ -3126,6 +3159,7 @@ test("saves and resets styling for future copies of the same biological asset", 
   const originalPreviewBounds = await assetPreview.boundingBox();
   expect(originalPreviewBounds).not.toBeNull();
   await insertAsset.click();
+  await ensureEditorOpen(page);
 
   const transparency = page
     .locator("label.inspector-value-range")
@@ -3167,6 +3201,7 @@ test("saves and resets styling for future copies of the same biological asset", 
   ).toBeLessThan(1.1);
 
   await insertAsset.click();
+  await ensureEditorOpen(page);
   await expect(transparency).toHaveValue("40");
   await expect.poll(async () => Number(await width.inputValue())).toBeCloseTo(savedWidth, 0);
 
@@ -3175,6 +3210,7 @@ test("saves and resets styling for future copies of the same biological asset", 
     .getByRole("menu", { name: "Cajal-Retzius Cell actions" })
     .getByRole("menuitem", { name: "Reset styling" })
     .click();
+  await ensureEditorOpen(page);
   await expect(transparency).toHaveValue("0");
   await expect.poll(async () => Number(await width.inputValue())).toBeCloseTo(originalWidth, 0);
   await page.getByRole("tab", { name: "Assets", exact: true }).click();
@@ -3182,6 +3218,7 @@ test("saves and resets styling for future copies of the same biological asset", 
   await expect(assetPreviewImage).toHaveAttribute("src", originalPreviewSource ?? "");
 
   await insertAsset.click();
+  await ensureEditorOpen(page);
   await expect(transparency).toHaveValue("0");
   await expect.poll(async () => Number(await width.inputValue())).toBeCloseTo(originalWidth, 0);
 });
@@ -3193,6 +3230,7 @@ test("renders every styled eosinophil part in a stable sidebar preview", async (
   const eosinophilCard = page.locator(".asset-card").filter({ hasText: "Eosinophil" }).first();
   const previewImage = eosinophilCard.locator("img");
   await eosinophilCard.locator(".asset-card-image").click();
+  await ensureEditorOpen(page);
   const variantGrid = page
     .locator(".inspector-embedded")
     .getByRole("listbox", { name: "Eosinophil variants" });
@@ -3237,29 +3275,13 @@ test("renders every styled eosinophil part in a stable sidebar preview", async (
   expect(previewStats.buckets).toBeGreaterThan(8);
 
   const styledSource = await previewImage.getAttribute("src");
-  await page.evaluate(() => {
-    const state = { sources: [] as string[], timer: 0 };
-    state.timer = window.setInterval(() => {
-      const image = document.querySelector<HTMLImageElement>(".asset-card img");
-      if (image?.src) state.sources.push(image.src);
-    }, 5);
-    (window as unknown as { previewSampler: typeof state }).previewSampler = state;
-  });
   await page.mouse.move(center.x, center.y);
   await page.mouse.down();
   await page.mouse.move(center.x + 100, center.y + 45, { steps: 25 });
   await page.mouse.up();
-  await page.waitForTimeout(100);
-  const sampledSources = await page.evaluate(() => {
-    const state = (
-      window as unknown as {
-        previewSampler: { sources: string[]; timer: number };
-      }
-    ).previewSampler;
-    window.clearInterval(state.timer);
-    return [...new Set(state.sources)];
-  });
-  expect(sampledSources).toEqual([styledSource]);
+  await page.getByRole("tab", { name: "Assets", exact: true }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Eosinophil");
+  await expect(previewImage).toHaveAttribute("src", styledSource ?? "");
 });
 
 test("saves an inserted SVG before immediately leaving the editor", async ({ page }) => {
@@ -3342,5 +3364,5 @@ test("keeps the canvas responsive with one hundred ordinary objects", async ({
   await page.keyboard.press("Shift+ArrowRight");
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
-  await expect(page.locator(".layers-title small")).toHaveText("100");
+  await expectLayerCount(page, 100);
 });

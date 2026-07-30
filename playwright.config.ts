@@ -1,5 +1,9 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const playwrightPort = process.env.PLAYWRIGHT_PORT ?? "5173";
+const playwrightBaseUrl =
+  process.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${playwrightPort}/OpenSketch/`;
+
 export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: true,
@@ -7,7 +11,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? "github" : "list",
   use: {
-    baseURL: "http://127.0.0.1:5173/OpenSketch/",
+    baseURL: playwrightBaseUrl,
     trace: "on-first-retry"
   },
   projects: [
@@ -25,8 +29,8 @@ export default defineConfig({
     }
   ],
   webServer: {
-    command: "pnpm --filter @workspace/web dev --host 127.0.0.1",
-    url: "http://127.0.0.1:5173/OpenSketch/",
+    command: `pnpm --filter @workspace/web dev --host 127.0.0.1 --port ${playwrightPort}`,
+    url: playwrightBaseUrl,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000
   }

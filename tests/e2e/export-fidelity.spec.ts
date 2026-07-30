@@ -15,6 +15,17 @@ function hexToCssRgb(hex: string): string {
   return `rgb(${(value >> 16) & 255},${(value >> 8) & 255},${value & 255})`;
 }
 
+async function ensureEditorOpen(page: Page) {
+  const inspector = page.locator(".inspector-embedded");
+  if (await inspector.isVisible().catch(() => false)) return;
+  const editButton = page
+    .getByLabel("Editor tools")
+    .getByRole("button", { name: "Edit", exact: true });
+  await expect(editButton).toBeVisible();
+  await editButton.click();
+  await expect(inspector).toBeVisible();
+}
+
 test("preserves editable color, gradients, clipping, fonts, and raster dimensions", async ({
   page
 }) => {
@@ -30,7 +41,7 @@ test("preserves editable color, gradients, clipping, fonts, and raster dimension
     persistedArtboard.x + persistedArtboard.width / 2,
     persistedArtboard.y + persistedArtboard.height / 2
   );
-  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await ensureEditorOpen(page);
   await expect(page.locator(".layers-title small")).toHaveText("1");
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await page
@@ -44,31 +55,9 @@ test("preserves editable color, gradients, clipping, fonts, and raster dimension
     canvasBounds.x + canvasBounds.width * 0.68,
     canvasBounds.y + canvasBounds.height * 0.65
   );
-  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await ensureEditorOpen(page);
   await expect(page.locator(".layers-title small")).toHaveText("2");
 
-  const artboard = page.locator(".artboard-stage");
-  const artboardBounds = await artboard.boundingBox();
-  expect(artboardBounds).not.toBeNull();
-  await artboard.dblclick({
-    position: {
-      x: artboardBounds!.width / 2,
-      y: artboardBounds!.height / 2 + 78 * (artboardBounds!.width / 1920)
-    }
-  });
-  await artboard.dblclick({
-    position: {
-      x: artboardBounds!.width / 2,
-      y: artboardBounds!.height / 2 + 78 * (artboardBounds!.width / 1920)
-    }
-  });
-  await artboard.click({
-    position: {
-      x: artboardBounds!.width / 2,
-      y: artboardBounds!.height / 2 + 78 * (artboardBounds!.width / 1920)
-    }
-  });
-  await page.getByRole("button", { name: "Edit", exact: true }).click();
   const fill = page.getByLabel("Fill color value");
   await expect(fill).toBeVisible();
   const originalColor = await fill.inputValue();
