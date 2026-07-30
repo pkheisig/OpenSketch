@@ -4,10 +4,10 @@ OpenSketch is an open-source, browser-native scientific figure editor. Use the
 hosted application at **[pkheisig.github.io/OpenSketch](https://pkheisig.github.io/OpenSketch/)**.
 
 The editor is a static React 19, TypeScript, Vite, and Fabric.js application with
-an offline bundle of public-domain illustrations imported from the NIAID NIH
-BioArt Source, plus locally authored editable top-view plates and culture
-dishes for experiment layouts. It has no application server, account system,
-analytics, or telemetry.
+an offline bundle of public-domain and openly licensed scientific illustrations
+from NIAID NIH BioArt, SciDraw, and Arcadia Science, plus locally authored
+editable top-view plates and culture dishes for experiment layouts. It has no
+application server, account system, analytics, or telemetry.
 
 Built-in and imported multi-element SVGs remain grouped as one movable layer.
 Double-clicking drills through overlapping and nested groups one hierarchy
@@ -15,11 +15,10 @@ level at a time. A visible SVG part can then be edited independently, including
 its fill, stroke, opacity, position, scale, and rotation. Press Escape or choose
 **Done** to return to the complete asset.
 
-> Biological artwork sourced from the NIAID NIH BioArt Source. OpenSketch is an
-> independent project and is not affiliated with or endorsed by NIH or NIAID.
-
 The source code is AGPL-3.0-or-later. Imported artwork retains its original
-public-domain status and is not licensed under the OpenSketch software license.
+Public Domain, CC0 1.0, or CC BY 4.0 status and is not relicensed under the
+OpenSketch software license. Per-asset authorship, source, DOI, and license are
+retained in the manifest and embedded in exported SVG provenance.
 
 ## Privacy and local data
 
@@ -44,7 +43,8 @@ Export important work as `.OpenSketch` files for durable backups.
 ## Offline use
 
 OpenSketch is an installable progressive web app. On the first complete visit,
-its application shell, fonts, and bundled BioArt library are copied to browser
+its application shell, fonts, and viewed portions of the bundled art library are
+copied to browser
 Cache Storage. The home screen reports **Ready offline** when that copy is
 available. Afterward the application, saved projects, built-in artwork, and
 exports can be reopened without internet access.
@@ -121,15 +121,16 @@ GitHub Pages serves immutable application files. There is no server-side
 application runtime in production. The service worker precaches the same static
 files for offline use; IndexedDB and `localStorage` remain local to the browser.
 
-## NIH BioArt asset pipeline
+## Scientific asset pipeline
 
 Asset import is an explicit maintainer operation:
 
 ```sh
 corepack pnpm assets:sync
+corepack pnpm assets:sync:open
 ```
 
-The command discovers the current first-party NIH BioArt catalog, reads each
+The first command discovers the current first-party NIH BioArt catalog, reads each
 record's declared license and SVG file list, and imports every SVG from records
 marked exactly **Public Domain**. It downloads at a courteous rate, sanitizes
 SVG, prefixes all internal IDs, generates transparent WebP thumbnails, groups
@@ -144,6 +145,18 @@ when no matching first-party NIH SVG is available, preserving existing project
 compatibility. The older mirror-only importer remains available to maintainers
 as `corepack pnpm assets:sync:commons`; it is not used by the application.
 
+The second command imports every technically usable vector SVG currently
+exposed by SciDraw under CC0 1.0 or CC BY 4.0, plus both editable SVG styles for
+every organism in the Arcadia Science Free organism illustration library. The
+bundled result contains **609 SciDraw families** (538 CC BY 4.0 and 71 CC0) and
+**71 Arcadia organism families with 142 SVG variants**. CC BY assets retain the
+primary author, SciDraw source page, DOI, and license URL required for
+attribution. CC0 assets retain source and license metadata for traceability.
+Each downloaded file passes the same sanitization and local-thumbnail pipeline;
+the browser never fetches these third-party sources at runtime. Upstream files
+that are malformed or too complex to sanitize safely are named in
+`data/open-assets-import-report.json` rather than being silently approximated.
+
 Individual stages are available as:
 
 ```sh
@@ -153,8 +166,9 @@ corepack pnpm assets:manifest
 ```
 
 Normal development, test, production build, and browser runtime paths never
-contact Wikimedia or NIH. The downloaded, sanitized artwork is committed to
-this repository and served from the same static GitHub Pages origin.
+contact Wikimedia, NIH, SciDraw, Zenodo, or Arcadia Science. The downloaded,
+sanitized artwork is committed to this repository and served from the same
+static GitHub Pages origin.
 
 ### Sanitization policy
 
@@ -162,16 +176,16 @@ Built-in and user-imported SVGs reject or remove scripts, event handlers,
 `foreignObject`, JavaScript URLs, external CSS, external images and fonts, and
 network references in SVG paint/filter attributes. Internal references are
 retained and namespaced with the asset ID before conservative SVGO processing.
-Files without an unambiguous NIH BioArt identity or explicit public-domain
-status are excluded and recorded in the import report. Processing or security
-failures still fail synchronization.
+Files without a verifiable source and redistribution/modification license are
+excluded and recorded in the import report. Processing or security failures are
+reported explicitly.
 
 ## Repository map
 
 ```text
 apps/web/                  React/Vite browser application and static assets
 packages/editor-core/      project, search, migration, and canvas domain types
-scripts/assets/            maintainer-only NIH import and SVG security pipeline
+scripts/assets/            maintainer-only open-art import and SVG security pipeline
 data/                      taxonomy, overrides, source lock, import report
 tests/                     unit, cross-browser, export, and offline PWA tests
 docs/                      architecture and asset pipeline notes

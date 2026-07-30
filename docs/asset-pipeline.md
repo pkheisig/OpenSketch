@@ -7,6 +7,15 @@ global request cadence. `pnpm assets:sync:commons` retains the older Wikimedia
 Commons mirror importer for maintenance and project compatibility, but the
 direct NIH catalog is authoritative.
 
+`pnpm assets:sync:open` separately imports every technically usable SciDraw
+vector drawing licensed CC0 1.0 or CC BY 4.0 and every tricolor/stroke and
+silhouette SVG in the Arcadia Science Free organism illustration library. The
+current result is 609 SciDraw families and 71 Arcadia families with 142 Arcadia
+variants. These files are copied into source-specific local directories and
+combined with NIH BioArt only in the browser manifest, preserving the
+established NIH source lock and stable IDs. All upstream technical exclusions
+are recorded in `data/open-assets-import-report.json`.
+
 ## Trust gates
 
 An asset enters the bundle only when:
@@ -21,11 +30,22 @@ An asset enters the bundle only when:
 6. Security validation finds no executable or network content.
 7. A transparent 256 × 256 WebP thumbnail can be rendered.
 
+For SciDraw and Arcadia Science, the same technical gates apply and the source
+must additionally expose a redistribution/modification license supported by
+OpenSketch. CC BY files retain primary-author, source-page, DOI, license, and
+license-URL metadata. CC0 files retain source and license metadata for
+traceability.
+
 Public-domain records without an SVG and records under another license are
 listed as skips in `data/import-errors.json`. Download, sanitization, rendering,
 or security failures are recorded separately and fail the synchronization.
 Legacy Commons identity conflicts can still be resolved explicitly in
 `data/asset-overrides.json`.
+
+The open-asset importer records individual upstream failures in
+`data/open-assets-import-report.json` while still publishing every other valid,
+licensed file. This prevents one corrupt third-party SVG from discarding an
+otherwise complete source collection.
 
 ## Determinism
 

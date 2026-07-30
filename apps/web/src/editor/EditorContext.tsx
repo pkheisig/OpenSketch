@@ -218,10 +218,14 @@ async function createBundledAssetGroup(family: AssetFamily, variant: AssetVarian
   const group = groupSvgElements(objects, result.options);
   group.assetId = variant.id;
   group.familyId = family.familyId;
+  const sourcePage = family.sourcePage ?? family.commonsPage ?? family.nihSourcePage ?? "";
   group.provenance = {
-    nihSourcePage: family.nihSourcePage,
-    sourcePage: family.sourcePage ?? family.nihSourcePage,
+    ...(family.nihSourcePage ? { nihSourcePage: family.nihSourcePage } : {}),
+    sourcePage,
     ...(family.commonsPage ? { commonsPage: family.commonsPage } : {}),
+    ...(family.sourceName ? { sourceName: family.sourceName } : {}),
+    ...(family.licenseUrl ? { licenseUrl: family.licenseUrl } : {}),
+    credit: family.credit,
     author: family.author,
     license: family.license
   };

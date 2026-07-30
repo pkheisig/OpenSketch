@@ -1,0 +1,35 @@
+{
+  "generatedAt": "2026-07-30T22:18:38.946Z",
+  "sources": {
+    "sciDraw": {
+      "importedFamilies": 609,
+      "licenses": {
+        "CC-BY-4.0": 538,
+        "CC0-1.0": 71
+      }
+    },
+    "organismLibrary": {
+      "importedFamilies": 71,
+      "importedVariants": 142,
+      "license": "CC0-1.0",
+      "record": "https://zenodo.org/api/records/17203578"
+    }
+  },
+  "failures": [
+    {
+      "source": "SciDraw",
+      "title": "Reef fish retina",
+      "error": "Malformed upstream SVG: text data outside the root node."
+    },
+    {
+      "source": "SciDraw",
+      "title": "Shark retina",
+      "error": "Malformed upstream SVG: text data outside the root node."
+    },
+    {
+      "source": "SciDraw",
+      "title": "Lipid Bilayer",
+      "error": "Upstream SVG has 98,312 elements and exceeded the 60-second safety-processing limit."
+    }
+  ]
+}

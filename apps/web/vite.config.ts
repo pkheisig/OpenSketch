@@ -16,7 +16,7 @@ export default defineConfig({
         name: "OpenSketch — Scientific Figure Studio",
         short_name: "OpenSketch",
         description:
-          "A private, offline-capable scientific figure editor with public-domain NIH BioArt.",
+          "A private, offline-capable scientific figure editor with openly licensed scientific art.",
         theme_color: "#152324",
         background_color: "#f2efe7",
         display: "standalone",
@@ -37,10 +37,18 @@ export default defineConfig({
         cleanupOutdatedCaches: true,
         navigateFallback: "/OpenSketch/index.html",
         globPatterns: ["**/*.{html,js,css,svg,png,webp,woff,woff2,ttf,txt}"],
-        globIgnores: ["assets/nih-bioart/**", "assets/nih-bioart-thumbnails/**"],
+        globIgnores: [
+          "assets/nih-bioart/**",
+          "assets/nih-bioart-thumbnails/**",
+          "assets/scidraw/**",
+          "assets/scidraw-thumbnails/**",
+          "assets/organism-library/**",
+          "assets/organism-library-thumbnails/**"
+        ],
         runtimeCaching: [
           {
-            urlPattern: /\/OpenSketch\/assets\/nih-bioart(?:-thumbnails)?\//,
+            urlPattern:
+              /\/OpenSketch\/assets\/(?:nih-bioart|scidraw|organism-library)(?:-thumbnails)?\//,
             handler: "CacheFirst",
             options: {
               cacheName: "opensketch-asset-library",

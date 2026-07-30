@@ -4,6 +4,7 @@ import sharp from "sharp";
 import type { AssetManifest } from "../../packages/editor-core/src/types";
 import { readJson, sha256 } from "./io";
 import { LOCK_PATH, MANIFEST_PATH, SVG_DIR, TAXONOMY_PATH, THUMB_DIR } from "./paths";
+import { ROOT } from "./paths";
 import { assertSafeSvg } from "./sanitize-svg";
 import { taxonomyIndex, type AssetTaxonomy } from "./taxonomy";
 import type { SourceLock } from "./types";
@@ -128,11 +129,71 @@ async function main(): Promise<void> {
     }
   }
 
+  const openManifestPath = join(
+    ROOT,
+    "apps/web/src/generated/open-assets-manifest.json"
+  );
+  const openManifest = await readJson<AssetManifest>(openManifestPath);
+  const publicDirectory = join(ROOT, "apps/web/public");
+  const allowedOpenLicenses = new Set(["CC0-1.0", "CC-BY-4.0"]);
+  if (openManifest.families.length === 0) {
+    errors.push("The open scientific-art collection is empty; run pnpm assets:sync:open.");
+  }
+  for (const family of openManifest.families) {
+    if (!allowedOpenLicenses.has(family.license)) {
+      errors.push(`${family.familyId}: unsupported open-asset license ${family.license}.`);
+    }
+    if (!family.sourcePage || !family.sourceName || !family.licenseUrl || !family.credit) {
+      errors.push(`${family.familyId}: attribution or source metadata is incomplete.`);
+    }
+    if (!family.variants.some((variant) => variant.id === family.defaultVariantId)) {
+      errors.push(`${family.familyId}: default variant does not exist.`);
+    }
+    for (const variant of family.variants) {
+      if (ids.has(variant.id)) errors.push(`${variant.id}: duplicate asset ID.`);
+      ids.add(variant.id);
+      const svgPath = join(publicDirectory, variant.assetPath);
+      const thumbnailPath = join(publicDirectory, variant.thumbnailPath);
+      if (!(await exists(svgPath))) errors.push(`${variant.id}: SVG is missing.`);
+      if (!(await exists(thumbnailPath))) errors.push(`${variant.id}: thumbnail is missing.`);
+      if (await exists(svgPath)) {
+        try {
+          const source = await readFile(svgPath, "utf8");
+          assertSafeSvg(source);
+          if (variant.localSha256 && sha256(source) !== variant.localSha256) {
+            errors.push(`${variant.id}: local SHA-256 differs from the open-assets manifest.`);
+          }
+        } catch (error) {
+          errors.push(`${variant.id}: ${String(error)}`);
+        }
+      }
+      if (await exists(thumbnailPath)) {
+        try {
+          const thumbnail = await sharp(thumbnailPath).metadata();
+          if (
+            thumbnail.format !== "webp" ||
+            !thumbnail.width ||
+            !thumbnail.height ||
+            thumbnail.width > 256 ||
+            thumbnail.height > 256 ||
+            !thumbnail.hasAlpha
+          ) {
+            errors.push(`${variant.id}: thumbnail is not a valid transparent WebP.`);
+          }
+        } catch (error) {
+          errors.push(`${variant.id}: thumbnail cannot be decoded: ${String(error)}`);
+        }
+      }
+    }
+  }
+
   if (errors.length) {
     console.error(errors.map((error) => `- ${error}`).join("\n"));
     throw new Error(`Asset validation failed with ${errors.length} issue(s).`);
   }
-  console.log(`Validated ${manifest.families.length} families and ${ids.size} SVG variants.`);
+  console.log(
+    `Validated ${manifest.families.length + openManifest.families.length} families and ${ids.size} SVG variants.`
+  );
 }
 
 main().catch((error) => {

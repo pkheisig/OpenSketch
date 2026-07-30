@@ -18,6 +18,27 @@ describe("SVG sanitization", () => {
     expect(() => assertSafeSvg(clean)).not.toThrow();
   });
 
+  it("strips harmless SVG document type declarations", () => {
+    const clean = sanitizeSvg(
+      '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4"/></svg>',
+      "doctype"
+    );
+    expect(clean).not.toContain("<!DOCTYPE");
+    expect(clean).toContain("<circle");
+  });
+
+  it("expands bounded literal namespace entities from legacy Illustrator SVGs", () => {
+    const clean = sanitizeSvg(
+      `<!DOCTYPE svg [
+        <!ENTITY ns_ai "http://ns.adobe.com/AdobeIllustrator/10.0/">
+      ]><svg xmlns="http://www.w3.org/2000/svg" xmlns:i="&ns_ai;" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4"/></svg>`,
+      "illustrator"
+    );
+    expect(clean).not.toContain("<!DOCTYPE");
+    expect(clean).not.toContain("&ns_ai;");
+    expect(clean).toContain("<circle");
+  });
+
   it("rejects executable imported media before insertion", () => {
     expect(() => sanitizeImportedSvg(unsafe)).toThrow("external or executable");
   });

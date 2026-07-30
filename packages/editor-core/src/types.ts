@@ -24,6 +24,8 @@ export interface AssetVariant {
   height?: number;
 }
 
+export type AssetLicense = "Public Domain" | "CC0-1.0" | "CC-BY-4.0";
+
 export interface AssetFamily {
   familyId: string;
   bioartEntryId: number;
@@ -33,8 +35,10 @@ export interface AssetFamily {
   keywords: string[];
   author: string;
   credit: string;
-  license: "Public Domain";
-  nihSourcePage: string;
+  license: AssetLicense;
+  licenseUrl?: string;
+  sourceName?: string;
+  nihSourcePage?: string;
   sourcePage?: string;
   commonsPage?: string;
   defaultVariantId: string;
@@ -44,7 +48,7 @@ export interface AssetFamily {
 export interface AssetManifest {
   version: 1;
   generatedAt: string;
-  source: "NIAID NIH BioArt" | "Wikimedia Commons" | "NIAID NIH BioArt and Wikimedia Commons";
+  source: string;
   families: AssetFamily[];
 }
 

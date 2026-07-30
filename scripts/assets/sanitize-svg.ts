@@ -28,33 +28,33 @@ function prefixInternalIds(svg: SVGSVGElement, assetId: string): void {
   svg.querySelectorAll("*").forEach((element) => {
     for (const attribute of [...element.attributes]) {
       let value = attribute.value;
-      for (const [previous, next] of idMap) {
-        if (
-          ["href", "xlink:href"].includes(attribute.name.toLowerCase()) &&
-          value === `#${previous}`
-        ) {
-          value = `#${next}`;
-        }
-        value = value.replace(
-          new RegExp(`url\\((['"]?)#${escapeRegExp(previous)}\\1\\)`, "g"),
-          `url(#${next})`
-        );
+      const attributeName = attribute.name.toLowerCase();
+      if (["href", "xlink:href"].includes(attributeName) && value.startsWith("#")) {
+        const replacement = idMap.get(value.slice(1));
+        if (replacement) value = `#${replacement}`;
       }
+      value = value.replace(
+        /url\(\s*(['"]?)#([^)'"]+)\1\s*\)/g,
+        (reference, _quote: string, id: string) =>
+          idMap.has(id) ? `url(#${idMap.get(id)})` : reference
+      );
       element.setAttribute(attribute.name, value);
     }
   });
   svg.querySelectorAll("style").forEach((style) => {
-    let content = style.textContent ?? "";
-    for (const [previous, next] of idMap) {
-      content = content.replace(
-        new RegExp(`(^|[},>+~])(\\s*)#${escapeRegExp(previous)}(?=\\s*[{,.:[>+~#])`, "gm"),
-        `$1$2#${next}`
+    const content = (style.textContent ?? "")
+      .replace(/([^{}]+)\{/g, (rule, selector: string) => {
+        const rewritten = selector.replace(
+          /#([A-Za-z_][\w:.-]*)/g,
+          (reference, id: string) => (idMap.has(id) ? `#${idMap.get(id)}` : reference)
+        );
+        return `${rewritten}{`;
+      })
+      .replace(
+        /url\(\s*(['"]?)#([^)'"]+)\1\s*\)/g,
+        (reference, _quote: string, id: string) =>
+          idMap.has(id) ? `url(#${idMap.get(id)})` : reference
       );
-      content = content.replace(
-        new RegExp(`url\\((['"]?)#${escapeRegExp(previous)}\\1\\)`, "g"),
-        `url(#${next})`
-      );
-    }
     style.textContent = content;
   });
 }
@@ -125,10 +125,33 @@ export function assertSafeSvg(svgText: string): void {
   }
 }
 
-export function sanitizeSvg(source: string, assetId: string): string {
-  if (/<!DOCTYPE|<!ENTITY/i.test(source)) {
-    throw new Error("SVG document type and entity declarations are not allowed.");
+function expandSafeInternalEntities(source: string): string {
+  const documentType = source.match(/<!DOCTYPE[^>]*\[[\s\S]*?\]>/i)?.[0];
+  if (!documentType) return source.replace(/<!DOCTYPE[^>]*>/gi, "");
+  if (/<!ENTITY\s+(?:%\s+)?[A-Za-z_][\w.-]*\s+(?:SYSTEM|PUBLIC)\b|<!ENTITY\s+%/i.test(documentType)) {
+    throw new Error("External and parameter SVG entities are not allowed.");
   }
+  const declarations = [
+    ...documentType.matchAll(/<!ENTITY\s+([A-Za-z_][\w.-]*)\s+(["'])([^"'<>]*)\2\s*>/gi)
+  ];
+  const remainingSubset = documentType
+    .replace(/^<!DOCTYPE[^[>]*\[/i, "")
+    .replace(/\]>$/i, "")
+    .replace(/<!ENTITY\s+[A-Za-z_][\w.-]*\s+(["'])[^"'<>]*\1\s*>/gi, "")
+    .trim();
+  if (remainingSubset || declarations.length > 64) {
+    throw new Error("Unsupported SVG document type declaration.");
+  }
+  let expanded = source;
+  for (const declaration of declarations) {
+    const [, name, , value] = declaration;
+    expanded = expanded.replaceAll(`&${name};`, value);
+  }
+  return expanded.replace(documentType, "");
+}
+
+export function sanitizeSvg(source: string, assetId: string): string {
+  source = expandSafeInternalEntities(source);
   const svgNamespacePrefix = source.match(
     /xmlns:([A-Za-z_][\w.-]*)=["']http:\/\/www\.w3\.org\/2000\/svg["']/
   )?.[1];
@@ -138,7 +161,14 @@ export function sanitizeSvg(source: string, assetId: string): string {
   let normalizedSource = svgNamespacePrefix
     ? source
         .replace(new RegExp(`(<\\/?)(?:${escapeRegExp(svgNamespacePrefix)}):`, "g"), "$1")
-        .replace(new RegExp(`xmlns:${escapeRegExp(svgNamespacePrefix)}=`), "xmlns=")
+        .replace(
+          new RegExp(
+            `\\s+xmlns:${escapeRegExp(svgNamespacePrefix)}=["']http:\\/\\/www\\.w3\\.org\\/2000\\/svg["']`
+          ),
+          /\sxmlns=["']http:\/\/www\.w3\.org\/2000\/svg["']/.test(source)
+            ? ""
+            : ' xmlns="http://www.w3.org/2000/svg"'
+        )
     : source;
   for (const prefix of new Set(["xlink", xlinkNamespacePrefix].filter(Boolean) as string[])) {
     normalizedSource = normalizedSource.replace(
