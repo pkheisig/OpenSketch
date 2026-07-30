@@ -3,7 +3,7 @@ import type {
   ConnectorLineStyle,
   ConnectorPathShape
 } from "@workspace/editor-core";
-import type { ConnectorCreationPreset } from "./creation";
+import type { ConnectorCreationPreset, CreationTool } from "./creation";
 import type { Point } from "./geometry";
 
 export type ConnectorFamily =
@@ -323,3 +323,19 @@ export const CONNECTOR_FAMILIES: ReadonlyArray<{
   { id: "circular", label: "Circular" },
   { id: "brackets", label: "Brackets" }
 ];
+
+export function creationToolForConnectorPreset(
+  value: ConnectorPreset,
+  family: ConnectorFamily
+): CreationTool {
+  const arrow =
+    value.endArrowhead !== "none" ||
+    value.startArrowhead !== "none" ||
+    family !== "lines" ||
+    value.pathShape === "circular";
+  return {
+    type: "shape",
+    kind: arrow ? "arrow" : value.pathShape === "straight" ? "line" : "curved-line",
+    connectorPreset: value
+  };
+}

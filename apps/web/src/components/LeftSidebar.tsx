@@ -39,10 +39,12 @@ import {
 import {
   CONNECTOR_FAMILIES,
   CONNECTOR_PRESETS,
+  creationToolForConnectorPreset,
   connectorPreviewEndpoints,
   type ConnectorFamily,
   type ConnectorPreset
 } from "@/editor/connectorPresets";
+import { setConnectorPresetDragPayload } from "@/editor/creationDrag";
 import {
   loadSavedElementStyles,
   SAVED_ELEMENT_STYLES_CHANGED_EVENT,
@@ -249,6 +251,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const [shapeFamily, setShapeFamily] = useState<keyof typeof SHAPE_GROUPS | null>(null);
   const sidebarRef = useRef<HTMLElement>(null);
   const handledSelection = useRef("");
+  const draggedLinePreset = useRef(false);
   const editor = useEditor();
   const autoEditWasEnabled = useRef(editor.autoEditEnabled);
   const setCreationTool = editor.setCreationTool;
@@ -283,16 +286,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
         endArrowhead: value.endArrowhead
       }
     }));
-    const arrow =
-      value.endArrowhead !== "none" ||
-      value.startArrowhead !== "none" ||
-      family !== "lines" ||
-      value.pathShape === "circular";
-    editor.setCreationTool({
-      type: "shape",
-      kind: arrow ? "arrow" : value.pathShape === "straight" ? "line" : "curved-line",
-      connectorPreset: value
-    });
+    editor.setCreationTool(creationToolForConnectorPreset(value, family));
     setFlyout(null);
     setLineFamily(null);
   };
@@ -456,7 +450,9 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
           className="tool-flyout line-tool-flyout"
           role="menu"
           aria-label="Line and arrow tools"
-          onPointerLeave={() => setLineFamily(null)}
+          onPointerLeave={() => {
+            if (!draggedLinePreset.current) setLineFamily(null);
+          }}
         >
           <div className="tool-flyout-primary">
             {CONNECTOR_FAMILIES.map(({ id: family, label }) => {
@@ -481,7 +477,19 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
                 return (
                   <button
                     key={value.label}
-                    onClick={() => chooseLinePreset(value, lineFamily)}
+                    draggable
+                    onDragStart={(event) => {
+                      draggedLinePreset.current = true;
+                      setConnectorPresetDragPayload(event.dataTransfer, lineFamily, value);
+                    }}
+                    onDragEnd={() => {
+                      window.setTimeout(() => {
+                        draggedLinePreset.current = false;
+                      }, 0);
+                    }}
+                    onClick={() => {
+                      if (!draggedLinePreset.current) chooseLinePreset(value, lineFamily);
+                    }}
                     role="menuitem"
                     aria-label={value.label}
                     title={value.label}

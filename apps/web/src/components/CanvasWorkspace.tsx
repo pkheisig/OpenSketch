@@ -67,6 +67,11 @@ import {
   zoomAnchorScrollDelta
 } from "@/editor/zoom";
 import { isLinearCreationTool } from "@/editor/creation";
+import {
+  CONNECTOR_PRESET_DRAG_TYPE,
+  connectorDropEndpoints,
+  readConnectorPresetDragPayload
+} from "@/editor/creationDrag";
 import { elementStyleKey } from "@/editor/elementStyles";
 import { CURSOR_GRABBING } from "@/editor/cursors";
 import { importedMediaFilesFromDataTransfer } from "@/editor/clipboardImport";
@@ -606,6 +611,21 @@ export function CanvasWorkspace() {
       if (family && variant) void editor.addAsset(family, variant, point);
       return;
     }
+    const draggedConnector = readConnectorPresetDragPayload(event.dataTransfer);
+    if (draggedConnector && point) {
+      const { from, to } = connectorDropEndpoints(draggedConnector.tool, point, canvasSettings);
+      editor.setCreationDefaults((current) => ({
+        ...current,
+        line: {
+          ...current.line,
+          lineStyle: draggedConnector.preset.lineStyle,
+          startArrowhead: draggedConnector.preset.startArrowhead,
+          endArrowhead: draggedConnector.preset.endArrowhead
+        }
+      }));
+      editor.placeCreationTool(draggedConnector.tool, from, to);
+      return;
+    }
     const importId = event.dataTransfer.getData(IMPORTED_MEDIA_DRAG_TYPE);
     if (importId) {
       void getImportedMedia(importId).then((media) => {
@@ -1005,6 +1025,7 @@ export function CanvasWorkspace() {
       onDragOver={(event) => {
         if (
           event.dataTransfer.types.includes("application/x-scientific-asset") ||
+          event.dataTransfer.types.includes(CONNECTOR_PRESET_DRAG_TYPE) ||
           event.dataTransfer.types.includes(IMPORTED_MEDIA_DRAG_TYPE) ||
           event.dataTransfer.types.includes("Files")
         ) {

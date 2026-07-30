@@ -277,6 +277,7 @@ interface EditorContextValue {
   setCreationDefaults: (
     defaults: CreationDefaults | ((current: CreationDefaults) => CreationDefaults)
   ) => void;
+  placeCreationTool: (tool: CreationTool, point: Point, endPoint?: Point) => void;
   placeCreation: (point: Point, endPoint?: Point) => void;
   addAsset: (family: AssetFamily, variant: AssetVariant, point?: Point) => Promise<void>;
   setAssetVariant: (variantId: string) => Promise<void>;
@@ -2046,11 +2047,8 @@ export function EditorProvider({
     [canvas, commit, creationDefaults.line, prepareElementStyle]
   );
 
-  const placeCreation = useCallback(
-    (point: Point, endPoint?: Point) => {
-      if (!creationTool) return;
-      const tool = creationTool;
-      setCreationTool(null);
+  const placeCreationTool = useCallback(
+    (tool: CreationTool, point: Point, endPoint?: Point) => {
       if (tool.type === "text") {
         addText(tool.kind, point, tool.fontSize, tool.fontWeight);
         return;
@@ -2080,7 +2078,17 @@ export function EditorProvider({
       }
       addShape(tool.kind, point, tool.connectorPreset);
     },
-    [addAttachedConnector, addFreeConnector, addShape, addText, canvas, creationTool]
+    [addAttachedConnector, addFreeConnector, addShape, addText, canvas]
+  );
+
+  const placeCreation = useCallback(
+    (point: Point, endPoint?: Point) => {
+      if (!creationTool) return;
+      const tool = creationTool;
+      setCreationTool(null);
+      placeCreationTool(tool, point, endPoint);
+    },
+    [creationTool, placeCreationTool]
   );
 
   const addAsset = useCallback(
@@ -3144,6 +3152,7 @@ export function EditorProvider({
       creationDefaults,
       setCreationTool,
       setCreationDefaults,
+      placeCreationTool,
       placeCreation,
       addAsset,
       setAssetVariant,
@@ -3211,6 +3220,7 @@ export function EditorProvider({
       projectDescription,
       project.id,
       previewZoom,
+      placeCreationTool,
       placeCreation,
       redo,
       resetColors,
