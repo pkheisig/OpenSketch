@@ -1,9 +1,30 @@
-import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type DragEvent
+} from "react";
 import { createPortal } from "react-dom";
 import { Check, ChevronDown } from "lucide-react";
 import type { AssetFamily } from "@workspace/editor-core";
 import { AssetPreviewImage } from "@/components/AssetPreviewImage";
-import { setAssetDragPayload } from "@/editor/assetDrag";
+import { setAssetDragImage, setAssetDragPayload } from "@/editor/assetDrag";
+
+function startVariantDrag(
+  event: DragEvent<HTMLButtonElement>,
+  familyId: string,
+  variantId: string
+): void {
+  setAssetDragPayload(event.dataTransfer, familyId, variantId);
+  setAssetDragImage(
+    event.dataTransfer,
+    event.currentTarget.querySelector<HTMLImageElement>(".asset-variant-preview img"),
+    event
+  );
+}
 
 export function AssetVariantGrid({
   family,
@@ -26,9 +47,7 @@ export function AssetVariantGrid({
           aria-label={`Select ${family.title} variant ${index + 1}`}
           onClick={() => onChange(variant.id)}
           draggable
-          onDragStart={(event) =>
-            setAssetDragPayload(event.dataTransfer, family.familyId, variant.id)
-          }
+          onDragStart={(event) => startVariantDrag(event, family.familyId, variant.id)}
         >
           <span className="asset-variant-preview">
             <AssetPreviewImage assetPath={variant.assetPath} fallbackPath={variant.thumbnailPath} />
@@ -158,9 +177,7 @@ export function AssetVariantPicker({
                 aria-selected={variant.id === value}
                 aria-label={`Select ${family.title} variant ${index + 1}`}
                 draggable
-                onDragStart={(event) =>
-                  setAssetDragPayload(event.dataTransfer, family.familyId, variant.id)
-                }
+                onDragStart={(event) => startVariantDrag(event, family.familyId, variant.id)}
                 onClick={() => {
                   onChange(variant.id);
                   setOpen(false);

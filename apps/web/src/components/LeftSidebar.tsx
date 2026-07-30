@@ -55,7 +55,11 @@ import {
   type SavedElementStyles
 } from "@/editor/elementStyles";
 import { TEXT_FONT_FAMILIES } from "@/editor/fonts";
-import { setAssetDragPayload, setImportedMediaDragPayload } from "@/editor/assetDrag";
+import {
+  setAssetDragImage,
+  setAssetDragPayload,
+  setImportedMediaDragPayload
+} from "@/editor/assetDrag";
 import {
   ASSET_VARIANT_DEFAULTS_CHANGED_EVENT,
   loadAssetVariantDefaults,
@@ -856,6 +860,11 @@ function AssetCard({
     const currentVariant =
       family.variants.find((candidate) => candidate.id === storedVariantId) ?? variant;
     setAssetDragPayload(event.dataTransfer, family.familyId, currentVariant.id);
+    setAssetDragImage(
+      event.dataTransfer,
+      event.currentTarget.querySelector<HTMLImageElement>(".asset-card-image img"),
+      event
+    );
   };
   return (
     <article className="asset-card" draggable onDragStart={onDragStart}>
