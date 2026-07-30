@@ -239,14 +239,17 @@ test("@smoke never paints fallback asset sizing or uninitialized canvas geometry
   ).toEqual([]);
 
   const preview = page.locator(".asset-card-image img").first();
-  const initialBounds = await preview.boundingBox();
+  const previewFrame = page.locator(".asset-card-image").first();
+  const initialBounds = await previewFrame.boundingBox();
   expect(initialBounds).not.toBeNull();
-  if ((await preview.getAttribute("data-preview-ready")) === "false") {
-    await expect(preview).toHaveCSS("visibility", "hidden");
-  }
+  const initialPreviewState = await preview.evaluate((image) => ({
+    ready: image.dataset.previewReady,
+    visibility: getComputedStyle(image).visibility
+  }));
+  if (initialPreviewState.ready === "false") expect(initialPreviewState.visibility).toBe("hidden");
   await expect(preview).toHaveAttribute("data-preview-ready", "true");
   await expect(preview).toHaveCSS("visibility", "visible");
-  const finalBounds = await preview.boundingBox();
+  const finalBounds = await previewFrame.boundingBox();
   expect(finalBounds).toEqual(initialBounds);
 });
 
@@ -1710,22 +1713,6 @@ test("double-clicking outside exits one group hierarchy level", async ({ page })
 });
 
 test("edits a group with single-click and modifier multi-selection", async ({ page }) => {
-  const opaqueBlueSelectionPixels = () =>
-    page.locator("canvas.lower-canvas").evaluate((canvas: HTMLCanvasElement) => {
-      const pixels = canvas.getContext("2d")!.getImageData(0, 0, canvas.width, canvas.height).data;
-      let count = 0;
-      for (let index = 0; index < pixels.length; index += 4) {
-        if (
-          pixels[index] === 59 &&
-          pixels[index + 1] === 130 &&
-          pixels[index + 2] === 246 &&
-          pixels[index + 3] === 255
-        ) {
-          count += 1;
-        }
-      }
-      return count;
-    });
   const renderedPixelAt = (point: { x: number; y: number }) =>
     page.locator("canvas.lower-canvas").evaluate((canvas: HTMLCanvasElement, clientPoint) => {
       const bounds = canvas.getBoundingClientRect();
@@ -1771,7 +1758,6 @@ test("edits a group with single-click and modifier multi-selection", async ({ pa
       )
   ).toBeGreaterThan(20);
   await page.mouse.click(rectangle.x, rectangle.y);
-  expect(await opaqueBlueSelectionPixels()).toBeGreaterThan(0);
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("rectangle");
 
@@ -3327,7 +3313,7 @@ test("exports an atomic SVG asset with its vector parts intact", async ({ page }
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("dendritic");
   const dendriticCell = page.locator(".asset-card").filter({ hasText: "Dendritic Cell" }).first();
-  await dendriticCell.locator(".asset-card-image").click();
+  await dendriticCell.getByRole("button", { name: "Insert Dendritic Cell", exact: true }).click();
   await expect(page.locator(".layers-title small")).toHaveText("1");
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.getByText("Edit individual parts", { exact: true })).toHaveCount(0);

@@ -750,6 +750,7 @@ export function EditorProvider({
   const lastCommit = useRef<{ label: string; at: number } | null>(null);
   const restoring = useRef(false);
   const clipboard = useRef<FabricObject[]>([]);
+  const pendingClipboardCopy = useRef<Promise<void> | null>(null);
   const clipboardMarker = useRef<string | undefined>(undefined);
   const savedElementStyles = useRef(loadSavedElementStyles());
   const pendingSnapshot = useRef<{ snapshot: string; revision: number } | undefined>(undefined);
@@ -2391,15 +2392,28 @@ export function EditorProvider({
           console.warn(`Could not copy the selection as ${format.toUpperCase()}.`, error);
         }
       );
-      clipboard.current = await Promise.all(selectedObjects.map((object) => object.clone()));
-      await systemWrite;
+      const internalCopy = Promise.all(selectedObjects.map((object) => object.clone())).then(
+        (clones) => {
+          clipboard.current = clones;
+        }
+      );
+      pendingClipboardCopy.current = internalCopy;
+      try {
+        await Promise.all([internalCopy, systemWrite]);
+      } finally {
+        if (pendingClipboardCopy.current === internalCopy) {
+          pendingClipboardCopy.current = null;
+        }
+      }
       if (cut) deleteSelection();
     },
     [canvas, deleteSelection]
   );
 
   const pasteSelection = useCallback(async () => {
-    if (!canvas || clipboard.current.length === 0) return;
+    if (!canvas) return;
+    await pendingClipboardCopy.current;
+    if (clipboard.current.length === 0) return;
     const [clones, nextClipboard] = await Promise.all([
       Promise.all(clipboard.current.map((object) => object.clone())),
       Promise.all(clipboard.current.map((object) => object.clone()))
