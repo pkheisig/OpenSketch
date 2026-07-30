@@ -20,6 +20,19 @@ function wellGeometry(source: string) {
   );
 }
 
+function wellRimGeometry(source: string) {
+  return Array.from(
+    source.matchAll(
+      /<circle data-well-rim="[^"]+" cx="([^"]+)" cy="([^"]+)" r="([^"]+)"[^>]+stroke-width="([^"]+)"/g
+    ),
+    (match) => ({
+      cx: Number(match[1]),
+      cy: Number(match[2]),
+      visualRadius: Number(match[3]) + Number(match[4]) / 2
+    })
+  );
+}
+
 describe("top-view labware assets", () => {
   it("provides the standard editable plate layouts and a culture dish", () => {
     expect(TOP_VIEW_LABWARE_FAMILIES.map((family) => family.title)).toEqual([
@@ -109,6 +122,29 @@ describe("top-view labware assets", () => {
     expect(top - grid.top).toBeCloseTo(grid.top + grid.height - bottom, 1);
     expect(left).toBeGreaterThan(grid.left);
     expect(top).toBeGreaterThan(grid.top);
+  });
+
+  it.each([
+    "6 Well Plate Top View",
+    "12 Well Plate Top View",
+    "24 Well Plate Top View",
+    "48 Well Plate Top View",
+    "96 Well Plate Top View",
+    "384 Well Plate Top View"
+  ])("keeps every well rim inside the raised face of %s", (title) => {
+    const family = TOP_VIEW_LABWARE_FAMILIES.find((candidate) => candidate.title === title);
+    const source = decodeSvg(family!.variants[0].assetPath);
+    const wells = wellRimGeometry(source);
+    const faceRight = Number(source.match(/data-plate-face-right="([^"]+)"/)?.[1]);
+    const faceBottom = Number(source.match(/data-plate-face-bottom="([^"]+)"/)?.[1]);
+
+    expect(wells).toHaveLength(
+      title.startsWith("384")
+        ? 384
+        : Number(title.slice(0, title.indexOf(" ")))
+    );
+    expect(Math.max(...wells.map((well) => well.cx + well.visualRadius))).toBeLessThan(faceRight);
+    expect(Math.max(...wells.map((well) => well.cy + well.visualRadius))).toBeLessThan(faceBottom);
   });
 
   it("progressively reduces the label gutters as well density increases", () => {

@@ -1,7 +1,9 @@
 import type { AssetFamily } from "@workspace/editor-core";
 
-const WIDTH = 360;
-const HEIGHT = 240;
+const WIDTH = 378;
+const HEIGHT = 252;
+const PLATE_FACE_RIGHT = 359;
+const PLATE_FACE_BOTTOM = 232;
 const SOURCE_PAGE = "https://github.com/pkheisig/OpenSketch";
 const WELL_GRID: Record<
   number,
@@ -67,12 +69,12 @@ function wellPlateSvg(rows: number, columns: number): string {
   }).join("");
 
   return [
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${WIDTH} ${HEIGHT}" data-grid-left="${grid.left}" data-grid-top="${grid.top}" data-grid-width="${grid.width}" data-grid-height="${grid.height}">`,
-    '<path id="plate-depth" d="M28 12H338c10 0 18 8 18 18v190c0 10-8 18-18 18H30L10 218V32Z" fill="#bed1d2" stroke="#6f9295" stroke-width="2"/>',
-    '<path id="plate-side" d="M350 24l6 6v190c0 10-8 18-18 18H30l-6-6h310c9 0 16-7 16-16Z" fill="#abc4c7" stroke="#6f9295" stroke-width="1.5"/>',
-    '<path id="plate" d="M28 4H334c9 0 16 7 16 16v194c0 9-7 16-16 16H28L4 206V28Z" fill="#eef5f5" stroke="#587d82" stroke-width="2.4"/>',
-    '<path id="plate-inset" d="M30 13H331c6 0 10 4 10 10v187c0 6-4 10-10 10H30L14 204V31Z" fill="#e5eff1" stroke="#a8c2c5" stroke-width="2"/>',
-    '<path id="plate-highlight" d="M31 17H329c5 0 8 3 8 8" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" opacity=".9"/>',
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${WIDTH} ${HEIGHT}" data-grid-left="${grid.left}" data-grid-top="${grid.top}" data-grid-width="${grid.width}" data-grid-height="${grid.height}" data-plate-face-right="${PLATE_FACE_RIGHT}" data-plate-face-bottom="${PLATE_FACE_BOTTOM}">`,
+    '<path id="plate-depth" d="M28 12H356c10 0 18 8 18 18v202c0 10-8 18-18 18H30L10 230V32Z" fill="#bed1d2" stroke="#6f9295" stroke-width="2"/>',
+    '<path id="plate-side" d="M368 24l6 6v202c0 10-8 18-18 18H30l-6-6h328c9 0 16-7 16-16Z" fill="#abc4c7" stroke="#6f9295" stroke-width="1.5"/>',
+    '<path id="plate" d="M28 4H352c9 0 16 7 16 16v206c0 9-7 16-16 16H28L4 218V28Z" fill="#eef5f5" stroke="#587d82" stroke-width="2.4"/>',
+    '<path id="plate-inset" d="M30 13H349c6 0 10 4 10 10v199c0 6-4 10-10 10H30L14 216V31Z" fill="#e5eff1" stroke="#a8c2c5" stroke-width="2"/>',
+    '<path id="plate-highlight" d="M31 17H347c5 0 8 3 8 8" fill="none" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round" opacity=".9"/>',
     `<g id="column-labels" fill="#315f76" font-family="'Source Sans 3', sans-serif" font-size="${labelFontSize}" font-weight="600">`,
     columnLabels,
     "</g>",
