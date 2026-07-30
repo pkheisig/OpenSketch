@@ -42,62 +42,76 @@ async function artboardPoint(page: Page, xRatio = 0.5, yRatio = 0.5) {
 }
 
 async function renderedArtworkCenter(page: Page) {
-  return page.locator(".lower-canvas").evaluate((canvas: HTMLCanvasElement) => {
-    const pixels = canvas.getContext("2d")!.getImageData(0, 0, canvas.width, canvas.height).data;
-    let left = canvas.width;
-    let top = canvas.height;
-    let right = -1;
-    let bottom = -1;
-    let sumX = 0;
-    let sumY = 0;
-    let count = 0;
-    for (let y = 0; y < canvas.height; y += 1) {
-      for (let x = 0; x < canvas.width; x += 1) {
-        const offset = (y * canvas.width + x) * 4;
-        if (
-          pixels[offset + 3] === 0 ||
-          (pixels[offset] > 245 && pixels[offset + 1] > 245 && pixels[offset + 2] > 245)
-        ) {
-          continue;
-        }
-        left = Math.min(left, x);
-        top = Math.min(top, y);
-        right = Math.max(right, x);
-        bottom = Math.max(bottom, y);
-        sumX += x;
-        sumY += y;
-        count += 1;
+  let center: { x: number; y: number } | null | undefined;
+  await expect
+    .poll(async () => {
+      try {
+        center = await page.locator(".lower-canvas").evaluate((canvas: HTMLCanvasElement) => {
+          const pixels = canvas
+            .getContext("2d")!
+            .getImageData(0, 0, canvas.width, canvas.height).data;
+          let left = canvas.width;
+          let top = canvas.height;
+          let right = -1;
+          let bottom = -1;
+          let sumX = 0;
+          let sumY = 0;
+          let count = 0;
+          for (let y = 0; y < canvas.height; y += 1) {
+            for (let x = 0; x < canvas.width; x += 1) {
+              const offset = (y * canvas.width + x) * 4;
+              if (
+                pixels[offset + 3] === 0 ||
+                (pixels[offset] > 245 && pixels[offset + 1] > 245 && pixels[offset + 2] > 245)
+              ) {
+                continue;
+              }
+              left = Math.min(left, x);
+              top = Math.min(top, y);
+              right = Math.max(right, x);
+              bottom = Math.max(bottom, y);
+              sumX += x;
+              sumY += y;
+              count += 1;
+            }
+          }
+          if (right < left || bottom < top) return null;
+          const centroidX = sumX / count;
+          const centroidY = sumY / count;
+          let closestX = left;
+          let closestY = top;
+          let closestDistance = Number.POSITIVE_INFINITY;
+          for (let y = top; y <= bottom; y += 1) {
+            for (let x = left; x <= right; x += 1) {
+              const offset = (y * canvas.width + x) * 4;
+              if (
+                pixels[offset + 3] === 0 ||
+                (pixels[offset] > 245 && pixels[offset + 1] > 245 && pixels[offset + 2] > 245)
+              ) {
+                continue;
+              }
+              const distance = (x - centroidX) ** 2 + (y - centroidY) ** 2;
+              if (distance < closestDistance) {
+                closestX = x;
+                closestY = y;
+                closestDistance = distance;
+              }
+            }
+          }
+          const bounds = canvas.getBoundingClientRect();
+          return {
+            x: bounds.left + (closestX / canvas.width) * bounds.width,
+            y: bounds.top + (closestY / canvas.height) * bounds.height
+          };
+        });
+        return center !== undefined && center !== null;
+      } catch {
+        return false;
       }
-    }
-    if (right < left || bottom < top) throw new Error("No rendered artwork is visible.");
-    const centroidX = sumX / count;
-    const centroidY = sumY / count;
-    let closestX = left;
-    let closestY = top;
-    let closestDistance = Number.POSITIVE_INFINITY;
-    for (let y = top; y <= bottom; y += 1) {
-      for (let x = left; x <= right; x += 1) {
-        const offset = (y * canvas.width + x) * 4;
-        if (
-          pixels[offset + 3] === 0 ||
-          (pixels[offset] > 245 && pixels[offset + 1] > 245 && pixels[offset + 2] > 245)
-        ) {
-          continue;
-        }
-        const distance = (x - centroidX) ** 2 + (y - centroidY) ** 2;
-        if (distance < closestDistance) {
-          closestX = x;
-          closestY = y;
-          closestDistance = distance;
-        }
-      }
-    }
-    const bounds = canvas.getBoundingClientRect();
-    return {
-      x: bounds.left + (closestX / canvas.width) * bounds.width,
-      y: bounds.top + (closestY / canvas.height) * bounds.height
-    };
-  });
+    })
+    .toBe(true);
+  if (!center) throw new Error("No rendered artwork is visible.");
+  return center;
 }
 
 async function ensureEditorOpen(page: Page) {
@@ -1009,19 +1023,20 @@ test("copies canvas objects to the system clipboard as PNG and SVG", async ({
   await page.keyboard.press("ControlOrMeta+C");
   await expect
     .poll(() =>
-      page.evaluate(async () =>
-        (await navigator.clipboard.read()).some((item) => item.types.includes("image/png"))
-      )
+      page.evaluate(async () => {
+        try {
+          const item = (await navigator.clipboard.read()).find((entry) =>
+            entry.types.includes("image/png")
+          );
+          if (!item) return [];
+          const bytes = new Uint8Array(await (await item.getType("image/png")).arrayBuffer());
+          return [...bytes.slice(0, 8)];
+        } catch {
+          return [];
+        }
+      })
     )
-    .toBe(true);
-  const pngSignature = await page.evaluate(async () => {
-    const item = (await navigator.clipboard.read()).find((entry) =>
-      entry.types.includes("image/png")
-    );
-    const bytes = new Uint8Array(await (await item!.getType("image/png")).arrayBuffer());
-    return [...bytes.slice(0, 8)];
-  });
-  expect(pngSignature).toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
+    .toEqual([137, 80, 78, 71, 13, 10, 26, 10]);
 
   await page.keyboard.press("ControlOrMeta+V");
   await ensureLayersOpen(page);
@@ -1039,22 +1054,22 @@ test("copies canvas objects to the system clipboard as PNG and SVG", async ({
   await expect(menu.getByRole("menuitem", { name: "Copy as PNG" })).toBeVisible();
   await menu.getByRole("menuitem", { name: "Copy as SVG" }).click();
 
+  let clipboardSvg = "";
   await expect
-    .poll(() =>
-      page.evaluate(async () => {
-        const item = (await navigator.clipboard.read()).find((entry) =>
-          entry.types.includes("text/plain")
-        );
-        return item ? (await item.getType("text/plain")).text() : "";
-      })
-    )
-    .toContain("<svg");
-  const clipboardSvg = await page.evaluate(async () => {
-    const item = (await navigator.clipboard.read()).find((entry) =>
-      entry.types.includes("text/plain")
-    );
-    return (await item!.getType("text/plain")).text();
-  });
+    .poll(async () => {
+      clipboardSvg = await page.evaluate(async () => {
+        try {
+          const item = (await navigator.clipboard.read()).find((entry) =>
+            entry.types.includes("text/plain")
+          );
+          return item ? (await item.getType("text/plain")).text() : "";
+        } catch {
+          return "";
+        }
+      });
+      return clipboardSvg.includes("<svg");
+    })
+    .toBe(true);
   expect(clipboardSvg).toContain("<svg");
   expect(clipboardSvg.match(/<path\b/g)?.length).toBeGreaterThanOrEqual(3);
 });
