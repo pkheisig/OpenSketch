@@ -2920,6 +2920,12 @@ test("shows favorites only in a dedicated asset category", async ({ page }) => {
 
   const favoritesCategory = page.getByRole("button", { name: "Favorites", exact: true });
   await expect(favoritesCategory).toHaveClass(/active/);
+  await page.getByRole("button", { name: "All", exact: true }).click();
+  await expect(page.getByRole("button", { name: "All", exact: true })).toHaveClass(/active/);
+  const assetsTab = page.getByRole("tab", { name: "Assets", exact: true });
+  await assetsTab.click();
+  await assetsTab.click();
+  await expect(page.getByRole("button", { name: "Favorites", exact: true })).toHaveClass(/active/);
   await expect(page.getByRole("heading", { name: "No match" })).toBeVisible();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("CD8 TCell");
   await expect(page.getByRole("button", { name: "All", exact: true })).toHaveClass(/active/);

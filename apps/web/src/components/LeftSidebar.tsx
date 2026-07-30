@@ -252,6 +252,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const [flyout, setFlyout] = useState<Flyout>(null);
   const [lineFamily, setLineFamily] = useState<ConnectorFamily | null>(null);
   const [shapeFamily, setShapeFamily] = useState<keyof typeof SHAPE_GROUPS | null>(null);
+  const [assetsPanelSession, setAssetsPanelSession] = useState(0);
   const sidebarRef = useRef<HTMLElement>(null);
   const handledSelection = useRef("");
   const draggedLinePreset = useRef(false);
@@ -267,6 +268,9 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     .join("|");
   const openPanel = (next: Tab) => {
     const shouldClose = !collapsed && tab === next;
+    if (next === "assets" && !shouldClose) {
+      setAssetsPanelSession((current) => current + 1);
+    }
     setTab(next);
     setFlyout(null);
     setLineFamily(null);
@@ -614,7 +618,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
             role="tabpanel"
             aria-label={`${tab} tools`}
           >
-            {tab === "assets" && <AssetsPanel />}
+            {tab === "assets" && <AssetsPanel key={assetsPanelSession} />}
             {tab === "imports" && <ImportsPanel />}
             {tab === "edit" && <InspectorContent onClose={onToggle} />}
           </div>
