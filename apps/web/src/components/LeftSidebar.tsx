@@ -589,7 +589,7 @@ function AssetsPanel() {
   const editor = useEditor();
   const [query, setQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [category, setCategory] = useState("All");
+  const [category, setCategory] = useState("Favorites");
   const [variants, setVariants] = useState(loadAssetVariantDefaults);
   const [favorites, setFavorites] = useState<Set<string>>(
     () => new Set(JSON.parse(localStorage.getItem("OpenSketch:favorites") ?? "[]") as string[])
@@ -708,7 +708,11 @@ function AssetsPanel() {
         <Search size={16} />
         <input
           value={query}
-          onChange={(event) => setQuery(event.target.value)}
+          onChange={(event) => {
+            const nextQuery = event.target.value;
+            setQuery(nextQuery);
+            if (nextQuery && category === "Favorites") setCategory("All");
+          }}
           placeholder="Search cells, proteins, equipment…"
         />
         {query && (

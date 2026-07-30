@@ -240,6 +240,7 @@ test("@smoke never paints fallback asset sizing or uninitialized canvas geometry
 
   const preview = page.locator(".asset-card-image img").first();
   const previewFrame = page.locator(".asset-card-image").first();
+  await page.getByRole("button", { name: "All", exact: true }).click();
   const initialBounds = await previewFrame.boundingBox();
   expect(initialBounds).not.toBeNull();
   const initialPreviewState = await preview.evaluate((image) => ({
@@ -2804,6 +2805,8 @@ test("fills the asset sidebar and presents laboratory assets before organisms", 
     await expect(tab).toHaveText("");
   }
 
+  await expect(page.getByRole("button", { name: "Favorites", exact: true })).toHaveClass(/active/);
+  await page.getByRole("button", { name: "All", exact: true }).click();
   const visibleAssetTitles = page.locator(".asset-card-copy strong");
   await expect(visibleAssetTitles.nth(7)).toBeVisible();
   expect((await visibleAssetTitles.allTextContents()).slice(0, 8)).toEqual([
@@ -2915,17 +2918,24 @@ test("shows favorites only in a dedicated asset category", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
 
+  const favoritesCategory = page.getByRole("button", { name: "Favorites", exact: true });
+  await expect(favoritesCategory).toHaveClass(/active/);
+  await expect(page.getByRole("heading", { name: "No match" })).toBeVisible();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("CD8 TCell");
+  await expect(page.getByRole("button", { name: "All", exact: true })).toHaveClass(/active/);
+
   const assetTitles = page.locator(".asset-card-copy strong");
   const cd8 = page.locator(".asset-card").filter({ hasText: "CD8 TCell" }).first();
   await cd8.hover();
   await cd8.getByRole("button", { name: "Toggle favorite" }).click();
+  await page.getByRole("button", { name: "Clear search" }).click();
   await expect(assetTitles.first()).not.toHaveText("CD8 TCell");
   await expect(page.locator(".asset-results-meta")).toHaveCount(0);
 
   await page.getByRole("button", { name: "Cells", exact: true }).click();
   await expect(assetTitles.first()).not.toHaveText("CD8 TCell");
 
-  await page.getByRole("button", { name: "Favorites", exact: true }).click();
+  await favoritesCategory.click();
   await expect(assetTitles.first()).toHaveText("CD8 TCell");
   const pinnedCd8 = page.locator(".asset-card").filter({ hasText: "CD8 TCell" }).first();
   await pinnedCd8.hover();
