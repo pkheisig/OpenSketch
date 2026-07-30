@@ -3066,6 +3066,13 @@ export function EditorProvider({
       } else if (modifier && event.key.toLowerCase() === "x") {
         event.preventDefault();
         void copySelectionToClipboard("png", true);
+      } else if (
+        modifier &&
+        event.key.toLowerCase() === "v" &&
+        (pendingClipboardCopy.current || clipboard.current.length > 0)
+      ) {
+        event.preventDefault();
+        void pasteSelection();
       } else if (modifier && event.key.toLowerCase() === "a") {
         event.preventDefault();
         const objects = canvas.getObjects().filter((object) => object.visible !== false);
