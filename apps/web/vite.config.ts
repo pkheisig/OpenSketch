@@ -8,7 +8,9 @@ export default defineConfig({
   plugins: [
     react(),
     VitePWA({
-      registerType: "autoUpdate",
+      // Never reload an active editing session to activate a new build. The
+      // waiting worker is applied once the user is safely back in the library.
+      registerType: "prompt",
       includeAssets: ["favicon.svg"],
       manifest: {
         name: "OpenSketch — Scientific Figure Studio",
@@ -31,9 +33,27 @@ export default defineConfig({
         ]
       },
       workbox: {
+        clientsClaim: true,
         cleanupOutdatedCaches: true,
         navigateFallback: "/OpenSketch/index.html",
         globPatterns: ["**/*.{html,js,css,svg,png,webp,woff,woff2,ttf,txt}"],
+        globIgnores: ["assets/nih-bioart/**", "assets/nih-bioart-thumbnails/**"],
+        runtimeCaching: [
+          {
+            urlPattern: /\/OpenSketch\/assets\/nih-bioart(?:-thumbnails)?\//,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "opensketch-asset-library",
+              expiration: {
+                maxEntries: 3_200,
+                maxAgeSeconds: 60 * 60 * 24 * 365
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          }
+        ],
         maximumFileSizeToCacheInBytes: 8 * 1024 * 1024
       }
     })

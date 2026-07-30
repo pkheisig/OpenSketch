@@ -37,3 +37,29 @@ test("reopens the production app and a saved project while offline", async ({ co
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".layers-title small")).toHaveText("1");
 });
+
+test("keeps an active production editing session open across an offline reload", async ({
+  context,
+  page
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+    if (!navigator.serviceWorker.controller) {
+      await new Promise<void>((resolve) => {
+        navigator.serviceWorker.addEventListener("controllerchange", () => resolve(), {
+          once: true
+        });
+      });
+    }
+  });
+
+  await context.setOffline(true);
+  await page.reload();
+  await expect(page.locator(".editor-shell")).toBeVisible();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await expect(page.locator(".home-shell")).toHaveCount(0);
+});

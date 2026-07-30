@@ -551,7 +551,24 @@ export function CanvasWorkspace() {
       preserveZoomAnchor(pendingZoom.current);
     };
     const onWheel = (event: globalThis.WheelEvent) => {
-      if (!event.ctrlKey && !event.metaKey) return;
+      if (!event.ctrlKey && !event.metaKey) {
+        const atHorizontalStart = host.scrollLeft <= 0 && event.deltaX < 0;
+        const atHorizontalEnd =
+          host.scrollLeft >= host.scrollWidth - host.clientWidth - 1 && event.deltaX > 0;
+        if (atHorizontalStart || atHorizontalEnd) {
+          // Trackpad overscroll at either horizontal edge can be interpreted as
+          // browser Back/Forward on macOS. Keep that gesture inside the studio.
+          event.preventDefault();
+          const deltaScale =
+            event.deltaMode === globalThis.WheelEvent.DOM_DELTA_LINE
+              ? 16
+              : event.deltaMode === globalThis.WheelEvent.DOM_DELTA_PAGE
+                ? host.clientHeight
+                : 1;
+          host.scrollTop += event.deltaY * deltaScale;
+        }
+        return;
+      }
       event.preventDefault();
       event.stopPropagation();
       const stage = stageRef.current;

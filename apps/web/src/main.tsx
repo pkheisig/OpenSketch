@@ -34,12 +34,20 @@ import "@fontsource/roboto-mono/latin-600.css";
 import "@fontsource/roboto-mono/latin-700.css";
 import "./styles/global.css";
 
-registerSW({
+const updateServiceWorker = registerSW({
   immediate: true,
+  onNeedRefresh() {
+    document.documentElement.dataset.updateReady = "true";
+    window.dispatchEvent(new Event("opensketch:update-ready"));
+  },
   onOfflineReady() {
     document.documentElement.dataset.offlineReady = "true";
     window.dispatchEvent(new Event("opensketch:offline-ready"));
   }
+});
+
+window.addEventListener("opensketch:apply-update", () => {
+  void updateServiceWorker(true);
 });
 
 createRoot(document.getElementById("root")!).render(

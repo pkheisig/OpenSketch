@@ -44,6 +44,7 @@ body,
   height: 100%;
   margin: 0;
   overflow: hidden;
+  overscroll-behavior: none;
 }
 
 button,
@@ -2113,7 +2114,7 @@ a:focus-visible {
   position: absolute;
   inset: 21px 0 0 21px;
   overflow: auto;
-  overscroll-behavior: contain;
+  overscroll-behavior: none;
   scrollbar-color: #9eaaa6 transparent;
   scrollbar-width: thin;
   touch-action: pan-x pan-y;

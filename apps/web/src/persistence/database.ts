@@ -122,6 +122,20 @@ export async function saveProject(project: ProjectRecord): Promise<void> {
   await db.projects.put(project);
 }
 
+export async function saveProjectThumbnail(
+  projectId: string,
+  projectRevision: string,
+  thumbnail: string
+): Promise<ProjectRecord | undefined> {
+  return db.transaction("rw", db.projects, async () => {
+    const current = await db.projects.get(projectId);
+    if (!current || current.updatedAt !== projectRevision) return current;
+    const next = { ...current, thumbnail };
+    await db.projects.put(next);
+    return next;
+  });
+}
+
 export async function createProjectFolder(name: string): Promise<ProjectFolderRecord> {
   const now = new Date().toISOString();
   const folder: ProjectFolderRecord = {

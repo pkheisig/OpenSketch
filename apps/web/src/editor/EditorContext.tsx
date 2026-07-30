@@ -718,7 +718,9 @@ export function EditorProvider({
       return true;
     }
   });
+  const alignmentEnabledRef = useRef(alignmentEnabled);
   const setAlignmentEnabled = useCallback((enabled: boolean) => {
+    alignmentEnabledRef.current = enabled;
     setAlignmentEnabledState(enabled);
     try {
       localStorage.setItem("OpenSketch:alignment-enabled", String(enabled));
@@ -1064,6 +1066,42 @@ export function EditorProvider({
   useEffect(() => {
     if (!canvas) return;
     let boundsTarget: FabricObject | undefined;
+    let connectorFrame: number | undefined;
+    let pendingConnectorObjectId: string | undefined;
+    let snapCandidateTarget: FabricObject | undefined;
+    let snapCandidateBounds: ReturnType<FabricObject["getBoundingRect"]>[] = [];
+    const cancelScheduledConnectorRefresh = () => {
+      if (connectorFrame !== undefined) window.cancelAnimationFrame(connectorFrame);
+      connectorFrame = undefined;
+      pendingConnectorObjectId = undefined;
+    };
+    const scheduleConnectorRefresh = (objectId: string) => {
+      pendingConnectorObjectId = objectId;
+      if (connectorFrame !== undefined) return;
+      connectorFrame = window.requestAnimationFrame(() => {
+        connectorFrame = undefined;
+        const changedObjectId = pendingConnectorObjectId;
+        pendingConnectorObjectId = undefined;
+        if (changedObjectId) refreshConnectors(changedObjectId);
+      });
+    };
+    const refreshConnectorsImmediately = (objectId?: string) => {
+      cancelScheduledConnectorRefresh();
+      refreshConnectors(objectId);
+    };
+    const otherObjectBounds = (target: FabricObject) => {
+      if (snapCandidateTarget !== target) {
+        snapCandidateTarget = target;
+        snapCandidateBounds = canvas
+          .getObjects()
+          .filter(
+            (candidate) =>
+              candidate !== target && !candidate.connector && candidate.visible !== false
+          )
+          .map((candidate) => candidate.getBoundingRect());
+      }
+      return snapCandidateBounds;
+    };
     const select = () => {
       const activeObject = canvas.getActiveObject();
       if (boundsTarget && boundsTarget !== activeObject) {
@@ -1404,7 +1442,8 @@ export function EditorProvider({
         snapSession.current = {};
         refreshParentGroups(changed);
         setSelection(canvas.getActiveObjects());
-        if (changed?.objectId) refreshConnectors(changed.objectId);
+        if (changed?.objectId) refreshConnectorsImmediately(changed.objectId);
+        else cancelScheduledConnectorRefresh();
         canvas.requestRenderAll();
         commit(duplicateSession ? "Duplicate drag" : "Transform");
       };
@@ -1466,10 +1505,10 @@ export function EditorProvider({
       if (snapSession.current.target !== target) {
         snapSession.current = { target };
       }
-      if (!alignmentEnabled || (e && "altKey" in e && e.altKey)) {
+      if (!alignmentEnabledRef.current || (e && "altKey" in e && e.altKey)) {
         snapSession.current = { target };
         guides.current = {};
-        refreshConnectors(target.objectId);
+        scheduleConnectorRefresh(target.objectId);
         canvas.requestRenderAll();
         rememberNestedPosition();
         return;
@@ -1477,13 +1516,7 @@ export function EditorProvider({
       const zoom = Math.max(latestZoom.current, 0.1);
       const result = snapBounds(
         target.getBoundingRect(),
-        canvas
-          .getObjects()
-          .filter(
-            (candidate) =>
-              candidate !== target && !candidate.connector && candidate.visible !== false
-          )
-          .map((candidate) => candidate.getBoundingRect()),
+        otherObjectBounds(target),
         SNAP_CAPTURE_DISTANCE_PX / zoom,
         {
           left: 0,
@@ -1524,17 +1557,19 @@ export function EditorProvider({
         vertical: horizontal.guide,
         horizontal: vertical.guide
       };
-      refreshConnectors(target.objectId);
+      scheduleConnectorRefresh(target.objectId);
       canvas.requestRenderAll();
       rememberNestedPosition();
     };
     const transform = ({ target }: { target?: FabricObject }) => {
       if (!target) return;
       configureSelectionControls(target, latestZoom.current);
-      if (target.objectId) refreshConnectors(target.objectId);
+      if (target.objectId) scheduleConnectorRefresh(target.objectId);
     };
     const clearGuides = () => {
       snapSession.current = {};
+      snapCandidateTarget = undefined;
+      snapCandidateBounds = [];
       if (guides.current.vertical === undefined && guides.current.horizontal === undefined) return;
       guides.current = {};
       canvas.requestRenderAll();
@@ -1546,6 +1581,8 @@ export function EditorProvider({
       }
       dragDuplicate.current = undefined;
       nestedDrag.current = undefined;
+      snapCandidateTarget = undefined;
+      snapCandidateBounds = [];
     };
     const drawGuides = ({ ctx: context }: { ctx: CanvasRenderingContext2D }) => {
       const { vertical, horizontal } = guides.current;
@@ -1608,20 +1645,13 @@ export function EditorProvider({
       if (boundsTarget) restoreObjectTargeting(boundsTarget);
       canvas.upperCanvasEl.removeEventListener("mousedown", preserveDeepSelectionForDrag, true);
       canvas.upperCanvasEl.removeEventListener("contextmenu", suppressModifierContextMenu, true);
+      cancelScheduledConnectorRefresh();
       void enqueuePendingSave();
       setCanvasReady(false);
       canvas.dispose();
       setCanvas(null);
     };
-  }, [
-    alignmentEnabled,
-    canvas,
-    closeGroupEdit,
-    commit,
-    enqueuePendingSave,
-    refreshConnectors,
-    setEditingGroupPath
-  ]);
+  }, [canvas, closeGroupEdit, commit, enqueuePendingSave, refreshConnectors, setEditingGroupPath]);
 
   const restoreAt = useCallback(
     async (index: number) => {

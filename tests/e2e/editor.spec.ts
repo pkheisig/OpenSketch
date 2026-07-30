@@ -213,6 +213,72 @@ test("@smoke never paints fallback asset sizing or uninitialized canvas geometry
   expect(finalBounds).toEqual(initialBounds);
 });
 
+test("@smoke keeps the canvas mounted during drag saves and restores the active project after reload", async ({
+  page
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await placeTool(page, "Rectangle");
+  await ensureLayersOpen(page);
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+
+  await page.locator(".lower-canvas").evaluate((canvas) => {
+    (window as typeof window & { __initialCanvas?: Element }).__initialCanvas = canvas;
+  });
+  const center = await artboardPoint(page);
+  await page.mouse.move(center.x, center.y);
+  await page.mouse.down();
+  await page.mouse.move(center.x + 180, center.y + 100, { steps: 60 });
+  await page.mouse.up();
+
+  await expect(page.locator(".home-shell")).toHaveCount(0);
+  await expect(page.locator(".loading-screen")).toHaveCount(0);
+  expect(
+    await page
+      .locator(".lower-canvas")
+      .evaluate(
+        (canvas) =>
+          canvas === (window as typeof window & { __initialCanvas?: Element }).__initialCanvas
+      )
+  ).toBe(true);
+  await expect(page.locator(".workspace-scroll")).toHaveCSS("overscroll-behavior", "none");
+
+  const projectId = await page.evaluate(
+    () => (history.state as Record<string, string> | null)?.OpenSketchProjectId
+  );
+  if (!projectId) throw new Error("The active project was not recorded in browser history.");
+  await expect
+    .poll(
+      () =>
+        page.evaluate(
+          (id) =>
+            new Promise<number>((resolve, reject) => {
+              const request = indexedDB.open("OpenSketch");
+              request.onerror = () => reject(request.error);
+              request.onsuccess = () => {
+                const transaction = request.result.transaction("projects", "readonly");
+                const project = transaction.objectStore("projects").get(id);
+                project.onerror = () => reject(project.error);
+                project.onsuccess = () => resolve(project.result?.objects?.objects?.length ?? 0);
+                transaction.oncomplete = () => request.result.close();
+              };
+            }),
+          projectId
+        ),
+      { timeout: 5_000 }
+    )
+    .toBe(1);
+
+  await page.reload();
+  await expect(page.locator(".editor-shell")).toBeVisible();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await expect(page.locator(".home-shell")).toHaveCount(0);
+  await expect.poll(() => renderedArtworkCenter(page)).not.toBeNull();
+  expect(
+    await page.evaluate(() => (history.state as Record<string, string> | null)?.OpenSketchProjectId)
+  ).toBe(projectId);
+});
+
 test("clears the text tool when another sidebar section or the page is clicked", async ({
   page
 }) => {
