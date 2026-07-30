@@ -3207,13 +3207,16 @@ test("saves and resets styling for future copies of the same biological asset", 
       )
     )
     .toBe(true);
-  const savedPreviewBounds = await assetPreview.boundingBox();
-  expect(
-    Math.abs((savedPreviewBounds?.width ?? 0) - (originalPreviewBounds?.width ?? 0))
-  ).toBeLessThan(1.1);
-  expect(
-    Math.abs((savedPreviewBounds?.height ?? 0) - (originalPreviewBounds?.height ?? 0))
-  ).toBeLessThan(1.1);
+  await expect
+    .poll(async () => {
+      const savedPreviewBounds = await assetPreview.boundingBox();
+      if (!savedPreviewBounds || !originalPreviewBounds) return false;
+      return (
+        Math.abs(savedPreviewBounds.width - originalPreviewBounds.width) < 1.1 &&
+        Math.abs(savedPreviewBounds.height - originalPreviewBounds.height) < 1.1
+      );
+    })
+    .toBe(true);
 
   await insertAsset.click();
   await ensureEditorOpen(page);

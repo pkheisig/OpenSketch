@@ -5,36 +5,43 @@ async function pasteImage(
   mimeType: string,
   targetSelector?: string
 ) {
-  await page.evaluate(async ({ type, targetSelector }) => {
-    let file: File;
-    if (type === "image/svg+xml") {
-      file = new File(
-        [
-          '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 60"><rect x="4" y="4" width="72" height="52" rx="8" fill="#62c7b7"/><circle cx="40" cy="30" r="14" fill="#173e3b"/></svg>'
-        ],
-        "external-diagram.svg",
-        { type }
-      );
-    } else {
-      const canvas = document.createElement("canvas");
-      canvas.width = 12;
-      canvas.height = 8;
-      const context = canvas.getContext("2d")!;
-      context.fillStyle = type === "image/png" ? "#ef5f79" : "#2d74ad";
-      context.fillRect(0, 0, canvas.width, canvas.height);
-      const blob = await new Promise<Blob>((resolve) =>
-        canvas.toBlob((value) => resolve(value!), type, 0.92)
-      );
-      file = new File([blob], type === "image/png" ? "external-image.png" : "external-photo.jpg", {
-        type
-      });
-    }
-    const transfer = new DataTransfer();
-    transfer.items.add(file);
-    const pasteEvent = new Event("paste", { bubbles: true, cancelable: true });
-    Object.defineProperty(pasteEvent, "clipboardData", { value: transfer });
-    (targetSelector ? document.querySelector(targetSelector) : window)?.dispatchEvent(pasteEvent);
-  }, { type: mimeType, targetSelector });
+  await page.evaluate(
+    async ({ type, targetSelector }) => {
+      let file: File;
+      if (type === "image/svg+xml") {
+        file = new File(
+          [
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 60"><rect x="4" y="4" width="72" height="52" rx="8" fill="#62c7b7"/><circle cx="40" cy="30" r="14" fill="#173e3b"/></svg>'
+          ],
+          "external-diagram.svg",
+          { type }
+        );
+      } else {
+        const canvas = document.createElement("canvas");
+        canvas.width = 12;
+        canvas.height = 8;
+        const context = canvas.getContext("2d")!;
+        context.fillStyle = type === "image/png" ? "#ef5f79" : "#2d74ad";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        const blob = await new Promise<Blob>((resolve) =>
+          canvas.toBlob((value) => resolve(value!), type, 0.92)
+        );
+        file = new File(
+          [blob],
+          type === "image/png" ? "external-image.png" : "external-photo.jpg",
+          {
+            type
+          }
+        );
+      }
+      const transfer = new DataTransfer();
+      transfer.items.add(file);
+      const pasteEvent = new Event("paste", { bubbles: true, cancelable: true });
+      Object.defineProperty(pasteEvent, "clipboardData", { value: transfer });
+      (targetSelector ? document.querySelector(targetSelector) : window)?.dispatchEvent(pasteEvent);
+    },
+    { type: mimeType, targetSelector }
+  );
 }
 
 async function dropSvgFile(page: import("@playwright/test").Page) {
@@ -107,6 +114,7 @@ test("@smoke stores imported media permanently and pastes SVG, PNG, and JPEG fro
   ).toHaveCount(3);
 
   await page.getByRole("button", { name: "Back to projects" }).click();
+  await expect(page.getByRole("button", { name: "New figure" })).toBeVisible();
   await page.reload();
   await expect
     .poll(() =>
@@ -128,7 +136,10 @@ test("@smoke stores imported media permanently and pastes SVG, PNG, and JPEG fro
     )
     .toBe(3);
 
-  await page.getByRole("button", { name: "New figure" }).click();
+  const savedProject = page.getByRole("button", { name: /^Untitled figure / });
+  await expect(savedProject).toBeVisible();
+  await savedProject.dispatchEvent("click");
+  await expect(page.locator(".upper-canvas")).toBeVisible();
   await page.getByRole("tab", { name: "Imports", exact: true }).click();
   await expect(
     page.getByLabel("Imported media library").locator(".import-library-card")
