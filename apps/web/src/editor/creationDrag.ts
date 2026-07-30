@@ -5,9 +5,11 @@ import {
   type ConnectorPreset
 } from "./connectorPresets";
 import type { CreationTool } from "./creation";
+import type { ShapeKind } from "./creation";
 import type { Point } from "./geometry";
 
 export const CONNECTOR_PRESET_DRAG_TYPE = "application/x-opensketch-connector-preset";
+export const SHAPE_PRESET_DRAG_TYPE = "application/x-opensketch-shape-preset";
 
 interface ConnectorPresetDragPayload {
   family: ConnectorFamily;
@@ -71,6 +73,41 @@ export function readConnectorPresetDragPayload(
 ): DraggedConnectorPreset | null {
   const encoded = dataTransfer.getData(CONNECTOR_PRESET_DRAG_TYPE);
   return encoded ? parseConnectorPresetDragPayload(encoded) : null;
+}
+
+const shapeKinds = new Set<ShapeKind>([
+  "rectangle",
+  "rounded-rectangle",
+  "pill",
+  "circle",
+  "ellipse",
+  "donut",
+  "triangle",
+  "right-triangle",
+  "pentagon",
+  "polygon",
+  "octagon",
+  "diamond",
+  "trapezoid",
+  "parallelogram"
+]);
+
+export function setShapePresetDragPayload(
+  dataTransfer: DataTransfer,
+  kind: ShapeKind
+): void {
+  dataTransfer.effectAllowed = "copy";
+  dataTransfer.setData(SHAPE_PRESET_DRAG_TYPE, kind);
+}
+
+export function parseShapePresetDragPayload(encoded: string): CreationTool | null {
+  return shapeKinds.has(encoded as ShapeKind)
+    ? { type: "shape", kind: encoded as ShapeKind }
+    : null;
+}
+
+export function readShapePresetDragPayload(dataTransfer: DataTransfer): CreationTool | null {
+  return parseShapePresetDragPayload(dataTransfer.getData(SHAPE_PRESET_DRAG_TYPE));
 }
 
 export function connectorDropEndpoints(

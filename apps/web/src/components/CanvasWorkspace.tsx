@@ -69,8 +69,10 @@ import {
 import { isLinearCreationTool } from "@/editor/creation";
 import {
   CONNECTOR_PRESET_DRAG_TYPE,
+  SHAPE_PRESET_DRAG_TYPE,
   connectorDropEndpoints,
-  readConnectorPresetDragPayload
+  readConnectorPresetDragPayload,
+  readShapePresetDragPayload
 } from "@/editor/creationDrag";
 import { elementStyleKey } from "@/editor/elementStyles";
 import { CURSOR_GRABBING } from "@/editor/cursors";
@@ -643,6 +645,11 @@ export function CanvasWorkspace() {
       editor.placeCreationTool(draggedConnector.tool, from, to);
       return;
     }
+    const draggedShape = readShapePresetDragPayload(event.dataTransfer);
+    if (draggedShape && point) {
+      editor.placeCreationTool(draggedShape, point);
+      return;
+    }
     const importId = event.dataTransfer.getData(IMPORTED_MEDIA_DRAG_TYPE);
     if (importId) {
       void getImportedMedia(importId).then((media) => {
@@ -1043,6 +1050,7 @@ export function CanvasWorkspace() {
         if (
           event.dataTransfer.types.includes("application/x-scientific-asset") ||
           event.dataTransfer.types.includes(CONNECTOR_PRESET_DRAG_TYPE) ||
+          event.dataTransfer.types.includes(SHAPE_PRESET_DRAG_TYPE) ||
           event.dataTransfer.types.includes(IMPORTED_MEDIA_DRAG_TYPE) ||
           event.dataTransfer.types.includes("Files")
         ) {

@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   connectorDropEndpoints,
-  parseConnectorPresetDragPayload
+  parseConnectorPresetDragPayload,
+  parseShapePresetDragPayload
 } from "../apps/web/src/editor/creationDrag";
 
 describe("connector preset dragging", () => {
@@ -58,5 +59,24 @@ describe("connector preset dragging", () => {
       from: { x: 0, y: 300 },
       to: { x: 220, y: 300 }
     });
+  });
+});
+
+describe("shape preset dragging", () => {
+  it("resolves every sidebar shape kind to a direct-placement creation tool", () => {
+    expect(parseShapePresetDragPayload("rounded-rectangle")).toEqual({
+      type: "shape",
+      kind: "rounded-rectangle"
+    });
+    expect(parseShapePresetDragPayload("pentagon")).toEqual({
+      type: "shape",
+      kind: "pentagon"
+    });
+  });
+
+  it("rejects removed, connector, and unknown shape kinds", () => {
+    expect(parseShapePresetDragPayload("star")).toBeNull();
+    expect(parseShapePresetDragPayload("arrow")).toBeNull();
+    expect(parseShapePresetDragPayload("unknown")).toBeNull();
   });
 });

@@ -44,7 +44,10 @@ import {
   type ConnectorFamily,
   type ConnectorPreset
 } from "@/editor/connectorPresets";
-import { setConnectorPresetDragPayload } from "@/editor/creationDrag";
+import {
+  setConnectorPresetDragPayload,
+  setShapePresetDragPayload
+} from "@/editor/creationDrag";
 import {
   loadSavedElementStyles,
   SAVED_ELEMENT_STYLES_CHANGED_EVENT,
@@ -252,6 +255,9 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const sidebarRef = useRef<HTMLElement>(null);
   const handledSelection = useRef("");
   const draggedLinePreset = useRef(false);
+  const pressedLinePreset = useRef(false);
+  const draggedShapePreset = useRef(false);
+  const pressedShapePreset = useRef(false);
   const editor = useEditor();
   const autoEditWasEnabled = useRef(editor.autoEditEnabled);
   const setCreationTool = editor.setCreationTool;
@@ -451,7 +457,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
           role="menu"
           aria-label="Line and arrow tools"
           onPointerLeave={() => {
-            if (!draggedLinePreset.current) setLineFamily(null);
+            if (!pressedLinePreset.current && !draggedLinePreset.current) setLineFamily(null);
           }}
         >
           <div className="tool-flyout-primary">
@@ -478,6 +484,15 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
                   <button
                     key={value.label}
                     draggable
+                    onPointerDown={() => {
+                      pressedLinePreset.current = true;
+                    }}
+                    onPointerUp={() => {
+                      pressedLinePreset.current = false;
+                    }}
+                    onPointerCancel={() => {
+                      pressedLinePreset.current = false;
+                    }}
                     onDragStart={(event) => {
                       draggedLinePreset.current = true;
                       setConnectorPresetDragPayload(event.dataTransfer, lineFamily, value);
@@ -485,6 +500,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
                     onDragEnd={() => {
                       window.setTimeout(() => {
                         draggedLinePreset.current = false;
+                        pressedLinePreset.current = false;
                       }, 0);
                     }}
                     onClick={() => {
@@ -507,7 +523,9 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
           className="tool-flyout shape-tool-flyout"
           role="menu"
           aria-label="Shape tools"
-          onPointerLeave={() => setShapeFamily(null)}
+          onPointerLeave={() => {
+            if (!pressedShapePreset.current && !draggedShapePreset.current) setShapeFamily(null);
+          }}
         >
           <div className="tool-flyout-primary">
             <button
@@ -532,10 +550,32 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
               {SHAPE_GROUPS[shapeFamily].map(([kind, glyph, label]) => (
                 <button
                   key={kind}
+                  draggable
+                  onPointerDown={() => {
+                    pressedShapePreset.current = true;
+                  }}
+                  onPointerUp={() => {
+                    pressedShapePreset.current = false;
+                  }}
+                  onPointerCancel={() => {
+                    pressedShapePreset.current = false;
+                  }}
+                  onDragStart={(event) => {
+                    draggedShapePreset.current = true;
+                    setShapePresetDragPayload(event.dataTransfer, kind);
+                  }}
+                  onDragEnd={() => {
+                    window.setTimeout(() => {
+                      draggedShapePreset.current = false;
+                      pressedShapePreset.current = false;
+                    }, 0);
+                  }}
                   onClick={() => {
-                    editor.setCreationTool({ type: "shape", kind });
-                    setFlyout(null);
-                    setShapeFamily(null);
+                    if (!draggedShapePreset.current) {
+                      editor.setCreationTool({ type: "shape", kind });
+                      setFlyout(null);
+                      setShapeFamily(null);
+                    }
                   }}
                   role="menuitem"
                   aria-label={label}
