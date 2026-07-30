@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-30T20:14:41.481Z",
+  "generatedAt": "2026-07-30T20:50:24.543Z",
   "source": "NIAID NIH BioArt and Wikimedia Commons",
   "families": [
     {
@@ -784,7 +784,7 @@
       "bioartEntryId": 14,
       "title": "Alveoli",
       "description": "body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}",
-      "category": "Viruses",
+      "category": "Cells",
       "keywords": [
         "Alveoli",
         "AT1",
@@ -817,7 +817,7 @@
         "immunity",
         "innate",
         "lungs",
-        "Viruses"
+        "Cells"
       ],
       "author": "NIAID Visual & Medical Arts",
       "credit": "Courtesy of NIAID",
@@ -9159,7 +9159,7 @@
       "bioartEntryId": 123,
       "title": "DNA",
       "description": "body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}",
-      "category": "Molecules",
+      "category": "Nucleic acids & genetics",
       "keywords": [
         "DNA",
         "dna",
@@ -9178,7 +9178,7 @@
         "prefers-color-scheme",
         "dark",
         "255",
-        "Molecules"
+        "Nucleic acids & genetics"
       ],
       "author": "NIAID Visual & Medical Arts",
       "credit": "Courtesy of NIAID",
@@ -12971,7 +12971,7 @@
       "bioartEntryId": 180,
       "title": "Granulocyte Macrophage Progenitor Cell",
       "description": "body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}",
-      "category": "Viruses",
+      "category": "Cells",
       "keywords": [
         "Granulocyte Macrophage Progenitor Cell",
         "granulocyte",
@@ -12993,7 +12993,7 @@
         "prefers-color-scheme",
         "dark",
         "255",
-        "Viruses"
+        "Cells"
       ],
       "author": "NIAID Visual & Medical Arts",
       "credit": "Courtesy of NIAID",
@@ -20478,7 +20478,7 @@
       "bioartEntryId": 312,
       "title": "Macrophage",
       "description": "body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}",
-      "category": "Viruses",
+      "category": "Cells",
       "keywords": [
         "Macrophage",
         "cell",
@@ -20511,7 +20511,7 @@
         "innate",
         "schematic",
         "skin",
-        "Viruses"
+        "Cells"
       ],
       "author": "NIAID Visual & Medical Arts",
       "credit": "Courtesy of NIAID",
@@ -20536,7 +20536,7 @@
       "bioartEntryId": 313,
       "title": "Macrophage",
       "description": "body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}",
-      "category": "Viruses",
+      "category": "Cells",
       "keywords": [
         "Macrophage",
         "biology",
@@ -20569,7 +20569,7 @@
         "255",
         "flat",
         "immunity",
-        "Viruses"
+        "Cells"
       ],
       "author": "NIAID Visual & Medical Arts",
       "credit": "Courtesy of NIAID",
@@ -20712,7 +20712,7 @@
       "bioartEntryId": 316,
       "title": "Malaria Infected Red Blood Cell",
       "description": "body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}",
-      "category": "Cells",
+      "category": "Parasites",
       "keywords": [
         "Malaria Infected Red Blood Cell",
         "Cells",
@@ -20736,7 +20736,7 @@
         "prefers-color-scheme",
         "dark",
         "255",
-        "Cells"
+        "Parasites"
       ],
       "author": "NIAID Visual & Medical Arts",
       "credit": "Courtesy of NIAID",
@@ -26976,7 +26976,7 @@
       "bioartEntryId": 405,
       "title": "Pickup Truck",
       "description": "body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "Pickup Truck",
         "pickup",
@@ -26996,7 +26996,7 @@
         "prefers-color-scheme",
         "dark",
         "255",
-        "Other"
+        "Equipment"
       ],
       "author": "NIAID Visual & Medical Arts",
       "credit": "Courtesy of NIAID",
@@ -39570,7 +39570,7 @@
       "bioartEntryId": 586,
       "title": "Placenta Cellular Cross Section",
       "description": "body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}",
-      "category": "Cells",
+      "category": "Anatomy",
       "keywords": [
         "Placenta Cellular Cross Section",
         "Cells",
@@ -39593,7 +39593,7 @@
         "prefers-color-scheme",
         "dark",
         "255",
-        "Cells"
+        "Anatomy"
       ],
       "author": "NIAID Visual & Medical Arts",
       "credit": "Courtesy of NIAID",
@@ -44821,7 +44821,7 @@
       "bioartEntryId": 677,
       "title": "Skin Cross-Section",
       "description": "body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}",
-      "category": "Cells",
+      "category": "Anatomy",
       "keywords": [
         "Skin Cross-Section",
         "Cells",
@@ -44842,7 +44842,7 @@
         "prefers-color-scheme",
         "dark",
         "255",
-        "Cells"
+        "Anatomy"
       ],
       "author": "NIAID Visual & Medical Arts",
       "credit": "Courtesy of NIAID",
@@ -45526,7 +45526,7 @@
       "bioartEntryId": 688,
       "title": "Blood-Brain Barrier",
       "description": "body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}",
-      "category": "Cells",
+      "category": "Anatomy",
       "keywords": [
         "Blood-Brain Barrier",
         "Cells",
@@ -45547,7 +45547,7 @@
         "prefers-color-scheme",
         "dark",
         "255",
-        "Cells"
+        "Anatomy"
       ],
       "author": "NIAID Visual & Medical Arts",
       "credit": "Courtesy of NIAID",

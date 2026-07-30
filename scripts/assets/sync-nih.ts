@@ -17,7 +17,7 @@ import {
 import { directSvgUrl, parseNihBioartPage, type NihBioartRecord } from "./nih-source";
 import { ERROR_PATH, LOCK_PATH, SVG_DIR, TAXONOMY_PATH, THUMB_DIR } from "./paths";
 import { assertSafeSvg } from "./sanitize-svg";
-import { taxonomyIndex, type AssetTaxonomy } from "./taxonomy";
+import { categoryForNihRecord, taxonomyIndex, type AssetTaxonomy } from "./taxonomy";
 import type { ImportFailure, ImportSkip, SourceLock, SourceLockEntry } from "./types";
 
 const SANITIZER_VERSION = 3;
@@ -54,39 +54,12 @@ function keywordsFor(record: NihBioartRecord, category: string): string[] {
   return [...new Set([record.title, category, ...record.keywords, ...words])].slice(0, 32);
 }
 
-function categoryFromNih(record: NihBioartRecord): string {
-  const categories = record.category.toLowerCase();
-  const searchable =
-    `${record.title} ${record.description} ${record.keywords.join(" ")}`.toLowerCase();
-  if (categories.includes("virus") || /\bvirus|virion|phage\b/.test(searchable)) return "Viruses";
-  if (categories.includes("parasite")) return "Parasites";
-  if (categories.includes("arthropod")) return "Arthropods";
-  if (/\bbacteri(?:a|um|al)\b/.test(searchable)) return "Bacteria";
-  if (categories.includes("cell scene") || categories.includes("cells and organelles")) {
-    return "Cells";
-  }
-  if (categories.includes("protein")) return "Proteins";
-  if (categories.includes("molecule")) return "Molecules";
-  if (categories.includes("equipment")) return "Equipment";
-  if (categories.includes("technique") || categories.includes("cellular process")) {
-    return "Cellular processes";
-  }
-  if (categories.includes("anatomy")) return "Anatomy";
-  if (categories.includes("people")) return "People";
-  if (categories.includes("animal")) return "Animals";
-  if (categories.includes("plant")) return "Plants";
-  if (categories.includes("shape") || categories.includes("data visualization")) {
-    return "Symbols & diagrams";
-  }
-  return "Other";
-}
-
 function assignNewTaxonomy(records: NihBioartRecord[], taxonomy: AssetTaxonomy): boolean {
   const existing = taxonomyIndex(taxonomy);
   let changed = false;
   for (const record of records) {
     if (existing.has(record.entryId)) continue;
-    const category = categoryFromNih(record);
+    const category = categoryForNihRecord(record);
     taxonomy.assignments[category].push(record.entryId);
     existing.set(record.entryId, category);
     changed = true;
