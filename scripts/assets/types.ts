@@ -22,9 +22,13 @@ export interface CommonsPage {
 
 export interface SourceLockEntry {
   title: string;
-  commonsPage: string;
+  sourceKind?: "nih" | "commons";
+  sourcePage?: string;
+  commonsPage?: string;
   sourceUrl: string;
-  commonsSha1: string;
+  commonsSha1?: string;
+  sourceFileId?: number;
+  sourceSha256?: string;
   localSha256: string;
   sanitizerVersion: number;
   assetId: string;

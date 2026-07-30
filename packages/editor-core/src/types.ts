@@ -18,6 +18,7 @@ export interface AssetVariant {
   assetPath: string;
   thumbnailPath: string;
   commonsSha1?: string;
+  sourceFileId?: number;
   localSha256?: string;
   width?: number;
   height?: number;
@@ -34,7 +35,8 @@ export interface AssetFamily {
   credit: string;
   license: "Public Domain";
   nihSourcePage: string;
-  commonsPage: string;
+  sourcePage?: string;
+  commonsPage?: string;
   defaultVariantId: string;
   variants: AssetVariant[];
 }
@@ -42,7 +44,7 @@ export interface AssetFamily {
 export interface AssetManifest {
   version: 1;
   generatedAt: string;
-  source: "Wikimedia Commons";
+  source: "NIAID NIH BioArt" | "Wikimedia Commons" | "NIAID NIH BioArt and Wikimedia Commons";
   families: AssetFamily[];
 }
 

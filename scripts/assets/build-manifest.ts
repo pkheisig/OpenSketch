@@ -36,6 +36,7 @@ export async function buildManifest(): Promise<AssetManifest> {
       assetPath: entry.assetPath,
       thumbnailPath: entry.thumbnailPath,
       commonsSha1: entry.commonsSha1,
+      sourceFileId: entry.sourceFileId,
       localSha256: entry.localSha256,
       width: entry.width,
       height: entry.height
@@ -97,7 +98,11 @@ export async function buildManifest(): Promise<AssetManifest> {
       previousComparable === currentComparable && previous
         ? previous.generatedAt
         : new Date().toISOString(),
-    source: "Wikimedia Commons",
+    source: Object.values(lock.files).every((entry) => entry.sourceKind === "nih")
+      ? "NIAID NIH BioArt"
+      : Object.values(lock.files).some((entry) => entry.sourceKind === "nih")
+        ? "NIAID NIH BioArt and Wikimedia Commons"
+        : "Wikimedia Commons",
     families
   };
   await writeJsonAtomic(MANIFEST_PATH, manifest);

@@ -220,7 +220,8 @@ async function createBundledAssetGroup(family: AssetFamily, variant: AssetVarian
   group.familyId = family.familyId;
   group.provenance = {
     nihSourcePage: family.nihSourcePage,
-    commonsPage: family.commonsPage,
+    sourcePage: family.sourcePage ?? family.nihSourcePage,
+    ...(family.commonsPage ? { commonsPage: family.commonsPage } : {}),
     author: family.author,
     license: family.license
   };

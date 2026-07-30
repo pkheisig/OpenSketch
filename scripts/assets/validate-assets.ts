@@ -49,7 +49,7 @@ async function main(): Promise<void> {
         `${family.familyId}: manifest category ${family.category} differs from reviewed category ${reviewedCategory}.`
       );
     }
-    if (!family.commonsPage || !family.nihSourcePage) {
+    if (!(family.sourcePage || family.commonsPage) || !family.nihSourcePage) {
       errors.push(`${family.familyId}: source URLs are missing.`);
     }
     if (family.license !== "Public Domain") {

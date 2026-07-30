@@ -15,9 +15,8 @@ level at a time. A visible SVG part can then be edited independently, including
 its fill, stroke, opacity, position, scale, and rotation. Press Escape or choose
 **Done** to return to the complete asset.
 
-> Biological artwork sourced from the NIAID NIH BioArt Source and obtained via
-> Wikimedia Commons. OpenSketch is an independent project and is not affiliated
-> with or endorsed by NIH or NIAID.
+> Biological artwork sourced from the NIAID NIH BioArt Source. OpenSketch is an
+> independent project and is not affiliated with or endorsed by NIH or NIAID.
 
 The source code is AGPL-3.0-or-later. Imported artwork retains its original
 public-domain status and is not licensed under the OpenSketch software license.
@@ -130,13 +129,20 @@ Asset import is an explicit maintainer operation:
 corepack pnpm assets:sync
 ```
 
-The command paginates the Commons category, requires explicit public-domain
-metadata, derives and validates NIH entry identities, downloads at a courteous
-rate, sanitizes SVG, prefixes all internal IDs, generates transparent WebP
-thumbnails, groups variants into families, and writes a deterministic manifest
-and source lock. Every family is assigned explicitly in `data/taxonomy.json`;
-new families must be reviewed before synchronization can complete, rather than
-being categorized from loose keyword matches.
+The command discovers the current first-party NIH BioArt catalog, reads each
+record's declared license and SVG file list, and imports every SVG from records
+marked exactly **Public Domain**. It downloads at a courteous rate, sanitizes
+SVG, prefixes all internal IDs, generates transparent WebP thumbnails, groups
+variants into families, assigns new entries from NIH's own categories, and
+writes a deterministic manifest and source lock. Public-domain records without
+an SVG, non-public-domain records such as CC BY 4.0 artwork, and unusable file
+endpoints are documented in `data/import-errors.json` and excluded.
+
+The current bundled collection contains **637 families and 2,432 SVG
+variants**. A small set of earlier public-domain Commons mirrors is retained
+when no matching first-party NIH SVG is available, preserving existing project
+compatibility. The older mirror-only importer remains available to maintainers
+as `corepack pnpm assets:sync:commons`; it is not used by the application.
 
 Individual stages are available as:
 
@@ -147,7 +153,8 @@ corepack pnpm assets:manifest
 ```
 
 Normal development, test, production build, and browser runtime paths never
-contact Wikimedia or NIH.
+contact Wikimedia or NIH. The downloaded, sanitized artwork is committed to
+this repository and served from the same static GitHub Pages origin.
 
 ### Sanitization policy
 
@@ -156,14 +163,15 @@ Built-in and user-imported SVGs reject or remove scripts, event handlers,
 network references in SVG paint/filter attributes. Internal references are
 retained and namespaced with the asset ID before conservative SVGO processing.
 Files without an unambiguous NIH BioArt identity or explicit public-domain
-status are recorded as import errors and fail synchronization.
+status are excluded and recorded in the import report. Processing or security
+failures still fail synchronization.
 
 ## Repository map
 
 ```text
 apps/web/                  React/Vite browser application and static assets
 packages/editor-core/      project, search, migration, and canvas domain types
-scripts/assets/            maintainer-only Commons import and SVG security pipeline
+scripts/assets/            maintainer-only NIH import and SVG security pipeline
 data/                      taxonomy, overrides, source lock, import report
 tests/                     unit, cross-browser, export, and offline PWA tests
 docs/                      architecture and asset pipeline notes
