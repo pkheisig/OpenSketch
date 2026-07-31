@@ -183,32 +183,25 @@ a:focus-visible {
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 13px;
   color: var(--ink);
   font-family: Georgia, "Source Serif 4", serif;
-  font-size: 21px;
+  font-size: 29px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
   line-height: 1;
 }
 
 .brand-mark {
-  width: 37px;
-  height: 37px;
-  overflow: visible;
-  fill: none;
-  stroke: var(--teal-dark);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.7;
+  display: block;
+  flex: none;
+  width: 44px;
+  height: 44px;
 }
 
 .brand span {
-  display: grid;
-  gap: 3px;
-}
-
-.brand strong {
-  color: var(--teal-dark);
-  font-weight: 700;
+  display: block;
+  white-space: nowrap;
 }
 
 /* Home */

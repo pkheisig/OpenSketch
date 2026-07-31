@@ -2004,6 +2004,21 @@ test("renders project previews with Fabric and upgrades legacy raster thumbnails
 
 test("@smoke supports visible and native navigation for new figures", async ({ page }) => {
   await page.goto("/");
+  const landingBrand = page.locator(".home-header .brand");
+  await expect(landingBrand.locator(".brand-mark")).toHaveAttribute("src", /favicon\.svg$/);
+  await expect(landingBrand.locator("span")).toHaveText("OpenSketch");
+  await expect(landingBrand.locator("span")).toHaveCSS("white-space", "nowrap");
+  const brandMarkBox = await landingBrand.locator(".brand-mark").boundingBox();
+  const brandTextBox = await landingBrand.locator("span").boundingBox();
+  expect(brandMarkBox).not.toBeNull();
+  expect(brandTextBox).not.toBeNull();
+  expect(
+    Math.abs(
+      (brandMarkBox?.y ?? 0) +
+        (brandMarkBox?.height ?? 0) / 2 -
+        ((brandTextBox?.y ?? 0) + (brandTextBox?.height ?? 0) / 2)
+    )
+  ).toBeLessThan(2);
   await expect(page.getByRole("heading", { name: "New figure" })).toHaveCount(0);
   await expect(page.getByText(/Local only|Preparing offline copy/)).toHaveCount(0);
   await page.getByRole("button", { name: "About", exact: true }).click();
