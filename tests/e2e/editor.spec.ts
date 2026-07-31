@@ -2908,6 +2908,45 @@ test("fills the asset sidebar with the merged scientific catalog", async ({ page
   await expect(page.locator(".asset-card").last()).toBeVisible();
 });
 
+test("scrolls the complete symbols catalog using thumbnails instead of full SVG renders", async ({
+  page
+}) => {
+  const fullBioIconRequests: string[] = [];
+  const bioIconThumbnailRequests: string[] = [];
+  let collectAssetRequests = false;
+  page.on("request", (request) => {
+    if (!collectAssetRequests) return;
+    const url = request.url();
+    if (/\/assets\/bioicons\/.*\.svg(?:\?|$)/.test(url)) fullBioIconRequests.push(url);
+    if (/\/assets\/bioicons-thumbnails\/.*\.webp(?:\?|$)/.test(url)) {
+      bioIconThumbnailRequests.push(url);
+    }
+  });
+
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  collectAssetRequests = true;
+  await page.getByRole("button", { name: "Symbols & diagrams", exact: true }).click();
+
+  const list = page.locator(".asset-list");
+  await expect(list).toBeVisible();
+  const scrollHeight = await list.evaluate((element) => element.scrollHeight);
+  const clientHeight = await list.evaluate((element) => element.clientHeight);
+  expect(scrollHeight).toBeGreaterThan(clientHeight);
+
+  for (let step = 0; step <= 16; step += 1) {
+    await list.evaluate((element, ratio) => {
+      element.scrollTop = (element.scrollHeight - element.clientHeight) * ratio;
+      element.dispatchEvent(new Event("scroll"));
+    }, step / 16);
+    await expect(page.locator(".asset-card").first()).toBeVisible();
+  }
+
+  await expect(page.locator(".asset-card").last()).toBeVisible();
+  expect(bioIconThumbnailRequests.length).toBeGreaterThan(0);
+  expect(fullBioIconRequests).toEqual([]);
+});
+
 test("uses title-free insert panels and supports the expanded offline font catalog", async ({
   page
 }) => {

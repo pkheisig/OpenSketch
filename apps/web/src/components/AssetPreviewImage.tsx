@@ -5,11 +5,11 @@ import { loadEditableSvg } from "@/editor/svg";
 
 const PREVIEW_SIZE = 448;
 const PREVIEW_PADDING = 36;
-const PREVIEW_CACHE_LIMIT = 96;
-const TRANSPARENT_PREVIEW =
-  "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
+const PREVIEW_CACHE_LIMIT = 36;
+const TRANSPARENT_PREVIEW = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=";
 const previewPromises = new Map<string, Promise<string>>();
 const previewSources = new Map<string, string>();
+const ORIGINAL_STYLE: ElementStyleSnapshot = { properties: {} };
 
 function previewKey(assetPath: string, snapshot?: ElementStyleSnapshot): string {
   return `${assetPath}:${snapshot ? JSON.stringify(snapshot) : "original"}`;
@@ -87,7 +87,71 @@ async function renderAssetPreview(
   return preview;
 }
 
-export function AssetPreviewImage({
+function BundledAssetPreview({
+  assetPath,
+  fallbackPath,
+  className
+}: {
+  assetPath: string;
+  fallbackPath?: string;
+  className?: string;
+}) {
+  const preferredSource = fallbackPath ?? assetPath;
+  const [preview, setPreview] = useState(() => ({
+    key: preferredSource,
+    source: preferredSource,
+    ready: false,
+    triedAsset: preferredSource === assetPath
+  }));
+
+  useEffect(() => {
+    setPreview({
+      key: preferredSource,
+      source: preferredSource,
+      ready: false,
+      triedAsset: preferredSource === assetPath
+    });
+  }, [assetPath, preferredSource]);
+
+  const current =
+    preview.key === preferredSource
+      ? preview
+      : {
+          key: preferredSource,
+          source: preferredSource,
+          ready: false,
+          triedAsset: preferredSource === assetPath
+        };
+
+  return (
+    <img
+      className={className}
+      src={current.source}
+      alt=""
+      loading="lazy"
+      draggable={false}
+      data-preview-ready={current.ready ? "true" : "false"}
+      onLoad={() =>
+        setPreview((state) => (state.key === preferredSource ? { ...state, ready: true } : state))
+      }
+      onError={() =>
+        setPreview((state) => {
+          if (state.key !== preferredSource || state.triedAsset) {
+            return { ...state, ready: true };
+          }
+          return {
+            key: preferredSource,
+            source: assetPath,
+            ready: false,
+            triedAsset: true
+          };
+        })
+      }
+    />
+  );
+}
+
+function StyledAssetPreview({
   assetPath,
   fallbackPath,
   savedStyle,
@@ -95,7 +159,7 @@ export function AssetPreviewImage({
 }: {
   assetPath: string;
   fallbackPath?: string;
-  savedStyle?: ElementStyleSnapshot;
+  savedStyle: ElementStyleSnapshot;
   className?: string;
 }) {
   const key = previewKey(assetPath, savedStyle);
@@ -137,6 +201,38 @@ export function AssetPreviewImage({
       loading="lazy"
       draggable={false}
       data-preview-ready={current?.ready ? "true" : "false"}
+    />
+  );
+}
+
+export function AssetPreviewImage({
+  assetPath,
+  fallbackPath,
+  savedStyle,
+  normalizeArtwork = false,
+  className
+}: {
+  assetPath: string;
+  fallbackPath?: string;
+  savedStyle?: ElementStyleSnapshot;
+  normalizeArtwork?: boolean;
+  className?: string;
+}) {
+  if (savedStyle === undefined && !normalizeArtwork) {
+    return (
+      <BundledAssetPreview
+        assetPath={assetPath}
+        fallbackPath={fallbackPath}
+        className={className}
+      />
+    );
+  }
+  return (
+    <StyledAssetPreview
+      assetPath={assetPath}
+      fallbackPath={fallbackPath}
+      savedStyle={savedStyle ?? ORIGINAL_STYLE}
+      className={className}
     />
   );
 }

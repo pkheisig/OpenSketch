@@ -895,6 +895,7 @@ function AssetCard({
           assetPath={variant.assetPath}
           fallbackPath={variant.thumbnailPath}
           savedStyle={savedStyle}
+          normalizeArtwork={family.variants.length > 1}
         />
       </button>
       <button className="asset-favorite" onClick={onFavorite} aria-label="Toggle favorite">
