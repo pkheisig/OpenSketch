@@ -24,7 +24,15 @@ export interface AssetVariant {
   height?: number;
 }
 
-export type AssetLicense = "Public Domain" | "CC0-1.0" | "CC-BY-4.0";
+export type AssetLicense =
+  | "Public Domain"
+  | "CC0-1.0"
+  | "CC-BY-3.0"
+  | "CC-BY-4.0"
+  | "CC-BY-SA-3.0"
+  | "CC-BY-SA-4.0"
+  | "MIT"
+  | "BSD-3-Clause";
 
 export interface AssetFamily {
   familyId: string;

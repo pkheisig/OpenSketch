@@ -129,13 +129,18 @@ async function main(): Promise<void> {
     }
   }
 
-  const openManifestPath = join(
-    ROOT,
-    "apps/web/src/generated/open-assets-manifest.json"
-  );
+  const openManifestPath = join(ROOT, "apps/web/src/generated/open-assets-manifest.json");
   const openManifest = await readJson<AssetManifest>(openManifestPath);
   const publicDirectory = join(ROOT, "apps/web/public");
-  const allowedOpenLicenses = new Set(["CC0-1.0", "CC-BY-4.0"]);
+  const allowedOpenLicenses = new Set([
+    "CC0-1.0",
+    "CC-BY-3.0",
+    "CC-BY-4.0",
+    "CC-BY-SA-3.0",
+    "CC-BY-SA-4.0",
+    "MIT",
+    "BSD-3-Clause"
+  ]);
   if (openManifest.families.length === 0) {
     errors.push("The open scientific-art collection is empty; run pnpm assets:sync:open.");
   }

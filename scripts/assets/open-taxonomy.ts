@@ -3,6 +3,11 @@ export interface SciDrawTaxonomyInput {
   category_slug: string;
 }
 
+export interface BioIconsTaxonomyInput {
+  name: string;
+  sourceCategory: string;
+}
+
 const FUNGI_AND_PROTISTS =
   /\b(?:abeoforma|agaricus|amoebiformis|aspergillus|bodo saltans|candida|diatom|dictyostelium|diplonema|euglena|isochrysis|monosiga|naegleria|neurospora|paramecium|penicillium|perkinsus|phaeodactylum|saccharomyces|salpingoeca|schizosaccharomyces|sphaeroforma|tetrahymena|ustilago|yarrowia|yeast)\b/;
 
@@ -143,4 +148,154 @@ export function categoryForOrganismAsset(title: string): string {
   if (PLANTS_AND_ALGAE.test(text)) return "Plants";
   if (FUNGI_AND_PROTISTS.test(text)) return "Fungi & protists";
   return "Animals";
+}
+
+export function categoryForBioIconsAsset(asset: BioIconsTaxonomyInput): string {
+  const title = asset.name.toLowerCase();
+  const sourceCategory = asset.sourceCategory
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+
+  // BioIcons' upstream categories are useful provenance, but some are very
+  // broad. Identity-level title rules take priority so retinal tissue, tumor
+  // cells, pathogens, and laboratory items do not inherit a misleading bucket.
+  if (
+    sourceCategory === "oncology" ||
+    /\b(?:adenoma|angiogenesis|cancer|cancerous|carcinoma|leukemia|lymphoma|melanoma|metastasis|neoplasm|oncolog|sarcoma|tumou?r)\b/.test(
+      title
+    )
+  ) {
+    return "Cancer & pathology";
+  }
+  if (
+    /\b(?:virus|virion|phage|adenovirus|coronavirus|hiv|influenza|papillomavirus|sars)\b/.test(
+      title
+    ) ||
+    sourceCategory === "viruses"
+  ) {
+    return "Viruses";
+  }
+  if (
+    /\b(?:plasmodium|schistosoma|giardia|entamoeba|trypanosoma|leishmania|toxoplasma|babesia|parasite)\b/.test(
+      title
+    ) ||
+    sourceCategory === "parasites"
+  ) {
+    return "Parasites";
+  }
+  if (FUNGI_AND_PROTISTS.test(title)) return "Fungi & protists";
+  if (
+    /\b(?:bacteri(?:a|um)|bacillus|biofilm|coccus|escherichia|microbiome|streptococc)\b/.test(
+      title
+    ) ||
+    sourceCategory === "microbiology"
+  ) {
+    return "Bacteria";
+  }
+  if (PLANTS_AND_ALGAE.test(title) || sourceCategory === "plants_algae") return "Plants";
+
+  if (
+    sourceCategory === "blood_immunology" ||
+    /\b(?:antigen presenting|b cell|blood|complement|dendritic|erythrocyte|granulocyte|immune|immun|leukocyte|lymphocyte|macrophage|monocyte|neutrophil|platelet|t cell)\b/.test(
+      title
+    )
+  ) {
+    return "Immunology & blood";
+  }
+  if (
+    sourceCategory === "cell_types" ||
+    sourceCategory === "cell_lines" ||
+    /\b(?:adipocyte|astrocyte|cell line|epithelial cell|fibroblast|hepatocyte|mast cell|myocyte|neuron|oocyte|ovum|sperm(?:atozoa)?)\b/.test(
+      title
+    )
+  ) {
+    return "Cells";
+  }
+  if (
+    sourceCategory === "intracellular_components" ||
+    sourceCategory === "cell_membrane" ||
+    /\b(?:centriole|cytoskeleton|endoplasmic|endosome|golgi|lysosome|membrane|mitochondri|nucleolus|nucleus|organelle|peroxisome|ribosome|vesicle)\b/.test(
+      title
+    )
+  ) {
+    return "Cell components";
+  }
+  if (
+    sourceCategory === "receptors_channels" ||
+    /\b(?:antibody|channel|enzyme|kinase|protein|receptor|transporter)\b/.test(title)
+  ) {
+    return "Proteins";
+  }
+  if (
+    ["nucleic_acids", "genetics", "genomics", "epigenetics", "molecular_biology"].includes(
+      sourceCategory
+    ) ||
+    /\b(?:chromatin|chromosome|dna|gene|genom|nucleic|nucleotide|rna)\b/.test(title)
+  ) {
+    return "Nucleic acids & genetics";
+  }
+  if (
+    [
+      "chemistry",
+      "amino_acids",
+      "peptides",
+      "molecular_modelling",
+      "molecular_modeling",
+      "nanotechnology"
+    ].includes(sourceCategory) ||
+    /\b(?:amino acid|chemical|lipid|metabolite|molecule|peptide)\b/.test(title)
+  ) {
+    return "Molecules";
+  }
+  if (
+    sourceCategory === "tissues" ||
+    sourceCategory === "extracellular_matrix" ||
+    /\b(?:epithelium|histolog|retina|retinal|section|tissue)\b/.test(title)
+  ) {
+    return "Tissues & histology";
+  }
+  if (
+    ["cell_culture", "procedures", "imaging"].includes(sourceCategory) ||
+    /\b(?:assay|blot|centrifug|chromatograph|culture|electrophoresis|facs|flow cytometr|imaging|microscop|pcr|sequenc)\b/.test(
+      title
+    )
+  ) {
+    return "Techniques & assays";
+  }
+  if (
+    ["lab_apparatus", "computer_hardware"].includes(sourceCategory) ||
+    /\b(?:beaker|bottle|centrifuge|computer|dish|flask|incubator|instrument|microscope|pipette|plate|rack|scanner|syringe|tube|vial)\b/.test(
+      title
+    )
+  ) {
+    return "Equipment";
+  }
+  if (
+    sourceCategory === "human_physiology" ||
+    sourceCategory === "neuroscience" ||
+    /\b(?:anatom|brain|heart|kidney|liver|lung|organ|physiology|skeleton)\b/.test(title)
+  ) {
+    return "Anatomy";
+  }
+  if (sourceCategory === "animals") {
+    return /\b(?:arthropod|beetle|butterfly|crab|fly|insect|mosquito|spider|tick)\b/.test(title)
+      ? "Arthropods"
+      : "Animals";
+  }
+  if (sourceCategory === "people_other") return "People";
+  if (
+    [
+      "scientific_graphs",
+      "machine_learning",
+      "chemo_and_bioinformatics",
+      "safety_symbols"
+    ].includes(sourceCategory)
+  ) {
+    return "Symbols & diagrams";
+  }
+  if (/\b(?:apoptosis|cell cycle|division|mitosis|pathway|signaling|transport)\b/.test(title)) {
+    return "Cellular processes";
+  }
+  return "Other";
 }

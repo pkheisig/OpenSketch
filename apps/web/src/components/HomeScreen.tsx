@@ -417,6 +417,20 @@ export function HomeScreen({
                   </a>{" "}
                   — CC0 organism illustrations
                 </li>
+                <li>
+                  <a href="https://bioicons.com/" target="_blank" rel="noreferrer">
+                    BioIcons
+                  </a>{" "}
+                  — editable scientific SVGs under each icon&apos;s stated CC0, CC BY, CC BY-SA,
+                  MIT, or BSD license
+                </li>
+                <li>
+                  <a href="https://smart.servier.com/" target="_blank" rel="noreferrer">
+                    Servier Medical Art
+                  </a>{" "}
+                  — medical illustrations distributed through BioIcons with per-asset attribution
+                  and license metadata
+                </li>
               </ul>
             </div>
             <p>

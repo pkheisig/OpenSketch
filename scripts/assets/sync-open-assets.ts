@@ -2,22 +2,15 @@ import { execFile } from "node:child_process";
 import { mkdtemp, mkdir, readFile, readdir, rm } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
-import Piscina from "piscina";
 import type {
   AssetFamily,
   AssetLicense,
   AssetManifest
 } from "../../packages/editor-core/src/types";
-import {
-  fetchWithRetry,
-  mapLimit,
-  rateLimitedFetch,
-  sha256,
-  writeJsonAtomic,
-  writeTextAtomic
-} from "./io";
+import { importBioIcons } from "./bioicons";
+import { fetchWithRetry, mapLimit, rateLimitedFetch, sha256, writeJsonAtomic } from "./io";
+import { closeOpenAssetStorage, storeOpenAsset } from "./open-asset-storage";
 import { categoryForOrganismAsset, categoryForSciDrawAsset } from "./open-taxonomy";
 import { ROOT } from "./paths";
 
@@ -31,12 +24,6 @@ const ORGANISM_THUMB_DIR = path.join(ROOT, "apps/web/public/assets/organism-libr
 const ORGANISM_RECORD_URL = "https://zenodo.org/api/records/17203578";
 const ORGANISM_ZIP_URL =
   "https://zenodo.org/api/records/17203578/files/arcadia-organism-library-v1.0.zip/content";
-const THUMBNAIL_WORKER = path.join(ROOT, "scripts/assets/thumbnail-worker.mjs");
-const sanitizerPool = new Piscina({
-  filename: fileURLToPath(new URL("./sanitize-worker.mjs", import.meta.url)),
-  minThreads: 2,
-  maxThreads: 6
-});
 
 interface SciDrawSummary {
   id: string;
@@ -100,26 +87,6 @@ function readableTitle(filename: string): string {
     .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
-function ensureViewBox(source: string): string {
-  if (/\bviewBox\s*=/i.test(source)) return source;
-  const width = source.match(/\bwidth=["']([0-9.]+)(?:px)?["']/i)?.[1];
-  const height = source.match(/\bheight=["']([0-9.]+)(?:px)?["']/i)?.[1];
-  if (!width || !height) return source;
-  return source.replace(/<svg\b/i, `<svg viewBox="0 0 ${width} ${height}"`);
-}
-
-function dimensions(svg: string): { width: number; height: number } {
-  const values = svg
-    .match(/\bviewBox=["']([^"']+)["']/i)?.[1]
-    .trim()
-    .split(/[\s,]+/)
-    .map(Number);
-  if (!values || values.length !== 4 || values.some((value) => !Number.isFinite(value))) {
-    throw new Error("SVG has no valid viewBox.");
-  }
-  return { width: Math.abs(values[2]), height: Math.abs(values[3]) };
-}
-
 async function fetchJson<T>(url: string): Promise<T> {
   return (await (await fetchWithRetry(httpsUrl(url))).json()) as T;
 }
@@ -140,50 +107,13 @@ async function allSciDrawSummaries(): Promise<SciDrawSummary[]> {
   );
 }
 
-async function writeAsset(
-  source: string,
-  assetId: string,
-  assetDirectory: string,
-  thumbnailDirectory: string
-): Promise<{
-  assetPath: string;
-  thumbnailPath: string;
-  localSha256: string;
-  width: number;
-  height: number;
-}> {
-  const sanitized = (await sanitizerPool.run(
-    {
-      source: ensureViewBox(source),
-      assetId
-    },
-    { signal: AbortSignal.timeout(60_000) }
-  )) as string;
-  const filename = `${assetId}.svg`;
-  const thumbnailFilename = `${assetId}.webp`;
-  const svgPath = path.join(assetDirectory, filename);
-  const thumbnailPath = path.join(thumbnailDirectory, thumbnailFilename);
-  await writeTextAtomic(svgPath, sanitized);
-  await execFileAsync(process.execPath, [THUMBNAIL_WORKER, svgPath, thumbnailPath], {
-    timeout: 20_000
-  });
-  const size = dimensions(sanitized);
-  const publicRoot = path.join(ROOT, "apps/web/public");
-  return {
-    assetPath: path.relative(publicRoot, svgPath).split(path.sep).join("/"),
-    thumbnailPath: path.relative(publicRoot, thumbnailPath).split(path.sep).join("/"),
-    localSha256: sha256(sanitized),
-    ...size
-  };
-}
-
 async function importSciDraw(failures: ImportFailure[]): Promise<AssetFamily[]> {
   const drawings = await allSciDrawSummaries();
   const families = await mapLimit(drawings, 6, async (drawing) => {
     try {
       const assetId = `scidraw-${slugify(drawing.slug)}`;
       const response = await rateLimitedFetch(httpsUrl(drawing.image_url), {}, 180, 3, 20_000);
-      const stored = await writeAsset(
+      const stored = await storeOpenAsset(
         await response.text(),
         assetId,
         SCIDRAW_ASSET_DIR,
@@ -278,7 +208,7 @@ async function importOrganismLibrary(failures: ImportFailure[]): Promise<AssetFa
             const storedVariants = [];
             for (const variant of variants.sort((a, b) => a.name.localeCompare(b.name))) {
               const variantId = `${familyId}${variant.suffix}`;
-              const stored = await writeAsset(
+              const stored = await storeOpenAsset(
                 await readFile(variant.path, "utf8"),
                 variantId,
                 ORGANISM_ASSET_DIR,
@@ -336,13 +266,15 @@ async function main(): Promise<void> {
   const failures: ImportFailure[] = [];
   const sciDrawFamilies = await importSciDraw(failures);
   const organismFamilies = await importOrganismLibrary(failures);
-  const families = [...sciDrawFamilies, ...organismFamilies].sort((a, b) =>
+  const bioIcons = await importBioIcons(process.env.BIOICONS_SOURCE_DIR);
+  failures.push(...bioIcons.failures);
+  const families = [...sciDrawFamilies, ...organismFamilies, ...bioIcons.families].sort((a, b) =>
     a.title.localeCompare(b.title)
   );
   const manifest: AssetManifest = {
     version: 1,
     generatedAt: new Date().toISOString(),
-    source: "SciDraw and Arcadia Science Free organism illustration library",
+    source: "SciDraw, Arcadia Science Free organism illustration library, and BioIcons",
     families
   };
   await writeJsonAtomic(GENERATED_MANIFEST, manifest);
@@ -364,18 +296,32 @@ async function main(): Promise<void> {
         ),
         license: "CC0-1.0",
         record: ORGANISM_RECORD_URL
+      },
+      bioIcons: {
+        importedFamilies: bioIcons.families.length,
+        discoveredSvgFiles: bioIcons.discoveredSvgFiles,
+        excludedWithoutAttribution: bioIcons.excludedWithoutAttribution,
+        commit: bioIcons.commit,
+        licenses: Object.fromEntries(
+          [...new Set(bioIcons.families.map((family) => family.license))]
+            .sort()
+            .map((license) => [
+              license,
+              bioIcons.families.filter((family) => family.license === license).length
+            ])
+        )
       }
     },
     failures
   });
   console.log(
-    `Imported ${families.length} open-licensed families (${sciDrawFamilies.length} SciDraw, ${organismFamilies.length} organism-library); ${failures.length} failures.`
+    `Imported ${families.length} open-licensed families (${sciDrawFamilies.length} SciDraw, ${organismFamilies.length} organism-library, ${bioIcons.families.length} BioIcons); ${failures.length} failures.`
   );
-  await sanitizerPool.destroy();
+  await closeOpenAssetStorage();
 }
 
 main().catch((error) => {
-  void sanitizerPool.destroy();
+  void closeOpenAssetStorage();
   console.error(error);
   process.exitCode = 1;
 });

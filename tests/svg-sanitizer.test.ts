@@ -3,6 +3,16 @@ import { sanitizeImportedSvg } from "../apps/web/src/assets/browserSanitizer";
 import { assertSafeSvg, sanitizeSvg } from "../scripts/assets/sanitize-svg";
 
 describe("SVG sanitization", () => {
+  it("removes malformed exporter payloads appended after a single SVG root", () => {
+    const clean = sanitizeSvg(
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4"/></svg>orphaned-export-payload</svg>',
+      "asset"
+    );
+
+    expect(clean).toContain("<circle");
+    expect(clean).not.toContain("orphaned-export-payload");
+  });
+
   const unsafe = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
     <defs><linearGradient id="gradient1"><stop stop-color="#fff"/></linearGradient></defs>
     <script>alert(1)</script>

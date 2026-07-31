@@ -11,7 +11,7 @@ export function resolveBundledAssetPath(path: string, baseUrl = import.meta.env.
 
 export const assetManifest: AssetManifest = {
   ...(manifest as AssetManifest),
-  source: `${(manifest as AssetManifest).source}, SciDraw, and Arcadia Science`,
+  source: `${(manifest as AssetManifest).source}, SciDraw, Arcadia Science, and BioIcons`,
   families: [
     ...TOP_VIEW_LABWARE_FAMILIES,
     ...(openAssetsManifest as AssetManifest).families,
@@ -28,6 +28,9 @@ export const assetManifest: AssetManifest = {
 export const ASSET_CATEGORIES = [
   "All",
   "Cells",
+  "Cancer & pathology",
+  "Immunology & blood",
+  "Cell components",
   "Proteins",
   "Molecules",
   "Nucleic acids & genetics",

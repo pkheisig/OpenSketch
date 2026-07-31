@@ -9,12 +9,16 @@ direct NIH catalog is authoritative.
 
 `pnpm assets:sync:open` separately imports every technically usable SciDraw
 vector drawing licensed CC0 1.0 or CC BY 4.0 and every tricolor/stroke and
-silhouette SVG in the Arcadia Science Free organism illustration library. The
-current result is 609 SciDraw families and 71 Arcadia families with 142 Arcadia
-variants. These files are copied into source-specific local directories and
-combined with NIH BioArt only in the browser manifest, preserving the
-established NIH source lock and stable IDs. All upstream technical exclusions
-are recorded in `data/open-assets-import-report.json`.
+silhouette SVG in the Arcadia Science Free organism illustration library. It
+also imports the pinned BioIcons SVG catalog under each file's declared CC0,
+CC BY, CC BY-SA, MIT, or BSD license. `pnpm assets:sync:bioicons` refreshes only
+that third source while retaining the already generated SciDraw and Arcadia
+entries. The current BioIcons bundle contains all 2,827 renderable SVGs in the
+pinned catalog; its three excluded `.svg` files are empty. These files are
+copied into source-specific local directories and combined with NIH BioArt only
+in the browser manifest, preserving the established NIH source lock and stable
+IDs. All upstream technical exclusions are recorded in
+`data/open-assets-import-report.json`.
 
 ## Trust gates
 
@@ -30,11 +34,14 @@ An asset enters the bundle only when:
 6. Security validation finds no executable or network content.
 7. A transparent 256 × 256 WebP thumbnail can be rendered.
 
-For SciDraw and Arcadia Science, the same technical gates apply and the source
-must additionally expose a redistribution/modification license supported by
-OpenSketch. CC BY files retain primary-author, source-page, DOI, license, and
-license-URL metadata. CC0 files retain source and license metadata for
-traceability.
+For SciDraw, Arcadia Science, and BioIcons, the same technical gates apply and
+the source must additionally expose a redistribution/modification license
+supported by OpenSketch. CC BY and CC BY-SA files retain author, source-page,
+license, and license-URL metadata; SciDraw also retains its DOI. MIT and BSD
+icons retain their author/copyright source and license. CC0 files retain source
+and license metadata for traceability. A BioIcons SVG without the full
+license/category/author path required for attribution is excluded rather than
+being assigned guessed provenance.
 
 Public-domain records without an SVG and records under another license are
 listed as skips in `data/import-errors.json`. Download, sanitization, rendering,
@@ -76,3 +83,9 @@ sync. Verify identity or taxonomy corrections against the linked NIH source
 page (and Commons page for a retained mirror entry) before adding overrides.
 `assets:validate` also proves that the taxonomy and generated manifest contain
 the same family IDs and categories.
+
+BioIcons is pinned by commit in `scripts/assets/bioicons.ts`; update that commit
+deliberately when refreshing the catalog. Its SVGs and thumbnails are served
+from the OpenSketch origin and cached on demand. They are intentionally excluded
+from PWA precaching so the application's first visit does not download the
+entire scientific-art library.

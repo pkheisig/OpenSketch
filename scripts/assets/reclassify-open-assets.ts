@@ -1,7 +1,11 @@
 import path from "node:path";
 import type { AssetManifest } from "../../packages/editor-core/src/types";
 import { readJson, writeJsonAtomic } from "./io";
-import { categoryForOrganismAsset, categoryForSciDrawAsset } from "./open-taxonomy";
+import {
+  categoryForBioIconsAsset,
+  categoryForOrganismAsset,
+  categoryForSciDrawAsset
+} from "./open-taxonomy";
 import { ROOT } from "./paths";
 
 const MANIFEST_PATH = path.join(ROOT, "apps/web/src/generated/open-assets-manifest.json");
@@ -9,13 +13,21 @@ const MANIFEST_PATH = path.join(ROOT, "apps/web/src/generated/open-assets-manife
 async function main(): Promise<void> {
   const manifest = await readJson<AssetManifest>(MANIFEST_PATH);
   const families = manifest.families.map((family) => {
-    const sourceCategory = family.sourceName === "SciDraw" ? (family.keywords[1] ?? "") : "";
+    const sourceCategory =
+      family.sourceName === "SciDraw" || family.sourceName?.startsWith("BioIcons")
+        ? (family.keywords[1] ?? "")
+        : "";
     const category = family.sourceName?.startsWith("Arcadia Science")
       ? categoryForOrganismAsset(family.title)
-      : categoryForSciDrawAsset({
-          name: family.title,
-          category_slug: sourceCategory
-        });
+      : family.sourceName?.startsWith("BioIcons")
+        ? categoryForBioIconsAsset({
+            name: family.title,
+            sourceCategory
+          })
+        : categoryForSciDrawAsset({
+            name: family.title,
+            category_slug: sourceCategory
+          });
     return {
       ...family,
       category,

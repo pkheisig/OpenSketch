@@ -44,16 +44,13 @@ function prefixInternalIds(svg: SVGSVGElement, assetId: string): void {
   svg.querySelectorAll("style").forEach((style) => {
     const content = (style.textContent ?? "")
       .replace(/([^{}]+)\{/g, (rule, selector: string) => {
-        const rewritten = selector.replace(
-          /#([A-Za-z_][\w:.-]*)/g,
-          (reference, id: string) => (idMap.has(id) ? `#${idMap.get(id)}` : reference)
+        const rewritten = selector.replace(/#([A-Za-z_][\w:.-]*)/g, (reference, id: string) =>
+          idMap.has(id) ? `#${idMap.get(id)}` : reference
         );
         return `${rewritten}{`;
       })
-      .replace(
-        /url\(\s*(['"]?)#([^)'"]+)\1\s*\)/g,
-        (reference, _quote: string, id: string) =>
-          idMap.has(id) ? `url(#${idMap.get(id)})` : reference
+      .replace(/url\(\s*(['"]?)#([^)'"]+)\1\s*\)/g, (reference, _quote: string, id: string) =>
+        idMap.has(id) ? `url(#${idMap.get(id)})` : reference
       );
     style.textContent = content;
   });
@@ -128,7 +125,9 @@ export function assertSafeSvg(svgText: string): void {
 function expandSafeInternalEntities(source: string): string {
   const documentType = source.match(/<!DOCTYPE[^>]*\[[\s\S]*?\]>/i)?.[0];
   if (!documentType) return source.replace(/<!DOCTYPE[^>]*>/gi, "");
-  if (/<!ENTITY\s+(?:%\s+)?[A-Za-z_][\w.-]*\s+(?:SYSTEM|PUBLIC)\b|<!ENTITY\s+%/i.test(documentType)) {
+  if (
+    /<!ENTITY\s+(?:%\s+)?[A-Za-z_][\w.-]*\s+(?:SYSTEM|PUBLIC)\b|<!ENTITY\s+%/i.test(documentType)
+  ) {
     throw new Error("External and parameter SVG entities are not allowed.");
   }
   const declarations = [
@@ -150,7 +149,17 @@ function expandSafeInternalEntities(source: string): string {
   return expanded.replace(documentType, "");
 }
 
+function removeTrailingRootGarbage(source: string): string {
+  const rootOpenings = source.match(/<svg\b/gi)?.length ?? 0;
+  if (rootOpenings !== 1) return source;
+  const closing = /<\/svg\s*>/i.exec(source);
+  if (!closing || closing.index + closing[0].length === source.length) return source;
+  const trailing = source.slice(closing.index + closing[0].length);
+  return trailing.trim() ? source.slice(0, closing.index + closing[0].length) : source;
+}
+
 export function sanitizeSvg(source: string, assetId: string): string {
+  source = removeTrailingRootGarbage(source);
   source = expandSafeInternalEntities(source);
   const svgNamespacePrefix = source.match(
     /xmlns:([A-Za-z_][\w.-]*)=["']http:\/\/www\.w3\.org\/2000\/svg["']/

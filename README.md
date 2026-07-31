@@ -5,7 +5,8 @@ hosted application at **[pkheisig.github.io/OpenSketch](https://pkheisig.github.
 
 The editor is a static React 19, TypeScript, Vite, and Fabric.js application with
 an offline bundle of public-domain and openly licensed scientific illustrations
-from NIAID NIH BioArt, SciDraw, and Arcadia Science, plus locally authored
+from NIAID NIH BioArt, SciDraw, Arcadia Science, and BioIcons (including Servier
+Medical Art), plus locally authored
 editable top-view plates and culture dishes for experiment layouts. It has no
 application server, account system, analytics, or telemetry.
 
@@ -16,9 +17,10 @@ its fill, stroke, opacity, position, scale, and rotation. Press Escape or choose
 **Done** to return to the complete asset.
 
 The source code is AGPL-3.0-or-later. Imported artwork retains its original
-Public Domain, CC0 1.0, or CC BY 4.0 status and is not relicensed under the
-OpenSketch software license. Per-asset authorship, source, DOI, and license are
-retained in the manifest and embedded in exported SVG provenance.
+Public Domain, CC0, CC BY, CC BY-SA, MIT, or BSD status and is not relicensed
+under the OpenSketch software license. Per-asset authorship, source, DOI where
+available, and license are retained in the manifest and embedded in exported
+SVG provenance.
 
 ## Privacy and local data
 
@@ -128,6 +130,7 @@ Asset import is an explicit maintainer operation:
 ```sh
 corepack pnpm assets:sync
 corepack pnpm assets:sync:open
+corepack pnpm assets:sync:bioicons
 ```
 
 The first command discovers the current first-party NIH BioArt catalog, reads each
@@ -146,15 +149,25 @@ compatibility. The older mirror-only importer remains available to maintainers
 as `corepack pnpm assets:sync:commons`; it is not used by the application.
 
 The second command imports every technically usable vector SVG currently
-exposed by SciDraw under CC0 1.0 or CC BY 4.0, plus both editable SVG styles for
-every organism in the Arcadia Science Free organism illustration library. The
-bundled result contains **609 SciDraw families** (538 CC BY 4.0 and 71 CC0) and
-**71 Arcadia organism families with 142 SVG variants**. CC BY assets retain the
-primary author, SciDraw source page, DOI, and license URL required for
-attribution. CC0 assets retain source and license metadata for traceability.
-Each downloaded file passes the same sanitization and local-thumbnail pipeline;
-the browser never fetches these third-party sources at runtime. Upstream files
-that are malformed or too complex to sanitize safely are named in
+exposed by SciDraw under CC0 1.0 or CC BY 4.0, both editable SVG styles for
+every organism in the Arcadia Science Free organism illustration library, and
+the pinned BioIcons catalog. The BioIcons import preserves the author, upstream
+category, source path, and exact per-file CC0, CC BY, CC BY-SA, MIT, or BSD
+license. Servier Medical Art is identified both as its original author and as a
+BioIcons-distributed source. The third command refreshes only BioIcons while
+retaining the already generated SciDraw and Arcadia entries.
+
+The bundled result contains **609 SciDraw families** (538 CC BY 4.0 and 71 CC0),
+**71 Arcadia organism families with 142 SVG variants**, and **2,827 BioIcons
+SVG families**. That is every renderable SVG in the pinned BioIcons catalog;
+the three excluded upstream `.svg` files are zero bytes. One icon with a legacy
+three-segment source path uses the contributor identity recorded by the
+upstream submission and author registry. CC BY assets retain the author, source
+page, DOI where available, and license URL required for attribution. CC0 assets
+retain source and license metadata for traceability. Each downloaded file
+passes the same sanitization and local-thumbnail pipeline; the browser never
+fetches these third-party sources at runtime. Upstream files that are malformed,
+lack attribution metadata, or are too complex to sanitize safely are named in
 `data/open-assets-import-report.json` rather than being silently approximated.
 
 Individual stages are available as:
@@ -166,9 +179,9 @@ corepack pnpm assets:manifest
 ```
 
 Normal development, test, production build, and browser runtime paths never
-contact Wikimedia, NIH, SciDraw, Zenodo, or Arcadia Science. The downloaded,
-sanitized artwork is committed to this repository and served from the same
-static GitHub Pages origin.
+contact Wikimedia, NIH, SciDraw, Zenodo, Arcadia Science, BioIcons, or Servier
+Medical Art. The downloaded, sanitized artwork is committed to this repository
+and served from the same static GitHub Pages origin.
 
 ### Sanitization policy
 

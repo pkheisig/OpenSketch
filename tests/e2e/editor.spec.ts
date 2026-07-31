@@ -2026,6 +2026,13 @@ test("@smoke supports visible and native navigation for new figures", async ({ p
       exact: true
     })
   ).toHaveAttribute("href", "https://zenodo.org/records/17203578");
+  await expect(aboutDialog.getByRole("link", { name: "BioIcons", exact: true })).toHaveAttribute(
+    "href",
+    "https://bioicons.com/"
+  );
+  await expect(
+    aboutDialog.getByRole("link", { name: "Servier Medical Art", exact: true })
+  ).toHaveAttribute("href", "https://smart.servier.com/");
   const github = aboutDialog.getByRole("link", { name: "GitHub", exact: true });
   await expect(github).toHaveAttribute("href", "https://github.com/pkheisig/OpenSketch");
   await expect(github.locator("svg")).toHaveCount(1);

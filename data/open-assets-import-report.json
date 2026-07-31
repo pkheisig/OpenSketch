@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-30T22:18:38.946Z",
+  "generatedAt": "2026-07-31T09:29:46.072Z",
   "sources": {
     "sciDraw": {
       "importedFamilies": 609,
@@ -13,6 +13,21 @@
       "importedVariants": 142,
       "license": "CC0-1.0",
       "record": "https://zenodo.org/api/records/17203578"
+    },
+    "bioIcons": {
+      "importedFamilies": 2827,
+      "discoveredSvgFiles": 2830,
+      "excludedWithoutAttribution": 0,
+      "commit": "d29e766ea7580b8063c4f47b29e872db40a4d979",
+      "licenses": {
+        "BSD-3-Clause": 3,
+        "CC-BY-3.0": 1376,
+        "CC-BY-4.0": 882,
+        "CC-BY-SA-3.0": 4,
+        "CC-BY-SA-4.0": 35,
+        "CC0-1.0": 488,
+        "MIT": 39
+      }
     }
   },
   "failures": [
@@ -30,6 +45,21 @@
       "source": "SciDraw",
       "title": "Lipid Bilayer",
       "error": "Upstream SVG has 98,312 elements and exceeded the 60-second safety-processing limit."
+    },
+    {
+      "source": "BioIcons",
+      "title": "Polyomaviridae",
+      "error": "The upstream SVG file is empty."
+    },
+    {
+      "source": "BioIcons",
+      "title": "SARS CoV 2",
+      "error": "The upstream SVG file is empty."
+    },
+    {
+      "source": "BioIcons",
+      "title": "Virus",
+      "error": "The upstream SVG file is empty."
     }
   ]
 }
