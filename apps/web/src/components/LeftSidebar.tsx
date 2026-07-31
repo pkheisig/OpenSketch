@@ -255,6 +255,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const [shapeFamily, setShapeFamily] = useState<keyof typeof SHAPE_GROUPS | null>(null);
   const [assetQuery, setAssetQuery] = useState("");
   const [assetCategory, setAssetCategory] = useState("Favorites");
+  const [assetSearchFocusRequest, setAssetSearchFocusRequest] = useState(0);
   const sidebarRef = useRef<HTMLElement>(null);
   const handledSelection = useRef("");
   const draggedLinePreset = useRef(false);
@@ -270,7 +271,10 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     .join("|");
   const openPanel = (next: Tab) => {
     const shouldClose = !collapsed && tab === next;
-    if (next === "assets" && !shouldClose && !assetQuery) setAssetCategory("Favorites");
+    if (next === "assets" && !shouldClose) {
+      if (!assetQuery) setAssetCategory("Favorites");
+      setAssetSearchFocusRequest((current) => current + 1);
+    }
     setTab(next);
     setFlyout(null);
     setLineFamily(null);
@@ -621,6 +625,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
                 onQueryChange={setAssetQuery}
                 category={assetCategory}
                 onCategoryChange={setAssetCategory}
+                focusRequest={assetSearchFocusRequest}
               />
             )}
             {tab === "imports" && <ImportsPanel />}
@@ -637,15 +642,18 @@ function AssetsPanel({
   query,
   onQueryChange,
   category,
-  onCategoryChange
+  onCategoryChange,
+  focusRequest
 }: {
   query: string;
   onQueryChange: (query: string) => void;
   category: string;
   onCategoryChange: (category: string) => void;
+  focusRequest: number;
 }) {
   const editor = useEditor();
   const [debouncedQuery, setDebouncedQuery] = useState(query);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const [variants, setVariants] = useState(loadAssetVariantDefaults);
   const [favorites, setFavorites] = useState<Set<string>>(
     () => new Set(JSON.parse(localStorage.getItem("OpenSketch:favorites") ?? "[]") as string[])
@@ -671,6 +679,11 @@ function AssetsPanel({
     const timeout = window.setTimeout(() => setDebouncedQuery(query), 160);
     return () => window.clearTimeout(timeout);
   }, [query]);
+  useEffect(() => {
+    if (focusRequest < 1) return;
+    searchInputRef.current?.focus();
+    searchInputRef.current?.select();
+  }, [focusRequest]);
   useEffect(() => {
     const updateSavedStyles = () => setSavedStyles(loadSavedElementStyles());
     window.addEventListener(SAVED_ELEMENT_STYLES_CHANGED_EVENT, updateSavedStyles);
@@ -763,6 +776,7 @@ function AssetsPanel({
       <label className="search-box">
         <Search size={16} />
         <input
+          ref={searchInputRef}
           value={query}
           onChange={(event) => {
             const nextQuery = event.target.value;

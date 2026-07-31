@@ -2994,6 +2994,7 @@ test("preserves an asset search after inserting artwork and reopening Assets", a
   await assetsTab.click();
 
   const reopenedSearch = page.getByPlaceholder("Search cells, proteins, equipment…");
+  await expect(reopenedSearch).toBeFocused();
   await expect(reopenedSearch).toHaveValue("Cajal-Retzius Cell");
   await expect(page.getByRole("button", { name: "All", exact: true })).toHaveClass(/active/);
   await expect(
