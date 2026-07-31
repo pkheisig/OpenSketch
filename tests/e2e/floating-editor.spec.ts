@@ -391,6 +391,7 @@ test("hides scrollbar chrome globally without disabling scrolling", async ({ pag
   await page.setViewportSize({ width: 1200, height: 700 });
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "All", exact: true }).click();
 
   const assetList = page.locator(".asset-list");
   await expect(assetList).toBeVisible();

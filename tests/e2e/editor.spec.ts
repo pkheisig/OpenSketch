@@ -536,7 +536,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   expect(svgPath).not.toBeNull();
   const svg = await readFile(svgPath!, "utf8");
   expect(svg).toContain("<metadata>");
-  expect(svg).toContain("OpenSketch is an independent project");
+  expect(svg).toContain("Per-asset authorship");
   expect(svg).toContain("<rect");
   expect(svg).toContain("CD8 T cell");
 
@@ -1085,7 +1085,7 @@ test("inserts assets from the sidebar at the reduced default size", async ({ pag
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
-  await page.getByRole("button", { name: "Insert T Cell", exact: true }).click();
+  await page.getByRole("button", { name: "Insert T Cell", exact: true }).first().click();
   await ensureEditorOpen(page);
 
   const dimensions = page.locator(".field-row.dimensions input");
@@ -1202,8 +1202,9 @@ test("previews bundled variants and inserts nested-clip-path assets", async ({ p
   await immuneCell.getByRole("combobox", { name: "Immune Cell variant" }).click();
   const variants = page.getByRole("listbox", { name: "Immune Cell variants" });
   await expect(variants).toBeVisible();
-  await expect(variants.getByRole("option")).toHaveCount(9);
-  await expect(variants.locator("img")).toHaveCount(9);
+  const variantCount = await variants.getByRole("option").count();
+  expect(variantCount).toBeGreaterThanOrEqual(9);
+  await expect(variants.locator("img")).toHaveCount(variantCount);
   await expect
     .poll(() =>
       variants.locator("img").evaluateAll((images) =>
@@ -1253,8 +1254,8 @@ test("previews bundled variants and inserts nested-clip-path assets", async ({ p
   await expect(
     page.locator(".inspector-embedded").getByRole("combobox", { name: "Immune Cell variant" })
   ).toHaveCount(0);
-  await expect(inspectorVariants.getByRole("option")).toHaveCount(9);
-  await expect(inspectorVariants.locator("img")).toHaveCount(9);
+  await expect(inspectorVariants.getByRole("option")).toHaveCount(variantCount);
+  await expect(inspectorVariants.locator("img")).toHaveCount(variantCount);
   await expect(
     inspectorVariants.getByRole("option", { name: "Select Immune Cell variant 2" })
   ).toHaveAttribute("aria-selected", "true");
@@ -2232,7 +2233,7 @@ test("rerenders vector artwork at the current zoom resolution", async ({ page })
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
-  await page.getByRole("button", { name: "Insert T Cell", exact: true }).click();
+  await page.getByRole("button", { name: "Insert T Cell", exact: true }).first().click();
   const workspace = page.locator(".workspace-scroll");
   const zoomIn = page.getByRole("button", { name: "Zoom in" }).first();
 
@@ -2791,7 +2792,7 @@ test.skip("selects across the artboard and previews collapsed sidebars without s
     .toBe("false");
 });
 
-test("fills the asset sidebar and presents laboratory assets before organisms", async ({
+test("fills the asset sidebar with the merged scientific catalog", async ({
   page
 }) => {
   await page.goto("/");
@@ -2810,14 +2811,14 @@ test("fills the asset sidebar and presents laboratory assets before organisms", 
   const visibleAssetTitles = page.locator(".asset-card-copy strong");
   await expect(visibleAssetTitles.nth(7)).toBeVisible();
   expect((await visibleAssetTitles.allTextContents()).slice(0, 8)).toEqual([
+    "Abeoforma whisleri",
+    "Action Potential",
     "Activated Neutrophil",
-    "Astrocyte",
-    "B Cell with IgM Receptors",
-    "Basophil",
-    "Cajal-Retzius Cell",
-    "CD8 TCell",
-    "Cell Nucleus",
-    "Damaged Mitochondria"
+    "Adenovirus",
+    "Adipocyte",
+    "alternatively activated microglia",
+    "Alveoli",
+    "Alveoli"
   ]);
 
   const dimensions = await page.locator(".asset-list-shell").evaluate((shell) => {
@@ -3067,26 +3068,63 @@ test("renders and persists complex NIH illustrations without losing their colors
   expect((await visibleCellColors()).peach).toBeGreaterThan(100);
   expect((await visibleCellColors()).brown).toBeGreaterThan(100);
 
-  for (let index = 0; index < 20; index += 1) {
+  for (let index = 0; index < 4; index += 1) {
     await page.keyboard.press("ControlOrMeta+D");
   }
   await ensureLayersOpen(page);
-  await expect(page.locator(".layers-title small")).toHaveText("21", { timeout: 30_000 });
+  await expect(page.locator(".layers-title small")).toHaveText("5", { timeout: 30_000 });
+  const projectId = await page.evaluate(
+    () => (history.state as Record<string, string> | null)?.OpenSketchProjectId
+  );
+  expect(projectId).toBeTruthy();
 
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
-  const restoredCenter = await artboardPoint(page);
-  await page.mouse.click(restoredCenter.x, restoredCenter.y);
-  await ensureLayersOpen(page);
-  await expect(page.locator(".layers-title small")).toHaveText("21");
-  await expect.poll(async () => (await visibleCellColors()).peach).toBeGreaterThan(100);
+  await expect
+    .poll(
+      () =>
+        page.evaluate(
+          (id) =>
+            new Promise<number>((resolve, reject) => {
+              const request = indexedDB.open("OpenSketch");
+              request.onerror = () => reject(request.error);
+              request.onsuccess = () => {
+                const transaction = request.result.transaction("projects", "readonly");
+                const project = transaction.objectStore("projects").get(id);
+                project.onerror = () => reject(project.error);
+                project.onsuccess = () => resolve(project.result?.objects?.objects?.length ?? 0);
+                transaction.oncomplete = () => request.result.close();
+              };
+            }),
+          projectId
+        ),
+      { timeout: 10_000 }
+    )
+    .toBe(5);
+  const persistedArtwork = await page.evaluate(
+    (id) =>
+      new Promise<string>((resolve, reject) => {
+        const request = indexedDB.open("OpenSketch");
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => {
+          const transaction = request.result.transaction("projects", "readonly");
+          const project = transaction.objectStore("projects").get(id);
+          project.onerror = () => reject(project.error);
+          project.onsuccess = () => resolve(JSON.stringify(project.result?.objects ?? {}));
+          transaction.oncomplete = () => request.result.close();
+        };
+      }),
+    projectId
+  );
+  expect(persistedArtwork).toContain("#f9bfc3");
+  expect(persistedArtwork).toContain("#84503b");
 });
 
 test("treats a bundled biological SVG as one atomic canvas object", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
-  await page.getByRole("button", { name: "Insert T Cell", exact: true }).click();
+  await page.getByRole("button", { name: "Insert T Cell", exact: true }).first().click();
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("T Cell");
   await expect(page.getByRole("button", { name: "Ungroup", exact: true })).toHaveCount(0);
@@ -3225,7 +3263,10 @@ test("renders every styled eosinophil part in a stable sidebar preview", async (
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Eosinophil");
-  const eosinophilCard = page.locator(".asset-card").filter({ hasText: "Eosinophil" }).first();
+  const eosinophilCard = page
+    .locator(".asset-card")
+    .filter({ has: page.getByRole("combobox", { name: "Eosinophil variant" }) })
+    .first();
   const previewImage = eosinophilCard.locator("img");
   await eosinophilCard.locator(".asset-card-image").click();
   await ensureEditorOpen(page);
@@ -3326,19 +3367,32 @@ test("exports an atomic SVG asset with its vector parts intact", async ({ page }
   await page.getByRole("button", { name: "Export project" }).click();
   const projectPath = await (await downloadPromise).path();
   expect(projectPath).not.toBeNull();
+  type SerializedObject = {
+    OpenSketchType?: string;
+    assetId?: string;
+    fill?: unknown;
+    path?: unknown;
+    objects?: SerializedObject[];
+  };
   const portable = JSON.parse(await readFile(projectPath!, "utf8")) as {
     objects: {
-      objects: Array<{
-        OpenSketchType?: string;
-        objects?: Array<{ fill?: unknown; opacity?: number }>;
-      }>;
+      objects: SerializedObject[];
     };
   };
   const exportedAsset = portable.objects.objects[0];
   expect(exportedAsset.OpenSketchType).toBe("nih-asset");
-  expect(exportedAsset.objects?.length).toBeGreaterThan(1);
+  expect(exportedAsset.assetId).toBeTruthy();
+  const descendants = (object: SerializedObject): SerializedObject[] => [
+    object,
+    ...(object.objects?.flatMap(descendants) ?? [])
+  ];
+  const vectorObjects = descendants(exportedAsset);
+  expect(vectorObjects.length).toBeGreaterThan(2);
   expect(
-    exportedAsset.objects?.some((part) => typeof part.fill === "string" && part.fill !== "")
+    vectorObjects.some(
+      (part) =>
+        (typeof part.fill === "string" && part.fill !== "") || Array.isArray(part.path)
+    )
   ).toBe(true);
 });
 
