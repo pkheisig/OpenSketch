@@ -396,6 +396,29 @@ export function HomeScreen({
             onMouseDown={(event) => event.stopPropagation()}
           >
             <p>{GLOBAL_CREDIT}</p>
+            <div className="about-sources">
+              <strong>Bundled artwork sources</strong>
+              <ul>
+                <li>
+                  <a href="https://bioart.niaid.nih.gov/" target="_blank" rel="noreferrer">
+                    NIAID NIH BioArt Source
+                  </a>{" "}
+                  — public-domain illustrations
+                </li>
+                <li>
+                  <a href="https://scidraw.io/" target="_blank" rel="noreferrer">
+                    SciDraw
+                  </a>{" "}
+                  — CC0 and CC BY 4.0 illustrations
+                </li>
+                <li>
+                  <a href="https://zenodo.org/records/17203578" target="_blank" rel="noreferrer">
+                    Arcadia Science Free organism illustration library
+                  </a>{" "}
+                  — CC0 organism illustrations
+                </li>
+              </ul>
+            </div>
             <p>
               The editor runs locally, uses no account or application backend, and keeps project
               files in your browser&apos;s IndexedDB.

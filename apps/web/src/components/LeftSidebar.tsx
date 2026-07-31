@@ -44,10 +44,7 @@ import {
   type ConnectorFamily,
   type ConnectorPreset
 } from "@/editor/connectorPresets";
-import {
-  setConnectorPresetDragPayload,
-  setShapePresetDragPayload
-} from "@/editor/creationDrag";
+import { setConnectorPresetDragPayload, setShapePresetDragPayload } from "@/editor/creationDrag";
 import {
   loadSavedElementStyles,
   SAVED_ELEMENT_STYLES_CHANGED_EVENT,
@@ -256,7 +253,8 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const [flyout, setFlyout] = useState<Flyout>(null);
   const [lineFamily, setLineFamily] = useState<ConnectorFamily | null>(null);
   const [shapeFamily, setShapeFamily] = useState<keyof typeof SHAPE_GROUPS | null>(null);
-  const [assetsPanelSession, setAssetsPanelSession] = useState(0);
+  const [assetQuery, setAssetQuery] = useState("");
+  const [assetCategory, setAssetCategory] = useState("Favorites");
   const sidebarRef = useRef<HTMLElement>(null);
   const handledSelection = useRef("");
   const draggedLinePreset = useRef(false);
@@ -272,9 +270,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     .join("|");
   const openPanel = (next: Tab) => {
     const shouldClose = !collapsed && tab === next;
-    if (next === "assets" && !shouldClose) {
-      setAssetsPanelSession((current) => current + 1);
-    }
+    if (next === "assets" && !shouldClose && !assetQuery) setAssetCategory("Favorites");
     setTab(next);
     setFlyout(null);
     setLineFamily(null);
@@ -353,10 +349,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     const clearCreationToolOutsideSidebar = (event: MouseEvent) => {
       const target = event.target;
       const sidebar = sidebarRef.current;
-      if (
-        !(target instanceof Element) ||
-        (sidebar && event.composedPath().includes(sidebar))
-      ) {
+      if (!(target instanceof Element) || (sidebar && event.composedPath().includes(sidebar))) {
         return;
       }
       if (
@@ -622,7 +615,14 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
             role="tabpanel"
             aria-label={`${tab} tools`}
           >
-            {tab === "assets" && <AssetsPanel key={assetsPanelSession} />}
+            {tab === "assets" && (
+              <AssetsPanel
+                query={assetQuery}
+                onQueryChange={setAssetQuery}
+                category={assetCategory}
+                onCategoryChange={setAssetCategory}
+              />
+            )}
             {tab === "imports" && <ImportsPanel />}
             {tab === "edit" && <InspectorContent onClose={onToggle} />}
           </div>
@@ -633,11 +633,19 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   );
 }
 
-function AssetsPanel() {
+function AssetsPanel({
+  query,
+  onQueryChange,
+  category,
+  onCategoryChange
+}: {
+  query: string;
+  onQueryChange: (query: string) => void;
+  category: string;
+  onCategoryChange: (category: string) => void;
+}) {
   const editor = useEditor();
-  const [query, setQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [category, setCategory] = useState("Favorites");
+  const [debouncedQuery, setDebouncedQuery] = useState(query);
   const [variants, setVariants] = useState(loadAssetVariantDefaults);
   const [favorites, setFavorites] = useState<Set<string>>(
     () => new Set(JSON.parse(localStorage.getItem("OpenSketch:favorites") ?? "[]") as string[])
@@ -758,13 +766,13 @@ function AssetsPanel() {
           value={query}
           onChange={(event) => {
             const nextQuery = event.target.value;
-            setQuery(nextQuery);
-            if (nextQuery && category === "Favorites") setCategory("All");
+            onQueryChange(nextQuery);
+            if (nextQuery && category === "Favorites") onCategoryChange("All");
           }}
           placeholder="Search cells, proteins, equipment…"
         />
         {query && (
-          <button onClick={() => setQuery("")} aria-label="Clear search">
+          <button onClick={() => onQueryChange("")} aria-label="Clear search">
             <X size={14} />
           </button>
         )}
@@ -774,7 +782,7 @@ function AssetsPanel() {
           <button
             key={item}
             className={category === item ? "active" : ""}
-            onClick={() => setCategory(item)}
+            onClick={() => onCategoryChange(item)}
           >
             {item === "Favorites" ? <Heart size={14} aria-hidden="true" /> : null}
             {item}

@@ -1342,8 +1342,8 @@ test.describe("bundled NIH BioArt SVG compatibility", () => {
             })
           );
           failed.push(
-            ...results.filter(
-              (result): result is { id: string; family: string; error: string } => Boolean(result)
+            ...results.filter((result): result is { id: string; family: string; error: string } =>
+              Boolean(result)
             )
           );
         }
@@ -2013,6 +2013,19 @@ test("@smoke supports visible and native navigation for new figures", async ({ p
   await expect(aboutDialog.getByText("Biology, drawn openly.", { exact: true })).toHaveCount(0);
   await expect(aboutDialog.getByRole("button", { name: "Copy artwork credit" })).toHaveCount(0);
   await expect(aboutDialog.getByRole("button", { name: "Continue" })).toHaveCount(0);
+  await expect(
+    aboutDialog.getByRole("link", { name: "NIAID NIH BioArt Source", exact: true })
+  ).toHaveAttribute("href", "https://bioart.niaid.nih.gov/");
+  await expect(aboutDialog.getByRole("link", { name: "SciDraw", exact: true })).toHaveAttribute(
+    "href",
+    "https://scidraw.io/"
+  );
+  await expect(
+    aboutDialog.getByRole("link", {
+      name: "Arcadia Science Free organism illustration library",
+      exact: true
+    })
+  ).toHaveAttribute("href", "https://zenodo.org/records/17203578");
   const github = aboutDialog.getByRole("link", { name: "GitHub", exact: true });
   await expect(github).toHaveAttribute("href", "https://github.com/pkheisig/OpenSketch");
   await expect(github.locator("svg")).toHaveCount(1);
@@ -2805,9 +2818,7 @@ test.skip("selects across the artboard and previews collapsed sidebars without s
     .toBe("false");
 });
 
-test("fills the asset sidebar with the merged scientific catalog", async ({
-  page
-}) => {
+test("fills the asset sidebar with the merged scientific catalog", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
 
@@ -2961,6 +2972,33 @@ test("shows favorites only in a dedicated asset category", async ({ page }) => {
   await pinnedCd8.hover();
   await pinnedCd8.getByRole("button", { name: "Toggle favorite" }).click();
   await expect(page.getByRole("heading", { name: "No match" })).toBeVisible();
+});
+
+test("preserves an asset search after inserting artwork and reopening Assets", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+
+  const search = page.getByPlaceholder("Search cells, proteins, equipment…");
+  await search.fill("Cajal-Retzius Cell");
+  const matchingAsset = page
+    .locator(".asset-card")
+    .filter({ hasText: "Cajal-Retzius Cell" })
+    .first();
+  await expect(matchingAsset).toBeVisible();
+  await matchingAsset.locator(".asset-card-image").click();
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+
+  const assetsTab = page.getByRole("tab", { name: "Assets", exact: true });
+  await assetsTab.click();
+  await expect(search).toHaveCount(0);
+  await assetsTab.click();
+
+  const reopenedSearch = page.getByPlaceholder("Search cells, proteins, equipment…");
+  await expect(reopenedSearch).toHaveValue("Cajal-Retzius Cell");
+  await expect(page.getByRole("button", { name: "All", exact: true })).toHaveClass(/active/);
+  await expect(
+    page.locator(".asset-card").filter({ hasText: "Cajal-Retzius Cell" }).first()
+  ).toBeVisible();
 });
 
 test("shows a minimal no-match state and preserves native page-text copying", async ({
@@ -3403,8 +3441,7 @@ test("exports an atomic SVG asset with its vector parts intact", async ({ page }
   expect(vectorObjects.length).toBeGreaterThan(2);
   expect(
     vectorObjects.some(
-      (part) =>
-        (typeof part.fill === "string" && part.fill !== "") || Array.isArray(part.path)
+      (part) => (typeof part.fill === "string" && part.fill !== "") || Array.isArray(part.path)
     )
   ).toBe(true);
 });

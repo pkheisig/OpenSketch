@@ -3329,6 +3329,30 @@ input[type="range"] {
   line-height: 1.65;
 }
 
+.about-sources {
+  margin: 17px 0;
+  color: #5f6f6c;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.about-sources strong {
+  color: var(--ink);
+  font-size: 12px;
+}
+
+.about-sources ul {
+  display: grid;
+  gap: 7px;
+  margin: 9px 0 0;
+  padding-left: 18px;
+}
+
+.about-sources a {
+  color: var(--teal-dark);
+  font-weight: 700;
+}
+
 .dialog-titlebar {
   display: flex;
   justify-content: space-between;
