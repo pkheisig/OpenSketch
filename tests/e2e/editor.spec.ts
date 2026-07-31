@@ -1,4 +1,5 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
+import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { PDFDocument } from "pdf-lib";
 
@@ -1289,57 +1290,69 @@ test("previews bundled variants and inserts nested-clip-path assets", async ({ p
   ).toHaveText("Variant 3");
 });
 
-test("parses every bundled NIH BioArt variant into editable objects", async ({
-  page,
-  browserName
-}) => {
-  test.skip(
-    browserName !== "chromium",
-    "The browser-independent asset corpus only needs one pass."
-  );
-  test.setTimeout(60_000);
-  const manifest = JSON.parse(
-    await readFile(
-      new URL("../../apps/web/src/generated/nih-bioart-manifest.json", import.meta.url),
-      "utf8"
-    )
-  ) as {
-    families: Array<{
-      title: string;
-      variants: Array<{ id: string; assetPath: string }>;
-    }>;
-  };
-  const variants = manifest.families.flatMap((family) =>
-    family.variants.map((variant) => ({ ...variant, family: family.title }))
-  );
-  await page.goto("/");
-  const failures = await page.evaluate(async (items) => {
-    const { loadEditableSvg } = await import("/OpenSketch/src/editor/svg.ts");
-    const failed: Array<{ id: string; family: string; error: string }> = [];
-    for (let offset = 0; offset < items.length; offset += 40) {
-      const results = await Promise.all(
-        items.slice(offset, offset + 40).map(async (item) => {
-          try {
-            const response = await fetch(`/OpenSketch${item.assetPath}`);
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const parsed = await loadEditableSvg(await response.text());
-            if (!parsed.objects.some(Boolean)) throw new Error("No editable objects");
-            return null;
-          } catch (reason) {
-            return { ...item, error: String(reason) };
-          }
-        })
-      );
-      failed.push(
-        ...results.filter((result): result is { id: string; family: string; error: string } =>
-          Boolean(result)
-        )
-      );
-    }
-    return failed;
-  }, variants);
+const bioArtManifest = JSON.parse(
+  readFileSync(
+    new URL("../../apps/web/src/generated/nih-bioart-manifest.json", import.meta.url),
+    "utf8"
+  )
+) as {
+  families: Array<{
+    title: string;
+    variants: Array<{ id: string; assetPath: string }>;
+  }>;
+};
+const bundledBioArtVariants = bioArtManifest.families.flatMap((family) =>
+  family.variants.map((variant) => ({ ...variant, family: family.title }))
+);
+const bioArtShardCount = 12;
+const bundledBioArtShards = Array.from({ length: bioArtShardCount }, (_, shardIndex) =>
+  bundledBioArtVariants.slice(
+    Math.ceil((bundledBioArtVariants.length * shardIndex) / bioArtShardCount),
+    Math.ceil((bundledBioArtVariants.length * (shardIndex + 1)) / bioArtShardCount)
+  )
+);
 
-  expect(failures).toEqual([]);
+test.describe("bundled NIH BioArt SVG compatibility", () => {
+  bundledBioArtShards.forEach((variants, shardIndex) => {
+    test(`parses every bundled NIH BioArt variant into editable objects (${shardIndex + 1}/${bioArtShardCount})`, async ({
+      page,
+      browserName
+    }) => {
+      test.skip(
+        browserName !== "chromium",
+        "The browser-independent asset corpus only needs one pass."
+      );
+      test.setTimeout(60_000);
+      await page.goto("/");
+      const failures = await page.evaluate(async (items) => {
+        const { loadEditableSvg } = await import("/OpenSketch/src/editor/svg.ts");
+        const failed: Array<{ id: string; family: string; error: string }> = [];
+        for (let offset = 0; offset < items.length; offset += 24) {
+          const results = await Promise.all(
+            items.slice(offset, offset + 24).map(async (item) => {
+              try {
+                const response = await fetch(`/OpenSketch${item.assetPath}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const parsed = await loadEditableSvg(await response.text());
+                if (!parsed.objects.some(Boolean)) throw new Error("No editable objects");
+                return null;
+              } catch (reason) {
+                return { ...item, error: String(reason) };
+              }
+            })
+          );
+          failed.push(
+            ...results.filter(
+              (result): result is { id: string; family: string; error: string } => Boolean(result)
+            )
+          );
+        }
+        return failed;
+      }, variants);
+
+      expect(failures).toEqual([]);
+    });
+  });
 });
 
 test("uses accessible in-app dropdowns with keyboard and outside-click behavior", async ({
