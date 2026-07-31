@@ -16574,36 +16574,6 @@
       ]
     },
     {
-      "familyId": "scidraw-caffeine-bad266e2",
-      "bioartEntryId": 1023302978,
-      "title": "Caffeine",
-      "description": "Editable scientific illustration from SciDraw.",
-      "category": "Food",
-      "keywords": [
-        "Caffeine",
-        "other",
-        "Food",
-        "SciDraw"
-      ],
-      "author": "John Chilton",
-      "credit": "John Chilton; SciDraw; CC-BY-4.0; DOI 10.5281/zenodo.3926340",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "SciDraw",
-      "sourcePage": "https://scidraw.io/drawing/caffeine-bad266e2",
-      "defaultVariantId": "scidraw-caffeine-bad266e2",
-      "variants": [
-        {
-          "id": "scidraw-caffeine-bad266e2",
-          "assetPath": "assets/scidraw/scidraw-caffeine-bad266e2.svg",
-          "thumbnailPath": "assets/scidraw-thumbnails/scidraw-caffeine-bad266e2.webp",
-          "localSha256": "866f16ce7aa642bef76fdc52f090ebff5bdcd7c69487fc4fa25918c0cc018f5a",
-          "width": 827,
-          "height": 749
-        }
-      ]
-    },
-    {
       "familyId": "bioicons-cake-ef9f9d4d",
       "bioartEntryId": 2251263444,
       "title": "Cake",

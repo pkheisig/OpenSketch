@@ -27,7 +27,7 @@ describe("open scientific-art collection", () => {
       family.sourceName?.startsWith("BioIcons")
     );
 
-    expect(sciDraw).toHaveLength(609);
+    expect(sciDraw).toHaveLength(608);
     expect(organisms).toHaveLength(71);
     expect(organisms.flatMap((family) => family.variants)).toHaveLength(142);
     expect(bioIcons).toHaveLength(2_827);
@@ -71,7 +71,8 @@ describe("open scientific-art collection", () => {
     ["Kinesin", "cell", "Proteins"],
     ["Pipette", "cell", "Equipment"],
     ["patch clamp", "cell", "Techniques & assays"],
-    ["Chlamydomonas reinhardtii", "cell", "Plants"]
+    ["Chlamydomonas reinhardtii", "cell", "Plants"],
+    ["Caffeine", "other", "Molecules"]
   ])("classifies %s independently of SciDraw's coarse %s bucket", (name, source, category) => {
     expect(categoryForSciDrawAsset({ name, category_slug: source })).toBe(category);
   });
@@ -117,6 +118,13 @@ describe("open scientific-art collection", () => {
     expect(cells).not.toContain("Candida albicans");
     expect(cells).not.toContain("Kinesin");
     expect(cells).not.toContain("Pipette");
+  });
+
+  it("does not bundle the invalid upstream caffeine SVG", async () => {
+    const manifest = await loadManifest();
+    expect(manifest.families.map((family) => family.familyId)).not.toContain(
+      "scidraw-caffeine-bad266e2"
+    );
   });
 
   it("exposes BioIcons oncology artwork in a dedicated cancer category", async () => {

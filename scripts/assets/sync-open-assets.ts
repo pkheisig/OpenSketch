@@ -43,6 +43,12 @@ interface SciDrawPage {
   results: SciDrawSummary[];
 }
 
+const EXCLUDED_SCIDRAW_SLUGS = new Set([
+  // The upstream file references empty embedded raster definitions, so neither
+  // browsers nor OpenSketch can render it as a usable SVG.
+  "caffeine-bad266e2"
+]);
+
 interface ImportFailure {
   source: string;
   title: string;
@@ -103,7 +109,8 @@ async function allSciDrawSummaries(): Promise<SciDrawSummary[]> {
     (drawing) =>
       drawing.is_vector &&
       drawing.image_type === "svg" &&
-      (drawing.license === "cc0" || drawing.license === "cc-by")
+      (drawing.license === "cc0" || drawing.license === "cc-by") &&
+      !EXCLUDED_SCIDRAW_SLUGS.has(drawing.slug)
   );
 }
 

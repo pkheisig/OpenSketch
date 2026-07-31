@@ -2940,6 +2940,26 @@ test("scrolls the complete symbols catalog using thumbnails instead of full SVG 
       element.dispatchEvent(new Event("scroll"));
     }, step / 16);
     await expect(page.locator(".asset-card").first()).toBeVisible();
+    await expect
+      .poll(() =>
+        page.locator(".asset-card:visible").evaluateAll((cards) =>
+          cards
+            .filter((card) => {
+              const list = card.closest(".asset-list");
+              if (!list) return false;
+              const cardBounds = card.getBoundingClientRect();
+              const listBounds = list.getBoundingClientRect();
+              const intersectsViewport =
+                cardBounds.bottom > listBounds.top && cardBounds.top < listBounds.bottom;
+              return (
+                intersectsViewport &&
+                card.querySelector("img")?.getAttribute("data-preview-ready") !== "true"
+              );
+            })
+            .map((card) => card.querySelector("strong")?.textContent ?? "Unknown asset")
+        )
+      )
+      .toEqual([]);
   }
 
   await expect(page.locator(".asset-card").last()).toBeVisible();

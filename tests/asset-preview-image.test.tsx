@@ -20,6 +20,8 @@ describe("asset preview images", () => {
 
     expect(image).not.toBeNull();
     expect(image).toHaveAttribute("src", "/assets/bioicons-thumbnails/cancer-cell.webp");
+    expect(image).toHaveAttribute("loading", "eager");
+    expect(image).toHaveAttribute("decoding", "async");
     expect(image).toHaveAttribute("data-preview-ready", "false");
     expect(fetchSpy).not.toHaveBeenCalled();
 
@@ -43,5 +45,28 @@ describe("asset preview images", () => {
 
     fireEvent.load(image!);
     expect(image).toHaveAttribute("data-preview-ready", "true");
+  });
+
+  it("marks a newly recycled virtual-list thumbnail ready after it loads", () => {
+    const view = render(
+      createElement(AssetPreviewImage, {
+        assetPath: "/assets/bioicons/first.svg",
+        fallbackPath: "/assets/bioicons-thumbnails/first.webp"
+      })
+    );
+    fireEvent.load(view.container.querySelector("img")!);
+
+    view.rerender(
+      createElement(AssetPreviewImage, {
+        assetPath: "/assets/bioicons/second.svg",
+        fallbackPath: "/assets/bioicons-thumbnails/second.webp"
+      })
+    );
+    const recycledImage = view.container.querySelector("img");
+    expect(recycledImage).toHaveAttribute("src", "/assets/bioicons-thumbnails/second.webp");
+    expect(recycledImage).toHaveAttribute("data-preview-ready", "false");
+
+    fireEvent.load(recycledImage!);
+    expect(recycledImage).toHaveAttribute("data-preview-ready", "true");
   });
 });

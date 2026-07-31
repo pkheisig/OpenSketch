@@ -835,6 +835,7 @@ function AssetsPanel({
               height={assetListHeight}
               itemCount={rows}
               itemSize={184}
+              overscanCount={8}
               width="100%"
             >
               {Row}

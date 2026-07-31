@@ -58,7 +58,7 @@ export function categoryForSciDrawAsset(drawing: SciDrawTaxonomyInput): string {
     return "Nucleic acids & genetics";
   }
   if (
-    /\b(?:molecule|lipid|bilayer|membrane|micelle|liposome|phospholipid|droplet|adenosine|alpha-linolenic acid|atp|c(?:a|g)mp|cellulose|cholesterol|fructose|ganglioside|glucose|gtp|haem|lactose|maltose|palmitic acid|pill capsule medicine|sucrose|triacylglyceride|urea|water)\b/.test(
+    /\b(?:molecule|lipid|bilayer|membrane|micelle|liposome|phospholipid|droplet|adenosine|alpha-linolenic acid|atp|c(?:a|g)mp|caffeine|cellulose|cholesterol|fructose|ganglioside|glucose|gtp|haem|lactose|maltose|palmitic acid|pill capsule medicine|sucrose|triacylglyceride|urea|water)\b/.test(
       title
     )
   ) {
@@ -107,7 +107,7 @@ export function categoryForSciDrawAsset(drawing: SciDrawTaxonomyInput): string {
   if (/\b(?:aedes|mosquito|fly|insect|arthropod|ant)\b/.test(title)) {
     return "Arthropods";
   }
-  if (/\b(?:apple|caffeine|coffee|food pellets?)\b/.test(title)) return "Food";
+  if (/\b(?:apple|coffee|food pellets?)\b/.test(title)) return "Food";
   if (/\b(?:arrows?|symbol|diagram|network|rnn|shape|scidraw (?:icon|logo))\b/.test(title)) {
     return "Symbols & diagrams";
   }

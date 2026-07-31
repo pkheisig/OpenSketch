@@ -128,25 +128,23 @@ function BundledAssetPreview({
       className={className}
       src={current.source}
       alt=""
-      loading="lazy"
+      loading="eager"
+      decoding="async"
       draggable={false}
       data-preview-ready={current.ready ? "true" : "false"}
-      onLoad={() =>
-        setPreview((state) => (state.key === preferredSource ? { ...state, ready: true } : state))
-      }
-      onError={() =>
-        setPreview((state) => {
-          if (state.key !== preferredSource || state.triedAsset) {
-            return { ...state, ready: true };
-          }
-          return {
-            key: preferredSource,
-            source: assetPath,
-            ready: false,
-            triedAsset: true
-          };
-        })
-      }
+      onLoad={() => setPreview({ ...current, ready: true })}
+      onError={() => {
+        if (current.triedAsset) {
+          setPreview({ ...current, ready: true });
+          return;
+        }
+        setPreview({
+          key: preferredSource,
+          source: assetPath,
+          ready: false,
+          triedAsset: true
+        });
+      }}
     />
   );
 }
