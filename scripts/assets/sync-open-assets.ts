@@ -5,7 +5,11 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import Piscina from "piscina";
-import type { AssetFamily, AssetLicense, AssetManifest } from "../../packages/editor-core/src/types";
+import type {
+  AssetFamily,
+  AssetLicense,
+  AssetManifest
+} from "../../packages/editor-core/src/types";
 import {
   fetchWithRetry,
   mapLimit,
@@ -14,21 +18,16 @@ import {
   writeJsonAtomic,
   writeTextAtomic
 } from "./io";
+import { categoryForOrganismAsset, categoryForSciDrawAsset } from "./open-taxonomy";
 import { ROOT } from "./paths";
 
 const execFileAsync = promisify(execFile);
-const GENERATED_MANIFEST = path.join(
-  ROOT,
-  "apps/web/src/generated/open-assets-manifest.json"
-);
+const GENERATED_MANIFEST = path.join(ROOT, "apps/web/src/generated/open-assets-manifest.json");
 const IMPORT_REPORT = path.join(ROOT, "data/open-assets-import-report.json");
 const SCIDRAW_ASSET_DIR = path.join(ROOT, "apps/web/public/assets/scidraw");
 const SCIDRAW_THUMB_DIR = path.join(ROOT, "apps/web/public/assets/scidraw-thumbnails");
 const ORGANISM_ASSET_DIR = path.join(ROOT, "apps/web/public/assets/organism-library");
-const ORGANISM_THUMB_DIR = path.join(
-  ROOT,
-  "apps/web/public/assets/organism-library-thumbnails"
-);
+const ORGANISM_THUMB_DIR = path.join(ROOT, "apps/web/public/assets/organism-library-thumbnails");
 const ORGANISM_RECORD_URL = "https://zenodo.org/api/records/17203578";
 const ORGANISM_ZIP_URL =
   "https://zenodo.org/api/records/17203578/files/arcadia-organism-library-v1.0.zip/content";
@@ -121,78 +120,6 @@ function dimensions(svg: string): { width: number; height: number } {
   return { width: Math.abs(values[2]), height: Math.abs(values[3]) };
 }
 
-function categoryForSciDraw(drawing: SciDrawSummary): string {
-  const text = `${drawing.name} ${drawing.category_slug}`.toLowerCase();
-  if (/\b(?:virus|virion|phage|sars|hiv|influenza)\b/.test(text)) return "Viruses";
-  if (/\b(?:bacteri|bacillus|coccus|e\\. ?coli)\b/.test(text)) return "Bacteria";
-  if (/\b(?:protein|enzyme|antibody|receptor|channel|kinase|tubulin|actin)\b/.test(text)) {
-    return "Proteins";
-  }
-  if (/\b(?:dna|rna|nucleic|chromosome|helix|nucleotide|gene|genome)\b/.test(text)) {
-    return "Nucleic acids & genetics";
-  }
-  if (/\b(?:molecule|lipid|atp|glucose|chemical|metabolite|amino acid)\b/.test(text)) {
-    return "Molecules";
-  }
-  if (
-    /\b(?:cell|neuron|astrocyte|microglia|macrophage|lymphocyte|platelet|organelle|mitochondri|nucleus)\b/.test(
-      text
-    )
-  ) {
-    return "Cells";
-  }
-  if (
-    /\b(?:tube|pipet|syringe|flask|beaker|dish|plate|microscope|centrifuge|vial|bottle|rack|instrument|equipment)\b/.test(
-      text
-    )
-  ) {
-    return "Equipment";
-  }
-  if (/\b(?:pathway|cycle|process|signaling|division|mitosis|transport)\b/.test(text)) {
-    return "Cellular processes";
-  }
-  if (/\b(?:brain|heart|lung|liver|kidney|bone|muscle|organ|anatom|skin|eye)\b/.test(text)) {
-    return "Anatomy";
-  }
-  if (/\b(?:drosophila|mosquito|fly|insect|arthropod)\b/.test(text)) return "Arthropods";
-  if (/\b(?:plant|leaf|flower|root|arabidopsis)\b/.test(text)) return "Plants";
-  if (drawing.category_slug === "human") return "People";
-  if (["mouse", "rat", "fish", "bird", "drosophila"].includes(drawing.category_slug)) {
-    return drawing.category_slug === "drosophila" ? "Arthropods" : "Animals";
-  }
-  if (/\b(?:arrow|symbol|diagram|shape)\b/.test(text)) return "Symbols & diagrams";
-  return "Other";
-}
-
-function categoryForOrganism(title: string): string {
-  const text = title.toLowerCase();
-  if (/\b(?:virus|sars-cov-2|influenza|immunodeficiency)\b/.test(text)) return "Viruses";
-  if (/\bescherichia coli\b/.test(text)) return "Bacteria";
-  if (
-    /\b(?:plasmodium|schistosoma|giardia|entamoeba|perkinsus|bodo saltans|naegleria)\b/.test(
-      text
-    )
-  ) {
-    return "Parasites";
-  }
-  if (/\b(?:aedes|drosophila)\b/.test(text)) return "Arthropods";
-  if (
-    /\b(?:arabidopsis|chlamydomonas|chlorella|bathycoccus|micromonas|nannochloropsis|ostreococcus|phaeodactylum|porphyra|symbiodinium|tetraselmis|volvox|isochrysis)\b/.test(
-      text
-    )
-  ) {
-    return "Plants";
-  }
-  if (
-    /\b(?:agaricus|aspergillus|candida|neurospora|penicillium|saccharomyces|schizosaccharomyces|ustilago|yarrowia)\b/.test(
-      text
-    )
-  ) {
-    return "Other";
-  }
-  return "Animals";
-}
-
 async function fetchJson<T>(url: string): Promise<T> {
   return (await (await fetchWithRetry(httpsUrl(url))).json()) as T;
 }
@@ -218,7 +145,13 @@ async function writeAsset(
   assetId: string,
   assetDirectory: string,
   thumbnailDirectory: string
-): Promise<{ assetPath: string; thumbnailPath: string; localSha256: string; width: number; height: number }> {
+): Promise<{
+  assetPath: string;
+  thumbnailPath: string;
+  localSha256: string;
+  width: number;
+  height: number;
+}> {
   const sanitized = (await sanitizerPool.run(
     {
       source: ensureViewBox(source),
@@ -249,13 +182,7 @@ async function importSciDraw(failures: ImportFailure[]): Promise<AssetFamily[]> 
   const families = await mapLimit(drawings, 6, async (drawing) => {
     try {
       const assetId = `scidraw-${slugify(drawing.slug)}`;
-      const response = await rateLimitedFetch(
-        httpsUrl(drawing.image_url),
-        {},
-        180,
-        3,
-        20_000
-      );
+      const response = await rateLimitedFetch(httpsUrl(drawing.image_url), {}, 180, 3, 20_000);
       const stored = await writeAsset(
         await response.text(),
         assetId,
@@ -263,14 +190,13 @@ async function importSciDraw(failures: ImportFailure[]): Promise<AssetFamily[]> 
         SCIDRAW_THUMB_DIR
       );
       const author = drawing.primary_author.full_name;
-      const license: AssetLicense =
-        drawing.license === "cc0" ? "CC0-1.0" : "CC-BY-4.0";
+      const license: AssetLicense = drawing.license === "cc0" ? "CC0-1.0" : "CC-BY-4.0";
       const licenseUrl =
         drawing.license === "cc0"
           ? "https://creativecommons.org/publicdomain/zero/1.0/"
           : "https://creativecommons.org/licenses/by/4.0/";
       const sourcePage = `https://scidraw.io/drawing/${drawing.slug}`;
-      const category = categoryForSciDraw(drawing);
+      const category = categoryForSciDrawAsset(drawing);
       return {
         familyId: assetId,
         bioartEntryId: legacyNumericId(drawing.id, 1_000_000_000),
@@ -279,9 +205,7 @@ async function importSciDraw(failures: ImportFailure[]): Promise<AssetFamily[]> 
         category,
         keywords: [drawing.name, drawing.category_slug, category, "SciDraw"],
         author,
-        credit: `${author}; SciDraw; ${license}${
-          drawing.doi ? `; DOI ${drawing.doi}` : ""
-        }`,
+        credit: `${author}; SciDraw; ${license}${drawing.doi ? `; DOI ${drawing.doi}` : ""}`,
         license,
         licenseUrl,
         sourceName: "SciDraw",
@@ -298,9 +222,7 @@ async function importSciDraw(failures: ImportFailure[]): Promise<AssetFamily[]> 
       return null;
     }
   });
-  return families.filter(
-    (family): family is NonNullable<typeof family> => family !== null
-  );
+  return families.filter((family): family is NonNullable<typeof family> => family !== null);
 }
 
 async function importOrganismLibrary(failures: ImportFailure[]): Promise<AssetFamily[]> {
@@ -337,59 +259,65 @@ async function importOrganismLibrary(failures: ImportFailure[]): Promise<AssetFa
       for (const file of files) {
         const base = file.replace(new RegExp(`${style.suffix}\\.svg$`, "i"), "");
         const variants = grouped.get(base) ?? [];
-        variants.push({ name: style.name, path: path.join(style.directory, file), suffix: style.suffix });
+        variants.push({
+          name: style.name,
+          path: path.join(style.directory, file),
+          suffix: style.suffix
+        });
         grouped.set(base, variants);
       }
     }
     return (
-      await mapLimit([...grouped.entries()].sort(([a], [b]) => a.localeCompare(b)), 6, async ([base, variants]) => {
-        const title = readableTitle(base);
-        try {
-          const familyId = `organism-${slugify(base)}`;
-          const storedVariants = [];
-          for (const variant of variants.sort((a, b) => a.name.localeCompare(b.name))) {
-            const variantId = `${familyId}${variant.suffix}`;
-            const stored = await writeAsset(
-              await readFile(variant.path, "utf8"),
-              variantId,
-              ORGANISM_ASSET_DIR,
-              ORGANISM_THUMB_DIR
-            );
-            storedVariants.push({ id: variantId, ...stored });
+      await mapLimit(
+        [...grouped.entries()].sort(([a], [b]) => a.localeCompare(b)),
+        6,
+        async ([base, variants]) => {
+          const title = readableTitle(base);
+          try {
+            const familyId = `organism-${slugify(base)}`;
+            const storedVariants = [];
+            for (const variant of variants.sort((a, b) => a.name.localeCompare(b.name))) {
+              const variantId = `${familyId}${variant.suffix}`;
+              const stored = await writeAsset(
+                await readFile(variant.path, "utf8"),
+                variantId,
+                ORGANISM_ASSET_DIR,
+                ORGANISM_THUMB_DIR
+              );
+              storedVariants.push({ id: variantId, ...stored });
+            }
+            const preferred =
+              storedVariants.find((variant) => variant.id.endsWith("-tricolorstroke")) ??
+              storedVariants[0];
+            const category = categoryForOrganismAsset(title);
+            return {
+              familyId,
+              bioartEntryId: legacyNumericId(base, 1_500_000_000),
+              title,
+              description: "Editable organism illustration from the Arcadia Science library.",
+              category,
+              keywords: [title, category, "organism", "Arcadia Science"],
+              author: "Arcadia Science",
+              credit:
+                "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
+              license: "CC0-1.0",
+              licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
+              sourceName: "Arcadia Science Free organism illustration library",
+              sourcePage: "https://doi.org/10.5281/zenodo.17203578",
+              defaultVariantId: preferred.id,
+              variants: storedVariants
+            } satisfies AssetFamily;
+          } catch (error) {
+            failures.push({
+              source: "Arcadia Science",
+              title,
+              error: errorMessage(error)
+            });
+            return null;
           }
-          const preferred =
-            storedVariants.find((variant) => variant.id.endsWith("-tricolorstroke")) ??
-            storedVariants[0];
-          const category = categoryForOrganism(title);
-          return {
-            familyId,
-            bioartEntryId: legacyNumericId(base, 1_500_000_000),
-            title,
-            description: "Editable organism illustration from the Arcadia Science library.",
-            category,
-            keywords: [title, category, "organism", "Arcadia Science"],
-            author: "Arcadia Science",
-            credit:
-              "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
-            license: "CC0-1.0",
-            licenseUrl: "https://creativecommons.org/publicdomain/zero/1.0/",
-            sourceName: "Arcadia Science Free organism illustration library",
-            sourcePage: "https://doi.org/10.5281/zenodo.17203578",
-            defaultVariantId: preferred.id,
-            variants: storedVariants
-          } satisfies AssetFamily;
-        } catch (error) {
-          failures.push({
-            source: "Arcadia Science",
-            title,
-            error: errorMessage(error)
-          });
-          return null;
         }
-      })
-    ).filter(
-      (family): family is NonNullable<typeof family> => family !== null
-    );
+      )
+    ).filter((family): family is NonNullable<typeof family> => family !== null);
   } finally {
     await rm(temporaryDirectory, { recursive: true, force: true });
   }
@@ -424,10 +352,8 @@ async function main(): Promise<void> {
       sciDraw: {
         importedFamilies: sciDrawFamilies.length,
         licenses: {
-          "CC-BY-4.0": sciDrawFamilies.filter((family) => family.license === "CC-BY-4.0")
-            .length,
-          "CC0-1.0": sciDrawFamilies.filter((family) => family.license === "CC0-1.0")
-            .length
+          "CC-BY-4.0": sciDrawFamilies.filter((family) => family.license === "CC-BY-4.0").length,
+          "CC0-1.0": sciDrawFamilies.filter((family) => family.license === "CC0-1.0").length
         }
       },
       organismLibrary: {

@@ -2,15 +2,13 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { describe, expect, it } from "vitest";
 import type { AssetManifest } from "../packages/editor-core/src/types";
+import { categoryForOrganismAsset, categoryForSciDrawAsset } from "../scripts/assets/open-taxonomy";
 
 const root = path.resolve(import.meta.dirname, "..");
 
 async function loadManifest(): Promise<AssetManifest> {
   return JSON.parse(
-    await readFile(
-      path.join(root, "apps/web/src/generated/open-assets-manifest.json"),
-      "utf8"
-    )
+    await readFile(path.join(root, "apps/web/src/generated/open-assets-manifest.json"), "utf8")
   ) as AssetManifest;
 }
 
@@ -37,9 +35,7 @@ describe("open scientific-art collection", () => {
       expect(family.credit).not.toBe("");
       expect(family.sourcePage).toMatch(/^https:\/\//);
       expect(family.licenseUrl).toMatch(/^https:\/\//);
-      expect(family.variants.some((variant) => variant.id === family.defaultVariantId)).toBe(
-        true
-      );
+      expect(family.variants.some((variant) => variant.id === family.defaultVariantId)).toBe(true);
 
       for (const variant of family.variants) {
         expect(variant.assetPath).not.toMatch(/^https?:/);
@@ -48,5 +44,45 @@ describe("open scientific-art collection", () => {
         variantIds.add(variant.id);
       }
     }
+  });
+
+  it.each([
+    ["Chicken retina", "cell", "Tissues & histology"],
+    ["Chameleon retina", "cell", "Tissues & histology"],
+    ["Adenovirus", "cell", "Viruses"],
+    ["Escherichia coli", "cell", "Bacteria"],
+    ["Candida albicans", "cell", "Fungi & protists"],
+    ["Kinesin", "cell", "Proteins"],
+    ["Pipette", "cell", "Equipment"],
+    ["patch clamp", "cell", "Techniques & assays"],
+    ["Chlamydomonas reinhardtii", "cell", "Plants"]
+  ])("classifies %s independently of SciDraw's coarse %s bucket", (name, source, category) => {
+    expect(categoryForSciDrawAsset({ name, category_slug: source })).toBe(category);
+  });
+
+  it("keeps the generated catalog aligned with the deterministic taxonomy", async () => {
+    const manifest = await loadManifest();
+    for (const family of manifest.families) {
+      const expected = family.sourceName?.startsWith("Arcadia Science")
+        ? categoryForOrganismAsset(family.title)
+        : categoryForSciDrawAsset({
+            name: family.title,
+            category_slug: family.keywords[1] ?? ""
+          });
+      expect(family.category, family.title).toBe(expected);
+    }
+  });
+
+  it("does not misfile tissue, pathogens, fungi, proteins, or equipment as cells", async () => {
+    const manifest = await loadManifest();
+    const cells = manifest.families
+      .filter((family) => family.category === "Cells")
+      .map((family) => family.title);
+    expect(cells).not.toContain("Chicken retina");
+    expect(cells).not.toContain("Adenovirus");
+    expect(cells).not.toContain("Escherichia coli");
+    expect(cells).not.toContain("Candida albicans");
+    expect(cells).not.toContain("Kinesin");
+    expect(cells).not.toContain("Pipette");
   });
 });

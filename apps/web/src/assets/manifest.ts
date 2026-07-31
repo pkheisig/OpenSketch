@@ -17,13 +17,13 @@ export const assetManifest: AssetManifest = {
     ...(openAssetsManifest as AssetManifest).families,
     ...(manifest as AssetManifest).families
   ].map((family) => ({
-      ...family,
-      variants: family.variants.map((variant) => ({
-        ...variant,
-        assetPath: resolveBundledAssetPath(variant.assetPath),
-        thumbnailPath: resolveBundledAssetPath(variant.thumbnailPath)
-      }))
+    ...family,
+    variants: family.variants.map((variant) => ({
+      ...variant,
+      assetPath: resolveBundledAssetPath(variant.assetPath),
+      thumbnailPath: resolveBundledAssetPath(variant.thumbnailPath)
     }))
+  }))
 };
 export const ASSET_CATEGORIES = [
   "All",
@@ -32,10 +32,13 @@ export const ASSET_CATEGORIES = [
   "Molecules",
   "Nucleic acids & genetics",
   "Cellular processes",
+  "Tissues & histology",
   "Equipment",
+  "Techniques & assays",
   "Bacteria",
   "Viruses",
   "Parasites",
+  "Fungi & protists",
   "Anatomy",
   "People",
   "Animals",

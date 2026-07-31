@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-07-30T20:50:24.543Z",
+  "generatedAt": "2026-07-31T08:11:29.745Z",
   "source": "NIAID NIH BioArt and Wikimedia Commons",
   "families": [
     {
@@ -465,7 +465,6 @@
       "category": "Cells",
       "keywords": [
         "Activated Neutrophil",
-        "Cells",
         "activated",
         "neutrophil",
         "body",
@@ -642,7 +641,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Unisex Icon",
-        "Symbols & diagrams",
         "unisex",
         "icon",
         "body",
@@ -784,7 +782,7 @@
       "bioartEntryId": 14,
       "title": "Alveoli",
       "description": "body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Alveoli",
         "AT1",
@@ -817,7 +815,7 @@
         "immunity",
         "innate",
         "lungs",
-        "Cells"
+        "Tissues & histology"
       ],
       "author": "NIAID Visual & Medical Arts",
       "credit": "Courtesy of NIAID",
@@ -842,10 +840,9 @@
       "bioartEntryId": 15,
       "title": "Alveoli",
       "description": "body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Alveoli",
-        "Cells",
         "AT1",
         "AT2",
         "Color",
@@ -876,7 +873,7 @@
         "flat",
         "immunity",
         "lungs",
-        "Cells"
+        "Tissues & histology"
       ],
       "author": "NIAID Visual & Medical Arts",
       "credit": "Courtesy of NIAID",
@@ -1549,7 +1546,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Arrow",
-        "Symbols & diagrams",
         "arrow",
         "body",
         "color",
@@ -1675,7 +1671,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Arrow",
-        "Symbols & diagrams",
         "arrow",
         "body",
         "color",
@@ -1729,7 +1724,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Arrow",
-        "Symbols & diagrams",
         "arrow",
         "body",
         "color",
@@ -1855,7 +1849,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Arrow",
-        "Symbols & diagrams",
         "arrow",
         "body",
         "color",
@@ -1963,7 +1956,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Arrow",
-        "Symbols & diagrams",
         "arrow",
         "body",
         "color",
@@ -2089,7 +2081,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Arrow",
-        "Symbols & diagrams",
         "arrow",
         "body",
         "color",
@@ -2215,7 +2206,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Arrow",
-        "Symbols & diagrams",
         "arrow",
         "body",
         "color",
@@ -2341,7 +2331,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Arrow",
-        "Symbols & diagrams",
         "arrow",
         "body",
         "color",
@@ -2467,7 +2456,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Arrow",
-        "Symbols & diagrams",
         "arrow",
         "body",
         "color",
@@ -2593,7 +2581,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Arrow",
-        "Symbols & diagrams",
         "arrow",
         "body",
         "color",
@@ -2719,7 +2706,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Arrow",
-        "Symbols & diagrams",
         "arrow",
         "body",
         "color",
@@ -2845,7 +2831,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Arrow",
-        "Symbols & diagrams",
         "arrow",
         "body",
         "color",
@@ -3235,7 +3220,6 @@
       "category": "Cells",
       "keywords": [
         "Astrocyte",
-        "Cells",
         "astrocyte",
         "body",
         "color",
@@ -3801,7 +3785,6 @@
       "category": "Cells",
       "keywords": [
         "Basophil",
-        "Cells",
         "basophil",
         "body",
         "color",
@@ -3864,7 +3847,6 @@
       "category": "Cells",
       "keywords": [
         "Basophil",
-        "Cells",
         "basophil",
         "body",
         "color",
@@ -4053,7 +4035,6 @@
       "category": "Cells",
       "keywords": [
         "BCell",
-        "Cells",
         "bcell",
         "body",
         "color",
@@ -4945,7 +4926,6 @@
       "category": "Cells",
       "keywords": [
         "Cajal-Retzius Cell",
-        "Cells",
         "brain",
         "Cajal",
         "cell",
@@ -5220,7 +5200,6 @@
       "category": "Cells",
       "keywords": [
         "CD8 TCell",
-        "Cells",
         "cd8",
         "tcell",
         "body",
@@ -5391,7 +5370,6 @@
       "category": "Cells",
       "keywords": [
         "Cell Death",
-        "Cells",
         "Apoptosis",
         "cell",
         "Cell death",
@@ -5445,7 +5423,6 @@
       "category": "Cells",
       "keywords": [
         "Cell Nucleus",
-        "Cells",
         "cell",
         "nucleus",
         "body",
@@ -5867,7 +5844,6 @@
       "category": "Nucleic acids & genetics",
       "keywords": [
         "Chromatin",
-        "Nucleic acids & genetics",
         "chromatin",
         "body",
         "color",
@@ -6057,7 +6033,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Cityscape",
-        "Symbols & diagrams",
         "cityscape",
         "body",
         "color",
@@ -6111,7 +6086,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Cleavage",
-        "Symbols & diagrams",
         "biology",
         "cleavage",
         "cut",
@@ -6165,7 +6139,6 @@
       "category": "Cells",
       "keywords": [
         "Common Dendritic Cell Progenitor Cell",
-        "Cells",
         "common",
         "dendritic",
         "cell",
@@ -6213,7 +6186,6 @@
       "category": "Cells",
       "keywords": [
         "Common Lymphoid Progenitor Cell",
-        "Cells",
         "common",
         "lymphoid",
         "progenitor",
@@ -6261,7 +6233,6 @@
       "category": "Cells",
       "keywords": [
         "Common Myeloid Progenitor Cell",
-        "Cells",
         "common",
         "myeloid",
         "progenitor",
@@ -6931,7 +6902,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Curved Arrow",
-        "Symbols & diagrams",
         "curved",
         "arrow",
         "body",
@@ -7361,7 +7331,6 @@
       "category": "Cells",
       "keywords": [
         "Damaged Mitochondria",
-        "Cells",
         "damaged",
         "mitochondria",
         "body",
@@ -7976,7 +7945,6 @@
       "category": "Cells",
       "keywords": [
         "Dendritic Cell",
-        "Cells",
         "dendritic",
         "cell",
         "body",
@@ -8103,7 +8071,6 @@
       "category": "Cells",
       "keywords": [
         "Dendritic Cell",
-        "Cells",
         "dendritic",
         "cell",
         "body",
@@ -8230,7 +8197,6 @@
       "category": "Cells",
       "keywords": [
         "Dendritic Cell",
-        "Cells",
         "dendritic",
         "cell",
         "body",
@@ -8366,7 +8332,6 @@
       "category": "Cells",
       "keywords": [
         "Dendritic Cell",
-        "Cells",
         "Cells and Organelles",
         "dendritic",
         "dentrite",
@@ -8425,7 +8390,6 @@
       "category": "Cells",
       "keywords": [
         "Dendritic Cellboundto TRegs",
-        "Cells",
         "dendritic",
         "cellboundto",
         "tregs",
@@ -8472,7 +8436,6 @@
       "category": "Cells",
       "keywords": [
         "Dentritic Cell",
-        "Cells",
         "dentritic",
         "cell",
         "body",
@@ -8608,7 +8571,6 @@
       "category": "Nucleic acids & genetics",
       "keywords": [
         "Diploid Chromosome",
-        "Nucleic acids & genetics",
         "diploid",
         "chromosome",
         "body",
@@ -8735,7 +8697,6 @@
       "category": "Nucleic acids & genetics",
       "keywords": [
         "Diploid Chromosome",
-        "Nucleic acids & genetics",
         "diploid",
         "chromosome",
         "body",
@@ -8880,7 +8841,6 @@
       "category": "Nucleic acids & genetics",
       "keywords": [
         "Diploid Chromosome Genes Highlighted",
-        "Nucleic acids & genetics",
         "diploid",
         "chromosome",
         "genes",
@@ -8928,7 +8888,6 @@
       "category": "Nucleic acids & genetics",
       "keywords": [
         "Diploid Chromosomewith Barr Body",
-        "Nucleic acids & genetics",
         "diploid",
         "chromosomewith",
         "barr",
@@ -9026,7 +8985,6 @@
       "category": "Cells",
       "keywords": [
         "Dividing B Cell",
-        "Cells",
         "dividing",
         "cell",
         "body",
@@ -9287,7 +9245,6 @@
       "category": "Nucleic acids & genetics",
       "keywords": [
         "DNA",
-        "Nucleic acids & genetics",
         "dna",
         "body",
         "color",
@@ -9413,7 +9370,6 @@
       "category": "Nucleic acids & genetics",
       "keywords": [
         "DNA",
-        "Nucleic acids & genetics",
         "dna",
         "body",
         "color",
@@ -9539,7 +9495,6 @@
       "category": "Nucleic acids & genetics",
       "keywords": [
         "DNA",
-        "Nucleic acids & genetics",
         "dna",
         "body",
         "color",
@@ -9994,7 +9949,6 @@
       "category": "Cells",
       "keywords": [
         "Dying Neutrophil",
-        "Cells",
         "cell",
         "Cells and Organelles",
         "chromatin",
@@ -10148,7 +10102,6 @@
       "category": "Cells",
       "keywords": [
         "Eosinophil",
-        "Cells",
         "eosinophil",
         "body",
         "color",
@@ -10283,7 +10236,6 @@
       "category": "Cells",
       "keywords": [
         "Eosinophil",
-        "Cells",
         "eosinophil",
         "body",
         "color",
@@ -10418,7 +10370,6 @@
       "category": "Cells",
       "keywords": [
         "Eosinophil",
-        "Cells",
         "Cells and Organelles",
         "eosinophil",
         "Flat",
@@ -10899,7 +10850,6 @@
       "category": "Cells",
       "keywords": [
         "Fertilized Egg",
-        "Cells",
         "fertilized",
         "egg",
         "body",
@@ -11026,7 +10976,6 @@
       "category": "Cells",
       "keywords": [
         "Fibroblast",
-        "Cells",
         "fibroblast",
         "body",
         "color",
@@ -11170,7 +11119,6 @@
       "category": "Cells",
       "keywords": [
         "Fibroblast",
-        "Cells",
         "fibroblast",
         "body",
         "color",
@@ -11314,7 +11262,6 @@
       "category": "Cells",
       "keywords": [
         "Fibroblast",
-        "Cells",
         "fibroblast",
         "body",
         "color",
@@ -11672,7 +11619,6 @@
       "category": "Equipment",
       "keywords": [
         "Flow Cytometer",
-        "Cells",
         "Cytometer",
         "Cytometry",
         "equipment",
@@ -12124,7 +12070,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Funnel diagram",
-        "Symbols & diagrams",
         "biology",
         "diagram",
         "figure",
@@ -12275,7 +12220,6 @@
       "category": "Nucleic acids & genetics",
       "keywords": [
         "Gene Mutation",
-        "Nucleic acids & genetics",
         "gene",
         "mutation",
         "body",
@@ -12321,7 +12265,6 @@
       "category": "Cells",
       "keywords": [
         "Generic Cells",
-        "Cells",
         "generic",
         "cells",
         "body",
@@ -12457,7 +12400,6 @@
       "category": "Cells",
       "keywords": [
         "Generic Cells",
-        "Cells",
         "generic",
         "cells",
         "body",
@@ -12593,7 +12535,6 @@
       "category": "Cells",
       "keywords": [
         "Generic Immune Cell",
-        "Cells",
         "generic",
         "immune",
         "cell",
@@ -13509,7 +13450,6 @@
       "category": "Nucleic acids & genetics",
       "keywords": [
         "Haploid Chromosome",
-        "Nucleic acids & genetics",
         "haploid",
         "chromosome",
         "body",
@@ -13636,7 +13576,6 @@
       "category": "Nucleic acids & genetics",
       "keywords": [
         "Haploid Chromosome",
-        "Nucleic acids & genetics",
         "haploid",
         "chromosome",
         "body",
@@ -13889,7 +13828,6 @@
       "category": "Cells",
       "keywords": [
         "Healthy neuron",
-        "Cells",
         "brain",
         "cell",
         "dendrite",
@@ -13940,7 +13878,6 @@
       "category": "Cells",
       "keywords": [
         "HEK 293 Cells",
-        "Cells",
         "hek",
         "293",
         "cells",
@@ -13987,7 +13924,6 @@
       "category": "Cells",
       "keywords": [
         "Hematopoietic Stem Cell",
-        "Cells",
         "hematopoietic",
         "stem",
         "cell",
@@ -14034,7 +13970,6 @@
       "category": "Cells",
       "keywords": [
         "Hematopoietic Stem Cell",
-        "Cells",
         "hematopoietic",
         "stem",
         "cell",
@@ -14081,7 +14016,6 @@
       "category": "Cells",
       "keywords": [
         "Hematopoietic Stem Cell",
-        "Cells",
         "hematopoietic",
         "stem",
         "cell",
@@ -14128,7 +14062,6 @@
       "category": "Cells",
       "keywords": [
         "Hepatocyte",
-        "Cells",
         "hepatocyte",
         "body",
         "color",
@@ -14173,7 +14106,6 @@
       "category": "Cells",
       "keywords": [
         "Hepatocyte",
-        "Cells",
         "hepatocyte",
         "body",
         "color",
@@ -14218,7 +14150,6 @@
       "category": "Nucleic acids & genetics",
       "keywords": [
         "Heterozygous Alleles",
-        "Nucleic acids & genetics",
         "Alleles",
         "Cells and Organelles",
         "chromosome",
@@ -14272,7 +14203,6 @@
       "category": "Nucleic acids & genetics",
       "keywords": [
         "Homozygous Alleles",
-        "Nucleic acids & genetics",
         "homozygous",
         "alleles",
         "body",
@@ -14556,7 +14486,6 @@
       "category": "Cells",
       "keywords": [
         "Human Blastocyst",
-        "Cells",
         "human",
         "blastocyst",
         "body",
@@ -14683,7 +14612,6 @@
       "category": "Cells",
       "keywords": [
         "Human Cone Cell",
-        "Cells",
         "human",
         "cone",
         "cell",
@@ -14820,7 +14748,6 @@
       "category": "Cells",
       "keywords": [
         "Human Cone Cells",
-        "Cells",
         "human",
         "cone",
         "cells",
@@ -15012,7 +14939,6 @@
       "category": "Cells",
       "keywords": [
         "Human Egg",
-        "Cells",
         "human",
         "egg",
         "body",
@@ -16488,7 +16414,6 @@
       "category": "Cells",
       "keywords": [
         "Human Sperm",
-        "Cells",
         "human",
         "sperm",
         "body",
@@ -16615,7 +16540,6 @@
       "category": "Cells",
       "keywords": [
         "Human Sperm",
-        "Cells",
         "human",
         "sperm",
         "body",
@@ -17142,7 +17066,6 @@
       "category": "Cells",
       "keywords": [
         "Immune Cell",
-        "Cells",
         "immune",
         "cell",
         "body",
@@ -17278,7 +17201,6 @@
       "category": "Cells",
       "keywords": [
         "Immune Cells",
-        "Cells",
         "B cells",
         "Basophils",
         "bcell",
@@ -17476,7 +17398,6 @@
       "category": "Cells",
       "keywords": [
         "Intermediate Progenitor Cell",
-        "Cells",
         "brain",
         "cell",
         "Cells and Organelles",
@@ -18924,7 +18845,6 @@
       "category": "Cells",
       "keywords": [
         "Langerhans Cell",
-        "Cells",
         "biology",
         "cell",
         "Cells and Organelles",
@@ -18982,7 +18902,6 @@
       "category": "Cells",
       "keywords": [
         "Langerhans Cell",
-        "Cells",
         "biology",
         "cell",
         "Cells and Organelles",
@@ -19086,7 +19005,6 @@
       "category": "Parasites",
       "keywords": [
         "Leishmania Amastigote",
-        "Parasites",
         "Amastigote",
         "Intracellular parasite",
         "Leishmania",
@@ -19145,7 +19063,6 @@
       "category": "Parasites",
       "keywords": [
         "Leishmania Amastigote",
-        "Parasites",
         "Amastigote",
         "Intracellular parasite",
         "Leishmania",
@@ -19204,7 +19121,6 @@
       "category": "Parasites",
       "keywords": [
         "Leishmania Haptomonad",
-        "Parasites",
         "Enigmatic stage in the life cycle of Leishmania",
         "Haptomonad",
         "Intracellular parasite",
@@ -19263,7 +19179,6 @@
       "category": "Parasites",
       "keywords": [
         "Leishmania Leptomonad",
-        "Parasites",
         "Flagellated",
         "Intracellular parasite",
         "Leishmania",
@@ -19322,7 +19237,6 @@
       "category": "Parasites",
       "keywords": [
         "Leishmania Metacyclic",
-        "Parasites",
         "Intracellular parasite",
         "Leishmania",
         "Leishmania metacyclic",
@@ -19379,7 +19293,6 @@
       "category": "Parasites",
       "keywords": [
         "Leishmania Metacyclic",
-        "Parasites",
         "Intracellular parasite",
         "Leishmania",
         "Leishmania metacyclic",
@@ -19436,7 +19349,6 @@
       "category": "Parasites",
       "keywords": [
         "Leishmania Metacyclic",
-        "Parasites",
         "Intracellular parasite",
         "Leishmania",
         "Leishmania metacyclic",
@@ -19493,7 +19405,6 @@
       "category": "Parasites",
       "keywords": [
         "Leishmania Nectomonad",
-        "Parasites",
         "Intracellular parasite",
         "Leishmania",
         "Leishmania nectomonad",
@@ -19552,7 +19463,6 @@
       "category": "Parasites",
       "keywords": [
         "Leishmania Procyclic",
-        "Parasites",
         "Flagellated",
         "Intracellular parasite",
         "Leishmania",
@@ -19611,7 +19521,6 @@
       "category": "Parasites",
       "keywords": [
         "Leishmania Retroleptomonad",
-        "Parasites",
         "Flagellated",
         "Intracellular parasite",
         "Leishmania",
@@ -19670,7 +19579,6 @@
       "category": "Parasites",
       "keywords": [
         "Leishmania Retroleptomonad",
-        "Parasites",
         "Flagellated",
         "Intracellular parasite",
         "Leishmania",
@@ -19729,7 +19637,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Lightning Bolt",
-        "Symbols & diagrams",
         "lightning",
         "bolt",
         "body",
@@ -20116,7 +20023,6 @@
       "category": "Cells",
       "keywords": [
         "Lympho Myeloid Primed Progenitor Cell",
-        "Cells",
         "lympho",
         "myeloid",
         "primed",
@@ -20165,7 +20071,6 @@
       "category": "Cells",
       "keywords": [
         "Lysosomes",
-        "Cells",
         "lysosomes",
         "body",
         "color",
@@ -20210,7 +20115,6 @@
       "category": "Cells",
       "keywords": [
         "Macrophage",
-        "Cells",
         "biology",
         "cell",
         "crawling",
@@ -20265,7 +20169,6 @@
       "category": "Cells",
       "keywords": [
         "Macrophage",
-        "Cells",
         "biology",
         "cell",
         "Immunity",
@@ -20322,7 +20225,6 @@
       "category": "Cells",
       "keywords": [
         "Macrophage",
-        "Cells",
         "biology",
         "cell",
         "Immunity",
@@ -20379,7 +20281,6 @@
       "category": "Cells",
       "keywords": [
         "Macrophage",
-        "Cells",
         "biology",
         "cell",
         "Immunity",
@@ -20436,7 +20337,6 @@
       "category": "Cells",
       "keywords": [
         "Macrophage",
-        "Cells",
         "macrophage",
         "body",
         "color",
@@ -20597,7 +20497,6 @@
       "category": "Parasites",
       "keywords": [
         "Malaria Female Gametocyte",
-        "Parasites",
         "biology",
         "cell",
         "Eukaryote",
@@ -20656,7 +20555,6 @@
       "category": "Parasites",
       "keywords": [
         "Malaria Macrogametocyte",
-        "Parasites",
         "cell",
         "Falciparum",
         "female",
@@ -20715,7 +20613,6 @@
       "category": "Parasites",
       "keywords": [
         "Malaria Infected Red Blood Cell",
-        "Cells",
         "malaria",
         "infected",
         "red",
@@ -20863,7 +20760,6 @@
       "category": "Parasites",
       "keywords": [
         "Malaria Male Gametocyte",
-        "Parasites",
         "biology",
         "cell",
         "Eukaryote",
@@ -20922,7 +20818,6 @@
       "category": "Parasites",
       "keywords": [
         "Malaria Microgametocyte",
-        "Parasites",
         "cell",
         "Falciparum",
         "Immunity",
@@ -20981,7 +20876,6 @@
       "category": "Parasites",
       "keywords": [
         "Malaria Merozoites",
-        "Parasites",
         "biology",
         "cell",
         "Eukaryote",
@@ -21040,7 +20934,6 @@
       "category": "Parasites",
       "keywords": [
         "Malaria Ookinete",
-        "Parasites",
         "biology",
         "cell",
         "Falciparum",
@@ -21099,7 +20992,6 @@
       "category": "Parasites",
       "keywords": [
         "Malaria Ring Stage",
-        "Parasites",
         "biology",
         "cell",
         "Eukaryote",
@@ -21158,7 +21050,6 @@
       "category": "Parasites",
       "keywords": [
         "Malaria Schizont",
-        "Parasites",
         "biology",
         "cell",
         "Eukaryote",
@@ -21217,7 +21108,6 @@
       "category": "Parasites",
       "keywords": [
         "Malaria Sporozoite",
-        "Parasites",
         "biology",
         "cell",
         "Falciparum",
@@ -21276,7 +21166,6 @@
       "category": "Parasites",
       "keywords": [
         "Malaria Stage II Gametocyte",
-        "Parasites",
         "biology",
         "cell",
         "Falciparum",
@@ -21335,7 +21224,6 @@
       "category": "Parasites",
       "keywords": [
         "Malaria Stage III Gametocyte",
-        "Parasites",
         "biology",
         "cell",
         "Falciparum",
@@ -21394,7 +21282,6 @@
       "category": "Parasites",
       "keywords": [
         "Malaria Stage IV Gametocyte",
-        "Parasites",
         "biology",
         "cell",
         "Falciparum",
@@ -21453,7 +21340,6 @@
       "category": "Parasites",
       "keywords": [
         "Malaria Trophozoite",
-        "Parasites",
         "biology",
         "cell",
         "Eukaryote",
@@ -21512,7 +21398,6 @@
       "category": "Parasites",
       "keywords": [
         "Malaria Zygote",
-        "Parasites",
         "malaria",
         "zygote",
         "body",
@@ -21891,7 +21776,6 @@
       "category": "Cells",
       "keywords": [
         "Mast Cell",
-        "Cells",
         "mast",
         "cell",
         "body",
@@ -22018,7 +21902,6 @@
       "category": "Cells",
       "keywords": [
         "Mast Cell",
-        "Cells",
         "mast",
         "cell",
         "body",
@@ -22145,7 +22028,6 @@
       "category": "Cells",
       "keywords": [
         "Megakaryocytic Erythroid Progenitor Cell",
-        "Cells",
         "megakaryocytic",
         "erythroid",
         "progenitor",
@@ -22193,7 +22075,6 @@
       "category": "Parasites",
       "keywords": [
         "Metacyclic",
-        "Parasites",
         "metacyclic",
         "body",
         "color",
@@ -23415,7 +23296,6 @@
       "category": "Cells",
       "keywords": [
         "Mitochondria",
-        "Cells",
         "Cells and Organelles",
         "graphical",
         "medicine",
@@ -23468,7 +23348,6 @@
       "category": "Cells",
       "keywords": [
         "Mitochondria",
-        "Cells",
         "cell anatomy",
         "cristae",
         "inner membrane",
@@ -23582,7 +23461,6 @@
       "category": "Cells",
       "keywords": [
         "Monocyte",
-        "Cells",
         "monocyte",
         "body",
         "color",
@@ -23627,7 +23505,6 @@
       "category": "Cells",
       "keywords": [
         "Monocyte",
-        "Cells",
         "blood cell",
         "Cells and Organelles",
         "monocyte",
@@ -23681,7 +23558,6 @@
       "category": "Cells",
       "keywords": [
         "Monocyte",
-        "Cells",
         "blood cell",
         "Cells and Organelles",
         "monocyte",
@@ -23735,7 +23611,6 @@
       "category": "Cells",
       "keywords": [
         "Monocyte Dendritic Cell Progenitor Cell",
-        "Cells",
         "monocyte",
         "dendritic",
         "cell",
@@ -24569,7 +24444,6 @@
       "category": "Cells",
       "keywords": [
         "Multipotent Progenitor Cell",
-        "Cells",
         "multipotent",
         "progenitor",
         "cell",
@@ -24740,7 +24614,6 @@
       "category": "Cells",
       "keywords": [
         "Natural Killer Cell",
-        "Cells",
         "natural",
         "killer",
         "cell",
@@ -24886,7 +24759,6 @@
       "category": "Cells",
       "keywords": [
         "Neutrophil",
-        "Cells",
         "neutrophil",
         "body",
         "color",
@@ -25003,7 +24875,6 @@
       "category": "Cells",
       "keywords": [
         "Neutrophil",
-        "Cells",
         "neutrophil",
         "body",
         "color",
@@ -25129,7 +25000,6 @@
       "category": "Cells",
       "keywords": [
         "Neutrophil",
-        "Cells",
         "neutrophil",
         "body",
         "color",
@@ -25255,7 +25125,6 @@
       "category": "Cells",
       "keywords": [
         "Neutrophil",
-        "Cells",
         "neutrophil",
         "body",
         "color",
@@ -25390,7 +25259,6 @@
       "category": "Cells",
       "keywords": [
         "Neutrophil",
-        "Cells",
         "neutrophil",
         "body",
         "color",
@@ -25525,7 +25393,6 @@
       "category": "Cells",
       "keywords": [
         "Neutrophil",
-        "Cells",
         "neutrophil",
         "body",
         "color",
@@ -25660,7 +25527,6 @@
       "category": "Cells",
       "keywords": [
         "Neutrophil",
-        "Cells",
         "neutrophil",
         "body",
         "color",
@@ -25795,7 +25661,6 @@
       "category": "Cells",
       "keywords": [
         "Neutrophil Netosis",
-        "Cells",
         "biology",
         "cell",
         "Color",
@@ -25854,7 +25719,6 @@
       "category": "Cells",
       "keywords": [
         "Neutrophil Netosis",
-        "Cells",
         "cell",
         "Flat",
         "Immunity",
@@ -26467,7 +26331,6 @@
       "category": "Cells",
       "keywords": [
         "Oligodendrocyte",
-        "Cells",
         "axon support",
         "glial cells",
         "multicolor",
@@ -26577,10 +26440,9 @@
       "bioartEntryId": 399,
       "title": "Organoid",
       "description": "body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Organoid",
-        "Cells",
         "organoid",
         "body",
         "color",
@@ -26597,7 +26459,7 @@
         "prefers-color-scheme",
         "dark",
         "255",
-        "Cells"
+        "Tissues & histology"
       ],
       "author": "NIAID Visual & Medical Arts",
       "credit": "Courtesy of NIAID",
@@ -26643,7 +26505,6 @@
       "category": "Cells",
       "keywords": [
         "Outer Radial Glial Cell",
-        "Cells",
         "outer",
         "radial",
         "glial",
@@ -26700,7 +26561,6 @@
       "category": "Nucleic acids & genetics",
       "keywords": [
         "Pedigree Diagram",
-        "Nucleic acids & genetics",
         "pedigree",
         "diagram",
         "body",
@@ -27255,7 +27115,6 @@
       "category": "Cells",
       "keywords": [
         "Plasma B Cell",
-        "Cells",
         "plasma",
         "cell",
         "body",
@@ -27373,7 +27232,6 @@
       "category": "Nucleic acids & genetics",
       "keywords": [
         "Plasmid",
-        "Nucleic acids & genetics",
         "plasmid",
         "body",
         "color",
@@ -27517,7 +27375,6 @@
       "category": "Nucleic acids & genetics",
       "keywords": [
         "Plasmid",
-        "Nucleic acids & genetics",
         "plasmid",
         "body",
         "color",
@@ -27661,7 +27518,6 @@
       "category": "Nucleic acids & genetics",
       "keywords": [
         "Plasmid",
-        "Nucleic acids & genetics",
         "plasmid",
         "body",
         "color",
@@ -27787,7 +27643,6 @@
       "category": "Nucleic acids & genetics",
       "keywords": [
         "Plasmid",
-        "Nucleic acids & genetics",
         "plasmid",
         "body",
         "color",
@@ -27931,7 +27786,6 @@
       "category": "Parasites",
       "keywords": [
         "Plasmodium",
-        "Parasites",
         "plasmodium",
         "body",
         "color",
@@ -28075,7 +27929,6 @@
       "category": "Cells",
       "keywords": [
         "Platelet",
-        "Cells",
         "platelet",
         "body",
         "color",
@@ -28824,7 +28677,6 @@
       "category": "Cells",
       "keywords": [
         "Pyramidal Neuron",
-        "Cells",
         "pyramidal",
         "neuron",
         "body",
@@ -30581,7 +30433,6 @@
       "category": "Cells",
       "keywords": [
         "Red Blood Cell",
-        "Cells",
         "blood",
         "blood cell",
         "Cells and Organelles",
@@ -30634,7 +30485,6 @@
       "category": "Cells",
       "keywords": [
         "Red Blood Cell",
-        "Cells",
         "blood",
         "blood cell",
         "Cells and Organelles",
@@ -30687,7 +30537,6 @@
       "category": "Cells",
       "keywords": [
         "Red Blood Cell",
-        "Cells",
         "blood",
         "blood cell",
         "Cells and Organelles",
@@ -30740,7 +30589,6 @@
       "category": "Cells",
       "keywords": [
         "Red Blood Cell Lysed",
-        "Cells",
         "blood cell",
         "Cells and Organelles",
         "ghost red blood cell",
@@ -30799,7 +30647,6 @@
       "category": "Cells",
       "keywords": [
         "Red Blood Cell Lysed",
-        "Cells",
         "blood cell",
         "Cells and Organelles",
         "ghost red blood cell",
@@ -31425,7 +31272,6 @@
       "category": "Nucleic acids & genetics",
       "keywords": [
         "RNA",
-        "Nucleic acids & genetics",
         "rna",
         "body",
         "color",
@@ -35748,7 +35594,6 @@
       "category": "Cells",
       "keywords": [
         "T Cell",
-        "Cells",
         "cell",
         "body",
         "color",
@@ -35874,7 +35719,6 @@
       "category": "Cells",
       "keywords": [
         "T Cell",
-        "Cells",
         "cell",
         "body",
         "color",
@@ -36396,7 +36240,6 @@
       "category": "Cells",
       "keywords": [
         "T Cell Senescence",
-        "Cells",
         "cell",
         "senescence",
         "body",
@@ -36841,7 +36684,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Thought Bubble",
-        "Symbols & diagrams",
         "thought",
         "bubble",
         "body",
@@ -37752,7 +37594,6 @@
       "category": "Cells",
       "keywords": [
         "Unidentified Off Target Cell",
-        "Cells",
         "brain",
         "cell",
         "cellular structures",
@@ -38132,7 +37973,6 @@
       "category": "Cells",
       "keywords": [
         "Vero Cell",
-        "Cells",
         "vero",
         "cell",
         "body",
@@ -38187,7 +38027,6 @@
       "category": "Cells",
       "keywords": [
         "Vero Cells",
-        "Cells",
         "vero",
         "cells",
         "body",
@@ -38838,7 +38677,6 @@
       "category": "Nucleic acids & genetics",
       "keywords": [
         "XY Chromosomes",
-        "Nucleic acids & genetics",
         "chromosomes",
         "body",
         "color",
@@ -39378,7 +39216,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Mass Spectrometry Graph",
-        "Symbols & diagrams",
         "mass",
         "spectrometry",
         "graph",
@@ -39422,10 +39259,9 @@
       "bioartEntryId": 583,
       "title": "Organoid Cross-section",
       "description": "body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Organoid Cross-section",
-        "Cells",
         "cross section",
         "cross-section",
         "grey",
@@ -39449,7 +39285,7 @@
         "cells",
         "cross",
         "section",
-        "Cells"
+        "Tissues & histology"
       ],
       "author": "NIAID Visual & Medical Arts",
       "credit": "Courtesy of NIAID",
@@ -39573,7 +39409,6 @@
       "category": "Anatomy",
       "keywords": [
         "Placenta Cellular Cross Section",
-        "Cells",
         "placenta",
         "cellular",
         "cross",
@@ -39850,7 +39685,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Male Symbol",
-        "Symbols & diagrams",
         "male",
         "symbol",
         "body",
@@ -40087,7 +39921,6 @@
       "keywords": [
         "Actin Polymerization",
         "actin",
-        "Cells",
         "process",
         "scene",
         "polymerization",
@@ -40135,7 +39968,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Arrow",
-        "Symbols & diagrams",
         "arrow",
         "body",
         "color",
@@ -40810,7 +40642,6 @@
       "category": "Cells",
       "keywords": [
         "B Cell with IgM Receptors",
-        "Cells",
         "bcell",
         "bcr",
         "cell",
@@ -41121,7 +40952,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Female Symbol",
-        "Symbols & diagrams",
         "female",
         "symbol",
         "body",
@@ -41257,7 +41087,6 @@
       "category": "Food",
       "keywords": [
         "Cracked Egg",
-        "Food",
         "cracked",
         "egg",
         "body",
@@ -41348,7 +41177,6 @@
       "category": "Food",
       "keywords": [
         "Egg",
-        "Food",
         "egg",
         "body",
         "color",
@@ -41526,7 +41354,6 @@
       "category": "Food",
       "keywords": [
         "Fried Egg",
-        "Food",
         "fried",
         "egg",
         "body",
@@ -41653,7 +41480,6 @@
       "category": "Cells",
       "keywords": [
         "Disrupted Golgi",
-        "Cells",
         "disrupted",
         "golgi",
         "body",
@@ -42161,7 +41987,6 @@
       "category": "Parasites",
       "keywords": [
         "Trypanosoma cruzi",
-        "Parasites",
         "trypanosoma",
         "cruzi",
         "body",
@@ -42304,7 +42129,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Generic Data Volcano Plot Graph",
-        "Symbols & diagrams",
         "generic",
         "data",
         "volcano",
@@ -42622,7 +42446,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Scientific Poster",
-        "Symbols & diagrams",
         "scientific",
         "poster",
         "body",
@@ -43398,7 +43221,6 @@
       "category": "Cells",
       "keywords": [
         "Petri Dish with HEK293",
-        "Cells",
         "petri",
         "dish",
         "with",
@@ -43571,7 +43393,6 @@
       "category": "Symbols & diagrams",
       "keywords": [
         "Blood drop",
-        "Symbols & diagrams",
         "blood",
         "drop",
         "body",
@@ -43614,10 +43435,9 @@
       "bioartEntryId": 661,
       "title": "Organoid",
       "description": "body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Organoid",
-        "Cells",
         "organoid",
         "body",
         "color",
@@ -43634,7 +43454,7 @@
         "prefers-color-scheme",
         "dark",
         "255",
-        "Cells"
+        "Tissues & histology"
       ],
       "author": "NIAID Visual & Medical Arts",
       "credit": "Courtesy of NIAID",
@@ -43677,10 +43497,9 @@
       "bioartEntryId": 662,
       "title": "Organoid",
       "description": "body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Organoid",
-        "Cells",
         "organoid",
         "body",
         "color",
@@ -43697,7 +43516,7 @@
         "prefers-color-scheme",
         "dark",
         "255",
-        "Cells"
+        "Tissues & histology"
       ],
       "author": "NIAID Visual & Medical Arts",
       "credit": "Courtesy of NIAID",
@@ -43740,10 +43559,9 @@
       "bioartEntryId": 663,
       "title": "Organoid",
       "description": "body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Organoid",
-        "Cells",
         "organoid",
         "body",
         "color",
@@ -43760,7 +43578,7 @@
         "prefers-color-scheme",
         "dark",
         "255",
-        "Cells"
+        "Tissues & histology"
       ],
       "author": "NIAID Visual & Medical Arts",
       "credit": "Courtesy of NIAID",
@@ -43803,10 +43621,9 @@
       "bioartEntryId": 664,
       "title": "Organoid",
       "description": "body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Organoid",
-        "Cells",
         "organoid",
         "body",
         "color",
@@ -43823,7 +43640,7 @@
         "prefers-color-scheme",
         "dark",
         "255",
-        "Cells"
+        "Tissues & histology"
       ],
       "author": "NIAID Visual & Medical Arts",
       "credit": "Courtesy of NIAID",
@@ -43866,10 +43683,9 @@
       "bioartEntryId": 665,
       "title": "Organoid",
       "description": "body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Organoid",
-        "Cells",
         "organoid",
         "body",
         "color",
@@ -43886,7 +43702,7 @@
         "prefers-color-scheme",
         "dark",
         "255",
-        "Cells"
+        "Tissues & histology"
       ],
       "author": "NIAID Visual & Medical Arts",
       "credit": "Courtesy of NIAID",
@@ -43929,10 +43745,9 @@
       "bioartEntryId": 666,
       "title": "Organoid",
       "description": "body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Organoid",
-        "Cells",
         "organoid",
         "body",
         "color",
@@ -43949,7 +43764,7 @@
         "prefers-color-scheme",
         "dark",
         "255",
-        "Cells"
+        "Tissues & histology"
       ],
       "author": "NIAID Visual & Medical Arts",
       "credit": "Courtesy of NIAID",
@@ -44245,7 +44060,6 @@
       "category": "Cells",
       "keywords": [
         "Astrocyte",
-        "Cells",
         "astrocyte",
         "body",
         "color",
@@ -44371,7 +44185,6 @@
       "category": "Cells",
       "keywords": [
         "Astrocyte",
-        "Cells",
         "astrocyte",
         "body",
         "color",
@@ -44497,7 +44310,6 @@
       "category": "Cells",
       "keywords": [
         "Astrocyte",
-        "Cells",
         "astrocyte",
         "body",
         "color",
@@ -44824,7 +44636,6 @@
       "category": "Anatomy",
       "keywords": [
         "Skin Cross-Section",
-        "Cells",
         "skin",
         "cross-section",
         "body",
@@ -45283,7 +45094,6 @@
       "category": "Parasites",
       "keywords": [
         "Toxoplasma gondii Tachyzoite",
-        "Parasites",
         "toxoplasma",
         "gondii",
         "tachyzoite",
@@ -45330,7 +45140,6 @@
       "category": "Parasites",
       "keywords": [
         "Toxoplasma gondii",
-        "Parasites",
         "toxoplasma",
         "gondii",
         "body",
@@ -45529,7 +45338,6 @@
       "category": "Anatomy",
       "keywords": [
         "Blood-Brain Barrier",
-        "Cells",
         "blood-brain",
         "barrier",
         "body",
@@ -46197,7 +46005,6 @@
       "category": "Parasites",
       "keywords": [
         "Babesia Infected Red Blood Cell",
-        "Parasites",
         "babesia",
         "infected",
         "red",

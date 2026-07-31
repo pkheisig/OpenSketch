@@ -20,6 +20,11 @@ export async function buildManifest(): Promise<AssetManifest> {
     readJson<AssetTaxonomy>(TAXONOMY_PATH)
   ]);
   const categoryByEntry = taxonomyIndex(taxonomy);
+  const categoryKeywords = new Set([
+    ...taxonomy.categories,
+    "Cells and organelles",
+    "Shapes and arrows"
+  ]);
   let previous: AssetManifest | undefined;
   try {
     previous = await readJson<AssetManifest>(MANIFEST_PATH);
@@ -57,25 +62,7 @@ export async function buildManifest(): Promise<AssetManifest> {
       ...(overrides.families?.[familyId] ?? {}),
       category,
       keywords: [
-        ...entry.family.keywords.filter(
-          (keyword) =>
-            ![
-              "Anatomy",
-              "Animals",
-              "Arthropods",
-              "Bacteria",
-              "Cells and organelles",
-              "Cellular processes",
-              "Equipment",
-              "Molecules",
-              "People",
-              "Plants",
-              "Proteins",
-              "Shapes and arrows",
-              "Viruses",
-              "Other"
-            ].includes(keyword)
-        ),
+        ...entry.family.keywords.filter((keyword) => !categoryKeywords.has(keyword)),
         category
       ]
     });

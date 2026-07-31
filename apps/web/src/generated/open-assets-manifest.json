@@ -68,11 +68,11 @@
       "bioartEntryId": 1154231241,
       "title": "4x objective",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "4x objective",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Manish Kumar",
@@ -98,11 +98,11 @@
       "bioartEntryId": 1131782568,
       "title": "Abeoforma whisleri",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Abeoforma whisleri",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -128,12 +128,11 @@
       "bioartEntryId": 1513838146,
       "title": "Abeoforma Whisleri",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Animals",
+      "category": "Fungi & protists",
       "keywords": [
         "Abeoforma Whisleri",
-        "Animals",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -166,11 +165,11 @@
       "bioartEntryId": 1264846413,
       "title": "Action Potential",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Cellular processes",
       "keywords": [
         "Action Potential",
         "cell",
-        "Cells",
+        "Cellular processes",
         "SciDraw"
       ],
       "author": "Peter Kraemer",
@@ -226,11 +225,11 @@
       "bioartEntryId": 1224006018,
       "title": "Adenosine",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Molecules",
       "keywords": [
         "Adenosine",
         "other",
-        "Other",
+        "Molecules",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -256,11 +255,11 @@
       "bioartEntryId": 1107666819,
       "title": "Adenovirus",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Viruses",
       "keywords": [
         "Adenovirus",
         "cell",
-        "Cells",
+        "Viruses",
         "SciDraw"
       ],
       "author": "NIAID Visual & Medical Arts",
@@ -316,11 +315,11 @@
       "bioartEntryId": 1017615779,
       "title": "Adrenal gland",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "People",
+      "category": "Anatomy",
       "keywords": [
         "Adrenal gland",
         "human",
-        "People",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -826,11 +825,11 @@
       "bioartEntryId": 1221893982,
       "title": "Aedes aegypti",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Arthropods",
       "keywords": [
         "Aedes aegypti",
         "other",
-        "Other",
+        "Arthropods",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -860,8 +859,7 @@
       "keywords": [
         "Aedes Aegypti",
         "Arthropods",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -894,11 +892,11 @@
       "bioartEntryId": 1198149569,
       "title": "Agaricus bisporus",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Fungi & protists",
       "keywords": [
         "Agaricus bisporus",
         "other",
-        "Other",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -924,12 +922,11 @@
       "bioartEntryId": 1681768751,
       "title": "Agaricus Bisporus",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Other",
+      "category": "Fungi & protists",
       "keywords": [
         "Agaricus Bisporus",
-        "Other",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -992,11 +989,11 @@
       "bioartEntryId": 1174802691,
       "title": "Alpaca",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Alpaca",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Anonymous Artist",
@@ -1022,11 +1019,11 @@
       "bioartEntryId": 1053558094,
       "title": "Alpha-Linolenic acid (omega-3)",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Molecules",
       "keywords": [
         "Alpha-Linolenic acid (omega-3)",
         "other",
-        "Other",
+        "Molecules",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -1082,11 +1079,11 @@
       "bioartEntryId": 1235021753,
       "title": "Amorphochlora amoebiformis",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Amorphochlora amoebiformis",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -1112,12 +1109,11 @@
       "bioartEntryId": 1658017487,
       "title": "Amorphochlora Amoebiformis",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Animals",
+      "category": "Fungi & protists",
       "keywords": [
         "Amorphochlora Amoebiformis",
-        "Animals",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -1150,11 +1146,11 @@
       "bioartEntryId": 1111220064,
       "title": "Analytical balance",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "Analytical balance",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Shuhan He",
@@ -1270,11 +1266,11 @@
       "bioartEntryId": 1207241620,
       "title": "Anolis carolinensis",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Anolis carolinensis",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -1304,8 +1300,7 @@
       "keywords": [
         "Anolis Carolinensis",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -1338,11 +1333,11 @@
       "bioartEntryId": 1196919196,
       "title": "Ant",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Arthropods",
       "keywords": [
         "Ant",
         "other",
-        "Other",
+        "Arthropods",
         "SciDraw"
       ],
       "author": "Scidraw ",
@@ -1428,11 +1423,11 @@
       "bioartEntryId": 1200246220,
       "title": "Aplysia",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Aplysia",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Shahar Bracha",
@@ -1458,11 +1453,11 @@
       "bioartEntryId": 1209323097,
       "title": "apple",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Food",
       "keywords": [
         "apple",
         "other",
-        "Other",
+        "Food",
         "SciDraw"
       ],
       "author": "Alexander Bates",
@@ -1522,8 +1517,7 @@
       "keywords": [
         "Arabidopsis Thaliana",
         "Plants",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -1586,11 +1580,11 @@
       "bioartEntryId": 1264900625,
       "title": "Archerfish retina",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Archerfish retina",
         "cell",
-        "Cells",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Tom Baden",
@@ -1616,11 +1610,11 @@
       "bioartEntryId": 1062482661,
       "title": "Arrows",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Symbols & diagrams",
       "keywords": [
         "Arrows",
         "other",
-        "Other",
+        "Symbols & diagrams",
         "SciDraw"
       ],
       "author": "Federico Claudi",
@@ -1646,11 +1640,11 @@
       "bioartEntryId": 1246676602,
       "title": "Aspergillus nidulans",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Fungi & protists",
       "keywords": [
         "Aspergillus nidulans",
         "other",
-        "Other",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -1676,12 +1670,11 @@
       "bioartEntryId": 1604657082,
       "title": "Aspergillus Nidulans",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Other",
+      "category": "Fungi & protists",
       "keywords": [
         "Aspergillus Nidulans",
-        "Other",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -1714,11 +1707,11 @@
       "bioartEntryId": 1212772794,
       "title": "Asthma inhaler",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "Asthma inhaler",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -1834,11 +1827,11 @@
       "bioartEntryId": 1096255335,
       "title": "ATUMSEM",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Techniques & assays",
       "keywords": [
         "ATUMSEM",
         "other",
-        "Other",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Alexander Bates",
@@ -1924,11 +1917,11 @@
       "bioartEntryId": 1150635157,
       "title": "Axodendritic Synapse (Basic)",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Cellular processes",
       "keywords": [
         "Axodendritic Synapse (Basic)",
         "cell",
-        "Cells",
+        "Cellular processes",
         "SciDraw"
       ],
       "author": "Jordan Matelsky",
@@ -1954,11 +1947,11 @@
       "bioartEntryId": 1170994164,
       "title": "Bacteria",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Bacteria",
       "keywords": [
         "Bacteria",
         "other",
-        "Other",
+        "Bacteria",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -1984,11 +1977,11 @@
       "bioartEntryId": 1163407203,
       "title": "Bacterium",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Bacteria",
       "keywords": [
         "Bacterium",
         "other",
-        "Other",
+        "Bacteria",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -2014,11 +2007,11 @@
       "bioartEntryId": 1030425435,
       "title": "Basic Hippocampus Interneuron subgroups diagram",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Animals",
+      "category": "Anatomy",
       "keywords": [
         "Basic Hippocampus Interneuron subgroups diagram",
         "mouse",
-        "Animals",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "Heath Robinson",
@@ -2104,11 +2097,11 @@
       "bioartEntryId": 1090805206,
       "title": "Bat silhouette",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Bat silhouette",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Tiago Branco",
@@ -2134,11 +2127,11 @@
       "bioartEntryId": 1150417779,
       "title": "Bathycoccus prasinos",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Plants",
       "keywords": [
         "Bathycoccus prasinos",
         "cell",
-        "Cells",
+        "Plants",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -2168,8 +2161,7 @@
       "keywords": [
         "Bathycoccus Prasinos",
         "Plants",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -2202,11 +2194,11 @@
       "bioartEntryId": 1192478899,
       "title": "Beakers",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "Beakers",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Diogo Losch De Oliveira",
@@ -2532,11 +2524,11 @@
       "bioartEntryId": 1002439429,
       "title": "Blue LED",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "Blue LED",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Jimmy Dooley",
@@ -2562,11 +2554,11 @@
       "bioartEntryId": 1161147325,
       "title": "Bodo saltans",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Bodo saltans",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -2596,8 +2588,7 @@
       "keywords": [
         "Bodo Saltans",
         "Parasites",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -2630,11 +2621,11 @@
       "bioartEntryId": 1201651473,
       "title": "Bone Cutters",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Anatomy",
+      "category": "Equipment",
       "keywords": [
         "Bone Cutters",
         "other",
-        "Anatomy",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Shuhan He",
@@ -2660,11 +2651,11 @@
       "bioartEntryId": 1107447926,
       "title": "Bone Scissors",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Anatomy",
+      "category": "Equipment",
       "keywords": [
         "Bone Scissors",
         "other",
-        "Anatomy",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Shuhan He",
@@ -3020,11 +3011,11 @@
       "bioartEntryId": 1187165296,
       "title": "Budding yeast",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Fungi & protists",
       "keywords": [
         "Budding yeast",
         "other",
-        "Other",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Montañes, J.c.",
@@ -3200,11 +3191,11 @@
       "bioartEntryId": 1094369388,
       "title": "Caenorhabditis elegans",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Caenorhabditis elegans",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -3234,8 +3225,7 @@
       "keywords": [
         "Caenorhabditis Elegans",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -3268,11 +3258,11 @@
       "bioartEntryId": 1023302978,
       "title": "Caffeine",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Food",
       "keywords": [
         "Caffeine",
         "other",
-        "Other",
+        "Food",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -3298,11 +3288,11 @@
       "bioartEntryId": 1055576716,
       "title": "Calcium imaging",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Techniques & assays",
       "keywords": [
         "Calcium imaging",
         "cell",
-        "Cells",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Zhe Chen",
@@ -3328,11 +3318,11 @@
       "bioartEntryId": 1164513102,
       "title": "Calcium store closed",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Cellular processes",
       "keywords": [
         "Calcium store closed",
         "cell",
-        "Cells",
+        "Cellular processes",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -3358,11 +3348,11 @@
       "bioartEntryId": 1128154421,
       "title": "Calcium store open",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Cellular processes",
       "keywords": [
         "Calcium store open",
         "cell",
-        "Cells",
+        "Cellular processes",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -3418,11 +3408,11 @@
       "bioartEntryId": 1192396144,
       "title": "Callithrix jacchus",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Callithrix jacchus",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -3452,8 +3442,7 @@
       "keywords": [
         "Callithrix Jacchus",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -3520,8 +3509,7 @@
       "keywords": [
         "Callorhinchus Milii",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -3554,11 +3542,11 @@
       "bioartEntryId": 1164822431,
       "title": "cAMP",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Molecules",
       "keywords": [
         "cAMP",
         "other",
-        "Other",
+        "Molecules",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -3584,11 +3572,11 @@
       "bioartEntryId": 1138874538,
       "title": "Candida albicans",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Candida albicans",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -3614,12 +3602,11 @@
       "bioartEntryId": 1538192576,
       "title": "Candida Albicans",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Other",
+      "category": "Fungi & protists",
       "keywords": [
         "Candida Albicans",
-        "Other",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -3652,11 +3639,11 @@
       "bioartEntryId": 1069257810,
       "title": "Carlito syrichta",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Carlito syrichta",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -3686,8 +3673,7 @@
       "keywords": [
         "Carlito Syrichta",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -3810,11 +3796,11 @@
       "bioartEntryId": 1230051492,
       "title": "cellulose",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Molecules",
       "keywords": [
         "cellulose",
         "other",
-        "Other",
+        "Molecules",
         "SciDraw"
       ],
       "author": "Anonymous Artist",
@@ -3840,11 +3826,11 @@
       "bioartEntryId": 1061368914,
       "title": "cGMP",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Molecules",
       "keywords": [
         "cGMP",
         "other",
-        "Other",
+        "Molecules",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -3870,11 +3856,11 @@
       "bioartEntryId": 1111954079,
       "title": "Chameleon",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Chameleon",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Tom Baden",
@@ -3900,11 +3886,11 @@
       "bioartEntryId": 1064031076,
       "title": "Chameleon retina",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Chameleon retina",
         "cell",
-        "Cells",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Tom Baden",
@@ -3960,11 +3946,11 @@
       "bioartEntryId": 1174972201,
       "title": "Chicken retina",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Chicken retina",
         "cell",
-        "Cells",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Tom Baden",
@@ -3990,11 +3976,11 @@
       "bioartEntryId": 1169247744,
       "title": "Chlamydomonas reinhardtii",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Plants",
       "keywords": [
         "Chlamydomonas reinhardtii",
         "cell",
-        "Cells",
+        "Plants",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -4024,8 +4010,7 @@
       "keywords": [
         "Chlamydomonas Reinhardtii",
         "Plants",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -4058,11 +4043,11 @@
       "bioartEntryId": 1172134344,
       "title": "Chlorella vulgaris",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Plants",
       "keywords": [
         "Chlorella vulgaris",
         "cell",
-        "Cells",
+        "Plants",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -4092,8 +4077,7 @@
       "keywords": [
         "Chlorella Vulgaris",
         "Plants",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -4126,11 +4110,11 @@
       "bioartEntryId": 1181755416,
       "title": "Cholesterol",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Molecules",
       "keywords": [
         "Cholesterol",
         "other",
-        "Other",
+        "Molecules",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -4156,11 +4140,11 @@
       "bioartEntryId": 1259895112,
       "title": "Christophe Leterrier",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "People",
       "keywords": [
         "Christophe Leterrier",
         "cell",
-        "Cells",
+        "People",
         "SciDraw"
       ],
       "author": "Christophe ",
@@ -4216,11 +4200,11 @@
       "bioartEntryId": 1190338463,
       "title": "Cichlid retina",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Cichlid retina",
         "cell",
-        "Cells",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Tom Baden",
@@ -4246,11 +4230,11 @@
       "bioartEntryId": 1098298971,
       "title": "Ciona intestinalis",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Ciona intestinalis",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -4280,8 +4264,7 @@
       "keywords": [
         "Ciona Intestinalis",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -4314,11 +4297,11 @@
       "bioartEntryId": 1025490031,
       "title": "Classical Conditioning Mouse",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Animals",
+      "category": "Techniques & assays",
       "keywords": [
         "Classical Conditioning Mouse",
         "mouse",
-        "Animals",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Mackenzie Mathis",
@@ -4344,11 +4327,11 @@
       "bioartEntryId": 1032411312,
       "title": "Clytia hemisphaerica",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Clytia hemisphaerica",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -4378,8 +4361,7 @@
       "keywords": [
         "Clytia Hemisphaerica",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -4412,11 +4394,11 @@
       "bioartEntryId": 1100514874,
       "title": "Coffee",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Food",
       "keywords": [
         "Coffee",
         "other",
-        "Other",
+        "Food",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -4472,11 +4454,11 @@
       "bioartEntryId": 1032260691,
       "title": "Coronavirus",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Viruses",
       "keywords": [
         "Coronavirus",
         "other",
-        "Other",
+        "Viruses",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -4502,11 +4484,11 @@
       "bioartEntryId": 1092358306,
       "title": "Coronavirus 3D",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Viruses",
       "keywords": [
         "Coronavirus 3D",
         "other",
-        "Other",
+        "Viruses",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -4532,11 +4514,11 @@
       "bioartEntryId": 1193048422,
       "title": "Cortical diagram with simplistic interneuron groups",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Animals",
+      "category": "Symbols & diagrams",
       "keywords": [
         "Cortical diagram with simplistic interneuron groups",
         "mouse",
-        "Animals",
+        "Symbols & diagrams",
         "SciDraw"
       ],
       "author": "Heath Robinson",
@@ -4562,11 +4544,11 @@
       "bioartEntryId": 1050189132,
       "title": "CPP box",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "CPP box",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Long Li",
@@ -4626,8 +4608,7 @@
       "keywords": [
         "Danio Rerio",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -4660,11 +4641,11 @@
       "bioartEntryId": 1211182510,
       "title": "DeapSea fish retina",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "DeapSea fish retina",
         "cell",
-        "Cells",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Tom Baden",
@@ -4690,11 +4671,11 @@
       "bioartEntryId": 1208137330,
       "title": "Diatom",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Diatom",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Gaston Martini",
@@ -4720,11 +4701,11 @@
       "bioartEntryId": 1093483797,
       "title": "Diatom",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Diatom",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Gaston Martini",
@@ -4750,11 +4731,11 @@
       "bioartEntryId": 1011040587,
       "title": "Dictyostelium discoideum",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Dictyostelium discoideum",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -4780,12 +4761,11 @@
       "bioartEntryId": 1651380439,
       "title": "Dictyostelium Discoideum",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Animals",
+      "category": "Fungi & protists",
       "keywords": [
         "Dictyostelium Discoideum",
-        "Animals",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -4818,11 +4798,11 @@
       "bioartEntryId": 1036244079,
       "title": "Diplonema papillatum",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Diplonema papillatum",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -4848,12 +4828,11 @@
       "bioartEntryId": 1760633262,
       "title": "Diplonema Papillatum",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Animals",
+      "category": "Fungi & protists",
       "keywords": [
         "Diplonema Papillatum",
-        "Animals",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -5310,8 +5289,7 @@
       "keywords": [
         "Drosophila Melanogaster",
         "Arthropods",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -5434,11 +5412,11 @@
       "bioartEntryId": 1241875439,
       "title": "Dry Baths",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "Dry Baths",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Shuhan He",
@@ -5554,11 +5532,11 @@
       "bioartEntryId": 1186091767,
       "title": "Early embryo dorsal view",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Anatomy",
       "keywords": [
         "Early embryo dorsal view",
         "other",
-        "Other",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -5584,11 +5562,11 @@
       "bioartEntryId": 1016553162,
       "title": "EEG_10_20",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "People",
+      "category": "Anatomy",
       "keywords": [
         "EEG_10_20",
         "human",
-        "People",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "Peter Kraemer",
@@ -5614,11 +5592,11 @@
       "bioartEntryId": 1128216735,
       "title": "electrode",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "electrode",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Alexander Bates",
@@ -5644,11 +5622,11 @@
       "bioartEntryId": 1266504621,
       "title": "electromyography (EMG)",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Techniques & assays",
       "keywords": [
         "electromyography (EMG)",
         "other",
-        "Other",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Xuan Ma",
@@ -5674,11 +5652,11 @@
       "bioartEntryId": 1254774083,
       "title": "ELISA",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Techniques & assays",
       "keywords": [
         "ELISA",
         "other",
-        "Other",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Lydia Smith-osborne",
@@ -5704,11 +5682,11 @@
       "bioartEntryId": 1202339379,
       "title": "ELISA",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Techniques & assays",
       "keywords": [
         "ELISA",
         "other",
-        "Other",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Lydia Smith-osborne",
@@ -5734,11 +5712,11 @@
       "bioartEntryId": 1215563481,
       "title": "EM slice",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Tissues & histology",
       "keywords": [
         "EM slice",
         "other",
-        "Other",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Alexander Bates",
@@ -5764,11 +5742,11 @@
       "bioartEntryId": 1146090862,
       "title": "EM slice",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Tissues & histology",
       "keywords": [
         "EM slice",
         "other",
-        "Other",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Alexander Bates",
@@ -5794,11 +5772,11 @@
       "bioartEntryId": 1120603020,
       "title": "EM slice",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Tissues & histology",
       "keywords": [
         "EM slice",
         "other",
-        "Other",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Alexander Bates",
@@ -5824,11 +5802,11 @@
       "bioartEntryId": 1256604182,
       "title": "EM slice",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Tissues & histology",
       "keywords": [
         "EM slice",
         "other",
-        "Other",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Alexander Bates",
@@ -5854,11 +5832,11 @@
       "bioartEntryId": 1067514931,
       "title": "Embryo lateral view",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Anatomy",
       "keywords": [
         "Embryo lateral view",
         "other",
-        "Other",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -5884,11 +5862,11 @@
       "bioartEntryId": 1231199584,
       "title": "Entamoeba histolytica",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Parasites",
       "keywords": [
         "Entamoeba histolytica",
         "cell",
-        "Cells",
+        "Parasites",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -5918,8 +5896,7 @@
       "keywords": [
         "Entamoeba Histolytica",
         "Parasites",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -6072,11 +6049,11 @@
       "bioartEntryId": 1104858370,
       "title": "Epithelial layer",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Epithelial layer",
         "cell",
-        "Cells",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -6102,11 +6079,11 @@
       "bioartEntryId": 1039066446,
       "title": "EPM",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "EPM",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Long Li",
@@ -6192,11 +6169,11 @@
       "bioartEntryId": 1155263967,
       "title": "Erythrocyte",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "People",
+      "category": "Cells",
       "keywords": [
         "Erythrocyte",
         "human",
-        "People",
+        "Cells",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -6222,11 +6199,11 @@
       "bioartEntryId": 1094988271,
       "title": "Escherichia coli",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Bacteria",
       "keywords": [
         "Escherichia coli",
         "cell",
-        "Cells",
+        "Bacteria",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -6256,8 +6233,7 @@
       "keywords": [
         "Escherichia Coli",
         "Bacteria",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -6290,11 +6266,11 @@
       "bioartEntryId": 1208383426,
       "title": "Euglena gracilis",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Euglena gracilis",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -6320,12 +6296,11 @@
       "bioartEntryId": 1593521004,
       "title": "Euglena Gracilis",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Animals",
+      "category": "Fungi & protists",
       "keywords": [
         "Euglena Gracilis",
-        "Animals",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -6358,11 +6333,11 @@
       "bioartEntryId": 1185783752,
       "title": "European starling operant conditioning",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Animals",
+      "category": "Techniques & assays",
       "keywords": [
         "European starling operant conditioning",
         "bird",
-        "Animals",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Tim Sainburg",
@@ -6388,11 +6363,11 @@
       "bioartEntryId": 1014347550,
       "title": "Exaiptasia diaphana",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Exaiptasia diaphana",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -6422,8 +6397,7 @@
       "keywords": [
         "Exaiptasia Diaphana",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -6456,11 +6430,11 @@
       "bioartEntryId": 1081399664,
       "title": "Extracellular recording",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Techniques & assays",
       "keywords": [
         "Extracellular recording",
         "other",
-        "Other",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Klara Gerlei",
@@ -6576,11 +6550,11 @@
       "bioartEntryId": 1193600981,
       "title": "FED3",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "FED3",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Andrew Hardaway",
@@ -6606,11 +6580,11 @@
       "bioartEntryId": 1250804459,
       "title": "FED3 angled",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "FED3 angled",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Andrew Hardaway",
@@ -6636,11 +6610,11 @@
       "bioartEntryId": 1076067810,
       "title": "FED3_Top_View",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "FED3_Top_View",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Mccutcheon Lab",
@@ -6666,11 +6640,11 @@
       "bioartEntryId": 1203455898,
       "title": "ferrule",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "ferrule",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Long Li",
@@ -6696,11 +6670,11 @@
       "bioartEntryId": 1023642709,
       "title": "FIBSEM",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Techniques & assays",
       "keywords": [
         "FIBSEM",
         "other",
-        "Other",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Alexander Bates",
@@ -6726,11 +6700,11 @@
       "bioartEntryId": 1008838125,
       "title": "Fiddler crab with a human brain as its carapace",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Anatomy",
+      "category": "Animals",
       "keywords": [
         "Fiddler crab with a human brain as its carapace",
         "other",
-        "Anatomy",
+        "Animals",
         "SciDraw"
       ],
       "author": "Sanna Titus",
@@ -7146,11 +7120,11 @@
       "bioartEntryId": 1119031125,
       "title": "Fly with RNN nervous system",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Arthropods",
+      "category": "Anatomy",
       "keywords": [
         "Fly with RNN nervous system",
         "drosophila",
-        "Arthropods",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "Kristin Branson",
@@ -7206,11 +7180,11 @@
       "bioartEntryId": 1014781022,
       "title": "Food pellets",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Food",
       "keywords": [
         "Food pellets",
         "other",
-        "Other",
+        "Food",
         "SciDraw"
       ],
       "author": "Izumi Fukunaga",
@@ -7236,11 +7210,11 @@
       "bioartEntryId": 1250563904,
       "title": "foot shock",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Techniques & assays",
       "keywords": [
         "foot shock",
         "other",
-        "Other",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Long Li",
@@ -7296,11 +7270,11 @@
       "bioartEntryId": 1104635165,
       "title": "Frog",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Frog",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Tom Baden",
@@ -7326,11 +7300,11 @@
       "bioartEntryId": 1095970044,
       "title": "Frog jumping",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Frog jumping",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Tiago Branco",
@@ -7356,11 +7330,11 @@
       "bioartEntryId": 1229601902,
       "title": "Frog retina",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Frog retina",
         "cell",
-        "Cells",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Tom Baden",
@@ -7386,11 +7360,11 @@
       "bioartEntryId": 1167235201,
       "title": "Fructose",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Molecules",
       "keywords": [
         "Fructose",
         "other",
-        "Other",
+        "Molecules",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -7416,11 +7390,11 @@
       "bioartEntryId": 1005036439,
       "title": "Fructose transporter",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Proteins",
       "keywords": [
         "Fructose transporter",
         "cell",
-        "Cells",
+        "Proteins",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -7446,11 +7420,11 @@
       "bioartEntryId": 1069509561,
       "title": "Gall bladder",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "People",
+      "category": "Anatomy",
       "keywords": [
         "Gall bladder",
         "human",
-        "People",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -7510,8 +7484,7 @@
       "keywords": [
         "Gallus Gallus",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -7544,11 +7517,11 @@
       "bioartEntryId": 1054403787,
       "title": "Ganglioside",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Molecules",
       "keywords": [
         "Ganglioside",
         "other",
-        "Other",
+        "Molecules",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -7574,11 +7547,11 @@
       "bioartEntryId": 1249673418,
       "title": "GCIBSEM",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Techniques & assays",
       "keywords": [
         "GCIBSEM",
         "other",
-        "Other",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Alexander Bates",
@@ -7634,11 +7607,11 @@
       "bioartEntryId": 1084954603,
       "title": "Giardia intestinalis",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Parasites",
       "keywords": [
         "Giardia intestinalis",
         "cell",
-        "Cells",
+        "Parasites",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -7668,8 +7641,7 @@
       "keywords": [
         "Giardia Intestinalis",
         "Parasites",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -7732,11 +7704,11 @@
       "bioartEntryId": 1174853114,
       "title": "Glucose transporter",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Molecules",
+      "category": "Proteins",
       "keywords": [
         "Glucose transporter",
         "cell",
-        "Molecules",
+        "Proteins",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -7792,11 +7764,11 @@
       "bioartEntryId": 1251383277,
       "title": "Ground Squirrel",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Ground Squirrel",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Tom Baden",
@@ -7822,11 +7794,11 @@
       "bioartEntryId": 1155002839,
       "title": "Ground squirrel retina",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Ground squirrel retina",
         "cell",
-        "Cells",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Tom Baden",
@@ -7852,11 +7824,11 @@
       "bioartEntryId": 1108144447,
       "title": "GTP battery",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Molecules",
       "keywords": [
         "GTP battery",
         "other",
-        "Other",
+        "Molecules",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -7882,11 +7854,11 @@
       "bioartEntryId": 1139792069,
       "title": "Haem",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Molecules",
       "keywords": [
         "Haem",
         "other",
-        "Other",
+        "Molecules",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -8182,11 +8154,11 @@
       "bioartEntryId": 1226915743,
       "title": "Hippocampus atlas outline",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Animals",
+      "category": "Anatomy",
       "keywords": [
         "Hippocampus atlas outline",
         "mouse",
-        "Animals",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "Heath Robinson",
@@ -8212,11 +8184,11 @@
       "bioartEntryId": 1174710754,
       "title": "Hippocampus coronal cartoon",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Animals",
+      "category": "Anatomy",
       "keywords": [
         "Hippocampus coronal cartoon",
         "mouse",
-        "Animals",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "Heath Robinson",
@@ -8272,11 +8244,11 @@
       "bioartEntryId": 1126623619,
       "title": "Hofstenia miamia",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Hofstenia miamia",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -8306,8 +8278,7 @@
       "keywords": [
         "Hofstenia Miamia",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -8644,8 +8615,7 @@
       "keywords": [
         "Human Immunodeficiency Virus",
         "Viruses",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -8678,11 +8648,11 @@
       "bioartEntryId": 1109902892,
       "title": "Human Nervous System",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "People",
+      "category": "Anatomy",
       "keywords": [
         "Human Nervous System",
         "human",
-        "People",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "Zane Mitrevica",
@@ -8738,11 +8708,11 @@
       "bioartEntryId": 1071087183,
       "title": "human skull",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "People",
+      "category": "Anatomy",
       "keywords": [
         "human skull",
         "human",
-        "People",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "Scidraw ",
@@ -8768,11 +8738,11 @@
       "bioartEntryId": 1265495417,
       "title": "Hydra vulgaris",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Hydra vulgaris",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -8802,8 +8772,7 @@
       "keywords": [
         "Hydra Vulgaris",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -8836,11 +8805,11 @@
       "bioartEntryId": 1247866762,
       "title": "Hypsibius dujardini",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Hypsibius dujardini",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -8870,8 +8839,7 @@
       "keywords": [
         "Hypsibius Dujardini",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -8904,11 +8872,11 @@
       "bioartEntryId": 1158973843,
       "title": "illumina Hi-seq",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "illumina Hi-seq",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Kyuhyun Choi",
@@ -8934,11 +8902,11 @@
       "bioartEntryId": 1131801852,
       "title": "in-vivo techniques",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Techniques & assays",
       "keywords": [
         "in-vivo techniques",
         "other",
-        "Other",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Kyuhyun Choi",
@@ -8998,8 +8966,7 @@
       "keywords": [
         "Influenza Virus",
         "Viruses",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -9152,11 +9119,11 @@
       "bioartEntryId": 1101061530,
       "title": "Ionic channels",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Proteins",
       "keywords": [
         "Ionic channels",
         "cell",
-        "Cells",
+        "Proteins",
         "SciDraw"
       ],
       "author": "Agustin Carpaneto",
@@ -9182,11 +9149,11 @@
       "bioartEntryId": 1215400546,
       "title": "Isochrysis galbana",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Isochrysis galbana",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -9212,12 +9179,11 @@
       "bioartEntryId": 1743927515,
       "title": "Isochrysis Galbana",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Plants",
+      "category": "Fungi & protists",
       "keywords": [
         "Isochrysis Galbana",
-        "Plants",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -9280,11 +9246,11 @@
       "bioartEntryId": 1029330083,
       "title": "Kinesin",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Proteins",
       "keywords": [
         "Kinesin",
         "cell",
-        "Cells",
+        "Proteins",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -9310,11 +9276,11 @@
       "bioartEntryId": 1092999145,
       "title": "Kinesin on microtubule",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Proteins",
       "keywords": [
         "Kinesin on microtubule",
         "cell",
-        "Cells",
+        "Proteins",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -9340,11 +9306,11 @@
       "bioartEntryId": 1044285604,
       "title": "Kinesin with cargo",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Proteins",
       "keywords": [
         "Kinesin with cargo",
         "cell",
-        "Cells",
+        "Proteins",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -9370,11 +9336,11 @@
       "bioartEntryId": 1260111905,
       "title": "laboratory",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "laboratory",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Alexander Bates",
@@ -9400,11 +9366,11 @@
       "bioartEntryId": 1053740687,
       "title": "Lactose",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Molecules",
       "keywords": [
         "Lactose",
         "other",
-        "Other",
+        "Molecules",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -9460,11 +9426,11 @@
       "bioartEntryId": 1067472176,
       "title": "Lamprey retina",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Lamprey retina",
         "cell",
-        "Cells",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Tom Baden",
@@ -9490,11 +9456,11 @@
       "bioartEntryId": 1112105490,
       "title": "Large intestine",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "People",
+      "category": "Anatomy",
       "keywords": [
         "Large intestine",
         "human",
-        "People",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -9730,11 +9696,11 @@
       "bioartEntryId": 1090480802,
       "title": "lizard",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "lizard",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Tiago Branco",
@@ -9880,11 +9846,11 @@
       "bioartEntryId": 1160918159,
       "title": "LTS Standard Tips",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "LTS Standard Tips",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Shuhan He",
@@ -9910,11 +9876,11 @@
       "bioartEntryId": 1145817700,
       "title": "Lungs",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "People",
+      "category": "Anatomy",
       "keywords": [
         "Lungs",
         "human",
-        "People",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -9940,11 +9906,11 @@
       "bioartEntryId": 1234394930,
       "title": "Macaca mulatta",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Macaca mulatta",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -9974,8 +9940,7 @@
       "keywords": [
         "Macaca Mulatta",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -10008,11 +9973,11 @@
       "bioartEntryId": 1209389516,
       "title": "Macaque cerebellar cortex (saggital section)",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Anatomy",
       "keywords": [
         "Macaque cerebellar cortex (saggital section)",
         "other",
-        "Other",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "Akshay Markanday",
@@ -10038,11 +10003,11 @@
       "bioartEntryId": 1229292339,
       "title": "Macaque Coronal Section",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Tissues & histology",
       "keywords": [
         "Macaque Coronal Section",
         "other",
-        "Other",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Paul Kramer",
@@ -10098,11 +10063,11 @@
       "bioartEntryId": 1159688234,
       "title": "Maltose",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Molecules",
       "keywords": [
         "Maltose",
         "other",
-        "Other",
+        "Molecules",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -10218,11 +10183,11 @@
       "bioartEntryId": 1159500560,
       "title": "membrane",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Molecules",
       "keywords": [
         "membrane",
         "cell",
-        "Cells",
+        "Molecules",
         "SciDraw"
       ],
       "author": "Peter Kraemer",
@@ -10278,11 +10243,11 @@
       "bioartEntryId": 1201556152,
       "title": "Microcebus murinus",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Microcebus murinus",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -10312,8 +10277,7 @@
       "keywords": [
         "Microcebus Murinus",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -10406,11 +10370,11 @@
       "bioartEntryId": 1135626550,
       "title": "Micromonas commoda",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Plants",
       "keywords": [
         "Micromonas commoda",
         "cell",
-        "Cells",
+        "Plants",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -10440,8 +10404,7 @@
       "keywords": [
         "Micromonas Commoda",
         "Plants",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -10534,11 +10497,11 @@
       "bioartEntryId": 1238420675,
       "title": "Microtube and pestle",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "Microtube and pestle",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Diogo Losch De Oliveira",
@@ -10564,11 +10527,11 @@
       "bioartEntryId": 1251818293,
       "title": "Microtubule",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Proteins",
       "keywords": [
         "Microtubule",
         "cell",
-        "Cells",
+        "Proteins",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -10684,11 +10647,11 @@
       "bioartEntryId": 1171416467,
       "title": "Mnemiopsis leidyi",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Mnemiopsis leidyi",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -10718,8 +10681,7 @@
       "keywords": [
         "Mnemiopsis Leidyi",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -10752,11 +10714,11 @@
       "bioartEntryId": 1164025791,
       "title": "Mobile HomeCage",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "Mobile HomeCage",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Jimmy Dooley",
@@ -10782,11 +10744,11 @@
       "bioartEntryId": 1168310107,
       "title": "Mobile HomeCage with Rat",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Animals",
+      "category": "Equipment",
       "keywords": [
         "Mobile HomeCage with Rat",
         "rat",
-        "Animals",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Jimmy Dooley",
@@ -10812,11 +10774,11 @@
       "bioartEntryId": 1159197695,
       "title": "monkey",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "monkey",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Xuan Ma",
@@ -10842,11 +10804,11 @@
       "bioartEntryId": 1130547860,
       "title": "Monkey",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Monkey",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Tom Baden",
@@ -10872,11 +10834,11 @@
       "bioartEntryId": 1171131236,
       "title": "Monkey (arm movement)",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Monkey (arm movement)",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Andrea Colins Rodriguez",
@@ -10932,11 +10894,11 @@
       "bioartEntryId": 1204288004,
       "title": "Monkey face cartoon",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Monkey face cartoon",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Akshay Markanday",
@@ -10962,11 +10924,11 @@
       "bioartEntryId": 1045735343,
       "title": "monkey silhouette",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "monkey silhouette",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Scidraw ",
@@ -10992,11 +10954,11 @@
       "bioartEntryId": 1260945596,
       "title": "monkey with lever",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "monkey with lever",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Klara Gerlei",
@@ -11022,11 +10984,11 @@
       "bioartEntryId": 1137539436,
       "title": "Monosiga brevicollis",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Monosiga brevicollis",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -11052,12 +11014,11 @@
       "bioartEntryId": 1732496207,
       "title": "Monosiga Brevicollis",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Animals",
+      "category": "Fungi & protists",
       "keywords": [
         "Monosiga Brevicollis",
-        "Animals",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -11480,11 +11441,11 @@
       "bioartEntryId": 1005290157,
       "title": "mouse brain slices 1",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Anatomy",
+      "category": "Tissues & histology",
       "keywords": [
         "mouse brain slices 1",
         "mouse",
-        "Anatomy",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Roberta Schellino",
@@ -11510,11 +11471,11 @@
       "bioartEntryId": 1068372738,
       "title": "Mouse brain slices part 2",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Anatomy",
+      "category": "Tissues & histology",
       "keywords": [
         "Mouse brain slices part 2",
         "mouse",
-        "Anatomy",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Roberta Schellino",
@@ -11540,11 +11501,11 @@
       "bioartEntryId": 1097135187,
       "title": "mouse cage",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "mouse cage",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Long Li",
@@ -11570,11 +11531,11 @@
       "bioartEntryId": 1057404899,
       "title": "mouse cage with bedding",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "mouse cage with bedding",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Long Li",
@@ -11600,11 +11561,11 @@
       "bioartEntryId": 1228786375,
       "title": "Mouse CNS",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Animals",
+      "category": "Anatomy",
       "keywords": [
         "Mouse CNS",
         "mouse",
-        "Animals",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "Jason Keller",
@@ -12170,11 +12131,11 @@
       "bioartEntryId": 1245031953,
       "title": "Mouse nervous system",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Animals",
+      "category": "Anatomy",
       "keywords": [
         "Mouse nervous system",
         "mouse",
-        "Animals",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "Jason Keller",
@@ -12380,11 +12341,11 @@
       "bioartEntryId": 1165690037,
       "title": "Mouse retina",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Mouse retina",
         "cell",
-        "Cells",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Tom Baden",
@@ -12590,11 +12551,11 @@
       "bioartEntryId": 1183867151,
       "title": "mouse skull",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Animals",
+      "category": "Anatomy",
       "keywords": [
         "mouse skull",
         "mouse",
-        "Animals",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "Ann Kennedy",
@@ -12860,11 +12821,11 @@
       "bioartEntryId": 1071212874,
       "title": "Mouse with an imaging objective",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Animals",
+      "category": "Techniques & assays",
       "keywords": [
         "Mouse with an imaging objective",
         "mouse",
-        "Animals",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Izumi Fukunaga",
@@ -12920,11 +12881,11 @@
       "bioartEntryId": 1245059472,
       "title": "Mouth taste",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "People",
+      "category": "Anatomy",
       "keywords": [
         "Mouth taste",
         "human",
-        "People",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -12950,11 +12911,11 @@
       "bioartEntryId": 1115012660,
       "title": "MRI scanner",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "MRI scanner",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Olin ",
@@ -13014,8 +12975,7 @@
       "keywords": [
         "Mus Musculus",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -13048,11 +13008,11 @@
       "bioartEntryId": 1180942427,
       "title": "Muscle Fibers",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Anatomy",
+      "category": "Tissues & histology",
       "keywords": [
         "Muscle Fibers",
         "other",
-        "Anatomy",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Roberta Schellino",
@@ -13138,11 +13098,11 @@
       "bioartEntryId": 1029233780,
       "title": "Muybridge Cat",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Muybridge Cat",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Gil Costa",
@@ -13168,11 +13128,11 @@
       "bioartEntryId": 1137992768,
       "title": "Myelencephalon, medulla oblongata",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "People",
+      "category": "Anatomy",
       "keywords": [
         "Myelencephalon, medulla oblongata",
         "human",
-        "People",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "Ksenia Georgievskaya",
@@ -13228,11 +13188,11 @@
       "bioartEntryId": 1094185320,
       "title": "myoglobin",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Proteins",
       "keywords": [
         "myoglobin",
         "cell",
-        "Cells",
+        "Proteins",
         "SciDraw"
       ],
       "author": "Alexander Bates",
@@ -13258,11 +13218,11 @@
       "bioartEntryId": 1105358575,
       "title": "Naegleria gruberi",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Naegleria gruberi",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -13292,8 +13252,7 @@
       "keywords": [
         "Naegleria Gruberi",
         "Parasites",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -13326,11 +13285,11 @@
       "bioartEntryId": 1063569239,
       "title": "Nannochloropsis sp.",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Plants",
       "keywords": [
         "Nannochloropsis sp.",
         "cell",
-        "Cells",
+        "Plants",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -13360,8 +13319,7 @@
       "keywords": [
         "Nannochloropsis Sp..",
         "Plants",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -13394,11 +13352,11 @@
       "bioartEntryId": 1214360177,
       "title": "Nematostella vectensis",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Nematostella vectensis",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -13428,8 +13386,7 @@
       "keywords": [
         "Nematostella Vectensis",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -13492,11 +13449,11 @@
       "bioartEntryId": 1148806070,
       "title": "network",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Symbols & diagrams",
       "keywords": [
         "network",
         "other",
-        "Other",
+        "Symbols & diagrams",
         "SciDraw"
       ],
       "author": "Alexander Bates",
@@ -13522,11 +13479,11 @@
       "bioartEntryId": 1055751105,
       "title": "network",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Symbols & diagrams",
       "keywords": [
         "network",
         "other",
-        "Other",
+        "Symbols & diagrams",
         "SciDraw"
       ],
       "author": "Alexander Bates",
@@ -13552,11 +13509,11 @@
       "bioartEntryId": 1053764249,
       "title": "network",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Symbols & diagrams",
       "keywords": [
         "network",
         "other",
-        "Other",
+        "Symbols & diagrams",
         "SciDraw"
       ],
       "author": "Alexander Bates",
@@ -13582,11 +13539,11 @@
       "bioartEntryId": 1166248716,
       "title": "network with hubs",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Symbols & diagrams",
       "keywords": [
         "network with hubs",
         "other",
-        "Other",
+        "Symbols & diagrams",
         "SciDraw"
       ],
       "author": "Mattia Chini",
@@ -13612,11 +13569,11 @@
       "bioartEntryId": 1106168764,
       "title": "Neural Network DeepLabCut",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Symbols & diagrams",
       "keywords": [
         "Neural Network DeepLabCut",
         "other",
-        "Other",
+        "Symbols & diagrams",
         "SciDraw"
       ],
       "author": "Mackenzie Mathis",
@@ -13642,11 +13599,11 @@
       "bioartEntryId": 1045612414,
       "title": "Neural Probe",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "Neural Probe",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Tony Man",
@@ -13672,11 +13629,11 @@
       "bioartEntryId": 1099377159,
       "title": "neural recordings",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Techniques & assays",
       "keywords": [
         "neural recordings",
         "other",
-        "Other",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Alexander Bates",
@@ -13702,11 +13659,11 @@
       "bioartEntryId": 1152502294,
       "title": "neural recordings",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Techniques & assays",
       "keywords": [
         "neural recordings",
         "other",
-        "Other",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Alexander Bates",
@@ -13732,11 +13689,11 @@
       "bioartEntryId": 1144409801,
       "title": "neural recordings - spike trains",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Techniques & assays",
       "keywords": [
         "neural recordings - spike trains",
         "other",
-        "Other",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Xuan Ma",
@@ -13972,11 +13929,11 @@
       "bioartEntryId": 1267446775,
       "title": "Neurospora crassa",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Fungi & protists",
       "keywords": [
         "Neurospora crassa",
         "other",
-        "Other",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -14002,12 +13959,11 @@
       "bioartEntryId": 1538649366,
       "title": "Neurospora Crassa",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Other",
+      "category": "Fungi & protists",
       "keywords": [
         "Neurospora Crassa",
-        "Other",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -14490,11 +14446,11 @@
       "bioartEntryId": 1141787546,
       "title": "Objective silhouette",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "Objective silhouette",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Manish Kumar",
@@ -14610,11 +14566,11 @@
       "bioartEntryId": 1177119915,
       "title": "Open Chromatin structure",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Nucleic acids & genetics",
       "keywords": [
         "Open Chromatin structure",
         "cell",
-        "Cells",
+        "Nucleic acids & genetics",
         "SciDraw"
       ],
       "author": "Kyuhyun Choi",
@@ -14670,11 +14626,11 @@
       "bioartEntryId": 1265137576,
       "title": "optic nerve and chiasm",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "People",
+      "category": "Anatomy",
       "keywords": [
         "optic nerve and chiasm",
         "human",
-        "People",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "Luis Concha",
@@ -14700,11 +14656,11 @@
       "bioartEntryId": 1082327258,
       "title": "optogenetics",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Techniques & assays",
       "keywords": [
         "optogenetics",
         "other",
-        "Other",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Long Li",
@@ -14730,11 +14686,11 @@
       "bioartEntryId": 1164381415,
       "title": "Ostreococcus tauri",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Plants",
       "keywords": [
         "Ostreococcus tauri",
         "cell",
-        "Cells",
+        "Plants",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -14764,8 +14720,7 @@
       "keywords": [
         "Ostreococcus Tauri",
         "Plants",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -14828,11 +14783,11 @@
       "bioartEntryId": 1191729426,
       "title": "Palmitic acid",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Molecules",
       "keywords": [
         "Palmitic acid",
         "other",
-        "Other",
+        "Molecules",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -14858,11 +14813,11 @@
       "bioartEntryId": 1231845349,
       "title": "Pan troglodytes",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Pan troglodytes",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -14892,8 +14847,7 @@
       "keywords": [
         "Pan Troglodytes",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -14926,11 +14880,11 @@
       "bioartEntryId": 1006349079,
       "title": "Pancreas",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "People",
+      "category": "Anatomy",
       "keywords": [
         "Pancreas",
         "human",
-        "People",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -14956,11 +14910,11 @@
       "bioartEntryId": 1036030541,
       "title": "Paramecium tetraurelia",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Paramecium tetraurelia",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -14986,12 +14940,11 @@
       "bioartEntryId": 1539395882,
       "title": "Paramecium Tetraurelia",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Animals",
+      "category": "Fungi & protists",
       "keywords": [
         "Paramecium Tetraurelia",
-        "Animals",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -15024,11 +14977,11 @@
       "bioartEntryId": 1068988955,
       "title": "patch clamp",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Techniques & assays",
       "keywords": [
         "patch clamp",
         "cell",
-        "Cells",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Zhe Chen",
@@ -15054,11 +15007,11 @@
       "bioartEntryId": 1239601223,
       "title": "Patch Electrode",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "Patch Electrode",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Andrew Hardaway",
@@ -15084,11 +15037,11 @@
       "bioartEntryId": 1016978657,
       "title": "Penicillium chrysogenum",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Fungi & protists",
       "keywords": [
         "Penicillium chrysogenum",
         "other",
-        "Other",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -15114,12 +15067,11 @@
       "bioartEntryId": 1676629734,
       "title": "Penicillium Chrysogenum",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Other",
+      "category": "Fungi & protists",
       "keywords": [
         "Penicillium Chrysogenum",
-        "Other",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -15152,11 +15104,11 @@
       "bioartEntryId": 1199186131,
       "title": "Perfusion",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Techniques & assays",
       "keywords": [
         "Perfusion",
         "cell",
-        "Cells",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Marcelo Moglie",
@@ -15182,11 +15134,11 @@
       "bioartEntryId": 1267258083,
       "title": "Perkinsus marinus",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Perkinsus marinus",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -15216,8 +15168,7 @@
       "keywords": [
         "Perkinsus Marinus",
         "Parasites",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -15374,8 +15325,7 @@
       "keywords": [
         "Petromyzon Marinus",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -15408,11 +15358,11 @@
       "bioartEntryId": 1258592783,
       "title": "Phaeodactylum tricornutum",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Phaeodactylum tricornutum",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -15438,12 +15388,11 @@
       "bioartEntryId": 1561643868,
       "title": "Phaeodactylum Tricornutum",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Plants",
+      "category": "Fungi & protists",
       "keywords": [
         "Phaeodactylum Tricornutum",
-        "Plants",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -15476,11 +15425,11 @@
       "bioartEntryId": 1250958950,
       "title": "phospholipids lipisome micelle",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Molecules",
       "keywords": [
         "phospholipids lipisome micelle",
         "cell",
-        "Cells",
+        "Molecules",
         "SciDraw"
       ],
       "author": "Wikipedia ",
@@ -15506,11 +15455,11 @@
       "bioartEntryId": 1048900053,
       "title": "Pill Capsule Medicine",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Molecules",
       "keywords": [
         "Pill Capsule Medicine",
         "other",
-        "Other",
+        "Molecules",
         "SciDraw"
       ],
       "author": "Daniel Clough",
@@ -15536,11 +15485,11 @@
       "bioartEntryId": 1208550793,
       "title": "pipette",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "pipette",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Scidraw ",
@@ -15566,11 +15515,11 @@
       "bioartEntryId": 1058244237,
       "title": "Pipette",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Equipment",
       "keywords": [
         "Pipette",
         "cell",
-        "Cells",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Marcelo Moglie",
@@ -15596,11 +15545,11 @@
       "bioartEntryId": 1096394442,
       "title": "Plasma Membrane",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Molecules",
       "keywords": [
         "Plasma Membrane",
         "cell",
-        "Cells",
+        "Molecules",
         "SciDraw"
       ],
       "author": "Vivek Kumar",
@@ -15626,11 +15575,11 @@
       "bioartEntryId": 1073173355,
       "title": "Plasma Membrane Curved",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Molecules",
       "keywords": [
         "Plasma Membrane Curved",
         "cell",
-        "Cells",
+        "Molecules",
         "SciDraw"
       ],
       "author": "Vivek Kumar",
@@ -15656,11 +15605,11 @@
       "bioartEntryId": 1242928303,
       "title": "Plasmodium falciparum",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Parasites",
       "keywords": [
         "Plasmodium falciparum",
         "cell",
-        "Cells",
+        "Parasites",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -15690,8 +15639,7 @@
       "keywords": [
         "Plasmodium Falciparum",
         "Parasites",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -15754,11 +15702,11 @@
       "bioartEntryId": 1154560786,
       "title": "Porphyra yezoensis",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Plants",
       "keywords": [
         "Porphyra yezoensis",
         "cell",
-        "Cells",
+        "Plants",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -15788,8 +15736,7 @@
       "keywords": [
         "Porphyra Yezoensis",
         "Plants",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -15822,11 +15769,11 @@
       "bioartEntryId": 1234418133,
       "title": "Prefrontal&hippocampus",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Animals",
+      "category": "Anatomy",
       "keywords": [
         "Prefrontal&hippocampus",
         "mouse",
-        "Animals",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "Yunan Chen",
@@ -15852,11 +15799,11 @@
       "bioartEntryId": 1067444747,
       "title": "Presynaptic site",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Cellular processes",
       "keywords": [
         "Presynaptic site",
         "cell",
-        "Cells",
+        "Cellular processes",
         "SciDraw"
       ],
       "author": "Kyuhyun Choi",
@@ -15882,11 +15829,11 @@
       "bioartEntryId": 1082119050,
       "title": "Primate retina",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Primate retina",
         "cell",
-        "Cells",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Tom Baden",
@@ -15912,11 +15859,11 @@
       "bioartEntryId": 1163335640,
       "title": "Pristionchus pacificus",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Pristionchus pacificus",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -15946,8 +15893,7 @@
       "keywords": [
         "Pristionchus Pacificus",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -16160,11 +16106,11 @@
       "bioartEntryId": 1063442443,
       "title": "qPCR",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Techniques & assays",
       "keywords": [
         "qPCR",
         "other",
-        "Other",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Florian Freudenberg",
@@ -16190,11 +16136,11 @@
       "bioartEntryId": 1256965547,
       "title": "Rabbit",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Rabbit",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Daniel Clough",
@@ -16250,11 +16196,11 @@
       "bioartEntryId": 1168783199,
       "title": "random network",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Symbols & diagrams",
       "keywords": [
         "random network",
         "other",
-        "Other",
+        "Symbols & diagrams",
         "SciDraw"
       ],
       "author": "Mattia Chini",
@@ -16280,11 +16226,11 @@
       "bioartEntryId": 1139132711,
       "title": "Raptor retina",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Raptor retina",
         "cell",
-        "Cells",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Tom Baden",
@@ -16670,11 +16616,11 @@
       "bioartEntryId": 1038764291,
       "title": "Rat Tetrode Recording",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Animals",
+      "category": "Techniques & assays",
       "keywords": [
         "Rat Tetrode Recording",
         "rat",
-        "Animals",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Gil Costa",
@@ -16824,8 +16770,7 @@
       "keywords": [
         "Rattus Norvegicus",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -16978,11 +16923,11 @@
       "bioartEntryId": 1029815437,
       "title": "Red blood cells",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "People",
+      "category": "Cells",
       "keywords": [
         "Red blood cells",
         "human",
-        "People",
+        "Cells",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -17008,11 +16953,11 @@
       "bioartEntryId": 1085209542,
       "title": "Repeating Pipettor",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "Repeating Pipettor",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Shuhan He",
@@ -17038,11 +16983,11 @@
       "bioartEntryId": 1200704198,
       "title": "Repeating Pipettor",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "Repeating Pipettor",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Shuhan He",
@@ -17068,11 +17013,11 @@
       "bioartEntryId": 1025086133,
       "title": "resident-intruder assay",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Animals",
+      "category": "Techniques & assays",
       "keywords": [
         "resident-intruder assay",
         "mouse",
-        "Animals",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Ann Kennedy",
@@ -17128,11 +17073,11 @@
       "bioartEntryId": 1108358876,
       "title": "Reward Water Drop",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Molecules",
       "keywords": [
         "Reward Water Drop",
         "other",
-        "Other",
+        "Molecules",
         "SciDraw"
       ],
       "author": "Akshay Markanday",
@@ -17158,11 +17103,11 @@
       "bioartEntryId": 1243103505,
       "title": "Ribbon Synapse",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Cellular processes",
       "keywords": [
         "Ribbon Synapse",
         "cell",
-        "Cells",
+        "Cellular processes",
         "SciDraw"
       ],
       "author": "Marcelo Moglie",
@@ -17188,11 +17133,11 @@
       "bioartEntryId": 1005557083,
       "title": "Ring Scissors",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "Ring Scissors",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Shuhan He",
@@ -17218,11 +17163,11 @@
       "bioartEntryId": 1166426551,
       "title": "RNN",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Symbols & diagrams",
       "keywords": [
         "RNN",
         "other",
-        "Other",
+        "Symbols & diagrams",
         "SciDraw"
       ],
       "author": "Federico Claudi",
@@ -17248,11 +17193,11 @@
       "bioartEntryId": 1228215027,
       "title": "Rodent recording emg with tetrodes",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Animals",
+      "category": "Techniques & assays",
       "keywords": [
         "Rodent recording emg with tetrodes",
         "mouse",
-        "Animals",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Heath Robinson",
@@ -17278,11 +17223,11 @@
       "bioartEntryId": 1129726064,
       "title": "Saccharomyces cerevisiae",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Saccharomyces cerevisiae",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -17308,12 +17253,11 @@
       "bioartEntryId": 1738708472,
       "title": "Saccharomyces Cerevisiae",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Other",
+      "category": "Fungi & protists",
       "keywords": [
         "Saccharomyces Cerevisiae",
-        "Other",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -17406,11 +17350,11 @@
       "bioartEntryId": 1239812199,
       "title": "Salamander",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Salamander",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Tom Baden",
@@ -17436,11 +17380,11 @@
       "bioartEntryId": 1036255274,
       "title": "Salamander retina",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Salamander retina",
         "cell",
-        "Cells",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Tom Baden",
@@ -17466,11 +17410,11 @@
       "bioartEntryId": 1180109001,
       "title": "Salpingoeca rosetta",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Salpingoeca rosetta",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -17496,12 +17440,11 @@
       "bioartEntryId": 1541895994,
       "title": "Salpingoeca Rosetta",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Animals",
+      "category": "Fungi & protists",
       "keywords": [
         "Salpingoeca Rosetta",
-        "Animals",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -17538,8 +17481,7 @@
       "keywords": [
         "SARS CoV 2",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -17602,11 +17544,11 @@
       "bioartEntryId": 1148394560,
       "title": "SBEM",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Techniques & assays",
       "keywords": [
         "SBEM",
         "other",
-        "Other",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Alexander Bates",
@@ -17632,11 +17574,11 @@
       "bioartEntryId": 1126525287,
       "title": "Schematic of a human molar",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "People",
+      "category": "Anatomy",
       "keywords": [
         "Schematic of a human molar",
         "human",
-        "People",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "Esther Plomp",
@@ -17662,11 +17604,11 @@
       "bioartEntryId": 1121757397,
       "title": "Schistosoma mansoni",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Parasites",
       "keywords": [
         "Schistosoma mansoni",
         "other",
-        "Other",
+        "Parasites",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -17696,8 +17638,7 @@
       "keywords": [
         "Schistosoma Mansoni",
         "Parasites",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -17730,11 +17671,11 @@
       "bioartEntryId": 1119716111,
       "title": "Schizosaccharomyces pombe",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Schizosaccharomyces pombe",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -17760,12 +17701,11 @@
       "bioartEntryId": 1627571199,
       "title": "Schizosaccharomyces Pombe",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Other",
+      "category": "Fungi & protists",
       "keywords": [
         "Schizosaccharomyces Pombe",
-        "Other",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -17798,11 +17738,11 @@
       "bioartEntryId": 1086791352,
       "title": "Schmidtea mediterranea",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Schmidtea mediterranea",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -17832,8 +17772,7 @@
       "keywords": [
         "Schmidtea Mediterranea",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -17896,11 +17835,11 @@
       "bioartEntryId": 1260261867,
       "title": "SciDraw Icon",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Symbols & diagrams",
       "keywords": [
         "SciDraw Icon",
         "other",
-        "Other",
+        "Symbols & diagrams",
         "SciDraw"
       ],
       "author": "Scidraw ",
@@ -17926,11 +17865,11 @@
       "bioartEntryId": 1123871861,
       "title": "SciDraw Logo",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Symbols & diagrams",
       "keywords": [
         "SciDraw Logo",
         "other",
-        "Other",
+        "Symbols & diagrams",
         "SciDraw"
       ],
       "author": "Scidraw ",
@@ -18106,11 +18045,11 @@
       "bioartEntryId": 1026137449,
       "title": "Silhouette CNS",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "People",
+      "category": "Anatomy",
       "keywords": [
         "Silhouette CNS",
         "human",
-        "People",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "Macauley Smith Breault",
@@ -18316,11 +18255,11 @@
       "bioartEntryId": 1083600288,
       "title": "skewed network",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Symbols & diagrams",
       "keywords": [
         "skewed network",
         "other",
-        "Other",
+        "Symbols & diagrams",
         "SciDraw"
       ],
       "author": "Mattia Chini",
@@ -18556,11 +18495,11 @@
       "bioartEntryId": 1196742747,
       "title": "Snake",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Snake",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Tom Baden",
@@ -18586,11 +18525,11 @@
       "bioartEntryId": 1234997512,
       "title": "Snake retina",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Snake retina",
         "cell",
-        "Cells",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Tom Baden",
@@ -18616,11 +18555,11 @@
       "bioartEntryId": 1081582419,
       "title": "Snake silhouette",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Snake silhouette",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Tiago Branco",
@@ -18706,11 +18645,11 @@
       "bioartEntryId": 1109452101,
       "title": "Sphaeroforma arctica",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Sphaeroforma arctica",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -18736,12 +18675,11 @@
       "bioartEntryId": 1684861342,
       "title": "Sphaeroforma Arctica",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Animals",
+      "category": "Fungi & protists",
       "keywords": [
         "Sphaeroforma Arctica",
-        "Animals",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -18774,11 +18712,11 @@
       "bioartEntryId": 1117908448,
       "title": "Spinal cord section",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Animals",
+      "category": "Tissues & histology",
       "keywords": [
         "Spinal cord section",
         "mouse",
-        "Animals",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Roberta Schellino",
@@ -18804,11 +18742,11 @@
       "bioartEntryId": 1049746460,
       "title": "Spine Cord",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "People",
+      "category": "Anatomy",
       "keywords": [
         "Spine Cord",
         "human",
-        "People",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "Ksenia Georgievskaya",
@@ -18864,11 +18802,11 @@
       "bioartEntryId": 1017623914,
       "title": "Spleen",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "People",
+      "category": "Anatomy",
       "keywords": [
         "Spleen",
         "human",
-        "People",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -18924,11 +18862,11 @@
       "bioartEntryId": 1099495882,
       "title": "ssTEM",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Techniques & assays",
       "keywords": [
         "ssTEM",
         "other",
-        "Other",
+        "Techniques & assays",
         "SciDraw"
       ],
       "author": "Alexander Bates",
@@ -18954,11 +18892,11 @@
       "bioartEntryId": 1262870027,
       "title": "Stomach",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "People",
+      "category": "Anatomy",
       "keywords": [
         "Stomach",
         "human",
-        "People",
+        "Anatomy",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -18984,11 +18922,11 @@
       "bioartEntryId": 1047301180,
       "title": "Sucrose",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Molecules",
       "keywords": [
         "Sucrose",
         "other",
-        "Other",
+        "Molecules",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -19014,11 +18952,11 @@
       "bioartEntryId": 1212855838,
       "title": "Sus scrofa domestica",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Sus scrofa domestica",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -19048,8 +18986,7 @@
       "keywords": [
         "Sus Scrofa Domestica",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -19082,11 +19019,11 @@
       "bioartEntryId": 1010968028,
       "title": "Symbiodinium sp.",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Plants",
       "keywords": [
         "Symbiodinium sp.",
         "cell",
-        "Cells",
+        "Plants",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -19116,8 +19053,7 @@
       "keywords": [
         "Symbiodinium Sp..",
         "Plants",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -19150,11 +19086,11 @@
       "bioartEntryId": 1261937149,
       "title": "synapse",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Cellular processes",
       "keywords": [
         "synapse",
         "cell",
-        "Cells",
+        "Cellular processes",
         "SciDraw"
       ],
       "author": "Peter Kraemer",
@@ -19180,11 +19116,11 @@
       "bioartEntryId": 1189549925,
       "title": "Synapse",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Cellular processes",
       "keywords": [
         "Synapse",
         "cell",
-        "Cells",
+        "Cellular processes",
         "SciDraw"
       ],
       "author": "Marcelo Moglie",
@@ -19304,8 +19240,7 @@
       "keywords": [
         "Taeniopygia Guttata",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -19368,11 +19303,11 @@
       "bioartEntryId": 1137550618,
       "title": "Tetrahymena thermophila",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Tetrahymena thermophila",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -19398,12 +19333,11 @@
       "bioartEntryId": 1713694350,
       "title": "Tetrahymena Thermophila",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Animals",
+      "category": "Fungi & protists",
       "keywords": [
         "Tetrahymena Thermophila",
-        "Animals",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -19436,11 +19370,11 @@
       "bioartEntryId": 1099846250,
       "title": "Tetraselmis striata",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Plants",
       "keywords": [
         "Tetraselmis striata",
         "cell",
-        "Cells",
+        "Plants",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -19470,8 +19404,7 @@
       "keywords": [
         "Tetraselmis Striata",
         "Plants",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -19504,11 +19437,11 @@
       "bioartEntryId": 1246504889,
       "title": "Thermometer",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "Thermometer",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -19534,11 +19467,11 @@
       "bioartEntryId": 1003534631,
       "title": "Triacylglyceride",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Molecules",
       "keywords": [
         "Triacylglyceride",
         "other",
-        "Other",
+        "Molecules",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -19654,11 +19587,11 @@
       "bioartEntryId": 1117883630,
       "title": "Urea",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Molecules",
       "keywords": [
         "Urea",
         "other",
-        "Other",
+        "Molecules",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -19684,11 +19617,11 @@
       "bioartEntryId": 1187454434,
       "title": "Ustilago maydis",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Ustilago maydis",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -19714,12 +19647,11 @@
       "bioartEntryId": 1685911865,
       "title": "Ustilago Maydis",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Other",
+      "category": "Fungi & protists",
       "keywords": [
         "Ustilago Maydis",
-        "Other",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -19752,11 +19684,11 @@
       "bioartEntryId": 1221473611,
       "title": "Utah array 10x10",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "Utah array 10x10",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Aitor Morales-gregorio",
@@ -19782,11 +19714,11 @@
       "bioartEntryId": 1043955647,
       "title": "Utah array 8x8",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "Utah array 8x8",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Aitor Morales-gregorio",
@@ -19842,11 +19774,11 @@
       "bioartEntryId": 1001658155,
       "title": "Volvox carteri",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Plants",
       "keywords": [
         "Volvox carteri",
         "other",
-        "Other",
+        "Plants",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -19876,8 +19808,7 @@
       "keywords": [
         "Volvox Carteri",
         "Plants",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -20060,11 +19991,11 @@
       "bioartEntryId": 1128711069,
       "title": "Water",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Molecules",
       "keywords": [
         "Water",
         "other",
-        "Other",
+        "Molecules",
         "SciDraw"
       ],
       "author": "John Chilton",
@@ -20090,11 +20021,11 @@
       "bioartEntryId": 1132815503,
       "title": "weight",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Equipment",
       "keywords": [
         "weight",
         "other",
-        "Other",
+        "Equipment",
         "SciDraw"
       ],
       "author": "Yu Taosong",
@@ -20210,11 +20141,11 @@
       "bioartEntryId": 1204632368,
       "title": "Xenopus oocyte",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Xenopus oocyte",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Agustin Carpaneto",
@@ -20240,11 +20171,11 @@
       "bioartEntryId": 1125918614,
       "title": "Xenopus Silhouette",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Xenopus Silhouette",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Agustin Carpaneto",
@@ -20270,11 +20201,11 @@
       "bioartEntryId": 1137736344,
       "title": "Xenopus Silhouette color",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Xenopus Silhouette color",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Agustin Carpaneto",
@@ -20300,11 +20231,11 @@
       "bioartEntryId": 1075619911,
       "title": "Xenopus tadpole with optic tectum",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Xenopus tadpole with optic tectum",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Joram Van Rheede",
@@ -20330,11 +20261,11 @@
       "bioartEntryId": 1105590712,
       "title": "Xenopus tropicalis",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Other",
+      "category": "Animals",
       "keywords": [
         "Xenopus tropicalis",
         "other",
-        "Other",
+        "Animals",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -20364,8 +20295,7 @@
       "keywords": [
         "Xenopus Tropicalis",
         "Animals",
-        "organism",
-        "Arcadia Science"
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -20398,11 +20328,11 @@
       "bioartEntryId": 1259614005,
       "title": "Yarrowia lipolytica",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "Yarrowia lipolytica",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Audrey Bell",
@@ -20428,12 +20358,11 @@
       "bioartEntryId": 1758961821,
       "title": "Yarrowia Lipolytica",
       "description": "Editable organism illustration from the Arcadia Science library.",
-      "category": "Other",
+      "category": "Fungi & protists",
       "keywords": [
         "Yarrowia Lipolytica",
-        "Other",
-        "organism",
-        "Arcadia Science"
+        "Fungi & protists",
+        "Arcadia Science Free organism illustration library"
       ],
       "author": "Arcadia Science",
       "credit": "Arcadia Science, Free organism illustration library, CC0-1.0, DOI 10.5281/zenodo.17203578",
@@ -20466,11 +20395,11 @@
       "bioartEntryId": 1220060354,
       "title": "yeast",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Fungi & protists",
       "keywords": [
         "yeast",
         "cell",
-        "Cells",
+        "Fungi & protists",
         "SciDraw"
       ],
       "author": "Alexander Bates",
@@ -20886,11 +20815,11 @@
       "bioartEntryId": 1088889649,
       "title": "Zebrafish retina (adult)",
       "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
+      "category": "Tissues & histology",
       "keywords": [
         "Zebrafish retina (adult)",
         "cell",
-        "Cells",
+        "Tissues & histology",
         "SciDraw"
       ],
       "author": "Tom Baden",

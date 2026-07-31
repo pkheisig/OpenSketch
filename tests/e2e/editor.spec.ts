@@ -3044,10 +3044,13 @@ test("orders the audited taxonomy from cell biology to macroscopic assets", asyn
     "Molecules",
     "Nucleic acids & genetics",
     "Cellular processes",
+    "Tissues & histology",
     "Equipment",
+    "Techniques & assays",
     "Bacteria",
     "Viruses",
     "Parasites",
+    "Fungi & protists",
     "Anatomy",
     "People",
     "Animals",
@@ -3064,6 +3067,10 @@ test("orders the audited taxonomy from cell biology to macroscopic assets", asyn
   await expect(
     page.locator(".asset-card").filter({ hasText: "Activated Neutrophil" })
   ).toBeVisible();
+
+  await page.getByRole("button", { name: "Tissues & histology", exact: true }).click();
+  await search.fill("Chicken retina");
+  await expect(page.locator(".asset-card").filter({ hasText: "Chicken retina" })).toBeVisible();
 
   await page.getByRole("button", { name: "Viruses", exact: true }).click();
   await search.fill("Bunyavirus");

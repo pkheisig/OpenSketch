@@ -18,6 +18,7 @@
     "format:check": "prettier --check .",
     "assets:sync": "tsx scripts/assets/sync-nih.ts",
     "assets:sync:open": "tsx scripts/assets/sync-open-assets.ts",
+    "assets:taxonomy:open": "tsx scripts/assets/reclassify-open-assets.ts",
     "assets:sync:commons": "tsx scripts/assets/sync-commons.ts",
     "assets:validate": "tsx scripts/assets/validate-assets.ts",
     "assets:thumbnails": "tsx scripts/assets/generate-thumbnails.ts",
