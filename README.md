@@ -161,11 +161,11 @@ license. Servier Medical Art is identified both as its original author and as a
 BioIcons-distributed source. The third command refreshes only BioIcons while
 retaining the already generated SciDraw and Arcadia entries.
 
-The bundled result contains **609 SciDraw families** (538 CC BY 4.0 and 71 CC0),
-**71 Arcadia organism families with 142 SVG variants**, and **2,826 BioIcons
-SVG families**. That is every renderable SVG in the pinned BioIcons catalog;
-three excluded upstream `.svg` files are zero bytes, and one additional source
-contains no visible artwork after secure sanitization. One icon with a legacy
+The bundled result contains **598 SciDraw families** (527 CC BY 4.0 and 71 CC0),
+**71 Arcadia organism families with 142 SVG variants**, and **2,768 BioIcons
+SVG families**. That is every SVG in the pinned catalogs that remains visible
+after secure sanitization; non-renderable records and three zero-byte BioIcons
+sources are excluded and listed in the import report. One icon with a legacy
 three-segment source path uses the contributor identity recorded by the
 upstream submission and author registry. CC BY assets retain the author, source
 page, DOI where available, and license URL required for attribution. CC0 assets

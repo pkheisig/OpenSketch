@@ -27,10 +27,10 @@ describe("open scientific-art collection", () => {
       family.sourceName?.startsWith("BioIcons")
     );
 
-    expect(sciDraw).toHaveLength(608);
+    expect(sciDraw).toHaveLength(598);
     expect(organisms).toHaveLength(71);
     expect(organisms.flatMap((family) => family.variants)).toHaveLength(142);
-    expect(bioIcons).toHaveLength(2_826);
+    expect(bioIcons).toHaveLength(2_768);
   });
 
   it("retains licenses, attribution, sources, and only local asset paths", async () => {
@@ -130,8 +130,12 @@ describe("open scientific-art collection", () => {
 
   it("does not bundle render-empty SVGs and files cancer-cell illustrations as cells", async () => {
     const manifest = await loadManifest();
-    expect(manifest.families.map((family) => family.familyId)).not.toContain(
-      "bioicons-cancer-cell-505acb8f"
+    expect(manifest.families.map((family) => family.familyId)).not.toEqual(
+      expect.arrayContaining([
+        "bioicons-cancer-cell-505acb8f",
+        "bioicons-b-cell-1-8c6fbdf2",
+        "scidraw-adipocyte-d3c9113d"
+      ])
     );
     const cellTitles = manifest.families
       .filter((family) => family.category === "Cells")

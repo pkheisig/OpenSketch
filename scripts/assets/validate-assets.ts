@@ -17,6 +17,51 @@ async function exists(filePath: string): Promise<boolean> {
   }
 }
 
+const THUMBNAIL_VALIDATION_CONCURRENCY = 12;
+
+async function runWithConcurrency(
+  tasks: Array<() => Promise<void>>,
+  concurrency = THUMBNAIL_VALIDATION_CONCURRENCY
+): Promise<void> {
+  let nextTask = 0;
+  const workers = Array.from({ length: Math.min(concurrency, tasks.length) }, async () => {
+    while (nextTask < tasks.length) {
+      const task = tasks[nextTask];
+      nextTask += 1;
+      await task();
+    }
+  });
+  await Promise.all(workers);
+}
+
+async function validateThumbnail(
+  thumbnailPath: string,
+  assetId: string,
+  errors: string[]
+): Promise<void> {
+  try {
+    const [thumbnail, stats] = await Promise.all([
+      sharp(thumbnailPath).metadata(),
+      sharp(thumbnailPath).stats()
+    ]);
+    if (thumbnail.format !== "webp") {
+      errors.push(`${assetId}: thumbnail is not WebP.`);
+    }
+    if (!thumbnail.width || !thumbnail.height || thumbnail.width > 256 || thumbnail.height > 256) {
+      errors.push(`${assetId}: thumbnail exceeds 256 x 256 pixels.`);
+    }
+    if (!thumbnail.hasAlpha) {
+      errors.push(`${assetId}: thumbnail has no alpha channel.`);
+    }
+    const alpha = stats.channels[3];
+    if (alpha && alpha.max === 0) {
+      errors.push(`${assetId}: thumbnail contains no visible pixels.`);
+    }
+  } catch (error) {
+    errors.push(`${assetId}: thumbnail cannot be decoded: ${String(error)}`);
+  }
+}
+
 async function main(): Promise<void> {
   const [manifest, lock, taxonomy] = await Promise.all([
     readJson<AssetManifest>(MANIFEST_PATH),
@@ -24,6 +69,7 @@ async function main(): Promise<void> {
     readJson<AssetTaxonomy>(TAXONOMY_PATH)
   ]);
   const errors: string[] = [];
+  const thumbnailValidationTasks: Array<() => Promise<void>> = [];
   const ids = new Set<string>();
   const familyIds = new Set<number>();
   const lockById = new Map(Object.values(lock.files).map((entry) => [entry.assetId, entry]));
@@ -64,34 +110,16 @@ async function main(): Promise<void> {
       ids.add(variant.id);
       const svgPath = join(SVG_DIR, basename(variant.assetPath));
       const thumbnailPath = join(THUMB_DIR, basename(variant.thumbnailPath));
-      if (!(await exists(svgPath))) errors.push(`${variant.id}: SVG is missing.`);
-      if (!(await exists(thumbnailPath))) errors.push(`${variant.id}: thumbnail is missing.`);
-      if (await exists(thumbnailPath)) {
-        try {
-          const thumbnail = await sharp(thumbnailPath).metadata();
-          if (thumbnail.format !== "webp") {
-            errors.push(`${variant.id}: thumbnail is not WebP.`);
-          }
-          if (
-            !thumbnail.width ||
-            !thumbnail.height ||
-            thumbnail.width > 256 ||
-            thumbnail.height > 256
-          ) {
-            errors.push(`${variant.id}: thumbnail exceeds 256 x 256 pixels.`);
-          }
-          if (!thumbnail.hasAlpha) {
-            errors.push(`${variant.id}: thumbnail has no alpha channel.`);
-          }
-          const alpha = (await sharp(thumbnailPath).stats()).channels[3];
-          if (alpha && alpha.max === 0) {
-            errors.push(`${variant.id}: thumbnail contains no visible pixels.`);
-          }
-        } catch (error) {
-          errors.push(`${variant.id}: thumbnail cannot be decoded: ${String(error)}`);
-        }
+      const [svgExists, thumbnailExists] = await Promise.all([
+        exists(svgPath),
+        exists(thumbnailPath)
+      ]);
+      if (!svgExists) errors.push(`${variant.id}: SVG is missing.`);
+      if (!thumbnailExists) errors.push(`${variant.id}: thumbnail is missing.`);
+      if (thumbnailExists) {
+        thumbnailValidationTasks.push(() => validateThumbnail(thumbnailPath, variant.id, errors));
       }
-      if (await exists(svgPath)) {
+      if (svgExists) {
         try {
           const source = await readFile(svgPath, "utf8");
           assertSafeSvg(source);
@@ -163,9 +191,13 @@ async function main(): Promise<void> {
       ids.add(variant.id);
       const svgPath = join(publicDirectory, variant.assetPath);
       const thumbnailPath = join(publicDirectory, variant.thumbnailPath);
-      if (!(await exists(svgPath))) errors.push(`${variant.id}: SVG is missing.`);
-      if (!(await exists(thumbnailPath))) errors.push(`${variant.id}: thumbnail is missing.`);
-      if (await exists(svgPath)) {
+      const [svgExists, thumbnailExists] = await Promise.all([
+        exists(svgPath),
+        exists(thumbnailPath)
+      ]);
+      if (!svgExists) errors.push(`${variant.id}: SVG is missing.`);
+      if (!thumbnailExists) errors.push(`${variant.id}: thumbnail is missing.`);
+      if (svgExists) {
         try {
           const source = await readFile(svgPath, "utf8");
           assertSafeSvg(source);
@@ -176,29 +208,13 @@ async function main(): Promise<void> {
           errors.push(`${variant.id}: ${String(error)}`);
         }
       }
-      if (await exists(thumbnailPath)) {
-        try {
-          const thumbnail = await sharp(thumbnailPath).metadata();
-          if (
-            thumbnail.format !== "webp" ||
-            !thumbnail.width ||
-            !thumbnail.height ||
-            thumbnail.width > 256 ||
-            thumbnail.height > 256 ||
-            !thumbnail.hasAlpha
-          ) {
-            errors.push(`${variant.id}: thumbnail is not a valid transparent WebP.`);
-          }
-          const alpha = (await sharp(thumbnailPath).stats()).channels[3];
-          if (alpha && alpha.max === 0) {
-            errors.push(`${variant.id}: thumbnail contains no visible pixels.`);
-          }
-        } catch (error) {
-          errors.push(`${variant.id}: thumbnail cannot be decoded: ${String(error)}`);
-        }
+      if (thumbnailExists) {
+        thumbnailValidationTasks.push(() => validateThumbnail(thumbnailPath, variant.id, errors));
       }
     }
   }
+
+  await runWithConcurrency(thumbnailValidationTasks);
 
   if (errors.length) {
     console.error(errors.map((error) => `- ${error}`).join("\n"));

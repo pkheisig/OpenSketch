@@ -2437,36 +2437,6 @@
       ]
     },
     {
-      "familyId": "scidraw-adipocyte-d3c9113d",
-      "bioartEntryId": 1043884253,
-      "title": "Adipocyte",
-      "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
-      "keywords": [
-        "Adipocyte",
-        "cell",
-        "Cells",
-        "SciDraw"
-      ],
-      "author": "John Chilton",
-      "credit": "John Chilton; SciDraw; CC-BY-4.0; DOI 10.5281/zenodo.3926133",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "SciDraw",
-      "sourcePage": "https://scidraw.io/drawing/adipocyte-d3c9113d",
-      "defaultVariantId": "scidraw-adipocyte-d3c9113d",
-      "variants": [
-        {
-          "id": "scidraw-adipocyte-d3c9113d",
-          "assetPath": "assets/scidraw/scidraw-adipocyte-d3c9113d.svg",
-          "thumbnailPath": "assets/scidraw-thumbnails/scidraw-adipocyte-d3c9113d.webp",
-          "localSha256": "f1180c1cd435a240f5d49c36fb818a9ba25a65863fc2afa899827f5503e39cba",
-          "width": 1936,
-          "height": 1670
-        }
-      ]
-    },
-    {
       "familyId": "bioicons-adipocyte-1-3513251e",
       "bioartEntryId": 2055652945,
       "title": "Adipocyte 1",
@@ -10643,192 +10613,6 @@
       ]
     },
     {
-      "familyId": "bioicons-b-cell-1-8c6fbdf2",
-      "bioartEntryId": 2147258335,
-      "title": "B Cell 1",
-      "description": "Editable blood immunology illustration from BioIcons.",
-      "category": "Immunology & blood",
-      "keywords": [
-        "B Cell 1",
-        "Blood Immunology",
-        "Immunology & blood",
-        "El-Jayawant",
-        "BioIcons"
-      ],
-      "author": "El-Jayawant",
-      "credit": "\"B Cell 1\" by El-Jayawant (https://www.eleanorjayawant.com/); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Blood_Immunology/El-Jayawant/B-cell_1.svg",
-      "defaultVariantId": "bioicons-b-cell-1-8c6fbdf2",
-      "variants": [
-        {
-          "id": "bioicons-b-cell-1-8c6fbdf2",
-          "assetPath": "assets/bioicons/bioicons-b-cell-1-8c6fbdf2.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-b-cell-1-8c6fbdf2.webp",
-          "localSha256": "5264efe72a1f06f8abbfb542562dcc533043a77358917d06edfc3217f5c6bdf6",
-          "width": 180,
-          "height": 174.43
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-b-cell-2-14421e33",
-      "bioartEntryId": 2021242339,
-      "title": "B Cell 2",
-      "description": "Editable blood immunology illustration from BioIcons.",
-      "category": "Immunology & blood",
-      "keywords": [
-        "B Cell 2",
-        "Blood Immunology",
-        "Immunology & blood",
-        "El-Jayawant",
-        "BioIcons"
-      ],
-      "author": "El-Jayawant",
-      "credit": "\"B Cell 2\" by El-Jayawant (https://www.eleanorjayawant.com/); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Blood_Immunology/El-Jayawant/B-cell_2.svg",
-      "defaultVariantId": "bioicons-b-cell-2-14421e33",
-      "variants": [
-        {
-          "id": "bioicons-b-cell-2-14421e33",
-          "assetPath": "assets/bioicons/bioicons-b-cell-2-14421e33.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-b-cell-2-14421e33.webp",
-          "localSha256": "a476dd37b35f79a10ecbe1938cfc2698ad36b1594a06258132af66923c26f462",
-          "width": 174,
-          "height": 164.54
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-b-cell-3-83f9a5fa",
-      "bioartEntryId": 2138386015,
-      "title": "B Cell 3",
-      "description": "Editable blood immunology illustration from BioIcons.",
-      "category": "Immunology & blood",
-      "keywords": [
-        "B Cell 3",
-        "Blood Immunology",
-        "Immunology & blood",
-        "El-Jayawant",
-        "BioIcons"
-      ],
-      "author": "El-Jayawant",
-      "credit": "\"B Cell 3\" by El-Jayawant (https://www.eleanorjayawant.com/); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Blood_Immunology/El-Jayawant/B-cell_3.svg",
-      "defaultVariantId": "bioicons-b-cell-3-83f9a5fa",
-      "variants": [
-        {
-          "id": "bioicons-b-cell-3-83f9a5fa",
-          "assetPath": "assets/bioicons/bioicons-b-cell-3-83f9a5fa.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-b-cell-3-83f9a5fa.webp",
-          "localSha256": "1d2158306d2edc49936825c8bb301dd3515e9981f7726b630dd67dc29b5638e0",
-          "width": 148,
-          "height": 148
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-b-cell-4-9b24a3a0",
-      "bioartEntryId": 2162679354,
-      "title": "B Cell 4",
-      "description": "Editable blood immunology illustration from BioIcons.",
-      "category": "Immunology & blood",
-      "keywords": [
-        "B Cell 4",
-        "Blood Immunology",
-        "Immunology & blood",
-        "El-Jayawant",
-        "BioIcons"
-      ],
-      "author": "El-Jayawant",
-      "credit": "\"B Cell 4\" by El-Jayawant (https://www.eleanorjayawant.com/); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Blood_Immunology/El-Jayawant/B-cell_4.svg",
-      "defaultVariantId": "bioicons-b-cell-4-9b24a3a0",
-      "variants": [
-        {
-          "id": "bioicons-b-cell-4-9b24a3a0",
-          "assetPath": "assets/bioicons/bioicons-b-cell-4-9b24a3a0.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-b-cell-4-9b24a3a0.webp",
-          "localSha256": "966c226a5dabe677a010ee8a47f3514b1e79348ca62f5b55f1f0d526cb12e044",
-          "width": 140.94,
-          "height": 141.99
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-b-cell-5-b69d1dc8",
-      "bioartEntryId": 2191484380,
-      "title": "B Cell 5",
-      "description": "Editable blood immunology illustration from BioIcons.",
-      "category": "Immunology & blood",
-      "keywords": [
-        "B Cell 5",
-        "Blood Immunology",
-        "Immunology & blood",
-        "El-Jayawant",
-        "BioIcons"
-      ],
-      "author": "El-Jayawant",
-      "credit": "\"B Cell 5\" by El-Jayawant (https://www.eleanorjayawant.com/); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Blood_Immunology/El-Jayawant/B-cell_5.svg",
-      "defaultVariantId": "bioicons-b-cell-5-b69d1dc8",
-      "variants": [
-        {
-          "id": "bioicons-b-cell-5-b69d1dc8",
-          "assetPath": "assets/bioicons/bioicons-b-cell-5-b69d1dc8.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-b-cell-5-b69d1dc8.webp",
-          "localSha256": "9d6d01287373e33e05a178195f894c47b5e76a609dbebc37ec3a001249c09b40",
-          "width": 152,
-          "height": 153.2
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-b-cell-cluster-2176d06f",
-      "bioartEntryId": 2035089670,
-      "title": "B Cell Cluster",
-      "description": "Editable blood immunology illustration from BioIcons.",
-      "category": "Immunology & blood",
-      "keywords": [
-        "B Cell Cluster",
-        "Blood Immunology",
-        "Immunology & blood",
-        "El-Jayawant",
-        "BioIcons"
-      ],
-      "author": "El-Jayawant",
-      "credit": "\"B Cell Cluster\" by El-Jayawant (https://www.eleanorjayawant.com/); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Blood_Immunology/El-Jayawant/B-cell_cluster.svg",
-      "defaultVariantId": "bioicons-b-cell-cluster-2176d06f",
-      "variants": [
-        {
-          "id": "bioicons-b-cell-cluster-2176d06f",
-          "assetPath": "assets/bioicons/bioicons-b-cell-cluster-2176d06f.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-b-cell-cluster-2176d06f.webp",
-          "localSha256": "4ead16170088e0c0b8a4ddf509f7e05a991d778abd047eb841f9b4e554c87de1",
-          "width": 356.11,
-          "height": 309.54
-        }
-      ]
-    },
-    {
       "familyId": "bioicons-b-dna-a7d11577",
       "bioartEntryId": 2175968599,
       "title": "B DNA",
@@ -11789,37 +11573,6 @@
           "localSha256": "f29aab9eef2bf74a2c6dec66c25dce618b6bb8a87bf8ca1e7a4bf7bccd087da3",
           "width": 1108.055,
           "height": 1082.992
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-barrel-stave-036ed2a8",
-      "bioartEntryId": 2003599658,
-      "title": "Barrel Stave",
-      "description": "Editable cell membrane illustration from BioIcons.",
-      "category": "Cell components",
-      "keywords": [
-        "Barrel Stave",
-        "Cell membrane",
-        "Cell components",
-        "El-Jayawant",
-        "BioIcons"
-      ],
-      "author": "El-Jayawant",
-      "credit": "\"Barrel Stave\" by El-Jayawant (https://www.eleanorjayawant.com/); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Cell_membrane/El-Jayawant/barrel_stave.svg",
-      "defaultVariantId": "bioicons-barrel-stave-036ed2a8",
-      "variants": [
-        {
-          "id": "bioicons-barrel-stave-036ed2a8",
-          "assetPath": "assets/bioicons/bioicons-barrel-stave-036ed2a8.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-barrel-stave-036ed2a8.webp",
-          "localSha256": "2d70f334f6278954c91aacc9200eab59aacd9514ff0392cf4d8c7d390c707c59",
-          "width": 180,
-          "height": 96.48
         }
       ]
     },
@@ -12953,68 +12706,6 @@
           "localSha256": "f301468cd18aeb4df80e0c507a81e56c891ae32d8830e9c174cc50d7c6797807",
           "width": 294,
           "height": 171
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-betta-fish-fighting-with-its-opponent-d5bfe73b",
-      "bioartEntryId": 2224132723,
-      "title": "Betta Fish Fighting With Its Opponent",
-      "description": "Editable procedures illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Betta Fish Fighting With Its Opponent",
-        "Procedures",
-        "Techniques & assays",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Betta Fish Fighting With Its Opponent\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Procedures/DBCLS/Betta_Fish_Fighting_with_Its_Opponent.svg",
-      "defaultVariantId": "bioicons-betta-fish-fighting-with-its-opponent-d5bfe73b",
-      "variants": [
-        {
-          "id": "bioicons-betta-fish-fighting-with-its-opponent-d5bfe73b",
-          "assetPath": "assets/bioicons/bioicons-betta-fish-fighting-with-its-opponent-d5bfe73b.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-betta-fish-fighting-with-its-opponent-d5bfe73b.webp",
-          "localSha256": "84700f86bc05a31d78ff5d281d218e4ca37b4a2f4f29fc1c1ecbb400cb05f012",
-          "width": 443.76,
-          "height": 265.68
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-betta-fish-recognizing-its-opponent-73dfa1ed",
-      "bioartEntryId": 2121502238,
-      "title": "Betta Fish Recognizing Its Opponent",
-      "description": "Editable procedures illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Betta Fish Recognizing Its Opponent",
-        "Procedures",
-        "Techniques & assays",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Betta Fish Recognizing Its Opponent\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Procedures/DBCLS/Betta_Fish_Recognizing_Its_Opponent.svg",
-      "defaultVariantId": "bioicons-betta-fish-recognizing-its-opponent-73dfa1ed",
-      "variants": [
-        {
-          "id": "bioicons-betta-fish-recognizing-its-opponent-73dfa1ed",
-          "assetPath": "assets/bioicons/bioicons-betta-fish-recognizing-its-opponent-73dfa1ed.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-betta-fish-recognizing-its-opponent-73dfa1ed.webp",
-          "localSha256": "4fb62d2068febe2fd6c0d43aedd36042bd35bf23bffcbd7cc853430c2ed24411",
-          "width": 443.76,
-          "height": 265.68
         }
       ]
     },
@@ -14450,37 +14141,6 @@
           "localSha256": "cfdab4f866e99380d6b7de4f81f13d7b7419190cd1e5f5a5d2a76aca381895d8",
           "width": 440.96,
           "height": 311.01
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-bone-marrow-11fae193",
-      "bioartEntryId": 2018853401,
-      "title": "Bone Marrow",
-      "description": "Editable blood immunology illustration from BioIcons.",
-      "category": "Immunology & blood",
-      "keywords": [
-        "Bone Marrow",
-        "Blood Immunology",
-        "Immunology & blood",
-        "El-Jayawant",
-        "BioIcons"
-      ],
-      "author": "El-Jayawant",
-      "credit": "\"Bone Marrow\" by El-Jayawant (https://www.eleanorjayawant.com/); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Blood_Immunology/El-Jayawant/bone_marrow.svg",
-      "defaultVariantId": "bioicons-bone-marrow-11fae193",
-      "variants": [
-        {
-          "id": "bioicons-bone-marrow-11fae193",
-          "assetPath": "assets/bioicons/bioicons-bone-marrow-11fae193.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-bone-marrow-11fae193.webp",
-          "localSha256": "215cf97b95f98f50a2667e7b06bf5c7d542b18283ca92830cd90b3087e7d0e76",
-          "width": 431,
-          "height": 276.52
         }
       ]
     },
@@ -17976,37 +17636,6 @@
       ]
     },
     {
-      "familyId": "bioicons-carpet-model-7fa7fdee",
-      "bioartEntryId": 2133857246,
-      "title": "Carpet Model",
-      "description": "Editable cell membrane illustration from BioIcons.",
-      "category": "Cell components",
-      "keywords": [
-        "Carpet Model",
-        "Cell membrane",
-        "Cell components",
-        "El-Jayawant",
-        "BioIcons"
-      ],
-      "author": "El-Jayawant",
-      "credit": "\"Carpet Model\" by El-Jayawant (https://www.eleanorjayawant.com/); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Cell_membrane/El-Jayawant/carpet_model.svg",
-      "defaultVariantId": "bioicons-carpet-model-7fa7fdee",
-      "variants": [
-        {
-          "id": "bioicons-carpet-model-7fa7fdee",
-          "assetPath": "assets/bioicons/bioicons-carpet-model-7fa7fdee.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-carpet-model-7fa7fdee.webp",
-          "localSha256": "5676684278e1259be2505527c866130a5a7bf9b6b5434fca8f7e05be7530ada5",
-          "width": 365.28,
-          "height": 187.68
-        }
-      ]
-    },
-    {
       "familyId": "bioicons-carrier-protein-membrane-1-9e568c32",
       "bioartEntryId": 2166029507,
       "title": "Carrier Protein Membrane 1",
@@ -20167,37 +19796,6 @@
           "localSha256": "659fd3716555cd88bb66252d95fd4b3d2f2c90664300c2e5d2332e2d5c4b5224",
           "width": 49.668,
           "height": 35.033
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-chambered-nautilus-ec91912a",
-      "bioartEntryId": 2248060178,
-      "title": "Chambered Nautilus",
-      "description": "Editable animals illustration from BioIcons.",
-      "category": "Animals",
-      "keywords": [
-        "Chambered Nautilus",
-        "Animals",
-        "Animals",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Chambered Nautilus\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Animals/DBCLS/Chambered_nautilus.svg",
-      "defaultVariantId": "bioicons-chambered-nautilus-ec91912a",
-      "variants": [
-        {
-          "id": "bioicons-chambered-nautilus-ec91912a",
-          "assetPath": "assets/bioicons/bioicons-chambered-nautilus-ec91912a.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-chambered-nautilus-ec91912a.webp",
-          "localSha256": "bc0265bb1e9f0a7400e7ef25ae1cad9df2a948874c6a1f08db4d1d3a52340d36",
-          "width": 400,
-          "height": 400
         }
       ]
     },
@@ -26569,37 +26167,6 @@
       ]
     },
     {
-      "familyId": "bioicons-culex-pipiens-mosquito-bb72b058",
-      "bioartEntryId": 2196553477,
-      "title": "Culex Pipiens Mosquito",
-      "description": "Editable animals illustration from BioIcons.",
-      "category": "Arthropods",
-      "keywords": [
-        "Culex Pipiens Mosquito",
-        "Animals",
-        "Arthropods",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Culex Pipiens Mosquito\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Animals/DBCLS/Culex_pipiens_mosquito.svg",
-      "defaultVariantId": "bioicons-culex-pipiens-mosquito-bb72b058",
-      "variants": [
-        {
-          "id": "bioicons-culex-pipiens-mosquito-bb72b058",
-          "assetPath": "assets/bioicons/bioicons-culex-pipiens-mosquito-bb72b058.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-culex-pipiens-mosquito-bb72b058.webp",
-          "localSha256": "34bbae15e1ee62e31bc3e2d895adc98d8e30ecd200cd97370e12e74c2428b216",
-          "width": 400,
-          "height": 400
-        }
-      ]
-    },
-    {
       "familyId": "bioicons-culture-flask-empty-9b084e90",
       "bioartEntryId": 2162563305,
       "title": "Culture Flask Empty",
@@ -32802,68 +32369,6 @@
           "localSha256": "ce97693018446292cfb59def180980edcdad602583286951e3f74cb0ede31056",
           "width": 575.35,
           "height": 554.61
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-elevated-plus-maze-test-mouse-placed-in-the-closed-arm-0055c8b3",
-      "bioartEntryId": 2000351371,
-      "title": "Elevated Plus Maze Test Mouse Placed In The Closed Arm",
-      "description": "Editable procedures illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Elevated Plus Maze Test Mouse Placed In The Closed Arm",
-        "Procedures",
-        "Techniques & assays",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Elevated Plus Maze Test Mouse Placed In The Closed Arm\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Procedures/DBCLS/Elevated_Plus_Maze_Test_Mouse_Placed_in_the_Closed_Arm.svg",
-      "defaultVariantId": "bioicons-elevated-plus-maze-test-mouse-placed-in-the-closed-arm-0055c8b3",
-      "variants": [
-        {
-          "id": "bioicons-elevated-plus-maze-test-mouse-placed-in-the-closed-arm-0055c8b3",
-          "assetPath": "assets/bioicons/bioicons-elevated-plus-maze-test-mouse-placed-in-the-closed-arm-0055c8b3.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-elevated-plus-maze-test-mouse-placed-in-the-closed-arm-0055c8b3.webp",
-          "localSha256": "2a8138b0f0d6457126b0cf26fb4e6ac9011178577ca019b14b666c4754ed5982",
-          "width": 206.4,
-          "height": 188.64
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-elevated-plus-maze-test-mouse-placed-in-the-open-arm-d2644220",
-      "bioartEntryId": 2220611618,
-      "title": "Elevated Plus Maze Test Mouse Placed In The Open Arm",
-      "description": "Editable procedures illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Elevated Plus Maze Test Mouse Placed In The Open Arm",
-        "Procedures",
-        "Techniques & assays",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Elevated Plus Maze Test Mouse Placed In The Open Arm\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Procedures/DBCLS/Elevated_Plus_Maze_Test_Mouse_Placed_in_the_Open_Arm.svg",
-      "defaultVariantId": "bioicons-elevated-plus-maze-test-mouse-placed-in-the-open-arm-d2644220",
-      "variants": [
-        {
-          "id": "bioicons-elevated-plus-maze-test-mouse-placed-in-the-open-arm-d2644220",
-          "assetPath": "assets/bioicons/bioicons-elevated-plus-maze-test-mouse-placed-in-the-open-arm-d2644220.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-elevated-plus-maze-test-mouse-placed-in-the-open-arm-d2644220.webp",
-          "localSha256": "87ced86ea536ce2a2c21002289d0ed052d19a77b853f87ec3bbdde7659bbbd15",
-          "width": 206.4,
-          "height": 188.64
         }
       ]
     },
@@ -45488,36 +44993,6 @@
       ]
     },
     {
-      "familyId": "scidraw-gentoo-penguin-9ff4db48",
-      "bioartEntryId": 1163503036,
-      "title": "Gentoo Penguin",
-      "description": "Editable scientific illustration from SciDraw.",
-      "category": "Animals",
-      "keywords": [
-        "Gentoo Penguin",
-        "bird",
-        "Animals",
-        "SciDraw"
-      ],
-      "author": "Molly Smith",
-      "credit": "Molly Smith; SciDraw; CC-BY-4.0; DOI 10.5281/zenodo.3926157",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "SciDraw",
-      "sourcePage": "https://scidraw.io/drawing/gentoo-penguin-9ff4db48",
-      "defaultVariantId": "scidraw-gentoo-penguin-9ff4db48",
-      "variants": [
-        {
-          "id": "scidraw-gentoo-penguin-9ff4db48",
-          "assetPath": "assets/scidraw/scidraw-gentoo-penguin-9ff4db48.svg",
-          "thumbnailPath": "assets/scidraw-thumbnails/scidraw-gentoo-penguin-9ff4db48.webp",
-          "localSha256": "ebc1a7eefad08903d0b18c7f9278eda621ce7fa99eafbc327b923560be441af8",
-          "width": 1248,
-          "height": 1432
-        }
-      ]
-    },
-    {
       "familyId": "bioicons-geo-logo-781a39bf",
       "bioartEntryId": 2125936539,
       "title": "GEO Logo",
@@ -45576,37 +45051,6 @@
           "localSha256": "434d1d03f32c4c808161c909b3ec0dc5ca838a767f5f693f51e5cb14ee62109e",
           "width": 1000,
           "height": 1000
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-germinal-center-dbd028b3",
-      "bioartEntryId": 2230490763,
-      "title": "Germinal Center",
-      "description": "Editable blood immunology illustration from BioIcons.",
-      "category": "Immunology & blood",
-      "keywords": [
-        "Germinal Center",
-        "Blood Immunology",
-        "Immunology & blood",
-        "El-Jayawant",
-        "BioIcons"
-      ],
-      "author": "El-Jayawant",
-      "credit": "\"Germinal Center\" by El-Jayawant (https://www.eleanorjayawant.com/); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Blood_Immunology/El-Jayawant/germinal_center.svg",
-      "defaultVariantId": "bioicons-germinal-center-dbd028b3",
-      "variants": [
-        {
-          "id": "bioicons-germinal-center-dbd028b3",
-          "assetPath": "assets/bioicons/bioicons-germinal-center-dbd028b3.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-germinal-center-dbd028b3.webp",
-          "localSha256": "c195ff5c87565fbd9ea2205dea4747b4e8619a8049065ec9692a941bece80c49",
-          "width": 571.33,
-          "height": 455.05
         }
       ]
     },
@@ -47177,37 +46621,6 @@
           "localSha256": "0fec82fbc4bd521c1dae750950effadb8426d3e615600cd36b0c0e151c918bd6",
           "width": 341.027,
           "height": 342.841
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-green-hydra-viridissima-6c0666a8",
-      "bioartEntryId": 2113272426,
-      "title": "Green Hydra Viridissima",
-      "description": "Editable animals illustration from BioIcons.",
-      "category": "Animals",
-      "keywords": [
-        "Green Hydra Viridissima",
-        "Animals",
-        "Animals",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Green Hydra Viridissima\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Animals/DBCLS/green_Hydra_viridissima.svg",
-      "defaultVariantId": "bioicons-green-hydra-viridissima-6c0666a8",
-      "variants": [
-        {
-          "id": "bioicons-green-hydra-viridissima-6c0666a8",
-          "assetPath": "assets/bioicons/bioicons-green-hydra-viridissima-6c0666a8.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-green-hydra-viridissima-6c0666a8.webp",
-          "localSha256": "5155dbd592baa0d8becdc9150ac19847e9151840390c5a96e19e0e9cd7649cf6",
-          "width": 400,
-          "height": 400
         }
       ]
     },
@@ -49628,36 +49041,6 @@
           "localSha256": "7aa9f15e9aadbc15cd8faa5ebfcdb0512e431becdf89a84d3fb07420adf115ec",
           "width": 1940,
           "height": 1691
-        }
-      ]
-    },
-    {
-      "familyId": "scidraw-hepatocyte-99eee670",
-      "bioartEntryId": 1014615643,
-      "title": "Hepatocyte",
-      "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
-      "keywords": [
-        "Hepatocyte",
-        "cell",
-        "Cells",
-        "SciDraw"
-      ],
-      "author": "John Chilton",
-      "credit": "John Chilton; SciDraw; CC-BY-4.0; DOI 10.5281/zenodo.3926287",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "SciDraw",
-      "sourcePage": "https://scidraw.io/drawing/hepatocyte-99eee670",
-      "defaultVariantId": "scidraw-hepatocyte-99eee670",
-      "variants": [
-        {
-          "id": "scidraw-hepatocyte-99eee670",
-          "assetPath": "assets/scidraw/scidraw-hepatocyte-99eee670.svg",
-          "thumbnailPath": "assets/scidraw-thumbnails/scidraw-hepatocyte-99eee670.webp",
-          "localSha256": "4f8c146c5acdcb83ff49f3d47d84c276452a0cce1d93c39542c1f7c64e16e82f",
-          "width": 1944,
-          "height": 1565
         }
       ]
     },
@@ -57948,36 +57331,6 @@
       ]
     },
     {
-      "familyId": "scidraw-lactose-0975acdd",
-      "bioartEntryId": 1053740687,
-      "title": "Lactose",
-      "description": "Editable scientific illustration from SciDraw.",
-      "category": "Molecules",
-      "keywords": [
-        "Lactose",
-        "other",
-        "Molecules",
-        "SciDraw"
-      ],
-      "author": "John Chilton",
-      "credit": "John Chilton; SciDraw; CC-BY-4.0; DOI 10.5281/zenodo.3926511",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "SciDraw",
-      "sourcePage": "https://scidraw.io/drawing/lactose-0975acdd",
-      "defaultVariantId": "scidraw-lactose-0975acdd",
-      "variants": [
-        {
-          "id": "scidraw-lactose-0975acdd",
-          "assetPath": "assets/scidraw/scidraw-lactose-0975acdd.svg",
-          "thumbnailPath": "assets/scidraw-thumbnails/scidraw-lactose-0975acdd.webp",
-          "localSha256": "353da360601875e7d8d79360d7f5420bf9dffc850b10009ece863786499f2c22",
-          "width": 966,
-          "height": 751
-        }
-      ]
-    },
-    {
       "familyId": "bioicons-ladybird-bug-beetle-0b83ddce",
       "bioartEntryId": 2012074460,
       "title": "Ladybird Bug Beetle",
@@ -59632,37 +58985,6 @@
           "localSha256": "01ff8e83f86fd422cbda7d5d71e585baa7e1736e936e5d0f7309fd8a7f0715b7",
           "width": 400,
           "height": 400
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-light-wave-0df8a52c",
-      "bioartEntryId": 2014649938,
-      "title": "Light Wave",
-      "description": "Editable general items illustration from BioIcons.",
-      "category": "Other",
-      "keywords": [
-        "Light Wave",
-        "General items",
-        "Other",
-        "Rahel-Khdhr",
-        "BioIcons"
-      ],
-      "author": "Rahel-Khdhr",
-      "credit": "\"Light Wave\" by Rahel-Khdhr (https://linktr.ee/rahe1); BioIcons; CC BY-SA 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-SA-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-sa-4.0/General_items/Rahel-Khdhr/Light_Wave.svg",
-      "defaultVariantId": "bioicons-light-wave-0df8a52c",
-      "variants": [
-        {
-          "id": "bioicons-light-wave-0df8a52c",
-          "assetPath": "assets/bioicons/bioicons-light-wave-0df8a52c.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-light-wave-0df8a52c.webp",
-          "localSha256": "188eb3c2d11424fc245fb78e43ce5935615766dd762235eb6b09603ae4da3611",
-          "width": 302,
-          "height": 722
         }
       ]
     },
@@ -62026,36 +61348,6 @@
       ]
     },
     {
-      "familyId": "scidraw-macrophage-a2629091",
-      "bioartEntryId": 1048320185,
-      "title": "Macrophage",
-      "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
-      "keywords": [
-        "Macrophage",
-        "cell",
-        "Cells",
-        "SciDraw"
-      ],
-      "author": "John Chilton",
-      "credit": "John Chilton; SciDraw; CC-BY-4.0; DOI 10.5281/zenodo.3926101",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "SciDraw",
-      "sourcePage": "https://scidraw.io/drawing/macrophage-a2629091",
-      "defaultVariantId": "scidraw-macrophage-a2629091",
-      "variants": [
-        {
-          "id": "scidraw-macrophage-a2629091",
-          "assetPath": "assets/scidraw/scidraw-macrophage-a2629091.svg",
-          "thumbnailPath": "assets/scidraw-thumbnails/scidraw-macrophage-a2629091.webp",
-          "localSha256": "05e7c2ca8ae5e871649693ef5a73a54c19418a679ccf4a09cfe34268557e105c",
-          "width": 1920,
-          "height": 1563
-        }
-      ]
-    },
-    {
       "familyId": "bioicons-macrophage-bc8d3e93",
       "bioartEntryId": 2197710825,
       "title": "Macrophage",
@@ -62337,36 +61629,6 @@
           "localSha256": "52fbf27ad36f6750ebbfee79e6e0b2e4bd9175dde84129a596a1c7dd0cced442",
           "width": 612,
           "height": 792
-        }
-      ]
-    },
-    {
-      "familyId": "scidraw-maltose-45216637",
-      "bioartEntryId": 1159688234,
-      "title": "Maltose",
-      "description": "Editable scientific illustration from SciDraw.",
-      "category": "Molecules",
-      "keywords": [
-        "Maltose",
-        "other",
-        "Molecules",
-        "SciDraw"
-      ],
-      "author": "John Chilton",
-      "credit": "John Chilton; SciDraw; CC-BY-4.0; DOI 10.5281/zenodo.3926513",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "SciDraw",
-      "sourcePage": "https://scidraw.io/drawing/maltose-45216637",
-      "defaultVariantId": "scidraw-maltose-45216637",
-      "variants": [
-        {
-          "id": "scidraw-maltose-45216637",
-          "assetPath": "assets/scidraw/scidraw-maltose-45216637.svg",
-          "thumbnailPath": "assets/scidraw-thumbnails/scidraw-maltose-45216637.webp",
-          "localSha256": "0270770e420ae89678500b9930a09fb7b7c0a38a5f54c13130a0ac8abd1a3636",
-          "width": 939,
-          "height": 593
         }
       ]
     },
@@ -67608,37 +66870,6 @@
       ]
     },
     {
-      "familyId": "bioicons-moon-jellyfish-98f060dd",
-      "bioartEntryId": 2160368141,
-      "title": "Moon Jellyfish",
-      "description": "Editable animals illustration from BioIcons.",
-      "category": "Animals",
-      "keywords": [
-        "Moon Jellyfish",
-        "Animals",
-        "Animals",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Moon Jellyfish\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Animals/DBCLS/Moon_jellyfish.svg",
-      "defaultVariantId": "bioicons-moon-jellyfish-98f060dd",
-      "variants": [
-        {
-          "id": "bioicons-moon-jellyfish-98f060dd",
-          "assetPath": "assets/bioicons/bioicons-moon-jellyfish-98f060dd.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-moon-jellyfish-98f060dd.webp",
-          "localSha256": "58a113da3d83df042998424d44d284917bb9cbe9d7029927c7bf1a9a6d5332df",
-          "width": 400,
-          "height": 400
-        }
-      ]
-    },
-    {
       "familyId": "bioicons-morpion-de24a359",
       "bioartEntryId": 2232933941,
       "title": "Morpion",
@@ -71332,36 +70563,6 @@
       ]
     },
     {
-      "familyId": "scidraw-mute-swan-6b9943a2",
-      "bioartEntryId": 1040192513,
-      "title": "Mute Swan",
-      "description": "Editable scientific illustration from SciDraw.",
-      "category": "Animals",
-      "keywords": [
-        "Mute Swan",
-        "bird",
-        "Animals",
-        "SciDraw"
-      ],
-      "author": "Molly Smith",
-      "credit": "Molly Smith; SciDraw; CC-BY-4.0; DOI 10.5281/zenodo.3926013",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "SciDraw",
-      "sourcePage": "https://scidraw.io/drawing/mute-swan-6b9943a2",
-      "defaultVariantId": "scidraw-mute-swan-6b9943a2",
-      "variants": [
-        {
-          "id": "scidraw-mute-swan-6b9943a2",
-          "assetPath": "assets/scidraw/scidraw-mute-swan-6b9943a2.svg",
-          "thumbnailPath": "assets/scidraw-thumbnails/scidraw-mute-swan-6b9943a2.webp",
-          "localSha256": "d6ff67d6960e7d804533782c5ae8b49348c5b3f6290bc79334bbe0285d2cb5e1",
-          "width": 952,
-          "height": 888
-        }
-      ]
-    },
-    {
       "familyId": "scidraw-muybridge-cat-a04ccee1",
       "bioartEntryId": 1029233780,
       "title": "Muybridge Cat",
@@ -71988,37 +71189,6 @@
           "localSha256": "8a4852679b93f2c5b74c66bb6cb99abbbe89197905824e64c10b9d350018b28b",
           "width": 619,
           "height": 619
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-nanopore-sequencing-dbf7c529",
-      "bioartEntryId": 2230653010,
-      "title": "Nanopore Sequencing",
-      "description": "Editable nucleic acids illustration from BioIcons.",
-      "category": "Nucleic acids & genetics",
-      "keywords": [
-        "Nanopore Sequencing",
-        "Nucleic acids",
-        "Nucleic acids & genetics",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Nanopore Sequencing\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Nucleic_acids/DBCLS/nanopore_sequencing.svg",
-      "defaultVariantId": "bioicons-nanopore-sequencing-dbf7c529",
-      "variants": [
-        {
-          "id": "bioicons-nanopore-sequencing-dbf7c529",
-          "assetPath": "assets/bioicons/bioicons-nanopore-sequencing-dbf7c529.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-nanopore-sequencing-dbf7c529.webp",
-          "localSha256": "6d36487df2a3330b60e920f655b90ffb62fcf1dc6c60ab03ef17a6f7dae86f62",
-          "width": 768,
-          "height": 432
         }
       ]
     },
@@ -74362,68 +73532,6 @@
       ]
     },
     {
-      "familyId": "bioicons-novel-tank-test-higher-anxiety-level-in-zebrafish-7e29ed16",
-      "bioartEntryId": 2132292305,
-      "title": "Novel Tank Test Higher Anxiety Level In Zebrafish",
-      "description": "Editable procedures illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Novel Tank Test Higher Anxiety Level In Zebrafish",
-        "Procedures",
-        "Techniques & assays",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Novel Tank Test Higher Anxiety Level In Zebrafish\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Procedures/DBCLS/Novel_Tank_Test_Higher_Anxiety_Level_in_Zebrafish.svg",
-      "defaultVariantId": "bioicons-novel-tank-test-higher-anxiety-level-in-zebrafish-7e29ed16",
-      "variants": [
-        {
-          "id": "bioicons-novel-tank-test-higher-anxiety-level-in-zebrafish-7e29ed16",
-          "assetPath": "assets/bioicons/bioicons-novel-tank-test-higher-anxiety-level-in-zebrafish-7e29ed16.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-novel-tank-test-higher-anxiety-level-in-zebrafish-7e29ed16.webp",
-          "localSha256": "fdb1568152678f1284ee6d3271d04b85c43fbb9b69fceba86cd339968de5b73a",
-          "width": 262.08,
-          "height": 193.92
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-novel-tank-test-lower-anxiety-level-in-zebrafish-2c64ce8a",
-      "bioartEntryId": 2046550248,
-      "title": "Novel Tank Test Lower Anxiety Level In Zebrafish",
-      "description": "Editable procedures illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Novel Tank Test Lower Anxiety Level In Zebrafish",
-        "Procedures",
-        "Techniques & assays",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Novel Tank Test Lower Anxiety Level In Zebrafish\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Procedures/DBCLS/Novel_Tank_Test_Lower_Anxiety_Level_in_Zebrafish.svg",
-      "defaultVariantId": "bioicons-novel-tank-test-lower-anxiety-level-in-zebrafish-2c64ce8a",
-      "variants": [
-        {
-          "id": "bioicons-novel-tank-test-lower-anxiety-level-in-zebrafish-2c64ce8a",
-          "assetPath": "assets/bioicons/bioicons-novel-tank-test-lower-anxiety-level-in-zebrafish-2c64ce8a.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-novel-tank-test-lower-anxiety-level-in-zebrafish-2c64ce8a.webp",
-          "localSha256": "3ca96276afa416dc696837c791d09bcc0435ef6b9519ee1476dbc1af919c7ea0",
-          "width": 262.08,
-          "height": 193.92
-        }
-      ]
-    },
-    {
       "familyId": "bioicons-nuclear-pore-complex-c9d315a6",
       "bioartEntryId": 2211628378,
       "title": "Nuclear Pore Complex",
@@ -76346,99 +75454,6 @@
           "localSha256": "1c42b80d9adbe5873223b8a4e4686c4eff997c32c78dd58d0ef12c227ce7184c",
           "width": 209.671,
           "height": 224.196
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-operant-conditioning-feeding-reward-da4228a2",
-      "bioartEntryId": 2228860554,
-      "title": "Operant Conditioning Feeding Reward",
-      "description": "Editable procedures illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Operant Conditioning Feeding Reward",
-        "Procedures",
-        "Techniques & assays",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Operant Conditioning Feeding Reward\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Procedures/DBCLS/Operant_Conditioning_Feeding_Reward.svg",
-      "defaultVariantId": "bioicons-operant-conditioning-feeding-reward-da4228a2",
-      "variants": [
-        {
-          "id": "bioicons-operant-conditioning-feeding-reward-da4228a2",
-          "assetPath": "assets/bioicons/bioicons-operant-conditioning-feeding-reward-da4228a2.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-operant-conditioning-feeding-reward-da4228a2.webp",
-          "localSha256": "e94d67b31cfca9d81b11f616873398e221576ce908faab1c7868d2812dcbaded",
-          "width": 192,
-          "height": 192
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-operant-conditioning-no-stimulation-f222261b",
-      "bioartEntryId": 2253895265,
-      "title": "Operant Conditioning No Stimulation",
-      "description": "Editable procedures illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Operant Conditioning No Stimulation",
-        "Procedures",
-        "Techniques & assays",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Operant Conditioning No Stimulation\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Procedures/DBCLS/Operant_Conditioning_No_Stimulation.svg",
-      "defaultVariantId": "bioicons-operant-conditioning-no-stimulation-f222261b",
-      "variants": [
-        {
-          "id": "bioicons-operant-conditioning-no-stimulation-f222261b",
-          "assetPath": "assets/bioicons/bioicons-operant-conditioning-no-stimulation-f222261b.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-operant-conditioning-no-stimulation-f222261b.webp",
-          "localSha256": "146a6ae7915eb3b79d50e628287abb52b82798012c68070b2caa3bd4ffae5843",
-          "width": 192,
-          "height": 192
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-operant-conditioning-response-to-light-stimulation-6cc7fd1a",
-      "bioartEntryId": 2114065361,
-      "title": "Operant Conditioning Response To Light Stimulation",
-      "description": "Editable procedures illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Operant Conditioning Response To Light Stimulation",
-        "Procedures",
-        "Techniques & assays",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Operant Conditioning Response To Light Stimulation\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Procedures/DBCLS/Operant_Conditioning_Response_to_Light_Stimulation.svg",
-      "defaultVariantId": "bioicons-operant-conditioning-response-to-light-stimulation-6cc7fd1a",
-      "variants": [
-        {
-          "id": "bioicons-operant-conditioning-response-to-light-stimulation-6cc7fd1a",
-          "assetPath": "assets/bioicons/bioicons-operant-conditioning-response-to-light-stimulation-6cc7fd1a.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-operant-conditioning-response-to-light-stimulation-6cc7fd1a.webp",
-          "localSha256": "a53adfb2e98cddd467addd9e891bc02e14bc8e680950001e9dfc56da59f253d3",
-          "width": 192,
-          "height": 192
         }
       ]
     },
@@ -80686,67 +79701,6 @@
       ]
     },
     {
-      "familyId": "bioicons-pill-bug-eb8b09ad",
-      "bioartEntryId": 2246984858,
-      "title": "Pill Bug",
-      "description": "Editable animals illustration from BioIcons.",
-      "category": "Animals",
-      "keywords": [
-        "Pill Bug",
-        "Animals",
-        "Animals",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Pill Bug\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Animals/DBCLS/Pill_bug.svg",
-      "defaultVariantId": "bioicons-pill-bug-eb8b09ad",
-      "variants": [
-        {
-          "id": "bioicons-pill-bug-eb8b09ad",
-          "assetPath": "assets/bioicons/bioicons-pill-bug-eb8b09ad.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-pill-bug-eb8b09ad.webp",
-          "localSha256": "cabb6a9ec6e6f6e08fd3ba334234432778bc2119bed0b3f6eb9fe4e8021f20c4",
-          "width": 400,
-          "height": 400
-        }
-      ]
-    },
-    {
-      "familyId": "scidraw-pill-capsule-medicine-7ee92768",
-      "bioartEntryId": 1048900053,
-      "title": "Pill Capsule Medicine",
-      "description": "Editable scientific illustration from SciDraw.",
-      "category": "Molecules",
-      "keywords": [
-        "Pill Capsule Medicine",
-        "other",
-        "Molecules",
-        "SciDraw"
-      ],
-      "author": "Daniel Clough",
-      "credit": "Daniel Clough; SciDraw; CC-BY-4.0; DOI 10.5281/zenodo.3926307",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "SciDraw",
-      "sourcePage": "https://scidraw.io/drawing/pill-capsule-medicine-7ee92768",
-      "defaultVariantId": "scidraw-pill-capsule-medicine-7ee92768",
-      "variants": [
-        {
-          "id": "scidraw-pill-capsule-medicine-7ee92768",
-          "assetPath": "assets/scidraw/scidraw-pill-capsule-medicine-7ee92768.svg",
-          "thumbnailPath": "assets/scidraw-thumbnails/scidraw-pill-capsule-medicine-7ee92768.webp",
-          "localSha256": "b5b14ffb5e87cbcd088b61407e91365d7edc680710e81ba57bdb019d0b87f98b",
-          "width": 841.9,
-          "height": 595.3
-        }
-      ]
-    },
-    {
       "familyId": "bioicons-pill-green-0e036682",
       "bioartEntryId": 2014693992,
       "title": "Pill Green",
@@ -81433,37 +80387,6 @@
       ]
     },
     {
-      "familyId": "bioicons-planaria-8fd73193",
-      "bioartEntryId": 2150827801,
-      "title": "Planaria",
-      "description": "Editable animals illustration from BioIcons.",
-      "category": "Animals",
-      "keywords": [
-        "Planaria",
-        "Animals",
-        "Animals",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Planaria\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Animals/DBCLS/Planaria.svg",
-      "defaultVariantId": "bioicons-planaria-8fd73193",
-      "variants": [
-        {
-          "id": "bioicons-planaria-8fd73193",
-          "assetPath": "assets/bioicons/bioicons-planaria-8fd73193.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-planaria-8fd73193.webp",
-          "localSha256": "fd7a2ffdb047d8c0ddcccef8e3f0fb428291fc150729ca07656c78364673b924",
-          "width": 400,
-          "height": 400
-        }
-      ]
-    },
-    {
       "familyId": "bioicons-plano-concave-lens-10cbec4c",
       "bioartEntryId": 2017612484,
       "title": "Plano Concave Lens",
@@ -81652,37 +80575,6 @@
       ]
     },
     {
-      "familyId": "bioicons-plasma-cell-98562452",
-      "bioartEntryId": 2159736389,
-      "title": "Plasma Cell",
-      "description": "Editable blood immunology illustration from BioIcons.",
-      "category": "Immunology & blood",
-      "keywords": [
-        "Plasma Cell",
-        "Blood Immunology",
-        "Immunology & blood",
-        "El-Jayawant",
-        "BioIcons"
-      ],
-      "author": "El-Jayawant",
-      "credit": "\"Plasma Cell\" by El-Jayawant (https://www.eleanorjayawant.com/); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Blood_Immunology/El-Jayawant/plasma_cell.svg",
-      "defaultVariantId": "bioicons-plasma-cell-98562452",
-      "variants": [
-        {
-          "id": "bioicons-plasma-cell-98562452",
-          "assetPath": "assets/bioicons/bioicons-plasma-cell-98562452.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-plasma-cell-98562452.webp",
-          "localSha256": "a1dd204fa55e0bcfeb3f0b5f1c659ddb65e725032828ebfdaf3256d92d104eb4",
-          "width": 311,
-          "height": 197
-        }
-      ]
-    },
-    {
       "familyId": "scidraw-plasma-membrane-4cf4bb8c",
       "bioartEntryId": 1096394442,
       "title": "Plasma Membrane",
@@ -81739,37 +80631,6 @@
           "localSha256": "d36384386abba2b13759d683de58aeebac16bb138437bc8337085323feb50dae",
           "width": 612,
           "height": 792
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-plasmablast-5be239ae",
-      "bioartEntryId": 2096347034,
-      "title": "Plasmablast",
-      "description": "Editable blood immunology illustration from BioIcons.",
-      "category": "Immunology & blood",
-      "keywords": [
-        "Plasmablast",
-        "Blood Immunology",
-        "Immunology & blood",
-        "El-Jayawant",
-        "BioIcons"
-      ],
-      "author": "El-Jayawant",
-      "credit": "\"Plasmablast\" by El-Jayawant (https://www.eleanorjayawant.com/); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Blood_Immunology/El-Jayawant/plasmablast.svg",
-      "defaultVariantId": "bioicons-plasmablast-5be239ae",
-      "variants": [
-        {
-          "id": "bioicons-plasmablast-5be239ae",
-          "assetPath": "assets/bioicons/bioicons-plasmablast-5be239ae.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-plasmablast-5be239ae.webp",
-          "localSha256": "f7e878aa5c04190d6ad9efd188f3c0e01038e63a83655b4d59f72192770c5aca",
-          "width": 399,
-          "height": 307
         }
       ]
     },
@@ -85750,37 +84611,6 @@
       ]
     },
     {
-      "familyId": "bioicons-protein-primary-structure-22d055e2",
-      "bioartEntryId": 2036504926,
-      "title": "Protein Primary Structure",
-      "description": "Editable intracellular components illustration from BioIcons.",
-      "category": "Cell components",
-      "keywords": [
-        "Protein Primary Structure",
-        "Intracellular components",
-        "Cell components",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Protein Primary Structure\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Intracellular_components/DBCLS/Protein_primary_structure.svg",
-      "defaultVariantId": "bioicons-protein-primary-structure-22d055e2",
-      "variants": [
-        {
-          "id": "bioicons-protein-primary-structure-22d055e2",
-          "assetPath": "assets/bioicons/bioicons-protein-primary-structure-22d055e2.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-protein-primary-structure-22d055e2.webp",
-          "localSha256": "6e5f0e443b0a2e1149de2a0e416fd907e10d873e8098a677d17bbfbf28ab8dfb",
-          "width": 400,
-          "height": 400
-        }
-      ]
-    },
-    {
       "familyId": "bioicons-protein-purification-colored-026528fe",
       "bioartEntryId": 2002511503,
       "title": "Protein Purification Colored",
@@ -85839,99 +84669,6 @@
           "localSha256": "a9807b288d58d6a268653bf914d908cabf4570d6d573f21d9258182312da702d",
           "width": 350,
           "height": 350
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-protein-quaternary-structure-64835f9e",
-      "bioartEntryId": 2105395705,
-      "title": "Protein Quaternary Structure",
-      "description": "Editable intracellular components illustration from BioIcons.",
-      "category": "Cell components",
-      "keywords": [
-        "Protein Quaternary Structure",
-        "Intracellular components",
-        "Cell components",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Protein Quaternary Structure\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Intracellular_components/DBCLS/Protein_quaternary_structure.svg",
-      "defaultVariantId": "bioicons-protein-quaternary-structure-64835f9e",
-      "variants": [
-        {
-          "id": "bioicons-protein-quaternary-structure-64835f9e",
-          "assetPath": "assets/bioicons/bioicons-protein-quaternary-structure-64835f9e.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-protein-quaternary-structure-64835f9e.webp",
-          "localSha256": "b9a4466928ca716947dd70d4d4729e937dcfd31e7073175ec4ada32c1cb13ef9",
-          "width": 400,
-          "height": 400
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-protein-secondary-structure-05d9e4db",
-      "bioartEntryId": 2006135373,
-      "title": "Protein Secondary Structure",
-      "description": "Editable intracellular components illustration from BioIcons.",
-      "category": "Cell components",
-      "keywords": [
-        "Protein Secondary Structure",
-        "Intracellular components",
-        "Cell components",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Protein Secondary Structure\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Intracellular_components/DBCLS/Protein_secondary_structure.svg",
-      "defaultVariantId": "bioicons-protein-secondary-structure-05d9e4db",
-      "variants": [
-        {
-          "id": "bioicons-protein-secondary-structure-05d9e4db",
-          "assetPath": "assets/bioicons/bioicons-protein-secondary-structure-05d9e4db.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-protein-secondary-structure-05d9e4db.webp",
-          "localSha256": "6e5f0e443b0a2e1149de2a0e416fd907e10d873e8098a677d17bbfbf28ab8dfb",
-          "width": 400,
-          "height": 400
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-protein-tertiary-structure-ca204b2b",
-      "bioartEntryId": 2211944626,
-      "title": "Protein Tertiary Structure",
-      "description": "Editable intracellular components illustration from BioIcons.",
-      "category": "Cell components",
-      "keywords": [
-        "Protein Tertiary Structure",
-        "Intracellular components",
-        "Cell components",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Protein Tertiary Structure\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Intracellular_components/DBCLS/Protein_tertiary_structure.svg",
-      "defaultVariantId": "bioicons-protein-tertiary-structure-ca204b2b",
-      "variants": [
-        {
-          "id": "bioicons-protein-tertiary-structure-ca204b2b",
-          "assetPath": "assets/bioicons/bioicons-protein-tertiary-structure-ca204b2b.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-protein-tertiary-structure-ca204b2b.webp",
-          "localSha256": "6e5f0e443b0a2e1149de2a0e416fd907e10d873e8098a677d17bbfbf28ab8dfb",
-          "width": 400,
-          "height": 400
         }
       ]
     },
@@ -86025,99 +84762,6 @@
           "localSha256": "70896746b0d31333d0b157a91bf979eafc844b661b4ff499fb38c68099e3b9d8",
           "width": 685,
           "height": 200
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-pull-task-before-cooperation-a7e3f1b2",
-      "bioartEntryId": 2176045851,
-      "title": "Pull Task Before Cooperation",
-      "description": "Editable procedures illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Pull Task Before Cooperation",
-        "Procedures",
-        "Techniques & assays",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Pull Task Before Cooperation\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Procedures/DBCLS/Pull_Task_Before_Cooperation.svg",
-      "defaultVariantId": "bioicons-pull-task-before-cooperation-a7e3f1b2",
-      "variants": [
-        {
-          "id": "bioicons-pull-task-before-cooperation-a7e3f1b2",
-          "assetPath": "assets/bioicons/bioicons-pull-task-before-cooperation-a7e3f1b2.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-pull-task-before-cooperation-a7e3f1b2.webp",
-          "localSha256": "634740ff5f1454fe3d8a220ec9cc918e47aa7466006fd928325038c1c2e20e96",
-          "width": 900,
-          "height": 900
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-pull-task-cooperation-failure-9623bfdd",
-      "bioartEntryId": 2157432829,
-      "title": "Pull Task Cooperation Failure",
-      "description": "Editable procedures illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Pull Task Cooperation Failure",
-        "Procedures",
-        "Techniques & assays",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Pull Task Cooperation Failure\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Procedures/DBCLS/Pull_Task_Cooperation_Failure.svg",
-      "defaultVariantId": "bioicons-pull-task-cooperation-failure-9623bfdd",
-      "variants": [
-        {
-          "id": "bioicons-pull-task-cooperation-failure-9623bfdd",
-          "assetPath": "assets/bioicons/bioicons-pull-task-cooperation-failure-9623bfdd.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-pull-task-cooperation-failure-9623bfdd.webp",
-          "localSha256": "f3f1bedf6b7253aefef6d72f1597c85e6c277fae41e8ad22cb5c5cacbecfb6ed",
-          "width": 900,
-          "height": 900
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-pull-task-cooperation-success-052355c1",
-      "bioartEntryId": 2005387612,
-      "title": "Pull Task Cooperation Success",
-      "description": "Editable procedures illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Pull Task Cooperation Success",
-        "Procedures",
-        "Techniques & assays",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Pull Task Cooperation Success\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Procedures/DBCLS/Pull_Task_Cooperation_Success.svg",
-      "defaultVariantId": "bioicons-pull-task-cooperation-success-052355c1",
-      "variants": [
-        {
-          "id": "bioicons-pull-task-cooperation-success-052355c1",
-          "assetPath": "assets/bioicons/bioicons-pull-task-cooperation-success-052355c1.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-pull-task-cooperation-success-052355c1.webp",
-          "localSha256": "72288355a5c99c835cd0f5c69a75defceeea9580d4be81f8506f5adca393d4eb",
-          "width": 900,
-          "height": 900
         }
       ]
     },
@@ -86491,36 +85135,6 @@
           "localSha256": "fb9b7e79d3aec29c62655eb66eba7b418a50114178ca6672587a301d45926643",
           "width": 491,
           "height": 814
-        }
-      ]
-    },
-    {
-      "familyId": "scidraw-pyramidal-neuron-2-1c3b09dd",
-      "bioartEntryId": 1047334507,
-      "title": "Pyramidal neuron 2",
-      "description": "Editable scientific illustration from SciDraw.",
-      "category": "Cells",
-      "keywords": [
-        "Pyramidal neuron 2",
-        "cell",
-        "Cells",
-        "SciDraw"
-      ],
-      "author": "John Chilton",
-      "credit": "John Chilton; SciDraw; CC-BY-4.0; DOI 10.5281/zenodo.3926143",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "SciDraw",
-      "sourcePage": "https://scidraw.io/drawing/pyramidal-neuron-2-1c3b09dd",
-      "defaultVariantId": "scidraw-pyramidal-neuron-2-1c3b09dd",
-      "variants": [
-        {
-          "id": "scidraw-pyramidal-neuron-2-1c3b09dd",
-          "assetPath": "assets/scidraw/scidraw-pyramidal-neuron-2-1c3b09dd.svg",
-          "thumbnailPath": "assets/scidraw-thumbnails/scidraw-pyramidal-neuron-2-1c3b09dd.webp",
-          "localSha256": "3401463ae6d13dcf37f43df2e402d0a1982bdab95defd07b3461385d0402f454",
-          "width": 523,
-          "height": 830
         }
       ]
     },
@@ -94969,37 +93583,6 @@
       ]
     },
     {
-      "familyId": "bioicons-slipper-animalcule-fee0a2db",
-      "bioartEntryId": 2267258413,
-      "title": "Slipper Animalcule",
-      "description": "Editable animals illustration from BioIcons.",
-      "category": "Animals",
-      "keywords": [
-        "Slipper Animalcule",
-        "Animals",
-        "Animals",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Slipper Animalcule\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Animals/DBCLS/Slipper_animalcule.svg",
-      "defaultVariantId": "bioicons-slipper-animalcule-fee0a2db",
-      "variants": [
-        {
-          "id": "bioicons-slipper-animalcule-fee0a2db",
-          "assetPath": "assets/bioicons/bioicons-slipper-animalcule-fee0a2db.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-slipper-animalcule-fee0a2db.webp",
-          "localSha256": "8315b4166b602cf4402997f2f56bf09acb6b4c02f5a657701cf494200719154b",
-          "width": 400,
-          "height": 400
-        }
-      ]
-    },
-    {
       "familyId": "bioicons-small-calculi-4679a19b",
       "bioartEntryId": 2073898521,
       "title": "Small Calculi",
@@ -96029,130 +94612,6 @@
       ]
     },
     {
-      "familyId": "bioicons-spectral-ami-a6fc43d6",
-      "bioartEntryId": 2175096893,
-      "title": "Spectral Ami",
-      "description": "Editable imaging illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Spectral Ami",
-        "Imaging",
-        "Techniques & assays",
-        "Spectral-Instruments",
-        "BioIcons"
-      ],
-      "author": "Spectral-Instruments",
-      "credit": "\"Spectral Ami\" by Spectral-Instruments (https://spectralinvivo.com); BioIcons; CC0 1.0",
-      "license": "CC0-1.0",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-0/Imaging/Spectral-Instruments/spectral_ami.svg",
-      "defaultVariantId": "bioicons-spectral-ami-a6fc43d6",
-      "variants": [
-        {
-          "id": "bioicons-spectral-ami-a6fc43d6",
-          "assetPath": "assets/bioicons/bioicons-spectral-ami-a6fc43d6.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-spectral-ami-a6fc43d6.webp",
-          "localSha256": "fca118c18b66edf45a98c55f7fe72fe19f2927ebd42af1bd828c97727d850345",
-          "width": 800,
-          "height": 1086
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-spectral-ami-five-mouse-4f48e95a",
-      "bioartEntryId": 2083136149,
-      "title": "Spectral Ami Five Mouse",
-      "description": "Editable imaging illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Spectral Ami Five Mouse",
-        "Imaging",
-        "Techniques & assays",
-        "Spectral-Instruments",
-        "BioIcons"
-      ],
-      "author": "Spectral-Instruments",
-      "credit": "\"Spectral Ami Five Mouse\" by Spectral-Instruments (https://spectralinvivo.com); BioIcons; CC0 1.0",
-      "license": "CC0-1.0",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-0/Imaging/Spectral-Instruments/spectral_ami_five_mouse.svg",
-      "defaultVariantId": "bioicons-spectral-ami-five-mouse-4f48e95a",
-      "variants": [
-        {
-          "id": "bioicons-spectral-ami-five-mouse-4f48e95a",
-          "assetPath": "assets/bioicons/bioicons-spectral-ami-five-mouse-4f48e95a.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-spectral-ami-five-mouse-4f48e95a.webp",
-          "localSha256": "d6dd9b1ebdb1dfa8de2a2f5ee015d62e6e6e0154b498f0dcfd78fc2e9ba66e43",
-          "width": 1448,
-          "height": 1086
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-spectral-ami-one-mouse-5ba8605d",
-      "bioartEntryId": 2096110085,
-      "title": "Spectral Ami One Mouse",
-      "description": "Editable imaging illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Spectral Ami One Mouse",
-        "Imaging",
-        "Techniques & assays",
-        "Spectral-Instruments",
-        "BioIcons"
-      ],
-      "author": "Spectral-Instruments",
-      "credit": "\"Spectral Ami One Mouse\" by Spectral-Instruments (https://spectralinvivo.com); BioIcons; CC0 1.0",
-      "license": "CC0-1.0",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-0/Imaging/Spectral-Instruments/spectral_ami_one_mouse.svg",
-      "defaultVariantId": "bioicons-spectral-ami-one-mouse-5ba8605d",
-      "variants": [
-        {
-          "id": "bioicons-spectral-ami-one-mouse-5ba8605d",
-          "assetPath": "assets/bioicons/bioicons-spectral-ami-one-mouse-5ba8605d.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-spectral-ami-one-mouse-5ba8605d.webp",
-          "localSha256": "136aa2e462de6c0e939b4f7063f2b7dd2035e314d27d57ee843e6c97aba7a779",
-          "width": 1448,
-          "height": 1086
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-spectral-aura-501b8dfd",
-      "bioartEntryId": 2083998943,
-      "title": "Spectral Aura",
-      "description": "Editable imaging illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Spectral Aura",
-        "Imaging",
-        "Techniques & assays",
-        "Spectral-Instruments",
-        "BioIcons"
-      ],
-      "author": "Spectral-Instruments",
-      "credit": "\"Spectral Aura\" by Spectral-Instruments (https://spectralinvivo.com); BioIcons; CC0 1.0",
-      "license": "CC0-1.0",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-0/Imaging/Spectral-Instruments/spectral_aura.svg",
-      "defaultVariantId": "bioicons-spectral-aura-501b8dfd",
-      "variants": [
-        {
-          "id": "bioicons-spectral-aura-501b8dfd",
-          "assetPath": "assets/bioicons/bioicons-spectral-aura-501b8dfd.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-spectral-aura-501b8dfd.webp",
-          "localSha256": "afb4794f596dd73f2edbecc6d4b0f899879a658b158f04d8ef98c4f515f983eb",
-          "width": 1448,
-          "height": 1086
-        }
-      ]
-    },
-    {
       "familyId": "bioicons-spectral-aura-five-mouse-87c4570e",
       "bioartEntryId": 2142361968,
       "title": "Spectral Aura Five Mouse",
@@ -96180,192 +94639,6 @@
           "localSha256": "2da0a9f96ffc0dda3fcd5b762545f341fbe6faedd2a779e0173a63f1cacadc84",
           "width": 1448,
           "height": 1086
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-spectral-aura-one-mouse-82d1f0b9",
-      "bioartEntryId": 2137174795,
-      "title": "Spectral Aura One Mouse",
-      "description": "Editable imaging illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Spectral Aura One Mouse",
-        "Imaging",
-        "Techniques & assays",
-        "Spectral-Instruments",
-        "BioIcons"
-      ],
-      "author": "Spectral-Instruments",
-      "credit": "\"Spectral Aura One Mouse\" by Spectral-Instruments (https://spectralinvivo.com); BioIcons; CC0 1.0",
-      "license": "CC0-1.0",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-0/Imaging/Spectral-Instruments/spectral_aura_one_mouse.svg",
-      "defaultVariantId": "bioicons-spectral-aura-one-mouse-82d1f0b9",
-      "variants": [
-        {
-          "id": "bioicons-spectral-aura-one-mouse-82d1f0b9",
-          "assetPath": "assets/bioicons/bioicons-spectral-aura-one-mouse-82d1f0b9.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-spectral-aura-one-mouse-82d1f0b9.webp",
-          "localSha256": "1930b15dadbb5e981e42f899d426b70dabde5cf9267ba571ae45bb7da85a0e9c",
-          "width": 1448,
-          "height": 1086
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-spectral-aura-ten-mouse-97f7f092",
-      "bioartEntryId": 2159350537,
-      "title": "Spectral Aura Ten Mouse",
-      "description": "Editable imaging illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Spectral Aura Ten Mouse",
-        "Imaging",
-        "Techniques & assays",
-        "Spectral-Instruments",
-        "BioIcons"
-      ],
-      "author": "Spectral-Instruments",
-      "credit": "\"Spectral Aura Ten Mouse\" by Spectral-Instruments (https://spectralinvivo.com); BioIcons; CC0 1.0",
-      "license": "CC0-1.0",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-0/Imaging/Spectral-Instruments/spectral_aura_ten_mouse.svg",
-      "defaultVariantId": "bioicons-spectral-aura-ten-mouse-97f7f092",
-      "variants": [
-        {
-          "id": "bioicons-spectral-aura-ten-mouse-97f7f092",
-          "assetPath": "assets/bioicons/bioicons-spectral-aura-ten-mouse-97f7f092.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-spectral-aura-ten-mouse-97f7f092.webp",
-          "localSha256": "71bcfbaf0ce7be126ccf9c535e46dc191ab02116bd3f9e81701ab18250dc4531",
-          "width": 1448,
-          "height": 1086
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-spectral-lago-a83f2f5b",
-      "bioartEntryId": 2176419573,
-      "title": "Spectral Lago",
-      "description": "Editable imaging illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Spectral Lago",
-        "Imaging",
-        "Techniques & assays",
-        "Spectral-Instruments",
-        "BioIcons"
-      ],
-      "author": "Spectral-Instruments",
-      "credit": "\"Spectral Lago\" by Spectral-Instruments (https://spectralinvivo.com); BioIcons; CC0 1.0",
-      "license": "CC0-1.0",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-0/Imaging/Spectral-Instruments/spectral_lago.svg",
-      "defaultVariantId": "bioicons-spectral-lago-a83f2f5b",
-      "variants": [
-        {
-          "id": "bioicons-spectral-lago-a83f2f5b",
-          "assetPath": "assets/bioicons/bioicons-spectral-lago-a83f2f5b.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-spectral-lago-a83f2f5b.webp",
-          "localSha256": "fc0a0274a5d93218b2f75c69a9f18371d6107dd41eab1c0b39b6496e417900f1",
-          "width": 800,
-          "height": 1109.15
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-spectral-lago-five-mouse-536dee08",
-      "bioartEntryId": 2087482080,
-      "title": "Spectral Lago Five Mouse",
-      "description": "Editable imaging illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Spectral Lago Five Mouse",
-        "Imaging",
-        "Techniques & assays",
-        "Spectral-Instruments",
-        "BioIcons"
-      ],
-      "author": "Spectral-Instruments",
-      "credit": "\"Spectral Lago Five Mouse\" by Spectral-Instruments (https://spectralinvivo.com); BioIcons; CC0 1.0",
-      "license": "CC0-1.0",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-0/Imaging/Spectral-Instruments/spectral_lago_five_mouse.svg",
-      "defaultVariantId": "bioicons-spectral-lago-five-mouse-536dee08",
-      "variants": [
-        {
-          "id": "bioicons-spectral-lago-five-mouse-536dee08",
-          "assetPath": "assets/bioicons/bioicons-spectral-lago-five-mouse-536dee08.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-spectral-lago-five-mouse-536dee08.webp",
-          "localSha256": "a8fa806be4d71e75d43f8842f0a111133803d02ef9e073c40ebc67ddbe299d83",
-          "width": 1448,
-          "height": 1109.15
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-spectral-lago-one-mouse-ad77e595",
-      "bioartEntryId": 2181894745,
-      "title": "Spectral Lago One Mouse",
-      "description": "Editable imaging illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Spectral Lago One Mouse",
-        "Imaging",
-        "Techniques & assays",
-        "Spectral-Instruments",
-        "BioIcons"
-      ],
-      "author": "Spectral-Instruments",
-      "credit": "\"Spectral Lago One Mouse\" by Spectral-Instruments (https://spectralinvivo.com); BioIcons; CC0 1.0",
-      "license": "CC0-1.0",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-0/Imaging/Spectral-Instruments/spectral_lago_one_mouse.svg",
-      "defaultVariantId": "bioicons-spectral-lago-one-mouse-ad77e595",
-      "variants": [
-        {
-          "id": "bioicons-spectral-lago-one-mouse-ad77e595",
-          "assetPath": "assets/bioicons/bioicons-spectral-lago-one-mouse-ad77e595.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-spectral-lago-one-mouse-ad77e595.webp",
-          "localSha256": "7c518b751a07b980ccf72d6996301cead7822b2c9757ef32ec2eff9042eabdd9",
-          "width": 1448,
-          "height": 1109.15
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-spectral-lago-ten-mouse-528ba77f",
-      "bioartEntryId": 2086555255,
-      "title": "Spectral Lago Ten Mouse",
-      "description": "Editable imaging illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Spectral Lago Ten Mouse",
-        "Imaging",
-        "Techniques & assays",
-        "Spectral-Instruments",
-        "BioIcons"
-      ],
-      "author": "Spectral-Instruments",
-      "credit": "\"Spectral Lago Ten Mouse\" by Spectral-Instruments (https://spectralinvivo.com); BioIcons; CC0 1.0",
-      "license": "CC0-1.0",
-      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-0/Imaging/Spectral-Instruments/spectral_lago_ten_mouse.svg",
-      "defaultVariantId": "bioicons-spectral-lago-ten-mouse-528ba77f",
-      "variants": [
-        {
-          "id": "bioicons-spectral-lago-ten-mouse-528ba77f",
-          "assetPath": "assets/bioicons/bioicons-spectral-lago-ten-mouse-528ba77f.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-spectral-lago-ten-mouse-528ba77f.webp",
-          "localSha256": "a8fa806be4d71e75d43f8842f0a111133803d02ef9e073c40ebc67ddbe299d83",
-          "width": 1448,
-          "height": 1109.15
         }
       ]
     },
@@ -96429,37 +94702,6 @@
           "localSha256": "df30a20c5db5b5b62a543bf096850490857e8a91f4cec9a874cc1d5a90df7a1c",
           "width": 166.823,
           "height": 30.563
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-sperm-b82eaa65",
-      "bioartEntryId": 2193129126,
-      "title": "Sperm",
-      "description": "Editable cell culture illustration from BioIcons.",
-      "category": "Cells",
-      "keywords": [
-        "Sperm",
-        "Cell culture",
-        "Cells",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Sperm\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Cell_culture/DBCLS/sperm.svg",
-      "defaultVariantId": "bioicons-sperm-b82eaa65",
-      "variants": [
-        {
-          "id": "bioicons-sperm-b82eaa65",
-          "assetPath": "assets/bioicons/bioicons-sperm-b82eaa65.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-sperm-b82eaa65.webp",
-          "localSha256": "7c7f08da401bff0ec4bda7f1247cde8b7ad4df8e02536a280439ec8a637c6511",
-          "width": 84.999,
-          "height": 359.065
         }
       ]
     },
@@ -98439,37 +96681,6 @@
       ]
     },
     {
-      "familyId": "bioicons-styela-clava-7c317eaa",
-      "bioartEntryId": 2130226154,
-      "title": "Styela Clava",
-      "description": "Editable animals illustration from BioIcons.",
-      "category": "Animals",
-      "keywords": [
-        "Styela Clava",
-        "Animals",
-        "Animals",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Styela Clava\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Animals/DBCLS/Styela_clava.svg",
-      "defaultVariantId": "bioicons-styela-clava-7c317eaa",
-      "variants": [
-        {
-          "id": "bioicons-styela-clava-7c317eaa",
-          "assetPath": "assets/bioicons/bioicons-styela-clava-7c317eaa.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-styela-clava-7c317eaa.webp",
-          "localSha256": "1c740fa1ab3686668810268134537fe0c4613569443e41fe0275f5e5003406fa",
-          "width": 400,
-          "height": 400
-        }
-      ]
-    },
-    {
       "familyId": "bioicons-sublingual-gland-d6d1c4a7",
       "bioartEntryId": 2225254474,
       "title": "Sublingual Gland",
@@ -98623,36 +96834,6 @@
           "localSha256": "440d11e7cff254ea419f7c2f90ae42f216b419c15b529ac22148e44e786f1b16",
           "width": 1000,
           "height": 1000
-        }
-      ]
-    },
-    {
-      "familyId": "scidraw-sucrose-69b83a18",
-      "bioartEntryId": 1047301180,
-      "title": "Sucrose",
-      "description": "Editable scientific illustration from SciDraw.",
-      "category": "Molecules",
-      "keywords": [
-        "Sucrose",
-        "other",
-        "Molecules",
-        "SciDraw"
-      ],
-      "author": "John Chilton",
-      "credit": "John Chilton; SciDraw; CC-BY-4.0; DOI 10.5281/zenodo.3926434",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "SciDraw",
-      "sourcePage": "https://scidraw.io/drawing/sucrose-69b83a18",
-      "defaultVariantId": "scidraw-sucrose-69b83a18",
-      "variants": [
-        {
-          "id": "scidraw-sucrose-69b83a18",
-          "assetPath": "assets/scidraw/scidraw-sucrose-69b83a18.svg",
-          "thumbnailPath": "assets/scidraw-thumbnails/scidraw-sucrose-69b83a18.webp",
-          "localSha256": "78b6d0ab5e619358dde43c2d6afa3c86da459ae0298df6f74e8405e3f100d56d",
-          "width": 972,
-          "height": 627
         }
       ]
     },
@@ -99640,68 +97821,6 @@
       ]
     },
     {
-      "familyId": "bioicons-t-maze-test-mouse-placed-in-one-arm-with-food-5aad90e6",
-      "bioartEntryId": 2095082766,
-      "title": "T Maze Test Mouse Placed In One Arm With Food",
-      "description": "Editable procedures illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "T Maze Test Mouse Placed In One Arm With Food",
-        "Procedures",
-        "Techniques & assays",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"T Maze Test Mouse Placed In One Arm With Food\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Procedures/DBCLS/T_Maze_Test_Mouse_Placed_in_One_Arm_with_Food.svg",
-      "defaultVariantId": "bioicons-t-maze-test-mouse-placed-in-one-arm-with-food-5aad90e6",
-      "variants": [
-        {
-          "id": "bioicons-t-maze-test-mouse-placed-in-one-arm-with-food-5aad90e6",
-          "assetPath": "assets/bioicons/bioicons-t-maze-test-mouse-placed-in-one-arm-with-food-5aad90e6.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-t-maze-test-mouse-placed-in-one-arm-with-food-5aad90e6.webp",
-          "localSha256": "08c2dc7c71e1396cb374cf314db71250ad157e80b366d085b75c3cc4e9ba2855",
-          "width": 262.08,
-          "height": 193.92
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-t-maze-test-mouse-placed-in-the-start-arm-f26c4039",
-      "bioartEntryId": 2254198787,
-      "title": "T Maze Test Mouse Placed In The Start Arm",
-      "description": "Editable procedures illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "T Maze Test Mouse Placed In The Start Arm",
-        "Procedures",
-        "Techniques & assays",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"T Maze Test Mouse Placed In The Start Arm\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Procedures/DBCLS/T_Maze_Test_Mouse_Placed_in_the_Start_Arm.svg",
-      "defaultVariantId": "bioicons-t-maze-test-mouse-placed-in-the-start-arm-f26c4039",
-      "variants": [
-        {
-          "id": "bioicons-t-maze-test-mouse-placed-in-the-start-arm-f26c4039",
-          "assetPath": "assets/bioicons/bioicons-t-maze-test-mouse-placed-in-the-start-arm-f26c4039.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-t-maze-test-mouse-placed-in-the-start-arm-f26c4039.webp",
-          "localSha256": "b11ec1cc9de4ec49ee1960cbd3ef626e97ccafbcfe148f288a270b9aacc48507",
-          "width": 262.08,
-          "height": 193.92
-        }
-      ]
-    },
-    {
       "familyId": "bioicons-t75-flask-3df1bb68",
       "bioartEntryId": 2064953270,
       "title": "T75 Flask",
@@ -99855,37 +97974,6 @@
           "localSha256": "c95e413d5842148b89811d6186892a26c387b716123ae9de08212c0047cb4f0d",
           "width": 1000,
           "height": 1000
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-tadpole-shrimp-f809e2d1",
-      "bioartEntryId": 2260087341,
-      "title": "Tadpole Shrimp",
-      "description": "Editable animals illustration from BioIcons.",
-      "category": "Animals",
-      "keywords": [
-        "Tadpole Shrimp",
-        "Animals",
-        "Animals",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Tadpole Shrimp\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Animals/DBCLS/Tadpole_shrimp.svg",
-      "defaultVariantId": "bioicons-tadpole-shrimp-f809e2d1",
-      "variants": [
-        {
-          "id": "bioicons-tadpole-shrimp-f809e2d1",
-          "assetPath": "assets/bioicons/bioicons-tadpole-shrimp-f809e2d1.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-tadpole-shrimp-f809e2d1.webp",
-          "localSha256": "d05156c5f7768892dfdb29553f45e943886ac2aa8ae23df9674f6601041963ed",
-          "width": 400,
-          "height": 400
         }
       ]
     },
@@ -101128,161 +99216,6 @@
       ]
     },
     {
-      "familyId": "bioicons-three-chambers-test-sociability-cc8de991",
-      "bioartEntryId": 2214490777,
-      "title": "Three Chambers Test Sociability",
-      "description": "Editable procedures illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Three Chambers Test Sociability",
-        "Procedures",
-        "Techniques & assays",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Three Chambers Test Sociability\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Procedures/DBCLS/Three_Chambers_Test_Sociability.svg",
-      "defaultVariantId": "bioicons-three-chambers-test-sociability-cc8de991",
-      "variants": [
-        {
-          "id": "bioicons-three-chambers-test-sociability-cc8de991",
-          "assetPath": "assets/bioicons/bioicons-three-chambers-test-sociability-cc8de991.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-three-chambers-test-sociability-cc8de991.webp",
-          "localSha256": "dff1b9e768f99395e4dbaef656c5a7d806890d52ef1c654ad82ab5b75c18ada2",
-          "width": 455.48,
-          "height": 280.42
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-three-chambers-test-sociability-sniffing-f813cde0",
-      "bioartEntryId": 2260127966,
-      "title": "Three Chambers Test Sociability Sniffing",
-      "description": "Editable procedures illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Three Chambers Test Sociability Sniffing",
-        "Procedures",
-        "Techniques & assays",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Three Chambers Test Sociability Sniffing\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Procedures/DBCLS/Three_Chambers_Test_Sociability_Sniffing.svg",
-      "defaultVariantId": "bioicons-three-chambers-test-sociability-sniffing-f813cde0",
-      "variants": [
-        {
-          "id": "bioicons-three-chambers-test-sociability-sniffing-f813cde0",
-          "assetPath": "assets/bioicons/bioicons-three-chambers-test-sociability-sniffing-f813cde0.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-three-chambers-test-sociability-sniffing-f813cde0.webp",
-          "localSha256": "aa475fb7259d355c1f503dd121afb2af392c546e02e760b3af64bea43bd411c2",
-          "width": 455.48,
-          "height": 280.42
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-three-chambers-test-social-novelty-b86b8bb9",
-      "bioartEntryId": 2193378491,
-      "title": "Three Chambers Test Social Novelty",
-      "description": "Editable procedures illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Three Chambers Test Social Novelty",
-        "Procedures",
-        "Techniques & assays",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Three Chambers Test Social Novelty\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Procedures/DBCLS/Three_Chambers_Test_Social_Novelty.svg",
-      "defaultVariantId": "bioicons-three-chambers-test-social-novelty-b86b8bb9",
-      "variants": [
-        {
-          "id": "bioicons-three-chambers-test-social-novelty-b86b8bb9",
-          "assetPath": "assets/bioicons/bioicons-three-chambers-test-social-novelty-b86b8bb9.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-three-chambers-test-social-novelty-b86b8bb9.webp",
-          "localSha256": "8bfe8c17799d8532a692c4934ecb2a317e870192888a241b28650a74deae7423",
-          "width": 455.48,
-          "height": 280.42
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-three-chambers-test-social-novelty-sniffing-60cfeb04",
-      "bioartEntryId": 2101514928,
-      "title": "Three Chambers Test Social Novelty Sniffing",
-      "description": "Editable procedures illustration from BioIcons.",
-      "category": "Techniques & assays",
-      "keywords": [
-        "Three Chambers Test Social Novelty Sniffing",
-        "Procedures",
-        "Techniques & assays",
-        "DBCLS",
-        "BioIcons"
-      ],
-      "author": "DBCLS",
-      "credit": "\"Three Chambers Test Social Novelty Sniffing\" by DBCLS (https://togotv.dbcls.jp/en/pics.html); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Procedures/DBCLS/Three_Chambers_Test_Social_Novelty_Sniffing.svg",
-      "defaultVariantId": "bioicons-three-chambers-test-social-novelty-sniffing-60cfeb04",
-      "variants": [
-        {
-          "id": "bioicons-three-chambers-test-social-novelty-sniffing-60cfeb04",
-          "assetPath": "assets/bioicons/bioicons-three-chambers-test-social-novelty-sniffing-60cfeb04.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-three-chambers-test-social-novelty-sniffing-60cfeb04.webp",
-          "localSha256": "6ae2cd81cb3d34b5dd1f131426d321c7106a32f1af960e9001228cced6f5b7e4",
-          "width": 455.48,
-          "height": 280.42
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-three-neck-flask-db159ae8",
-      "bioartEntryId": 2229726638,
-      "title": "Three Neck Flask",
-      "description": "Editable lab apparatus illustration from BioIcons.",
-      "category": "Equipment",
-      "keywords": [
-        "Three Neck Flask",
-        "Lab apparatus",
-        "Equipment",
-        "Elrond",
-        "BioIcons"
-      ],
-      "author": "Elrond",
-      "credit": "\"Three Neck Flask\" by Elrond (https://commons.wikimedia.org/wiki/User:Elrond); BioIcons; CC BY-SA 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-SA-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-sa-4.0/Lab_apparatus/Elrond/three-neck-flask.svg",
-      "defaultVariantId": "bioicons-three-neck-flask-db159ae8",
-      "variants": [
-        {
-          "id": "bioicons-three-neck-flask-db159ae8",
-          "assetPath": "assets/bioicons/bioicons-three-neck-flask-db159ae8.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-three-neck-flask-db159ae8.webp",
-          "localSha256": "192ddc055fd44a996d22f61be7a67c5808d7335cce0b93fa93a20e5a87ae38a9",
-          "width": 169.004,
-          "height": 168.07
-        }
-      ]
-    },
-    {
       "familyId": "bioicons-three-types-of-neurons-0349990a",
       "bioartEntryId": 2003447184,
       "title": "Three Types Of Neurons",
@@ -102161,37 +100094,6 @@
           "localSha256": "3cda0eac80e64c751b43dcfdae3dda1b7f7e8448d610d272622f3b22fa93b695",
           "width": 569.046,
           "height": 498.142
-        }
-      ]
-    },
-    {
-      "familyId": "bioicons-toroidal-pore-181fb223",
-      "bioartEntryId": 2025295650,
-      "title": "Toroidal Pore",
-      "description": "Editable cell membrane illustration from BioIcons.",
-      "category": "Cell components",
-      "keywords": [
-        "Toroidal Pore",
-        "Cell membrane",
-        "Cell components",
-        "El-Jayawant",
-        "BioIcons"
-      ],
-      "author": "El-Jayawant",
-      "credit": "\"Toroidal Pore\" by El-Jayawant (https://www.eleanorjayawant.com/); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Cell_membrane/El-Jayawant/toroidal_pore.svg",
-      "defaultVariantId": "bioicons-toroidal-pore-181fb223",
-      "variants": [
-        {
-          "id": "bioicons-toroidal-pore-181fb223",
-          "assetPath": "assets/bioicons/bioicons-toroidal-pore-181fb223.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-toroidal-pore-181fb223.webp",
-          "localSha256": "5175f4fce51a5994e9b02f4cc907bf699dc42d930fa47ead0c57ee2e8baf8f47",
-          "width": 178.56,
-          "height": 95.52
         }
       ]
     },
