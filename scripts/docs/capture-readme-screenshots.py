@@ -1,0 +1,56 @@
+from pathlib import Path
+
+from playwright.sync_api import sync_playwright
+
+
+ROOT = Path(__file__).resolve().parents[2]
+OUTPUT = ROOT / "docs" / "images"
+EXAMPLE = ROOT / "examples" / "antibody-mediated-immune-response.OpenSketch"
+APP_URL = "http://127.0.0.1:5173/OpenSketch/"
+
+
+def capture() -> None:
+    OUTPUT.mkdir(parents=True, exist_ok=True)
+    errors: list[str] = []
+
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch(headless=True)
+        context = browser.new_context(
+            viewport={"width": 1600, "height": 1000},
+            device_scale_factor=1,
+            reduced_motion="reduce",
+        )
+        page = context.new_page()
+        page.on("pageerror", lambda error: errors.append(str(error)))
+        page.goto(APP_URL, wait_until="networkidle")
+
+        with page.expect_file_chooser() as chooser:
+            page.get_by_role("button", name="Import project").click()
+        chooser.value.set_files(str(EXAMPLE))
+        page.locator('.workspace-plane[data-canvas-ready="true"]').wait_for()
+        page.wait_for_timeout(1_000)
+        page.get_by_role("button", name="Close panel").click()
+        page.wait_for_timeout(250)
+        page.screenshot(path=OUTPUT / "editor.png", animations="disabled")
+
+        page.get_by_role("tab", name="Assets", exact=True).click()
+        page.get_by_role("tabpanel", name="assets tools").wait_for()
+        page.get_by_placeholder("Search cells, proteins, equipment…").fill("cell")
+        page.locator('[data-preview-ready="true"]').first.wait_for()
+        page.wait_for_timeout(250)
+        page.screenshot(path=OUTPUT / "asset-library.png", animations="disabled")
+
+        page.get_by_role("button", name="Back to projects").click()
+        page.get_by_role("heading", name="Projects", exact=True).wait_for()
+        page.wait_for_timeout(1_000)
+        page.screenshot(path=OUTPUT / "projects.png", animations="disabled")
+
+        context.close()
+        browser.close()
+
+    if errors:
+        raise RuntimeError("Headless browser errors:\n" + "\n".join(errors))
+
+
+if __name__ == "__main__":
+    capture()
