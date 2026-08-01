@@ -5,8 +5,28 @@ from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / "docs" / "images"
-EXAMPLE = ROOT / "examples" / "antibody-mediated-immune-response.OpenSketch"
 APP_URL = "http://127.0.0.1:5173/OpenSketch/"
+
+
+SHOWCASE_ASSETS = (
+    ("96 Well Plate Top View", 360, 220),
+    ("Macrophage", 650, 220),
+    ("Lab Mouse", 950, 220),
+    ("Confocal Microscope", 390, 500),
+    ("Dendritic Cell", 680, 500),
+    ("DNA Double Helix", 980, 500),
+)
+
+
+def add_asset(page, title: str, x: int, y: int) -> None:
+    search = page.get_by_placeholder("Search cells, proteins, equipment…")
+    search.fill(title)
+    insert = page.get_by_role("button", name=f"Insert {title}", exact=True).first
+    insert.wait_for()
+    card = insert.locator("xpath=ancestor::article")
+    card.locator('[data-preview-ready="true"]').wait_for()
+    card.drag_to(page.locator(".artboard-stage"), target_position={"x": x, "y": y})
+    page.wait_for_timeout(500)
 
 
 def capture() -> None:
@@ -24,12 +44,14 @@ def capture() -> None:
         page.on("pageerror", lambda error: errors.append(str(error)))
         page.goto(APP_URL, wait_until="networkidle")
 
-        with page.expect_file_chooser() as chooser:
-            page.get_by_role("button", name="Import project").click()
-        chooser.value.set_files(str(EXAMPLE))
+        page.get_by_role("button", name="New figure", exact=True).click()
         page.locator('.workspace-plane[data-canvas-ready="true"]').wait_for()
-        page.wait_for_timeout(1_000)
+
+        for title, x, y in SHOWCASE_ASSETS:
+            add_asset(page, title, x, y)
+
         page.get_by_role("button", name="Close panel").click()
+        page.locator(".artboard-stage").click(position={"x": 1_150, "y": 680})
         page.wait_for_timeout(250)
         page.screenshot(path=OUTPUT / "editor.png", animations="disabled")
 
