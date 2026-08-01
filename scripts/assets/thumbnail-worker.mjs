@@ -11,6 +11,10 @@ const rendered = await sharp(await readFile(input), {
   density: 192,
   limitInputPixels: false
 })
+  .trim({
+    background: { r: 0, g: 0, b: 0, alpha: 0 },
+    threshold: 1
+  })
   .resize(224, 224, {
     fit: "contain",
     background: { r: 0, g: 0, b: 0, alpha: 0 }

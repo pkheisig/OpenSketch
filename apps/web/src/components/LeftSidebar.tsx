@@ -30,6 +30,7 @@ import {
 } from "@workspace/editor-core";
 import { ASSET_CATEGORIES, assetManifest } from "@/assets/manifest";
 import { AssetPreviewImage } from "@/components/AssetPreviewImage";
+import { prioritizeAssetPreviews } from "@/assets/previewWarmup";
 import { useEditor } from "@/editor/EditorContext";
 import {
   buildConnectorGeometry,
@@ -706,6 +707,11 @@ function AssetsPanel({
     observer.observe(list);
     return () => observer.disconnect();
   }, [families.length]);
+  useEffect(() => {
+    prioritizeAssetPreviews(
+      families.flatMap((family) => family.variants.map((variant) => variant.thumbnailPath))
+    );
+  }, [families]);
   const rows = Math.ceil(families.length / 2);
   const selectedVariant = (family: AssetFamily) =>
     family.variants.find((variant) => variant.id === variants[family.familyId]) ??
@@ -896,7 +902,6 @@ function AssetCard({
           assetPath={variant.assetPath}
           fallbackPath={variant.thumbnailPath}
           savedStyle={savedStyle}
-          normalizeArtwork={family.variants.length > 1}
         />
       </button>
       <button className="asset-favorite" onClick={onFavorite} aria-label="Toggle favorite">

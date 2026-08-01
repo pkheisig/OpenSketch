@@ -44,12 +44,14 @@ Export important work as `.OpenSketch` files for durable backups.
 
 ## Offline use
 
-OpenSketch is an installable progressive web app. On the first complete visit,
-its application shell, fonts, and viewed portions of the bundled art library are
-copied to browser
-Cache Storage. The home screen reports **Ready offline** when that copy is
-available. Afterward the application, saved projects, built-in artwork, and
-exports can be reopened without internet access.
+OpenSketch is an installable progressive web app. On the first complete editor
+visit, its application shell, fonts, and lightweight 256 px WebP preview catalog
+are copied to browser Cache Storage. The active asset category is prioritized;
+the rest is warmed while the browser is idle and reused on later visits. Full
+editable SVG sources are loaded only when an asset is inserted and are then
+cached separately. The home screen reports **Ready offline** when the application
+shell is available. Afterward the application, saved projects, previously used
+artwork, and exports can be reopened without internet access.
 
 The service worker only reads static files from the same GitHub Pages origin.
 It never sends user data.
@@ -170,10 +172,12 @@ three-segment source path uses the contributor identity recorded by the
 upstream submission and author registry. CC BY assets retain the author, source
 page, DOI where available, and license URL required for attribution. CC0 assets
 retain source and license metadata for traceability. Each downloaded file
-passes the same sanitization and local-thumbnail pipeline; the browser never
-fetches these third-party sources at runtime. Upstream files that are malformed,
-lack attribution metadata, or are too complex to sanitize safely are named in
-`data/open-assets-import-report.json` rather than being silently approximated.
+passes the same sanitization and normalized local-thumbnail pipeline. Catalog
+cards use pre-generated, centered WebP previews and never parse or rasterize full
+SVG sources while scrolling; the browser never fetches third-party sources at
+runtime. Upstream files that are malformed, lack attribution metadata, or are too
+complex to sanitize safely are named in `data/open-assets-import-report.json`
+rather than being silently approximated.
 
 Individual stages are available as:
 

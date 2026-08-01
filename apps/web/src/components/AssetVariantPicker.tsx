@@ -50,11 +50,7 @@ export function AssetVariantGrid({
           onDragStart={(event) => startVariantDrag(event, family.familyId, variant.id)}
         >
           <span className="asset-variant-preview">
-            <AssetPreviewImage
-              assetPath={variant.assetPath}
-              fallbackPath={variant.thumbnailPath}
-              normalizeArtwork
-            />
+            <AssetPreviewImage assetPath={variant.assetPath} fallbackPath={variant.thumbnailPath} />
             {variant.id === value && <Check size={14} aria-hidden="true" />}
           </span>
           <span>Variant {index + 1}</span>
@@ -192,7 +188,6 @@ export function AssetVariantPicker({
                   <AssetPreviewImage
                     assetPath={variant.assetPath}
                     fallbackPath={variant.thumbnailPath}
-                    normalizeArtwork
                   />
                   {variant.id === value && <Check size={14} aria-hidden="true" />}
                 </span>

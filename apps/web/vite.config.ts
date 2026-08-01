@@ -50,12 +50,26 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern:
-              /\/OpenSketch\/assets\/(?:nih-bioart|scidraw|organism-library|bioicons)(?:-thumbnails)?\//,
+              /\/OpenSketch\/assets\/(?:nih-bioart|scidraw|organism-library|bioicons)-thumbnails\//,
             handler: "CacheFirst",
             options: {
-              cacheName: "opensketch-asset-library",
+              cacheName: "opensketch-asset-previews",
               expiration: {
-                maxEntries: 6_200,
+                maxEntries: 8_000,
+                maxAgeSeconds: 60 * 60 * 24 * 365
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+          {
+            urlPattern: /\/OpenSketch\/assets\/(?:nih-bioart|scidraw|organism-library|bioicons)\//,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "opensketch-asset-sources",
+              expiration: {
+                maxEntries: 2_000,
                 maxAgeSeconds: 60 * 60 * 24 * 365
               },
               cacheableResponse: {

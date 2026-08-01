@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { ProjectRecord } from "@workspace/editor-core";
 import { EditorProvider } from "@/editor/EditorContext";
 import { TopToolbar } from "@/components/TopToolbar";
 import { LeftSidebar } from "@/components/LeftSidebar";
 import { CanvasWorkspace } from "@/components/CanvasWorkspace";
+import { ASSET_PREVIEW_CACHE_VERSION, assetManifest } from "@/assets/manifest";
+import { scheduleAssetPreviewWarmup } from "@/assets/previewWarmup";
 
 export function EditorStudio({
   project,
@@ -24,6 +26,14 @@ export function EditorStudio({
       return next;
     });
   };
+  useEffect(() => {
+    scheduleAssetPreviewWarmup(
+      assetManifest.families.flatMap((family) =>
+        family.variants.map((variant) => variant.thumbnailPath)
+      ),
+      ASSET_PREVIEW_CACHE_VERSION
+    );
+  }, []);
   return (
     <EditorProvider key={project.id} project={project} onProjectChange={onProjectChange}>
       <main className="editor-shell">

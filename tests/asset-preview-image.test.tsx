@@ -31,6 +31,22 @@ describe("asset preview images", () => {
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
+  it("uses bundled thumbnails for normalized multi-variant previews", () => {
+    const fetchSpy = vi.spyOn(globalThis, "fetch");
+    const { container } = render(
+      createElement(AssetPreviewImage, {
+        assetPath: "/assets/nih-bioart/variant-2.svg",
+        fallbackPath: "/assets/nih-bioart-thumbnails/variant-2.webp"
+      })
+    );
+
+    expect(container.querySelector("img")).toHaveAttribute(
+      "src",
+      "/assets/nih-bioart-thumbnails/variant-2.webp"
+    );
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
   it("falls back to the source SVG when a bundled thumbnail cannot be decoded", () => {
     const { container } = render(
       createElement(AssetPreviewImage, {

@@ -25,6 +25,12 @@ export const assetManifest: AssetManifest = {
     }))
   }))
 };
+
+export const ASSET_PREVIEW_CACHE_VERSION = [
+  (manifest as AssetManifest).generatedAt,
+  (openAssetsManifest as AssetManifest).generatedAt,
+  TOP_VIEW_LABWARE_FAMILIES.length
+].join(":");
 export const ASSET_CATEGORIES = [
   "All",
   "Cells",

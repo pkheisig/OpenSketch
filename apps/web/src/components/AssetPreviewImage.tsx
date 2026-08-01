@@ -199,16 +199,14 @@ export function AssetPreviewImage({
   assetPath,
   fallbackPath,
   savedStyle,
-  normalizeArtwork = false,
   className
 }: {
   assetPath: string;
   fallbackPath?: string;
   savedStyle?: ElementStyleSnapshot;
-  normalizeArtwork?: boolean;
   className?: string;
 }) {
-  if (savedStyle === undefined && !normalizeArtwork) {
+  if (savedStyle === undefined) {
     return (
       <BundledAssetPreview
         assetPath={assetPath}

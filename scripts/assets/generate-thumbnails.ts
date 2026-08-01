@@ -1,12 +1,21 @@
-import { readdir, readFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
-import { SVG_DIR, THUMB_DIR } from "./paths";
+import type { AssetManifest } from "../../packages/editor-core/src/types";
+import { MANIFEST_PATH, ROOT } from "./paths";
 import { writeBufferAtomic } from "./io";
+import { mapLimit, readJson } from "./io";
+
+const OPEN_MANIFEST_PATH = path.join(ROOT, "apps/web/src/generated/open-assets-manifest.json");
+const PUBLIC_DIR = path.join(ROOT, "apps/web/public");
 
 export async function generateThumbnail(svgPath: string, outputPath: string): Promise<void> {
   const source = await readFile(svgPath);
   const rendered = await sharp(source, { density: 192 })
+    .trim({
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+      threshold: 1
+    })
     .resize(224, 224, {
       fit: "contain",
       background: { r: 0, g: 0, b: 0, alpha: 0 }
@@ -24,13 +33,26 @@ export async function generateThumbnail(svgPath: string, outputPath: string): Pr
 }
 
 async function main(): Promise<void> {
-  const files = (await readdir(SVG_DIR)).filter((file) => file.endsWith(".svg")).sort();
-  for (const [index, file] of files.entries()) {
-    const output = path.join(THUMB_DIR, file.replace(/\.svg$/, ".webp"));
-    await generateThumbnail(path.join(SVG_DIR, file), output);
-    process.stdout.write(`\rThumbnail ${index + 1}/${files.length}: ${file}`);
-  }
-  if (files.length) process.stdout.write("\n");
+  const manifests = await Promise.all([
+    readJson<AssetManifest>(MANIFEST_PATH),
+    readJson<AssetManifest>(OPEN_MANIFEST_PATH)
+  ]);
+  const multiVariantOnly = process.argv.includes("--multi-variant");
+  const variants = manifests.flatMap((manifest) =>
+    manifest.families
+      .filter((family) => !multiVariantOnly || family.variants.length > 1)
+      .flatMap((family) => family.variants)
+  );
+  await mapLimit(variants, 8, async (variant, index) => {
+    await generateThumbnail(
+      path.join(PUBLIC_DIR, variant.assetPath.replace(/^\/+/, "")),
+      path.join(PUBLIC_DIR, variant.thumbnailPath.replace(/^\/+/, ""))
+    );
+    if ((index + 1) % 50 === 0 || index + 1 === variants.length) {
+      process.stdout.write(`\rNormalized thumbnails ${index + 1}/${variants.length}`);
+    }
+  });
+  if (variants.length) process.stdout.write("\n");
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
