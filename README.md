@@ -162,9 +162,10 @@ BioIcons-distributed source. The third command refreshes only BioIcons while
 retaining the already generated SciDraw and Arcadia entries.
 
 The bundled result contains **609 SciDraw families** (538 CC BY 4.0 and 71 CC0),
-**71 Arcadia organism families with 142 SVG variants**, and **2,827 BioIcons
+**71 Arcadia organism families with 142 SVG variants**, and **2,826 BioIcons
 SVG families**. That is every renderable SVG in the pinned BioIcons catalog;
-the three excluded upstream `.svg` files are zero bytes. One icon with a legacy
+three excluded upstream `.svg` files are zero bytes, and one additional source
+contains no visible artwork after secure sanitization. One icon with a legacy
 three-segment source path uses the contributor identity recorded by the
 upstream submission and author registry. CC BY assets retain the author, source
 page, DOI where available, and license URL required for attribution. CC0 assets

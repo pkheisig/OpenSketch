@@ -30,7 +30,7 @@ describe("open scientific-art collection", () => {
     expect(sciDraw).toHaveLength(608);
     expect(organisms).toHaveLength(71);
     expect(organisms.flatMap((family) => family.variants)).toHaveLength(142);
-    expect(bioIcons).toHaveLength(2_827);
+    expect(bioIcons).toHaveLength(2_826);
   });
 
   it("retains licenses, attribution, sources, and only local asset paths", async () => {
@@ -78,7 +78,8 @@ describe("open scientific-art collection", () => {
   });
 
   it.each([
-    ["cancerous cell 1", "Oncology", "Cancer & pathology"],
+    ["cancerous cell 1", "Oncology", "Cells"],
+    ["normal cell 1", "Oncology", "Cells"],
     ["tumor", "Oncology", "Cancer & pathology"],
     ["Chicken retina", "Tissues", "Tissues & histology"],
     ["T Cell", "Blood_Immunology", "Immunology & blood"],
@@ -127,15 +128,29 @@ describe("open scientific-art collection", () => {
     );
   });
 
+  it("does not bundle render-empty SVGs and files cancer-cell illustrations as cells", async () => {
+    const manifest = await loadManifest();
+    expect(manifest.families.map((family) => family.familyId)).not.toContain(
+      "bioicons-cancer-cell-505acb8f"
+    );
+    const cellTitles = manifest.families
+      .filter((family) => family.category === "Cells")
+      .map((family) => family.title);
+    expect(cellTitles).toEqual(
+      expect.arrayContaining(["Cancerous Cell 1", "Cancerous Cell 5", "Normal Cell 1"])
+    );
+  });
+
   it("exposes BioIcons oncology artwork in a dedicated cancer category", async () => {
     const manifest = await loadManifest();
     const cancer = manifest.families.filter(
       (family) =>
         family.sourceName?.startsWith("BioIcons") && family.category === "Cancer & pathology"
     );
-    expect(cancer.length).toBeGreaterThanOrEqual(35);
+    expect(cancer.length).toBeGreaterThanOrEqual(25);
     expect(cancer.map((family) => family.title)).toEqual(
-      expect.arrayContaining(["Cancerous Cell 1", "Carcinoma", "Tumor"])
+      expect.arrayContaining(["Carcinoma", "Tumor"])
     );
+    expect(cancer.map((family) => family.title)).not.toContain("Cancerous Cell 1");
   });
 });

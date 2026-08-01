@@ -104,15 +104,6 @@ function BundledAssetPreview({
     triedAsset: preferredSource === assetPath
   }));
 
-  useEffect(() => {
-    setPreview({
-      key: preferredSource,
-      source: preferredSource,
-      ready: false,
-      triedAsset: preferredSource === assetPath
-    });
-  }, [assetPath, preferredSource]);
-
   const current =
     preview.key === preferredSource
       ? preview
@@ -125,6 +116,7 @@ function BundledAssetPreview({
 
   return (
     <img
+      key={`${current.key}:${current.source}`}
       className={className}
       src={current.source}
       alt=""

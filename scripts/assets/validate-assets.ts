@@ -83,6 +83,10 @@ async function main(): Promise<void> {
           if (!thumbnail.hasAlpha) {
             errors.push(`${variant.id}: thumbnail has no alpha channel.`);
           }
+          const alpha = (await sharp(thumbnailPath).stats()).channels[3];
+          if (alpha && alpha.max === 0) {
+            errors.push(`${variant.id}: thumbnail contains no visible pixels.`);
+          }
         } catch (error) {
           errors.push(`${variant.id}: thumbnail cannot be decoded: ${String(error)}`);
         }
@@ -184,6 +188,10 @@ async function main(): Promise<void> {
             !thumbnail.hasAlpha
           ) {
             errors.push(`${variant.id}: thumbnail is not a valid transparent WebP.`);
+          }
+          const alpha = (await sharp(thumbnailPath).stats()).channels[3];
+          if (alpha && alpha.max === 0) {
+            errors.push(`${variant.id}: thumbnail contains no visible pixels.`);
           }
         } catch (error) {
           errors.push(`${variant.id}: thumbnail cannot be decoded: ${String(error)}`);

@@ -2923,7 +2923,7 @@ test("fills the asset sidebar with the merged scientific catalog", async ({ page
   await expect(page.locator(".asset-card").last()).toBeVisible();
 });
 
-test("scrolls the complete symbols catalog using thumbnails instead of full SVG renders", async ({
+test("rapidly scrolls the complete symbols catalog without leaving blank thumbnails", async ({
   page
 }) => {
   const fullBioIconRequests: string[] = [];
@@ -2948,6 +2948,35 @@ test("scrolls the complete symbols catalog using thumbnails instead of full SVG 
   const scrollHeight = await list.evaluate((element) => element.scrollHeight);
   const clientHeight = await list.evaluate((element) => element.clientHeight);
   expect(scrollHeight).toBeGreaterThan(clientHeight);
+
+  // Reproduce a trackpad-style fling first: virtual rows are recycled several
+  // times before any individual thumbnail has time to decode.
+  await list.evaluate((element) => {
+    for (let step = 0; step <= 24; step += 1) {
+      element.scrollTop = (element.scrollHeight - element.clientHeight) * (step / 24);
+      element.dispatchEvent(new Event("scroll"));
+    }
+  });
+  await expect
+    .poll(() =>
+      page.locator(".asset-card:visible").evaluateAll((cards) =>
+        cards
+          .filter((card) => {
+            const list = card.closest(".asset-list");
+            const image = card.querySelector<HTMLImageElement>("img");
+            if (!list || !image) return true;
+            const cardBounds = card.getBoundingClientRect();
+            const listBounds = list.getBoundingClientRect();
+            return (
+              cardBounds.bottom > listBounds.top &&
+              cardBounds.top < listBounds.bottom &&
+              (!image.complete || image.naturalWidth === 0)
+            );
+          })
+          .map((card) => card.querySelector("strong")?.textContent ?? "Unknown asset")
+      )
+    )
+    .toEqual([]);
 
   for (let step = 0; step <= 16; step += 1) {
     await list.evaluate((element, ratio) => {

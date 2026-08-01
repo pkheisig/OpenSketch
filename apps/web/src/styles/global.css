@@ -1497,10 +1497,6 @@ a:focus-visible {
   object-fit: contain;
 }
 
-.asset-card-image img[data-preview-ready="false"] {
-  visibility: hidden;
-}
-
 .asset-favorite {
   position: absolute;
   top: 6px;

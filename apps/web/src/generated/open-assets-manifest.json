@@ -17141,46 +17141,15 @@
       ]
     },
     {
-      "familyId": "bioicons-cancer-cell-505acb8f",
-      "bioartEntryId": 2084257976,
-      "title": "Cancer Cell",
-      "description": "Editable blood immunology illustration from BioIcons.",
-      "category": "Cancer & pathology",
-      "keywords": [
-        "Cancer Cell",
-        "Blood Immunology",
-        "Cancer & pathology",
-        "El-Jayawant",
-        "BioIcons"
-      ],
-      "author": "El-Jayawant",
-      "credit": "\"Cancer Cell\" by El-Jayawant (https://www.eleanorjayawant.com/); BioIcons; CC BY 4.0; adapted for secure offline delivery by OpenSketch",
-      "license": "CC-BY-4.0",
-      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-      "sourceName": "BioIcons",
-      "sourcePage": "https://github.com/duerrsimon/bioicons/blob/d29e766ea7580b8063c4f47b29e872db40a4d979/static/icons/cc-by-4.0/Blood_Immunology/El-Jayawant/cancer_cell.svg",
-      "defaultVariantId": "bioicons-cancer-cell-505acb8f",
-      "variants": [
-        {
-          "id": "bioicons-cancer-cell-505acb8f",
-          "assetPath": "assets/bioicons/bioicons-cancer-cell-505acb8f.svg",
-          "thumbnailPath": "assets/bioicons-thumbnails/bioicons-cancer-cell-505acb8f.webp",
-          "localSha256": "a04921b8458f10d3befcd1800383a75d0ec48985ef5ca3fafba6fdb6e1186c7b",
-          "width": 155.24,
-          "height": 140.97
-        }
-      ]
-    },
-    {
       "familyId": "bioicons-cancerous-cell-1-1a980f83",
       "bioartEntryId": 2027885816,
       "title": "Cancerous Cell 1",
       "description": "Editable oncology illustration from BioIcons.",
-      "category": "Cancer & pathology",
+      "category": "Cells",
       "keywords": [
         "Cancerous Cell 1",
         "Oncology",
-        "Cancer & pathology",
+        "Cells",
         "Servier",
         "BioIcons",
         "Servier Medical Art"
@@ -17208,11 +17177,11 @@
       "bioartEntryId": 2035578748,
       "title": "Cancerous Cell 2",
       "description": "Editable oncology illustration from BioIcons.",
-      "category": "Cancer & pathology",
+      "category": "Cells",
       "keywords": [
         "Cancerous Cell 2",
         "Oncology",
-        "Cancer & pathology",
+        "Cells",
         "Servier",
         "BioIcons",
         "Servier Medical Art"
@@ -17240,11 +17209,11 @@
       "bioartEntryId": 2110705588,
       "title": "Cancerous Cell 3",
       "description": "Editable oncology illustration from BioIcons.",
-      "category": "Cancer & pathology",
+      "category": "Cells",
       "keywords": [
         "Cancerous Cell 3",
         "Oncology",
-        "Cancer & pathology",
+        "Cells",
         "Servier",
         "BioIcons",
         "Servier Medical Art"
@@ -17272,11 +17241,11 @@
       "bioartEntryId": 2050926814,
       "title": "Cancerous Cell 4",
       "description": "Editable oncology illustration from BioIcons.",
-      "category": "Cancer & pathology",
+      "category": "Cells",
       "keywords": [
         "Cancerous Cell 4",
         "Oncology",
-        "Cancer & pathology",
+        "Cells",
         "Servier",
         "BioIcons",
         "Servier Medical Art"
@@ -17304,11 +17273,11 @@
       "bioartEntryId": 2141206015,
       "title": "Cancerous Cell 5",
       "description": "Editable oncology illustration from BioIcons.",
-      "category": "Cancer & pathology",
+      "category": "Cells",
       "keywords": [
         "Cancerous Cell 5",
         "Oncology",
-        "Cancer & pathology",
+        "Cells",
         "Servier",
         "BioIcons",
         "Servier Medical Art"
@@ -74143,11 +74112,11 @@
       "bioartEntryId": 2088448757,
       "title": "Normal Cell 1",
       "description": "Editable oncology illustration from BioIcons.",
-      "category": "Cancer & pathology",
+      "category": "Cells",
       "keywords": [
         "Normal Cell 1",
         "Oncology",
-        "Cancer & pathology",
+        "Cells",
         "Servier",
         "BioIcons",
         "Servier Medical Art"
@@ -74175,11 +74144,11 @@
       "bioartEntryId": 2127412793,
       "title": "Normal Cell 2",
       "description": "Editable oncology illustration from BioIcons.",
-      "category": "Cancer & pathology",
+      "category": "Cells",
       "keywords": [
         "Normal Cell 2",
         "Oncology",
-        "Cancer & pathology",
+        "Cells",
         "Servier",
         "BioIcons",
         "Servier Medical Art"
@@ -74207,11 +74176,11 @@
       "bioartEntryId": 2221154597,
       "title": "Normal Cell 3",
       "description": "Editable oncology illustration from BioIcons.",
-      "category": "Cancer & pathology",
+      "category": "Cells",
       "keywords": [
         "Normal Cell 3",
         "Oncology",
-        "Cancer & pathology",
+        "Cells",
         "Servier",
         "BioIcons",
         "Servier Medical Art"
@@ -74239,11 +74208,11 @@
       "bioartEntryId": 2131229621,
       "title": "Normal Cell 4",
       "description": "Editable oncology illustration from BioIcons.",
-      "category": "Cancer & pathology",
+      "category": "Cells",
       "keywords": [
         "Normal Cell 4",
         "Oncology",
-        "Cancer & pathology",
+        "Cells",
         "Servier",
         "BioIcons",
         "Servier Medical Art"
@@ -74271,11 +74240,11 @@
       "bioartEntryId": 2083109836,
       "title": "Normal Cell 5",
       "description": "Editable oncology illustration from BioIcons.",
-      "category": "Cancer & pathology",
+      "category": "Cells",
       "keywords": [
         "Normal Cell 5",
         "Oncology",
-        "Cancer & pathology",
+        "Cells",
         "Servier",
         "BioIcons",
         "Servier Medical Art"

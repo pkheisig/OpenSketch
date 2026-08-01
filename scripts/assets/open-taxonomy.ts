@@ -160,6 +160,9 @@ export function categoryForBioIconsAsset(asset: BioIconsTaxonomyInput): string {
   // BioIcons' upstream categories are useful provenance, but some are very
   // broad. Identity-level title rules take priority so retinal tissue, tumor
   // cells, pathogens, and laboratory items do not inherit a misleading bucket.
+  if (/\b(?:cancer|cancerous|normal) cells?(?:\s+\d+)?\b/.test(title)) {
+    return "Cells";
+  }
   if (
     sourceCategory === "oncology" ||
     /\b(?:adenoma|angiogenesis|cancer|cancerous|carcinoma|leukemia|lymphoma|melanoma|metastasis|neoplasm|oncolog|sarcoma|tumou?r)\b/.test(

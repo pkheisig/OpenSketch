@@ -25,4 +25,10 @@ const rendered = await sharp(await readFile(input), {
   .webp({ quality: 88, alphaQuality: 100 })
   .toBuffer();
 
+const { channels } = await sharp(rendered).stats();
+const alpha = channels[3];
+if (alpha && alpha.max === 0) {
+  throw new Error("The SVG renders no visible pixels.");
+}
+
 await writeFile(output, rendered);
