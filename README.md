@@ -97,6 +97,7 @@ corepack pnpm test
 corepack pnpm assets:validate
 corepack pnpm build
 corepack pnpm test:e2e
+corepack pnpm test:e2e:cross-browser
 corepack pnpm test:pwa
 ```
 
@@ -114,10 +115,13 @@ Chromium workflows for every change to `main`. New pushes cancel obsolete runs,
 so only the latest commit occupies the Pages deployment queue. Asset validation
 and the offline PWA workflow run only when their source paths change.
 
-The complete Chromium, Firefox, and WebKit suite runs nightly and can also be
-started manually. Its browser jobs run in parallel and cache their Playwright
-binaries. Only the generated `dist/` directory is uploaded as a GitHub Pages
-artifact and deployed to the `github-pages` environment.
+The five representative Chromium workflows run on every push and pull request.
+A focused Firefox and WebKit compatibility suite runs weekly and can also be
+started manually. It reuses a version-matched Playwright runtime instead of
+reinstalling browser binaries and Linux dependencies in separate jobs. The
+complete end-to-end suite remains available locally through `pnpm test:e2e`.
+Only the generated `dist/` directory is uploaded as a GitHub Pages artifact and
+deployed to the `github-pages` environment.
 
 GitHub Pages serves immutable application files. There is no server-side
 application runtime in production. The service worker precaches the same static

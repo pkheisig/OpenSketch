@@ -1,9 +1,9 @@
-name: Full browser compatibility
+name: Cross-browser smoke
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "17 2 * * *"
+    - cron: "17 2 * * 1"
 
 permissions:
   contents: read
@@ -13,14 +13,11 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  browser:
-    name: ${{ matrix.browser }}
+  cross-browser-smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
-    strategy:
-      fail-fast: false
-      matrix:
-        browser: [chromium, firefox, webkit]
+    timeout-minutes: 8
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.0-noble-amd64
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v6
@@ -31,16 +28,5 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Restore ${{ matrix.browser }} cache
-        id: browser-cache
-        uses: actions/cache@v5
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ matrix.browser }}-${{ hashFiles('pnpm-lock.yaml') }}
-      - name: Install ${{ matrix.browser }}
-        if: steps.browser-cache.outputs.cache-hit != 'true'
-        run: pnpm exec playwright install --with-deps ${{ matrix.browser }}
-      - name: Install ${{ matrix.browser }} system dependencies
-        if: steps.browser-cache.outputs.cache-hit == 'true'
-        run: pnpm exec playwright install-deps ${{ matrix.browser }}
-      - run: pnpm exec playwright test --project=${{ matrix.browser }}
+      - name: Run Firefox and WebKit compatibility workflows
+        run: pnpm test:e2e:cross-browser
