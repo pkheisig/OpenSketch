@@ -5,10 +5,7 @@ const HEIGHT = 252;
 const PLATE_FACE_RIGHT = 359;
 const PLATE_FACE_BOTTOM = 232;
 const SOURCE_PAGE = "https://github.com/pkheisig/OpenSketch";
-const WELL_GRID: Record<
-  number,
-  { left: number; top: number; width: number; height: number }
-> = {
+const WELL_GRID: Record<number, { left: number; top: number; width: number; height: number }> = {
   6: { left: 48, top: 48, width: 288, height: 168 },
   12: { left: 44, top: 44, width: 296, height: 176 },
   24: { left: 40, top: 40, width: 304, height: 184 },
@@ -33,11 +30,105 @@ const LABEL_FONT_SIZE: Record<number, number> = {
   384: 5.2
 };
 
+const DEFAULT_WELL_FILL = "#d9eef4";
+const UNSELECTED_WELL_FILL = "#f4f7f6";
+
+type WellFillResolver = (row: number, column: number, rows: number, columns: number) => string;
+
+interface WellPlateVariantDefinition {
+  key: string;
+  label: string;
+  fillWell: WellFillResolver;
+}
+
+const SOLID_WELL_COLORS = [
+  ["default", "Pale blue", DEFAULT_WELL_FILL],
+  ["pink", "Pink", "#f5a3bd"],
+  ["rose", "Rose", "#ee6f91"],
+  ["red", "Red", "#ef767a"],
+  ["orange", "Orange", "#f5a45b"],
+  ["yellow", "Yellow", "#f4d35e"],
+  ["lime", "Lime", "#b8db68"],
+  ["green", "Green", "#79c99e"],
+  ["teal", "Teal", "#6fc3c5"],
+  ["cyan", "Cyan", "#78cce2"],
+  ["blue", "Blue", "#78aee8"],
+  ["purple", "Purple", "#b79ced"]
+] as const;
+
+const SELECTED_WELL_COLORS = [
+  ["pink", "Pink", "#f5a3bd"],
+  ["yellow", "Yellow", "#f4d35e"],
+  ["green", "Green", "#79c99e"]
+] as const;
+
+const WELL_SELECTION_PATTERNS: Array<
+  [string, string, (row: number, column: number, rows: number, columns: number) => boolean]
+> = [
+  ["first-row", "first row", (row) => row === 0],
+  ["first-column", "first column", (_row, column) => column === 0],
+  ["checkerboard", "checkerboard", (row, column) => (row + column) % 2 === 0],
+  [
+    "diagonal",
+    "diagonal",
+    (row, column, rows, columns) =>
+      Math.round(((columns - 1) * row) / Math.max(1, rows - 1)) === column
+  ],
+  [
+    "center",
+    "center",
+    (row, column, rows, columns) =>
+      row >= Math.floor((rows - 1) / 2) &&
+      row <= Math.ceil((rows - 1) / 2) &&
+      column >= Math.floor((columns - 1) / 2) &&
+      column <= Math.ceil((columns - 1) / 2)
+  ]
+];
+
+const WELL_PLATE_VARIANTS: WellPlateVariantDefinition[] = [
+  ...SOLID_WELL_COLORS.map(([key, label, color]) => ({
+    key,
+    label,
+    fillWell: () => color
+  })),
+  ...SELECTED_WELL_COLORS.flatMap(([colorName, colorLabel, color]) =>
+    WELL_SELECTION_PATTERNS.map(([patternName, patternLabel, isSelected]) => ({
+      key: `${colorName}-${patternName}`,
+      label: `${colorLabel} · ${patternLabel}`,
+      fillWell: (row: number, column: number, rows: number, columns: number) =>
+        isSelected(row, column, rows, columns) ? color : UNSELECTED_WELL_FILL
+    }))
+  ),
+  {
+    key: "multicolor-rows",
+    label: "Rainbow rows",
+    fillWell: (row) => ["#f5a3bd", "#f4d35e", "#79c99e", "#78aee8", "#b79ced"][row % 5]
+  },
+  {
+    key: "multicolor-columns",
+    label: "Rainbow columns",
+    fillWell: (_row, column) => ["#f5a3bd", "#f4d35e", "#79c99e", "#78aee8", "#b79ced"][column % 5]
+  },
+  {
+    key: "multicolor-quadrants",
+    label: "Color quadrants",
+    fillWell: (row, column, rows, columns) => {
+      const lower = row >= rows / 2;
+      const right = column >= columns / 2;
+      return ["#f5a3bd", "#f4d35e", "#79c99e", "#b79ced"][Number(lower) * 2 + Number(right)];
+    }
+  }
+];
+
 function svgDataUrl(source: string): string {
   return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(source)}`;
 }
 
-function wellPlateSvg(rows: number, columns: number): string {
+function wellPlateSvg(
+  rows: number,
+  columns: number,
+  fillWell: WellFillResolver = () => DEFAULT_WELL_FILL
+): string {
   const wellCount = rows * columns;
   const grid = WELL_GRID[wellCount] ?? WELL_GRID[96];
   const xStep = grid.width / columns;
@@ -48,12 +139,13 @@ function wellPlateSvg(rows: number, columns: number): string {
     const column = index % columns;
     const cx = grid.left + (column + 0.5) * xStep;
     const cy = grid.top + (row + 0.5) * yStep;
+    const wellFill = fillWell(row, column, rows, columns);
     const strokeWidth = Math.max(0.8, Math.min(1.8, radius * 0.1));
     const rimWidth = Math.max(1.4, Math.min(3.4, radius * 0.18));
     return [
       `<circle data-well-shadow="${row + 1}-${column + 1}" cx="${cx.toFixed(2)}" cy="${(cy + Math.max(0.8, radius * 0.08)).toFixed(2)}" r="${(radius + rimWidth * 0.55).toFixed(2)}" fill="#c8d7d5"/>`,
       `<circle data-well-rim="${row + 1}-${column + 1}" cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="${(radius + rimWidth * 0.4).toFixed(2)}" fill="#f8fbfa" stroke="#b6c9c7" stroke-width="${rimWidth.toFixed(2)}"/>`,
-      `<circle id="well-${row + 1}-${column + 1}" cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="${radius.toFixed(2)}" fill="#d9eef4" stroke="#5f858a" stroke-width="${strokeWidth.toFixed(2)}"/>`
+      `<circle id="well-${row + 1}-${column + 1}" cx="${cx.toFixed(2)}" cy="${cy.toFixed(2)}" r="${radius.toFixed(2)}" fill="${wellFill}" stroke="#5f858a" stroke-width="${strokeWidth.toFixed(2)}"/>`
     ].join("");
   }).join("");
   const labelFontSize = LABEL_FONT_SIZE[wellCount] ?? 8.5;
@@ -101,12 +193,35 @@ function family(
   slug: string,
   title: string,
   description: string,
-  source: string,
+  source: string | { rows: number; columns: number },
   entryId: number,
   keywords: string[]
 ): AssetFamily {
   const id = `opensketch-${slug}`;
-  const dataUrl = svgDataUrl(source);
+  const variants =
+    typeof source === "string"
+      ? [
+          {
+            id,
+            assetPath: svgDataUrl(source),
+            thumbnailPath: svgDataUrl(source),
+            width: WIDTH,
+            height: HEIGHT
+          }
+        ]
+      : WELL_PLATE_VARIANTS.map((definition, index) => {
+          const dataUrl = svgDataUrl(
+            wellPlateSvg(source.rows, source.columns, definition.fillWell)
+          );
+          return {
+            id: index === 0 ? id : `${id}-${definition.key}`,
+            label: definition.label,
+            assetPath: dataUrl,
+            thumbnailPath: dataUrl,
+            width: WIDTH,
+            height: HEIGHT
+          };
+        });
   return {
     familyId: id,
     bioartEntryId: entryId,
@@ -120,15 +235,7 @@ function family(
     nihSourcePage: SOURCE_PAGE,
     commonsPage: SOURCE_PAGE,
     defaultVariantId: id,
-    variants: [
-      {
-        id,
-        assetPath: dataUrl,
-        thumbnailPath: dataUrl,
-        width: WIDTH,
-        height: HEIGHT
-      }
-    ]
+    variants
   };
 }
 
@@ -137,7 +244,7 @@ export const TOP_VIEW_LABWARE_FAMILIES: AssetFamily[] = [
     "6-well-plate-top-view",
     "6 Well Plate Top View",
     "Standard 2 by 3 well plate viewed from above",
-    wellPlateSvg(2, 3),
+    { rows: 2, columns: 3 },
     -1006,
     ["6 well plate", "2x3", "culture plate"]
   ),
@@ -145,7 +252,7 @@ export const TOP_VIEW_LABWARE_FAMILIES: AssetFamily[] = [
     "12-well-plate-top-view",
     "12 Well Plate Top View",
     "Standard 3 by 4 well plate viewed from above",
-    wellPlateSvg(3, 4),
+    { rows: 3, columns: 4 },
     -1012,
     ["12 well plate", "3x4", "culture plate"]
   ),
@@ -153,7 +260,7 @@ export const TOP_VIEW_LABWARE_FAMILIES: AssetFamily[] = [
     "24-well-plate-top-view",
     "24 Well Plate Top View",
     "Standard 4 by 6 well plate viewed from above",
-    wellPlateSvg(4, 6),
+    { rows: 4, columns: 6 },
     -1024,
     ["24 well plate", "4x6", "culture plate"]
   ),
@@ -161,7 +268,7 @@ export const TOP_VIEW_LABWARE_FAMILIES: AssetFamily[] = [
     "48-well-plate-top-view",
     "48 Well Plate Top View",
     "Standard 6 by 8 well plate viewed from above",
-    wellPlateSvg(6, 8),
+    { rows: 6, columns: 8 },
     -1048,
     ["48 well plate", "6x8", "culture plate"]
   ),
@@ -169,7 +276,7 @@ export const TOP_VIEW_LABWARE_FAMILIES: AssetFamily[] = [
     "96-well-plate-top-view",
     "96 Well Plate Top View",
     "Standard 8 by 12 microplate viewed from above",
-    wellPlateSvg(8, 12),
+    { rows: 8, columns: 12 },
     -1096,
     ["96 well plate", "8x12", "microplate", "assay plate"]
   ),
@@ -177,7 +284,7 @@ export const TOP_VIEW_LABWARE_FAMILIES: AssetFamily[] = [
     "384-well-plate-top-view",
     "384 Well Plate Top View",
     "Standard 16 by 24 microplate viewed from above",
-    wellPlateSvg(16, 24),
+    { rows: 16, columns: 24 },
     -1384,
     ["384 well plate", "16x24", "microplate", "assay plate"]
   ),

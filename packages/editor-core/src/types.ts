@@ -15,6 +15,7 @@ export interface CanvasSettings {
 
 export interface AssetVariant {
   id: string;
+  label?: string;
   assetPath: string;
   thumbnailPath: string;
   commonsSha1?: string;

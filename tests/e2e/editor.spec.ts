@@ -444,6 +444,53 @@ test("inserts editable standard top-view labware", async ({ page }) => {
     .toBeCloseTo(250, 0);
 });
 
+test("previews and inserts the selected top-view plate color variant", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("24 well plate top view");
+
+  const card = page
+    .locator(".asset-card")
+    .filter({ has: page.locator("strong").filter({ hasText: /^24 Well Plate Top View$/ }) })
+    .first();
+  const variantTrigger = card.getByRole("combobox", { name: "24 Well Plate Top View variant" });
+  await variantTrigger.click();
+
+  const menu = page.getByRole("listbox", { name: "24 Well Plate Top View variants" });
+  await expect(menu.getByRole("option")).toHaveCount(30);
+  await menu
+    .getByRole("option")
+    .filter({ hasText: /^Pink$/ })
+    .click();
+  await expect(variantTrigger).toHaveText(/Pink/);
+  await expect(card.locator("img")).toHaveAttribute("src", /%23f5a3bd/i);
+
+  await card.getByRole("button", { name: "Insert 24 Well Plate Top View" }).click();
+  await expect
+    .poll(() =>
+      page.locator(".lower-canvas").evaluate((canvas: HTMLCanvasElement) => {
+        const pixels = canvas
+          .getContext("2d")!
+          .getImageData(0, 0, canvas.width, canvas.height).data;
+        let pinkPixels = 0;
+        for (let offset = 0; offset < pixels.length; offset += 4) {
+          if (
+            pixels[offset] > 225 &&
+            pixels[offset + 1] >= 125 &&
+            pixels[offset + 1] <= 190 &&
+            pixels[offset + 2] >= 145 &&
+            pixels[offset + 2] <= 210 &&
+            pixels[offset + 3] > 200
+          ) {
+            pinkPixels += 1;
+          }
+        }
+        return pinkPixels;
+      })
+    )
+    .toBeGreaterThan(100);
+});
+
 test("uses the complete SVG selector bounds as its canvas hitbox", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();

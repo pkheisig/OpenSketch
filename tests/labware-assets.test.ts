@@ -33,6 +33,17 @@ function wellRimGeometry(source: string) {
   );
 }
 
+function wellFills(source: string): string[] {
+  return Array.from(
+    source.matchAll(/<circle id="well-[^"]+"[^>]+fill="([^"]+)"/g),
+    (match) => match[1]
+  );
+}
+
+function withoutWellFills(source: string): string {
+  return source.replace(/(<circle id="well-[^"]+"[^>]+fill=")[^"]+("[^>]*>)/g, "$1__WELL_FILL__$2");
+}
+
 describe("top-view labware assets", () => {
   it("provides the standard editable plate layouts and a culture dish", () => {
     expect(TOP_VIEW_LABWARE_FAMILIES.map((family) => family.title)).toEqual([
@@ -58,6 +69,59 @@ describe("top-view labware assets", () => {
     expect(family).toBeDefined();
     const source = decodeSvg(family!.variants[0].assetPath);
     expect(source.match(/id="well-/g)).toHaveLength(expectedWells);
+  });
+
+  it.each([
+    "6 Well Plate Top View",
+    "12 Well Plate Top View",
+    "24 Well Plate Top View",
+    "48 Well Plate Top View",
+    "96 Well Plate Top View",
+    "384 Well Plate Top View"
+  ])("provides 30 color and selection variants for %s", (title) => {
+    const family = TOP_VIEW_LABWARE_FAMILIES.find((candidate) => candidate.title === title);
+
+    expect(family).toBeDefined();
+    expect(family!.variants).toHaveLength(30);
+    expect(new Set(family!.variants.map((variant) => variant.id))).toHaveLength(30);
+    expect(new Set(family!.variants.map((variant) => variant.label))).toHaveLength(30);
+    expect(family!.variants[0].id).toBe(family!.defaultVariantId);
+  });
+
+  it.each([
+    "6 Well Plate Top View",
+    "12 Well Plate Top View",
+    "24 Well Plate Top View",
+    "48 Well Plate Top View",
+    "96 Well Plate Top View",
+    "384 Well Plate Top View"
+  ])("changes only well fills between the variants of %s", (title) => {
+    const family = TOP_VIEW_LABWARE_FAMILIES.find((candidate) => candidate.title === title)!;
+    const normalizedSources = family.variants.map((variant) =>
+      withoutWellFills(decodeSvg(variant.assetPath))
+    );
+
+    expect(new Set(normalizedSources)).toHaveLength(1);
+  });
+
+  it.each([
+    "6 Well Plate Top View",
+    "12 Well Plate Top View",
+    "24 Well Plate Top View",
+    "48 Well Plate Top View",
+    "96 Well Plate Top View",
+    "384 Well Plate Top View"
+  ])("includes pink, yellow, and partially selected wells for %s", (title) => {
+    const family = TOP_VIEW_LABWARE_FAMILIES.find((candidate) => candidate.title === title)!;
+    const fillSets = family.variants.map(
+      (variant) => new Set(wellFills(decodeSvg(variant.assetPath)))
+    );
+
+    expect(fillSets.some((fills) => fills.size === 1 && fills.has("#f5a3bd"))).toBe(true);
+    expect(fillSets.some((fills) => fills.size === 1 && fills.has("#f4d35e"))).toBe(true);
+    expect(
+      fillSets.some((fills) => fills.size === 2 && fills.has("#f5a3bd") && fills.has("#f4f7f6"))
+    ).toBe(true);
   });
 
   it.each([
@@ -139,9 +203,7 @@ describe("top-view labware assets", () => {
     const faceBottom = Number(source.match(/data-plate-face-bottom="([^"]+)"/)?.[1]);
 
     expect(wells).toHaveLength(
-      title.startsWith("384")
-        ? 384
-        : Number(title.slice(0, title.indexOf(" ")))
+      title.startsWith("384") ? 384 : Number(title.slice(0, title.indexOf(" ")))
     );
     expect(Math.max(...wells.map((well) => well.cx + well.visualRadius))).toBeLessThan(faceRight);
     expect(Math.max(...wells.map((well) => well.cy + well.visualRadius))).toBeLessThan(faceBottom);

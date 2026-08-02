@@ -29,7 +29,7 @@ export const assetManifest: AssetManifest = {
 export const ASSET_PREVIEW_CACHE_VERSION = [
   (manifest as AssetManifest).generatedAt,
   (openAssetsManifest as AssetManifest).generatedAt,
-  TOP_VIEW_LABWARE_FAMILIES.length
+  TOP_VIEW_LABWARE_FAMILIES.reduce((total, family) => total + family.variants.length, 0)
 ].join(":");
 export const ASSET_CATEGORIES = [
   "All",

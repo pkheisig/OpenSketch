@@ -53,7 +53,7 @@ export function AssetVariantGrid({
             <AssetPreviewImage assetPath={variant.assetPath} fallbackPath={variant.thumbnailPath} />
             {variant.id === value && <Check size={14} aria-hidden="true" />}
           </span>
-          <span>Variant {index + 1}</span>
+          <span>{variant.label ?? `Variant ${index + 1}`}</span>
         </button>
       ))}
     </div>
@@ -84,6 +84,7 @@ export function AssetVariantPicker({
     0,
     family.variants.findIndex((variant) => variant.id === value)
   );
+  const selectedLabel = family.variants[selectedIndex]?.label ?? `Variant ${selectedIndex + 1}`;
   const updatePosition = useCallback(() => {
     const trigger = triggerRef.current;
     if (!trigger) return;
@@ -146,7 +147,7 @@ export function AssetVariantPicker({
         aria-controls={`${id}-variants`}
         onClick={() => setOpen((current) => !current)}
       >
-        <span>Variant {selectedIndex + 1}</span>
+        <span>{selectedLabel}</span>
         <ChevronDown size={12} aria-hidden="true" />
       </button>
       {open &&
@@ -191,7 +192,7 @@ export function AssetVariantPicker({
                   />
                   {variant.id === value && <Check size={14} aria-hidden="true" />}
                 </span>
-                <span>Variant {index + 1}</span>
+                <span>{variant.label ?? `Variant ${index + 1}`}</span>
               </button>
             ))}
           </div>,
