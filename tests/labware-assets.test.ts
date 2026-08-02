@@ -111,17 +111,25 @@ describe("top-view labware assets", () => {
     "48 Well Plate Top View",
     "96 Well Plate Top View",
     "384 Well Plate Top View"
-  ])("includes pink, yellow, and partially selected wells for %s", (title) => {
+  ])("uses pink exclusively for partially selected wells in %s", (title) => {
     const family = TOP_VIEW_LABWARE_FAMILIES.find((candidate) => candidate.title === title)!;
-    const fillSets = family.variants.map(
-      (variant) => new Set(wellFills(decodeSvg(variant.assetPath)))
-    );
+    const variants = family.variants.map((variant) => ({
+      label: variant.label ?? "",
+      fills: new Set(wellFills(decodeSvg(variant.assetPath)))
+    }));
 
-    expect(fillSets.some((fills) => fills.size === 1 && fills.has("#f5a3bd"))).toBe(true);
-    expect(fillSets.some((fills) => fills.size === 1 && fills.has("#f4d35e"))).toBe(true);
+    expect(variants.some(({ fills }) => fills.size === 1 && fills.has("#f5a3bd"))).toBe(true);
+    expect(variants.some(({ fills }) => fills.size === 1 && fills.has("#f4d35e"))).toBe(true);
     expect(
-      fillSets.some((fills) => fills.size === 2 && fills.has("#f5a3bd") && fills.has("#f4f7f6"))
+      variants.some(({ fills }) => fills.size === 2 && fills.has("#f5a3bd") && fills.has("#f4f7f6"))
     ).toBe(true);
+    variants
+      .filter(({ fills }) => fills.size > 1)
+      .forEach(({ label, fills }) => {
+        expect(label).toMatch(/^Pink · /);
+        expect([...fills].sort()).toEqual(["#f4f7f6", "#f5a3bd"]);
+      });
+    expect(variants.some(({ label }) => /rainbow|multicolor/i.test(label))).toBe(false);
   });
 
   it.each([

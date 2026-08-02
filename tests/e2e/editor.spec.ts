@@ -491,6 +491,51 @@ test("previews and inserts the selected top-view plate color variant", async ({ 
     .toBeGreaterThan(100);
 });
 
+test("drags the chosen top-view plate variant preview instead of the default plate", async ({
+  page
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("24 well plate top view");
+
+  const card = page
+    .locator(".asset-card")
+    .filter({ has: page.locator("strong").filter({ hasText: /^24 Well Plate Top View$/ }) })
+    .first();
+  await card.getByRole("combobox", { name: "24 Well Plate Top View variant" }).click();
+
+  const pinkCheckerboard = page
+    .getByRole("listbox", { name: "24 Well Plate Top View variants" })
+    .getByRole("option")
+    .filter({ hasText: /^Pink · checkerboard$/ });
+  await expect(pinkCheckerboard).toBeVisible();
+  await pinkCheckerboard.dragTo(page.locator(".artboard-stage"));
+
+  await expect
+    .poll(() =>
+      page.locator(".lower-canvas").evaluate((canvas: HTMLCanvasElement) => {
+        const pixels = canvas
+          .getContext("2d")!
+          .getImageData(0, 0, canvas.width, canvas.height).data;
+        let pinkPixels = 0;
+        for (let offset = 0; offset < pixels.length; offset += 4) {
+          if (
+            pixels[offset] > 225 &&
+            pixels[offset + 1] >= 125 &&
+            pixels[offset + 1] <= 190 &&
+            pixels[offset + 2] >= 145 &&
+            pixels[offset + 2] <= 210 &&
+            pixels[offset + 3] > 200
+          ) {
+            pinkPixels += 1;
+          }
+        }
+        return pinkPixels;
+      })
+    )
+    .toBeGreaterThan(50);
+});
+
 test("uses the complete SVG selector bounds as its canvas hitbox", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();

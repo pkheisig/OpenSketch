@@ -56,23 +56,28 @@ const SOLID_WELL_COLORS = [
   ["purple", "Purple", "#b79ced"]
 ] as const;
 
-const SELECTED_WELL_COLORS = [
-  ["pink", "Pink", "#f5a3bd"],
-  ["yellow", "Yellow", "#f4d35e"],
-  ["green", "Green", "#79c99e"]
-] as const;
+const SELECTED_WELL_FILL = "#f5a3bd";
 
 const WELL_SELECTION_PATTERNS: Array<
   [string, string, (row: number, column: number, rows: number, columns: number) => boolean]
 > = [
   ["first-row", "first row", (row) => row === 0],
+  ["last-row", "last row", (row, _column, rows) => row === rows - 1],
   ["first-column", "first column", (_row, column) => column === 0],
+  ["last-column", "last column", (_row, column, _rows, columns) => column === columns - 1],
   ["checkerboard", "checkerboard", (row, column) => (row + column) % 2 === 0],
+  ["inverse-checkerboard", "inverse checkerboard", (row, column) => (row + column) % 2 === 1],
   [
     "diagonal",
     "diagonal",
     (row, column, rows, columns) =>
       Math.round(((columns - 1) * row) / Math.max(1, rows - 1)) === column
+  ],
+  [
+    "anti-diagonal",
+    "anti-diagonal",
+    (row, column, rows, columns) =>
+      columns - 1 - Math.round(((columns - 1) * row) / Math.max(1, rows - 1)) === column
   ],
   [
     "center",
@@ -82,6 +87,45 @@ const WELL_SELECTION_PATTERNS: Array<
       row <= Math.ceil((rows - 1) / 2) &&
       column >= Math.floor((columns - 1) / 2) &&
       column <= Math.ceil((columns - 1) / 2)
+  ],
+  [
+    "corners",
+    "corners",
+    (row, column, rows, columns) =>
+      (row === 0 || row === rows - 1) && (column === 0 || column === columns - 1)
+  ],
+  [
+    "top-left-quadrant",
+    "top-left quadrant",
+    (row, column, rows, columns) => row < Math.ceil(rows / 2) && column < Math.ceil(columns / 2)
+  ],
+  [
+    "top-right-quadrant",
+    "top-right quadrant",
+    (row, column, rows, columns) => row < Math.ceil(rows / 2) && column >= Math.floor(columns / 2)
+  ],
+  [
+    "bottom-left-quadrant",
+    "bottom-left quadrant",
+    (row, column, rows, columns) => row >= Math.floor(rows / 2) && column < Math.ceil(columns / 2)
+  ],
+  [
+    "bottom-right-quadrant",
+    "bottom-right quadrant",
+    (row, column, rows, columns) => row >= Math.floor(rows / 2) && column >= Math.floor(columns / 2)
+  ],
+  [
+    "every-third-well",
+    "every third well",
+    (row, column, _rows, columns) => (row * columns + column) % 3 === 0
+  ],
+  ["odd-wells", "odd wells", (row, column, _rows, columns) => (row * columns + column) % 2 === 0],
+  ["even-wells", "even wells", (row, column, _rows, columns) => (row * columns + column) % 2 === 1],
+  [
+    "center-cross",
+    "center cross",
+    (row, column, rows, columns) =>
+      row === Math.floor((rows - 1) / 2) || column === Math.floor((columns - 1) / 2)
   ]
 ];
 
@@ -91,33 +135,12 @@ const WELL_PLATE_VARIANTS: WellPlateVariantDefinition[] = [
     label,
     fillWell: () => color
   })),
-  ...SELECTED_WELL_COLORS.flatMap(([colorName, colorLabel, color]) =>
-    WELL_SELECTION_PATTERNS.map(([patternName, patternLabel, isSelected]) => ({
-      key: `${colorName}-${patternName}`,
-      label: `${colorLabel} · ${patternLabel}`,
-      fillWell: (row: number, column: number, rows: number, columns: number) =>
-        isSelected(row, column, rows, columns) ? color : UNSELECTED_WELL_FILL
-    }))
-  ),
-  {
-    key: "multicolor-rows",
-    label: "Rainbow rows",
-    fillWell: (row) => ["#f5a3bd", "#f4d35e", "#79c99e", "#78aee8", "#b79ced"][row % 5]
-  },
-  {
-    key: "multicolor-columns",
-    label: "Rainbow columns",
-    fillWell: (_row, column) => ["#f5a3bd", "#f4d35e", "#79c99e", "#78aee8", "#b79ced"][column % 5]
-  },
-  {
-    key: "multicolor-quadrants",
-    label: "Color quadrants",
-    fillWell: (row, column, rows, columns) => {
-      const lower = row >= rows / 2;
-      const right = column >= columns / 2;
-      return ["#f5a3bd", "#f4d35e", "#79c99e", "#b79ced"][Number(lower) * 2 + Number(right)];
-    }
-  }
+  ...WELL_SELECTION_PATTERNS.map(([patternName, patternLabel, isSelected]) => ({
+    key: `pink-${patternName}`,
+    label: `Pink · ${patternLabel}`,
+    fillWell: (row: number, column: number, rows: number, columns: number) =>
+      isSelected(row, column, rows, columns) ? SELECTED_WELL_FILL : UNSELECTED_WELL_FILL
+  }))
 ];
 
 function svgDataUrl(source: string): string {

@@ -18,6 +18,11 @@ function startVariantDrag(
   familyId: string,
   variantId: string
 ): void {
+  // The picker is rendered through a portal, but React still bubbles its
+  // synthetic drag event through the AssetCard component tree. Keep the card's
+  // drag handler from replacing this explicitly chosen variant with the card's
+  // current default.
+  event.stopPropagation();
   setAssetDragPayload(event.dataTransfer, familyId, variantId);
   setAssetDragImage(
     event.dataTransfer,
