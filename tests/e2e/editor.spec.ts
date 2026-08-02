@@ -457,7 +457,7 @@ test("previews and inserts the selected top-view plate color variant", async ({ 
   await variantTrigger.click();
 
   const menu = page.getByRole("listbox", { name: "24 Well Plate Top View variants" });
-  await expect(menu.getByRole("option")).toHaveCount(30);
+  await expect(menu.getByRole("option")).toHaveCount(32);
   await menu
     .getByRole("option")
     .filter({ hasText: /^Pink$/ })

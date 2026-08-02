@@ -78,14 +78,44 @@ describe("top-view labware assets", () => {
     "48 Well Plate Top View",
     "96 Well Plate Top View",
     "384 Well Plate Top View"
-  ])("provides 30 color and selection variants for %s", (title) => {
+  ])("provides 32 color and selection variants for %s", (title) => {
     const family = TOP_VIEW_LABWARE_FAMILIES.find((candidate) => candidate.title === title);
 
     expect(family).toBeDefined();
-    expect(family!.variants).toHaveLength(30);
-    expect(new Set(family!.variants.map((variant) => variant.id))).toHaveLength(30);
-    expect(new Set(family!.variants.map((variant) => variant.label))).toHaveLength(30);
+    expect(family!.variants).toHaveLength(32);
+    expect(new Set(family!.variants.map((variant) => variant.id))).toHaveLength(32);
+    expect(new Set(family!.variants.map((variant) => variant.label))).toHaveLength(32);
     expect(family!.variants[0].id).toBe(family!.defaultVariantId);
+  });
+
+  it.each([
+    ["6 Well Plate Top View", 2, 3],
+    ["12 Well Plate Top View", 3, 4],
+    ["24 Well Plate Top View", 4, 6],
+    ["48 Well Plate Top View", 6, 8],
+    ["96 Well Plate Top View", 8, 12],
+    ["384 Well Plate Top View", 16, 24]
+  ])("provides both alternating row and column phases for %s", (title, rows, columns) => {
+    const family = TOP_VIEW_LABWARE_FAMILIES.find((candidate) => candidate.title === title)!;
+    const fillsFor = (label: string) =>
+      wellFills(decodeSvg(family.variants.find((variant) => variant.label === label)!.assetPath));
+    const pink = "#f5a3bd";
+    const clear = "#f4f7f6";
+
+    const oddRows = fillsFor("Pink · rows A, C, E…");
+    const evenRows = fillsFor("Pink · rows B, D, F…");
+    const oddColumns = fillsFor("Pink · columns 1, 3, 5…");
+    const evenColumns = fillsFor("Pink · columns 2, 4, 6…");
+
+    for (let row = 0; row < rows; row += 1) {
+      for (let column = 0; column < columns; column += 1) {
+        const index = row * columns + column;
+        expect(oddRows[index]).toBe(row % 2 === 0 ? pink : clear);
+        expect(evenRows[index]).toBe(row % 2 === 1 ? pink : clear);
+        expect(oddColumns[index]).toBe(column % 2 === 0 ? pink : clear);
+        expect(evenColumns[index]).toBe(column % 2 === 1 ? pink : clear);
+      }
+    }
   });
 
   it.each([

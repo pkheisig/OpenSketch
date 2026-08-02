@@ -119,8 +119,10 @@ const WELL_SELECTION_PATTERNS: Array<
     "every third well",
     (row, column, _rows, columns) => (row * columns + column) % 3 === 0
   ],
-  ["odd-wells", "odd wells", (row, column, _rows, columns) => (row * columns + column) % 2 === 0],
-  ["even-wells", "even wells", (row, column, _rows, columns) => (row * columns + column) % 2 === 1],
+  ["odd-wells", "columns 1, 3, 5…", (_row, column) => column % 2 === 0],
+  ["even-wells", "columns 2, 4, 6…", (_row, column) => column % 2 === 1],
+  ["odd-rows", "rows A, C, E…", (row) => row % 2 === 0],
+  ["even-rows", "rows B, D, F…", (row) => row % 2 === 1],
   [
     "center-cross",
     "center cross",
