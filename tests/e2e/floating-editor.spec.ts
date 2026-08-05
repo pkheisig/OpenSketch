@@ -84,6 +84,14 @@ test("@smoke uses floating BioRender-style tools, flyouts, and left-side propert
     await expectFlyoutTopAligned(lineMenu, family);
   }
   await lineMenu.getByRole("menuitem", { name: /^Lines/ }).hover();
+  await expect(lineMenu.locator(".connector-family-lines button svg").first()).toHaveCSS(
+    "width",
+    "30px"
+  );
+  await expect(lineMenu.locator(".connector-family-lines button svg").first()).toHaveCSS(
+    "height",
+    "26px"
+  );
   const lineGlyphs = await lineMenu
     .locator(".tool-flyout-secondary button svg")
     .evaluateAll((icons) => icons.map((icon) => icon.outerHTML));

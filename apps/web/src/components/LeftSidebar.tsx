@@ -175,7 +175,7 @@ function ConnectorPresetIcon({ value }: { value: ConnectorPreset }) {
     if (!graphic) return;
     const bounds = graphic.getBBox();
     if (!Number.isFinite(bounds.width) || !Number.isFinite(bounds.height)) return;
-    const aspectRatio = 43 / 31;
+    const aspectRatio = 30 / 26;
     let width = Math.max(34, bounds.width + 5);
     let height = Math.max(24.5, bounds.height + 5);
     if (width / height < aspectRatio) {
@@ -198,8 +198,8 @@ function ConnectorPresetIcon({ value }: { value: ConnectorPreset }) {
   ]);
   return (
     <svg
-      width="43"
-      height="31"
+      width="30"
+      height="26"
       viewBox={viewBox}
       aria-hidden="true"
       style={{ opacity: value.opacity ?? 1 }}
