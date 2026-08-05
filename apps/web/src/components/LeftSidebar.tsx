@@ -254,10 +254,12 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const [flyout, setFlyout] = useState<Flyout>(null);
   const [lineFamily, setLineFamily] = useState<ConnectorFamily | null>(null);
   const [shapeFamily, setShapeFamily] = useState<keyof typeof SHAPE_GROUPS | null>(null);
+  const [secondaryTop, setSecondaryTop] = useState(0);
   const [assetQuery, setAssetQuery] = useState("");
   const [assetCategory, setAssetCategory] = useState("Favorites");
   const [assetSearchFocusRequest, setAssetSearchFocusRequest] = useState(0);
   const sidebarRef = useRef<HTMLElement>(null);
+  const primaryFamilyButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const handledSelection = useRef("");
   const draggedLinePreset = useRef(false);
   const pressedLinePreset = useRef(false);
@@ -291,6 +293,15 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     editor.setCreationTool(null);
     if (!shouldClose && !collapsed) onToggle();
   };
+  const activeFlyoutFamily =
+    flyout === "lines" ? lineFamily : flyout === "shapes" ? shapeFamily : null;
+  useLayoutEffect(() => {
+    const activeButton = activeFlyoutFamily
+      ? primaryFamilyButtonRefs.current[activeFlyoutFamily]
+      : null;
+    const nextTop = activeButton?.offsetTop ?? 0;
+    setSecondaryTop((current) => (current === nextTop ? current : nextTop));
+  }, [activeFlyoutFamily]);
   const chooseLinePreset = (value: ConnectorPreset, family: ConnectorFamily) => {
     editor.setCreationDefaults((current) => ({
       ...current,
@@ -472,6 +483,9 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
               return (
                 <button
                   key={family}
+                  ref={(element) => {
+                    primaryFamilyButtonRefs.current[family] = element;
+                  }}
                   className={lineFamily === family ? "active" : ""}
                   onPointerEnter={() => setLineFamily(family)}
                   onClick={() => setLineFamily(family)}
@@ -484,7 +498,10 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
             })}
           </div>
           {lineFamily ? (
-            <div className={`tool-flyout-secondary connector-family-${lineFamily}`}>
+            <div
+              className={`tool-flyout-secondary connector-family-${lineFamily}`}
+              style={{ marginTop: secondaryTop }}
+            >
               {CONNECTOR_PRESETS[lineFamily].map((value) => {
                 return (
                   <button
@@ -535,6 +552,9 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
         >
           <div className="tool-flyout-primary">
             <button
+              ref={(element) => {
+                primaryFamilyButtonRefs.current.basic = element;
+              }}
               className={shapeFamily === "basic" ? "active" : ""}
               onPointerEnter={() => setShapeFamily("basic")}
               onClick={() => setShapeFamily("basic")}
@@ -543,6 +563,9 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
               <ShapePresetIcon glyph="rectangle" /> Shapes
             </button>
             <button
+              ref={(element) => {
+                primaryFamilyButtonRefs.current.polygons = element;
+              }}
               className={shapeFamily === "polygons" ? "active" : ""}
               onPointerEnter={() => setShapeFamily("polygons")}
               onClick={() => setShapeFamily("polygons")}
@@ -552,7 +575,10 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
             </button>
           </div>
           {shapeFamily ? (
-            <div className="tool-flyout-secondary shape-flyout-grid">
+            <div
+              className="tool-flyout-secondary shape-flyout-grid"
+              style={{ marginTop: secondaryTop }}
+            >
               {SHAPE_GROUPS[shapeFamily].map(([kind, glyph, label]) => (
                 <button
                   key={kind}
@@ -1023,7 +1049,6 @@ function ShapesPanel() {
                 ariaLabel="Default text color"
                 value={editor.creationDefaults.text.color}
                 onChange={(color) => updateTextDefaults({ color })}
-                showValue
               />
             </div>
             <label className="creation-number-field">
@@ -1104,7 +1129,6 @@ function ShapesPanel() {
                 ariaLabel="Default line color"
                 value={editor.creationDefaults.line.color}
                 onChange={(color) => updateLineDefaults({ color })}
-                showValue
               />
             </div>
             <label className="creation-number-field">

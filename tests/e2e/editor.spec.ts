@@ -898,7 +898,9 @@ test("places text and shapes from active tools and persists line creation defaul
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
   await page.getByRole("button", { name: "Defaults", exact: true }).click();
-  await expect(page.getByLabel("Default line color")).toContainText("#c026d3");
+  await expect(page.getByLabel("Default line color").locator(".palette-color-value")).toHaveCount(
+    0
+  );
   await expect(page.getByLabel("Default line thickness")).toHaveValue("9");
   await expect(page.getByRole("combobox", { name: "Line style" })).toHaveText(/Dashed/i);
   await expect(page.getByRole("combobox", { name: "Start head" })).toHaveText(/None/i);
@@ -906,7 +908,9 @@ test("places text and shapes from active tools and persists line creation defaul
   await expect(page.getByRole("combobox", { name: "Default text typeface" })).toHaveText(
     /Source Serif 4/i
   );
-  await expect(page.getByLabel("Default text color")).toContainText("#3157a4");
+  await expect(page.getByLabel("Default text color").locator(".palette-color-value")).toHaveCount(
+    0
+  );
   await expect(page.getByLabel("Default text size")).toHaveValue("28");
   await expect(page.getByRole("combobox", { name: "Default text weight" })).toHaveText(/Semibold/i);
 

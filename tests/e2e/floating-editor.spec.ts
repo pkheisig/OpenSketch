@@ -1,4 +1,27 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Locator } from "@playwright/test";
+
+async function expectFlyoutTopAligned(menu: Locator, family: string) {
+  const familyItem = menu
+    .locator(".tool-flyout-primary")
+    .getByRole("menuitem", { name: family, exact: true });
+  await familyItem.hover();
+  await expect
+    .poll(
+      () =>
+        menu.evaluate((menuElement) => {
+          const activeItem = menuElement.querySelector<HTMLElement>(
+            ".tool-flyout-primary button.active"
+          );
+          const secondary = menuElement.querySelector<HTMLElement>(".tool-flyout-secondary");
+          if (!activeItem || !secondary) return Number.POSITIVE_INFINITY;
+          return Math.abs(
+            activeItem.getBoundingClientRect().top - secondary.getBoundingClientRect().top
+          );
+        }),
+      { message: `secondary flyout should align with ${family}` }
+    )
+    .toBeLessThan(0.5);
+}
 
 test("@smoke uses floating BioRender-style tools, flyouts, and left-side properties", async ({ page }) => {
   await page.goto("/");
@@ -49,6 +72,17 @@ test("@smoke uses floating BioRender-style tools, flyouts, and left-side propert
             (svg.getBoundingClientRect().width / svg.viewBox.baseVal.width)
         : 0;
     });
+  for (const family of [
+    "Lines",
+    "Arrows",
+    "Inhibitor",
+    "Dots",
+    "Neurons",
+    "Circular",
+    "Brackets"
+  ]) {
+    await expectFlyoutTopAligned(lineMenu, family);
+  }
   await lineMenu.getByRole("menuitem", { name: /^Lines/ }).hover();
   const lineGlyphs = await lineMenu
     .locator(".tool-flyout-secondary button svg")
@@ -170,6 +204,9 @@ test("@smoke uses floating BioRender-style tools, flyouts, and left-side propert
   await page.mouse.move(900, 500);
   await expect(shapeMenu).toBeVisible();
   await expect(shapeMenu.locator(".tool-flyout-secondary")).toHaveCount(0);
+  for (const family of ["Shapes", "Polygons"]) {
+    await expectFlyoutTopAligned(shapeMenu, family);
+  }
   const shapeFamilySpacing = await shapeMenu
     .locator(".tool-flyout-primary button")
     .first()
