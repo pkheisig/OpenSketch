@@ -1493,9 +1493,11 @@ test("uses accessible in-app dropdowns with keyboard and outside-click behavior"
   await expect(page.getByLabel("Pixel width")).toHaveCount(0);
   await expect(page.getByLabel("Pixel height")).toHaveCount(0);
   await expect(page.locator(".export-summary")).toHaveCount(0);
+  await expect(outputDpi).toHaveAttribute("data-value", "1200");
   await outputDpi.click();
   await expect(page.getByRole("option", { name: "150 DPI" })).toBeVisible();
   await expect(page.getByRole("option", { name: "1200 DPI" })).toBeVisible();
+  await expect(page.getByRole("option", { name: "1500 DPI" })).toBeVisible();
   await expect(page.getByRole("option", { name: "72 DPI" })).toHaveCount(0);
   await page.keyboard.press("Escape");
   await expect(page.getByRole("dialog", { name: "Export figure" })).toBeVisible();

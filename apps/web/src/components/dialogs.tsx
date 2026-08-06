@@ -11,7 +11,7 @@ export function ExportDialog({ onClose }: { onClose: () => void }) {
   const editor = useEditor();
   const dialogRef = useModalDialog(true, onClose);
   const [format, setFormat] = useState<"svg" | "png" | "pdf">("svg");
-  const [dpi, setDpi] = useState(() => loadExportDpi(editor.canvasSettings.dpi));
+  const [dpi, setDpi] = useState(() => loadExportDpi());
   const [transparent, setTransparent] = useState(false);
   const [background, setBackground] = useState(editor.canvasSettings.background);
   const [exportError, setExportError] = useState("");

@@ -99,8 +99,9 @@ an accessible title, description, generator, used asset IDs, per-asset
 source/author/license records, and global NIH BioArt credit.
 
 PNG is rendered from a neutral logical viewport so editor zoom never changes
-output dimensions. The selected 150–1200 DPI value determines raster scaling
-and is embedded as a valid PNG physical-resolution (`pHYs`) chunk.
+output dimensions. Exports default to 1200 DPI; the selected 150–1500 DPI
+value determines raster scaling and is embedded as a valid PNG
+physical-resolution (`pHYs`) chunk.
 
 PDF consumes the same generated SVG through `svg2pdf.js` and jsPDF, preserving
 supported vector paths and text. Bundled Source Sans 3 fonts keep default text
