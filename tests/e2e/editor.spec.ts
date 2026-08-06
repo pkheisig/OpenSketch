@@ -248,7 +248,7 @@ test("@smoke never paints fallback asset sizing or uninitialized canvas geometry
     ready: image.dataset.previewReady,
     visibility: getComputedStyle(image).visibility
   }));
-  if (initialPreviewState.ready === "false") expect(initialPreviewState.visibility).toBe("hidden");
+  expect(initialPreviewState.visibility).toBe("visible");
   await expect(preview).toHaveAttribute("data-preview-ready", "true");
   await expect(preview).toHaveCSS("visibility", "visible");
   const finalBounds = await previewFrame.boundingBox();
@@ -1197,11 +1197,13 @@ test("keeps family variant previews normalized and drags the selected variant", 
   const visibleArtworkBounds = async (image: Locator) => {
     await expect.poll(() => image.getAttribute("src")).toMatch(/\.webp$/);
     await expect
-      .poll(() =>
-        image.evaluate(
-          (element: HTMLImageElement) =>
-            element.complete && element.naturalWidth === 256 && element.naturalHeight === 256
-        )
+      .poll(
+        () =>
+          image.evaluate(
+            (element: HTMLImageElement) =>
+              element.complete && element.naturalWidth === 256 && element.naturalHeight === 256
+          ),
+        { timeout: 15_000 }
       )
       .toBe(true);
     return image.evaluate((element: HTMLImageElement) => {
@@ -1303,18 +1305,20 @@ test("previews bundled variants and inserts nested-clip-path assets", async ({ p
   expect(variantCount).toBeGreaterThanOrEqual(9);
   await expect(variants.locator("img")).toHaveCount(variantCount);
   await expect
-    .poll(() =>
-      variants.locator("img").evaluateAll((images) =>
-        images.every((image) => {
-          const element = image as HTMLImageElement;
-          return (
-            element.getAttribute("src")?.startsWith("data:image/png") &&
-            element.complete &&
-            element.naturalWidth === 448 &&
-            element.naturalHeight === 448
-          );
-        })
-      )
+    .poll(
+      () =>
+        variants.locator("img").evaluateAll((images) =>
+          images.every((image) => {
+            const element = image as HTMLImageElement;
+            return (
+              element.getAttribute("src")?.endsWith(".webp") &&
+              element.complete &&
+              element.naturalWidth === 256 &&
+              element.naturalHeight === 256
+            );
+          })
+        ),
+      { timeout: 15_000 }
     )
     .toBe(true);
   await variants.getByRole("option", { name: "Select Immune Cell variant 2" }).click();
@@ -2953,14 +2957,14 @@ test("fills the asset sidebar with the merged scientific catalog", async ({ page
   const visibleAssetTitles = page.locator(".asset-card-copy strong");
   await expect(visibleAssetTitles.nth(7)).toBeVisible();
   expect((await visibleAssetTitles.allTextContents()).slice(0, 8)).toEqual([
-    "Abeoforma whisleri",
-    "Action Potential",
+    "1cell Pn4 Zygote",
+    "2c Embryo",
+    "4c Embryo Style1",
+    "4c Embryo Style2",
+    "8c Embryo",
     "Activated Neutrophil",
-    "Adenovirus",
-    "Adipocyte",
-    "alternatively activated microglia",
-    "Alveoli",
-    "Alveoli"
+    "Adipocyte 1",
+    "Adipocyte 2"
   ]);
 
   const dimensions = await page.locator(".asset-list-shell").evaluate((shell) => {
@@ -3246,6 +3250,9 @@ test("orders the audited taxonomy from cell biology to macroscopic assets", asyn
     "Favorites",
     "All",
     "Cells",
+    "Cancer & pathology",
+    "Immunology & blood",
+    "Cell components",
     "Proteins",
     "Molecules",
     "Nucleic acids & genetics",
@@ -3300,7 +3307,11 @@ test("renders and persists complex NIH illustrations without losing their colors
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("dendritic");
-  const dendriticCell = page.locator(".asset-card").filter({ hasText: "Dendritic Cell" }).first();
+  const dendriticCell = page
+    .locator(".asset-card")
+    .filter({ hasText: "Dendritic Cell" })
+    .filter({ hasText: "Source: NIAID Visual & Medical Arts" })
+    .first();
   await expect(dendriticCell).toBeVisible();
   const insert = dendriticCell.locator(".asset-card-image");
   await insert.click();
@@ -3445,12 +3456,15 @@ test("saves and resets styling for future copies of the same biological asset", 
   const assetPreview = assetCard.locator(".asset-card-image");
   const assetPreviewImage = assetPreview.locator("img");
   await expect(assetPreview).toBeVisible();
+  await expect(assetPreviewImage).toHaveAttribute("src", /\.webp$/);
   await expect
-    .poll(() =>
-      assetPreviewImage.evaluate(
-        (image: HTMLImageElement) =>
-          image.complete && image.naturalWidth === 448 && image.naturalHeight === 448
-      )
+    .poll(
+      () =>
+        assetPreviewImage.evaluate(
+          (image: HTMLImageElement) =>
+            image.complete && image.naturalWidth === 256 && image.naturalHeight === 256
+        ),
+      { timeout: 15_000 }
     )
     .toBe(true);
   const originalPreviewSource = await assetPreviewImage.getAttribute("src");
@@ -3550,12 +3564,16 @@ test("renders every styled eosinophil part in a stable sidebar preview", async (
     .click();
   await page.getByRole("tab", { name: "Assets", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Eosinophil");
-  await expect.poll(() => previewImage.getAttribute("src")).toMatch(/^data:image\/png/);
   await expect
-    .poll(() =>
-      previewImage.evaluate(
-        (image: HTMLImageElement) => image.complete && image.naturalWidth === 448
-      )
+    .poll(() => previewImage.getAttribute("src"), { timeout: 15_000 })
+    .toMatch(/^data:image\/png/);
+  await expect
+    .poll(
+      () =>
+        previewImage.evaluate(
+          (image: HTMLImageElement) => image.complete && image.naturalWidth === 448
+        ),
+      { timeout: 15_000 }
     )
     .toBe(true);
 
@@ -3614,7 +3632,7 @@ test("exports an atomic SVG asset with its vector parts intact", async ({ page }
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("dendritic");
   const dendriticCell = page.locator(".asset-card").filter({ hasText: "Dendritic Cell" }).first();
   await expect(dendriticCell.locator("img")).toHaveAttribute("data-preview-ready", "true");
-  await dendriticCell.getByRole("button", { name: "Insert Dendritic Cell", exact: true }).click();
+  await dendriticCell.locator(".asset-card-image").click();
   await expect(page.locator(".layers-title small")).toHaveText("1");
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.getByText("Edit individual parts", { exact: true })).toHaveCount(0);

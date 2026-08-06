@@ -1,5 +1,29 @@
-const ASSET_DRAG_TYPE = "application/x-scientific-asset";
+export const ASSET_DRAG_TYPE = "application/x-scientific-asset";
 export const IMPORTED_MEDIA_DRAG_TYPE = "application/x-opensketch-import";
+
+export type AssetDragPayload = {
+  familyId: string;
+  variantId: string;
+};
+
+export function parseAssetDragPayload(encoded: string): AssetDragPayload | null {
+  try {
+    const parsed: unknown = JSON.parse(encoded);
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return null;
+    const payload = parsed as Record<string, unknown>;
+    if (
+      typeof payload.familyId !== "string" ||
+      payload.familyId.trim().length === 0 ||
+      typeof payload.variantId !== "string" ||
+      payload.variantId.trim().length === 0
+    ) {
+      return null;
+    }
+    return { familyId: payload.familyId, variantId: payload.variantId };
+  } catch {
+    return null;
+  }
+}
 
 type DragPointer = {
   clientX: number;

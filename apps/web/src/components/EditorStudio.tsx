@@ -7,6 +7,8 @@ import { CanvasWorkspace } from "@/components/CanvasWorkspace";
 import { ASSET_PREVIEW_CACHE_VERSION, assetManifest } from "@/assets/manifest";
 import { scheduleAssetPreviewWarmup } from "@/assets/previewWarmup";
 
+const ASSET_PREVIEW_WARMUP_DELAY_MS = 10_000;
+
 export function EditorStudio({
   project,
   onProjectChange,
@@ -27,12 +29,15 @@ export function EditorStudio({
     });
   };
   useEffect(() => {
-    scheduleAssetPreviewWarmup(
-      assetManifest.families.flatMap((family) =>
-        family.variants.map((variant) => variant.thumbnailPath)
-      ),
-      ASSET_PREVIEW_CACHE_VERSION
-    );
+    const warmupTimer = window.setTimeout(() => {
+      scheduleAssetPreviewWarmup(
+        assetManifest.families.flatMap((family) =>
+          family.variants.map((variant) => variant.thumbnailPath)
+        ),
+        ASSET_PREVIEW_CACHE_VERSION
+      );
+    }, ASSET_PREVIEW_WARMUP_DELAY_MS);
+    return () => window.clearTimeout(warmupTimer);
   }, []);
   return (
     <EditorProvider key={project.id} project={project} onProjectChange={onProjectChange}>

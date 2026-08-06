@@ -30,7 +30,6 @@ import {
 } from "@workspace/editor-core";
 import { ASSET_CATEGORIES, assetManifest } from "@/assets/manifest";
 import { AssetPreviewImage } from "@/components/AssetPreviewImage";
-import { prioritizeAssetPreviews } from "@/assets/previewWarmup";
 import { useEditor } from "@/editor/EditorContext";
 import {
   buildConnectorGeometry,
@@ -58,6 +57,7 @@ import {
   setAssetDragPayload,
   setImportedMediaDragPayload
 } from "@/editor/assetDrag";
+import { loadStringList, saveStringList } from "@/editor/stringListStorage";
 import {
   ASSET_VARIANT_DEFAULTS_CHANGED_EVENT,
   loadAssetVariantDefaults,
@@ -78,6 +78,8 @@ type Flyout = "lines" | "shapes" | "defaults" | null;
 type CreationDefaultsSection = "text" | "shape" | "line";
 
 const CREATION_DEFAULTS_DISCLOSURE_STORAGE_KEY = "OpenSketch:creation-defaults-disclosures";
+const FAVORITES_STORAGE_KEY = "OpenSketch:favorites";
+const RECENT_ASSETS_STORAGE_KEY = "OpenSketch:recent-assets";
 const DEFAULT_CREATION_DEFAULTS_DISCLOSURES: Record<CreationDefaultsSection, boolean> = {
   text: true,
   shape: true,
@@ -683,11 +685,9 @@ function AssetsPanel({
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [variants, setVariants] = useState(loadAssetVariantDefaults);
   const [favorites, setFavorites] = useState<Set<string>>(
-    () => new Set(JSON.parse(localStorage.getItem("OpenSketch:favorites") ?? "[]") as string[])
+    () => new Set(loadStringList(FAVORITES_STORAGE_KEY))
   );
-  const [recent, setRecent] = useState<string[]>(
-    () => JSON.parse(localStorage.getItem("OpenSketch:recent-assets") ?? "[]") as string[]
-  );
+  const [recent, setRecent] = useState<string[]>(() => loadStringList(RECENT_ASSETS_STORAGE_KEY));
   const [assetError, setAssetError] = useState("");
   const [assetListHeight, setAssetListHeight] = useState(0);
   const [savedStyles, setSavedStyles] = useState<SavedElementStyles>(loadSavedElementStyles);
@@ -702,6 +702,13 @@ function AssetsPanel({
       ? matches.filter((family) => favorites.has(family.familyId))
       : matches;
   }, [category, debouncedQuery, favorites]);
+  const titleCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const family of families) {
+      counts.set(family.title, (counts.get(family.title) ?? 0) + 1);
+    }
+    return counts;
+  }, [families]);
   useEffect(() => {
     const timeout = window.setTimeout(() => setDebouncedQuery(query), 160);
     return () => window.clearTimeout(timeout);
@@ -733,11 +740,6 @@ function AssetsPanel({
     observer.observe(list);
     return () => observer.disconnect();
   }, [families.length]);
-  useEffect(() => {
-    prioritizeAssetPreviews(
-      families.flatMap((family) => family.variants.map((variant) => variant.thumbnailPath))
-    );
-  }, [families]);
   const rows = Math.ceil(families.length / 2);
   const selectedVariant = (family: AssetFamily) =>
     family.variants.find((variant) => variant.id === variants[family.familyId]) ??
@@ -749,13 +751,13 @@ function AssetsPanel({
     if (next.has(familyId)) next.delete(familyId);
     else next.add(familyId);
     setFavorites(next);
-    localStorage.setItem("OpenSketch:favorites", JSON.stringify([...next]));
+    saveStringList(FAVORITES_STORAGE_KEY, [...next]);
   };
 
   const insert = (family: AssetFamily, variant: AssetVariant) => {
     const next = [family.familyId, ...recent.filter((id) => id !== family.familyId)].slice(0, 8);
     setRecent(next);
-    localStorage.setItem("OpenSketch:recent-assets", JSON.stringify(next));
+    saveStringList(RECENT_ASSETS_STORAGE_KEY, next);
     setAssetError("");
     void editor
       .addAsset(family, variant)
@@ -773,6 +775,7 @@ function AssetsPanel({
             variant={variant}
             savedStyle={savedStyles[`asset:${variant.id}`]}
             favorite={favorites.has(family.familyId)}
+            duplicateTitle={(titleCounts.get(family.title) ?? 0) > 1}
             onFavorite={() => toggleFavorite(family.familyId)}
             onInsert={() => insert(family, variant)}
             onVariant={(variantId) => saveAssetVariantDefault(family.familyId, variantId)}
@@ -898,6 +901,7 @@ function AssetCard({
   variant,
   savedStyle,
   favorite,
+  duplicateTitle,
   onFavorite,
   onInsert,
   onVariant
@@ -906,10 +910,13 @@ function AssetCard({
   variant: AssetVariant;
   savedStyle?: ElementStyleSnapshot;
   favorite: boolean;
+  duplicateTitle: boolean;
   onFavorite: () => void;
   onInsert: () => void;
   onVariant: (id: string) => void;
 }) {
+  const sourceLabel = family.sourceName ?? family.author;
+  const sourceId = `asset-source-${family.familyId}`;
   const onDragStart = (event: DragEvent) => {
     const storedVariantId = loadAssetVariantDefaults()[family.familyId];
     const currentVariant =
@@ -923,7 +930,12 @@ function AssetCard({
   };
   return (
     <article className="asset-card" draggable onDragStart={onDragStart}>
-      <button className="asset-card-image" onClick={onInsert} aria-label={`Insert ${family.title}`}>
+      <button
+        className="asset-card-image"
+        onClick={onInsert}
+        aria-label={`Insert ${family.title}`}
+        aria-describedby={duplicateTitle ? sourceId : undefined}
+      >
         <AssetPreviewImage
           assetPath={variant.assetPath}
           fallbackPath={variant.thumbnailPath}
@@ -940,6 +952,9 @@ function AssetCard({
         ) : (
           <small>{family.category}</small>
         )}
+        <small id={sourceId} className="asset-card-source" title={`Source: ${sourceLabel}`}>
+          Source: {sourceLabel}
+        </small>
       </div>
     </article>
   );

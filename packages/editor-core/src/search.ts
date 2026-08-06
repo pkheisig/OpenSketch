@@ -54,25 +54,36 @@ function matchesTerms(haystack: string, value: string): boolean {
     .every((term) => matchesTerm(haystack, term));
 }
 
-const CATEGORY_BROWSE_PRIORITY: Record<string, number> = {
-  Cells: 0,
-  Proteins: 1,
-  Molecules: 2,
-  "Nucleic acids & genetics": 3,
-  "Cellular processes": 4,
-  Equipment: 5,
-  Bacteria: 6,
-  Viruses: 7,
-  Parasites: 8,
-  Anatomy: 9,
-  People: 10,
-  Animals: 11,
-  Arthropods: 12,
-  Plants: 13,
-  Food: 14,
-  "Symbols & diagrams": 15,
-  Other: 16
-};
+/** Browse order shared by the catalog UI and unfiltered search results. */
+export const ASSET_CATEGORY_ORDER = [
+  "Cells",
+  "Cancer & pathology",
+  "Immunology & blood",
+  "Cell components",
+  "Proteins",
+  "Molecules",
+  "Nucleic acids & genetics",
+  "Cellular processes",
+  "Tissues & histology",
+  "Equipment",
+  "Techniques & assays",
+  "Bacteria",
+  "Viruses",
+  "Parasites",
+  "Fungi & protists",
+  "Anatomy",
+  "People",
+  "Animals",
+  "Arthropods",
+  "Plants",
+  "Food",
+  "Symbols & diagrams",
+  "Other"
+] as const;
+
+const CATEGORY_BROWSE_PRIORITY: Record<string, number> = Object.fromEntries(
+  ASSET_CATEGORY_ORDER.map((category, index) => [category, index])
+);
 
 export function assetBrowsePriority(family: AssetFamily): number {
   return CATEGORY_BROWSE_PRIORITY[family.category] ?? CATEGORY_BROWSE_PRIORITY.Other;

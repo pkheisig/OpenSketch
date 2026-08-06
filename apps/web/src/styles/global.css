@@ -1540,6 +1540,10 @@ a:focus-visible {
   text-overflow: ellipsis;
 }
 
+.asset-card-source {
+  font-style: italic;
+}
+
 .asset-variant-picker {
   width: 100%;
 }

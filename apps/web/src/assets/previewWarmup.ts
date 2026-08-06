@@ -1,6 +1,7 @@
 const PREVIEW_CACHE_NAME = "opensketch-asset-previews";
 const PREVIEW_CACHE_MARKER_PREFIX = "OpenSketch:asset-preview-cache:";
 const PREVIEW_WARMUP_CONCURRENCY = 12;
+const PREVIEW_IDLE_CONCURRENCY = 2;
 
 type WarmupPriority = "priority" | "idle";
 type WarmupState = WarmupPriority | "active" | "complete";
@@ -14,6 +15,7 @@ let scheduled = false;
 let completionMarker = "";
 let fullCatalogQueued = false;
 let warmupFailed = false;
+let activeIdleRequests = 0;
 
 function cacheableUrl(path: string): string | null {
   if (/^(?:data:|blob:)/i.test(path)) return null;
@@ -34,14 +36,15 @@ function previewCache(): Promise<Cache | null> {
   return cachePromise;
 }
 
-function nextUrl(): string | undefined {
+function nextUrl(allowIdle: boolean): { url: string; idle: boolean } | undefined {
   while (priorityQueue.length > 0) {
     const url = priorityQueue.shift()!;
-    if (states.get(url) === "priority") return url;
+    if (states.get(url) === "priority") return { url, idle: false };
   }
+  if (!allowIdle) return undefined;
   while (idleQueue.length > 0) {
     const url = idleQueue.shift()!;
-    if (states.get(url) === "idle") return url;
+    if (states.get(url) === "idle") return { url, idle: true };
   }
   return undefined;
 }
@@ -55,14 +58,16 @@ async function warmUrl(url: string): Promise<void> {
 
 function drainQueue(): void {
   while (activeRequests < PREVIEW_WARMUP_CONCURRENCY) {
-    const url = nextUrl();
-    if (!url) {
+    const next = nextUrl(activeIdleRequests < PREVIEW_IDLE_CONCURRENCY);
+    if (!next) {
       if (activeRequests === 0 && completionMarker && fullCatalogQueued && !warmupFailed) {
         localStorage.setItem(completionMarker, "complete");
       }
       return;
     }
+    const { url } = next;
     activeRequests += 1;
+    if (next.idle) activeIdleRequests += 1;
     states.set(url, "active");
     void warmUrl(url)
       .then(() => states.set(url, "complete"))
@@ -72,6 +77,7 @@ function drainQueue(): void {
       })
       .finally(() => {
         activeRequests -= 1;
+        if (next.idle) activeIdleRequests -= 1;
         drainQueue();
       });
   }

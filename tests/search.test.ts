@@ -92,4 +92,22 @@ describe("asset search", () => {
       animal
     ]);
   });
+
+  it("keeps newly classified asset families in their intended browse positions", () => {
+    const families = [
+      { ...antibody, familyId: "other", title: "Zebra", category: "Other" },
+      { ...antibody, familyId: "techniques", title: "Stain", category: "Techniques & assays" },
+      { ...antibody, familyId: "components", title: "Nucleus", category: "Cell components" },
+      { ...antibody, familyId: "cancer", title: "Tumor", category: "Cancer & pathology" },
+      { ...antibody, familyId: "cells", title: "Cell", category: "Cells" }
+    ];
+
+    expect(filterAssetFamilies(families, "", "All").map((family) => family.familyId)).toEqual([
+      "cells",
+      "cancer",
+      "components",
+      "techniques",
+      "other"
+    ]);
+  });
 });

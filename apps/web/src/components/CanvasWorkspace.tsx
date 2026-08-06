@@ -78,7 +78,11 @@ import { elementStyleKey } from "@/editor/elementStyles";
 import { CURSOR_GRABBING } from "@/editor/cursors";
 import { importedMediaFilesFromDataTransfer } from "@/editor/clipboardImport";
 import type { Point } from "@/editor/geometry";
-import { IMPORTED_MEDIA_DRAG_TYPE } from "@/editor/assetDrag";
+import {
+  ASSET_DRAG_TYPE,
+  IMPORTED_MEDIA_DRAG_TYPE,
+  parseAssetDragPayload
+} from "@/editor/assetDrag";
 import { getImportedMedia } from "@/persistence/database";
 
 interface StoredViewport {
@@ -622,12 +626,14 @@ export function CanvasWorkspace() {
           y: Math.max(0, Math.min(canvasSettings.height, (event.clientY - bounds.top) / zoom))
         }
       : undefined;
-    const encoded = event.dataTransfer.getData("application/x-scientific-asset");
+    const encoded = event.dataTransfer.getData(ASSET_DRAG_TYPE);
     if (encoded) {
-      const data = JSON.parse(encoded) as { familyId: string; variantId: string };
-      const family = assetManifest.families.find((item) => item.familyId === data.familyId);
-      const variant = family?.variants.find((item) => item.id === data.variantId);
-      if (family && variant) void editor.addAsset(family, variant, point);
+      const data = parseAssetDragPayload(encoded);
+      if (data) {
+        const family = assetManifest.families.find((item) => item.familyId === data.familyId);
+        const variant = family?.variants.find((item) => item.id === data.variantId);
+        if (family && variant) void editor.addAsset(family, variant, point);
+      }
       return;
     }
     const draggedConnector = readConnectorPresetDragPayload(event.dataTransfer);
@@ -1048,7 +1054,7 @@ export function CanvasWorkspace() {
       } ${editor.editingGroup ? "group-editing" : ""}`}
       onDragOver={(event) => {
         if (
-          event.dataTransfer.types.includes("application/x-scientific-asset") ||
+          event.dataTransfer.types.includes(ASSET_DRAG_TYPE) ||
           event.dataTransfer.types.includes(CONNECTOR_PRESET_DRAG_TYPE) ||
           event.dataTransfer.types.includes(SHAPE_PRESET_DRAG_TYPE) ||
           event.dataTransfer.types.includes(IMPORTED_MEDIA_DRAG_TYPE) ||

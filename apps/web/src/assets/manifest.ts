@@ -1,4 +1,4 @@
-import type { AssetManifest } from "@workspace/editor-core";
+import { ASSET_CATEGORY_ORDER, type AssetManifest } from "@workspace/editor-core";
 import manifest from "../generated/nih-bioart-manifest.json";
 import openAssetsManifest from "../generated/open-assets-manifest.json";
 import { TOP_VIEW_LABWARE_FAMILIES } from "./labware";
@@ -31,29 +31,4 @@ export const ASSET_PREVIEW_CACHE_VERSION = [
   (openAssetsManifest as AssetManifest).generatedAt,
   TOP_VIEW_LABWARE_FAMILIES.reduce((total, family) => total + family.variants.length, 0)
 ].join(":");
-export const ASSET_CATEGORIES = [
-  "All",
-  "Cells",
-  "Cancer & pathology",
-  "Immunology & blood",
-  "Cell components",
-  "Proteins",
-  "Molecules",
-  "Nucleic acids & genetics",
-  "Cellular processes",
-  "Tissues & histology",
-  "Equipment",
-  "Techniques & assays",
-  "Bacteria",
-  "Viruses",
-  "Parasites",
-  "Fungi & protists",
-  "Anatomy",
-  "People",
-  "Animals",
-  "Arthropods",
-  "Plants",
-  "Food",
-  "Symbols & diagrams",
-  "Other"
-];
+export const ASSET_CATEGORIES = ["All", ...ASSET_CATEGORY_ORDER];

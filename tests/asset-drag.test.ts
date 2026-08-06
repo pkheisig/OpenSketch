@@ -1,5 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
-import { setAssetDragImage, setAssetDragPayload } from "../apps/web/src/editor/assetDrag";
+import {
+  parseAssetDragPayload,
+  setAssetDragImage,
+  setAssetDragPayload
+} from "../apps/web/src/editor/assetDrag";
 
 function mockDataTransfer() {
   return {
@@ -20,6 +24,21 @@ describe("asset dragging", () => {
       "application/x-scientific-asset",
       JSON.stringify({ familyId: "t-cell", variantId: "variant-green" })
     );
+  });
+
+  it("rejects malformed or incomplete drop payloads without throwing", () => {
+    expect(parseAssetDragPayload("not JSON")).toBeNull();
+    expect(parseAssetDragPayload(JSON.stringify({ familyId: "t-cell" }))).toBeNull();
+    expect(parseAssetDragPayload(JSON.stringify(["t-cell", "variant-green"]))).toBeNull();
+    expect(
+      parseAssetDragPayload(JSON.stringify({ familyId: "", variantId: "variant-green" }))
+    ).toBeNull();
+    expect(
+      parseAssetDragPayload(JSON.stringify({ familyId: "t-cell", variantId: "variant-green" }))
+    ).toEqual({
+      familyId: "t-cell",
+      variantId: "variant-green"
+    });
   });
 
   it("uses only the asset image as the browser drag preview", () => {
