@@ -1436,7 +1436,7 @@ export function CanvasWorkspace() {
                   Width
                   <input
                     type="number"
-                    min="0.1"
+                    min={canvasUnit === "px" ? 1 : 0.1}
                     step={canvasUnit === "px" ? 1 : 0.1}
                     value={Number(canvasWidth.toFixed(canvasUnit === "px" ? 0 : 2))}
                     onChange={(event) =>
@@ -1459,7 +1459,7 @@ export function CanvasWorkspace() {
                   Height
                   <input
                     type="number"
-                    min="0.1"
+                    min={canvasUnit === "px" ? 1 : 0.1}
                     step={canvasUnit === "px" ? 1 : 0.1}
                     value={Number(canvasHeight.toFixed(canvasUnit === "px" ? 0 : 2))}
                     onChange={(event) =>

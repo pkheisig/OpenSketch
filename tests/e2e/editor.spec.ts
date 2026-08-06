@@ -712,17 +712,28 @@ test("keeps the canvas preset label synchronized with its dimensions", async ({ 
 
   const canvasSettings = page.getByRole("dialog", { name: "Canvas settings" });
   const preset = canvasSettings.getByRole("combobox", { name: "Preset" });
+  const width = canvasSettings.getByLabel("Width");
+  const height = canvasSettings.getByLabel("Height");
   await expect(preset).toContainText("Presentation 16:9");
 
   await selectUiOption(page, "Preset", "A4 landscape");
   await expect(preset).toContainText("A4 landscape");
-  await expect(canvasSettings.getByLabel("Width")).toHaveValue("3508");
-  await expect(canvasSettings.getByLabel("Height")).toHaveValue("2480");
+  await expect(width).toHaveValue("3508");
+  await expect(height).toHaveValue("2480");
 
-  await canvasSettings.getByLabel("Width").fill("3509");
+  await width.press("ArrowUp");
+  await expect(width).toHaveValue("3509");
+  await width.press("ArrowDown");
+  await expect(width).toHaveValue("3508");
+  await height.press("ArrowUp");
+  await expect(height).toHaveValue("2481");
+  await height.press("ArrowDown");
+  await expect(height).toHaveValue("2480");
+
+  await width.fill("3509");
   await expect(preset).toContainText("Custom dimensions");
 
-  await canvasSettings.getByLabel("Width").fill("3508");
+  await width.fill("3508");
   await expect(preset).toContainText("A4 landscape");
 });
 
