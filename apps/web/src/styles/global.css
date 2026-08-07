@@ -1451,7 +1451,12 @@ a:focus-visible {
 
 .asset-filter-collapse {
   margin-top: 0;
-  transition: margin-top var(--motion-disclosure);
+  transition:
+    grid-template-rows var(--motion-disclosure),
+    opacity 140ms ease,
+    transform var(--motion-disclosure),
+    margin-top var(--motion-disclosure),
+    visibility 0s linear 220ms;
 }
 
 .asset-filter-collapse.open {

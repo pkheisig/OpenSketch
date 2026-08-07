@@ -3072,6 +3072,13 @@ test("reveals asset filters and filters catalog metadata", async ({ page }) => {
 
   const filterPanel = page.getByRole("region", { name: "Asset filters" });
   await expect(filterPanel).toBeVisible();
+  const filterTransitionProperties = await page
+    .locator(".asset-filter-collapse")
+    .evaluate((element) => getComputedStyle(element).transitionProperty);
+  expect(filterTransitionProperties).toContain("grid-template-rows");
+  expect(filterTransitionProperties).toContain("opacity");
+  expect(filterTransitionProperties).toContain("transform");
+  expect(filterTransitionProperties).toContain("margin-top");
   for (const label of ["Filter by source", "Filter by variants"]) {
     await expect(filterPanel.getByRole("combobox", { name: label })).toBeVisible();
   }
