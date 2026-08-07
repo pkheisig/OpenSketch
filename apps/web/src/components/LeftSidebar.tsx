@@ -9,6 +9,7 @@ import {
   type ReactNode
 } from "react";
 import { FixedSizeList as List, type ListChildComponentProps } from "react-window";
+import { createPortal } from "react-dom";
 import {
   ArrowRight,
   Edit3,
@@ -88,6 +89,10 @@ const RECENT_ASSETS_STORAGE_KEY = "OpenSketch:recent-assets";
 const ALL_ASSET_FILTER_VALUE = "__all__";
 const SINGLE_VARIANT_FILTER_VALUE = "single";
 const MULTIPLE_VARIANT_FILTER_VALUE = "multiple";
+const NIH_BIOART_SOURCE_LABEL = "NIH BioArt";
+const SOURCE_POPOVER_WIDTH = 220;
+const SOURCE_POPOVER_MARGIN = 12;
+const SOURCE_POPOVER_GAP = 8;
 const DEFAULT_CREATION_DEFAULTS_DISCLOSURES: Record<CreationDefaultsSection, boolean> = {
   text: true,
   shape: true,
@@ -110,6 +115,7 @@ function loadCreationDefaultsDisclosures(): Record<CreationDefaultsSection, bool
 }
 
 function assetSourceLabel(family: AssetFamily): string {
+  if (family.nihSourcePage) return NIH_BIOART_SOURCE_LABEL;
   return family.sourceName ?? family.author;
 }
 
@@ -1040,6 +1046,70 @@ function AssetCard({
   const sourceLabel = assetSourceLabel(family);
   const sourcePage = assetSourcePage(family);
   const sourceId = `asset-source-${family.familyId}`;
+  const sourceTriggerRef = useRef<HTMLButtonElement>(null);
+  const sourcePopoverRef = useRef<HTMLDivElement>(null);
+  const sourceCloseTimer = useRef<number | null>(null);
+  const [sourcePopoverOpen, setSourcePopoverOpen] = useState(false);
+  const [sourcePopoverPosition, setSourcePopoverPosition] = useState({
+    left: SOURCE_POPOVER_MARGIN,
+    top: SOURCE_POPOVER_MARGIN,
+    width: SOURCE_POPOVER_WIDTH
+  });
+  const openSourcePopover = () => {
+    if (sourceCloseTimer.current !== null) {
+      window.clearTimeout(sourceCloseTimer.current);
+      sourceCloseTimer.current = null;
+    }
+    setSourcePopoverOpen(true);
+  };
+  const scheduleSourcePopoverClose = () => {
+    if (sourceCloseTimer.current !== null) window.clearTimeout(sourceCloseTimer.current);
+    sourceCloseTimer.current = window.setTimeout(() => {
+      sourceCloseTimer.current = null;
+      setSourcePopoverOpen(false);
+    }, 140);
+  };
+  useEffect(
+    () => () => {
+      if (sourceCloseTimer.current !== null) window.clearTimeout(sourceCloseTimer.current);
+    },
+    []
+  );
+  useLayoutEffect(() => {
+    if (!sourcePopoverOpen) return;
+    const updateSourcePopoverPosition = () => {
+      const trigger = sourceTriggerRef.current;
+      if (!trigger) return;
+      const triggerBounds = trigger.getBoundingClientRect();
+      const width = Math.min(
+        SOURCE_POPOVER_WIDTH,
+        Math.max(0, window.innerWidth - SOURCE_POPOVER_MARGIN * 2)
+      );
+      const maxLeft = Math.max(
+        SOURCE_POPOVER_MARGIN,
+        window.innerWidth - width - SOURCE_POPOVER_MARGIN
+      );
+      const left = Math.min(Math.max(SOURCE_POPOVER_MARGIN, triggerBounds.right - width), maxLeft);
+      const belowTop = triggerBounds.bottom + SOURCE_POPOVER_GAP;
+      const popoverHeight = sourcePopoverRef.current?.getBoundingClientRect().height ?? 0;
+      const top =
+        popoverHeight > 0 && belowTop + popoverHeight > window.innerHeight - SOURCE_POPOVER_MARGIN
+          ? Math.max(SOURCE_POPOVER_MARGIN, triggerBounds.top - popoverHeight - SOURCE_POPOVER_GAP)
+          : belowTop;
+      setSourcePopoverPosition((current) =>
+        current.left === left && current.top === top && current.width === width
+          ? current
+          : { left, top, width }
+      );
+    };
+    updateSourcePopoverPosition();
+    window.addEventListener("resize", updateSourcePopoverPosition);
+    window.addEventListener("scroll", updateSourcePopoverPosition, true);
+    return () => {
+      window.removeEventListener("resize", updateSourcePopoverPosition);
+      window.removeEventListener("scroll", updateSourcePopoverPosition, true);
+    };
+  }, [sourcePopoverOpen]);
   const onDragStart = (event: DragEvent) => {
     const storedVariantId = loadAssetVariantDefaults()[family.familyId];
     const currentVariant =
@@ -1070,29 +1140,49 @@ function AssetCard({
       </button>
       <div className="asset-source-control">
         <button
+          ref={sourceTriggerRef}
           type="button"
           className="asset-source-trigger"
           aria-label={`Show source for ${family.title}`}
           aria-controls={sourceId}
           title="Show source information"
+          onMouseEnter={openSourcePopover}
+          onMouseLeave={scheduleSourcePopoverClose}
+          onFocus={openSourcePopover}
+          onBlur={scheduleSourcePopoverClose}
           onClick={(event) => event.stopPropagation()}
         >
           <Info size={14} aria-hidden="true" />
         </button>
-        <div id={sourceId} className="asset-source-popover" role="tooltip">
-          <span className="asset-source-kicker">Source</span>
-          <strong>{sourceLabel}</strong>
-          {family.sourceName && family.author !== family.sourceName ? (
-            <span>By {family.author}</span>
-          ) : null}
-          <span className="asset-source-license">{family.license}</span>
-          {sourcePage ? (
-            <a href={sourcePage} target="_blank" rel="noreferrer">
-              View source <ExternalLink size={11} aria-hidden="true" />
-            </a>
-          ) : null}
-        </div>
       </div>
+      {createPortal(
+        <MotionPresence open={sourcePopoverOpen} exitMs={120}>
+          <div
+            ref={sourcePopoverRef}
+            id={sourceId}
+            className="asset-source-popover open"
+            role="tooltip"
+            style={sourcePopoverPosition}
+            onMouseEnter={openSourcePopover}
+            onMouseLeave={scheduleSourcePopoverClose}
+            onFocus={openSourcePopover}
+            onBlur={scheduleSourcePopoverClose}
+          >
+            <span className="asset-source-kicker">Source</span>
+            <strong>{sourceLabel}</strong>
+            {family.sourceName && family.author !== family.sourceName ? (
+              <span>By {family.author}</span>
+            ) : null}
+            <span className="asset-source-license">{family.license}</span>
+            {sourcePage ? (
+              <a href={sourcePage} target="_blank" rel="noreferrer">
+                View source <ExternalLink size={11} aria-hidden="true" />
+              </a>
+            ) : null}
+          </div>
+        </MotionPresence>,
+        document.body
+      )}
       <div className="asset-card-copy">
         <strong title={family.title}>{family.title}</strong>
         {family.variants.length > 1 ? (

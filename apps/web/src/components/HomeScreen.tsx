@@ -406,7 +406,7 @@ export function HomeScreen({
               <ul>
                 <li>
                   <a href="https://bioart.niaid.nih.gov/" target="_blank" rel="noreferrer">
-                    NIAID NIH BioArt Source
+                    NIH BioArt Source
                   </a>{" "}
                   — public-domain illustrations
                 </li>

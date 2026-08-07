@@ -2144,7 +2144,7 @@ test("@smoke supports visible and native navigation for new figures", async ({ p
   await expect(aboutDialog.getByRole("button", { name: "Copy artwork credit" })).toHaveCount(0);
   await expect(aboutDialog.getByRole("button", { name: "Continue" })).toHaveCount(0);
   await expect(
-    aboutDialog.getByRole("link", { name: "NIAID NIH BioArt Source", exact: true })
+    aboutDialog.getByRole("link", { name: "NIH BioArt Source", exact: true })
   ).toHaveAttribute("href", "https://bioart.niaid.nih.gov/");
   await expect(aboutDialog.getByRole("link", { name: "SciDraw", exact: true })).toHaveAttribute(
     "href",
@@ -3001,7 +3001,7 @@ test("fills the asset sidebar with the merged scientific catalog", async ({ page
   await firstAsset.hover();
   await expect(sourceTrigger).toHaveCSS("opacity", "1");
   await sourceTrigger.hover();
-  const sourcePopover = firstAsset.locator(".asset-source-popover");
+  const sourcePopover = page.locator(".asset-source-popover");
   await expect(sourcePopover).toBeVisible();
   await expect(sourcePopover.locator(".asset-source-kicker")).toHaveText("Source");
   await expect(sourcePopover.locator("strong")).toHaveText(/.+/);
@@ -3009,6 +3009,17 @@ test("fills the asset sidebar with the merged scientific catalog", async ({ page
   await expect(sourcePopover.getByRole("link", { name: /View source/ })).toHaveAttribute(
     "href",
     /^https?:\/\//
+  );
+  await expect(sourcePopover).toHaveCSS("position", "fixed");
+  await expect(sourcePopover).toHaveCSS("z-index", "360");
+  const sourcePopoverBounds = await sourcePopover.boundingBox();
+  const viewport = page.viewportSize();
+  expect(sourcePopoverBounds).not.toBeNull();
+  expect(sourcePopoverBounds!.x).toBeGreaterThanOrEqual(0);
+  expect(sourcePopoverBounds!.y).toBeGreaterThanOrEqual(0);
+  expect(sourcePopoverBounds!.x + sourcePopoverBounds!.width).toBeLessThanOrEqual(viewport!.width);
+  expect(sourcePopoverBounds!.y + sourcePopoverBounds!.height).toBeLessThanOrEqual(
+    viewport!.height
   );
   await expect(firstAsset.locator(".asset-card-image")).toHaveCSS(
     "background-color",
@@ -3079,7 +3090,7 @@ test("reveals asset filters and filters catalog metadata", async ({ page }) => {
   await neuron
     .getByRole("button", { name: "Show source for Neuron with dendritic spines" })
     .hover();
-  await expect(neuron.locator(".asset-source-popover")).toContainText("SciDraw");
+  await expect(page.locator(".asset-source-popover")).toContainText("SciDraw");
 
   await selectUiOption(page, "Filter by source", "BioIcons");
   await expect(page.getByRole("heading", { name: "No match", exact: true })).toBeVisible();
@@ -3376,9 +3387,12 @@ test("renders and persists complex NIH illustrations without losing their colors
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("dendritic");
   await page.getByRole("button", { name: "Toggle asset filters" }).click();
-  await selectUiOption(page, "Filter by source", "NIAID Visual & Medical Arts");
+  await selectUiOption(page, "Filter by source", "NIH BioArt");
   const dendriticCell = page.locator(".asset-card").filter({ hasText: "Dendritic Cell" }).first();
   await expect(dendriticCell).toBeVisible();
+  await dendriticCell.hover();
+  await dendriticCell.getByRole("button", { name: "Show source for Dendritic Cell" }).hover();
+  await expect(page.locator(".asset-source-popover strong")).toHaveText("NIH BioArt");
   const insert = dendriticCell.locator(".asset-card-image");
   await insert.click();
   await expect(page.locator(".layers-title small")).toHaveText("1");
