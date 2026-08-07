@@ -11,6 +11,7 @@ import { createPortal } from "react-dom";
 import { Check, ChevronDown } from "lucide-react";
 import type { AssetFamily } from "@workspace/editor-core";
 import { AssetPreviewImage } from "@/components/AssetPreviewImage";
+import { MotionPresence } from "@/components/MotionPresence";
 import { setAssetDragImage, setAssetDragPayload } from "@/editor/assetDrag";
 
 function startVariantDrag(
@@ -155,52 +156,53 @@ export function AssetVariantPicker({
         <span>{selectedLabel}</span>
         <ChevronDown size={12} aria-hidden="true" />
       </button>
-      {open &&
-        position &&
+      {position &&
         createPortal(
-          <div
-            ref={menuRef}
-            id={`${id}-variants`}
-            className="asset-variant-menu"
-            role="listbox"
-            aria-label={`${family.title} variants`}
-            style={position}
-            tabIndex={-1}
-            onKeyDown={(event) => {
-              if (event.key === "Escape") {
-                event.preventDefault();
-                setOpen(false);
-                triggerRef.current?.focus();
-              }
-            }}
-          >
-            {family.variants.map((variant, index) => (
-              <button
-                key={variant.id}
-                type="button"
-                className={variant.id === value ? "selected" : ""}
-                role="option"
-                aria-selected={variant.id === value}
-                aria-label={`Select ${family.title} variant ${index + 1}`}
-                draggable
-                onDragStart={(event) => startVariantDrag(event, family.familyId, variant.id)}
-                onClick={() => {
-                  onChange(variant.id);
+          <MotionPresence open={open} exitMs={160}>
+            <div
+              ref={menuRef}
+              id={`${id}-variants`}
+              className="asset-variant-menu"
+              role="listbox"
+              aria-label={`${family.title} variants`}
+              style={position}
+              tabIndex={-1}
+              onKeyDown={(event) => {
+                if (event.key === "Escape") {
+                  event.preventDefault();
                   setOpen(false);
                   triggerRef.current?.focus();
-                }}
-              >
-                <span className="asset-variant-preview">
-                  <AssetPreviewImage
-                    assetPath={variant.assetPath}
-                    fallbackPath={variant.thumbnailPath}
-                  />
-                  {variant.id === value && <Check size={14} aria-hidden="true" />}
-                </span>
-                <span>{variant.label ?? `Variant ${index + 1}`}</span>
-              </button>
-            ))}
-          </div>,
+                }
+              }}
+            >
+              {family.variants.map((variant, index) => (
+                <button
+                  key={variant.id}
+                  type="button"
+                  className={variant.id === value ? "selected" : ""}
+                  role="option"
+                  aria-selected={variant.id === value}
+                  aria-label={`Select ${family.title} variant ${index + 1}`}
+                  draggable
+                  onDragStart={(event) => startVariantDrag(event, family.familyId, variant.id)}
+                  onClick={() => {
+                    onChange(variant.id);
+                    setOpen(false);
+                    triggerRef.current?.focus();
+                  }}
+                >
+                  <span className="asset-variant-preview">
+                    <AssetPreviewImage
+                      assetPath={variant.assetPath}
+                      fallbackPath={variant.thumbnailPath}
+                    />
+                    {variant.id === value && <Check size={14} aria-hidden="true" />}
+                  </span>
+                  <span>{variant.label ?? `Variant ${index + 1}`}</span>
+                </button>
+              ))}
+            </div>
+          </MotionPresence>,
           document.body
         )}
     </div>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ArrowLeft, ChevronDown, Download, HelpCircle, Redo2, Undo2 } from "lucide-react";
 import type { ProjectRecord } from "@workspace/editor-core";
 import { GLOBAL_CREDIT } from "@/assets/credit";
+import { MotionPresence } from "@/components/MotionPresence";
 import { useEditor } from "@/editor/EditorContext";
 import { ExportDialog } from "./dialogs";
 import { useModalDialog } from "./useModalDialog";
@@ -90,71 +91,73 @@ export function TopToolbar({ project, onHome }: { project: ProjectRecord; onHome
           </button>
         </div>
       </header>
-      {exportOpen && <ExportDialog onClose={() => setExportOpen(false)} />}
-      {helpOpen && (
-        <div className="dialog-backdrop" onMouseDown={() => setHelpOpen(false)}>
-          <section
-            ref={helpRef}
-            className="dialog shortcut-dialog"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="shortcut-title"
-            tabIndex={-1}
-            onMouseDown={(event) => event.stopPropagation()}
-          >
-            <p className="eyebrow">FIELD GUIDE</p>
-            <h2 id="shortcut-title">Keyboard shortcuts</h2>
-            <div className="shortcut-grid">
-              <span>Undo / redo</span>
-              <ShortcutKeys
-                combinations={[
-                  ["Cmd/Ctrl", "Z"],
-                  ["Shift", "Cmd/Ctrl", "Z"]
-                ]}
-              />
-              <span>Duplicate</span>
-              <ShortcutKeys combinations={[["Cmd/Ctrl", "D"]]} />
-              <span>Cut / copy / paste</span>
-              <ShortcutKeys
-                combinations={[
-                  ["Cmd/Ctrl", "X"],
-                  ["Cmd/Ctrl", "C"],
-                  ["Cmd/Ctrl", "V"]
-                ]}
-              />
-              <span>Select all</span>
-              <ShortcutKeys combinations={[["Cmd/Ctrl", "A"]]} />
-              <span>Group / ungroup</span>
-              <ShortcutKeys
-                combinations={[
-                  ["Cmd/Ctrl", "G"],
-                  ["Shift", "Cmd/Ctrl", "G"]
-                ]}
-              />
-              <span>Nudge / large nudge</span>
-              <ShortcutKeys combinations={[["Arrow key"], ["Shift", "Arrow key"]]} />
-              <span>Zoom / fit canvas</span>
-              <ShortcutKeys
-                combinations={[
-                  ["Cmd/Ctrl", "+"],
-                  ["Cmd/Ctrl", "−"],
-                  ["Cmd/Ctrl", "0"]
-                ]}
-              />
-              <span>Delete</span>
-              <ShortcutKeys combinations={[["Backspace"], ["Delete"]]} />
-            </div>
-            <p className="dialog-note">
-              Hold Space and drag, use the middle mouse button, or use the workspace scrollbars to
-              pan. Hold Cmd/Ctrl while scrolling to zoom.
-            </p>
-            <p className="dialog-note">{GLOBAL_CREDIT}</p>
-            <button className="button primary" onClick={() => setHelpOpen(false)}>
-              Got it
-            </button>
-          </section>
-        </div>
-      )}
+      <ExportDialog open={exportOpen} onClose={() => setExportOpen(false)} />
+      <MotionPresence open={helpOpen} exitMs={180}>
+        {helpOpen ? (
+          <div className="dialog-backdrop" onMouseDown={() => setHelpOpen(false)}>
+            <section
+              ref={helpRef}
+              className="dialog shortcut-dialog"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="shortcut-title"
+              tabIndex={-1}
+              onMouseDown={(event) => event.stopPropagation()}
+            >
+              <p className="eyebrow">FIELD GUIDE</p>
+              <h2 id="shortcut-title">Keyboard shortcuts</h2>
+              <div className="shortcut-grid">
+                <span>Undo / redo</span>
+                <ShortcutKeys
+                  combinations={[
+                    ["Cmd/Ctrl", "Z"],
+                    ["Shift", "Cmd/Ctrl", "Z"]
+                  ]}
+                />
+                <span>Duplicate</span>
+                <ShortcutKeys combinations={[["Cmd/Ctrl", "D"]]} />
+                <span>Cut / copy / paste</span>
+                <ShortcutKeys
+                  combinations={[
+                    ["Cmd/Ctrl", "X"],
+                    ["Cmd/Ctrl", "C"],
+                    ["Cmd/Ctrl", "V"]
+                  ]}
+                />
+                <span>Select all</span>
+                <ShortcutKeys combinations={[["Cmd/Ctrl", "A"]]} />
+                <span>Group / ungroup</span>
+                <ShortcutKeys
+                  combinations={[
+                    ["Cmd/Ctrl", "G"],
+                    ["Shift", "Cmd/Ctrl", "G"]
+                  ]}
+                />
+                <span>Nudge / large nudge</span>
+                <ShortcutKeys combinations={[["Arrow key"], ["Shift", "Arrow key"]]} />
+                <span>Zoom / fit canvas</span>
+                <ShortcutKeys
+                  combinations={[
+                    ["Cmd/Ctrl", "+"],
+                    ["Cmd/Ctrl", "−"],
+                    ["Cmd/Ctrl", "0"]
+                  ]}
+                />
+                <span>Delete</span>
+                <ShortcutKeys combinations={[["Backspace"], ["Delete"]]} />
+              </div>
+              <p className="dialog-note">
+                Hold Space and drag, use the middle mouse button, or use the workspace scrollbars to
+                pan. Hold Cmd/Ctrl while scrolling to zoom.
+              </p>
+              <p className="dialog-note">{GLOBAL_CREDIT}</p>
+              <button className="button primary" onClick={() => setHelpOpen(false)}>
+                Got it
+              </button>
+            </section>
+          </div>
+        ) : null}
+      </MotionPresence>
     </>
   );
 }

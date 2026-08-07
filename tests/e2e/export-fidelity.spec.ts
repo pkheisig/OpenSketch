@@ -16,7 +16,9 @@ function hexToCssRgb(hex: string): string {
 }
 
 async function ensureEditorOpen(page: Page) {
-  const inspector = page.locator(".inspector-embedded");
+  const inspector = page.locator(
+    ".sidebar-expanded:not(.motion-presence-closing) .inspector-embedded"
+  );
   if (await inspector.isVisible().catch(() => false)) return;
   const editButton = page
     .getByLabel("Editor tools")

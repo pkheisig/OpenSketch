@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import type { ProjectFolderRecord, ProjectRecord } from "@workspace/editor-core";
 import { GLOBAL_CREDIT } from "@/assets/credit";
+import { MotionPresence } from "@/components/MotionPresence";
 import { Logo } from "./Logo";
 import { useModalDialog } from "./useModalDialog";
 
@@ -166,47 +167,49 @@ export function HomeScreen({
               <FolderPlus size={19} />
               New folder
             </button>
-            {creatingFolder ? (
-              <form
-                className="new-folder-form"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  const name = folderName.trim();
-                  if (!name) return;
-                  onNewFolder(name);
-                  setFolderName("");
-                  setCreatingFolder(false);
-                }}
-              >
-                <Folder size={17} aria-hidden="true" />
-                <input
-                  autoFocus
-                  aria-label="Folder name"
-                  value={folderName}
-                  placeholder="Folder name"
-                  onChange={(event) => setFolderName(event.target.value)}
-                  onKeyDown={(event) => {
-                    if (event.key === "Escape") {
-                      setFolderName("");
-                      setCreatingFolder(false);
-                    }
-                  }}
-                />
-                <button type="submit" aria-label="Create folder" disabled={!folderName.trim()}>
-                  <Check size={16} />
-                </button>
-                <button
-                  type="button"
-                  aria-label="Cancel folder"
-                  onClick={() => {
+            <MotionPresence open={creatingFolder} exitMs={180}>
+              {creatingFolder ? (
+                <form
+                  className="new-folder-form"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    const name = folderName.trim();
+                    if (!name) return;
+                    onNewFolder(name);
                     setFolderName("");
                     setCreatingFolder(false);
                   }}
                 >
-                  <X size={16} />
-                </button>
-              </form>
-            ) : null}
+                  <Folder size={17} aria-hidden="true" />
+                  <input
+                    autoFocus
+                    aria-label="Folder name"
+                    value={folderName}
+                    placeholder="Folder name"
+                    onChange={(event) => setFolderName(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Escape") {
+                        setFolderName("");
+                        setCreatingFolder(false);
+                      }
+                    }}
+                  />
+                  <button type="submit" aria-label="Create folder" disabled={!folderName.trim()}>
+                    <Check size={16} />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label="Cancel folder"
+                    onClick={() => {
+                      setFolderName("");
+                      setCreatingFolder(false);
+                    }}
+                  >
+                    <X size={16} />
+                  </button>
+                </form>
+              ) : null}
+            </MotionPresence>
           </div>
         </section>
 
@@ -291,49 +294,51 @@ export function HomeScreen({
             <p className="empty-projects">No projects yet.</p>
           ) : null}
 
-          {openFolder ? (
-            <section className="folder-drawer" aria-label={`${openFolder.name} folder`}>
-              <div className="folder-drawer-heading">
-                <FolderOpen size={17} />
-                <strong>{openFolder.name}</strong>
-                <span>{openFolderProjects.length}</span>
-                <button
-                  aria-label={`Close ${openFolder.name} folder`}
-                  onClick={() => setOpenFolder()}
-                >
-                  <X size={15} />
-                </button>
-              </div>
-              {openFolderProjects.length ? (
-                <div
-                  className="project-row folder-project-row"
-                  aria-label={`${openFolder.name} projects, newest edited first`}
-                >
-                  {openFolderProjects.map((project) => (
-                    <ProjectCard
-                      key={project.id}
-                      project={project}
-                      onOpen={onOpen}
-                      onRename={onRename}
-                      onExport={onExport}
-                      onDuplicate={onDuplicate}
-                      onDelete={onDelete}
-                      onArchive={onArchive}
-                      onRestore={onRestore}
-                      onMoveProject={onMoveProject}
-                      onDragStart={setDraggedProjectId}
-                      onDragEnd={() => {
-                        setDraggedProjectId(undefined);
-                        setDropTarget(undefined);
-                      }}
-                    />
-                  ))}
+          <MotionPresence open={Boolean(openFolder)} exitMs={220}>
+            {openFolder ? (
+              <section className="folder-drawer" aria-label={`${openFolder.name} folder`}>
+                <div className="folder-drawer-heading">
+                  <FolderOpen size={17} />
+                  <strong>{openFolder.name}</strong>
+                  <span>{openFolderProjects.length}</span>
+                  <button
+                    aria-label={`Close ${openFolder.name} folder`}
+                    onClick={() => setOpenFolder()}
+                  >
+                    <X size={15} />
+                  </button>
                 </div>
-              ) : (
-                <p className="empty-folder">Drag projects onto this folder.</p>
-              )}
-            </section>
-          ) : null}
+                {openFolderProjects.length ? (
+                  <div
+                    className="project-row folder-project-row"
+                    aria-label={`${openFolder.name} projects, newest edited first`}
+                  >
+                    {openFolderProjects.map((project) => (
+                      <ProjectCard
+                        key={project.id}
+                        project={project}
+                        onOpen={onOpen}
+                        onRename={onRename}
+                        onExport={onExport}
+                        onDuplicate={onDuplicate}
+                        onDelete={onDelete}
+                        onArchive={onArchive}
+                        onRestore={onRestore}
+                        onMoveProject={onMoveProject}
+                        onDragStart={setDraggedProjectId}
+                        onDragEnd={() => {
+                          setDraggedProjectId(undefined);
+                          setDropTarget(undefined);
+                        }}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <p className="empty-folder">Drag projects onto this folder.</p>
+                )}
+              </section>
+            ) : null}
+          </MotionPresence>
         </section>
 
         <section className="archived-section">

@@ -23,7 +23,9 @@ async function expectFlyoutTopAligned(menu: Locator, family: string) {
     .toBeLessThan(0.5);
 }
 
-test("@smoke uses floating BioRender-style tools, flyouts, and left-side properties", async ({ page }) => {
+test("@smoke uses floating BioRender-style tools, flyouts, and left-side properties", async ({
+  page
+}) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
 
@@ -354,19 +356,31 @@ test("expands all creation defaults initially and restores each disclosure state
   await page.getByRole("button", { name: "Defaults", exact: true }).click();
 
   const defaults = page.getByRole("dialog", { name: "New object defaults" });
-  const sections = defaults.locator("details.creation-defaults");
+  const sections = defaults.locator(".creation-defaults");
   await expect(sections).toHaveCount(3);
   await expect(defaults).toHaveCSS("max-height", "760px");
-  await expect(sections.first().locator("summary")).toHaveCSS("font-size", "12px");
+  await expect(sections.first().locator(".creation-defaults-summary")).toHaveCSS(
+    "font-size",
+    "12px"
+  );
   const sectionGap = await sections.evaluateAll((cards) => {
     const first = cards[0]?.getBoundingClientRect();
     const second = cards[1]?.getBoundingClientRect();
     return first && second ? second.top - first.bottom : 0;
   });
   expect(sectionGap).toBeGreaterThanOrEqual(13.5);
-  await expect(sections.nth(0)).toHaveAttribute("open", "");
-  await expect(sections.nth(1)).toHaveAttribute("open", "");
-  await expect(sections.nth(2)).toHaveAttribute("open", "");
+  await expect(sections.nth(0).locator(".creation-defaults-summary")).toHaveAttribute(
+    "aria-expanded",
+    "true"
+  );
+  await expect(sections.nth(1).locator(".creation-defaults-summary")).toHaveAttribute(
+    "aria-expanded",
+    "true"
+  );
+  await expect(sections.nth(2).locator(".creation-defaults-summary")).toHaveAttribute(
+    "aria-expanded",
+    "true"
+  );
 
   const textSize = defaults.getByRole("spinbutton", { name: "Default text size" });
   await textSize.fill("2");
@@ -381,9 +395,15 @@ test("expands all creation defaults initially and restores each disclosure state
   await expect(textSize).toHaveValue("35");
 
   await defaults.getByText("New shape defaults", { exact: true }).click();
-  await expect(sections.nth(1)).not.toHaveAttribute("open", "");
+  await expect(sections.nth(1).locator(".creation-defaults-summary")).toHaveAttribute(
+    "aria-expanded",
+    "false"
+  );
   await defaults.getByText("New line & arrow defaults", { exact: true }).click();
-  await expect(sections.nth(2)).not.toHaveAttribute("open", "");
+  await expect(sections.nth(2).locator(".creation-defaults-summary")).toHaveAttribute(
+    "aria-expanded",
+    "false"
+  );
 
   await page.getByRole("button", { name: "Defaults", exact: true }).click();
   await expect(defaults).toHaveCount(0);
@@ -391,10 +411,19 @@ test("expands all creation defaults initially and restores each disclosure state
 
   const restored = page
     .getByRole("dialog", { name: "New object defaults" })
-    .locator("details.creation-defaults");
-  await expect(restored.nth(0)).toHaveAttribute("open", "");
-  await expect(restored.nth(1)).not.toHaveAttribute("open", "");
-  await expect(restored.nth(2)).not.toHaveAttribute("open", "");
+    .locator(".creation-defaults");
+  await expect(restored.nth(0).locator(".creation-defaults-summary")).toHaveAttribute(
+    "aria-expanded",
+    "true"
+  );
+  await expect(restored.nth(1).locator(".creation-defaults-summary")).toHaveAttribute(
+    "aria-expanded",
+    "false"
+  );
+  await expect(restored.nth(2).locator(".creation-defaults-summary")).toHaveAttribute(
+    "aria-expanded",
+    "false"
+  );
 });
 
 test("shows variant grids with viewport margins and invisible scrollbars", async ({ page }) => {
@@ -442,9 +471,7 @@ test("hides scrollbar chrome globally without disabling scrolling", async ({ pag
   await expect(assetList).toBeVisible();
   await expect(assetList).toHaveCSS("scrollbar-width", "none");
   await expect
-    .poll(() =>
-      assetList.evaluate((element) => element.scrollHeight > element.clientHeight)
-    )
+    .poll(() => assetList.evaluate((element) => element.scrollHeight > element.clientHeight))
     .toBe(true);
   await assetList.evaluate((element) => {
     element.scrollTop = 120;

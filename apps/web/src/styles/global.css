@@ -180,6 +180,18 @@ a:focus-visible {
   overflow: hidden;
 }
 
+.motion-presence-closing {
+  pointer-events: none !important;
+  animation: motion-presence-out var(--motion-presence-exit, var(--motion-ui)) ease both !important;
+}
+
+@keyframes motion-presence-out {
+  to {
+    opacity: 0;
+    transform: translateY(-5px) scale(0.985);
+  }
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -1431,12 +1443,19 @@ a:focus-visible {
 .asset-filter-panel {
   display: grid;
   gap: 8px;
-  margin-top: 8px;
   padding: 9px;
   border: 1px solid #d4dfda;
   border-radius: 8px;
   background: #f5faf7;
-  animation: ui-popover-in var(--motion-ui) both;
+}
+
+.asset-filter-collapse {
+  margin-top: 0;
+  transition: margin-top var(--motion-disclosure);
+}
+
+.asset-filter-collapse.open {
+  margin-top: 8px;
 }
 
 .asset-filter-heading {
@@ -2000,27 +2019,26 @@ a:focus-visible {
   background: #fbfcfa;
 }
 
-.creation-defaults summary {
+.creation-defaults-summary {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 11px 12px;
+  border: 0;
   color: #405b58;
+  background: transparent;
+  text-align: left;
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.04em;
   cursor: pointer;
-  list-style: none;
   transition:
     color var(--motion-ui),
     background var(--motion-ui);
 }
 
-.creation-defaults summary::-webkit-details-marker {
-  display: none;
-}
-
-.creation-defaults summary::before {
+.creation-defaults-summary::before {
   width: 8px;
   color: #5d7470;
   content: "›";
@@ -2030,27 +2048,13 @@ a:focus-visible {
   transition: transform var(--motion-disclosure);
 }
 
-.creation-defaults[open] summary::before {
+.creation-defaults.open .creation-defaults-summary::before {
   transform: rotate(90deg);
 }
 
-.creation-defaults summary:hover {
+.creation-defaults-summary:hover {
   color: var(--teal-dark);
   background: #f0f6f3;
-}
-
-.creation-defaults::details-content {
-  block-size: 0;
-  overflow: clip;
-  opacity: 0;
-  transition:
-    block-size var(--motion-disclosure),
-    opacity 140ms ease;
-}
-
-.creation-defaults[open]::details-content {
-  block-size: auto;
-  opacity: 1;
 }
 
 .creation-defaults-body {

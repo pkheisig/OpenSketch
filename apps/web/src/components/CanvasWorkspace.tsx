@@ -7,6 +7,7 @@ import {
   type DragEvent,
   type MouseEvent as ReactMouseEvent,
   type PointerEvent,
+  type CSSProperties,
   type ReactNode
 } from "react";
 import { createPortal } from "react-dom";
@@ -57,6 +58,7 @@ import {
 } from "@workspace/editor-core";
 import { assetManifest } from "@/assets/manifest";
 import { ColorPalettePicker } from "@/components/ColorPalettePicker";
+import { MotionPresence } from "@/components/MotionPresence";
 import { UiSelect } from "@/components/UiSelect";
 import { useEditor } from "@/editor/EditorContext";
 import { isManualGroup } from "@/editor/grouping";
@@ -107,13 +109,21 @@ function CanvasContextMenu({
   y,
   label,
   actions,
-  onClose
+  onClose,
+  className = "",
+  inert,
+  "aria-hidden": ariaHidden,
+  style: presenceStyle
 }: {
   x: number;
   y: number;
   label: string;
   actions: ContextMenuAction[];
   onClose: () => void;
+  className?: string;
+  inert?: boolean;
+  "aria-hidden"?: boolean;
+  style?: CSSProperties;
 }) {
   const menuRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ left: x, top: y });
@@ -152,10 +162,12 @@ function CanvasContextMenu({
   return createPortal(
     <div
       ref={menuRef}
-      className="canvas-context-menu"
+      className={`canvas-context-menu ${className}`.trim()}
       role="menu"
       aria-label={label}
-      style={position}
+      aria-hidden={ariaHidden}
+      inert={inert}
+      style={{ ...position, ...presenceStyle }}
       onKeyDown={(event) => {
         event.stopPropagation();
         const buttons = [...event.currentTarget.querySelectorAll<HTMLButtonElement>("button")];
@@ -1254,151 +1266,153 @@ export function CanvasWorkspace() {
               <EllipsisVertical size={19} />
             </button>
           </div>
-          {selectionMenu ? (
-            <div className={`selection-toolbar-menu ${selectionMenu}`} role="menu">
-              {selectionMenu === "align" ? (
-                <>
-                  <button onClick={() => editor.align("left")}>
-                    <AlignLeft size={16} />
-                    Left
-                  </button>
-                  <button onClick={() => editor.align("center")}>
-                    <AlignCenter size={16} />
-                    Center
-                  </button>
-                  <button onClick={() => editor.align("right")}>
-                    <AlignRight size={16} />
-                    Right
-                  </button>
-                  <button onClick={() => editor.align("top")}>
-                    <ArrowUpToLine size={16} />
-                    Top
-                  </button>
-                  <button onClick={() => editor.align("middle")}>
-                    <AlignVerticalDistributeCenter size={16} />
-                    Middle
-                  </button>
-                  <button onClick={() => editor.align("bottom")}>
-                    <ArrowDownToLine size={16} />
-                    Bottom
-                  </button>
-                  <button
-                    onClick={() => editor.distribute("horizontal")}
-                    disabled={editor.selection.length < 3}
-                    title={
-                      editor.selection.length < 3
-                        ? "Select at least three objects to distribute"
-                        : undefined
-                    }
-                  >
-                    <AlignHorizontalDistributeCenter size={16} />
-                    Distribute H
-                  </button>
-                  <button
-                    onClick={() => editor.distribute("vertical")}
-                    disabled={editor.selection.length < 3}
-                    title={
-                      editor.selection.length < 3
-                        ? "Select at least three objects to distribute"
-                        : undefined
-                    }
-                  >
-                    <AlignVerticalDistributeCenter size={16} />
-                    Distribute V
-                  </button>
-                </>
-              ) : null}
-              {selectionMenu === "arrange" ? (
-                <>
-                  <button onClick={() => editor.arrange("front")}>
-                    <ArrowUpToLine size={16} />
-                    Bring to front
-                  </button>
-                  <button onClick={() => editor.arrange("forward")}>
-                    <MoveUp size={16} />
-                    Bring one up
-                  </button>
-                  <button onClick={() => editor.arrange("backward")}>
-                    <MoveDown size={16} />
-                    Send one down
-                  </button>
-                  <button onClick={() => editor.arrange("back")}>
-                    <ArrowDownToLine size={16} />
-                    Send to back
-                  </button>
-                </>
-              ) : null}
-              {selectionMenu === "flip" ? (
-                <>
-                  <button onClick={() => editor.flip("x")}>
-                    <FlipHorizontal2 size={16} />
-                    Horizontal
-                  </button>
-                  <button onClick={() => editor.flip("y")}>
-                    <FlipVertical2 size={16} />
-                    Vertical
-                  </button>
-                </>
-              ) : null}
-              {selectionMenu === "transform" ? (
-                <>
-                  <button onClick={() => editor.setObject({ angle: 0 })}>
-                    <RotateCcw size={16} />
-                    Reset rotation
-                  </button>
-                  <button
-                    onClick={() =>
-                      editor.setObject({ angle: (editor.selection[0]?.angle ?? 0) - 90 })
-                    }
-                  >
-                    <RotateCcw size={16} />
-                    Rotate left 90°
-                  </button>
-                  <button
-                    onClick={() =>
-                      editor.setObject({ angle: (editor.selection[0]?.angle ?? 0) + 90 })
-                    }
-                  >
-                    <RotateCw size={16} />
-                    Rotate right 90°
-                  </button>
-                  <button onClick={() => editor.setObject({ scaleX: 1, scaleY: 1 })}>
-                    <Scaling size={16} />
-                    Reset scale
-                  </button>
-                </>
-              ) : null}
-              {selectionMenu === "more" ? (
-                <>
-                  <button onClick={() => void editor.copySelectionToClipboard("png", true)}>
-                    <Scissors size={16} />
-                    <span>Cut</span>
-                    <kbd>Cmd/Ctrl X</kbd>
-                  </button>
-                  <button onClick={() => void editor.copySelectionToClipboard("png")}>
-                    <Copy size={16} />
-                    <span>Copy</span>
-                    <kbd>Cmd/Ctrl C</kbd>
-                  </button>
-                  <button onClick={() => void editor.duplicateSelection()}>
-                    <Copy size={16} />
-                    <span>Duplicate</span>
-                    <kbd>Cmd/Ctrl D</kbd>
-                  </button>
-                  <button onClick={() => void editor.pasteSelection()}>
-                    <Clipboard size={16} />
-                    <span>Paste</span>
-                    <kbd>Cmd/Ctrl V</kbd>
-                  </button>
-                  <button className="danger separator-before" onClick={editor.deleteSelection}>
-                    <Trash2 size={16} />
-                    <span>Delete</span>
-                    <kbd>Delete</kbd>
-                  </button>
-                </>
-              ) : null}
-            </div>
-          ) : null}
+          <MotionPresence open={selectionMenu !== null} exitMs={140}>
+            {selectionMenu ? (
+              <div className={`selection-toolbar-menu ${selectionMenu}`} role="menu">
+                {selectionMenu === "align" ? (
+                  <>
+                    <button onClick={() => editor.align("left")}>
+                      <AlignLeft size={16} />
+                      Left
+                    </button>
+                    <button onClick={() => editor.align("center")}>
+                      <AlignCenter size={16} />
+                      Center
+                    </button>
+                    <button onClick={() => editor.align("right")}>
+                      <AlignRight size={16} />
+                      Right
+                    </button>
+                    <button onClick={() => editor.align("top")}>
+                      <ArrowUpToLine size={16} />
+                      Top
+                    </button>
+                    <button onClick={() => editor.align("middle")}>
+                      <AlignVerticalDistributeCenter size={16} />
+                      Middle
+                    </button>
+                    <button onClick={() => editor.align("bottom")}>
+                      <ArrowDownToLine size={16} />
+                      Bottom
+                    </button>
+                    <button
+                      onClick={() => editor.distribute("horizontal")}
+                      disabled={editor.selection.length < 3}
+                      title={
+                        editor.selection.length < 3
+                          ? "Select at least three objects to distribute"
+                          : undefined
+                      }
+                    >
+                      <AlignHorizontalDistributeCenter size={16} />
+                      Distribute H
+                    </button>
+                    <button
+                      onClick={() => editor.distribute("vertical")}
+                      disabled={editor.selection.length < 3}
+                      title={
+                        editor.selection.length < 3
+                          ? "Select at least three objects to distribute"
+                          : undefined
+                      }
+                    >
+                      <AlignVerticalDistributeCenter size={16} />
+                      Distribute V
+                    </button>
+                  </>
+                ) : null}
+                {selectionMenu === "arrange" ? (
+                  <>
+                    <button onClick={() => editor.arrange("front")}>
+                      <ArrowUpToLine size={16} />
+                      Bring to front
+                    </button>
+                    <button onClick={() => editor.arrange("forward")}>
+                      <MoveUp size={16} />
+                      Bring one up
+                    </button>
+                    <button onClick={() => editor.arrange("backward")}>
+                      <MoveDown size={16} />
+                      Send one down
+                    </button>
+                    <button onClick={() => editor.arrange("back")}>
+                      <ArrowDownToLine size={16} />
+                      Send to back
+                    </button>
+                  </>
+                ) : null}
+                {selectionMenu === "flip" ? (
+                  <>
+                    <button onClick={() => editor.flip("x")}>
+                      <FlipHorizontal2 size={16} />
+                      Horizontal
+                    </button>
+                    <button onClick={() => editor.flip("y")}>
+                      <FlipVertical2 size={16} />
+                      Vertical
+                    </button>
+                  </>
+                ) : null}
+                {selectionMenu === "transform" ? (
+                  <>
+                    <button onClick={() => editor.setObject({ angle: 0 })}>
+                      <RotateCcw size={16} />
+                      Reset rotation
+                    </button>
+                    <button
+                      onClick={() =>
+                        editor.setObject({ angle: (editor.selection[0]?.angle ?? 0) - 90 })
+                      }
+                    >
+                      <RotateCcw size={16} />
+                      Rotate left 90°
+                    </button>
+                    <button
+                      onClick={() =>
+                        editor.setObject({ angle: (editor.selection[0]?.angle ?? 0) + 90 })
+                      }
+                    >
+                      <RotateCw size={16} />
+                      Rotate right 90°
+                    </button>
+                    <button onClick={() => editor.setObject({ scaleX: 1, scaleY: 1 })}>
+                      <Scaling size={16} />
+                      Reset scale
+                    </button>
+                  </>
+                ) : null}
+                {selectionMenu === "more" ? (
+                  <>
+                    <button onClick={() => void editor.copySelectionToClipboard("png", true)}>
+                      <Scissors size={16} />
+                      <span>Cut</span>
+                      <kbd>Cmd/Ctrl X</kbd>
+                    </button>
+                    <button onClick={() => void editor.copySelectionToClipboard("png")}>
+                      <Copy size={16} />
+                      <span>Copy</span>
+                      <kbd>Cmd/Ctrl C</kbd>
+                    </button>
+                    <button onClick={() => void editor.duplicateSelection()}>
+                      <Copy size={16} />
+                      <span>Duplicate</span>
+                      <kbd>Cmd/Ctrl D</kbd>
+                    </button>
+                    <button onClick={() => void editor.pasteSelection()}>
+                      <Clipboard size={16} />
+                      <span>Paste</span>
+                      <kbd>Cmd/Ctrl V</kbd>
+                    </button>
+                    <button className="danger separator-before" onClick={editor.deleteSelection}>
+                      <Trash2 size={16} />
+                      <span>Delete</span>
+                      <kbd>Delete</kbd>
+                    </button>
+                  </>
+                ) : null}
+              </div>
+            ) : null}
+          </MotionPresence>
         </div>
       ) : null}
       <div ref={footerRef} className={`workspace-footer ${footerPanel ? "footer-panel-open" : ""}`}>
@@ -1411,118 +1425,120 @@ export function CanvasWorkspace() {
             <Scaling size={15} />
             Canvas size
           </button>
-          {footerPanel === "size" ? (
-            <div
-              className="workspace-footer-popover canvas-size-popover"
-              role="dialog"
-              aria-label="Canvas settings"
-            >
-              <strong>Canvas settings</strong>
-              <UiSelect
-                className="footer-select"
-                label="Preset"
-                value={activeCanvasPreset}
-                options={[
-                  { value: "", label: "Custom dimensions" },
-                  ...Object.keys(CANVAS_PRESETS).map((name) => ({ value: name, label: name }))
-                ]}
-                onChange={(name) => {
-                  const preset = CANVAS_PRESETS[name];
-                  if (preset) editor.setCanvasSettings(preset);
-                }}
-              />
-              <div className="canvas-settings-dimensions">
-                <label>
-                  Width
-                  <input
-                    type="number"
-                    min={canvasUnit === "px" ? 1 : 0.1}
-                    step={canvasUnit === "px" ? 1 : 0.1}
-                    value={Number(canvasWidth.toFixed(canvasUnit === "px" ? 0 : 2))}
-                    onChange={(event) =>
-                      editor.setCanvasSettings({
-                        width: Math.max(
-                          1,
-                          Math.round(
-                            unitToPixels(
-                              Number(event.target.value) || 0.1,
-                              canvasUnit,
-                              editor.canvasSettings.dpi
-                            )
-                          )
-                        )
-                      })
-                    }
-                  />
-                </label>
-                <label>
-                  Height
-                  <input
-                    type="number"
-                    min={canvasUnit === "px" ? 1 : 0.1}
-                    step={canvasUnit === "px" ? 1 : 0.1}
-                    value={Number(canvasHeight.toFixed(canvasUnit === "px" ? 0 : 2))}
-                    onChange={(event) =>
-                      editor.setCanvasSettings({
-                        height: Math.max(
-                          1,
-                          Math.round(
-                            unitToPixels(
-                              Number(event.target.value) || 0.1,
-                              canvasUnit,
-                              editor.canvasSettings.dpi
-                            )
-                          )
-                        )
-                      })
-                    }
-                  />
-                </label>
+          <MotionPresence open={footerPanel === "size"} exitMs={150}>
+            {footerPanel === "size" ? (
+              <div
+                className="workspace-footer-popover canvas-size-popover"
+                role="dialog"
+                aria-label="Canvas settings"
+              >
+                <strong>Canvas settings</strong>
                 <UiSelect
-                  className="footer-select compact"
-                  label="Unit"
-                  value={canvasUnit}
+                  className="footer-select"
+                  label="Preset"
+                  value={activeCanvasPreset}
                   options={[
-                    { value: "px", label: "px" },
-                    { value: "mm", label: "mm" },
-                    { value: "in", label: "in" }
+                    { value: "", label: "Custom dimensions" },
+                    ...Object.keys(CANVAS_PRESETS).map((name) => ({ value: name, label: name }))
                   ]}
-                  onChange={(unit) => editor.setCanvasSettings({ unit: unit as CanvasUnit })}
+                  onChange={(name) => {
+                    const preset = CANVAS_PRESETS[name];
+                    if (preset) editor.setCanvasSettings(preset);
+                  }}
                 />
+                <div className="canvas-settings-dimensions">
+                  <label>
+                    Width
+                    <input
+                      type="number"
+                      min={canvasUnit === "px" ? 1 : 0.1}
+                      step={canvasUnit === "px" ? 1 : 0.1}
+                      value={Number(canvasWidth.toFixed(canvasUnit === "px" ? 0 : 2))}
+                      onChange={(event) =>
+                        editor.setCanvasSettings({
+                          width: Math.max(
+                            1,
+                            Math.round(
+                              unitToPixels(
+                                Number(event.target.value) || 0.1,
+                                canvasUnit,
+                                editor.canvasSettings.dpi
+                              )
+                            )
+                          )
+                        })
+                      }
+                    />
+                  </label>
+                  <label>
+                    Height
+                    <input
+                      type="number"
+                      min={canvasUnit === "px" ? 1 : 0.1}
+                      step={canvasUnit === "px" ? 1 : 0.1}
+                      value={Number(canvasHeight.toFixed(canvasUnit === "px" ? 0 : 2))}
+                      onChange={(event) =>
+                        editor.setCanvasSettings({
+                          height: Math.max(
+                            1,
+                            Math.round(
+                              unitToPixels(
+                                Number(event.target.value) || 0.1,
+                                canvasUnit,
+                                editor.canvasSettings.dpi
+                              )
+                            )
+                          )
+                        })
+                      }
+                    />
+                  </label>
+                  <UiSelect
+                    className="footer-select compact"
+                    label="Unit"
+                    value={canvasUnit}
+                    options={[
+                      { value: "px", label: "px" },
+                      { value: "mm", label: "mm" },
+                      { value: "in", label: "in" }
+                    ]}
+                    onChange={(unit) => editor.setCanvasSettings({ unit: unit as CanvasUnit })}
+                  />
+                </div>
+                <div className="canvas-color-control">
+                  Background
+                  <ColorPalettePicker
+                    ariaLabel="Canvas background"
+                    value={editor.canvasSettings.background}
+                    disabled={editor.canvasSettings.transparent}
+                    onChange={(background) => editor.setCanvasSettings({ background })}
+                    showValue
+                  />
+                </div>
+                <label className="footer-check">
+                  <input
+                    type="checkbox"
+                    checked={editor.canvasSettings.transparent}
+                    onChange={(event) =>
+                      editor.setCanvasSettings({ transparent: event.target.checked })
+                    }
+                  />
+                  Transparent background
+                </label>
+                <label className="footer-check">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(editor.canvasSettings.doubleClickCreatesText)}
+                    onChange={(event) =>
+                      editor.setCanvasSettings({ doubleClickCreatesText: event.target.checked })
+                    }
+                  />
+                  Double-click to add text
+                </label>
+                <button onClick={editor.fitCanvas}>Fit canvas</button>
               </div>
-              <div className="canvas-color-control">
-                Background
-                <ColorPalettePicker
-                  ariaLabel="Canvas background"
-                  value={editor.canvasSettings.background}
-                  disabled={editor.canvasSettings.transparent}
-                  onChange={(background) => editor.setCanvasSettings({ background })}
-                  showValue
-                />
-              </div>
-              <label className="footer-check">
-                <input
-                  type="checkbox"
-                  checked={editor.canvasSettings.transparent}
-                  onChange={(event) =>
-                    editor.setCanvasSettings({ transparent: event.target.checked })
-                  }
-                />
-                Transparent background
-              </label>
-              <label className="footer-check">
-                <input
-                  type="checkbox"
-                  checked={Boolean(editor.canvasSettings.doubleClickCreatesText)}
-                  onChange={(event) =>
-                    editor.setCanvasSettings({ doubleClickCreatesText: event.target.checked })
-                  }
-                />
-                Double-click to add text
-              </label>
-              <button onClick={editor.fitCanvas}>Fit canvas</button>
-            </div>
-          ) : null}
+            ) : null}
+          </MotionPresence>
         </div>
         <div className="workspace-controls" aria-label="Zoom controls">
           <button onClick={() => setZoom(zoom - 0.1)} aria-label="Zoom out">
@@ -1570,21 +1586,23 @@ export function CanvasWorkspace() {
           </button>
         </div>
       </div>
-      {contextMenu && (
-        <CanvasContextMenu
-          x={contextMenu.x}
-          y={contextMenu.y}
-          label={
-            contextMenu.objects.length === 0
-              ? "Canvas actions"
-              : contextMenu.objects.length === 1
-                ? `${contextMenu.objects[0].name ?? "Object"} actions`
-                : `${contextMenu.objects.length} selected actions`
-          }
-          actions={contextActions()}
-          onClose={() => setContextMenu(null)}
-        />
-      )}
+      <MotionPresence open={Boolean(contextMenu)} exitMs={150}>
+        {contextMenu ? (
+          <CanvasContextMenu
+            x={contextMenu.x}
+            y={contextMenu.y}
+            label={
+              contextMenu.objects.length === 0
+                ? "Canvas actions"
+                : contextMenu.objects.length === 1
+                  ? `${contextMenu.objects[0].name ?? "Object"} actions`
+                  : `${contextMenu.objects.length} selected actions`
+            }
+            actions={contextActions()}
+            onClose={() => setContextMenu(null)}
+          />
+        ) : null}
+      </MotionPresence>
     </section>
   );
 }

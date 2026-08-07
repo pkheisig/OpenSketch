@@ -10,6 +10,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { Check, ChevronDown } from "lucide-react";
+import { MotionPresence } from "@/components/MotionPresence";
 
 export interface UiSelectOption<T extends string | number> {
   value: T;
@@ -238,45 +239,46 @@ export function UiSelect<T extends string | number>({
         <span className="ui-select-value">{selected?.label ?? String(value)}</span>
         <ChevronDown size={14} aria-hidden="true" />
       </button>
-      {open &&
-        position &&
+      {position &&
         createPortal(
-          <div
-            ref={menuRef}
-            id={`${id}-listbox`}
-            className="ui-select-menu"
-            role="listbox"
-            aria-label={ariaLabel ?? label}
-            aria-activedescendant={`${id}-option-${activeIndex}`}
-            tabIndex={-1}
-            style={{
-              left: position.left,
-              top: position.top,
-              width: position.width,
-              maxHeight: position.maxHeight
-            }}
-            onKeyDown={handleMenuKeyDown}
-          >
-            {options.map((option, index) => (
-              <button
-                key={String(option.value)}
-                id={`${id}-option-${index}`}
-                type="button"
-                className={index === activeIndex ? "active" : ""}
-                role="option"
-                aria-selected={option.value === value}
-                disabled={option.disabled}
-                onPointerMove={() => !option.disabled && setActiveIndex(index)}
-                onClick={() => {
-                  onChange(option.value);
-                  close(true);
-                }}
-              >
-                <span>{option.label}</span>
-                {option.value === value && <Check size={14} aria-hidden="true" />}
-              </button>
-            ))}
-          </div>,
+          <MotionPresence open={open} exitMs={160}>
+            <div
+              ref={menuRef}
+              id={`${id}-listbox`}
+              className="ui-select-menu"
+              role="listbox"
+              aria-label={ariaLabel ?? label}
+              aria-activedescendant={`${id}-option-${activeIndex}`}
+              tabIndex={-1}
+              style={{
+                left: position.left,
+                top: position.top,
+                width: position.width,
+                maxHeight: position.maxHeight
+              }}
+              onKeyDown={handleMenuKeyDown}
+            >
+              {options.map((option, index) => (
+                <button
+                  key={String(option.value)}
+                  id={`${id}-option-${index}`}
+                  type="button"
+                  className={index === activeIndex ? "active" : ""}
+                  role="option"
+                  aria-selected={option.value === value}
+                  disabled={option.disabled}
+                  onPointerMove={() => !option.disabled && setActiveIndex(index)}
+                  onClick={() => {
+                    onChange(option.value);
+                    close(true);
+                  }}
+                >
+                  <span>{option.label}</span>
+                  {option.value === value && <Check size={14} aria-hidden="true" />}
+                </button>
+              ))}
+            </div>
+          </MotionPresence>,
           document.body
         )}
     </div>

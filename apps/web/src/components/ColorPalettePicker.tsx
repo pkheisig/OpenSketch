@@ -8,6 +8,7 @@ import {
 } from "react";
 import { createPortal } from "react-dom";
 import { Check } from "lucide-react";
+import { MotionPresence } from "@/components/MotionPresence";
 
 const THEME_COLUMNS = [
   ["#ffffff", "#f2f2f2", "#d9d9d9", "#bfbfbf", "#7f7f7f", "#3f3f3f"],
@@ -162,75 +163,75 @@ export function ColorPalettePicker({
         />
         {showValue ? <span className="palette-color-value">{normalizedValue}</span> : null}
       </button>
-      {open
-        ? createPortal(
-            <div
-              ref={popoverRef}
-              className="color-palette-popover"
-              style={position}
-              role="dialog"
-              aria-label={`${ariaLabel} palette`}
-            >
-              <section>
-                <h3>Theme colors</h3>
-                <div className="theme-color-grid">
-                  {THEME_COLUMNS.flatMap((column, columnIndex) =>
-                    column.map((color, shadeIndex) => (
-                      <ColorSwatch
-                        key={`${columnIndex}-${shadeIndex}`}
-                        color={color}
-                        selected={color.toLowerCase() === normalizedValue}
-                        onChoose={choose}
-                      />
-                    ))
-                  )}
-                </div>
-              </section>
-              <section>
-                <h3>Standard colors</h3>
-                <div
-                  className={`standard-color-grid ${
-                    allowTransparent ? "with-transparent" : ""
-                  }`.trim()}
-                >
-                  {allowTransparent ? (
+      {createPortal(
+        <MotionPresence open={open} exitMs={160}>
+          <div
+            ref={popoverRef}
+            className="color-palette-popover"
+            style={position}
+            role="dialog"
+            aria-label={`${ariaLabel} palette`}
+          >
+            <section>
+              <h3>Theme colors</h3>
+              <div className="theme-color-grid">
+                {THEME_COLUMNS.flatMap((column, columnIndex) =>
+                  column.map((color, shadeIndex) => (
                     <ColorSwatch
-                      color="transparent"
-                      selected={normalizedValue === "transparent"}
-                      onChoose={choose}
-                    />
-                  ) : null}
-                  {STANDARD_COLORS.map((color) => (
-                    <ColorSwatch
-                      key={color}
+                      key={`${columnIndex}-${shadeIndex}`}
                       color={color}
                       selected={color.toLowerCase() === normalizedValue}
                       onChoose={choose}
                     />
-                  ))}
-                </div>
-              </section>
-              <label className="palette-hex-field">
-                Custom
-                <span>
-                  <input
-                    value={draft}
-                    aria-label={`${ariaLabel} hex value`}
-                    spellCheck={false}
-                    maxLength={7}
-                    onChange={(event) => setDraft(event.target.value)}
-                    onBlur={applyDraft}
-                    onKeyDown={onHexKeyDown}
+                  ))
+                )}
+              </div>
+            </section>
+            <section>
+              <h3>Standard colors</h3>
+              <div
+                className={`standard-color-grid ${
+                  allowTransparent ? "with-transparent" : ""
+                }`.trim()}
+              >
+                {allowTransparent ? (
+                  <ColorSwatch
+                    color="transparent"
+                    selected={normalizedValue === "transparent"}
+                    onChoose={choose}
                   />
-                  <button type="button" onClick={applyDraft}>
-                    Apply
-                  </button>
-                </span>
-              </label>
-            </div>,
-            document.body
-          )
-        : null}
+                ) : null}
+                {STANDARD_COLORS.map((color) => (
+                  <ColorSwatch
+                    key={color}
+                    color={color}
+                    selected={color.toLowerCase() === normalizedValue}
+                    onChoose={choose}
+                  />
+                ))}
+              </div>
+            </section>
+            <label className="palette-hex-field">
+              Custom
+              <span>
+                <input
+                  value={draft}
+                  aria-label={`${ariaLabel} hex value`}
+                  spellCheck={false}
+                  maxLength={7}
+                  onChange={(event) => setDraft(event.target.value)}
+                  onBlur={applyDraft}
+                  onKeyDown={onHexKeyDown}
+                />
+                <button type="button" onClick={applyDraft}>
+                  Apply
+                </button>
+              </span>
+            </label>
+          </div>
+        </MotionPresence>,
+        document.body
+      )}
     </span>
   );
 }

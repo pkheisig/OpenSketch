@@ -116,7 +116,9 @@ async function renderedArtworkCenter(page: Page) {
 }
 
 async function ensureEditorOpen(page: Page) {
-  const inspector = page.locator(".inspector-embedded");
+  const inspector = page.locator(
+    ".sidebar-expanded:not(.motion-presence-closing) .inspector-embedded"
+  );
   if (await inspector.isVisible().catch(() => false)) return;
 
   let editButton = page.getByRole("button", { name: "Edit", exact: true });
@@ -132,7 +134,7 @@ async function ensureEditorOpen(page: Page) {
 
 async function ensureLayersOpen(page: Page) {
   await ensureEditorOpen(page);
-  const toggle = page.locator(".layers-title");
+  const toggle = page.locator(".sidebar-expanded:not(.motion-presence-closing) .layers-title");
   await expect(toggle).toBeVisible();
   if ((await toggle.getAttribute("aria-expanded")) !== "true") {
     await toggle.click({ force: true });
@@ -823,7 +825,7 @@ test("places text and shapes from active tools and persists line creation defaul
   await expect(shapeMenu.getByRole("menuitem", { name: "Octagon" })).toBeVisible();
   await expect(shapeMenu.getByRole("menuitem", { name: "Star" })).toHaveCount(0);
   await page.getByRole("button", { name: "Defaults", exact: true }).click();
-  await expect(page.locator(".creation-defaults summary")).toHaveText([
+  await expect(page.locator(".creation-defaults-summary")).toHaveText([
     "New text defaults",
     "New shape defaults",
     "New line & arrow defaults"
@@ -3058,9 +3060,15 @@ test("reveals asset filters and filters catalog metadata", async ({ page }) => {
 
   const filterPanel = page.getByRole("region", { name: "Asset filters" });
   await expect(filterPanel).toBeVisible();
-  for (const label of ["Filter by source", "Filter by license", "Filter by variants"]) {
+  for (const label of ["Filter by source", "Filter by variants"]) {
     await expect(filterPanel.getByRole("combobox", { name: label })).toBeVisible();
   }
+  await filterPanel.getByRole("combobox", { name: "Filter by source" }).click();
+  await expect(page.getByRole("option", { name: "BioIcons", exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("option", { name: "BioIcons / Servier Medical Art", exact: true })
+  ).toHaveCount(0);
+  await page.keyboard.press("Escape");
 
   const search = page.getByPlaceholder("Search cells, proteins, equipment…");
   await search.fill("Neuron with dendritic spines");
@@ -3073,7 +3081,7 @@ test("reveals asset filters and filters catalog metadata", async ({ page }) => {
     .hover();
   await expect(neuron.locator(".asset-source-popover")).toContainText("SciDraw");
 
-  await selectUiOption(page, "Filter by license", "Public Domain");
+  await selectUiOption(page, "Filter by source", "BioIcons");
   await expect(page.getByRole("heading", { name: "No match", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Clear asset filters" }).click();
   await expect(neuron).toBeVisible();

@@ -5,7 +5,8 @@ import {
   useRef,
   useState,
   type DragEvent,
-  type KeyboardEvent
+  type KeyboardEvent,
+  type ReactNode
 } from "react";
 import { FixedSizeList as List, type ListChildComponentProps } from "react-window";
 import {
@@ -32,6 +33,8 @@ import {
 } from "@workspace/editor-core";
 import { ASSET_CATEGORIES, assetManifest } from "@/assets/manifest";
 import { AssetPreviewImage } from "@/components/AssetPreviewImage";
+import { MotionCollapse } from "@/components/MotionCollapse";
+import { MotionPresence } from "@/components/MotionPresence";
 import { useEditor } from "@/editor/EditorContext";
 import {
   buildConnectorGeometry,
@@ -108,6 +111,12 @@ function loadCreationDefaultsDisclosures(): Record<CreationDefaultsSection, bool
 
 function assetSourceLabel(family: AssetFamily): string {
   return family.sourceName ?? family.author;
+}
+
+function assetSourceFilterLabel(family: AssetFamily): string {
+  return assetSourceLabel(family) === "BioIcons / Servier Medical Art"
+    ? "BioIcons"
+    : assetSourceLabel(family);
 }
 
 function assetSourcePage(family: AssetFamily): string {
@@ -302,6 +311,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const autoEditWasEnabled = useRef(editor.autoEditEnabled);
   const setCreationTool = editor.setCreationTool;
   const canEdit = editor.selection.length > 0;
+  const panelOpen = !collapsed && (tab !== "edit" || canEdit);
   const selectionKey = editor.selection
     .map((object, index) => object.objectId ?? `${object.type}:${object.name ?? index}`)
     .join("|");
@@ -501,199 +511,211 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
           </button>
         ) : null}
       </nav>
-      {flyout === "lines" ? (
-        <div
-          className="tool-flyout line-tool-flyout"
-          role="menu"
-          aria-label="Line and arrow tools"
-          onPointerLeave={() => {
-            if (!pressedLinePreset.current && !draggedLinePreset.current) setLineFamily(null);
-          }}
-        >
-          <div className="tool-flyout-primary">
-            {CONNECTOR_FAMILIES.map(({ id: family, label }) => {
-              const sample = CONNECTOR_PRESETS[family][0];
-              return (
-                <button
-                  key={family}
-                  ref={(element) => {
-                    primaryFamilyButtonRefs.current[family] = element;
-                  }}
-                  className={lineFamily === family ? "active" : ""}
-                  onPointerEnter={() => setLineFamily(family)}
-                  onClick={() => setLineFamily(family)}
-                  role="menuitem"
-                >
-                  <ConnectorPresetIcon value={sample} />
-                  {label}
-                </button>
-              );
-            })}
-          </div>
-          {lineFamily ? (
-            <div
-              className={`tool-flyout-secondary connector-family-${lineFamily}`}
-              style={{ marginTop: secondaryTop }}
-            >
-              {CONNECTOR_PRESETS[lineFamily].map((value) => {
+      <MotionPresence open={flyout === "lines"} exitMs={150}>
+        {flyout === "lines" ? (
+          <div
+            className="tool-flyout line-tool-flyout"
+            role="menu"
+            aria-label="Line and arrow tools"
+            onPointerLeave={() => {
+              if (!pressedLinePreset.current && !draggedLinePreset.current) setLineFamily(null);
+            }}
+          >
+            <div className="tool-flyout-primary">
+              {CONNECTOR_FAMILIES.map(({ id: family, label }) => {
+                const sample = CONNECTOR_PRESETS[family][0];
                 return (
                   <button
-                    key={value.label}
-                    draggable
-                    onPointerDown={() => {
-                      pressedLinePreset.current = true;
+                    key={family}
+                    ref={(element) => {
+                      primaryFamilyButtonRefs.current[family] = element;
                     }}
-                    onPointerUp={() => {
-                      pressedLinePreset.current = false;
-                    }}
-                    onPointerCancel={() => {
-                      pressedLinePreset.current = false;
-                    }}
-                    onDragStart={(event) => {
-                      draggedLinePreset.current = true;
-                      setConnectorPresetDragPayload(event.dataTransfer, lineFamily, value);
-                    }}
-                    onDragEnd={() => {
-                      window.setTimeout(() => {
-                        draggedLinePreset.current = false;
-                        pressedLinePreset.current = false;
-                      }, 0);
-                    }}
-                    onClick={() => {
-                      if (!draggedLinePreset.current) chooseLinePreset(value, lineFamily);
-                    }}
+                    className={lineFamily === family ? "active" : ""}
+                    onPointerEnter={() => setLineFamily(family)}
+                    onClick={() => setLineFamily(family)}
                     role="menuitem"
-                    aria-label={value.label}
-                    title={value.label}
                   >
-                    <ConnectorPresetIcon value={value} />
+                    <ConnectorPresetIcon value={sample} />
+                    {label}
                   </button>
                 );
               })}
             </div>
-          ) : null}
-        </div>
-      ) : null}
-      {flyout === "shapes" ? (
-        <div
-          className="tool-flyout shape-tool-flyout"
-          role="menu"
-          aria-label="Shape tools"
-          onPointerLeave={() => {
-            if (!pressedShapePreset.current && !draggedShapePreset.current) setShapeFamily(null);
-          }}
-        >
-          <div className="tool-flyout-primary">
-            <button
-              ref={(element) => {
-                primaryFamilyButtonRefs.current.basic = element;
-              }}
-              className={shapeFamily === "basic" ? "active" : ""}
-              onPointerEnter={() => setShapeFamily("basic")}
-              onClick={() => setShapeFamily("basic")}
-              role="menuitem"
-            >
-              <ShapePresetIcon glyph="rectangle" /> Shapes
-            </button>
-            <button
-              ref={(element) => {
-                primaryFamilyButtonRefs.current.polygons = element;
-              }}
-              className={shapeFamily === "polygons" ? "active" : ""}
-              onPointerEnter={() => setShapeFamily("polygons")}
-              onClick={() => setShapeFamily("polygons")}
-              role="menuitem"
-            >
-              <ShapePresetIcon glyph="hexagon" /> Polygons
-            </button>
-          </div>
-          {shapeFamily ? (
-            <div
-              className="tool-flyout-secondary shape-flyout-grid"
-              style={{ marginTop: secondaryTop }}
-            >
-              {SHAPE_GROUPS[shapeFamily].map(([kind, glyph, label]) => (
-                <button
-                  key={kind}
-                  draggable
-                  onPointerDown={() => {
-                    pressedShapePreset.current = true;
-                  }}
-                  onPointerUp={() => {
-                    pressedShapePreset.current = false;
-                  }}
-                  onPointerCancel={() => {
-                    pressedShapePreset.current = false;
-                  }}
-                  onDragStart={(event) => {
-                    draggedShapePreset.current = true;
-                    setShapePresetDragPayload(event.dataTransfer, kind);
-                  }}
-                  onDragEnd={() => {
-                    window.setTimeout(() => {
-                      draggedShapePreset.current = false;
-                      pressedShapePreset.current = false;
-                    }, 0);
-                  }}
-                  onClick={() => {
-                    if (!draggedShapePreset.current) {
-                      editor.setCreationTool({ type: "shape", kind });
-                      setFlyout(null);
-                      setShapeFamily(null);
-                    }
-                  }}
-                  role="menuitem"
-                  aria-label={label}
-                  title={label}
+            <MotionPresence open={Boolean(lineFamily)} exitMs={120}>
+              {lineFamily ? (
+                <div
+                  className={`tool-flyout-secondary connector-family-${lineFamily}`}
+                  style={{ marginTop: secondaryTop }}
                 >
-                  <ShapePresetIcon glyph={glyph} />
-                </button>
-              ))}
-            </div>
-          ) : null}
-        </div>
-      ) : null}
-      {flyout === "defaults" ? (
-        <div
-          className="tool-flyout tool-defaults-flyout"
-          role="dialog"
-          aria-label="New object defaults"
-        >
-          <ShapesPanel />
-        </div>
-      ) : null}
-      {!collapsed && (tab !== "edit" || canEdit) ? (
-        <div className="sidebar-expanded floating-panel">
-          {tab !== "edit" ? (
-            <div className="floating-panel-header">
-              <strong>{tab === "assets" ? "Assets" : "Imports"}</strong>
-              <button className="panel-close-button" onClick={onToggle} aria-label="Close panel">
-                ×
+                  {CONNECTOR_PRESETS[lineFamily].map((value) => {
+                    return (
+                      <button
+                        key={value.label}
+                        draggable
+                        onPointerDown={() => {
+                          pressedLinePreset.current = true;
+                        }}
+                        onPointerUp={() => {
+                          pressedLinePreset.current = false;
+                        }}
+                        onPointerCancel={() => {
+                          pressedLinePreset.current = false;
+                        }}
+                        onDragStart={(event) => {
+                          draggedLinePreset.current = true;
+                          setConnectorPresetDragPayload(event.dataTransfer, lineFamily, value);
+                        }}
+                        onDragEnd={() => {
+                          window.setTimeout(() => {
+                            draggedLinePreset.current = false;
+                            pressedLinePreset.current = false;
+                          }, 0);
+                        }}
+                        onClick={() => {
+                          if (!draggedLinePreset.current) chooseLinePreset(value, lineFamily);
+                        }}
+                        role="menuitem"
+                        aria-label={value.label}
+                        title={value.label}
+                      >
+                        <ConnectorPresetIcon value={value} />
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : null}
+            </MotionPresence>
+          </div>
+        ) : null}
+      </MotionPresence>
+      <MotionPresence open={flyout === "shapes"} exitMs={150}>
+        {flyout === "shapes" ? (
+          <div
+            className="tool-flyout shape-tool-flyout"
+            role="menu"
+            aria-label="Shape tools"
+            onPointerLeave={() => {
+              if (!pressedShapePreset.current && !draggedShapePreset.current) setShapeFamily(null);
+            }}
+          >
+            <div className="tool-flyout-primary">
+              <button
+                ref={(element) => {
+                  primaryFamilyButtonRefs.current.basic = element;
+                }}
+                className={shapeFamily === "basic" ? "active" : ""}
+                onPointerEnter={() => setShapeFamily("basic")}
+                onClick={() => setShapeFamily("basic")}
+                role="menuitem"
+              >
+                <ShapePresetIcon glyph="rectangle" /> Shapes
+              </button>
+              <button
+                ref={(element) => {
+                  primaryFamilyButtonRefs.current.polygons = element;
+                }}
+                className={shapeFamily === "polygons" ? "active" : ""}
+                onPointerEnter={() => setShapeFamily("polygons")}
+                onClick={() => setShapeFamily("polygons")}
+                role="menuitem"
+              >
+                <ShapePresetIcon glyph="hexagon" /> Polygons
               </button>
             </div>
-          ) : null}
-          <div
-            key={tab}
-            className={`sidebar-content sidebar-content-${tab}`}
-            id={`insert-panel-${tab}`}
-            role="tabpanel"
-            aria-label={`${tab} tools`}
-          >
-            {tab === "assets" && (
-              <AssetsPanel
-                query={assetQuery}
-                onQueryChange={setAssetQuery}
-                category={assetCategory}
-                onCategoryChange={setAssetCategory}
-                focusRequest={assetSearchFocusRequest}
-              />
-            )}
-            {tab === "imports" && <ImportsPanel />}
-            {tab === "edit" && <InspectorContent onClose={onToggle} />}
+            <MotionPresence open={Boolean(shapeFamily)} exitMs={120}>
+              {shapeFamily ? (
+                <div
+                  className="tool-flyout-secondary shape-flyout-grid"
+                  style={{ marginTop: secondaryTop }}
+                >
+                  {SHAPE_GROUPS[shapeFamily].map(([kind, glyph, label]) => (
+                    <button
+                      key={kind}
+                      draggable
+                      onPointerDown={() => {
+                        pressedShapePreset.current = true;
+                      }}
+                      onPointerUp={() => {
+                        pressedShapePreset.current = false;
+                      }}
+                      onPointerCancel={() => {
+                        pressedShapePreset.current = false;
+                      }}
+                      onDragStart={(event) => {
+                        draggedShapePreset.current = true;
+                        setShapePresetDragPayload(event.dataTransfer, kind);
+                      }}
+                      onDragEnd={() => {
+                        window.setTimeout(() => {
+                          draggedShapePreset.current = false;
+                          pressedShapePreset.current = false;
+                        }, 0);
+                      }}
+                      onClick={() => {
+                        if (!draggedShapePreset.current) {
+                          editor.setCreationTool({ type: "shape", kind });
+                          setFlyout(null);
+                          setShapeFamily(null);
+                        }
+                      }}
+                      role="menuitem"
+                      aria-label={label}
+                      title={label}
+                    >
+                      <ShapePresetIcon glyph={glyph} />
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+            </MotionPresence>
           </div>
-          <LayersPanel />
-        </div>
-      ) : null}
+        ) : null}
+      </MotionPresence>
+      <MotionPresence open={flyout === "defaults"} exitMs={150}>
+        {flyout === "defaults" ? (
+          <div
+            className="tool-flyout tool-defaults-flyout"
+            role="dialog"
+            aria-label="New object defaults"
+          >
+            <ShapesPanel />
+          </div>
+        ) : null}
+      </MotionPresence>
+      <MotionPresence open={panelOpen} exitMs={180}>
+        {panelOpen ? (
+          <div className="sidebar-expanded floating-panel">
+            {tab !== "edit" ? (
+              <div className="floating-panel-header">
+                <strong>{tab === "assets" ? "Assets" : "Imports"}</strong>
+                <button className="panel-close-button" onClick={onToggle} aria-label="Close panel">
+                  ×
+                </button>
+              </div>
+            ) : null}
+            <div
+              key={tab}
+              className={`sidebar-content sidebar-content-${tab}`}
+              id={`insert-panel-${tab}`}
+              role="tabpanel"
+              aria-label={`${tab} tools`}
+            >
+              {tab === "assets" && (
+                <AssetsPanel
+                  query={assetQuery}
+                  onQueryChange={setAssetQuery}
+                  category={assetCategory}
+                  onCategoryChange={setAssetCategory}
+                  focusRequest={assetSearchFocusRequest}
+                />
+              )}
+              {tab === "imports" && <ImportsPanel />}
+              {tab === "edit" && <InspectorContent onClose={onToggle} />}
+            </div>
+            <LayersPanel />
+          </div>
+        ) : null}
+      </MotionPresence>
     </aside>
   );
 }
@@ -724,22 +746,13 @@ function AssetsPanel({
   const [savedStyles, setSavedStyles] = useState<SavedElementStyles>(loadSavedElementStyles);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [sourceFilter, setSourceFilter] = useState(ALL_ASSET_FILTER_VALUE);
-  const [licenseFilter, setLicenseFilter] = useState(ALL_ASSET_FILTER_VALUE);
   const [variantFilter, setVariantFilter] = useState(ALL_ASSET_FILTER_VALUE);
   const assetListRef = useRef<HTMLDivElement>(null);
   const sourceOptions = useMemo(
     () =>
       assetFilterOptions(
-        assetManifest.families.map((family) => assetSourceLabel(family)),
+        assetManifest.families.map((family) => assetSourceFilterLabel(family)),
         "All sources"
-      ),
-    []
-  );
-  const licenseOptions = useMemo(
-    () =>
-      assetFilterOptions(
-        assetManifest.families.map((family) => family.license),
-        "All licenses"
       ),
     []
   );
@@ -751,20 +764,18 @@ function AssetsPanel({
     );
     const filtered = matches.filter((family) => {
       const matchesSource =
-        sourceFilter === ALL_ASSET_FILTER_VALUE || assetSourceLabel(family) === sourceFilter;
-      const matchesLicense =
-        licenseFilter === ALL_ASSET_FILTER_VALUE || family.license === licenseFilter;
+        sourceFilter === ALL_ASSET_FILTER_VALUE || assetSourceFilterLabel(family) === sourceFilter;
       const matchesVariants =
         variantFilter === ALL_ASSET_FILTER_VALUE ||
         (variantFilter === SINGLE_VARIANT_FILTER_VALUE && family.variants.length === 1) ||
         (variantFilter === MULTIPLE_VARIANT_FILTER_VALUE && family.variants.length > 1);
-      return matchesSource && matchesLicense && matchesVariants;
+      return matchesSource && matchesVariants;
     });
     return category === "Favorites"
       ? filtered.filter((family) => favorites.has(family.familyId))
       : filtered;
-  }, [category, debouncedQuery, favorites, licenseFilter, sourceFilter, variantFilter]);
-  const activeFilterCount = [sourceFilter, licenseFilter, variantFilter].filter(
+  }, [category, debouncedQuery, favorites, sourceFilter, variantFilter]);
+  const activeFilterCount = [sourceFilter, variantFilter].filter(
     (value) => value !== ALL_ASSET_FILTER_VALUE
   ).length;
   useEffect(() => {
@@ -901,7 +912,7 @@ function AssetsPanel({
           ) : null}
         </button>
       </div>
-      {filtersOpen ? (
+      <MotionCollapse open={filtersOpen} className="asset-filter-collapse">
         <div className="asset-filter-panel" role="region" aria-label="Asset filters">
           <div className="asset-filter-heading">
             <strong>Refine assets</strong>
@@ -912,14 +923,13 @@ function AssetsPanel({
                 aria-label="Clear asset filters"
                 onClick={() => {
                   setSourceFilter(ALL_ASSET_FILTER_VALUE);
-                  setLicenseFilter(ALL_ASSET_FILTER_VALUE);
                   setVariantFilter(ALL_ASSET_FILTER_VALUE);
                 }}
               >
                 Clear
               </button>
             ) : (
-              <span>Source, license, or variants</span>
+              <span>Source or variants</span>
             )}
           </div>
           <div className="asset-filter-grid">
@@ -931,13 +941,6 @@ function AssetsPanel({
               ariaLabel="Filter by source"
             />
             <UiSelect
-              value={licenseFilter}
-              options={licenseOptions}
-              onChange={setLicenseFilter}
-              label="License"
-              ariaLabel="Filter by license"
-            />
-            <UiSelect
               value={variantFilter}
               options={ASSET_VARIANT_OPTIONS}
               onChange={setVariantFilter}
@@ -946,7 +949,7 @@ function AssetsPanel({
             />
           </div>
         </div>
-      ) : null}
+      </MotionCollapse>
       <div className="category-strip" role="list" aria-label="Asset categories">
         {["Favorites", ...ASSET_CATEGORIES].map((item) => (
           <button
@@ -1152,6 +1155,34 @@ function CommittedNumberInput({
   );
 }
 
+function CreationDefaultsDisclosure({
+  title,
+  open,
+  onChange,
+  children
+}: {
+  title: string;
+  open: boolean;
+  onChange: (open: boolean) => void;
+  children: ReactNode;
+}) {
+  return (
+    <section className={`creation-defaults ${open ? "open" : ""}`}>
+      <button
+        type="button"
+        className="creation-defaults-summary"
+        aria-expanded={open}
+        onClick={() => onChange(!open)}
+      >
+        {title}
+      </button>
+      <MotionCollapse open={open}>
+        <div className="creation-defaults-body">{children}</div>
+      </MotionCollapse>
+    </section>
+  );
+}
+
 function ShapesPanel() {
   const editor = useEditor();
   const [openSections, setOpenSections] = useState(loadCreationDefaultsDisclosures);
@@ -1184,148 +1215,139 @@ function ShapesPanel() {
     }));
   return (
     <>
-      <details
-        className="creation-defaults"
+      <CreationDefaultsDisclosure
+        title="New text defaults"
         open={openSections.text}
-        onToggle={(event) => setSectionOpen("text", event.currentTarget.open)}
+        onChange={(open) => setSectionOpen("text", open)}
       >
-        <summary>New text defaults</summary>
-        <div className="creation-defaults-body">
-          <UiSelect
-            className="field"
-            label="Typeface"
-            ariaLabel="Default text typeface"
-            value={editor.creationDefaults.text.fontFamily}
-            options={TEXT_FONT_FAMILIES.map((font) => ({ value: font, label: font }))}
-            onChange={(fontFamily) => updateTextDefaults({ fontFamily })}
-          />
-          <div className="creation-default-grid">
-            <div className="creation-color-field">
-              Color
-              <ColorPalettePicker
-                ariaLabel="Default text color"
-                value={editor.creationDefaults.text.color}
-                onChange={(color) => updateTextDefaults({ color })}
-              />
-            </div>
-            <label className="creation-number-field">
-              Size
-              <CommittedNumberInput
-                ariaLabel="Default text size"
-                min={6}
-                max={400}
-                value={editor.creationDefaults.text.fontSize}
-                onCommit={(fontSize) => updateTextDefaults({ fontSize })}
-              />
-            </label>
-          </div>
-          <UiSelect
-            className="field"
-            label="Weight"
-            ariaLabel="Default text weight"
-            value={String(editor.creationDefaults.text.fontWeight)}
-            options={[
-              { value: "400", label: "Regular" },
-              { value: "600", label: "Semibold" },
-              { value: "700", label: "Bold" }
-            ]}
-            onChange={(fontWeight) => updateTextDefaults({ fontWeight: Number(fontWeight) })}
-          />
-        </div>
-      </details>
-      <details
-        className="creation-defaults"
-        open={openSections.shape}
-        onToggle={(event) => setSectionOpen("shape", event.currentTarget.open)}
-      >
-        <summary>New shape defaults</summary>
-        <div className="creation-defaults-body">
-          <div className="creation-default-grid">
-            <div className="creation-color-field">
-              Fill
-              <ColorPalettePicker
-                ariaLabel="Default shape fill"
-                value={editor.creationDefaults.shape.fill}
-                onChange={(fill) => updateShapeDefaults({ fill })}
-                allowTransparent
-              />
-            </div>
-            <div className="creation-color-field">
-              Outline
-              <ColorPalettePicker
-                ariaLabel="Default shape outline"
-                value={editor.creationDefaults.shape.stroke}
-                onChange={(stroke) => updateShapeDefaults({ stroke })}
-                allowTransparent
-              />
-            </div>
+        <UiSelect
+          className="field"
+          label="Typeface"
+          ariaLabel="Default text typeface"
+          value={editor.creationDefaults.text.fontFamily}
+          options={TEXT_FONT_FAMILIES.map((font) => ({ value: font, label: font }))}
+          onChange={(fontFamily) => updateTextDefaults({ fontFamily })}
+        />
+        <div className="creation-default-grid">
+          <div className="creation-color-field">
+            Color
+            <ColorPalettePicker
+              ariaLabel="Default text color"
+              value={editor.creationDefaults.text.color}
+              onChange={(color) => updateTextDefaults({ color })}
+            />
           </div>
           <label className="creation-number-field">
-            Outline weight
+            Size
             <CommittedNumberInput
-              ariaLabel="Default shape outline weight"
-              min={0}
-              max={40}
-              value={editor.creationDefaults.shape.strokeWidth}
-              onCommit={(strokeWidth) => updateShapeDefaults({ strokeWidth })}
+              ariaLabel="Default text size"
+              min={6}
+              max={400}
+              value={editor.creationDefaults.text.fontSize}
+              onCommit={(fontSize) => updateTextDefaults({ fontSize })}
             />
           </label>
         </div>
-      </details>
-      <details
-        className="creation-defaults"
-        open={openSections.line}
-        onToggle={(event) => setSectionOpen("line", event.currentTarget.open)}
+        <UiSelect
+          className="field"
+          label="Weight"
+          ariaLabel="Default text weight"
+          value={String(editor.creationDefaults.text.fontWeight)}
+          options={[
+            { value: "400", label: "Regular" },
+            { value: "600", label: "Semibold" },
+            { value: "700", label: "Bold" }
+          ]}
+          onChange={(fontWeight) => updateTextDefaults({ fontWeight: Number(fontWeight) })}
+        />
+      </CreationDefaultsDisclosure>
+      <CreationDefaultsDisclosure
+        title="New shape defaults"
+        open={openSections.shape}
+        onChange={(open) => setSectionOpen("shape", open)}
       >
-        <summary>New line & arrow defaults</summary>
-        <div className="creation-defaults-body">
-          <div className="creation-default-grid">
-            <div className="creation-color-field">
-              Color
-              <ColorPalettePicker
-                ariaLabel="Default line color"
-                value={editor.creationDefaults.line.color}
-                onChange={(color) => updateLineDefaults({ color })}
-              />
-            </div>
-            <label className="creation-number-field">
-              Thickness
-              <CommittedNumberInput
-                ariaLabel="Default line thickness"
-                min={1}
-                max={40}
-                value={editor.creationDefaults.line.width}
-                onCommit={(width) => updateLineDefaults({ width })}
-              />
-            </label>
-          </div>
-          <UiSelect
-            className="field"
-            label="Line style"
-            value={editor.creationDefaults.line.lineStyle}
-            options={[
-              { value: "solid", label: "Solid" },
-              { value: "dashed", label: "Dashed" },
-              { value: "dotted", label: "Dotted" }
-            ]}
-            onChange={(lineStyle) =>
-              updateLineDefaults({ lineStyle: lineStyle as ConnectorLineStyle })
-            }
-          />
-          <div className="creation-default-grid">
-            <CreationArrowheadSelect
-              label="Start head"
-              value={editor.creationDefaults.line.startArrowhead}
-              onChange={(startArrowhead) => updateLineDefaults({ startArrowhead })}
+        <div className="creation-default-grid">
+          <div className="creation-color-field">
+            Fill
+            <ColorPalettePicker
+              ariaLabel="Default shape fill"
+              value={editor.creationDefaults.shape.fill}
+              onChange={(fill) => updateShapeDefaults({ fill })}
+              allowTransparent
             />
-            <CreationArrowheadSelect
-              label="End head"
-              value={editor.creationDefaults.line.endArrowhead}
-              onChange={(endArrowhead) => updateLineDefaults({ endArrowhead })}
+          </div>
+          <div className="creation-color-field">
+            Outline
+            <ColorPalettePicker
+              ariaLabel="Default shape outline"
+              value={editor.creationDefaults.shape.stroke}
+              onChange={(stroke) => updateShapeDefaults({ stroke })}
+              allowTransparent
             />
           </div>
         </div>
-      </details>
+        <label className="creation-number-field">
+          Outline weight
+          <CommittedNumberInput
+            ariaLabel="Default shape outline weight"
+            min={0}
+            max={40}
+            value={editor.creationDefaults.shape.strokeWidth}
+            onCommit={(strokeWidth) => updateShapeDefaults({ strokeWidth })}
+          />
+        </label>
+      </CreationDefaultsDisclosure>
+      <CreationDefaultsDisclosure
+        title="New line & arrow defaults"
+        open={openSections.line}
+        onChange={(open) => setSectionOpen("line", open)}
+      >
+        <div className="creation-default-grid">
+          <div className="creation-color-field">
+            Color
+            <ColorPalettePicker
+              ariaLabel="Default line color"
+              value={editor.creationDefaults.line.color}
+              onChange={(color) => updateLineDefaults({ color })}
+            />
+          </div>
+          <label className="creation-number-field">
+            Thickness
+            <CommittedNumberInput
+              ariaLabel="Default line thickness"
+              min={1}
+              max={40}
+              value={editor.creationDefaults.line.width}
+              onCommit={(width) => updateLineDefaults({ width })}
+            />
+          </label>
+        </div>
+        <UiSelect
+          className="field"
+          label="Line style"
+          value={editor.creationDefaults.line.lineStyle}
+          options={[
+            { value: "solid", label: "Solid" },
+            { value: "dashed", label: "Dashed" },
+            { value: "dotted", label: "Dotted" }
+          ]}
+          onChange={(lineStyle) =>
+            updateLineDefaults({ lineStyle: lineStyle as ConnectorLineStyle })
+          }
+        />
+        <div className="creation-default-grid">
+          <CreationArrowheadSelect
+            label="Start head"
+            value={editor.creationDefaults.line.startArrowhead}
+            onChange={(startArrowhead) => updateLineDefaults({ startArrowhead })}
+          />
+          <CreationArrowheadSelect
+            label="End head"
+            value={editor.creationDefaults.line.endArrowhead}
+            onChange={(endArrowhead) => updateLineDefaults({ endArrowhead })}
+          />
+        </div>
+      </CreationDefaultsDisclosure>
     </>
   );
 }
