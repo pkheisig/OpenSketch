@@ -316,6 +316,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const pressedLinePreset = useRef(false);
   const draggedShapePreset = useRef(false);
   const pressedShapePreset = useRef(false);
+  const draggedAsset = useRef(false);
   const editor = useEditor();
   const autoEditWasEnabled = useRef(editor.autoEditEnabled);
   const setCreationTool = editor.setCreationTool;
@@ -393,9 +394,23 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     onToggle();
   }, [collapsed, editor.creationTool, onToggle]);
   useEffect(() => {
+    const clearAssetDrag = () => {
+      window.setTimeout(() => {
+        draggedAsset.current = false;
+      }, 0);
+    };
+    window.addEventListener("dragend", clearAssetDrag);
+    window.addEventListener("drop", clearAssetDrag);
+    return () => {
+      window.removeEventListener("dragend", clearAssetDrag);
+      window.removeEventListener("drop", clearAssetDrag);
+    };
+  }, []);
+  useEffect(() => {
     const closeOutsideSidebar = (event: PointerEvent) => {
       const target = event.target;
       if (!(target instanceof Element)) return;
+      if (draggedAsset.current) return;
       if (sidebarRef.current?.contains(target)) return;
       if (
         target.closest(
@@ -722,6 +737,14 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
                   onSourceFilterChange={setAssetSourceFilter}
                   variantFilter={assetVariantFilter}
                   onVariantFilterChange={setAssetVariantFilter}
+                  onAssetDragStart={() => {
+                    draggedAsset.current = true;
+                  }}
+                  onAssetDragEnd={() => {
+                    window.setTimeout(() => {
+                      draggedAsset.current = false;
+                    }, 0);
+                  }}
                 />
               )}
               {tab === "imports" && <ImportsPanel />}
@@ -746,7 +769,9 @@ function AssetsPanel({
   sourceFilter,
   onSourceFilterChange,
   variantFilter,
-  onVariantFilterChange
+  onVariantFilterChange,
+  onAssetDragStart,
+  onAssetDragEnd
 }: {
   query: string;
   onQueryChange: (query: string) => void;
@@ -759,6 +784,8 @@ function AssetsPanel({
   onSourceFilterChange: (value: string) => void;
   variantFilter: string;
   onVariantFilterChange: (value: string) => void;
+  onAssetDragStart: () => void;
+  onAssetDragEnd: () => void;
 }) {
   const editor = useEditor();
   const [debouncedQuery, setDebouncedQuery] = useState(query);
@@ -871,6 +898,8 @@ function AssetsPanel({
             onFavorite={() => toggleFavorite(family.familyId)}
             onInsert={() => insert(family, variant)}
             onVariant={(variantId) => saveAssetVariantDefault(family.familyId, variantId)}
+            onAssetDragStart={onAssetDragStart}
+            onAssetDragEnd={onAssetDragEnd}
           />
         );
       })}
@@ -1051,7 +1080,9 @@ function AssetCard({
   favorite,
   onFavorite,
   onInsert,
-  onVariant
+  onVariant,
+  onAssetDragStart,
+  onAssetDragEnd
 }: {
   family: AssetFamily;
   variant: AssetVariant;
@@ -1060,6 +1091,8 @@ function AssetCard({
   onFavorite: () => void;
   onInsert: () => void;
   onVariant: (id: string) => void;
+  onAssetDragStart: () => void;
+  onAssetDragEnd: () => void;
 }) {
   const sourceLabel = assetSourceLabel(family);
   const sourcePage = assetSourcePage(family);
@@ -1140,7 +1173,15 @@ function AssetCard({
     );
   };
   return (
-    <article className="asset-card" draggable onDragStart={onDragStart}>
+    <article
+      className="asset-card"
+      draggable
+      onDragStart={(event) => {
+        onAssetDragStart();
+        onDragStart(event);
+      }}
+      onDragEnd={onAssetDragEnd}
+    >
       <button
         className="asset-card-image"
         onClick={onInsert}

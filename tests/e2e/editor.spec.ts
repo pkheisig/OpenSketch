@@ -1293,6 +1293,7 @@ test("keeps family variant previews normalized and drags the selected variant", 
   expect(Math.abs(firstBounds.centerY - secondBounds.centerY)).toBeLessThanOrEqual(2);
 
   await card.dragTo(page.locator(".artboard-stage"));
+  await expect(page.locator(".assets-panel")).toBeVisible();
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header h2")).toHaveText("Activated Neutrophil");
   await expect(
