@@ -306,6 +306,9 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const [assetQuery, setAssetQuery] = useState("");
   const [assetCategory, setAssetCategory] = useState("Favorites");
   const [assetSearchFocusRequest, setAssetSearchFocusRequest] = useState(0);
+  const [assetFiltersOpen, setAssetFiltersOpen] = useState(false);
+  const [assetSourceFilter, setAssetSourceFilter] = useState(ALL_ASSET_FILTER_VALUE);
+  const [assetVariantFilter, setAssetVariantFilter] = useState(ALL_ASSET_FILTER_VALUE);
   const sidebarRef = useRef<HTMLElement>(null);
   const primaryFamilyButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const handledSelection = useRef("");
@@ -713,6 +716,12 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
                   category={assetCategory}
                   onCategoryChange={setAssetCategory}
                   focusRequest={assetSearchFocusRequest}
+                  filtersOpen={assetFiltersOpen}
+                  onFiltersOpenChange={setAssetFiltersOpen}
+                  sourceFilter={assetSourceFilter}
+                  onSourceFilterChange={setAssetSourceFilter}
+                  variantFilter={assetVariantFilter}
+                  onVariantFilterChange={setAssetVariantFilter}
                 />
               )}
               {tab === "imports" && <ImportsPanel />}
@@ -731,13 +740,25 @@ function AssetsPanel({
   onQueryChange,
   category,
   onCategoryChange,
-  focusRequest
+  focusRequest,
+  filtersOpen,
+  onFiltersOpenChange,
+  sourceFilter,
+  onSourceFilterChange,
+  variantFilter,
+  onVariantFilterChange
 }: {
   query: string;
   onQueryChange: (query: string) => void;
   category: string;
   onCategoryChange: (category: string) => void;
   focusRequest: number;
+  filtersOpen: boolean;
+  onFiltersOpenChange: (open: boolean) => void;
+  sourceFilter: string;
+  onSourceFilterChange: (value: string) => void;
+  variantFilter: string;
+  onVariantFilterChange: (value: string) => void;
 }) {
   const editor = useEditor();
   const [debouncedQuery, setDebouncedQuery] = useState(query);
@@ -750,9 +771,6 @@ function AssetsPanel({
   const [assetError, setAssetError] = useState("");
   const [assetListHeight, setAssetListHeight] = useState(0);
   const [savedStyles, setSavedStyles] = useState<SavedElementStyles>(loadSavedElementStyles);
-  const [filtersOpen, setFiltersOpen] = useState(false);
-  const [sourceFilter, setSourceFilter] = useState(ALL_ASSET_FILTER_VALUE);
-  const [variantFilter, setVariantFilter] = useState(ALL_ASSET_FILTER_VALUE);
   const assetListRef = useRef<HTMLDivElement>(null);
   const sourceOptions = useMemo(
     () =>
@@ -907,7 +925,7 @@ function AssetsPanel({
           aria-label="Toggle asset filters"
           aria-expanded={filtersOpen}
           title="Filter assets"
-          onClick={() => setFiltersOpen((open) => !open)}
+          onClick={() => onFiltersOpenChange(!filtersOpen)}
         >
           <SlidersHorizontal size={15} aria-hidden="true" />
           <span>Filter</span>
@@ -928,8 +946,8 @@ function AssetsPanel({
                 className="asset-filter-clear"
                 aria-label="Clear asset filters"
                 onClick={() => {
-                  setSourceFilter(ALL_ASSET_FILTER_VALUE);
-                  setVariantFilter(ALL_ASSET_FILTER_VALUE);
+                  onSourceFilterChange(ALL_ASSET_FILTER_VALUE);
+                  onVariantFilterChange(ALL_ASSET_FILTER_VALUE);
                 }}
               >
                 Clear
@@ -942,14 +960,14 @@ function AssetsPanel({
             <UiSelect
               value={sourceFilter}
               options={sourceOptions}
-              onChange={setSourceFilter}
+              onChange={onSourceFilterChange}
               label="Source"
               ariaLabel="Filter by source"
             />
             <UiSelect
               value={variantFilter}
               options={ASSET_VARIANT_OPTIONS}
-              onChange={setVariantFilter}
+              onChange={onVariantFilterChange}
               label="Variants"
               ariaLabel="Filter by variants"
             />

@@ -3291,6 +3291,33 @@ test("preserves an asset search after inserting artwork and reopening Assets", a
   ).toBeVisible();
 });
 
+test("preserves asset filters after closing and reopening Assets", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+
+  const filterToggle = page.getByRole("button", { name: "Toggle asset filters" });
+  await filterToggle.click();
+  await selectUiOption(page, "Filter by source", "SciDraw");
+  await selectUiOption(page, "Filter by variants", "Multiple variants");
+
+  const assetsTab = page.getByRole("tab", { name: "Assets", exact: true });
+  await assetsTab.click();
+  await expect(page.getByPlaceholder("Search cells, proteins, equipment…")).toHaveCount(0);
+  await assetsTab.click();
+
+  const activePanel = page.locator(".sidebar-expanded:not(.motion-presence-closing)");
+  await expect(activePanel.getByRole("button", { name: "Toggle asset filters" })).toHaveAttribute(
+    "aria-expanded",
+    "true"
+  );
+  await expect(activePanel.getByRole("combobox", { name: "Filter by source" })).toContainText(
+    "SciDraw"
+  );
+  await expect(activePanel.getByRole("combobox", { name: "Filter by variants" })).toContainText(
+    "Multiple variants"
+  );
+});
+
 test("shows a minimal no-match state and preserves native page-text copying", async ({
   page,
   context,
