@@ -52,6 +52,11 @@ import {
 } from "@/editor/connectorPresets";
 import { setConnectorPresetDragPayload, setShapePresetDragPayload } from "@/editor/creationDrag";
 import {
+  ASSET_FAVORITES_CHANGED_EVENT,
+  loadAssetFavorites,
+  saveAssetFavorites
+} from "@/editor/assetFavorites";
+import {
   loadSavedElementStyles,
   SAVED_ELEMENT_STYLES_CHANGED_EVENT,
   type ElementStyleSnapshot,
@@ -84,7 +89,6 @@ type Flyout = "lines" | "shapes" | "defaults" | null;
 type CreationDefaultsSection = "text" | "shape" | "line";
 
 const CREATION_DEFAULTS_DISCLOSURE_STORAGE_KEY = "OpenSketch:creation-defaults-disclosures";
-const FAVORITES_STORAGE_KEY = "OpenSketch:favorites";
 const RECENT_ASSETS_STORAGE_KEY = "OpenSketch:recent-assets";
 const ALL_ASSET_FILTER_VALUE = "__all__";
 const SINGLE_VARIANT_FILTER_VALUE = "single";
@@ -791,9 +795,7 @@ function AssetsPanel({
   const [debouncedQuery, setDebouncedQuery] = useState(query);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [variants, setVariants] = useState(loadAssetVariantDefaults);
-  const [favorites, setFavorites] = useState<Set<string>>(
-    () => new Set(loadStringList(FAVORITES_STORAGE_KEY))
-  );
+  const [favorites, setFavorites] = useState<Set<string>>(loadAssetFavorites);
   const [recent, setRecent] = useState<string[]>(() => loadStringList(RECENT_ASSETS_STORAGE_KEY));
   const [assetError, setAssetError] = useState("");
   const [assetListHeight, setAssetListHeight] = useState(0);
@@ -844,6 +846,11 @@ function AssetsPanel({
     return () => window.removeEventListener(SAVED_ELEMENT_STYLES_CHANGED_EVENT, updateSavedStyles);
   }, []);
   useEffect(() => {
+    const updateFavorites = () => setFavorites(loadAssetFavorites());
+    window.addEventListener(ASSET_FAVORITES_CHANGED_EVENT, updateFavorites);
+    return () => window.removeEventListener(ASSET_FAVORITES_CHANGED_EVENT, updateFavorites);
+  }, []);
+  useEffect(() => {
     const updateVariants = () => setVariants(loadAssetVariantDefaults());
     window.addEventListener(ASSET_VARIANT_DEFAULTS_CHANGED_EVENT, updateVariants);
     return () => window.removeEventListener(ASSET_VARIANT_DEFAULTS_CHANGED_EVENT, updateVariants);
@@ -871,7 +878,7 @@ function AssetsPanel({
     if (next.has(familyId)) next.delete(familyId);
     else next.add(familyId);
     setFavorites(next);
-    saveStringList(FAVORITES_STORAGE_KEY, [...next]);
+    saveAssetFavorites(next);
   };
 
   const insert = (family: AssetFamily, variant: AssetVariant) => {

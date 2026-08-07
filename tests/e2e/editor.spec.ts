@@ -1564,6 +1564,7 @@ test("offers selection-aware canvas context actions", async ({ page }) => {
   const shapeMenu = page.getByRole("menu", { name: "rectangle actions" });
   await expect(shapeMenu.getByRole("menuitem", { name: "Save styling" })).toBeVisible();
   await expect(shapeMenu.getByRole("menuitem", { name: "Reset styling" })).toBeVisible();
+  await expect(shapeMenu.getByRole("menuitem", { name: /favorites/i })).toHaveCount(0);
   await expect(shapeMenu.getByRole("menuitem", { name: "Copy as SVG" })).toBeVisible();
   await expect(shapeMenu.getByRole("menuitem", { name: "Copy as PNG" })).toBeVisible();
   await expect(shapeMenu.getByRole("menuitem", { name: "Duplicate" })).toBeVisible();
@@ -1594,6 +1595,27 @@ test("offers selection-aware canvas context actions", async ({ page }) => {
   await textMenu.getByRole("menuitem", { name: "Reset styling" }).click();
   await ensureEditorOpen(page);
   await expect(textFill).toHaveValue("#183133");
+});
+
+test("adds a selected asset to Favorites from its context menu", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
+  await page.getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true }).click();
+  await ensureEditorOpen(page);
+
+  const center = await artboardPoint(page);
+  await page.mouse.click(center.x, center.y, { button: "right" });
+  const menu = page.getByRole("menu", { name: "Cajal-Retzius Cell actions" });
+  const menuItems = await menu.getByRole("menuitem").allTextContents();
+  expect(menuItems.indexOf("Add to favorites")).toBe(menuItems.indexOf("Reset styling") + 1);
+  await menu.getByRole("menuitem", { name: "Add to favorites" }).click();
+
+  await page.getByRole("tab", { name: "Assets", exact: true }).click();
+  await page.getByRole("button", { name: "Favorites", exact: true }).click();
+  await expect(
+    page.getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true })
+  ).toBeVisible();
 });
 
 test("saves and resets per-element styling for future sidebar shapes", async ({ page }) => {

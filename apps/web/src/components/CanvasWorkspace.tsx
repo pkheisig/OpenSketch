@@ -31,6 +31,7 @@ import {
   FlipVertical2,
   Grid3X3,
   Group as GroupIcon,
+  Heart,
   Layers3,
   Lock,
   Maximize2,
@@ -77,6 +78,7 @@ import {
   readShapePresetDragPayload
 } from "@/editor/creationDrag";
 import { elementStyleKey } from "@/editor/elementStyles";
+import { loadAssetFavorites, toggleAssetFavorite } from "@/editor/assetFavorites";
 import { CURSOR_GRABBING } from "@/editor/cursors";
 import { importedMediaFilesFromDataTransfer } from "@/editor/clipboardImport";
 import type { Point } from "@/editor/geometry";
@@ -958,6 +960,11 @@ export function CanvasWorkspace() {
     }
 
     const styleable = objects.length === 1 && Boolean(elementStyleKey(objects[0]));
+    const assetFamilyId =
+      objects.length === 1 && objects[0].OpenSketchType === "nih-asset"
+        ? objects[0].familyId
+        : undefined;
+    const assetIsFavorite = assetFamilyId ? loadAssetFavorites().has(assetFamilyId) : false;
     const actions: ContextMenuAction[] = [
       {
         label: "Cut",
@@ -1012,6 +1019,15 @@ export function CanvasWorkspace() {
           action: editor.resetSelectionStyle
         }
       );
+      if (assetFamilyId) {
+        actions.push({
+          label: assetIsFavorite ? "Remove from favorites" : "Add to favorites",
+          icon: <Heart size={15} fill={assetIsFavorite ? "currentColor" : "none"} />,
+          action: () => {
+            toggleAssetFavorite(assetFamilyId);
+          }
+        });
+      }
     }
     actions.push(
       {
