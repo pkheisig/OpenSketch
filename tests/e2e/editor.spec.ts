@@ -2994,8 +2994,20 @@ test("fills the asset sidebar with the merged scientific catalog", async ({ page
   expect(dimensions.scrollHeight).toBeGreaterThan(dimensions.clientHeight);
 
   const firstAsset = page.locator(".asset-card").first();
-  await expect(page.locator(".asset-info")).toHaveCount(0);
-  await expect(page.getByRole("button", { name: /^About / })).toHaveCount(0);
+  const sourceTrigger = firstAsset.getByRole("button", { name: /^Show source for / });
+  await expect(sourceTrigger).toHaveCSS("opacity", "0");
+  await firstAsset.hover();
+  await expect(sourceTrigger).toHaveCSS("opacity", "1");
+  await sourceTrigger.hover();
+  const sourcePopover = firstAsset.locator(".asset-source-popover");
+  await expect(sourcePopover).toBeVisible();
+  await expect(sourcePopover.locator(".asset-source-kicker")).toHaveText("Source");
+  await expect(sourcePopover.locator("strong")).toHaveText(/.+/);
+  await expect(sourcePopover.locator(".asset-source-license")).toHaveText(/.+/);
+  await expect(sourcePopover.getByRole("link", { name: /View source/ })).toHaveAttribute(
+    "href",
+    /^https?:\/\//
+  );
   await expect(firstAsset.locator(".asset-card-image")).toHaveCSS(
     "background-color",
     "rgb(255, 255, 255)"
@@ -3034,6 +3046,41 @@ test("fills the asset sidebar with the merged scientific catalog", async ({ page
     list.dispatchEvent(new Event("scroll"));
   });
   await expect(page.locator(".asset-card").last()).toBeVisible();
+});
+
+test("reveals asset filters and filters catalog metadata", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+
+  const filterToggle = page.getByRole("button", { name: "Toggle asset filters" });
+  await expect(filterToggle).toHaveAttribute("aria-expanded", "false");
+  await filterToggle.click();
+
+  const filterPanel = page.getByRole("region", { name: "Asset filters" });
+  await expect(filterPanel).toBeVisible();
+  for (const label of ["Filter by source", "Filter by license", "Filter by variants"]) {
+    await expect(filterPanel.getByRole("combobox", { name: label })).toBeVisible();
+  }
+
+  const search = page.getByPlaceholder("Search cells, proteins, equipment…");
+  await search.fill("Neuron with dendritic spines");
+  await selectUiOption(page, "Filter by source", "SciDraw");
+  const neuron = page.locator(".asset-card").filter({ hasText: "Neuron with dendritic spines" });
+  await expect(neuron).toBeVisible();
+  await neuron.hover();
+  await neuron
+    .getByRole("button", { name: "Show source for Neuron with dendritic spines" })
+    .hover();
+  await expect(neuron.locator(".asset-source-popover")).toContainText("SciDraw");
+
+  await selectUiOption(page, "Filter by license", "Public Domain");
+  await expect(page.getByRole("heading", { name: "No match", exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Clear asset filters" }).click();
+  await expect(neuron).toBeVisible();
+
+  await search.fill("Eosinophil");
+  await selectUiOption(page, "Filter by variants", "Multiple variants");
+  await expect(page.locator(".asset-card").filter({ hasText: "Eosinophil" }).first()).toBeVisible();
 });
 
 test("rapidly scrolls the complete symbols catalog without leaving blank thumbnails", async ({
@@ -3320,11 +3367,9 @@ test("renders and persists complex NIH illustrations without losing their colors
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("dendritic");
-  const dendriticCell = page
-    .locator(".asset-card")
-    .filter({ hasText: "Dendritic Cell" })
-    .filter({ hasText: "Source: NIAID Visual & Medical Arts" })
-    .first();
+  await page.getByRole("button", { name: "Toggle asset filters" }).click();
+  await selectUiOption(page, "Filter by source", "NIAID Visual & Medical Arts");
+  const dendriticCell = page.locator(".asset-card").filter({ hasText: "Dendritic Cell" }).first();
   await expect(dendriticCell).toBeVisible();
   const insert = dendriticCell.locator(".asset-card-image");
   await insert.click();

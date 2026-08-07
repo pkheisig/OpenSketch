@@ -11,9 +11,11 @@ import { FixedSizeList as List, type ListChildComponentProps } from "react-windo
 import {
   ArrowRight,
   Edit3,
+  ExternalLink,
   FileInput,
   Heart,
   ImagePlus,
+  Info,
   Search,
   Shapes,
   SlidersHorizontal,
@@ -80,6 +82,9 @@ type CreationDefaultsSection = "text" | "shape" | "line";
 const CREATION_DEFAULTS_DISCLOSURE_STORAGE_KEY = "OpenSketch:creation-defaults-disclosures";
 const FAVORITES_STORAGE_KEY = "OpenSketch:favorites";
 const RECENT_ASSETS_STORAGE_KEY = "OpenSketch:recent-assets";
+const ALL_ASSET_FILTER_VALUE = "__all__";
+const SINGLE_VARIANT_FILTER_VALUE = "single";
+const MULTIPLE_VARIANT_FILTER_VALUE = "multiple";
 const DEFAULT_CREATION_DEFAULTS_DISCLOSURES: Record<CreationDefaultsSection, boolean> = {
   text: true,
   shape: true,
@@ -100,6 +105,32 @@ function loadCreationDefaultsDisclosures(): Record<CreationDefaultsSection, bool
     return DEFAULT_CREATION_DEFAULTS_DISCLOSURES;
   }
 }
+
+function assetSourceLabel(family: AssetFamily): string {
+  return family.sourceName ?? family.author;
+}
+
+function assetSourcePage(family: AssetFamily): string {
+  return family.sourcePage ?? family.commonsPage ?? family.nihSourcePage ?? "";
+}
+
+function assetFilterOptions(values: string[], allLabel: string) {
+  return [
+    { value: ALL_ASSET_FILTER_VALUE, label: allLabel },
+    ...[...new Set(values)]
+      .sort((left, right) => left.localeCompare(right))
+      .map((value) => ({
+        value,
+        label: value
+      }))
+  ];
+}
+
+const ASSET_VARIANT_OPTIONS = [
+  { value: ALL_ASSET_FILTER_VALUE, label: "Any variants" },
+  { value: SINGLE_VARIANT_FILTER_VALUE, label: "Single variant" },
+  { value: MULTIPLE_VARIANT_FILTER_VALUE, label: "Multiple variants" }
+] as const;
 
 const SHAPE_GROUPS = {
   basic: [
@@ -691,24 +722,51 @@ function AssetsPanel({
   const [assetError, setAssetError] = useState("");
   const [assetListHeight, setAssetListHeight] = useState(0);
   const [savedStyles, setSavedStyles] = useState<SavedElementStyles>(loadSavedElementStyles);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [sourceFilter, setSourceFilter] = useState(ALL_ASSET_FILTER_VALUE);
+  const [licenseFilter, setLicenseFilter] = useState(ALL_ASSET_FILTER_VALUE);
+  const [variantFilter, setVariantFilter] = useState(ALL_ASSET_FILTER_VALUE);
   const assetListRef = useRef<HTMLDivElement>(null);
+  const sourceOptions = useMemo(
+    () =>
+      assetFilterOptions(
+        assetManifest.families.map((family) => assetSourceLabel(family)),
+        "All sources"
+      ),
+    []
+  );
+  const licenseOptions = useMemo(
+    () =>
+      assetFilterOptions(
+        assetManifest.families.map((family) => family.license),
+        "All licenses"
+      ),
+    []
+  );
   const families = useMemo(() => {
     const matches = filterAssetFamilies(
       assetManifest.families,
       debouncedQuery,
       category === "Favorites" ? "All" : category
     );
+    const filtered = matches.filter((family) => {
+      const matchesSource =
+        sourceFilter === ALL_ASSET_FILTER_VALUE || assetSourceLabel(family) === sourceFilter;
+      const matchesLicense =
+        licenseFilter === ALL_ASSET_FILTER_VALUE || family.license === licenseFilter;
+      const matchesVariants =
+        variantFilter === ALL_ASSET_FILTER_VALUE ||
+        (variantFilter === SINGLE_VARIANT_FILTER_VALUE && family.variants.length === 1) ||
+        (variantFilter === MULTIPLE_VARIANT_FILTER_VALUE && family.variants.length > 1);
+      return matchesSource && matchesLicense && matchesVariants;
+    });
     return category === "Favorites"
-      ? matches.filter((family) => favorites.has(family.familyId))
-      : matches;
-  }, [category, debouncedQuery, favorites]);
-  const titleCounts = useMemo(() => {
-    const counts = new Map<string, number>();
-    for (const family of families) {
-      counts.set(family.title, (counts.get(family.title) ?? 0) + 1);
-    }
-    return counts;
-  }, [families]);
+      ? filtered.filter((family) => favorites.has(family.familyId))
+      : filtered;
+  }, [category, debouncedQuery, favorites, licenseFilter, sourceFilter, variantFilter]);
+  const activeFilterCount = [sourceFilter, licenseFilter, variantFilter].filter(
+    (value) => value !== ALL_ASSET_FILTER_VALUE
+  ).length;
   useEffect(() => {
     const timeout = window.setTimeout(() => setDebouncedQuery(query), 160);
     return () => window.clearTimeout(timeout);
@@ -775,7 +833,6 @@ function AssetsPanel({
             variant={variant}
             savedStyle={savedStyles[`asset:${variant.id}`]}
             favorite={favorites.has(family.familyId)}
-            duplicateTitle={(titleCounts.get(family.title) ?? 0) > 1}
             onFavorite={() => toggleFavorite(family.familyId)}
             onInsert={() => insert(family, variant)}
             onVariant={(variantId) => saveAssetVariantDefault(family.familyId, variantId)}
@@ -808,24 +865,88 @@ function AssetsPanel({
 
   return (
     <div className="assets-panel">
-      <label className="search-box">
-        <Search size={16} />
-        <input
-          ref={searchInputRef}
-          value={query}
-          onChange={(event) => {
-            const nextQuery = event.target.value;
-            onQueryChange(nextQuery);
-            if (nextQuery && category === "Favorites") onCategoryChange("All");
-          }}
-          placeholder="Search cells, proteins, equipment…"
-        />
-        {query && (
-          <button onClick={() => onQueryChange("")} aria-label="Clear search">
-            <X size={14} />
-          </button>
-        )}
-      </label>
+      <div className="asset-search-row">
+        <label className="search-box">
+          <Search size={16} />
+          <input
+            ref={searchInputRef}
+            value={query}
+            onChange={(event) => {
+              const nextQuery = event.target.value;
+              onQueryChange(nextQuery);
+              if (nextQuery && category === "Favorites") onCategoryChange("All");
+            }}
+            placeholder="Search cells, proteins, equipment…"
+          />
+          {query && (
+            <button type="button" onClick={() => onQueryChange("")} aria-label="Clear search">
+              <X size={14} />
+            </button>
+          )}
+        </label>
+        <button
+          type="button"
+          className={`asset-filter-toggle${filtersOpen ? " active" : ""}`}
+          aria-label="Toggle asset filters"
+          aria-expanded={filtersOpen}
+          title="Filter assets"
+          onClick={() => setFiltersOpen((open) => !open)}
+        >
+          <SlidersHorizontal size={15} aria-hidden="true" />
+          <span>Filter</span>
+          {activeFilterCount > 0 ? (
+            <span className="asset-filter-count" aria-label={`${activeFilterCount} active filters`}>
+              {activeFilterCount}
+            </span>
+          ) : null}
+        </button>
+      </div>
+      {filtersOpen ? (
+        <div className="asset-filter-panel" role="region" aria-label="Asset filters">
+          <div className="asset-filter-heading">
+            <strong>Refine assets</strong>
+            {activeFilterCount > 0 ? (
+              <button
+                type="button"
+                className="asset-filter-clear"
+                aria-label="Clear asset filters"
+                onClick={() => {
+                  setSourceFilter(ALL_ASSET_FILTER_VALUE);
+                  setLicenseFilter(ALL_ASSET_FILTER_VALUE);
+                  setVariantFilter(ALL_ASSET_FILTER_VALUE);
+                }}
+              >
+                Clear
+              </button>
+            ) : (
+              <span>Source, license, or variants</span>
+            )}
+          </div>
+          <div className="asset-filter-grid">
+            <UiSelect
+              value={sourceFilter}
+              options={sourceOptions}
+              onChange={setSourceFilter}
+              label="Source"
+              ariaLabel="Filter by source"
+            />
+            <UiSelect
+              value={licenseFilter}
+              options={licenseOptions}
+              onChange={setLicenseFilter}
+              label="License"
+              ariaLabel="Filter by license"
+            />
+            <UiSelect
+              value={variantFilter}
+              options={ASSET_VARIANT_OPTIONS}
+              onChange={setVariantFilter}
+              label="Variants"
+              ariaLabel="Filter by variants"
+            />
+          </div>
+        </div>
+      ) : null}
       <div className="category-strip" role="list" aria-label="Asset categories">
         {["Favorites", ...ASSET_CATEGORIES].map((item) => (
           <button
@@ -901,7 +1022,6 @@ function AssetCard({
   variant,
   savedStyle,
   favorite,
-  duplicateTitle,
   onFavorite,
   onInsert,
   onVariant
@@ -910,12 +1030,12 @@ function AssetCard({
   variant: AssetVariant;
   savedStyle?: ElementStyleSnapshot;
   favorite: boolean;
-  duplicateTitle: boolean;
   onFavorite: () => void;
   onInsert: () => void;
   onVariant: (id: string) => void;
 }) {
-  const sourceLabel = family.sourceName ?? family.author;
+  const sourceLabel = assetSourceLabel(family);
+  const sourcePage = assetSourcePage(family);
   const sourceId = `asset-source-${family.familyId}`;
   const onDragStart = (event: DragEvent) => {
     const storedVariantId = loadAssetVariantDefaults()[family.familyId];
@@ -934,7 +1054,7 @@ function AssetCard({
         className="asset-card-image"
         onClick={onInsert}
         aria-label={`Insert ${family.title}`}
-        aria-describedby={duplicateTitle ? sourceId : undefined}
+        aria-describedby={sourceId}
       >
         <AssetPreviewImage
           assetPath={variant.assetPath}
@@ -945,6 +1065,31 @@ function AssetCard({
       <button className="asset-favorite" onClick={onFavorite} aria-label="Toggle favorite">
         <Heart size={14} fill={favorite ? "currentColor" : "none"} />
       </button>
+      <div className="asset-source-control">
+        <button
+          type="button"
+          className="asset-source-trigger"
+          aria-label={`Show source for ${family.title}`}
+          aria-controls={sourceId}
+          title="Show source information"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <Info size={14} aria-hidden="true" />
+        </button>
+        <div id={sourceId} className="asset-source-popover" role="tooltip">
+          <span className="asset-source-kicker">Source</span>
+          <strong>{sourceLabel}</strong>
+          {family.sourceName && family.author !== family.sourceName ? (
+            <span>By {family.author}</span>
+          ) : null}
+          <span className="asset-source-license">{family.license}</span>
+          {sourcePage ? (
+            <a href={sourcePage} target="_blank" rel="noreferrer">
+              View source <ExternalLink size={11} aria-hidden="true" />
+            </a>
+          ) : null}
+        </div>
+      </div>
       <div className="asset-card-copy">
         <strong title={family.title}>{family.title}</strong>
         {family.variants.length > 1 ? (
@@ -952,9 +1097,6 @@ function AssetCard({
         ) : (
           <small>{family.category}</small>
         )}
-        <small id={sourceId} className="asset-card-source" title={`Source: ${sourceLabel}`}>
-          Source: {sourceLabel}
-        </small>
       </div>
     </article>
   );
