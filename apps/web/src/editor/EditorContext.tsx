@@ -54,6 +54,7 @@ import {
   normalizedPresetColor,
   presetColorMap
 } from "@/editor/assetColorPresets";
+import { saveAssetVariantDefault } from "@/editor/assetVariantDefaults";
 import {
   anchorPoint,
   applySnapResistance,
@@ -2644,6 +2645,9 @@ export function EditorProvider({
       [key]: captureElementStyle(target)
     };
     persistSavedElementStyles(savedElementStyles.current);
+    if (target.OpenSketchType === "nih-asset" && target.familyId && target.assetId) {
+      saveAssetVariantDefault(target.familyId, target.assetId);
+    }
   }, [canvas]);
 
   const resetSelectionStyle = useCallback(() => {

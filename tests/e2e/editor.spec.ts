@@ -1401,7 +1401,57 @@ test("previews bundled variants and inserts nested-clip-path assets", async ({ p
     .filter({ has: page.locator("strong").filter({ hasText: /^Immune Cell$/ }) });
   await expect(
     newProjectImmuneCell.getByRole("combobox", { name: "Immune Cell variant" })
-  ).toHaveText("Variant 3");
+  ).toHaveText("Variant 2");
+});
+
+test("promotes a canvas asset variant to the Assets default only when styling is saved", async ({
+  page
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Immune Cell");
+  const assetCard = page
+    .locator(".asset-card")
+    .filter({ has: page.locator("strong").filter({ hasText: /^Immune Cell$/ }) });
+  await expect(assetCard).toBeVisible();
+
+  await assetCard.getByRole("combobox", { name: "Immune Cell variant" }).click();
+  await page
+    .getByRole("listbox", { name: "Immune Cell variants" })
+    .getByRole("option", { name: "Select Immune Cell variant 2" })
+    .click();
+  await expect(assetCard.getByRole("combobox", { name: "Immune Cell variant" })).toHaveText(
+    "Variant 2"
+  );
+  await assetCard.getByRole("button", { name: "Insert Immune Cell" }).click();
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  const inspectorVariants = page
+    .locator(".inspector-embedded")
+    .getByRole("listbox", { name: "Immune Cell variants" });
+  await inspectorVariants.getByRole("option", { name: "Select Immune Cell variant 3" }).click();
+  await expect(
+    inspectorVariants.getByRole("option", { name: "Select Immune Cell variant 3" })
+  ).toHaveAttribute("aria-selected", "true");
+
+  await page.getByRole("tab", { name: "Assets", exact: true }).click();
+  await expect(assetCard.getByRole("combobox", { name: "Immune Cell variant" })).toHaveText(
+    "Variant 2"
+  );
+
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  const artworkCenter = await renderedArtworkCenter(page);
+  await page.mouse.click(artworkCenter.x, artworkCenter.y, { button: "right" });
+  await page
+    .getByRole("menu", { name: "Immune Cell actions" })
+    .getByRole("menuitem", { name: "Save styling" })
+    .click();
+
+  await page.getByRole("tab", { name: "Assets", exact: true }).click();
+  await expect(assetCard.getByRole("combobox", { name: "Immune Cell variant" })).toHaveText(
+    "Variant 3"
+  );
 });
 
 const bioArtManifest = JSON.parse(

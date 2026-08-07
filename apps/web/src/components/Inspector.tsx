@@ -33,7 +33,6 @@ import {
 } from "@workspace/editor-core";
 import { Color, FabricObject, Group as FabricGroup, Text } from "fabric";
 import { assetManifest } from "@/assets/manifest";
-import { saveAssetVariantDefault } from "@/editor/assetVariantDefaults";
 import { useEditor } from "@/editor/EditorContext";
 import { TEXT_FONT_FAMILIES } from "@/editor/fonts";
 import { isManualGroup } from "@/editor/grouping";
@@ -199,7 +198,6 @@ function ObjectInspector({ object }: { object: FabricObject }) {
                 family={assetFamily}
                 value={object.assetId}
                 onChange={(variantId) => {
-                  saveAssetVariantDefault(assetFamily.familyId, variantId);
                   void editor.setAssetVariant(variantId);
                 }}
               />
