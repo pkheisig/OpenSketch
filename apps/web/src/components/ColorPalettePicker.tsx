@@ -262,6 +262,10 @@ export function ColorPalettePicker({
     const target = axis === "hue" ? hueRef.current : spectrumRef.current;
     if (!target) return;
     const bounds = target.getBoundingClientRect();
+    if (!Number.isFinite(clientX) || !Number.isFinite(clientY)) {
+      if (commit) updateSpectrumValue(hsvRef.current, true);
+      return;
+    }
     const xRatio = clamp((clientX - bounds.left) / Math.max(bounds.width, 1), 0, 1);
     const yRatio = clamp((clientY - bounds.top) / Math.max(bounds.height, 1), 0, 1);
     const current = hsvRef.current;

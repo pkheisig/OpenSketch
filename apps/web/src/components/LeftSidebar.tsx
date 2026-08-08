@@ -12,6 +12,7 @@ import { FixedSizeList as List, type ListChildComponentProps } from "react-windo
 import { createPortal } from "react-dom";
 import {
   ArrowRight,
+  Bookmark,
   Edit3,
   ExternalLink,
   FileInput,
@@ -22,6 +23,7 @@ import {
   Shapes,
   SlidersHorizontal,
   Sparkles,
+  Trash2,
   Type,
   X
 } from "lucide-react";
@@ -70,6 +72,13 @@ import {
   setImportedMediaDragPayload
 } from "@/editor/assetDrag";
 import { loadStringList, saveStringList } from "@/editor/stringListStorage";
+import {
+  ASSET_TEMPLATES_CHANGED_EVENT,
+  deleteAssetTemplate,
+  loadAssetTemplates,
+  setTemplateDragPayload,
+  type AssetTemplate
+} from "@/editor/assetTemplates";
 import {
   ASSET_VARIANT_DEFAULTS_CHANGED_EVENT,
   loadAssetVariantDefaults,
@@ -829,6 +838,7 @@ function AssetsPanel({
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [variants, setVariants] = useState(loadAssetVariantDefaults);
   const [favorites, setFavorites] = useState<Set<string>>(loadAssetFavorites);
+  const [templates, setTemplates] = useState<AssetTemplate[]>(loadAssetTemplates);
   const [recent, setRecent] = useState<string[]>(() => loadStringList(RECENT_ASSETS_STORAGE_KEY));
   const [assetError, setAssetError] = useState("");
   const [assetListHeight, setAssetListHeight] = useState(0);
@@ -843,6 +853,7 @@ function AssetsPanel({
     [assetManifest.families]
   );
   const families = useMemo(() => {
+    if (category === "Templates") return [];
     const matches = filterAssetFamilies(
       assetManifest.families,
       debouncedQuery,
@@ -861,6 +872,12 @@ function AssetsPanel({
       ? filtered.filter((family) => favorites.has(family.familyId))
       : filtered;
   }, [assetManifest.families, category, debouncedQuery, favorites, sourceFilter, variantFilter]);
+  const matchingTemplates = useMemo(() => {
+    const normalizedQuery = debouncedQuery.trim().toLowerCase();
+    return normalizedQuery
+      ? templates.filter((template) => template.name.toLowerCase().includes(normalizedQuery))
+      : templates;
+  }, [debouncedQuery, templates]);
   const activeFilterCount = [sourceFilter, variantFilter].filter(
     (value) => value !== ALL_ASSET_FILTER_VALUE
   ).length;
@@ -882,6 +899,11 @@ function AssetsPanel({
     const updateFavorites = () => setFavorites(loadAssetFavorites());
     window.addEventListener(ASSET_FAVORITES_CHANGED_EVENT, updateFavorites);
     return () => window.removeEventListener(ASSET_FAVORITES_CHANGED_EVENT, updateFavorites);
+  }, []);
+  useEffect(() => {
+    const updateTemplates = () => setTemplates(loadAssetTemplates());
+    window.addEventListener(ASSET_TEMPLATES_CHANGED_EVENT, updateTemplates);
+    return () => window.removeEventListener(ASSET_TEMPLATES_CHANGED_EVENT, updateTemplates);
   }, []);
   useEffect(() => {
     const updateVariants = () => setVariants(loadAssetVariantDefaults());
@@ -921,6 +943,13 @@ function AssetsPanel({
     setAssetError("");
     void editor
       .addAsset(family, variant)
+      .catch((reason) => setAssetError(String(reason).replace(/^Error:\s*/, "")));
+  };
+
+  const insertTemplate = (template: AssetTemplate) => {
+    setAssetError("");
+    void editor
+      .addTemplate(template)
       .catch((reason) => setAssetError(String(reason).replace(/^Error:\s*/, "")));
   };
 
@@ -988,24 +1017,32 @@ function AssetsPanel({
             </button>
           )}
         </label>
-        <button
-          type="button"
-          className={`asset-filter-toggle${filtersOpen ? " active" : ""}`}
-          aria-label="Toggle asset filters"
-          aria-expanded={filtersOpen}
-          title="Filter assets"
-          onClick={() => onFiltersOpenChange(!filtersOpen)}
-        >
-          <SlidersHorizontal size={15} aria-hidden="true" />
-          <span>Filter</span>
-          {activeFilterCount > 0 ? (
-            <span className="asset-filter-count" aria-label={`${activeFilterCount} active filters`}>
-              {activeFilterCount}
-            </span>
-          ) : null}
-        </button>
+        {category !== "Templates" ? (
+          <button
+            type="button"
+            className={`asset-filter-toggle${filtersOpen ? " active" : ""}`}
+            aria-label="Toggle asset filters"
+            aria-expanded={filtersOpen}
+            title="Filter assets"
+            onClick={() => onFiltersOpenChange(!filtersOpen)}
+          >
+            <SlidersHorizontal size={15} aria-hidden="true" />
+            <span>Filter</span>
+            {activeFilterCount > 0 ? (
+              <span
+                className="asset-filter-count"
+                aria-label={`${activeFilterCount} active filters`}
+              >
+                {activeFilterCount}
+              </span>
+            ) : null}
+          </button>
+        ) : null}
       </div>
-      <MotionCollapse open={filtersOpen} className="asset-filter-collapse">
+      <MotionCollapse
+        open={filtersOpen && category !== "Templates"}
+        className="asset-filter-collapse"
+      >
         <div className="asset-filter-panel" role="region" aria-label="Asset filters">
           <div className="asset-filter-heading">
             <strong>Refine assets</strong>
@@ -1044,13 +1081,14 @@ function AssetsPanel({
         </div>
       </MotionCollapse>
       <div className="category-strip" role="list" aria-label="Asset categories">
-        {["Favorites", ...ASSET_CATEGORIES].map((item) => (
+        {["Favorites", "Templates", ...ASSET_CATEGORIES].map((item) => (
           <button
             key={item}
             className={category === item ? "active" : ""}
             onClick={() => onCategoryChange(item)}
           >
             {item === "Favorites" ? <Heart size={14} aria-hidden="true" /> : null}
+            {item === "Templates" ? <Bookmark size={14} aria-hidden="true" /> : null}
             {item}
           </button>
         ))}
@@ -1060,7 +1098,7 @@ function AssetsPanel({
           {assetError}
         </p>
       ) : null}
-      {!query && category !== "Favorites" && recent.length > 0 && (
+      {!query && category !== "Favorites" && category !== "Templates" && recent.length > 0 && (
         <div className="recent-assets" aria-label="Recent assets">
           <span>Recent</span>
           {recent
@@ -1074,7 +1112,30 @@ function AssetsPanel({
             ))}
         </div>
       )}
-      {families.length ? (
+      {category === "Templates" ? (
+        matchingTemplates.length > 0 ? (
+          <div className="asset-list-shell template-list-shell">
+            <div className="template-grid" aria-label="Saved templates">
+              {matchingTemplates.map((template) => (
+                <TemplateCard
+                  key={template.id}
+                  template={template}
+                  onInsert={() => insertTemplate(template)}
+                  onDelete={() => deleteAssetTemplate(template.id)}
+                  onAssetDragStart={onAssetDragStart}
+                  onAssetDragEnd={onAssetDragEnd}
+                />
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="empty-library">
+            <Bookmark size={23} />
+            <h3>{templates.length ? "No template match" : "No templates yet"}</h3>
+            <p>Right-click a group on the canvas to save it here.</p>
+          </div>
+        )
+      ) : families.length ? (
         <div
           ref={assetListRef}
           className="asset-list-shell"
@@ -1110,6 +1171,65 @@ function AssetsPanel({
         </div>
       )}
     </div>
+  );
+}
+
+function TemplateCard({
+  template,
+  onInsert,
+  onDelete,
+  onAssetDragStart,
+  onAssetDragEnd
+}: {
+  template: AssetTemplate;
+  onInsert: () => void;
+  onDelete: () => void;
+  onAssetDragStart: () => void;
+  onAssetDragEnd: () => void;
+}) {
+  return (
+    <article
+      className="asset-card template-card"
+      draggable
+      onDragStart={(event) => {
+        onAssetDragStart();
+        setTemplateDragPayload(event.dataTransfer, template.id);
+        setAssetDragImage(
+          event.dataTransfer,
+          event.currentTarget.querySelector<HTMLImageElement>(".asset-card-image img"),
+          event
+        );
+      }}
+      onDragEnd={onAssetDragEnd}
+    >
+      <button
+        className="asset-card-image template-card-image"
+        onClick={onInsert}
+        aria-label={`Insert ${template.name}`}
+      >
+        {template.thumbnail ? (
+          <img src={template.thumbnail} alt="" draggable={false} />
+        ) : (
+          <Bookmark size={28} aria-hidden="true" />
+        )}
+      </button>
+      <button
+        type="button"
+        className="template-delete"
+        onClick={(event) => {
+          event.stopPropagation();
+          onDelete();
+        }}
+        aria-label={`Delete ${template.name}`}
+        title="Delete template"
+      >
+        <Trash2 size={14} aria-hidden="true" />
+      </button>
+      <div className="asset-card-copy">
+        <strong title={template.name}>{template.name}</strong>
+        <small>Saved group</small>
+      </div>
+    </article>
   );
 }
 

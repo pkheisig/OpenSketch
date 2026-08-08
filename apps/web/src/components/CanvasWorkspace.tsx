@@ -19,6 +19,7 @@ import {
   AlignLeft,
   AlignRight,
   AlignVerticalDistributeCenter,
+  BookmarkPlus,
   ChevronDown,
   Clipboard,
   Copy,
@@ -78,6 +79,7 @@ import {
 } from "@/editor/creationDrag";
 import { elementStyleKey } from "@/editor/elementStyles";
 import { loadAssetFavorites, toggleAssetFavorite } from "@/editor/assetFavorites";
+import { loadAssetTemplates, TEMPLATE_DRAG_TYPE } from "@/editor/assetTemplates";
 import { CURSOR_GRABBING } from "@/editor/cursors";
 import { importedMediaFilesFromDataTransfer } from "@/editor/clipboardImport";
 import type { Point } from "@/editor/geometry";
@@ -678,6 +680,12 @@ export function CanvasWorkspace() {
       });
       return;
     }
+    const templateId = event.dataTransfer.getData(TEMPLATE_DRAG_TYPE);
+    if (templateId) {
+      const template = loadAssetTemplates().find((item) => item.id === templateId);
+      if (template) void editor.addTemplate(template, point);
+      return;
+    }
     const files = importedMediaFilesFromDataTransfer(event.dataTransfer);
     if (files.length > 0) {
       void Promise.allSettled(
@@ -1002,12 +1010,19 @@ export function CanvasWorkspace() {
         separatorBefore: true
       });
     } else if (isManualGroup(objects[0])) {
-      actions.push({
-        label: "Ungroup",
-        icon: <Ungroup size={15} />,
-        action: editor.ungroupSelection,
-        separatorBefore: true
-      });
+      actions.push(
+        {
+          label: "Ungroup",
+          icon: <Ungroup size={15} />,
+          action: editor.ungroupSelection,
+          separatorBefore: true
+        },
+        {
+          label: "Save to templates",
+          icon: <BookmarkPlus size={15} />,
+          action: () => void editor.saveSelectionAsTemplate()
+        }
+      );
     }
     if (styleable) {
       actions.push(
@@ -1089,6 +1104,7 @@ export function CanvasWorkspace() {
           event.dataTransfer.types.includes(CONNECTOR_PRESET_DRAG_TYPE) ||
           event.dataTransfer.types.includes(SHAPE_PRESET_DRAG_TYPE) ||
           event.dataTransfer.types.includes(IMPORTED_MEDIA_DRAG_TYPE) ||
+          event.dataTransfer.types.includes(TEMPLATE_DRAG_TYPE) ||
           event.dataTransfer.types.includes("Files")
         ) {
           event.preventDefault();

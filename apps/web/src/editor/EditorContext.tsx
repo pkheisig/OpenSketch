@@ -22,6 +22,7 @@ import {
   Point as FabricPoint,
   Polygon,
   Rect,
+  StaticCanvas,
   Textbox,
   Triangle,
   cache,
@@ -107,6 +108,7 @@ import {
   type SelectionClipboardFormat,
   writeSelectionToSystemClipboard
 } from "@/editor/selectionClipboard";
+import { saveAssetTemplate, type AssetTemplate } from "@/editor/assetTemplates";
 import {
   clipboardContainsSelectionMarker,
   importedMediaFilesFromClipboard
@@ -317,11 +319,13 @@ interface EditorContextValue {
   placeCreationTool: (tool: CreationTool, point: Point, endPoint?: Point) => void;
   placeCreation: (point: Point, endPoint?: Point) => void;
   addAsset: (family: AssetFamily, variant: AssetVariant, point?: Point) => Promise<void>;
+  addTemplate: (template: AssetTemplate, point?: Point) => Promise<void>;
   setAssetVariant: (variantId: string) => Promise<void>;
   addImportedMedia: (media: ImportedMediaRecord, point?: Point) => Promise<void>;
   importMedia: (file: File, point?: Point) => Promise<ImportedMediaRecord>;
   deleteSelection: () => void;
   duplicateSelection: () => Promise<void>;
+  saveSelectionAsTemplate: () => Promise<void>;
   copySelectionToClipboard: (format?: SelectionClipboardFormat, cut?: boolean) => Promise<void>;
   pasteSelection: () => Promise<void>;
   groupSelection: () => void;
@@ -477,8 +481,26 @@ function configureCanvasAssets(objects: FabricObject[]): void {
 }
 
 function assignFreshCloneIds(object: FabricObject): void {
-  object.objectId = crypto.randomUUID();
-  if (object instanceof Group) object.getObjects().forEach(assignFreshCloneIds);
+  const ids = new Map<string, string>();
+  const collect = (current: FabricObject) => {
+    if (current.objectId) ids.set(current.objectId, crypto.randomUUID());
+    if (current instanceof Group) current.getObjects().forEach(collect);
+  };
+  const apply = (current: FabricObject) => {
+    current.objectId = current.objectId
+      ? (ids.get(current.objectId) ?? crypto.randomUUID())
+      : crypto.randomUUID();
+    if (current.connector) {
+      current.connector = {
+        ...current.connector,
+        fromObjectId: ids.get(current.connector.fromObjectId) ?? current.connector.fromObjectId,
+        toObjectId: ids.get(current.connector.toObjectId) ?? current.connector.toObjectId
+      };
+    }
+    if (current instanceof Group) current.getObjects().forEach(apply);
+  };
+  collect(object);
+  apply(object);
 }
 
 function hitObjectsAtLevel(
@@ -541,6 +563,40 @@ function refreshParentGroups(object: FabricObject | undefined): void {
 function groupSvgElements(objects: FabricObject[], options: Record<string, unknown>): Group {
   const grouped = util.groupSVGElements(objects, options);
   return grouped instanceof Group ? grouped : new Group([grouped]);
+}
+
+const TEMPLATE_PREVIEW_WIDTH = 320;
+const TEMPLATE_PREVIEW_HEIGHT = 220;
+const TEMPLATE_PREVIEW_PADDING = 28;
+
+async function renderTemplateThumbnail(object: FabricObject): Promise<string> {
+  const previewObject = await object.clone();
+  const bounds = previewObject.getBoundingRect();
+  const scale = Math.min(
+    (TEMPLATE_PREVIEW_WIDTH - TEMPLATE_PREVIEW_PADDING * 2) / Math.max(bounds.width, 1),
+    (TEMPLATE_PREVIEW_HEIGHT - TEMPLATE_PREVIEW_PADDING * 2) / Math.max(bounds.height, 1)
+  );
+  previewObject.set({
+    left: TEMPLATE_PREVIEW_WIDTH / 2,
+    top: TEMPLATE_PREVIEW_HEIGHT / 2,
+    originX: "center",
+    originY: "center",
+    scaleX: (previewObject.scaleX ?? 1) * scale,
+    scaleY: (previewObject.scaleY ?? 1) * scale
+  });
+  previewObject.setCoords();
+
+  const previewCanvas = new StaticCanvas(undefined, {
+    width: TEMPLATE_PREVIEW_WIDTH,
+    height: TEMPLATE_PREVIEW_HEIGHT,
+    enableRetinaScaling: false,
+    renderOnAddRemove: false
+  });
+  previewCanvas.add(previewObject);
+  previewCanvas.renderAll();
+  const thumbnail = previewCanvas.toDataURL({ format: "png", multiplier: 1 });
+  previewCanvas.dispose();
+  return thumbnail;
 }
 
 function refreshTextMetrics(objects: FabricObject[]): void {
@@ -1323,9 +1379,11 @@ export function EditorProvider({
       const scenePoint = canvas.getScenePoint(event);
       const currentEditingGroup = editingGroupRef.current;
       if (currentEditingGroup) {
-        const selected = (isAtomicSvgAsset(editingGroupPathRef.current[0])
-          ? svgEditHitObjectsAtLevel(canvas, currentEditingGroup.getObjects(), scenePoint)
-          : hitObjectsAtLevel(canvas, currentEditingGroup.getObjects(), scenePoint))[0];
+        const selected = (
+          isAtomicSvgAsset(editingGroupPathRef.current[0])
+            ? svgEditHitObjectsAtLevel(canvas, currentEditingGroup.getObjects(), scenePoint)
+            : hitObjectsAtLevel(canvas, currentEditingGroup.getObjects(), scenePoint)
+        )[0];
         if (!selected) {
           event.preventDefault();
           event.stopImmediatePropagation();
@@ -1341,12 +1399,11 @@ export function EditorProvider({
               .filter((object) => directNestedParent(object) === currentEditingGroup)
           : [];
         const addsToSelection = additiveModifier && !currentObjects.includes(selected);
-        const objects =
-          addsToSelection
-            ? [...currentObjects, selected]
-            : additiveModifier
-              ? currentObjects
-              : [selected];
+        const objects = addsToSelection
+          ? [...currentObjects, selected]
+          : additiveModifier
+            ? currentObjects
+            : [selected];
         canvas.discardActiveObject();
         if (objects.length > 1) {
           const activeSelection = new ActiveSelection(objects, { canvas });
@@ -2243,6 +2300,24 @@ export function EditorProvider({
     [addObject, canvas]
   );
 
+  const addTemplate = useCallback(
+    (template: AssetTemplate, point?: Point) => {
+      const operation = assetInsertQueue.current.then(async () => {
+        if (!canvas) return;
+        const [object] = (await util.enlivenObjects([
+          structuredClone(template.object)
+        ])) as FabricObject[];
+        if (!object) return;
+        assignFreshCloneIds(object);
+        configureCanvasAssets([object]);
+        addObject(object, template.name, "group", point);
+      });
+      assetInsertQueue.current = operation.catch(() => undefined);
+      return operation;
+    },
+    [addObject, canvas]
+  );
+
   const setAssetVariant = useCallback(
     (variantId: string) => {
       const operation = assetInsertQueue.current.then(async () => {
@@ -2454,6 +2529,35 @@ export function EditorProvider({
     commit("Delete");
   }, [canvas, commit]);
 
+  const saveSelectionAsTemplate = useCallback(async () => {
+    if (!canvas) return;
+    const activeObject = canvas.getActiveObject();
+    if (!isManualGroup(activeObject)) return;
+    const defaultName =
+      typeof activeObject.name === "string" && activeObject.name.trim()
+        ? activeObject.name.trim()
+        : "Group";
+    const name = window.prompt("Save group as template", defaultName)?.trim();
+    if (!name) return;
+
+    const snapshotObject = await activeObject.clone();
+    snapshotObject.set({ left: 0, top: 0, originX: "center", originY: "center" });
+    snapshotObject.setCoords();
+    let thumbnail = "";
+    try {
+      thumbnail = await renderTemplateThumbnail(activeObject);
+    } catch (reason) {
+      console.warn("Template preview could not be rendered; the template is still saved.", reason);
+    }
+    saveAssetTemplate({
+      id: crypto.randomUUID(),
+      name,
+      object: snapshotObject.toObject() as unknown as Record<string, unknown>,
+      thumbnail,
+      createdAt: new Date().toISOString()
+    });
+  }, [canvas]);
+
   const duplicateSelection = useCallback(async () => {
     if (!canvas) return;
     const selectedObjects = canvas.getActiveObjects();
@@ -2558,7 +2662,9 @@ export function EditorProvider({
     const selectedObjects = active.getObjects();
     if (selectedObjects.length < 2) return;
     const collection = layerCollectionForObject(selectedObjects[0], canvas);
-    if (!selectedObjects.every((object) => layerCollectionForObject(object, canvas) === collection)) {
+    if (
+      !selectedObjects.every((object) => layerCollectionForObject(object, canvas) === collection)
+    ) {
       return;
     }
     const objects = [...selectedObjects].sort(
@@ -3149,12 +3255,8 @@ export function EditorProvider({
       const data = event.clipboardData;
       if (!data) return;
       const targetIsTextInput =
-        event.target instanceof HTMLInputElement ||
-        event.target instanceof HTMLTextAreaElement;
-      if (
-        !targetIsTextInput &&
-        clipboardContainsSelectionMarker(data, clipboardMarker.current)
-      ) {
+        event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement;
+      if (!targetIsTextInput && clipboardContainsSelectionMarker(data, clipboardMarker.current)) {
         event.preventDefault();
         void pasteSelection();
         return;
@@ -3351,11 +3453,13 @@ export function EditorProvider({
       placeCreationTool,
       placeCreation,
       addAsset,
+      addTemplate,
       setAssetVariant,
       addImportedMedia,
       importMedia,
       deleteSelection,
       duplicateSelection,
+      saveSelectionAsTemplate,
       copySelectionToClipboard,
       pasteSelection,
       groupSelection,
@@ -3384,6 +3488,7 @@ export function EditorProvider({
     }),
     [
       addAsset,
+      addTemplate,
       addImportedMedia,
       setAssetVariant,
       creationDefaults,
@@ -3403,6 +3508,7 @@ export function EditorProvider({
       deleteSelection,
       distribute,
       duplicateSelection,
+      saveSelectionAsTemplate,
       exportPng,
       exportPdf,
       exportSvg,

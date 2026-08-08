@@ -1527,6 +1527,9 @@ a:focus-visible {
 }
 
 .category-strip button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   flex: none;
   padding: 5px 9px;
   border: 1px solid #d4d9d5;
@@ -1592,6 +1595,18 @@ a:focus-visible {
   flex: 1;
 }
 
+.template-list-shell {
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.template-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 0 3px 8px;
+}
+
 .asset-row {
   display: grid !important;
   grid-template-columns: 1fr 1fr;
@@ -1636,6 +1651,41 @@ a:focus-visible {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+}
+
+.template-card-image {
+  color: #3d7772;
+  background: linear-gradient(135deg, rgba(222, 241, 235, 0.9), rgba(247, 250, 246, 0.9)), #f5f8f4;
+}
+
+.template-delete {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: grid;
+  width: 25px;
+  height: 25px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid #d6ded9;
+  border-radius: 50%;
+  color: #526e6b;
+  background: rgba(255, 255, 255, 0.9);
+  opacity: 0;
+  transition:
+    opacity 120ms ease,
+    color 120ms ease,
+    background 120ms ease;
+}
+
+.template-card:hover .template-delete,
+.template-delete:focus-visible {
+  opacity: 1;
+}
+
+.template-delete:hover {
+  color: #8e2d28;
+  background: #f8e9e6;
 }
 
 .asset-favorite {
