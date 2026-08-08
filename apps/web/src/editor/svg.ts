@@ -1,4 +1,4 @@
-import { Group, loadSVGFromString, type FabricObject } from "fabric";
+import { Group, Shadow, loadSVGFromString, type FabricObject } from "fabric";
 
 const SVG_BLEND_MODES = new Set<GlobalCompositeOperation>([
   "multiply",
@@ -29,11 +29,133 @@ interface SvgHierarchyNode {
   groups: Map<string, SvgHierarchyNode>;
 }
 
-const SVG_GROUP_ATTRIBUTE = "data-opensketch-group";
+interface SvgFilterShadow {
+  blur: number;
+  offsetX: number;
+  offsetY: number;
+  color?: string;
+}
 
-function isSvgHierarchyNode(
-  value: SvgHierarchyNode | FabricObject
-): value is SvgHierarchyNode {
+const SVG_GROUP_ATTRIBUTE = "data-opensketch-group";
+const SVG_URL_REFERENCE = /url\(\s*["']?#([^"')]+)["']?\s*\)/i;
+
+function svgProperty(element: Element, property: string): string | null {
+  const attribute = element.getAttribute(property)?.trim();
+  if (attribute) return attribute;
+  const style = element.getAttribute("style");
+  if (!style) return null;
+  const declaration = style
+    .split(";")
+    .map((part) => part.trim())
+    .find((part) => part.split(":", 1)[0]?.trim().toLowerCase() === property.toLowerCase());
+  return declaration?.slice(declaration.indexOf(":") + 1).trim() || null;
+}
+
+function svgUrlReference(value: string | null): string | null {
+  return value?.match(SVG_URL_REFERENCE)?.[1] ?? null;
+}
+
+function finiteSvgNumber(value: string | null | undefined, fallback = 0): number {
+  const parsed = Number.parseFloat(value ?? "");
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function svgFilterBlur(filter: Element): number {
+  const blur = filter.querySelector("feGaussianBlur, feDropShadow");
+  if (!blur) return 0;
+  const deviations = (blur.getAttribute("stdDeviation") ?? "")
+    .trim()
+    .split(/[\s,]+/)
+    .map((value) => finiteSvgNumber(value))
+    .filter((value) => value > 0);
+  // Fabric's Shadow serializes blur as stdDeviation / 2. Doubling the SVG
+  // value here therefore preserves the source blur when the object is
+  // rendered on the Fabric canvas and when it is exported back to SVG.
+  return Math.max(...deviations, 0) * 2;
+}
+
+function svgFilterOffset(filter: Element): { offsetX: number; offsetY: number } {
+  const dropShadow = filter.querySelector("feDropShadow");
+  if (dropShadow) {
+    return {
+      offsetX: finiteSvgNumber(dropShadow.getAttribute("dx")),
+      offsetY: finiteSvgNumber(dropShadow.getAttribute("dy"))
+    };
+  }
+  const offset = filter.querySelector("feOffset");
+  return {
+    offsetX: finiteSvgNumber(offset?.getAttribute("dx")),
+    offsetY: finiteSvgNumber(offset?.getAttribute("dy"))
+  };
+}
+
+function colorWithOpacity(color: string, opacity: number): string {
+  if (opacity >= 1 || opacity < 0) return color;
+  const hex = color.match(/^#([0-9a-f]{3,8})$/i)?.[1];
+  if (!hex) return color;
+  const expanded =
+    hex.length === 3 || hex.length === 4 ? [...hex].map((part) => part + part).join("") : hex;
+  const red = Number.parseInt(expanded.slice(0, 2), 16);
+  const green = Number.parseInt(expanded.slice(2, 4), 16);
+  const blue = Number.parseInt(expanded.slice(4, 6), 16);
+  const sourceAlpha = expanded.length === 8 ? Number.parseInt(expanded.slice(6, 8), 16) / 255 : 1;
+  return `rgba(${red}, ${green}, ${blue}, ${sourceAlpha * opacity})`;
+}
+
+function svgFilterColor(filter: Element): string | undefined {
+  const flood = filter.querySelector("feFlood");
+  const color = flood ? svgProperty(flood, "flood-color") : null;
+  if (!color || /^(?:none|currentcolor)$/i.test(color)) return undefined;
+  const opacity = finiteSvgNumber(flood ? svgProperty(flood, "flood-opacity") : null, 1);
+  return colorWithOpacity(color, opacity);
+}
+
+function svgFilterShadows(source: string): Map<string, SvgFilterShadow> {
+  const shadows = new Map<string, SvgFilterShadow>();
+  const document = new DOMParser().parseFromString(source, "image/svg+xml");
+  if (document.querySelector("parsererror")) return shadows;
+  document.querySelectorAll("filter").forEach((filter) => {
+    const id = filter.getAttribute("id");
+    const blur = svgFilterBlur(filter);
+    if (!id || blur <= 0) return;
+    const { offsetX, offsetY } = svgFilterOffset(filter);
+    const color = svgFilterColor(filter);
+    shadows.set(id, { blur, offsetX, offsetY, ...(color ? { color } : {}) });
+  });
+  return shadows;
+}
+
+function objectPaintColor(object: FabricObject): string | undefined {
+  for (const paint of [object.fill, object.stroke]) {
+    if (typeof paint !== "string") continue;
+    const value = paint.trim();
+    if (value && !/^(?:none|transparent)$/i.test(value) && !/^url\(/i.test(value)) return value;
+  }
+  return undefined;
+}
+
+function applySvgFilterShadow(
+  element: Element,
+  object: FabricObject,
+  shadows: Map<string, SvgFilterShadow>
+): void {
+  const filterId = svgUrlReference(svgProperty(element, "filter"));
+  const effect = filterId ? shadows.get(filterId) : undefined;
+  if (!effect) return;
+  const color = effect.color ?? objectPaintColor(object);
+  if (!color) return;
+  object.set(
+    "shadow",
+    new Shadow({
+      color,
+      blur: effect.blur,
+      offsetX: effect.offsetX,
+      offsetY: effect.offsetY
+    })
+  );
+}
+
+function isSvgHierarchyNode(value: SvgHierarchyNode | FabricObject): value is SvgHierarchyNode {
   return (value as Partial<SvgHierarchyNode>).kind === "svg-hierarchy";
 }
 
@@ -164,9 +286,7 @@ function groupSvgHierarchy(
     node.children.push(object);
   });
   const materialize = (child: SvgHierarchyNode | FabricObject): FabricObject =>
-    isSvgHierarchyNode(child)
-      ? new Group(child.children.map(materialize))
-      : child;
+    isSvgHierarchyNode(child) ? new Group(child.children.map(materialize)) : child;
   return root.children.map(materialize);
 }
 
@@ -180,9 +300,11 @@ export async function loadEditableSvg(source: string) {
   const compatibleSource = normalizeSvgForFabric(source);
   const annotatedSource = annotateSvgGroups(compatibleSource);
   const rules = blendRules(annotatedSource);
+  const filterShadows = svgFilterShadows(annotatedSource);
   const hierarchyPaths = new WeakMap<FabricObject, string[]>();
   const parsed = await loadSVGFromString(annotatedSource, (element, object) => {
     hierarchyPaths.set(object, sourceGroupPath(element));
+    applySvgFilterShadow(element, object, filterShadows);
     const blendMode = svgBlendMode(element, rules);
     if (blendMode) {
       object.globalCompositeOperation = blendMode;

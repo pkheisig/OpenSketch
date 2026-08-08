@@ -35,6 +35,12 @@ const PATH_SHAPES: ConnectorPathShape[] = [
 const normalizedDegrees = (value: number) => ((value % 360) + 360) % 360;
 
 describe("orthogonal connector routing", () => {
+  it("allows headless connectors to override their endpoint cap", () => {
+    expect(connectorStrokeLineCap("none", "none", "butt")).toBe("butt");
+    expect(connectorStrokeLineCap("none", "none", "round")).toBe("round");
+    expect(connectorStrokeLineCap("none", "triangle", "round")).toBe("butt");
+  });
+
   it("keeps a direct route compact when the path is clear", () => {
     expect(routeOrthogonal({ x: 0, y: 40 }, { x: 300, y: 40 }, "right", "left", [])).toEqual([
       { x: 0, y: 40 },

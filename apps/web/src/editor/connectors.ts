@@ -318,7 +318,8 @@ function connectorPath(
       strokeWidth: appearance.width,
       strokeLineCap: connectorStrokeLineCap(
         binding.startArrowhead,
-        binding.endArrowhead
+        binding.endArrowhead,
+        binding.lineCap
       ),
       strokeLineJoin: "round",
       strokeDashArray: dashFor(binding.lineStyle, appearance.width),
@@ -342,7 +343,8 @@ function connectorPath(
     strokeWidth: appearance.width,
     strokeLineCap: connectorStrokeLineCap(
       binding.startArrowhead,
-      binding.endArrowhead
+      binding.endArrowhead,
+      binding.lineCap
     ),
     strokeLineJoin: "round",
     strokeDashArray: dashFor(binding.lineStyle, appearance.width),
@@ -544,6 +546,8 @@ export function createFreeConnectorObject(
   if (screenAligned) {
     const group = createConnectorObject(from, to, binding, appearance);
     group.setCoords();
+    group.freeConnectorBinding = { ...binding };
+    group.freeConnectorGeometry = localConnectorGeometry(group, from, to);
     return group;
   }
   const angle = Math.atan2(to.y - from.y, to.x - from.x);
@@ -560,7 +564,108 @@ export function createFreeConnectorObject(
     top: group.top + from.y - transformedStart.y
   });
   group.setCoords();
+  group.freeConnectorBinding = { ...binding };
+  group.freeConnectorGeometry = localConnectorGeometry(group, from, to);
   return group;
+}
+
+function localConnectorGeometry(
+  group: Group,
+  from: Point,
+  to: Point
+): { from: Point; to: Point } {
+  const inverse = util.invertTransform(group.calcOwnMatrix());
+  const localFrom = util.transformPoint(new FabricPoint(from.x, from.y), inverse);
+  const localTo = util.transformPoint(new FabricPoint(to.x, to.y), inverse);
+  return {
+    from: { x: localFrom.x, y: localFrom.y },
+    to: { x: localTo.x, y: localTo.y }
+  };
+}
+
+function pathEndpoint(path: Path, first: boolean): Point | null {
+  const commands = path.path as unknown as Array<Array<string | number>>;
+  const meaningful = commands.filter((command) => command[0] !== "Z" && command.length >= 3);
+  const command = first ? meaningful[0] : meaningful.at(-1);
+  if (!command) return null;
+  const offset = path.pathOffset ?? new FabricPoint(0, 0);
+  const coordinateStart = first ? 1 : command.length - 2;
+  const x = Number(command[coordinateStart]);
+  const y = Number(command[coordinateStart + 1]);
+  if (!Number.isFinite(x) || !Number.isFinite(y)) return null;
+  return { x: x - offset.x, y: y - offset.y };
+}
+
+export function freeConnectorEndpoints(group: Group): { from: Point; to: Point } | null {
+  const stored = group.freeConnectorGeometry;
+  if (
+    stored &&
+    Number.isFinite(stored.from.x) &&
+    Number.isFinite(stored.from.y) &&
+    Number.isFinite(stored.to.x) &&
+    Number.isFinite(stored.to.y)
+  ) {
+    return {
+      from: { ...stored.from },
+      to: { ...stored.to }
+    };
+  }
+  const centerline = group.getObjects().find((object): object is Path => object instanceof Path);
+  if (!centerline) return null;
+  const from = pathEndpoint(centerline, true);
+  const to = pathEndpoint(centerline, false);
+  if (!from || !to) return null;
+  const endpoints = { from, to };
+  group.freeConnectorGeometry = endpoints;
+  return endpoints;
+}
+
+/** Rebuild a free connector around one dragged endpoint while preserving the other. */
+export function updateFreeConnectorEndpoint(
+  group: Group,
+  endpoint: "from" | "to",
+  parentPoint: Point
+): boolean {
+  const binding = group.freeConnectorBinding;
+  const endpoints = freeConnectorEndpoints(group);
+  if (!binding || !endpoints) return false;
+
+  const matrix = group.calcOwnMatrix();
+  const fixedLocal = endpoint === "from" ? endpoints.to : endpoints.from;
+  const fixedParent = util.transformPoint(
+    new FabricPoint(fixedLocal.x, fixedLocal.y),
+    matrix
+  );
+  const nextFrom = endpoint === "from" ? parentPoint : { x: fixedParent.x, y: fixedParent.y };
+  const nextTo = endpoint === "to" ? parentPoint : { x: fixedParent.x, y: fixedParent.y };
+  if (Math.hypot(nextTo.x - nextFrom.x, nextTo.y - nextFrom.y) < EPSILON) return false;
+
+  const replacement = createConnectorObject(
+    nextFrom,
+    nextTo,
+    { ...binding },
+    connectorAppearance(group)
+  );
+  const replacementChildren = replacement.removeAll();
+  group.removeAll();
+  group.set({
+    left: replacement.left,
+    top: replacement.top,
+    width: replacement.width,
+    height: replacement.height,
+    angle: replacement.angle,
+    scaleX: replacement.scaleX,
+    scaleY: replacement.scaleY,
+    skewX: replacement.skewX,
+    skewY: replacement.skewY,
+    flipX: replacement.flipX,
+    flipY: replacement.flipY
+  });
+  group.add(...replacementChildren);
+  group.freeConnectorGeometry = localConnectorGeometry(group, nextFrom, nextTo);
+  group.dirty = true;
+  group.setCoords();
+  return true;
 }
 
 export function connectorAppearance(object: FabricObject): ConnectorAppearance {

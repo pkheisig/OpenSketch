@@ -379,7 +379,9 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   useEffect(() => {
     if (!selectionKey) {
       handledSelection.current = "";
-      if (tab === "edit" && !collapsed) onToggle();
+      if (tab === "edit" && !collapsed && editor.canvas?.getActiveObjects().length === 0) {
+        onToggle();
+      }
       return;
     }
     if (!editor.autoEditEnabled) return;
@@ -387,7 +389,15 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     handledSelection.current = selectionKey;
     setTab("edit");
     if (collapsed) onToggle();
-  }, [collapsed, editor.autoEditEnabled, editor.creationTool, onToggle, selectionKey, tab]);
+  }, [
+    collapsed,
+    editor.autoEditEnabled,
+    editor.canvas,
+    editor.creationTool,
+    onToggle,
+    selectionKey,
+    tab
+  ]);
   useEffect(() => {
     const wasEnabled = autoEditWasEnabled.current;
     autoEditWasEnabled.current = editor.autoEditEnabled;
@@ -437,6 +447,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
       ) {
         return;
       }
+      if (tab === "edit" && editor.selection.length > 0) return;
       setFlyout(null);
       setLineFamily(null);
       setShapeFamily(null);
@@ -444,7 +455,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     };
     document.addEventListener("pointerdown", closeOutsideSidebar, true);
     return () => document.removeEventListener("pointerdown", closeOutsideSidebar, true);
-  }, [collapsed, onToggle]);
+  }, [collapsed, editor.selection.length, onToggle, tab]);
   useEffect(() => {
     const clearCreationToolOutsideSidebar = (event: MouseEvent) => {
       const target = event.target;

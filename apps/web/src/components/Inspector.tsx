@@ -29,6 +29,7 @@ import {
   type AssetFamily,
   type ConnectorAnchor,
   type ConnectorArrowhead,
+  type ConnectorLineCap,
   type ConnectorLineStyle,
   type ConnectorRouting
 } from "@workspace/editor-core";
@@ -39,6 +40,11 @@ import { isManualGroup } from "@/editor/grouping";
 import { AssetVariantGrid } from "@/components/AssetVariantPicker";
 import { ColorPalettePicker } from "@/components/ColorPalettePicker";
 import { UiSelect } from "@/components/UiSelect";
+import {
+  DEFAULT_TEXT_LINE_HEIGHT,
+  lineSpacingValue,
+  TEXT_LINE_SPACING_OPTIONS
+} from "@/editor/text";
 
 function number(value: number | undefined, digits = 0) {
   return Number(value ?? 0).toFixed(digits);
@@ -90,6 +96,24 @@ function ObjectInspector({ object }: { object: FabricObject }) {
     "double-arrow",
     "curved-arrow"
   ].includes(objectType);
+  const canEditLineCap =
+    objectType === "line" ||
+    objectType === "curved-line" ||
+    (objectType === "connector" &&
+      object.connector?.startArrowhead === "none" &&
+      object.connector?.endArrowhead === "none");
+  const lineCap: ConnectorLineCap = object.connector
+    ? (object.connector.lineCap ??
+      (object.connector.startArrowhead === "none" && object.connector.endArrowhead === "none"
+        ? "round"
+        : "butt"))
+    : object instanceof FabricGroup
+      ? object.getObjects()[0]?.strokeLineCap === "butt"
+        ? "butt"
+        : "round"
+      : object.strokeLineCap === "butt"
+        ? "butt"
+        : "round";
   const isShape = objectType === "shape";
   const isSvgPart = objectType === "svg-part";
   useEffect(() => {
@@ -283,6 +307,21 @@ function ObjectInspector({ object }: { object: FabricObject }) {
               }}
             />
           </label>
+          {canEditLineCap ? (
+            <UiSelect
+              className="field"
+              label="Line ends"
+              value={lineCap}
+              options={[
+                { value: "butt" as const, label: "Blunt" },
+                { value: "round" as const, label: "Curved" }
+              ]}
+              onChange={(next) => {
+                if (object.connector) editor.updateConnector({ lineCap: next });
+                else editor.setObject({ strokeLineCap: next });
+              }}
+            />
+          ) : null}
           {object.connector ? (
             <>
               <ConnectorSelect
@@ -485,10 +524,22 @@ function ObjectInspector({ object }: { object: FabricObject }) {
               onChange={(fontWeight) => editor.setObject({ fontWeight })}
             />
           </div>
+          <UiSelect
+            className="field"
+            label="Line spacing"
+            value={lineSpacingValue(object.lineHeight)}
+            options={[
+              ...TEXT_LINE_SPACING_OPTIONS,
+              { value: "custom" as const, label: "Custom (fine tune below)" }
+            ]}
+            onChange={(lineHeight) => {
+              if (lineHeight !== "custom") editor.setObject({ lineHeight });
+            }}
+          />
           <div className="field-row two">
             <NumberField
-              label="Line height"
-              value={object.lineHeight}
+              label="Custom line height"
+              value={object.lineHeight ?? DEFAULT_TEXT_LINE_HEIGHT}
               min={0.5}
               max={4}
               step={0.05}

@@ -66,6 +66,7 @@ import {
   type Point
 } from "@/editor/geometry";
 import {
+  configureTextObject,
   configureSelectionControls,
   enableSelectionBoundsTarget,
   nextDeepSelection,
@@ -91,7 +92,13 @@ import {
   rememberRecognizedGroup,
   type RecognizedGroup
 } from "@/editor/groupRecognition";
-import { isAtomicSvgAsset, isManualGroup } from "@/editor/grouping";
+import {
+  arrangeObjects,
+  directNestedParent,
+  isAtomicSvgAsset,
+  isManualGroup,
+  layerCollectionForObject
+} from "@/editor/grouping";
 import {
   SELECTION_CLIPBOARD_MARKER_PREFIX,
   type SelectionClipboardFormat,
@@ -115,6 +122,7 @@ import {
   type ShapeKind,
   type TextKind
 } from "@/editor/creation";
+import { DEFAULT_TEXT_LINE_HEIGHT } from "@/editor/text";
 
 FabricObject.customProperties = [
   "objectId",
@@ -133,6 +141,8 @@ FabricObject.customProperties = [
   "effectBaseGradientFill",
   "effectBaseGradientStroke",
   "connector",
+  "freeConnectorBinding",
+  "freeConnectorGeometry",
   "connectorHeadOffsetVersion",
   "assetTint",
   "assetTintAmount",
@@ -159,6 +169,8 @@ const RESTORABLE_GROUP_PROPERTIES = [
   "effectBaseGradientFill",
   "effectBaseGradientStroke",
   "connector",
+  "freeConnectorBinding",
+  "freeConnectorGeometry",
   "assetTint",
   "assetTintAmount",
   "assetSaturation",
@@ -249,6 +261,7 @@ async function createBundledAssetGroup(family: AssetFamily, variant: AssetVarian
     paletteFromObject(group).map((color) => [color, color])
   );
   rememberOriginalColors(group);
+  markSvgParts(group);
   configureAtomicSvgAsset(group);
   return group;
 }
@@ -390,23 +403,28 @@ function editableAssetParent(object: FabricObject | undefined): Group | null {
   return null;
 }
 
-function directNestedParent(object: FabricObject | undefined): Group | null {
-  const parent = object?.parent ?? object?.group;
-  return parent instanceof Group && !(parent instanceof ActiveSelection) ? parent : null;
+function markSvgParts(group: Group): void {
+  group.getObjects().forEach((part) => {
+    part.objectId ??= crypto.randomUUID();
+    part.name ??= `SVG ${part.type}`;
+    part.OpenSketchType = "svg-part";
+    if (part instanceof Group) markSvgParts(part);
+  });
 }
 
-function configureAtomicSvgAsset(object: FabricObject): void {
+function configureAtomicSvgAsset(object: FabricObject, editing = false): void {
   if (!(object instanceof Group)) return;
-  object.subTargetCheck = false;
-  object.interactive = false;
+  object.subTargetCheck = editing;
+  object.interactive = editing;
   // An illustration behaves as one canvas object. Its complete selector bounds
-  // are therefore its hitbox, including transparent gaps between SVG paths.
+  // are therefore its hitbox, including transparent gaps between SVG paths,
+  // until the user explicitly enters vector editing.
   object.perPixelTargetFind = false;
   object.getObjects().forEach((part) => {
-    part.selectable = false;
-    part.evented = false;
+    part.selectable = editing;
+    part.evented = editing;
     part.perPixelTargetFind = false;
-    if (part instanceof Group) configureAtomicSvgAsset(part);
+    if (part instanceof Group) configureAtomicSvgAsset(part, editing);
   });
   object.setCoords();
 }
@@ -428,6 +446,7 @@ function configureNestedSelection(object: FabricObject): void {
 
 function configureCanvasAssets(objects: FabricObject[]): void {
   objects.forEach((object) => {
+    configureTextObject(object);
     if (object.OpenSketchType === "upload") object.OpenSketchType = "import";
     if (object.connector && object instanceof Group) {
       normalizeConnectorHeadOffsets(object);
@@ -435,12 +454,14 @@ function configureCanvasAssets(objects: FabricObject[]): void {
       centerline?.set({
         strokeLineCap: connectorStrokeLineCap(
           object.connector.startArrowhead,
-          object.connector.endArrowhead
+          object.connector.endArrowhead,
+          object.connector.lineCap
         )
       });
       object.dirty = true;
     }
     if (isAtomicSvgAsset(object)) {
+      markSvgParts(object);
       configureAtomicSvgAsset(object);
     } else if (isManualGroup(object)) {
       configureNestedSelection(object);
@@ -466,6 +487,24 @@ function hitObjectsAtLevel(
     if (object.visible === false || object.selectable === false) return false;
     return Boolean(canvas.searchPossibleTargets([object], point).target);
   });
+}
+
+function svgEditHitObjectsAtLevel(
+  canvas: Canvas,
+  objects: FabricObject[],
+  point: FabricPoint
+): FabricObject[] {
+  const directHits = hitObjectsAtLevel(canvas, objects, point);
+  const descendants: FabricObject[] = [];
+  directHits.forEach((object) => {
+    if (!(object instanceof Group) || object.OpenSketchType !== "svg-part") {
+      descendants.push(object);
+      return;
+    }
+    const nestedHits = svgEditHitObjectsAtLevel(canvas, object.getObjects(), point);
+    descendants.push(...(nestedHits.length > 0 ? nestedHits : [object]));
+  });
+  return descendants;
 }
 
 function deepHitObjects(
@@ -1070,12 +1109,14 @@ export function EditorProvider({
     const exitedGroup = path.at(-1);
     if (!exitedGroup) return;
     const parentPath = path.slice(0, -1);
+    const svgAssetRoot = path[0];
     setEditingGroupPath(parentPath);
     modifierDeepSelection.current = undefined;
     deepSelectionCycle.current = undefined;
     if (!canvas) return;
     canvas.discardActiveObject();
     if (parentPath.length === 0) {
+      if (isAtomicSvgAsset(svgAssetRoot)) configureAtomicSvgAsset(svgAssetRoot);
       configureSelectionControls(exitedGroup, latestZoom.current);
       canvas.setActiveObject(exitedGroup);
       setSelection([exitedGroup]);
@@ -1140,20 +1181,24 @@ export function EditorProvider({
     };
     const selectDeeperObject = ({
       e,
-      scenePoint
+      scenePoint,
+      target: eventTarget
     }: {
       e: MouseEvent | PointerEvent | TouchEvent;
       scenePoint?: FabricPoint;
+      target?: FabricObject;
     }) => {
       if (!scenePoint) return;
       const currentEditingGroup = editingGroupRef.current;
       if (currentEditingGroup) {
-        const directHits = hitObjectsAtLevel(
-          canvas,
-          currentEditingGroup.getObjects(),
-          scenePoint
-        );
-        const nestedGroup = directHits.find(isManualGroup);
+        const directHits = isAtomicSvgAsset(editingGroupPathRef.current[0])
+          ? svgEditHitObjectsAtLevel(canvas, currentEditingGroup.getObjects(), scenePoint)
+          : hitObjectsAtLevel(canvas, currentEditingGroup.getObjects(), scenePoint);
+        const nestedGroup =
+          directHits.find(isManualGroup) ??
+          (isAtomicSvgAsset(editingGroupPathRef.current[0])
+            ? directHits.find((object) => object instanceof Group)
+            : undefined);
         if (nestedGroup) {
           setEditingGroupPath([...editingGroupPathRef.current, nestedGroup]);
           canvas.discardActiveObject();
@@ -1176,9 +1221,20 @@ export function EditorProvider({
         }
         return;
       }
-      const group = hitObjectsAtLevel(canvas, canvas.getObjects(), scenePoint).find(
-        isManualGroup
-      );
+      const topLevelHits = hitObjectsAtLevel(canvas, canvas.getObjects(), scenePoint);
+      const asset = topLevelHits.find(isAtomicSvgAsset);
+      if (asset) {
+        markSvgParts(asset);
+        configureAtomicSvgAsset(asset, true);
+        setEditingGroupPath([asset]);
+        canvas.discardActiveObject();
+        setSelection([]);
+        modifierDeepSelection.current = undefined;
+        deepSelectionCycle.current = undefined;
+        canvas.requestRenderAll();
+        return;
+      }
+      const group = topLevelHits.find(isManualGroup);
       if (group) {
         setEditingGroupPath([group]);
         canvas.discardActiveObject();
@@ -1204,6 +1260,14 @@ export function EditorProvider({
             : activeObject;
       const hitObjects = deepHitObjects(canvas, scenePoint, cycleFrom);
       if (hitObjects.length === 0) {
+        if (eventTarget instanceof IText) {
+          configureSelectionControls(eventTarget, latestZoom.current);
+          canvas.setActiveObject(eventTarget);
+          setSelection([eventTarget]);
+          if (!eventTarget.isEditing) eventTarget.enterEditing();
+          canvas.requestRenderAll();
+          return;
+        }
         if (latestCanvasSettings.current.doubleClickCreatesText) {
           createPointText.current(scenePoint);
         }
@@ -1252,11 +1316,9 @@ export function EditorProvider({
       const scenePoint = canvas.getScenePoint(event);
       const currentEditingGroup = editingGroupRef.current;
       if (currentEditingGroup) {
-        const selected = hitObjectsAtLevel(
-          canvas,
-          currentEditingGroup.getObjects(),
-          scenePoint
-        )[0];
+        const selected = (isAtomicSvgAsset(editingGroupPathRef.current[0])
+          ? svgEditHitObjectsAtLevel(canvas, currentEditingGroup.getObjects(), scenePoint)
+          : hitObjectsAtLevel(canvas, currentEditingGroup.getObjects(), scenePoint))[0];
         if (!selected) {
           event.preventDefault();
           event.stopImmediatePropagation();
@@ -1717,8 +1779,11 @@ export function EditorProvider({
   );
 
   const prepareElementStyle = useCallback((object: FabricObject) => {
+    const key = elementStyleKey(object);
     object.defaultElementStyle ??= captureElementStyle(object);
-    applyElementStyle(object, savedElementStyles.current[elementStyleKey(object) ?? ""]);
+    // A saved element style is a per-type override. Apply it after capturing the
+    // creation defaults so the Defaults panel never overwrites it for new items.
+    applyElementStyle(object, key ? savedElementStyles.current[key] : undefined);
   }, []);
 
   const addObject = useCallback(
@@ -1757,12 +1822,13 @@ export function EditorProvider({
         fontFamily: creationDefaults.text.fontFamily,
         fontSize: fontSize ?? creationDefaults.text.fontSize,
         fontWeight: fontWeight ?? creationDefaults.text.fontWeight,
-        lineHeight: 1.2
+        lineHeight: DEFAULT_TEXT_LINE_HEIGHT
       };
       const object =
         kind === "box"
           ? new Textbox("Text box", { ...options, width: 420 })
           : new IText("Text", options);
+      configureTextObject(object);
       addObject(object, kind === "box" ? "Text box" : "Text", "text", point);
       // Entering Fabric text editing during the canvas pointer-down handler can
       // race the React tool-state render and Fabric's hidden textarea setup.
@@ -2235,6 +2301,7 @@ export function EditorProvider({
         paletteFromObject(object).map((color) => [color, color])
       );
       rememberOriginalColors(object);
+      if (object instanceof Group) markSvgParts(object);
       configureAtomicSvgAsset(object);
       latestProject.current = {
         ...latestProject.current,
@@ -2316,10 +2383,14 @@ export function EditorProvider({
     if (!canvas) return;
     const parent = editableAssetParent(canvas.getActiveObject());
     if (!parent) return;
+    if (editingGroupPathRef.current[0] === parent) {
+      setEditingGroupPath([]);
+      configureAtomicSvgAsset(parent);
+    }
     canvas.setActiveObject(parent);
     setSelection([parent]);
     canvas.requestRenderAll();
-  }, [canvas]);
+  }, [canvas, setEditingGroupPath]);
 
   const deleteSelection = useCallback(() => {
     if (!canvas) return;
@@ -2368,6 +2439,7 @@ export function EditorProvider({
     if (!canvas) return;
     const selectedObjects = canvas.getActiveObjects();
     const clones = await Promise.all(selectedObjects.map((object) => object.clone()));
+    configureCanvasAssets(clones);
     const nestedParent = editableAssetParent(selectedObjects[0]);
     if (
       nestedParent &&
@@ -2440,6 +2512,7 @@ export function EditorProvider({
       Promise.all(clipboard.current.map((object) => object.clone())),
       Promise.all(clipboard.current.map((object) => object.clone()))
     ]);
+    configureCanvasAssets(clones);
     clones.forEach((clone) => {
       clone.set({
         left: (clone.left ?? 0) + 24,
@@ -2463,16 +2536,31 @@ export function EditorProvider({
   const groupSelection = useCallback(() => {
     if (!canvas || !(canvas.getActiveObject() instanceof ActiveSelection)) return;
     const active = canvas.getActiveObject() as ActiveSelection;
-    const objects = active.removeAll();
+    const selectedObjects = active.getObjects();
+    if (selectedObjects.length < 2) return;
+    const collection = layerCollectionForObject(selectedObjects[0], canvas);
+    if (!selectedObjects.every((object) => layerCollectionForObject(object, canvas) === collection)) {
+      return;
+    }
+    const objects = [...selectedObjects].sort(
+      (a, b) => collection.getObjects().indexOf(a) - collection.getObjects().indexOf(b)
+    );
+    const insertionIndex = collection.getObjects().indexOf(objects[0]);
+    active.removeAll();
     canvas.discardActiveObject();
-    canvas.remove(...objects);
+    collection.remove(...objects);
     const group = new Group(objects);
     const recognition = findRecognizedGroup(objects);
     if (recognition) restoreRecognizedGroup(group, objects, recognition);
     assignIdentity(group, "Group", "group");
     group.OpenSketchType = "group";
     configureCanvasAssets([group]);
-    canvas.add(group);
+    collection.insertAt(Math.max(0, insertionIndex), group);
+    if (collection instanceof Group) {
+      collection.triggerLayout();
+      collection.dirty = true;
+      collection.setCoords();
+    }
     canvas.setActiveObject(group);
     deepSelectionCycle.current = undefined;
     setSelection([group]);
@@ -2483,19 +2571,19 @@ export function EditorProvider({
   const ungroupSelection = useCallback(() => {
     if (!canvas || !isManualGroup(canvas.getActiveObject())) return;
     const group = canvas.getActiveObject() as Group;
-    const parent = directNestedParent(group);
-    const index = parent?.getObjects().indexOf(group) ?? -1;
+    const parent = layerCollectionForObject(group, canvas);
+    const index = parent.getObjects().indexOf(group);
     canvas.discardActiveObject();
     const objects = group.removeAll();
     rememberRecognizedGroup(objects, recognizedGroupRecord(group, objects));
-    if (parent && index >= 0) {
+    if (index >= 0) {
       parent.remove(group);
       parent.insertAt(index, ...objects);
-      parent.setCoords();
-      parent.dirty = true;
-    } else {
-      canvas.remove(group);
-      canvas.add(...objects);
+      if (parent instanceof Group) {
+        parent.triggerLayout();
+        parent.setCoords();
+        parent.dirty = true;
+      }
     }
     const selectionObject = new ActiveSelection(objects, { canvas });
     configureSelectionControls(selectionObject, latestZoom.current);
@@ -2509,14 +2597,7 @@ export function EditorProvider({
   const arrange = useCallback(
     (action: "front" | "forward" | "backward" | "back") => {
       if (!canvas) return;
-      for (const object of canvas.getActiveObjects()) {
-        const collection = object.group instanceof Group ? object.group : canvas;
-        if (action === "front") collection.bringObjectToFront(object);
-        if (action === "forward") collection.bringObjectForward(object);
-        if (action === "backward") collection.sendObjectBackwards(object);
-        if (action === "back") collection.sendObjectToBack(object);
-        if (object.group instanceof Group) object.group.dirty = true;
-      }
+      arrangeObjects(canvas.getActiveObjects(), canvas, action);
       canvas.requestRenderAll();
       commit("Arrange layers");
     },
@@ -2609,6 +2690,7 @@ export function EditorProvider({
       const objects = canvas.getActiveObjects();
       objects.forEach((object) => {
         object.set(properties);
+        configureTextObject(object);
         if (
           object instanceof Group &&
           ["line", "curved-line", "arrow", "double-arrow", "curved-arrow"].includes(
@@ -2633,6 +2715,9 @@ export function EditorProvider({
             }
             if (Array.isArray(properties.strokeDashArray) || properties.strokeDashArray === null) {
               part.set("strokeDashArray", properties.strokeDashArray as number[] | null);
+            }
+            if (properties.strokeLineCap === "butt" || properties.strokeLineCap === "round") {
+              part.set("strokeLineCap", properties.strokeLineCap);
             }
           });
           object.dirty = true;
@@ -2705,7 +2790,7 @@ export function EditorProvider({
           linethrough: false,
           overline: false,
           charSpacing: 0,
-          lineHeight: 1.2,
+          lineHeight: DEFAULT_TEXT_LINE_HEIGHT,
           textAlign: "left",
           opacity: 1
         });
@@ -2714,12 +2799,14 @@ export function EditorProvider({
         object.set({
           stroke: DEFAULT_CREATION_DEFAULTS.line.color,
           strokeWidth: DEFAULT_CREATION_DEFAULTS.line.width,
+          strokeLineCap: "round",
           opacity: 1
         });
         if (object.connector) {
           object.connector = {
             ...object.connector,
             lineStyle: DEFAULT_CREATION_DEFAULTS.line.lineStyle,
+            lineCap: "round",
             startArrowhead:
               type === "double-arrow"
                 ? DEFAULT_CREATION_DEFAULTS.line.startArrowhead || "triangle"
@@ -2734,7 +2821,8 @@ export function EditorProvider({
               strokeWidth:
                 part instanceof Path
                   ? DEFAULT_CREATION_DEFAULTS.line.width
-                  : Math.max(1, DEFAULT_CREATION_DEFAULTS.line.width * 0.4)
+                  : Math.max(1, DEFAULT_CREATION_DEFAULTS.line.width * 0.4),
+              strokeLineCap: "round"
             });
             if (typeof part.fill === "string" && part.fill !== "") {
               part.set("fill", DEFAULT_CREATION_DEFAULTS.line.color);
@@ -3136,6 +3224,7 @@ export function EditorProvider({
           event.preventDefault();
           const rootGroup = groupPath[0];
           setEditingGroupPath([]);
+          if (isAtomicSvgAsset(rootGroup)) configureAtomicSvgAsset(rootGroup);
           modifierDeepSelection.current = undefined;
           deepSelectionCycle.current = undefined;
           canvas.discardActiveObject();

@@ -1,7 +1,15 @@
-import { ActiveSelection, Canvas, Group, Point, Rect } from "../apps/web/node_modules/fabric";
+import {
+  ActiveSelection,
+  Canvas,
+  Group,
+  IText,
+  Point,
+  Rect
+} from "../apps/web/node_modules/fabric";
 import { describe, expect, it } from "vitest";
 import {
   configureSelectionControls,
+  configureTextObject,
   enableSelectionBoundsTarget,
   GROUP_SELECTION_COLOR,
   ROTATION_SNAP_ANGLE,
@@ -127,6 +135,78 @@ describe("selection control colors", () => {
     const tiny = new Rect({ width: 20, height: 20 });
 
     expect(selectionControlHitSizeForObject(tiny, 0.25)).toBe(SELECTION_CONTROL_HIT_MIN_PX);
+  });
+});
+
+describe("text scaling controls", () => {
+  it("uses font-size resize handles without allowing visual stretch", () => {
+    const text = new IText("Label");
+
+    configureTextObject(text);
+
+    for (const corner of ["tl", "tr", "br", "bl"] as const) {
+      expect(text.isControlVisible(corner)).toBe(true);
+      expect(text.controls[corner].actionName).toBe("text-font-size");
+    }
+    for (const edge of ["mt", "mr", "mb", "ml"] as const) {
+      expect(text.isControlVisible(edge)).toBe(false);
+    }
+    expect(text.isControlVisible("mtr")).toBe(true);
+  });
+
+  it("converts a corner drag into font size while resetting object scale", () => {
+    const canvas = new Canvas();
+    const text = new IText("Label", { fontSize: 20, left: 100, top: 100 });
+    canvas.add(text);
+    canvas.setActiveObject(text);
+    configureSelectionControls(text);
+
+    const handler = text.controls.br.actionHandler;
+    expect(handler).toBeDefined();
+    const width = text.width;
+    const height = text.height;
+    const anchor = text.getPositionByOrigin("left", "top");
+    const transform = {
+      target: text,
+      corner: "br",
+      originX: "left",
+      originY: "top",
+      scaleX: 1,
+      scaleY: 1,
+      skewX: 0,
+      skewY: 0,
+      offsetX: 0,
+      offsetY: 0,
+      ex: anchor.x + width,
+      ey: anchor.y + height,
+      lastX: anchor.x + width,
+      lastY: anchor.y + height,
+      theta: 0,
+      width,
+      height,
+      shiftKey: false,
+      altKey: false,
+      actionPerformed: false,
+      original: {
+        scaleX: 1,
+        scaleY: 1,
+        skewX: 0,
+        skewY: 0,
+        angle: 0,
+        left: text.left,
+        top: text.top,
+        flipX: false,
+        flipY: false,
+        originX: "left",
+        originY: "top"
+      }
+    };
+
+    handler?.({} as never, transform as never, anchor.x + width * 1.5, anchor.y + height * 1.5);
+
+    expect(text.fontSize).toBeGreaterThan(20);
+    expect(text.scaleX).toBe(1);
+    expect(text.scaleY).toBe(1);
   });
 });
 

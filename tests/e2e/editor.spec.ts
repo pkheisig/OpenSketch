@@ -12,6 +12,7 @@ async function selectUiOption(
   const matches = page.getByRole("combobox", { name: label });
   await (occurrence === "last" ? matches.last() : matches.first()).click();
   await page.getByRole("option", { name: option, exact: true }).click();
+  await expect(page.getByRole("listbox", { name: label })).toHaveCount(0);
 }
 
 async function setPaletteColor(page: Page, label: string, color: string) {
@@ -807,6 +808,108 @@ test("builds and persists a styled object-attached connector", async ({ page }) 
   );
 });
 
+test("changes line ends between blunt and curved in the edit menu", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await placeTool(page, "Line", 0.35, 0.5);
+  await page.keyboard.press("ControlOrMeta+A");
+  await ensureEditorOpen(page);
+
+  const lineEnds = page.getByRole("combobox", { name: "Line ends" });
+  await expect(lineEnds).toHaveAttribute("data-value", "round");
+  await selectUiOption(page, "Line ends", "Blunt");
+  await expect(lineEnds).toHaveAttribute("data-value", "butt");
+
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await page.getByRole("button", { name: "Untitled figure" }).click();
+  await page.keyboard.press("ControlOrMeta+A");
+  await ensureEditorOpen(page);
+  await expect(page.getByRole("combobox", { name: "Line ends" })).toHaveAttribute(
+    "data-value",
+    "butt"
+  );
+  await selectUiOption(page, "Line ends", "Curved");
+  await expect(page.getByRole("combobox", { name: "Line ends" })).toHaveAttribute(
+    "data-value",
+    "round"
+  );
+});
+
+test("extends a free line from one endpoint without scaling both dimensions", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await placeTool(page, "Line", 0.32, 0.5);
+
+  const readLine = () =>
+    page.evaluate(async () => {
+      const projectId = (history.state as Record<string, unknown> | null)?.OpenSketchProjectId;
+      if (typeof projectId !== "string") return null;
+      const database = await new Promise<IDBDatabase>((resolve, reject) => {
+        const request = indexedDB.open("OpenSketch");
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+      const project = await new Promise<Record<string, any> | null>((resolve, reject) => {
+        const request = database.transaction("projects", "readonly").objectStore("projects").get(projectId);
+        request.onsuccess = () => resolve((request.result as Record<string, any> | undefined) ?? null);
+        request.onerror = () => reject(request.error);
+      });
+      database.close();
+      const object = project?.objects?.objects?.find((candidate: Record<string, unknown>) =>
+        ["line", "curved-line", "arrow", "double-arrow", "curved-arrow"].includes(
+          String(candidate.OpenSketchType)
+        )
+      );
+      if (!object?.freeConnectorGeometry) return null;
+      const angle = (Number(object.angle ?? 0) * Math.PI) / 180;
+      const scaleX = Number(object.scaleX ?? 1);
+      const scaleY = Number(object.scaleY ?? 1);
+      const map = (point: { x: number; y: number }) => ({
+        x:
+          Number(object.left ?? 0) +
+          Math.cos(angle) * scaleX * point.x -
+          Math.sin(angle) * scaleY * point.y,
+        y:
+          Number(object.top ?? 0) +
+          Math.sin(angle) * scaleX * point.x +
+          Math.cos(angle) * scaleY * point.y
+      });
+      return {
+        canvas: project.canvas,
+        start: map(object.freeConnectorGeometry.from),
+        end: map(object.freeConnectorGeometry.to),
+        scaleX,
+        scaleY
+      };
+    });
+  await expect.poll(readLine).not.toBeNull();
+  const initial = await readLine();
+  if (!initial) throw new Error("The created line was not persisted.");
+  const stage = await page.locator(".artboard-stage").boundingBox();
+  if (!stage) throw new Error("Artboard is not visible.");
+  const end = {
+    x: stage.x + (initial.end.x / initial.canvas.width) * stage.width,
+    y: stage.y + (initial.end.y / initial.canvas.height) * stage.height
+  };
+  await page.mouse.move(end.x, end.y);
+  await page.mouse.down();
+  await page.mouse.move(end.x + 120, end.y + 40, { steps: 8 });
+  await page.mouse.up();
+
+  await expect
+    .poll(async () => {
+      const after = await readLine();
+      return after && after.end.x - initial.end.x;
+    })
+    .toBeGreaterThan(150);
+  const after = await readLine();
+  if (!after) throw new Error("The resized line was not persisted.");
+  expect(after.start.x).toBeCloseTo(initial.start.x, 0);
+  expect(after.start.y).toBeCloseTo(initial.start.y, 0);
+  expect(after.scaleX).toBe(1);
+  expect(after.scaleY).toBe(1);
+});
+
 test("places text and shapes from active tools and persists line creation defaults", async ({
   page
 }) => {
@@ -971,6 +1074,12 @@ test("places text and shapes from active tools and persists line creation defaul
   await expect(textInspector.getByRole("combobox", { name: "Font" })).toHaveText(/Source Serif 4/i);
   await expect(textInspector.getByLabel("Size", { exact: true })).toHaveValue("28");
   await expect(textInspector.getByRole("combobox", { name: "Weight" })).toHaveText(/Semibold/i);
+  await expect(textInspector.getByRole("combobox", { name: "Line spacing" })).toHaveText(
+    /No extra spacing/i
+  );
+  await selectUiOption(page, "Line spacing", "Double (2×)");
+  await expect(textInspector.getByRole("combobox", { name: "Line spacing" })).toHaveText(/Double/i);
+  await expect(textInspector.getByLabel("Custom line height", { exact: true })).toHaveValue("2.00");
   await expect(textInspector.getByLabel("Text color value")).toHaveValue("#3157a4");
 });
 
@@ -1104,6 +1213,31 @@ test("optionally creates Text on an empty-artboard double-click and persists the
   await page.getByRole("button", { name: "Untitled figure" }).click();
   await page.getByRole("button", { name: "Canvas size" }).click();
   await expect(page.getByLabel("Double-click to add text")).toBeChecked();
+});
+
+test("double-clicking an existing text item edits it instead of creating another", async ({
+  page
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+
+  const textTool = page
+    .getByLabel("Editor tools")
+    .getByRole("button", { name: "Text", exact: true });
+  await textTool.click();
+  const point = await artboardPoint(page, 0.52, 0.3);
+  await page.mouse.click(point.x, point.y);
+  const fabricTextarea = page.locator('textarea[data-fabric="textarea"]');
+  await expect(fabricTextarea).toBeFocused();
+  await page.keyboard.type("Existing label");
+  await page.keyboard.press("Escape");
+
+  await textTool.click();
+  await page.mouse.dblclick(point.x, point.y);
+
+  await expect(fabricTextarea).toBeFocused();
+  await expect(fabricTextarea).toHaveValue("Existing label");
+  await expectLayerCount(page, 1);
 });
 
 test("preserves clipboard object size across repeated pastes", async ({ page }) => {
@@ -1712,6 +1846,110 @@ test("saves and resets per-element styling for future sidebar shapes", async ({ 
     .toBeUndefined();
 });
 
+test("resizes text by changing font size instead of stretching its glyphs", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+
+  await placeTool(page, "Text", 0.5, 0.45);
+  await page.keyboard.type("Fixed label");
+  await page.keyboard.press("Escape");
+  await ensureEditorOpen(page);
+
+  const width = page.locator(".field-row.dimensions input").first();
+  const height = page.locator(".field-row.dimensions input").last();
+  const fontSize = page.getByLabel("Size", { exact: true });
+  await expect(width).toBeVisible();
+  const beforeWidth = Number(await width.inputValue());
+  const beforeHeight = Number(await height.inputValue());
+  const beforeFontSize = Number(await fontSize.inputValue());
+  const stage = await page.locator(".artboard-stage").boundingBox();
+  if (!stage) throw new Error("Artboard is not visible.");
+  const zoom = stage.width / 1920;
+  const beforeLeft = Number(await page.getByLabel("X", { exact: true }).inputValue());
+  const beforeTop = Number(await page.getByLabel("Y", { exact: true }).inputValue());
+  const topRight = {
+    x: stage.x + (beforeLeft + beforeWidth / 2) * zoom,
+    y: stage.y + (beforeTop - beforeHeight / 2) * zoom
+  };
+
+  await page.mouse.move(topRight.x - 3, topRight.y + 3);
+  await page.mouse.down();
+  await page.mouse.move(topRight.x + 90, topRight.y - 40, { steps: 8 });
+  await page.mouse.up();
+
+  await expect.poll(async () => Number(await width.inputValue())).toBeGreaterThan(beforeWidth);
+  await expect.poll(async () => Number(await height.inputValue())).toBeGreaterThan(beforeHeight);
+  await expect
+    .poll(async () => Number(await fontSize.inputValue()))
+    .toBeGreaterThan(beforeFontSize);
+  await expect
+    .poll(() =>
+      page.evaluate(async () => {
+        const projectId = (history.state as Record<string, unknown> | null)?.OpenSketchProjectId;
+        if (typeof projectId !== "string") return null;
+        const request = indexedDB.open("OpenSketch");
+        return await new Promise<{ scaleX?: number; scaleY?: number } | null>((resolve, reject) => {
+          request.onerror = () => reject(request.error);
+          request.onsuccess = () => {
+            const get = request.result
+              .transaction("projects")
+              .objectStore("projects")
+              .get(projectId);
+            get.onerror = () => reject(get.error);
+            get.onsuccess = () => {
+              const object = get.result?.objects?.objects?.[0];
+              resolve(object ? { scaleX: object.scaleX, scaleY: object.scaleY } : null);
+            };
+          };
+        });
+      })
+    )
+    .toMatchObject({ scaleX: 1, scaleY: 1 });
+});
+
+test("saved text styling overrides later new-text defaults", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+
+  const firstPoint = await artboardPoint(page, 0.32, 0.45);
+  await placeTool(page, "Text", 0.32, 0.45);
+  await page.keyboard.type("Saved label");
+  await page.keyboard.press("Escape");
+  await ensureEditorOpen(page);
+  await setPaletteColor(page, "Text color", "#ff0000");
+  await selectUiOption(page, "Font", "STIX Two Text");
+  const textSize = page.getByLabel("Size", { exact: true });
+  await fillStable(textSize, "42");
+  await textSize.press("Enter");
+  await selectUiOption(page, "Weight", "Semibold");
+
+  await page.getByRole("button", { name: "Close properties" }).click();
+  await page.mouse.click(firstPoint.x, firstPoint.y, { button: "right" });
+  await page
+    .getByRole("menu", { name: "Text actions" })
+    .getByRole("menuitem", { name: "Save styling" })
+    .click();
+
+  await page.getByRole("button", { name: "Defaults", exact: true }).click();
+  await setPaletteColor(page, "Default text color", "#0000ff");
+  await selectUiOption(page, "Default text typeface", "Source Serif 4");
+  const defaultTextSize = page.getByLabel("Default text size");
+  await fillStable(defaultTextSize, "28");
+  await defaultTextSize.press("Enter");
+  await selectUiOption(page, "Default text weight", "Bold");
+  await page.getByRole("button", { name: "Defaults", exact: true }).click();
+
+  await placeTool(page, "Text", 0.7, 0.45);
+  await page.keyboard.type("Future label");
+  await page.keyboard.press("Escape");
+  await ensureEditorOpen(page);
+  const futureText = page.locator(".inspector-scroll");
+  await expect(futureText.getByLabel("Text color value")).toHaveValue("#ff0000");
+  await expect(futureText.getByRole("combobox", { name: "Font" })).toHaveText(/STIX Two Text/);
+  await expect(futureText.getByLabel("Size", { exact: true })).toHaveValue("42");
+  await expect(futureText.getByRole("combobox", { name: "Weight" })).toHaveText(/Semibold/);
+});
+
 test("ungroups exactly one level of a nested group hierarchy", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
@@ -1768,6 +2006,28 @@ test("treats an imported SVG as one atomic canvas object", async ({ page }) => {
   await expect(page.getByRole("status").filter({ hasText: "Editing a group" })).toHaveCount(0);
   await ensureLayersOpen(page);
   await expect(page.locator(".layers-title small")).toHaveText("1");
+});
+
+test("enters imported SVG vector editing and selects a nested part", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Imports", exact: true }).click();
+  await page
+    .locator('input[type="file"][accept*="image/svg+xml"]')
+    .setInputFiles("tests/fixtures/nested-groups.svg");
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+
+  const center = await artboardPoint(page);
+  await page.mouse.dblclick(center.x, center.y);
+  const vectorBanner = page.getByRole("status").filter({ hasText: "Editing vector asset" });
+  await expect(vectorBanner).toBeVisible();
+
+  await page.mouse.click(center.x, center.y);
+  await ensureEditorOpen(page);
+  await expect(page.locator(".svg-part-context")).toContainText("Inside");
+
+  await page.locator(".svg-part-context").getByRole("button", { name: "Done" }).click();
+  await expect(vectorBanner).toHaveCount(0);
 });
 
 test("double-clicks through overlapping objects and into grouped children", async ({ page }) => {
@@ -1958,6 +2218,33 @@ test("edits a group with single-click and modifier multi-selection", async ({ pa
   await expect(page.locator(".inspector-header h2")).toHaveText("Group");
 });
 
+test("keeps a group created inside group editing nested at one canvas layer", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await placeTool(page, "Rectangle", 0.3, 0.5);
+  await placeTool(page, "Circle", 0.5, 0.5);
+  await placeTool(page, "Triangle", 0.7, 0.5);
+  await page.keyboard.press("ControlOrMeta+A");
+  await page.getByRole("button", { name: "Group", exact: true }).click();
+
+  const rectangle = await artboardPoint(page, 0.3, 0.5);
+  const circle = await artboardPoint(page, 0.5, 0.5);
+  const groupBanner = page.getByRole("status").filter({ hasText: "Editing a group" });
+  await page.mouse.dblclick(rectangle.x, rectangle.y);
+  await expect(groupBanner).toBeVisible();
+  await page.mouse.click(rectangle.x, rectangle.y);
+  await page.keyboard.down("Control");
+  await page.mouse.click(circle.x, circle.y);
+  await page.keyboard.up("Control");
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await expect(page.locator(".inspector-header span")).toHaveText("2 selected");
+
+  await page.getByRole("button", { name: "Group", exact: true }).click();
+  await expectLayerCount(page, 1);
+  await page.keyboard.press("Escape");
+  await expect(groupBanner).toHaveCount(0);
+});
+
 test("adds independent canvas objects to the selection with Ctrl-click", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
@@ -1973,6 +2260,30 @@ test("adds independent canvas objects to the selection with Ctrl-click", async (
 
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await expect(page.locator(".inspector-header span")).toHaveText("2 selected");
+});
+
+test("keeps the edit panel open while changing the selected object", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await placeTool(page, "Rectangle", 0.35, 0.5);
+  await placeTool(page, "Circle", 0.65, 0.5);
+
+  const firstObject = await artboardPoint(page, 0.35, 0.5);
+  const secondObject = await artboardPoint(page, 0.65, 0.5);
+  const emptyCanvas = await artboardPoint(page, 0.9, 0.85);
+  const inspector = page.locator(".inspector-embedded");
+
+  await page.mouse.click(firstObject.x, firstObject.y);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await expect(inspector).toBeVisible();
+  await expect(page.locator(".inspector-header h2")).toHaveText("rectangle");
+
+  await page.mouse.click(secondObject.x, secondObject.y);
+  await expect(inspector).toBeVisible();
+  await expect(page.locator(".inspector-header h2")).toHaveText("circle");
+
+  await page.mouse.click(emptyCanvas.x, emptyCanvas.y);
+  await expect(inspector).toHaveCount(0);
 });
 
 test("preserves nested group dimensions when duplicating by modifier-drag", async ({ page }) => {
@@ -2105,6 +2416,59 @@ test("moves objects exactly one layer through the canvas context menu", async ({
     .click();
   await ensureLayersOpen(page);
   await expect(layerNames).toHaveText(["rectangle", "triangle", "circle"]);
+});
+
+test("keeps grouped layers nested and preserves their outer stack slot", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+
+  await placeTool(page, "Rectangle", 0.25, 0.5);
+  await placeTool(page, "Circle", 0.5, 0.5);
+
+  await page.keyboard.press("ControlOrMeta+A");
+  await page.getByRole("button", { name: "Group", exact: true }).click();
+  await placeTool(page, "Triangle", 0.75, 0.5);
+
+  await ensureLayersOpen(page);
+  const layerNames = page.locator(".layer-copy strong");
+  await expect(layerNames).toHaveText(["triangle", "Group"]);
+
+  await page
+    .locator(".layer-list > button")
+    .filter({ has: page.getByText("Group", { exact: true }) })
+    .click();
+  await page.getByRole("button", { name: "Ungroup", exact: true }).click();
+  await expect(layerNames).toHaveText(["triangle", "circle", "rectangle"]);
+});
+
+test("keeps front and back actions at the outer canvas boundaries around groups", async ({
+  page
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+
+  await placeTool(page, "Rectangle", 0.25, 0.5);
+  await placeTool(page, "Circle", 0.35, 0.5);
+  await page.keyboard.press("ControlOrMeta+A");
+  await page.getByRole("button", { name: "Group", exact: true }).click();
+  await placeTool(page, "Triangle", 0.55, 0.5);
+  await placeTool(page, "Diamond", 0.8, 0.5);
+
+  await ensureLayersOpen(page);
+  const layerNames = page.locator(".layer-copy strong");
+  await expect(layerNames).toHaveText(["diamond", "triangle", "Group"]);
+
+  const triangleLayer = page.locator(".layer-list > button").filter({ hasText: "triangle" });
+  await triangleLayer.click();
+  const layerControls = page.locator(".layers-panel .layer-controls");
+  await layerControls.getByRole("button", { name: "Send to back" }).click();
+  await expect(layerNames).toHaveText(["diamond", "Group", "triangle"]);
+
+  await triangleLayer.click();
+  await layerControls.getByRole("button", { name: "Bring to front" }).click();
+  await expect(layerNames).toHaveText(["triangle", "diamond", "Group"]);
 });
 
 test("renders project previews with Fabric and upgrades legacy raster thumbnails", async ({

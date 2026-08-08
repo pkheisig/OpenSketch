@@ -50,7 +50,7 @@ import {
   Ungroup,
   Unlock
 } from "lucide-react";
-import { ActiveSelection, type FabricObject } from "fabric";
+import { ActiveSelection, IText, type FabricObject } from "fabric";
 import {
   CANVAS_PRESETS,
   pixelsToUnit,
@@ -787,6 +787,8 @@ export function CanvasWorkspace() {
     }
     const creationPoint = canvasPoint(event.clientX, event.clientY);
     if (event.button === 0 && editor.creationTool && creationPoint) {
+      const target = canvas?.findTarget(event.nativeEvent as never).target;
+      if (target instanceof IText) return;
       event.preventDefault();
       event.stopPropagation();
       if (isLinearCreationTool(editor.creationTool)) {
@@ -1101,7 +1103,13 @@ export function CanvasWorkspace() {
     >
       {editor.editingGroup ? (
         <div className="group-edit-banner" role="status">
-          <strong>Editing a group</strong>
+          <strong>
+            {editor.editingGroup.OpenSketchType === "nih-asset" ||
+            editor.editingGroup.OpenSketchType === "import" ||
+            editor.editingGroup.OpenSketchType === "upload"
+              ? "Editing vector asset"
+              : "Editing a group"}
+          </strong>
           <button type="button" onClick={editor.closeGroupEdit}>
             Exit group
           </button>

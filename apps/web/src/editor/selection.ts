@@ -1,6 +1,14 @@
-import { FabricObject, type Control, type TCornerPoint } from "fabric";
+import {
+  controlsUtils,
+  FabricObject,
+  IText,
+  type Control,
+  type TCornerPoint,
+  type TransformActionHandler
+} from "fabric";
 import { CURSOR_ROTATE, uiTransformCursor } from "@/editor/cursors";
 import { isManualGroup } from "@/editor/grouping";
+import { configureVectorControls } from "@/editor/vectorControls";
 
 export const SINGLE_OBJECT_SELECTION_COLOR = "#3b82f6";
 export const GROUP_SELECTION_COLOR = "#f28c28";
@@ -17,6 +25,79 @@ const selectionShadowInstalled = new WeakSet<FabricObject>();
 const expandedHitboxInstalled = new WeakSet<Control>();
 const selectionHitSize = new WeakMap<object, number>();
 const selectionPerPixelTargetFind = new WeakMap<FabricObject, boolean>();
+
+const TEXT_FONT_SIZE_CONTROLS = {
+  tl: true,
+  tr: true,
+  br: true,
+  bl: true,
+  mt: false,
+  mr: false,
+  mb: false,
+  ml: false
+} as const;
+
+type TextScaleTransform = Parameters<TransformActionHandler>[1] & {
+  textBaseFontSize?: number;
+  textBaseWidth?: number;
+  textBaseHeight?: number;
+};
+
+const TEXT_FONT_SIZE_MIN = 6;
+const TEXT_FONT_SIZE_MAX = 400;
+
+const textFontSizeAction: TransformActionHandler = (_eventData, rawTransform, x, y) => {
+  const transform = rawTransform as TextScaleTransform;
+  const target = transform.target;
+  if (!(target instanceof IText) || target.lockScalingX || target.lockScalingY) return false;
+
+  if (
+    transform.textBaseFontSize === undefined ||
+    transform.textBaseWidth === undefined ||
+    transform.textBaseHeight === undefined
+  ) {
+    const originalScaleX = Math.abs(transform.original.scaleX) || 1;
+    const originalScaleY = Math.abs(transform.original.scaleY) || 1;
+    transform.textBaseFontSize = target.fontSize * Math.sqrt(originalScaleX * originalScaleY);
+    transform.textBaseWidth = Math.max(1, Math.abs(transform.width) * originalScaleX);
+    transform.textBaseHeight = Math.max(1, Math.abs(transform.height) * originalScaleY);
+  }
+
+  const localPoint = controlsUtils.getLocalPoint(
+    transform,
+    transform.originX,
+    transform.originY,
+    x,
+    y
+  );
+  const baseDiagonal = transform.textBaseWidth + transform.textBaseHeight;
+  const pointerDiagonal = Math.abs(localPoint.x) + Math.abs(localPoint.y);
+  const scale = Math.max(0.01, pointerDiagonal / Math.max(1, baseDiagonal));
+  const fontSize = Math.min(
+    TEXT_FONT_SIZE_MAX,
+    Math.max(TEXT_FONT_SIZE_MIN, transform.textBaseFontSize * scale)
+  );
+  const changed = target.fontSize !== fontSize || target.scaleX !== 1 || target.scaleY !== 1;
+  target.set({ fontSize, scaleX: 1, scaleY: 1 });
+  return changed;
+};
+
+const textFontSizeActionHandler = controlsUtils.wrapWithFireEvent(
+  "scaling",
+  controlsUtils.wrapWithFixedAnchor(textFontSizeAction)
+);
+
+/** Resize text by changing its font size instead of stretching its glyphs. */
+export function configureTextObject(object: FabricObject): void {
+  if (!(object instanceof IText)) return;
+  ["tl", "tr", "br", "bl"].forEach((corner) => {
+    const control = object.controls[corner];
+    if (!control) return;
+    control.actionName = "text-font-size";
+    control.actionHandler = textFontSizeActionHandler;
+  });
+  object.setControlsVisibility(TEXT_FONT_SIZE_CONTROLS);
+}
 
 export function enableSelectionBoundsTarget(object: FabricObject): void {
   if (!selectionPerPixelTargetFind.has(object)) {
@@ -139,6 +220,8 @@ function installSelectionBorderShadow(object: FabricObject): void {
 }
 
 export function configureSelectionControls(object: FabricObject, zoom = 1): void {
+  configureTextObject(object);
+  configureVectorControls(object);
   const color = isManualGroup(object) ? GROUP_SELECTION_COLOR : SINGLE_OBJECT_SELECTION_COLOR;
   installSelectionBorderShadow(object);
   selectionHitSize.set(object, selectionControlHitSizeForObject(object, zoom));

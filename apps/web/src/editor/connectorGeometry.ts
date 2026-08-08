@@ -1,4 +1,8 @@
-import type { ConnectorArrowhead, ConnectorPathShape } from "@workspace/editor-core";
+import type {
+  ConnectorArrowhead,
+  ConnectorLineCap,
+  ConnectorPathShape
+} from "@workspace/editor-core";
 import type { Point } from "./geometry";
 
 export interface ConnectorGeometry {
@@ -18,9 +22,10 @@ const pointText = (point: Point) => `${point.x} ${point.y}`;
  */
 export function connectorStrokeLineCap(
   startArrowhead: ConnectorArrowhead,
-  endArrowhead: ConnectorArrowhead
-): "round" | "butt" {
-  return startArrowhead === "none" && endArrowhead === "none" ? "round" : "butt";
+  endArrowhead: ConnectorArrowhead,
+  lineCap?: ConnectorLineCap
+): ConnectorLineCap {
+  return startArrowhead === "none" && endArrowhead === "none" ? (lineCap ?? "round") : "butt";
 }
 
 /**

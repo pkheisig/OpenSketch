@@ -103,6 +103,7 @@ export type ConnectorAnchor = "top" | "right" | "bottom" | "left" | "center";
 export type ConnectorArrowhead =
   "none" | "triangle" | "open" | "circle" | "open-circle" | "bar" | "neuron";
 export type ConnectorLineStyle = "solid" | "dashed" | "dotted";
+export type ConnectorLineCap = "butt" | "round";
 export type ConnectorRouting = "direct" | "orthogonal";
 export type ConnectorPathShape =
   | "straight"
@@ -128,6 +129,7 @@ export interface ConnectorBinding {
   startArrowhead: ConnectorArrowhead;
   endArrowhead: ConnectorArrowhead;
   lineStyle: ConnectorLineStyle;
+  lineCap?: ConnectorLineCap;
   routing?: ConnectorRouting;
   pathShape?: ConnectorPathShape;
   curvature: number;
