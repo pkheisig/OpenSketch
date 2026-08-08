@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title">
+  <title id="title">OpenSketch OS monogram</title>
+  <rect width="512" height="512" rx="108" fill="#152324"/>
+  <rect x="18" y="18" width="476" height="476" rx="94" fill="none" stroke="#315856" stroke-width="12"/>
+  <circle cx="154" cy="256" r="88" fill="none" stroke="#e7b84b" stroke-width="58"/>
+  <path
+    d="M423 161C397 128 298 126 292 194C286 261 419 230 418 315C417 391 313 401 278 357"
+    fill="none"
+    stroke="#71c3b8"
+    stroke-width="58"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  />
+</svg>
