@@ -1,1 +1,0 @@
-import{j as o}from"./index-D4oOGzBI.js";function t({open:i,children:s,className:e=""}){return o.jsx("div",{className:`motion-collapse ${i?"open":""} ${e}`.trim(),"aria-hidden":!i,inert:i?void 0:!0,children:o.jsx("div",{className:"motion-collapse-inner",children:s})})}export{t as M};
