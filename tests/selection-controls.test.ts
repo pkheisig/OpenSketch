@@ -10,6 +10,8 @@ import { describe, expect, it } from "vitest";
 import {
   configureSelectionControls,
   configureTextObject,
+  applyActiveSelectionTextScale,
+  beginActiveSelectionTextScale,
   enableSelectionBoundsTarget,
   GROUP_SELECTION_COLOR,
   ROTATION_SNAP_ANGLE,
@@ -139,6 +141,29 @@ describe("selection control colors", () => {
 });
 
 describe("text scaling controls", () => {
+  it("realizes text font size while resizing a mixed multi-selection", () => {
+    const canvas = new Canvas();
+    const text = new IText("Label", { fontSize: 20, left: 100, top: 100 });
+    const shape = new Rect({ width: 40, height: 40, left: 180, top: 100 });
+    canvas.add(text, shape);
+    const selection = new ActiveSelection([text, shape], { canvas });
+    canvas.setActiveObject(selection);
+
+    const session = beginActiveSelectionTextScale(selection);
+    expect(session).not.toBeNull();
+
+    selection.set({ scaleX: 2, scaleY: 2 });
+    expect(applyActiveSelectionTextScale(selection, session!)).toBe(true);
+    expect(text.fontSize).toBe(40);
+    expect(text.scaleX).toBeCloseTo(0.5);
+    expect(text.scaleY).toBeCloseTo(0.5);
+
+    selection.remove(text);
+    expect(text.fontSize).toBe(40);
+    expect(text.scaleX).toBeCloseTo(1);
+    expect(text.scaleY).toBeCloseTo(1);
+  });
+
   it("uses font-size resize handles without allowing visual stretch", () => {
     const text = new IText("Label");
 

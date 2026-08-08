@@ -2250,6 +2250,7 @@ a:focus-visible {
 /* Canvas */
 .canvas-workspace {
   position: relative;
+  --floating-ui-left-inset: 78px;
   min-width: 0;
   min-height: 0;
   overflow: hidden;
@@ -2507,7 +2508,7 @@ a:focus-visible {
 .ruler-horizontal {
   top: 0;
   right: 0;
-  left: 21px;
+  left: var(--floating-ui-left-inset);
   display: flex;
   height: 21px;
   padding-left: 80px;
@@ -2522,8 +2523,8 @@ a:focus-visible {
 
 .ruler-vertical {
   top: 21px;
-  bottom: 0;
-  left: 0;
+  bottom: 54px;
+  left: var(--floating-ui-left-inset);
   width: 21px;
   padding-top: 80px;
   border-right: 1px solid #bac4bf;
@@ -4096,6 +4097,10 @@ input[type="range"] {
   background: var(--workspace);
 }
 
+.editor-grid:has(.sidebar-expanded) .canvas-workspace {
+  --floating-ui-left-inset: 420px;
+}
+
 .left-sidebar.floating-sidebar {
   position: absolute;
   z-index: 30;
@@ -4579,10 +4584,10 @@ input[type="range"] {
 
 .workspace-footer {
   position: absolute;
-  z-index: 9;
+  z-index: 40;
   right: 14px;
   bottom: 12px;
-  left: 14px;
+  left: var(--floating-ui-left-inset);
   display: grid;
   min-height: 42px;
   grid-template-columns: 1fr auto 1fr;
@@ -4594,10 +4599,15 @@ input[type="range"] {
   background: rgba(255, 254, 250, 0.96);
   box-shadow: 0 8px 24px rgba(27, 54, 52, 0.14);
   backdrop-filter: blur(10px);
+  pointer-events: none;
 }
 
 .workspace-footer.footer-panel-open {
-  z-index: 31;
+  z-index: 41;
+}
+
+.workspace-footer > * {
+  pointer-events: auto;
 }
 
 .workspace-footer .workspace-controls {

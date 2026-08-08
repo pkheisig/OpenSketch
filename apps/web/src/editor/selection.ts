@@ -1,6 +1,8 @@
 import {
+  ActiveSelection,
   controlsUtils,
   FabricObject,
+  Group,
   IText,
   type Control,
   type TCornerPoint,
@@ -45,6 +47,96 @@ type TextScaleTransform = Parameters<TransformActionHandler>[1] & {
 
 const TEXT_FONT_SIZE_MIN = 6;
 const TEXT_FONT_SIZE_MAX = 400;
+
+type TextScaleBaseline = {
+  object: IText;
+  fontSize: number;
+  scaleX: number;
+  scaleY: number;
+};
+
+export type ActiveSelectionTextScaleSession = {
+  selectionScaleX: number;
+  selectionScaleY: number;
+  textBaselines: TextScaleBaseline[];
+};
+
+function stableScale(value: number | undefined): number {
+  return Number.isFinite(value) && Math.abs(value ?? 0) > 0.0001 ? value! : 1;
+}
+
+function nestedTextObjects(object: FabricObject): IText[] {
+  if (object instanceof IText) return [object];
+  if (object instanceof Group) return object.getObjects().flatMap(nestedTextObjects);
+  return [];
+}
+
+/** Capture the text objects before an ActiveSelection resize begins. */
+export function beginActiveSelectionTextScale(
+  selection: FabricObject
+): ActiveSelectionTextScaleSession | null {
+  if (!(selection instanceof ActiveSelection)) return null;
+  const textBaselines = selection
+    .getObjects()
+    .flatMap(nestedTextObjects)
+    .map((object) => ({
+      object,
+      fontSize: object.fontSize,
+      scaleX: stableScale(object.scaleX),
+      scaleY: stableScale(object.scaleY)
+    }));
+  if (textBaselines.length === 0) return null;
+  return {
+    selectionScaleX: stableScale(selection.scaleX),
+    selectionScaleY: stableScale(selection.scaleY),
+    textBaselines
+  };
+}
+
+/**
+ * Convert an ActiveSelection's scale into text font sizes while compensating
+ * the child scale so the text keeps the same visual size during the drag and
+ * has a neutral scale when Fabric later exits the selection.
+ */
+export function applyActiveSelectionTextScale(
+  selection: FabricObject,
+  session: ActiveSelectionTextScaleSession
+): boolean {
+  if (!(selection instanceof ActiveSelection)) return false;
+  const scaleX = Math.abs(stableScale(selection.scaleX) / session.selectionScaleX);
+  const scaleY = Math.abs(stableScale(selection.scaleY) / session.selectionScaleY);
+  const requestedFontScale = Math.sqrt(scaleX * scaleY);
+  if (!Number.isFinite(requestedFontScale) || requestedFontScale <= 0) return false;
+
+  let changed = false;
+  session.textBaselines.forEach(({ object, fontSize, scaleX: baseScaleX, scaleY: baseScaleY }) => {
+    const nextFontSize = Math.min(
+      TEXT_FONT_SIZE_MAX,
+      Math.max(TEXT_FONT_SIZE_MIN, fontSize * requestedFontScale)
+    );
+    const appliedFontScale = nextFontSize / Math.max(fontSize, TEXT_FONT_SIZE_MIN);
+    const nextScaleX = baseScaleX / appliedFontScale;
+    const nextScaleY = baseScaleY / appliedFontScale;
+    if (
+      Math.abs(object.fontSize - nextFontSize) < 0.0001 &&
+      Math.abs(object.scaleX - nextScaleX) < 0.0001 &&
+      Math.abs(object.scaleY - nextScaleY) < 0.0001
+    ) {
+      return;
+    }
+    object.set({ fontSize: nextFontSize, scaleX: nextScaleX, scaleY: nextScaleY });
+    object.initDimensions();
+    object.dirty = true;
+    object.setCoords();
+    let parent = object.group;
+    while (parent) {
+      parent.dirty = true;
+      parent = parent.group;
+    }
+    changed = true;
+  });
+  return changed;
+}
 
 const textFontSizeAction: TransformActionHandler = (_eventData, rawTransform, x, y) => {
   const transform = rawTransform as TextScaleTransform;

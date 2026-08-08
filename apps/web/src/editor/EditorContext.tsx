@@ -66,13 +66,16 @@ import {
   type Point
 } from "@/editor/geometry";
 import {
+  applyActiveSelectionTextScale,
+  beginActiveSelectionTextScale,
   configureTextObject,
   configureSelectionControls,
   enableSelectionBoundsTarget,
   nextDeepSelection,
   restoreObjectTargeting,
   SELECTION_STROKE_WIDTH_PX,
-  selectionStrokeWidthAtZoom
+  selectionStrokeWidthAtZoom,
+  type ActiveSelectionTextScaleSession
 } from "@/editor/selection";
 import { CURSOR_GRAB, CURSOR_GRABBING } from "@/editor/cursors";
 import { assetInsertionScale } from "@/editor/assetInsertion";
@@ -1129,6 +1132,10 @@ export function EditorProvider({
   useEffect(() => {
     if (!canvas) return;
     let boundsTarget: FabricObject | undefined;
+    const activeSelectionTextScales = new WeakMap<
+      ActiveSelection,
+      ActiveSelectionTextScaleSession
+    >();
     let connectorFrame: number | undefined;
     let pendingConnectorObjectId: string | undefined;
     let snapCandidateTarget: FabricObject | undefined;
@@ -1501,6 +1508,7 @@ export function EditorProvider({
     };
     const modified = ({ target }: { target?: FabricObject } = {}) => {
       const changed = target ?? canvas.getActiveObject();
+      if (changed instanceof ActiveSelection) activeSelectionTextScales.delete(changed);
       const nestedSession =
         changed && nestedDrag.current?.target === changed ? nestedDrag.current : undefined;
       if (changed && nestedSession) {
@@ -1648,6 +1656,17 @@ export function EditorProvider({
     const transform = ({ target }: { target?: FabricObject }) => {
       if (!target) return;
       configureSelectionControls(target, latestZoom.current);
+      if (target instanceof ActiveSelection) {
+        let textScaleSession = activeSelectionTextScales.get(target);
+        if (!textScaleSession) {
+          textScaleSession = beginActiveSelectionTextScale(target) ?? undefined;
+          if (textScaleSession) activeSelectionTextScales.set(target, textScaleSession);
+        }
+        if (textScaleSession && applyActiveSelectionTextScale(target, textScaleSession)) {
+          target.dirty = true;
+          canvas.requestRenderAll();
+        }
+      }
       if (target.objectId) scheduleConnectorRefresh(target.objectId);
     };
     const clearGuides = () => {
