@@ -50,7 +50,12 @@ export function EditorStudio({
     return () => window.clearTimeout(warmupTimer);
   }, []);
   return (
-    <EditorProvider key={project.id} project={project} onProjectChange={onProjectChange}>
+    <EditorProvider
+      key={project.id}
+      project={project}
+      onProjectChange={onProjectChange}
+      onRequestExit={onHome}
+    >
       <main className="editor-shell">
         <Suspense fallback={<header className="top-toolbar" aria-hidden="true" />}>
           <TopToolbar

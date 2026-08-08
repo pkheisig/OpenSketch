@@ -211,7 +211,7 @@ html[data-theme] :is(.ui-select-menu, .asset-variant-menu) button:focus-visible 
 .opensketch-app .section-heading h1,
 .opensketch-app .section-heading h2 {
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 400;
 }
 
 .opensketch-app .project-count,
@@ -227,6 +227,11 @@ html[data-theme] :is(.ui-select-menu, .asset-variant-menu) button:focus-visible 
   border-radius: 6px;
   color: var(--shell-text);
   background: var(--shell-card);
+  font-weight: 400;
+}
+
+.opensketch-app .project-title {
+  font-weight: 400;
 }
 
 .opensketch-app .new-figure-button:hover,
@@ -946,6 +951,24 @@ html[data-theme] .ui-select-menu button svg,
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.03em;
+}
+
+.opensketch-app .export-dialog {
+  font-weight: 400;
+}
+
+.opensketch-app .export-dialog .dialog-titlebar h2 {
+  font-weight: 700;
+}
+
+.opensketch-app .export-dialog .format-tabs span,
+.opensketch-app .export-dialog .format-tabs strong,
+.opensketch-app .export-dialog .field,
+.opensketch-app .export-dialog .check-field,
+.opensketch-app .export-dialog .color-field,
+.opensketch-app .export-dialog .color-field > span,
+.opensketch-app .export-dialog > .button.primary {
+  font-weight: 400;
 }
 
 .opensketch-app .dialog > p:not(.eyebrow),

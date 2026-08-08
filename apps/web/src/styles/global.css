@@ -290,7 +290,7 @@ a:focus-visible {
   margin: 0;
   font-family: inherit;
   font-size: 16px;
-  font-weight: 800;
+  font-weight: 400;
   letter-spacing: -0.01em;
 }
 
@@ -351,7 +351,7 @@ a:focus-visible {
     border-color 120ms ease,
     background 120ms ease;
   font-size: 12px;
-  font-weight: 750;
+  font-weight: 400;
 }
 
 .new-figure-button:hover {
@@ -383,7 +383,7 @@ a:focus-visible {
   color: #405b57;
   background: #fffef9;
   font-size: 12px;
-  font-weight: 750;
+  font-weight: 400;
   transition:
     border-color 150ms ease,
     color 150ms ease,
@@ -550,7 +550,7 @@ a:focus-visible {
   background: transparent;
   text-align: left;
   font-size: 13px;
-  font-weight: 800;
+  font-weight: 400;
 }
 
 .project-card details {
@@ -3835,6 +3835,24 @@ input[type="range"] {
 
 .dialog-titlebar h2 {
   margin-bottom: 0;
+}
+
+.export-dialog {
+  font-weight: 400;
+}
+
+.export-dialog .dialog-titlebar h2 {
+  font-weight: 700;
+}
+
+.export-dialog .format-tabs span,
+.export-dialog .format-tabs strong,
+.export-dialog .field,
+.export-dialog .check-field,
+.export-dialog .color-field,
+.export-dialog .color-field > span,
+.export-dialog > .button.primary {
+  font-weight: 400;
 }
 
 .format-tabs {

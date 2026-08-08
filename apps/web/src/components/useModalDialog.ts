@@ -19,6 +19,7 @@ export function useModalDialog(open: boolean, onClose: () => void) {
     const keyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
+        event.stopPropagation();
         closeRef.current();
         return;
       }

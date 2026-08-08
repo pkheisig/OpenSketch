@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://pkheisig.github.io/OpenSketch/"><strong>Open OpenSketch&nbsp;&rarr;</strong></a>
+  <a href="https://pkheisig.github.io/OpenSketch/"><strong>Launch OpenSketch&nbsp;&rarr;</strong></a>
 </p>
 
 <table>

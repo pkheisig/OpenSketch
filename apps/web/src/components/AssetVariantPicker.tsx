@@ -170,6 +170,7 @@ export function AssetVariantPicker({
               onKeyDown={(event) => {
                 if (event.key === "Escape") {
                   event.preventDefault();
+                  event.stopPropagation();
                   setOpen(false);
                   triggerRef.current?.focus();
                 }

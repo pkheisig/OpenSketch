@@ -805,10 +805,12 @@ function withLogicalViewport<T>(canvas: Canvas, settings: CanvasSettings, operat
 export function EditorProvider({
   project,
   onProjectChange,
+  onRequestExit,
   children
 }: {
   project: ProjectRecord;
   onProjectChange: (project: ProjectRecord) => Promise<void>;
+  onRequestExit: () => void;
   children: ReactNode;
 }) {
   const [canvas, setCanvas] = useState<Canvas | null>(null);
@@ -874,6 +876,7 @@ export function EditorProvider({
   const savedElementStyles = useRef(loadSavedElementStyles());
   const pendingSnapshot = useRef<{ snapshot: string; revision: number } | undefined>(undefined);
   const saveQueue = useRef<Promise<void>>(Promise.resolve());
+  const exitPending = useRef(false);
   const saveRevision = useRef(0);
   const savedRevision = useRef(0);
   const lastSaveError = useRef<unknown>(undefined);
@@ -1087,6 +1090,16 @@ export function EditorProvider({
     }
     await refreshThumbnail();
   }, [enqueuePendingSave, refreshThumbnail]);
+
+  const requestExit = useCallback(() => {
+    if (exitPending.current) return;
+    exitPending.current = true;
+    void flushSave()
+      .then(onRequestExit)
+      .catch(() => {
+        exitPending.current = false;
+      });
+  }, [flushSave, onRequestExit]);
 
   const persist = useCallback(
     (snapshot?: string) => {
@@ -3356,18 +3369,24 @@ export function EditorProvider({
           return;
         }
         if (creationTool) {
+          event.preventDefault();
           setCreationTool(null);
           return;
         }
         const parentAsset = editableAssetParent(canvas.getActiveObject());
         if (parentAsset) {
+          event.preventDefault();
           canvas.setActiveObject(parentAsset);
           setSelection([parentAsset]);
           canvas.requestRenderAll();
-        } else {
+        } else if (canvas.getActiveObjects().length > 0) {
+          event.preventDefault();
           canvas.discardActiveObject();
           setSelection([]);
           canvas.requestRenderAll();
+        } else {
+          event.preventDefault();
+          requestExit();
         }
       } else if (event.key.startsWith("Arrow")) {
         event.preventDefault();
@@ -3415,6 +3434,7 @@ export function EditorProvider({
     importMedia,
     pasteSelection,
     redo,
+    requestExit,
     refreshConnectors,
     selectParentAsset,
     setEditingGroupPath,

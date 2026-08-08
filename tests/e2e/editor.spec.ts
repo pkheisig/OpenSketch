@@ -2646,6 +2646,17 @@ test("@smoke supports visible and native navigation for new figures", async ({ p
   expect(previewCanvasBounds!.height).toBeGreaterThanOrEqual(previewBounds!.height - 2);
 });
 
+test("@smoke exits the editor with Escape", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await expect(page.getByLabel("OpenSketch figure artboard")).toBeVisible();
+
+  await page.keyboard.press("Escape");
+
+  await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
+  await expect(page.getByLabel("OpenSketch figure artboard")).toHaveCount(0);
+});
+
 test("archives projects and organizes newest-first project rows with folders", async ({ page }) => {
   const createNamedProject = async (name: string) => {
     await page.getByRole("button", { name: "New figure" }).click();
