@@ -12,7 +12,12 @@
   <a href="https://pkheisig.github.io/OpenSketch/"><strong>Open OpenSketch&nbsp;&rarr;</strong></a>
 </p>
 
-![A scientific figure in the OpenSketch editor](docs/images/editor.png)
+<table>
+  <tr>
+    <td width="50%"><img src="docs/images/taa-tcells.png" alt="Tumor-associated antigen recognition by T cells in OpenSketch"></td>
+    <td width="50%"><img src="docs/images/t-cell-macs.png" alt="T-cell expansion workflow using MACS in OpenSketch"></td>
+  </tr>
+</table>
 
 OpenSketch combines an editable scientific illustration library with the text,
 shape, connector, alignment, grouping, and export tools needed to assemble
@@ -27,13 +32,6 @@ installation, or application server is required.
 - Organize local projects in folders and reopen them offline.
 - Export editable SVG and PDF, high-resolution PNG, or portable `.OpenSketch`
   project files.
-
-<table>
-  <tr>
-    <td width="50%"><img src="docs/images/asset-library.png" alt="Searching the OpenSketch scientific asset library"></td>
-    <td width="50%"><img src="docs/images/projects.png" alt="Locally stored projects in OpenSketch"></td>
-  </tr>
-</table>
 
 ## Private by design
 
