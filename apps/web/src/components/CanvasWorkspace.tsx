@@ -279,6 +279,7 @@ export function CanvasWorkspace() {
   const zoomSettleTimer = useRef<number | undefined>(undefined);
   const pendingZoom = useRef(zoom);
   const pendingZoomAnchor = useRef<ZoomAnchor | null>(null);
+  const [rulerZoom, setRulerZoom] = useState(zoom);
   const [dragging, setDragging] = useState(false);
   const [viewportReady, setViewportReady] = useState(false);
   const [rulerVisible, setRulerVisible] = useState(() => {
@@ -326,7 +327,7 @@ export function CanvasWorkspace() {
         preset.height === editor.canvasSettings.height
     )?.[0] ?? "";
   const rulerStyle = {
-    "--ruler-step": `${RULER_STEP_PX * Math.max(0.1, zoom)}px`
+    "--ruler-step": `${RULER_STEP_PX * Math.max(0.1, rulerZoom)}px`
   } as CSSProperties;
 
   useEffect(() => {
@@ -551,6 +552,7 @@ export function CanvasWorkspace() {
 
   useEffect(() => {
     pendingZoom.current = zoom;
+    setRulerZoom(zoom);
   }, [zoom]);
 
   useEffect(() => {
@@ -609,6 +611,7 @@ export function CanvasWorkspace() {
         0.1,
         Math.min(4, pendingZoom.current + wheelZoomDelta(event.deltaY, event.deltaMode))
       );
+      setRulerZoom(pendingZoom.current);
       if (zoomFrame.current === undefined) {
         zoomFrame.current = window.requestAnimationFrame(() => {
           zoomFrame.current = undefined;
@@ -1145,7 +1148,7 @@ export function CanvasWorkspace() {
           </div>
           <div className="canvas-ruler ruler-vertical" style={rulerStyle}>
             {Array.from({ length: RULER_TICK_COUNT }, (_, index) => (
-              <span key={index}>{index * RULER_STEP_PX}</span>
+              <span key={index}>{index === 0 ? null : index * RULER_STEP_PX}</span>
             ))}
           </div>
         </>

@@ -2569,6 +2569,7 @@ a:focus-visible {
   flex: 0 0 var(--ruler-step, 200px);
   padding: 5px 0 0 4px;
   border-left: 1px solid #b6c0bb;
+  transition: flex-basis 90ms ease-out;
 }
 
 .ruler-vertical {
@@ -2585,6 +2586,7 @@ a:focus-visible {
   height: var(--ruler-step, 200px);
   padding: 4px 0 0 4px;
   border-top: 1px solid #b6c0bb;
+  transition: height 90ms ease-out;
   writing-mode: vertical-rl;
 }
 

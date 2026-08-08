@@ -8,6 +8,7 @@ test("@smoke keeps the footer above the floating rail and reserves the ruler lan
   await expect(page.locator(".canvas-workspace")).toBeVisible();
   await expect(page.locator(".floating-tool-rail")).toBeVisible();
   await expect(page.locator(".workspace-footer")).toBeVisible();
+  await page.waitForTimeout(500);
 
   const geometry = await page.evaluate(() => {
     const rect = (selector: string) => {
@@ -21,6 +22,7 @@ test("@smoke keeps the footer above the floating rail and reserves the ruler lan
         bottom: bounds.bottom,
         width: bounds.width,
         height: bounds.height,
+        text: element.textContent,
         background: getComputedStyle(element).backgroundColor,
         zIndex: Number.parseInt(getComputedStyle(element).zIndex, 10) || 0
       };
@@ -54,20 +56,29 @@ test("@smoke keeps the footer above the floating rail and reserves the ruler lan
   expect(geometry.verticalRuler!.left).toBeGreaterThanOrEqual(geometry.panel!.right);
   expect(geometry.horizontalZero!.left).toBeCloseTo(geometry.horizontalRuler!.left, 1);
   expect(geometry.verticalZero!.top).toBeCloseTo(geometry.verticalRuler!.top, 1);
+  expect(geometry.horizontalZero!.text).toBe("0");
+  expect(geometry.verticalZero!.text).toBe("");
   expect(geometry.footer!.left).toBeGreaterThanOrEqual(geometry.panel!.right);
   expect(geometry.verticalRuler!.bottom).toBeLessThanOrEqual(geometry.footer!.top);
   expect(geometry.footer!.zIndex).toBeGreaterThan(geometry.rail!.zIndex);
 
   const initialStep = geometry.horizontalZero!.width;
-  await page.getByRole("button", { name: "Zoom in" }).click();
+  const scrollBox = await page.locator(".workspace-scroll").boundingBox();
+  expect(scrollBox).not.toBeNull();
+  await page.mouse.move(scrollBox!.x + scrollBox!.width / 2, scrollBox!.y + scrollBox!.height / 2);
+  await page.keyboard.down("Control");
+  await page.mouse.wheel(0, -100);
+  await page.keyboard.up("Control");
   await expect
     .poll(
-      async () => (await page.locator(".ruler-horizontal span:first-child").boundingBox())?.width
+      async () => (await page.locator(".ruler-horizontal span:first-child").boundingBox())?.width,
+      { timeout: 120 }
     )
     .toBeGreaterThan(initialStep);
   await expect
     .poll(
-      async () => (await page.locator(".ruler-vertical span:first-child").boundingBox())?.height
+      async () => (await page.locator(".ruler-vertical span:first-child").boundingBox())?.height,
+      { timeout: 120 }
     )
     .toBeGreaterThan(geometry.verticalZero!.height);
 });
