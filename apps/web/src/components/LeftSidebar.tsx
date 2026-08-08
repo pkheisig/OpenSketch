@@ -26,13 +26,14 @@ import {
   X
 } from "lucide-react";
 import {
+  ASSET_CATEGORY_ORDER,
   filterAssetFamilies,
+  type AssetManifest,
   type AssetFamily,
   type AssetVariant,
   type ConnectorArrowhead,
   type ConnectorLineStyle
 } from "@workspace/editor-core";
-import { ASSET_CATEGORIES, assetManifest } from "@/assets/manifest";
 import { AssetPreviewImage } from "@/components/AssetPreviewImage";
 import { MotionCollapse } from "@/components/MotionCollapse";
 import { MotionPresence } from "@/components/MotionPresence";
@@ -102,6 +103,7 @@ const DEFAULT_CREATION_DEFAULTS_DISCLOSURES: Record<CreationDefaultsSection, boo
   shape: true,
   line: true
 };
+const ASSET_CATEGORIES = ["All", ...ASSET_CATEGORY_ORDER];
 
 function loadCreationDefaultsDisclosures(): Record<CreationDefaultsSection, boolean> {
   try {
@@ -313,6 +315,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const [assetFiltersOpen, setAssetFiltersOpen] = useState(false);
   const [assetSourceFilter, setAssetSourceFilter] = useState(ALL_ASSET_FILTER_VALUE);
   const [assetVariantFilter, setAssetVariantFilter] = useState(ALL_ASSET_FILTER_VALUE);
+  const [assetCatalog, setAssetCatalog] = useState<AssetManifest | null>(null);
   const sidebarRef = useRef<HTMLElement>(null);
   const primaryFamilyButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const handledSelection = useRef("");
@@ -397,6 +400,16 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
     if (!editor.creationTool || collapsed) return;
     onToggle();
   }, [collapsed, editor.creationTool, onToggle]);
+  useEffect(() => {
+    if (collapsed || tab !== "assets" || assetCatalog) return;
+    let active = true;
+    void import("@/assets/manifest").then(({ assetManifest }) => {
+      if (active) setAssetCatalog(assetManifest);
+    });
+    return () => {
+      active = false;
+    };
+  }, [assetCatalog, collapsed, tab]);
   useEffect(() => {
     const clearAssetDrag = () => {
       window.setTimeout(() => {
@@ -728,29 +741,36 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
               role="tabpanel"
               aria-label={`${tab} tools`}
             >
-              {tab === "assets" && (
-                <AssetsPanel
-                  query={assetQuery}
-                  onQueryChange={setAssetQuery}
-                  category={assetCategory}
-                  onCategoryChange={setAssetCategory}
-                  focusRequest={assetSearchFocusRequest}
-                  filtersOpen={assetFiltersOpen}
-                  onFiltersOpenChange={setAssetFiltersOpen}
-                  sourceFilter={assetSourceFilter}
-                  onSourceFilterChange={setAssetSourceFilter}
-                  variantFilter={assetVariantFilter}
-                  onVariantFilterChange={setAssetVariantFilter}
-                  onAssetDragStart={() => {
-                    draggedAsset.current = true;
-                  }}
-                  onAssetDragEnd={() => {
-                    window.setTimeout(() => {
-                      draggedAsset.current = false;
-                    }, 0);
-                  }}
-                />
-              )}
+              {tab === "assets" &&
+                (assetCatalog ? (
+                  <AssetsPanel
+                    assetManifest={assetCatalog}
+                    query={assetQuery}
+                    onQueryChange={setAssetQuery}
+                    category={assetCategory}
+                    onCategoryChange={setAssetCategory}
+                    focusRequest={assetSearchFocusRequest}
+                    filtersOpen={assetFiltersOpen}
+                    onFiltersOpenChange={setAssetFiltersOpen}
+                    sourceFilter={assetSourceFilter}
+                    onSourceFilterChange={setAssetSourceFilter}
+                    variantFilter={assetVariantFilter}
+                    onVariantFilterChange={setAssetVariantFilter}
+                    onAssetDragStart={() => {
+                      draggedAsset.current = true;
+                    }}
+                    onAssetDragEnd={() => {
+                      window.setTimeout(() => {
+                        draggedAsset.current = false;
+                      }, 0);
+                    }}
+                  />
+                ) : (
+                  <div className="empty-library" role="status">
+                    <Search size={23} />
+                    <h3>Loading asset library…</h3>
+                  </div>
+                ))}
               {tab === "imports" && <ImportsPanel />}
               {tab === "edit" && <InspectorContent onClose={onToggle} />}
             </div>
@@ -763,6 +783,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
 }
 
 function AssetsPanel({
+  assetManifest,
   query,
   onQueryChange,
   category,
@@ -777,6 +798,7 @@ function AssetsPanel({
   onAssetDragStart,
   onAssetDragEnd
 }: {
+  assetManifest: AssetManifest;
   query: string;
   onQueryChange: (query: string) => void;
   category: string;
@@ -807,7 +829,7 @@ function AssetsPanel({
         assetManifest.families.map((family) => assetSourceFilterLabel(family)),
         "All sources"
       ),
-    []
+    [assetManifest.families]
   );
   const families = useMemo(() => {
     const matches = filterAssetFamilies(
@@ -827,7 +849,7 @@ function AssetsPanel({
     return category === "Favorites"
       ? filtered.filter((family) => favorites.has(family.familyId))
       : filtered;
-  }, [category, debouncedQuery, favorites, sourceFilter, variantFilter]);
+  }, [assetManifest.families, category, debouncedQuery, favorites, sourceFilter, variantFilter]);
   const activeFilterCount = [sourceFilter, variantFilter].filter(
     (value) => value !== ALL_ASSET_FILTER_VALUE
   ).length;

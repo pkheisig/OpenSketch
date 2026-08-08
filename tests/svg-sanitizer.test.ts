@@ -73,6 +73,25 @@ describe("SVG sanitization", () => {
     expect(clean).not.toContain("<style");
   });
 
+  it("removes external paint URLs from ordinary SVG attributes", () => {
+    const styled = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+      <rect width="10" height="10" fill="url(https://example.org/paint.svg)"/>
+    </svg>`;
+    const clean = sanitizeImportedSvg(styled, "local");
+    expect(clean).not.toContain("example.org");
+  });
+
+  it("preserves safe inline styles while namespacing internal references", () => {
+    const styled = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+      <defs><linearGradient id="paint"><stop stop-color="#fff"/></linearGradient></defs>
+      <style>#shape { fill: url('#paint'); }</style>
+      <rect id="shape" width="10" height="10"/>
+    </svg>`;
+    const clean = sanitizeImportedSvg(styled, "safe");
+    expect(clean).toContain("#safe-shape");
+    expect(clean).toContain("url(#safe-paint)");
+  });
+
   it("does not confuse hex colors with internal IDs", () => {
     const colorLikeId = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
       <style>#fff { stroke: #fff; }</style>
@@ -118,5 +137,12 @@ describe("SVG sanitization", () => {
     </svg>`;
     expect(sanitizeSvg(externalUse, "asset")).not.toContain("<use");
     expect(sanitizeImportedSvg(externalUse, "import")).not.toContain("<use");
+  });
+
+  it("rejects malformed SVGs and SVGs without a viewBox", () => {
+    expect(() => sanitizeImportedSvg("not svg", "import")).toThrow("not a valid SVG");
+    expect(() =>
+      sanitizeImportedSvg('<svg xmlns="http://www.w3.org/2000/svg"><rect/></svg>', "import")
+    ).toThrow("must define a viewBox");
   });
 });

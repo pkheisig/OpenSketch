@@ -110,4 +110,41 @@ describe("asset search", () => {
       "other"
     ]);
   });
+
+  it("sorts equal-category browse results by title and keeps search ties stable", () => {
+    const zebra = { ...antibody, familyId: "zebra", title: "Zebra protein" };
+    const alpha = { ...antibody, familyId: "alpha", title: "Alpha protein" };
+    expect(filterAssetFamilies([zebra, alpha], "", "All")).toEqual([alpha, zebra]);
+    expect(filterAssetFamilies([zebra, alpha], "protein", "All")).toEqual([zebra, alpha]);
+    expect(
+      filterAssetFamilies(
+        [
+          { ...zebra, familyId: "first", title: "Same", category: "Proteins" },
+          { ...alpha, familyId: "second", title: "Same", category: "Proteins" }
+        ],
+        "",
+        "All"
+      ).map((family) => family.familyId)
+    ).toEqual(["first", "second"]);
+  });
+
+  it("matches plural words ending in ies", () => {
+    const bodies = { ...antibody, familyId: "bodies", title: "Cell bodies" };
+    expect(filterAssetFamilies([bodies], "bodies")).toEqual([bodies]);
+  });
+
+  it("ranks title prefixes, synonym matches, and unknown browse categories", () => {
+    const kinase = { ...antibody, familyId: "kinase", title: "Protein kinase" };
+    const reticulum = {
+      ...antibody,
+      familyId: "reticulum",
+      title: "Cell structure",
+      description: "Endoplasmic reticulum network",
+      keywords: ["endoplasmic reticulum"]
+    };
+    const unlisted = { ...antibody, familyId: "unlisted", title: "Unlisted", category: "Unlisted" };
+    expect(filterAssetFamilies([kinase], "protein")).toEqual([kinase]);
+    expect(filterAssetFamilies([reticulum], "er")).toEqual([reticulum]);
+    expect(filterAssetFamilies([unlisted, antibody], "", "All")).toEqual([antibody, unlisted]);
+  });
 });

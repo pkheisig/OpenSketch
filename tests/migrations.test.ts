@@ -71,4 +71,22 @@ describe("project migrations", () => {
       })
     ).toThrow("imported media");
   });
+
+  it("rejects invalid project structure and asset references", () => {
+    expect(() => migrateProject(null)).toThrow("not an OpenSketch project");
+    expect(() => migrateProject({ ...project, format: "Other" })).toThrow("marker");
+    expect(() => migrateProject({ ...project, name: "" })).toThrow("incomplete");
+    expect(() => migrateProject({ ...project, canvas: { ...project.canvas, unit: "cm" } })).toThrow(
+      "canvas unit"
+    );
+    expect(() => migrateProject({ ...project, objects: [] })).toThrow("scene is invalid");
+    expect(() => migrateProject({ ...project, usedAssetIds: [42] })).toThrow("asset references");
+  });
+
+  it("defaults omitted optional media and asset lists", () => {
+    const legacy = { ...project, uploads: undefined, usedAssetIds: undefined };
+    const migrated = migrateProject(legacy);
+    expect(migrated.uploads).toEqual([]);
+    expect(migrated.usedAssetIds).toEqual([]);
+  });
 });

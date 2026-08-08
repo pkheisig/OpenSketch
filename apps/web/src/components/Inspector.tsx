@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   AlignCenter,
   AlignHorizontalDistributeCenter,
@@ -26,13 +26,13 @@ import {
 } from "lucide-react";
 import { MotionCollapse } from "@/components/MotionCollapse";
 import {
+  type AssetFamily,
   type ConnectorAnchor,
   type ConnectorArrowhead,
   type ConnectorLineStyle,
   type ConnectorRouting
 } from "@workspace/editor-core";
 import { Color, FabricObject, Group as FabricGroup, Text } from "fabric";
-import { assetManifest } from "@/assets/manifest";
 import { useEditor } from "@/editor/EditorContext";
 import { TEXT_FONT_FAMILIES } from "@/editor/fonts";
 import { isManualGroup } from "@/editor/grouping";
@@ -79,6 +79,7 @@ export function InspectorContent({ onClose }: { onClose?: () => void }) {
 function ObjectInspector({ object }: { object: FabricObject }) {
   const editor = useEditor();
   const [aspectLocked, setAspectLocked] = useState(true);
+  const [assetFamilies, setAssetFamilies] = useState<AssetFamily[] | null>(null);
   const objectType = object.OpenSketchType ?? "";
   const isText = object instanceof Text;
   const isLineLike = [
@@ -91,9 +92,22 @@ function ObjectInspector({ object }: { object: FabricObject }) {
   ].includes(objectType);
   const isShape = objectType === "shape";
   const isSvgPart = objectType === "svg-part";
+  useEffect(() => {
+    if (!(object instanceof FabricGroup) || !object.familyId) {
+      setAssetFamilies(null);
+      return;
+    }
+    let active = true;
+    void import("@/assets/manifest").then(({ assetManifest }) => {
+      if (active) setAssetFamilies(assetManifest.families);
+    });
+    return () => {
+      active = false;
+    };
+  }, [object]);
   const assetFamily =
     object instanceof FabricGroup && object.familyId
-      ? assetManifest.families.find((family) => family.familyId === object.familyId)
+      ? assetFamilies?.find((family) => family.familyId === object.familyId)
       : undefined;
   const hasStoredVariants = Boolean(assetFamily && assetFamily.variants.length > 1);
   const canGroup = editor.selection.length > 1;

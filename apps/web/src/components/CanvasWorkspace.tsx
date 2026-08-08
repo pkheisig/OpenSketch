@@ -57,7 +57,6 @@ import {
   unitToPixels,
   type CanvasUnit
 } from "@workspace/editor-core";
-import { assetManifest } from "@/assets/manifest";
 import { ColorPalettePicker } from "@/components/ColorPalettePicker";
 import { MotionPresence } from "@/components/MotionPresence";
 import { UiSelect } from "@/components/UiSelect";
@@ -644,9 +643,11 @@ export function CanvasWorkspace() {
     if (encoded) {
       const data = parseAssetDragPayload(encoded);
       if (data) {
-        const family = assetManifest.families.find((item) => item.familyId === data.familyId);
-        const variant = family?.variants.find((item) => item.id === data.variantId);
-        if (family && variant) void editor.addAsset(family, variant, point);
+        void import("@/assets/manifest").then(({ assetManifest }) => {
+          const family = assetManifest.families.find((item) => item.familyId === data.familyId);
+          const variant = family?.variants.find((item) => item.id === data.variantId);
+          if (family && variant) void editor.addAsset(family, variant, point);
+        });
       }
       return;
     }

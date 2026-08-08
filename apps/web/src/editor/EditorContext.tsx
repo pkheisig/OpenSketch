@@ -105,7 +105,6 @@ import {
   rememberProjectImports,
   saveImportedMedia as saveImportedMediaToLibrary
 } from "@/persistence/database";
-import { assetManifest } from "@/assets/manifest";
 import {
   CREATION_DEFAULTS_STORAGE_KEY,
   DEFAULT_CREATION_DEFAULTS,
@@ -173,11 +172,27 @@ const MAX_HISTORY = 120;
 const SVG_CACHE_LIMIT = 64;
 const DRAG_DUPLICATE_OPACITY = 0.35;
 const svgStringCache = new Map<string, string>();
-const bundledVariants = new Map(
-  assetManifest.families.flatMap((family) =>
-    family.variants.map((variant) => [variant.id, variant] as const)
-  )
-);
+let assetManifestPromise: Promise<typeof import("@/assets/manifest")> | undefined;
+let bundledVariantsPromise: Promise<Map<string, AssetVariant>> | undefined;
+
+function loadAssetManifest() {
+  if (!assetManifestPromise) assetManifestPromise = import("@/assets/manifest");
+  return assetManifestPromise;
+}
+
+function loadBundledVariants(): Promise<Map<string, AssetVariant>> {
+  if (!bundledVariantsPromise) {
+    bundledVariantsPromise = loadAssetManifest().then(
+      ({ assetManifest }) =>
+        new Map(
+          assetManifest.families.flatMap((family) =>
+            family.variants.map((variant) => [variant.id, variant] as const)
+          )
+        )
+    );
+  }
+  return bundledVariantsPromise;
+}
 const COALESCABLE_HISTORY_LABELS = new Set([
   "Change properties",
   "Edit connector",
@@ -196,13 +211,13 @@ function cacheSvg(assetId: string, source: string): void {
   }
 }
 
-async function bundledSvgSource(assetId: string): Promise<string | null> {
+async function bundledSvgSource(assetId: string, assetPath?: string): Promise<string | null> {
   const cached = svgStringCache.get(assetId);
   if (cached) {
     cacheSvg(assetId, cached);
     return cached;
   }
-  const variant = bundledVariants.get(assetId);
+  const variant = assetPath ? { assetPath } : (await loadBundledVariants()).get(assetId);
   if (!variant) return null;
   const response = await fetch(variant.assetPath);
   if (!response.ok) return null;
@@ -212,7 +227,7 @@ async function bundledSvgSource(assetId: string): Promise<string | null> {
 }
 
 async function createBundledAssetGroup(family: AssetFamily, variant: AssetVariant): Promise<Group> {
-  const source = await bundledSvgSource(variant.id);
+  const source = await bundledSvgSource(variant.id, variant.assetPath);
   if (!source) throw new Error(`Could not load ${family.title}.`);
   const result = await loadEditableSvg(source);
   const objects = result.objects.filter((object): object is FabricObject => Boolean(object));
@@ -2150,6 +2165,7 @@ export function EditorProvider({
         const current = canvas.getActiveObject();
         if (!(current instanceof Group) || !current.familyId || current.assetId === variantId)
           return;
+        const { assetManifest } = await loadAssetManifest();
         const family = assetManifest.families.find(
           (candidate) => candidate.familyId === current.familyId
         );
@@ -2805,16 +2821,28 @@ export function EditorProvider({
       if (!canvas || selection.length !== 1) return;
       const object = selection[0];
       if (!(object instanceof Group) || !object.familyId) return;
-      const family = assetManifest.families.find((item) => item.familyId === object.familyId);
-      const profile = family ? colorProfileForFamily(family) : undefined;
       const preset = ASSET_COLOR_PRESETS.find((item) => item.id === presetId);
-      if (!profile || !preset) return;
-      const mapping = presetColorMap(originalPaints(object), profile, preset);
-      restoreOriginalColors(object);
-      applyPresetColors(object, mapping, preset.id);
-      canvas.requestRenderAll();
-      setSelection([...canvas.getActiveObjects()]);
-      commit("Apply color preset");
+      if (!preset) return;
+      void loadAssetManifest()
+        .then(({ assetManifest }) => {
+          const family = assetManifest.families.find((item) => item.familyId === object.familyId);
+          const profile = family ? colorProfileForFamily(family) : undefined;
+          if (
+            !profile ||
+            !canvas ||
+            !canvas.getObjects().includes(object) ||
+            canvas.getActiveObject() !== object
+          ) {
+            return;
+          }
+          const mapping = presetColorMap(originalPaints(object), profile, preset);
+          restoreOriginalColors(object);
+          applyPresetColors(object, mapping, preset.id);
+          canvas.requestRenderAll();
+          setSelection([...canvas.getActiveObjects()]);
+          commit("Apply color preset");
+        })
+        .catch(() => undefined);
     },
     [canvas, commit, selection]
   );

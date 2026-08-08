@@ -2,6 +2,7 @@ import DOMPurify from "dompurify";
 
 const EXECUTABLE = /(?:javascript:|@import|<\s*(?:script|foreignObject)\b)/i;
 const NETWORK = /(?:https?:\/\/|^\/\/)/i;
+const EXTERNAL_STYLE_URL = /url\(\s*(?:(?:["'])(?!#)|(?!(?:["']?)#))/i;
 const URL_ATTRIBUTES = new Set([
   "href",
   "xlink:href",
@@ -96,8 +97,9 @@ export function sanitizeImportedSvg(
   });
   svg.querySelectorAll("style").forEach((style) => {
     let content = style.textContent ?? "";
-    if (/@import|https?:|javascript:|url\(\s*[^#]/i.test(content)) style.remove();
-    else {
+    if (/@import|https?:|javascript:/i.test(content) || EXTERNAL_STYLE_URL.test(content)) {
+      style.remove();
+    } else {
       for (const [oldId, newId] of mapping) {
         content = content.replace(
           new RegExp(`(^|[},>+~])(\\s*)#${escapeRegExp(oldId)}(?=\\s*[{,.:[>+~#])`, "gm"),
