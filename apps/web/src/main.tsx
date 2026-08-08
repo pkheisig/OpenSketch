@@ -33,6 +33,7 @@ import "@fontsource/roboto-mono/latin-400.css";
 import "@fontsource/roboto-mono/latin-600.css";
 import "@fontsource/roboto-mono/latin-700.css";
 import "./styles/global.css";
+import "./styles/opengate-theme.css";
 
 const updateServiceWorker = registerSW({
   immediate: true,

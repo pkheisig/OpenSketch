@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { ArrowLeft, ChevronDown, Download, HelpCircle, Redo2, Undo2 } from "lucide-react";
+import {
+  ArrowLeft,
+  ChevronDown,
+  Download,
+  HelpCircle,
+  Moon,
+  Redo2,
+  Sun,
+  Undo2
+} from "lucide-react";
 import type { ProjectRecord } from "@workspace/editor-core";
 import { GLOBAL_CREDIT } from "@/assets/credit";
 import { MotionPresence } from "@/components/MotionPresence";
@@ -36,7 +45,17 @@ function ShortcutKeys({ combinations }: { combinations: string[][] }) {
   );
 }
 
-export function TopToolbar({ project, onHome }: { project: ProjectRecord; onHome: () => void }) {
+export function TopToolbar({
+  project,
+  onHome,
+  theme,
+  onToggleTheme
+}: {
+  project: ProjectRecord;
+  onHome: () => void;
+  theme: "light" | "dark";
+  onToggleTheme: () => void;
+}) {
   const editor = useEditor();
   const [leaving, setLeaving] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
@@ -83,6 +102,14 @@ export function TopToolbar({ project, onHome }: { project: ProjectRecord; onHome
           </button>
         </div>
         <div className="toolbar-actions">
+          <button
+            className="icon-button theme-toggle"
+            onClick={onToggleTheme}
+            aria-label={`Use ${theme === "light" ? "dark" : "light"} theme`}
+            title={`Use ${theme === "light" ? "dark" : "light"} theme`}
+          >
+            {theme === "light" ? <Moon size={17} /> : <Sun size={17} />}
+          </button>
           <button className="icon-button" onClick={() => setHelpOpen(true)} aria-label="Help">
             <HelpCircle size={17} />
           </button>

@@ -23,6 +23,17 @@ const EditorStudio = lazy(() =>
 );
 
 const PROJECT_HISTORY_KEY = "OpenSketchProjectId";
+const THEME_STORAGE_KEY = "OpenSketch-theme";
+
+type Theme = "light" | "dark";
+
+function readTheme(): Theme {
+  try {
+    return window.localStorage.getItem(THEME_STORAGE_KEY) === "dark" ? "dark" : "light";
+  } catch {
+    return "light";
+  }
+}
 
 function historyProjectId() {
   const state = window.history.state as Record<string, unknown> | null;
@@ -30,6 +41,7 @@ function historyProjectId() {
 }
 
 export function App() {
+  const [theme, setTheme] = useState<Theme>(readTheme);
   const [projects, setProjects] = useState<ProjectRecord[]>([]);
   const [folders, setFolders] = useState<ProjectFolderRecord[]>([]);
   const [current, setCurrent] = useState<ProjectRecord | null>(null);
@@ -40,6 +52,23 @@ export function App() {
   );
   const refreshRevision = useRef(0);
   const historySyncRevision = useRef(0);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((current) => {
+      const next = current === "light" ? "dark" : "light";
+      try {
+        window.localStorage.setItem(THEME_STORAGE_KEY, next);
+      } catch {
+        // Keep theme switching available for this session if storage is blocked.
+      }
+      return next;
+    });
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+  }, [theme]);
 
   const refresh = useCallback(async () => {
     const revision = ++refreshRevision.current;
@@ -171,15 +200,17 @@ export function App() {
 
   if (loading) {
     return (
-      <div className="loading-screen">
-        <div className="loading-mark" />
-        <span>Preparing local studio…</span>
+      <div className={`opensketch-app theme-${theme}`}>
+        <div className="loading-screen">
+          <div className="loading-mark" />
+          <span>Preparing local studio…</span>
+        </div>
       </div>
     );
   }
 
   return (
-    <>
+    <div className={`opensketch-app theme-${theme}`}>
       {current ? (
         <Suspense
           fallback={
@@ -193,12 +224,16 @@ export function App() {
             project={current}
             onProjectChange={updateProject}
             onHome={returnToProjects}
+            theme={theme}
+            onToggleTheme={toggleTheme}
           />
         </Suspense>
       ) : (
         <HomeScreen
           projects={projects}
           folders={folders}
+          theme={theme}
+          onToggleTheme={toggleTheme}
           onNew={() => void newProject()}
           onNewFolder={(name) => {
             createProjectFolder(name)
@@ -278,6 +313,6 @@ export function App() {
           </button>
         </div>
       )}
-    </>
+    </div>
   );
 }

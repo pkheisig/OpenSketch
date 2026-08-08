@@ -12,8 +12,10 @@ import {
   FolderPlus,
   Github,
   MoreHorizontal,
+  Moon,
   Pencil,
   Save,
+  Sun,
   Trash2,
   Upload,
   X
@@ -29,6 +31,8 @@ const OPEN_FOLDER_STORAGE_KEY = "opensketch.openFolderId";
 export function HomeScreen({
   projects,
   folders,
+  theme,
+  onToggleTheme,
   onNew,
   onNewFolder,
   onOpen,
@@ -45,6 +49,8 @@ export function HomeScreen({
 }: {
   projects: ProjectRecord[];
   folders: ProjectFolderRecord[];
+  theme: "light" | "dark";
+  onToggleTheme: () => void;
   onNew: () => void;
   onNewFolder: (name: string) => void;
   onOpen: (project: ProjectRecord) => void;
@@ -134,6 +140,14 @@ export function HomeScreen({
       <header className="home-header">
         <Logo />
         <div className="home-header-actions">
+          <button
+            className="icon-button theme-toggle"
+            onClick={onToggleTheme}
+            aria-label={`Use ${theme === "light" ? "dark" : "light"} theme`}
+            title={`Use ${theme === "light" ? "dark" : "light"} theme`}
+          >
+            {theme === "light" ? <Moon size={16} /> : <Sun size={16} />}
+          </button>
           <button className="button secondary" onClick={() => input.current?.click()}>
             <Upload size={16} /> Import project
           </button>

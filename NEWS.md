@@ -1,5 +1,8 @@
 # OpenSketch 0.1.0
 
+- Adopted the OpenGate visual system across the project library and editor,
+  including warm light/dark surfaces, orange accents, compact Avenir Next/Inter
+  controls, and a persisted theme switch.
 - Converted OpenSketch into a static, browser-native GitHub Pages application
   while preserving the version-1 `.OpenSketch` project format and editor
   behavior.

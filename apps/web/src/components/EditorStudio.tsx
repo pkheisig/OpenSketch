@@ -16,11 +16,15 @@ const ASSET_PREVIEW_WARMUP_DELAY_MS = 10_000;
 export function EditorStudio({
   project,
   onProjectChange,
-  onHome
+  onHome,
+  theme,
+  onToggleTheme
 }: {
   project: ProjectRecord;
   onProjectChange: (project: ProjectRecord) => Promise<void>;
   onHome: () => void;
+  theme: "light" | "dark";
+  onToggleTheme: () => void;
 }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(
     () => localStorage.getItem("OpenSketch:left-sidebar-collapsed") === "true"
@@ -49,7 +53,12 @@ export function EditorStudio({
     <EditorProvider key={project.id} project={project} onProjectChange={onProjectChange}>
       <main className="editor-shell">
         <Suspense fallback={<header className="top-toolbar" aria-hidden="true" />}>
-          <TopToolbar project={project} onHome={onHome} />
+          <TopToolbar
+            project={project}
+            onHome={onHome}
+            theme={theme}
+            onToggleTheme={onToggleTheme}
+          />
         </Suspense>
         <div className={`editor-grid ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
           <Suspense
