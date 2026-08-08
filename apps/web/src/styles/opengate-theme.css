@@ -430,6 +430,11 @@ html[data-theme] :is(.ui-select-menu, .asset-variant-menu) button:focus-visible 
   border-right-color: var(--shell-border);
 }
 
+.opensketch-app .left-sidebar.floating-sidebar {
+  border-right: 0;
+  background: transparent;
+}
+
 .opensketch-app .sidebar-expand,
 .opensketch-app .floating-tool-rail,
 .opensketch-app .sidebar-expanded.floating-panel,

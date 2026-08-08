@@ -2561,12 +2561,12 @@ a:focus-visible {
   left: var(--floating-ui-left-inset);
   display: flex;
   height: 21px;
-  padding-left: 80px;
+  overflow: hidden;
   border-bottom: 1px solid #bac4bf;
 }
 
 .ruler-horizontal span {
-  flex: 0 0 200px;
+  flex: 0 0 var(--ruler-step, 200px);
   padding: 5px 0 0 4px;
   border-left: 1px solid #b6c0bb;
 }
@@ -2576,13 +2576,13 @@ a:focus-visible {
   bottom: 54px;
   left: var(--floating-ui-left-inset);
   width: 21px;
-  padding-top: 80px;
+  overflow: hidden;
   border-right: 1px solid #bac4bf;
 }
 
 .ruler-vertical span {
   display: block;
-  height: 200px;
+  height: var(--ruler-step, 200px);
   padding: 4px 0 0 4px;
   border-top: 1px solid #b6c0bb;
   writing-mode: vertical-rl;

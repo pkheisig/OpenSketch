@@ -97,6 +97,8 @@ interface StoredViewport {
 }
 
 const RULER_VISIBILITY_KEY = "OpenSketch:ruler-visible";
+const RULER_STEP_PX = 200;
+const RULER_TICK_COUNT = 64;
 
 interface ContextMenuAction {
   label: string;
@@ -323,6 +325,9 @@ export function CanvasWorkspace() {
         preset.width === editor.canvasSettings.width &&
         preset.height === editor.canvasSettings.height
     )?.[0] ?? "";
+  const rulerStyle = {
+    "--ruler-step": `${RULER_STEP_PX * Math.max(0.1, zoom)}px`
+  } as CSSProperties;
 
   useEffect(() => {
     setCanvasElement(canvasRef.current);
@@ -1133,14 +1138,14 @@ export function CanvasWorkspace() {
       ) : null}
       {rulerVisible ? (
         <>
-          <div className="canvas-ruler ruler-horizontal">
-            {Array.from({ length: 13 }, (_, index) => (
-              <span key={index}>{index * 200}</span>
+          <div className="canvas-ruler ruler-horizontal" style={rulerStyle}>
+            {Array.from({ length: RULER_TICK_COUNT }, (_, index) => (
+              <span key={index}>{index * RULER_STEP_PX}</span>
             ))}
           </div>
-          <div className="canvas-ruler ruler-vertical">
-            {Array.from({ length: 8 }, (_, index) => (
-              <span key={index}>{index * 200}</span>
+          <div className="canvas-ruler ruler-vertical" style={rulerStyle}>
+            {Array.from({ length: RULER_TICK_COUNT }, (_, index) => (
+              <span key={index}>{index * RULER_STEP_PX}</span>
             ))}
           </div>
         </>
