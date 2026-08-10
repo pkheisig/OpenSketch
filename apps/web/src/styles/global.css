@@ -1022,6 +1022,7 @@ a:focus-visible {
 .editor-grid {
   --left-sidebar-width: 304px;
   --right-sidebar-width: 288px;
+  --editor-ruler-size: 24px;
   display: grid;
   grid-template-columns:
     var(--left-sidebar-width) minmax(460px, 1fr)
@@ -2300,8 +2301,8 @@ a:focus-visible {
 /* Canvas */
 .canvas-workspace {
   position: relative;
-  --floating-ui-left-inset: 78px;
-  --ruler-size: 24px;
+  --floating-ui-left-inset: calc(78px + var(--editor-ruler-size));
+  --ruler-size: var(--editor-ruler-size);
   min-width: 0;
   min-height: 0;
   overflow: hidden;
@@ -2638,11 +2639,10 @@ a:focus-visible {
   border-left: 1px solid var(--ruler-line-strong);
 }
 
-.ruler-horizontal .ruler-major-tick::after {
+.ruler-horizontal .ruler-label {
   position: absolute;
   bottom: 11px;
   left: 4px;
-  content: attr(data-value);
 }
 
 .ruler-vertical .ruler-major-tick {
@@ -2651,11 +2651,10 @@ a:focus-visible {
   border-top: 1px solid var(--ruler-line-strong);
 }
 
-.ruler-vertical .ruler-major-tick::after {
+.ruler-vertical .ruler-label {
   position: absolute;
   top: 4px;
   right: 11px;
-  content: attr(data-value);
   writing-mode: vertical-rl;
 }
 
@@ -4258,15 +4257,15 @@ input[type="range"] {
 }
 
 .editor-grid:has(.sidebar-expanded) .canvas-workspace {
-  --floating-ui-left-inset: 420px;
+  --floating-ui-left-inset: calc(420px + var(--editor-ruler-size));
 }
 
 .left-sidebar.floating-sidebar {
   position: absolute;
   z-index: 30;
-  top: 12px;
+  top: calc(var(--editor-ruler-size) + 8px);
   bottom: 12px;
-  left: 12px;
+  left: calc(var(--editor-ruler-size) + 12px);
   width: auto;
   min-height: 0;
   overflow: visible;

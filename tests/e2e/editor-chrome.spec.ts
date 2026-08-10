@@ -57,8 +57,12 @@ test("@smoke keeps artboard rulers stable beneath the floating editor chrome", a
   expect(geometry.horizontalRuler!.right).toBeGreaterThanOrEqual(geometry.workspace!.right - 1);
   expect(geometry.verticalRuler!.left).toBeCloseTo(geometry.workspace!.left, 1);
   expect(geometry.horizontalRuler!.left).toBeLessThan(geometry.panel!.right);
+  expect(geometry.rail!.left).toBeGreaterThanOrEqual(geometry.verticalRuler!.right + 8);
+  expect(geometry.rail!.top).toBeGreaterThanOrEqual(geometry.horizontalRuler!.bottom + 6);
   expect(geometry.horizontalZero!.left).toBeCloseTo(geometry.artboard!.left, 1);
   expect(geometry.verticalZero!.top).toBeCloseTo(geometry.artboard!.top, 1);
+  expect(geometry.horizontalZero!.text).toBe("0");
+  expect(geometry.verticalZero!.text).toBe("0");
   expect(geometry.footer!.left).toBeGreaterThanOrEqual(geometry.panel!.right);
   expect(geometry.footer!.zIndex).toBeGreaterThan(geometry.rail!.zIndex);
 

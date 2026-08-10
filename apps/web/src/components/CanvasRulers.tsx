@@ -140,7 +140,9 @@ export function CanvasRulers({
               className="ruler-major-tick"
               data-value={tick.label}
               style={{ left: tick.position }}
-            />
+            >
+              <span className="ruler-label">{tick.label}</span>
+            </span>
           ))}
         </div>
       </div>
@@ -161,7 +163,9 @@ export function CanvasRulers({
               className="ruler-major-tick"
               data-value={tick.label}
               style={{ top: tick.position }}
-            />
+            >
+              <span className="ruler-label">{tick.label}</span>
+            </span>
           ))}
         </div>
       </div>
