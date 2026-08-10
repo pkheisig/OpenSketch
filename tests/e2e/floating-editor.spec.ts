@@ -481,15 +481,32 @@ test("hides scrollbar chrome globally without disabling scrolling", async ({ pag
   await expect(page.locator(".workspace-scroll")).toHaveCSS("scrollbar-width", "none");
 });
 
-test("does not draw teal focus selector lines around fields and controls", async ({ page }) => {
+test("uses one focus ring and consistent neutral asset-control surfaces", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const search = page.getByPlaceholder("Search cells, proteins, equipment…");
+  const searchBox = search.locator("..");
+  const variant = page.getByRole("combobox", { name: /variant$/i }).first();
+  await expect(variant).toBeVisible();
+  const restingSurfaces = await page.evaluate(() => {
+    const searchInput = document.querySelector<HTMLInputElement>(".search-box input")!;
+    const searchWrapper = searchInput.closest<HTMLElement>(".search-box")!;
+    const variantTrigger = document.querySelector<HTMLElement>(".asset-variant-trigger")!;
+    return {
+      input: getComputedStyle(searchInput).backgroundColor,
+      search: getComputedStyle(searchWrapper).backgroundColor,
+      variant: getComputedStyle(variantTrigger).backgroundColor
+    };
+  });
+  expect(restingSurfaces.input).toBe("rgba(0, 0, 0, 0)");
+  expect(restingSurfaces.variant).toBe(restingSurfaces.search);
+
   await search.click();
   await expect(search).toBeFocused();
   await expect(search).toHaveCSS("outline-style", "none");
-  await expect(search.locator("..")).toHaveCSS("box-shadow", "none");
+  await expect(search).toHaveCSS("box-shadow", "none");
+  await expect(searchBox).not.toHaveCSS("box-shadow", "none");
 
   const title = page.getByRole("textbox", { name: "Document title" });
   await title.click();

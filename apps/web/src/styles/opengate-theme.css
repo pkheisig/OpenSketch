@@ -563,6 +563,12 @@ html[data-theme] :is(.ui-select-menu, .asset-variant-menu) button:focus-visible 
   color: var(--shell-muted);
 }
 
+.opensketch-app .search-box input {
+  outline: none;
+  background: transparent;
+  box-shadow: none;
+}
+
 .opensketch-app .search-box input,
 .opensketch-app .new-folder-form input {
   color: var(--shell-text);
@@ -679,7 +685,13 @@ html[data-theme] :is(.ui-select-menu, .asset-variant-menu) button:focus-visible 
 .opensketch-app .asset-variant-trigger {
   border-bottom-color: var(--shell-border);
   color: var(--shell-text);
-  background: var(--shell-accent-soft);
+  background: var(--shell-input);
+}
+
+.opensketch-app .asset-variant-trigger:hover,
+.opensketch-app .asset-variant-trigger[aria-expanded="true"] {
+  color: var(--shell-accent);
+  background: var(--shell-focus);
 }
 
 .opensketch-app .asset-variant-grid > button {
@@ -828,14 +840,19 @@ html[data-theme] .ui-select-menu button svg,
   );
 }
 
-.opensketch-app .canvas-ruler {
+.opensketch-app .canvas-ruler,
+.opensketch-app .ruler-corner {
   color: var(--shell-muted);
   border-color: var(--shell-border);
-  background: var(--shell-input);
+  background: color-mix(in srgb, var(--shell-card) 92%, var(--shell-bg));
 }
 
-.opensketch-app .ruler-horizontal span,
-.opensketch-app .ruler-vertical span {
+.opensketch-app .ruler-track {
+  --ruler-line: color-mix(in srgb, var(--shell-border-strong) 68%, transparent);
+  --ruler-line-strong: var(--shell-border-strong);
+}
+
+.opensketch-app .ruler-major-tick {
   border-color: var(--shell-border);
 }
 

@@ -59,6 +59,7 @@ import {
   type CanvasUnit
 } from "@workspace/editor-core";
 import { ColorPalettePicker } from "@/components/ColorPalettePicker";
+import { CanvasRulers } from "@/components/CanvasRulers";
 import { MotionPresence } from "@/components/MotionPresence";
 import { UiSelect } from "@/components/UiSelect";
 import { useEditor } from "@/editor/EditorContext";
@@ -97,8 +98,6 @@ interface StoredViewport {
 }
 
 const RULER_VISIBILITY_KEY = "OpenSketch:ruler-visible";
-const RULER_STEP_PX = 200;
-const RULER_TICK_COUNT = 64;
 
 interface ContextMenuAction {
   label: string;
@@ -326,10 +325,6 @@ export function CanvasWorkspace() {
         preset.width === editor.canvasSettings.width &&
         preset.height === editor.canvasSettings.height
     )?.[0] ?? "";
-  const rulerStyle = {
-    "--ruler-step": `${RULER_STEP_PX * Math.max(0.1, rulerZoom)}px`
-  } as CSSProperties;
-
   useEffect(() => {
     setCanvasElement(canvasRef.current);
   }, [setCanvasElement]);
@@ -1140,18 +1135,16 @@ export function CanvasWorkspace() {
         </div>
       ) : null}
       {rulerVisible ? (
-        <>
-          <div className="canvas-ruler ruler-horizontal" style={rulerStyle}>
-            {Array.from({ length: RULER_TICK_COUNT }, (_, index) => (
-              <span key={index}>{index * RULER_STEP_PX}</span>
-            ))}
-          </div>
-          <div className="canvas-ruler ruler-vertical" style={rulerStyle}>
-            {Array.from({ length: RULER_TICK_COUNT }, (_, index) => (
-              <span key={index}>{index === 0 ? null : index * RULER_STEP_PX}</span>
-            ))}
-          </div>
-        </>
+        <CanvasRulers
+          canvasWidth={canvasSettings.width}
+          canvasHeight={canvasSettings.height}
+          dpi={canvasSettings.dpi}
+          scrollRef={scrollRef}
+          stageRef={stageRef}
+          unit={canvasSettings.unit}
+          workspaceRef={workspaceRef}
+          zoom={rulerZoom}
+        />
       ) : null}
       <div
         ref={scrollRef}

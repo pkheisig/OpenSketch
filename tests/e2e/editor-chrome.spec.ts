@@ -1,8 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("@smoke keeps the footer above the floating rail and reserves the ruler lane", async ({
-  page
-}) => {
+test("@smoke keeps artboard rulers stable beneath the floating editor chrome", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
   await expect(page.locator(".canvas-workspace")).toBeVisible();
@@ -33,10 +31,12 @@ test("@smoke keeps the footer above the floating rail and reserves the ruler lan
       rail: rect(".floating-tool-rail"),
       panel: rect(".sidebar-expanded"),
       footer: rect(".workspace-footer"),
+      artboard: rect(".artboard-stage"),
       horizontalRuler: rect(".ruler-horizontal"),
       verticalRuler: rect(".ruler-vertical"),
-      horizontalZero: rect(".ruler-horizontal span:first-child"),
-      verticalZero: rect(".ruler-vertical span:first-child")
+      horizontalZero: rect('.ruler-horizontal .ruler-major-tick[data-value="0"]'),
+      horizontalTwoHundred: rect('.ruler-horizontal .ruler-major-tick[data-value="200"]'),
+      verticalZero: rect('.ruler-vertical .ruler-major-tick[data-value="0"]')
     };
   });
 
@@ -45,24 +45,25 @@ test("@smoke keeps the footer above the floating rail and reserves the ruler lan
   expect(geometry.rail).not.toBeNull();
   expect(geometry.panel).not.toBeNull();
   expect(geometry.footer).not.toBeNull();
+  expect(geometry.artboard).not.toBeNull();
   expect(geometry.horizontalRuler).not.toBeNull();
   expect(geometry.verticalRuler).not.toBeNull();
   expect(geometry.horizontalZero).not.toBeNull();
+  expect(geometry.horizontalTwoHundred).not.toBeNull();
   expect(geometry.verticalZero).not.toBeNull();
 
   expect(geometry.sidebar!.background).toBe("rgba(0, 0, 0, 0)");
-  expect(geometry.horizontalRuler!.left).toBeGreaterThanOrEqual(geometry.panel!.right);
+  expect(geometry.horizontalRuler!.left).toBeCloseTo(geometry.workspace!.left, 1);
   expect(geometry.horizontalRuler!.right).toBeGreaterThanOrEqual(geometry.workspace!.right - 1);
-  expect(geometry.verticalRuler!.left).toBeGreaterThanOrEqual(geometry.panel!.right);
-  expect(geometry.horizontalZero!.left).toBeCloseTo(geometry.horizontalRuler!.left, 1);
-  expect(geometry.verticalZero!.top).toBeCloseTo(geometry.verticalRuler!.top, 1);
-  expect(geometry.horizontalZero!.text).toBe("0");
-  expect(geometry.verticalZero!.text).toBe("");
+  expect(geometry.verticalRuler!.left).toBeCloseTo(geometry.workspace!.left, 1);
+  expect(geometry.horizontalRuler!.left).toBeLessThan(geometry.panel!.right);
+  expect(geometry.horizontalZero!.left).toBeCloseTo(geometry.artboard!.left, 1);
+  expect(geometry.verticalZero!.top).toBeCloseTo(geometry.artboard!.top, 1);
   expect(geometry.footer!.left).toBeGreaterThanOrEqual(geometry.panel!.right);
-  expect(geometry.verticalRuler!.bottom).toBeLessThanOrEqual(geometry.footer!.top);
   expect(geometry.footer!.zIndex).toBeGreaterThan(geometry.rail!.zIndex);
 
-  const initialStep = geometry.horizontalZero!.width;
+  const initialTwoHundredOffset =
+    geometry.horizontalTwoHundred!.left - geometry.horizontalZero!.left;
   const scrollBox = await page.locator(".workspace-scroll").boundingBox();
   expect(scrollBox).not.toBeNull();
   await page.mouse.move(scrollBox!.x + scrollBox!.width / 2, scrollBox!.y + scrollBox!.height / 2);
@@ -71,14 +72,28 @@ test("@smoke keeps the footer above the floating rail and reserves the ruler lan
   await page.keyboard.up("Control");
   await expect
     .poll(
-      async () => (await page.locator(".ruler-horizontal span:first-child").boundingBox())?.width,
+      async () => {
+        const zero = await page
+          .locator('.ruler-horizontal .ruler-major-tick[data-value="0"]')
+          .boundingBox();
+        const twoHundred = await page
+          .locator('.ruler-horizontal .ruler-major-tick[data-value="200"]')
+          .boundingBox();
+        return zero && twoHundred ? twoHundred.x - zero.x : 0;
+      },
       { timeout: 120 }
     )
-    .toBeGreaterThan(initialStep);
+    .toBeGreaterThan(initialTwoHundredOffset);
   await expect
     .poll(
-      async () => (await page.locator(".ruler-vertical span:first-child").boundingBox())?.height,
+      async () => {
+        const artboard = await page.locator(".artboard-stage").boundingBox();
+        const zero = await page
+          .locator('.ruler-vertical .ruler-major-tick[data-value="0"]')
+          .boundingBox();
+        return artboard && zero ? Math.abs(artboard.y - zero.y) : Number.POSITIVE_INFINITY;
+      },
       { timeout: 120 }
     )
-    .toBeGreaterThan(geometry.verticalZero!.height);
+    .toBeLessThan(1);
 });

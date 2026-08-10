@@ -2301,6 +2301,7 @@ a:focus-visible {
 .canvas-workspace {
   position: relative;
   --floating-ui-left-inset: 78px;
+  --ruler-size: 24px;
   min-width: 0;
   min-height: 0;
   overflow: hidden;
@@ -2310,7 +2311,7 @@ a:focus-visible {
 
 .canvas-workspace::before {
   position: absolute;
-  inset: 21px 0 0 21px;
+  inset: var(--ruler-size) 0 0 var(--ruler-size);
   pointer-events: none;
   opacity: 0;
   background-image:
@@ -2380,7 +2381,7 @@ a:focus-visible {
 
 .workspace-scroll {
   position: absolute;
-  inset: 21px 0 0 21px;
+  inset: var(--ruler-size) 0 0 var(--ruler-size);
   overflow: auto;
   overscroll-behavior: none;
   scrollbar-color: #9eaaa6 transparent;
@@ -2548,46 +2549,135 @@ a:focus-visible {
 
 .canvas-ruler {
   position: absolute;
-  z-index: 5;
+  z-index: 14;
+  overflow: hidden;
+  pointer-events: none;
   color: #697672;
-  background: #cbd2ce;
+  background: rgba(247, 246, 240, 0.96);
+  box-shadow: 0 1px 4px rgba(38, 50, 46, 0.08);
   font-size: 8px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
   user-select: none;
 }
 
 .ruler-horizontal {
   top: 0;
   right: 0;
-  left: var(--floating-ui-left-inset);
-  display: flex;
-  height: 21px;
-  overflow: hidden;
+  left: 0;
+  height: var(--ruler-size);
   border-bottom: 1px solid #bac4bf;
 }
 
-.ruler-horizontal span {
-  flex: 0 0 var(--ruler-step, 200px);
-  padding: 5px 0 0 4px;
-  border-left: 1px solid #b6c0bb;
-  transition: flex-basis 90ms ease-out;
-}
-
 .ruler-vertical {
-  top: 21px;
-  bottom: 54px;
-  left: var(--floating-ui-left-inset);
-  width: 21px;
-  overflow: hidden;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--ruler-size);
   border-right: 1px solid #bac4bf;
 }
 
-.ruler-vertical span {
+.ruler-track {
+  --ruler-line: rgba(105, 118, 114, 0.38);
+  --ruler-line-strong: rgba(105, 118, 114, 0.72);
+  position: absolute;
+}
+
+.ruler-horizontal .ruler-track {
+  top: 0;
+  bottom: 0;
+  border-right: 1px solid var(--ruler-line-strong);
+  border-left: 1px solid var(--ruler-line-strong);
+}
+
+.ruler-vertical .ruler-track {
+  right: 0;
+  left: 0;
+  border-top: 1px solid var(--ruler-line-strong);
+  border-bottom: 1px solid var(--ruler-line-strong);
+}
+
+.ruler-track::before {
+  position: absolute;
+  pointer-events: none;
+  content: "";
+}
+
+.ruler-horizontal .ruler-track::before {
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 5px;
+  background: repeating-linear-gradient(
+    90deg,
+    transparent 0 calc(var(--ruler-minor-step) - 1px),
+    var(--ruler-line) calc(var(--ruler-minor-step) - 1px) var(--ruler-minor-step)
+  );
+}
+
+.ruler-vertical .ruler-track::before {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 5px;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0 calc(var(--ruler-minor-step) - 1px),
+    var(--ruler-line) calc(var(--ruler-minor-step) - 1px) var(--ruler-minor-step)
+  );
+}
+
+.ruler-major-tick {
+  position: absolute;
   display: block;
-  height: var(--ruler-step, 200px);
-  padding: 4px 0 0 4px;
-  border-top: 1px solid #b6c0bb;
-  transition: height 90ms ease-out;
+}
+
+.ruler-horizontal .ruler-major-tick {
+  bottom: 0;
+  height: 10px;
+  border-left: 1px solid var(--ruler-line-strong);
+}
+
+.ruler-horizontal .ruler-major-tick::after {
+  position: absolute;
+  bottom: 11px;
+  left: 4px;
+  content: attr(data-value);
+}
+
+.ruler-vertical .ruler-major-tick {
+  right: 0;
+  width: 10px;
+  border-top: 1px solid var(--ruler-line-strong);
+}
+
+.ruler-vertical .ruler-major-tick::after {
+  position: absolute;
+  top: 4px;
+  right: 11px;
+  content: attr(data-value);
   writing-mode: vertical-rl;
+}
+
+.ruler-corner {
+  position: absolute;
+  z-index: 15;
+  top: 0;
+  left: 0;
+  display: grid;
+  width: var(--ruler-size);
+  height: var(--ruler-size);
+  place-items: center;
+  pointer-events: none;
+  border-right: 1px solid #bac4bf;
+  border-bottom: 1px solid #bac4bf;
+  color: #697672;
+  background: #cbd2ce;
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  user-select: none;
 }
 
 .workspace-controls {
