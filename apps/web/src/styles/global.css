@@ -2588,13 +2588,11 @@ a:focus-visible {
   top: 0;
   bottom: 0;
   border-right: 1px solid var(--ruler-line-strong);
-  border-left: 1px solid var(--ruler-line-strong);
 }
 
 .ruler-vertical .ruler-track {
   right: 0;
   left: 0;
-  border-top: 1px solid var(--ruler-line-strong);
   border-bottom: 1px solid var(--ruler-line-strong);
 }
 

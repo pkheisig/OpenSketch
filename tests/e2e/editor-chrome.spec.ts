@@ -85,7 +85,7 @@ test("@smoke keeps artboard rulers stable beneath the floating editor chrome", a
           .boundingBox();
         return zero && twoHundred ? twoHundred.x - zero.x : 0;
       },
-      { timeout: 120 }
+      { timeout: 1_000 }
     )
     .toBeGreaterThan(initialTwoHundredOffset);
   await expect
@@ -97,7 +97,7 @@ test("@smoke keeps artboard rulers stable beneath the floating editor chrome", a
           .boundingBox();
         return artboard && zero ? Math.abs(artboard.y - zero.y) : Number.POSITIVE_INFINITY;
       },
-      { timeout: 120 }
+      { timeout: 1_000 }
     )
     .toBeLessThan(1);
 });

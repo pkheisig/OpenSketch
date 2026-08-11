@@ -73,26 +73,36 @@ export function CanvasRulers({
   }, [stageRef, workspaceRef]);
 
   useLayoutEffect(() => {
-    const scrollHost = scrollRef.current;
-    const stage = stageRef.current;
-    const workspace = workspaceRef.current;
-    if (!scrollHost || !stage || !workspace) return;
-
-    let frame = 0;
+    let frame: number | undefined;
+    let disposed = false;
+    let scrollHost: HTMLDivElement | null = null;
+    let observer: ResizeObserver | null = null;
     const scheduleUpdate = () => {
-      window.cancelAnimationFrame(frame);
+      window.cancelAnimationFrame(frame ?? 0);
       frame = window.requestAnimationFrame(updateMetrics);
     };
-    const observer = new ResizeObserver(scheduleUpdate);
-    observer.observe(scrollHost);
-    observer.observe(stage);
-    observer.observe(workspace);
-    scrollHost.addEventListener("scroll", scheduleUpdate, { passive: true });
-    updateMetrics();
+    const connect = () => {
+      if (disposed) return;
+      scrollHost = scrollRef.current;
+      const stage = stageRef.current;
+      const workspace = workspaceRef.current;
+      if (!scrollHost || !stage || !workspace) {
+        frame = window.requestAnimationFrame(connect);
+        return;
+      }
+      observer = new ResizeObserver(scheduleUpdate);
+      observer.observe(scrollHost);
+      observer.observe(stage);
+      observer.observe(workspace);
+      scrollHost.addEventListener("scroll", scheduleUpdate, { passive: true });
+      updateMetrics();
+    };
+    connect();
     return () => {
-      observer.disconnect();
-      scrollHost.removeEventListener("scroll", scheduleUpdate);
-      window.cancelAnimationFrame(frame);
+      disposed = true;
+      observer?.disconnect();
+      scrollHost?.removeEventListener("scroll", scheduleUpdate);
+      window.cancelAnimationFrame(frame ?? 0);
     };
   }, [scrollRef, stageRef, updateMetrics, workspaceRef]);
 

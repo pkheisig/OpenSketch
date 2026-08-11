@@ -487,6 +487,7 @@ test("uses one focus ring and consistent neutral asset-control surfaces", async 
 
   const search = page.getByPlaceholder("Search cells, proteins, equipment…");
   const searchBox = search.locator("..");
+  await page.getByRole("button", { name: "All", exact: true }).click();
   const variant = page.getByRole("combobox", { name: /variant$/i }).first();
   await expect(variant).toBeVisible();
   const restingSurfaces = await page.evaluate(() => {
@@ -511,13 +512,13 @@ test("uses one focus ring and consistent neutral asset-control surfaces", async 
   const title = page.getByRole("textbox", { name: "Document title" });
   await title.click();
   await expect(title).toBeFocused();
-  await expect(title).toHaveCSS("outline-style", "none");
+  await expect(title).toHaveCSS("outline-style", "solid");
 
   await page.getByRole("button", { name: "Defaults", exact: true }).click();
   const textSize = page.getByRole("spinbutton", { name: "Default text size" });
   await textSize.click();
   await expect(textSize).toBeFocused();
-  await expect(textSize).toHaveCSS("outline-style", "none");
+  await expect(textSize).toHaveCSS("outline-style", "solid");
 });
 
 test("creates every distinct shape variant exposed by the shape pop-out", async ({ page }) => {
