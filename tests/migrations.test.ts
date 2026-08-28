@@ -6,6 +6,112 @@ import {
 } from "../packages/editor-core/src";
 
 describe("project migrations", () => {
+  const bytesDataUrl = (mimeType: string, bytes: number[]): string =>
+    `data:${mimeType};base64,${btoa(String.fromCharCode(...bytes))}`;
+
+  const pngHeaderDataUrl = (width: number, height: number): string => {
+    const bytes = new Uint8Array([
+      137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 0, 0, 0, 0, 0
+    ]);
+    const view = new DataView(bytes.buffer);
+    view.setUint32(16, width);
+    view.setUint32(20, height);
+    return `data:image/png;base64,${btoa(String.fromCharCode(...bytes))}`;
+  };
+
+  const jpegHeaderDataUrl = (width: number, height: number): string =>
+    bytesDataUrl("image/jpeg", [
+      0xff,
+      0xd8,
+      0xff,
+      0xc0,
+      0x00,
+      0x11,
+      0x08,
+      (height >> 8) & 0xff,
+      height & 0xff,
+      (width >> 8) & 0xff,
+      width & 0xff,
+      0x03,
+      0x01,
+      0x11,
+      0x00,
+      0x02,
+      0x11,
+      0x00,
+      0x03,
+      0x11,
+      0x00
+    ]);
+
+  const webpVp8xHeaderDataUrl = (width: number, height: number): string =>
+    bytesDataUrl("image/webp", [
+      0x52,
+      0x49,
+      0x46,
+      0x46,
+      0x00,
+      0x00,
+      0x00,
+      0x00,
+      0x57,
+      0x45,
+      0x42,
+      0x50,
+      0x56,
+      0x50,
+      0x38,
+      0x58,
+      0x0a,
+      0x00,
+      0x00,
+      0x00,
+      0x00,
+      0x00,
+      0x00,
+      0x00,
+      (width - 1) & 0xff,
+      ((width - 1) >> 8) & 0xff,
+      ((width - 1) >> 16) & 0xff,
+      (height - 1) & 0xff,
+      ((height - 1) >> 8) & 0xff,
+      ((height - 1) >> 16) & 0xff
+    ]);
+
+  const webpVp8HeaderDataUrl = (width: number, height: number): string =>
+    bytesDataUrl("image/webp", [
+      0x52,
+      0x49,
+      0x46,
+      0x46,
+      0x00,
+      0x00,
+      0x00,
+      0x00,
+      0x57,
+      0x45,
+      0x42,
+      0x50,
+      0x56,
+      0x50,
+      0x38,
+      0x20,
+      0x0a,
+      0x00,
+      0x00,
+      0x00,
+      0x00,
+      0x00,
+      0x00,
+      0x9d,
+      0x01,
+      0x2a,
+      width & 0xff,
+      (width >> 8) & 0xff,
+      height & 0xff,
+      (height >> 8) & 0xff
+    ]);
+
   const project = {
     format: "OpenSketch",
     formatVersion: 1,
@@ -245,6 +351,47 @@ describe("project migrations", () => {
         ]
       })
     ).toThrow("data URL size limit");
+
+    expect(() =>
+      migrateProject({
+        ...project,
+        uploads: [
+          {
+            id: "huge-png",
+            name: "huge.png",
+            mimeType: "image/png",
+            dataUrl: pngHeaderDataUrl(PORTABLE_PROJECT_LIMITS.maxRasterDimension + 1, 1)
+          }
+        ]
+      })
+    ).toThrow("decoded raster dimension");
+
+    expect(() =>
+      migrateProject({
+        ...project,
+        uploads: [
+          {
+            id: "wide-png",
+            name: "wide.png",
+            mimeType: "image/png",
+            dataUrl: pngHeaderDataUrl(10_000, 10_001)
+          }
+        ]
+      })
+    ).toThrow("decoded raster dimension");
+
+    for (const [name, mimeType, dataUrl] of [
+      ["jpeg", "image/jpeg", jpegHeaderDataUrl(10_000, 10_001)],
+      ["webp-vp8x", "image/webp", webpVp8xHeaderDataUrl(10_000, 10_001)],
+      ["webp-vp8", "image/webp", webpVp8HeaderDataUrl(10_000, 10_001)]
+    ] as const) {
+      expect(() =>
+        migrateProject({
+          ...project,
+          uploads: [{ id: name, name: `${name}.image`, mimeType, dataUrl }]
+        })
+      ).toThrow("decoded raster dimension");
+    }
   });
 
   it("validates Fabric scalar fields and required connector enums", () => {
