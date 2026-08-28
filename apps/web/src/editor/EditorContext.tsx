@@ -2524,11 +2524,12 @@ export function EditorProvider({
       canvas.add(object);
       canvas.setActiveObject(object);
       setSelection([object]);
+      const nextObjects = canvas.toJSON();
       try {
         assertPortableProjectWithinBudget({
           ...latestProject.current,
           uploads: nextUploads,
-          objects: canvas.toJSON()
+          objects: nextObjects
         });
       } catch (reason) {
         canvas.remove(object);
@@ -2547,7 +2548,11 @@ export function EditorProvider({
           `The image could not be added without exceeding the project budget. ${String(reason).replace(/^Error:\s*/, "")}`
         );
       }
-      latestProject.current = { ...latestProject.current, uploads: nextUploads };
+      latestProject.current = {
+        ...latestProject.current,
+        objects: nextObjects,
+        uploads: nextUploads
+      };
       canvas.requestRenderAll();
       commit(`Add ${stored.name}`);
       return stored;
