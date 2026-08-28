@@ -10,6 +10,11 @@ import {
   type ImportedMediaRecord,
   type PortableProject
 } from "./types";
+import { repairProjectIdentity } from "./identity";
+import { PORTABLE_SCENE_LIMITS } from "./sceneLimits";
+
+export { repairProjectIdentity } from "./identity";
+export type { ProjectIdentityRepair } from "./identity";
 
 /** Resource bounds applied before a portable project reaches Fabric or persistence. */
 export const PORTABLE_PROJECT_LIMITS = {
@@ -23,8 +28,8 @@ export const PORTABLE_PROJECT_LIMITS = {
   maxStringLength: 100_000,
   maxObjectIdLength: 128,
   maxObjectNameLength: 512,
-  maxSceneObjects: 10_000,
-  maxSceneDepth: 32,
+  maxSceneObjects: PORTABLE_SCENE_LIMITS.maxSceneObjects,
+  maxSceneDepth: PORTABLE_SCENE_LIMITS.maxSceneDepth,
   maxArrayLength: 50_000,
   maxObjectProperties: 96,
   maxMetadataEntries: 256,
@@ -1723,5 +1728,24 @@ export function migrateProject(input: unknown): PortableProject {
     uploads: structuredClone(uploads),
     usedAssetIds: structuredClone(usedAssetIds),
     ...(description === undefined ? {} : { description })
+  };
+}
+
+export interface MigratedProjectForLoad {
+  project: PortableProject;
+  identityRepaired: boolean;
+  identityWarnings: string[];
+}
+
+/**
+ * Repairs duplicate identities produced by older clone paths before applying
+ * the strict portable-project validation gate.
+ */
+export function migrateProjectForLoad(input: unknown): MigratedProjectForLoad {
+  const repair = repairProjectIdentity(input);
+  return {
+    project: migrateProject(repair.project),
+    identityRepaired: repair.repaired,
+    identityWarnings: repair.warnings
   };
 }

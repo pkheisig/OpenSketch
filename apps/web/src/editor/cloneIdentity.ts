@@ -1,11 +1,14 @@
-import { Group, type FabricObject } from "fabric";
+import type { FabricObject } from "fabric";
 import type { ConnectorBinding } from "@workspace/editor-core";
 import type { RecognizedGroup } from "@/editor/groupRecognition";
+import { visitSceneObjects } from "@/editor/sceneTree";
 
 function remapConnectorBinding(
   binding: ConnectorBinding,
   ids: Map<string, string>
 ): ConnectorBinding {
+  // A clone owns only the IDs collected below. References to objects outside
+  // the cloned roots are intentionally preserved as external bindings.
   return {
     ...binding,
     fromObjectId: ids.get(binding.fromObjectId) ?? binding.fromObjectId,
@@ -60,25 +63,42 @@ export function assignFreshCloneIds(objects: FabricObject | FabricObject[]): voi
   const roots = Array.isArray(objects) ? objects : [objects];
   const ids = new Map<string, string>();
   const recognitionIds = new Map<string, string>();
+  const usedIds = new Set<string>();
+  const freshId = (): string => {
+    let candidate = crypto.randomUUID();
+    while (usedIds.has(candidate)) candidate = crypto.randomUUID();
+    usedIds.add(candidate);
+    return candidate;
+  };
   const collectRecognizedGroupIds = (groups: RecognizedGroup[]) => {
     groups.forEach((group) => {
       if (!recognitionIds.has(group.objectId)) {
-        recognitionIds.set(group.objectId, crypto.randomUUID());
+        recognitionIds.set(group.objectId, freshId());
       }
       if (Array.isArray(group.properties.recognizedGroups)) {
         collectRecognizedGroupIds(group.properties.recognizedGroups);
       }
     });
   };
+  const sourceIds = new Set<string>();
+  const recognizedGroups: RecognizedGroup[][] = [];
   const collect = (current: FabricObject) => {
-    if (current.objectId) ids.set(current.objectId, crypto.randomUUID());
-    if (current.recognizedGroups) collectRecognizedGroupIds(current.recognizedGroups);
-    if (current instanceof Group) current.getObjects().forEach(collect);
+    if (current.objectId) {
+      if (sourceIds.has(current.objectId)) {
+        throw new Error(
+          `Cannot clone a scene subtree with duplicate object ID "${current.objectId}".`
+        );
+      }
+      sourceIds.add(current.objectId);
+    }
+    if (current.recognizedGroups) recognizedGroups.push(current.recognizedGroups);
   };
+  visitSceneObjects(roots, collect);
+  sourceIds.forEach((id) => usedIds.add(id));
+  recognizedGroups.forEach(collectRecognizedGroupIds);
+  sourceIds.forEach((id) => ids.set(id, freshId()));
   const apply = (current: FabricObject) => {
-    current.objectId = current.objectId
-      ? (ids.get(current.objectId) ?? crypto.randomUUID())
-      : crypto.randomUUID();
+    current.objectId = current.objectId ? (ids.get(current.objectId) ?? freshId()) : freshId();
     if (current.connector) {
       current.connector = remapConnectorBinding(current.connector, ids);
     }
@@ -93,8 +113,6 @@ export function assignFreshCloneIds(objects: FabricObject | FabricObject[]): voi
       current.defaultElementStyle = structuredClone(current.defaultElementStyle);
       remapStyleSnapshotIds(current.defaultElementStyle, ids);
     }
-    if (current instanceof Group) current.getObjects().forEach(apply);
   };
-  roots.forEach(collect);
-  roots.forEach(apply);
+  visitSceneObjects(roots, apply);
 }

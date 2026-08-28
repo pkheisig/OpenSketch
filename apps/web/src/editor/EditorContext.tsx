@@ -94,6 +94,16 @@ import {
 } from "@/editor/elementStyles";
 import { assignFreshCloneIds } from "@/editor/cloneIdentity";
 import {
+  assertUniqueSceneObjectIds,
+  isSceneDescendant,
+  removeSceneObject,
+  replaceSceneObject,
+  sendSceneObjectToParentPlane,
+  sceneObjectEntries,
+  sceneObjectIndex,
+  visitSceneObjects
+} from "@/editor/sceneTree";
+import {
   consumeRecognizedGroup,
   findRecognizedGroup,
   rememberRecognizedGroup,
@@ -368,6 +378,16 @@ function assignIdentity(object: FabricObject, name: string, type: string): void 
   object.objectId ??= crypto.randomUUID();
   object.name ??= name;
   object.OpenSketchType ??= type;
+}
+
+function assignSceneIdentities(objects: FabricObject | FabricObject[]): void {
+  const roots = Array.isArray(objects) ? objects : [objects];
+  roots.forEach((object) =>
+    assignIdentity(object, object.name ?? "Untitled layer", object.OpenSketchType ?? object.type)
+  );
+  visitSceneObjects(objects, (object) => {
+    object.objectId ??= crypto.randomUUID();
+  });
 }
 
 function recognizedGroupRecord(group: Group, objects: FabricObject[]): RecognizedGroup {
@@ -931,26 +951,33 @@ export function EditorProvider({
   const refreshConnectors = useCallback(
     (changedObjectId?: string) => {
       if (!canvas) return;
-      const objects = canvas.getObjects();
-      const byId = new Map(
-        objects
-          .filter((object) => Boolean(object.objectId))
-          .map((object) => [object.objectId as string, object])
-      );
-      for (const connector of [...objects]) {
+      assertUniqueSceneObjectIds(canvas);
+      const entries = sceneObjectEntries(canvas);
+      const byId = sceneObjectIndex(canvas);
+      const changedObject = changedObjectId ? byId.get(changedObjectId) : undefined;
+      for (const entry of entries.filter(({ object }) => Boolean(object.connector))) {
+        const connector = entry.object;
         const binding = connector.connector;
+        const fromObject = binding ? byId.get(binding.fromObjectId) : undefined;
+        const toObject = binding ? byId.get(binding.toObjectId) : undefined;
         if (
           !binding ||
           (changedObjectId &&
             binding.fromObjectId !== changedObjectId &&
-            binding.toObjectId !== changedObjectId)
+            binding.toObjectId !== changedObjectId &&
+            (!changedObject ||
+              !fromObject ||
+              !toObject ||
+              (!isSceneDescendant(fromObject, changedObject) &&
+                !isSceneDescendant(toObject, changedObject) &&
+                !isSceneDescendant(changedObject, fromObject) &&
+                !isSceneDescendant(changedObject, toObject))))
         ) {
           continue;
         }
-        const fromObject = byId.get(binding.fromObjectId);
-        const toObject = byId.get(binding.toObjectId);
         if (!fromObject || !toObject) continue;
-        const obstacles = objects
+        const obstacles = canvas
+          .getObjects()
           .filter(
             (object) =>
               !object.connector &&
@@ -968,16 +995,22 @@ export function EditorProvider({
         );
         replacement.objectId = connector.objectId;
         replacement.name = connector.name;
+        replacement.OpenSketchType = connector.OpenSketchType;
+        replacement.defaultElementStyle = connector.defaultElementStyle
+          ? structuredClone(connector.defaultElementStyle)
+          : undefined;
+        replacement.connectorHeadOffsetVersion = connector.connectorHeadOffsetVersion;
         replacement.visible = connector.visible;
         replacement.selectable = connector.selectable;
         replacement.evented = connector.evented;
-        const index = canvas.getObjects().indexOf(connector);
+        assignSceneIdentities(replacement);
+        sendSceneObjectToParentPlane(replacement, entry.parent);
         const active = canvas.getActiveObject() === connector;
-        canvas.remove(connector);
-        canvas.insertAt(index, replacement);
+        replaceSceneObject(entry, replacement);
         if (active) canvas.setActiveObject(replacement);
         byId.set(replacement.objectId!, replacement);
       }
+      assertUniqueSceneObjectIds(canvas);
       canvas.requestRenderAll();
     },
     [canvas]
@@ -986,6 +1019,7 @@ export function EditorProvider({
   const serialize = useCallback(() => {
     if (!canvas) return JSON.stringify(latestProject.current.objects);
     refreshTextMetrics(canvas.getObjects());
+    assertUniqueSceneObjectIds(canvas);
     return JSON.stringify(canvas.toJSON());
   }, [canvas]);
 
@@ -1137,14 +1171,9 @@ export function EditorProvider({
       setCanvasReady(false);
       instance.loadFromJSON(project.objects).then(async () => {
         await restoreBundledSvgBlendModes(instance.getObjects());
-        instance.getObjects().forEach((object) => {
-          assignIdentity(
-            object,
-            object.name ?? "Untitled layer",
-            object.OpenSketchType ?? object.type
-          );
-        });
+        assignSceneIdentities(instance.getObjects());
         configureCanvasAssets(instance.getObjects());
+        assertUniqueSceneObjectIds(instance);
         instance.requestRenderAll();
         const initial = JSON.stringify(instance.toJSON());
         history.current = [initial];
@@ -1156,6 +1185,11 @@ export function EditorProvider({
     },
     [project, updateHistoryState]
   );
+
+  useEffect(() => {
+    if (!canvas || !canvasReady) return;
+    refreshConnectors();
+  }, [canvas, canvasReady, refreshConnectors]);
 
   const closeGroupEdit = useCallback(() => {
     const path = editingGroupPathRef.current;
@@ -1812,16 +1846,20 @@ export function EditorProvider({
       if (!canvas || !history.current[index]) return;
       restoring.current = true;
       await canvas.loadFromJSON(history.current[index]);
+      assignSceneIdentities(canvas.getObjects());
       configureCanvasAssets(canvas.getObjects());
+      assertUniqueSceneObjectIds(canvas);
       refreshConnectors();
       canvas.requestRenderAll();
       historyIndex.current = index;
+      const repairedSnapshot = serialize();
+      history.current[index] = repairedSnapshot;
       setSelection([]);
       updateHistoryState();
       restoring.current = false;
-      persist(history.current[index]);
+      persist(repairedSnapshot);
     },
-    [canvas, persist, refreshConnectors, updateHistoryState]
+    [canvas, persist, refreshConnectors, serialize, updateHistoryState]
   );
 
   const undo = useCallback(() => {
@@ -1860,6 +1898,7 @@ export function EditorProvider({
     (object: FabricObject, name: string, type: string, point?: Point) => {
       if (!canvas) return;
       assignIdentity(object, name, type);
+      assignSceneIdentities(object);
       prepareElementStyle(object);
       centerObject(object, point);
       canvas.add(object);
@@ -1982,6 +2021,7 @@ export function EditorProvider({
         obstacles
       );
       assignIdentity(connector, "Connector", "connector");
+      assignSceneIdentities(connector);
       prepareElementStyle(connector);
       canvas.add(connector);
       canvas.sendObjectToBack(connector);
@@ -2225,6 +2265,7 @@ export function EditorProvider({
       object.lockScalingX = false;
       object.lockScalingY = false;
       assignIdentity(object, object.name, kind);
+      assignSceneIdentities(object);
       prepareElementStyle(object);
       canvas.add(object);
       canvas.setActiveObject(object);
@@ -2348,6 +2389,7 @@ export function EditorProvider({
         });
         replacement.setPositionByOrigin(center, "center", "center");
         replacement.setCoords();
+        assignSceneIdentities(replacement);
 
         const index = canvas.getObjects().indexOf(current);
         canvas.remove(current);
@@ -2499,19 +2541,20 @@ export function EditorProvider({
       });
       const parentAsset = [...parents][0];
       if (parentAsset && parentAsset.getObjects().length > 0) {
-        connectorsForRemovedIds(canvas.getObjects(), removedIds).forEach((object) =>
-          canvas.remove(object)
-        );
+        sceneObjectEntries(canvas)
+          .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
+          .forEach(removeSceneObject);
         canvas.setActiveObject(parentAsset);
         setSelection([parentAsset]);
       } else {
         parents.forEach((parent) => {
           if (parent.objectId) removedIds.add(parent.objectId);
-          canvas.remove(parent);
+          const entry = sceneObjectEntries(canvas).find(({ object }) => object === parent);
+          if (entry) removeSceneObject(entry);
         });
-        connectorsForRemovedIds(canvas.getObjects(), removedIds).forEach((object) =>
-          canvas.remove(object)
-        );
+        sceneObjectEntries(canvas)
+          .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
+          .forEach(removeSceneObject);
         canvas.discardActiveObject();
         setSelection([]);
       }
@@ -2519,11 +2562,26 @@ export function EditorProvider({
       commit("Delete SVG part");
       return;
     }
-    const removedIds = new Set(
-      active.map((object) => object.objectId).filter((id): id is string => Boolean(id))
+    const removedIds = new Set<string>();
+    visitSceneObjects(active, (object) => {
+      if (object.objectId) removedIds.add(object.objectId);
+    });
+    const activeSet = new Set(active);
+    const entries = sceneObjectEntries(canvas);
+    entries
+      .filter(
+        ({ object }) =>
+          !activeSet.has(object) && connectorsForRemovedIds([object], removedIds).length > 0
+      )
+      .forEach(removeSceneObject);
+    const selectedRoots = active.filter(
+      (object) =>
+        !active.some((candidate) => candidate !== object && isSceneDescendant(object, candidate))
     );
-    const connected = connectorsForRemovedIds(canvas.getObjects(), removedIds);
-    [...active, ...connected].forEach((object) => canvas.remove(object));
+    selectedRoots.forEach((object) => {
+      const entry = entries.find((candidate) => candidate.object === object);
+      if (entry) removeSceneObject(entry);
+    });
     canvas.discardActiveObject();
     setSelection([]);
     canvas.requestRenderAll();
@@ -2690,9 +2748,10 @@ export function EditorProvider({
     canvas.setActiveObject(group);
     deepSelectionCycle.current = undefined;
     setSelection([group]);
+    refreshConnectors();
     canvas.requestRenderAll();
     commit("Group");
-  }, [canvas, commit]);
+  }, [canvas, commit, refreshConnectors]);
 
   const ungroupSelection = useCallback(() => {
     if (!canvas || !isManualGroup(canvas.getActiveObject())) return;
@@ -2712,17 +2771,18 @@ export function EditorProvider({
         parent.dirty = true;
       }
     }
-    connectorsForRemovedIds(canvas.getObjects(), removedIds).forEach((object) =>
-      canvas.remove(object)
-    );
+    sceneObjectEntries(canvas)
+      .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
+      .forEach(removeSceneObject);
     const selectionObject = new ActiveSelection(objects, { canvas });
     configureSelectionControls(selectionObject, latestZoom.current);
     canvas.setActiveObject(selectionObject);
     deepSelectionCycle.current = undefined;
     setSelection(selectionObject.getObjects());
+    refreshConnectors();
     canvas.requestRenderAll();
     commit("Ungroup");
-  }, [canvas, commit]);
+  }, [canvas, commit, refreshConnectors]);
 
   const arrange = useCallback(
     (action: "front" | "forward" | "backward" | "back") => {

@@ -75,4 +75,37 @@ describe("clone identity remapping", () => {
     expect(object.objectId).not.toBe("source");
     expect(object.connector).toEqual(binding(object.objectId!, "external"));
   });
+
+  it("remints connector descendants together with their endpoint subtree", () => {
+    const from = new Rect({ width: 10 });
+    const to = new Rect({ width: 10, left: 40 });
+    from.objectId = "nested-from";
+    to.objectId = "nested-to";
+    const connector = new Group([]);
+    connector.objectId = "nested-connector";
+    connector.connector = binding("nested-from", "nested-to");
+    const source = new Group([from, to, connector]);
+    source.objectId = "nested-group";
+
+    assignFreshCloneIds(source);
+
+    const ids = [source, ...source.getObjects()].map((object) => object.objectId);
+    expect(new Set(ids).size).toBe(4);
+    expect(connector.connector).toEqual(binding(from.objectId!, to.objectId!));
+    expect(source.objectId).not.toBe("nested-group");
+    expect(connector.objectId).not.toBe("nested-connector");
+  });
+
+  it("fails atomically when a clone subtree already has duplicate IDs", () => {
+    const first = new Rect({ width: 10 });
+    const second = new Rect({ width: 10 });
+    first.objectId = "same";
+    second.objectId = "same";
+    const group = new Group([first, second]);
+    group.objectId = "group";
+
+    expect(() => assignFreshCloneIds(group)).toThrow("duplicate object ID");
+    expect(first.objectId).toBe("same");
+    expect(second.objectId).toBe("same");
+  });
 });

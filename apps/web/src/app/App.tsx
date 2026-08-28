@@ -14,7 +14,11 @@ import {
   saveProject,
   saveProjectThumbnail
 } from "@/persistence/database";
-import { downloadProject, readProjectFile } from "@/persistence/portable";
+import {
+  downloadProject,
+  normalizeProjectForLoad,
+  readProjectFileWithWarnings
+} from "@/persistence/portable";
 import { isProjectThumbnailCurrent } from "@/persistence/thumbnailFormat";
 import { HomeScreen } from "@/components/HomeScreen";
 
@@ -38,6 +42,18 @@ function readTheme(): Theme {
 function historyProjectId() {
   const state = window.history.state as Record<string, unknown> | null;
   return typeof state?.[PROJECT_HISTORY_KEY] === "string" ? state[PROJECT_HISTORY_KEY] : null;
+}
+
+function identityRepairNotice(project: ProjectRecord, warnings: string[]): string {
+  const duplicateCount = warnings.filter((warning) =>
+    warning.startsWith("Repaired duplicate")
+  ).length;
+  return `Repaired scene identity in “${project.name}” (${duplicateCount} duplicate ID${duplicateCount === 1 ? "" : "s"}).`;
+}
+
+function projectLoadError(project: ProjectRecord, reason: unknown): string {
+  const detail = reason instanceof Error ? reason.message : String(reason);
+  return `Could not load “${project.name}”: ${detail.replace(/^Error:\s*/, "")}`;
 }
 
 export function App() {
@@ -73,12 +89,30 @@ export function App() {
   const refresh = useCallback(async () => {
     const revision = ++refreshRevision.current;
     const [stored, storedFolders] = await Promise.all([listProjects(), listProjectFolders()]);
-    if (revision !== refreshRevision.current) return stored;
-    setProjects(stored);
+    const repairNotices: string[] = [];
+    const invalidNotices: string[] = [];
+    const normalized = stored.map((project) => {
+      try {
+        const loaded = normalizeProjectForLoad(project);
+        if (loaded.identityRepaired) {
+          repairNotices.push(identityRepairNotice(project, loaded.identityWarnings));
+          void saveProject(loaded.project).catch((reason) => setError(String(reason)));
+        }
+        return loaded.project;
+      } catch (reason) {
+        invalidNotices.push(projectLoadError(project, reason));
+        return project;
+      }
+    });
+    if (revision !== refreshRevision.current) return normalized;
+    setProjects(normalized);
     setFolders(storedFolders);
+    if (repairNotices.length > 0 || invalidNotices.length > 0) {
+      setError([...repairNotices, ...invalidNotices].join(" "));
+    }
 
     const activeProjectId = historyProjectId();
-    const stale = stored.filter(
+    const stale = normalized.filter(
       (project) =>
         project.id !== activeProjectId &&
         !isProjectThumbnailCurrent(project.thumbnail, project.updatedAt)
@@ -110,7 +144,7 @@ export function App() {
         })
         .catch((reason) => setError(String(reason)));
     }
-    return stored;
+    return normalized;
   }, []);
 
   useEffect(() => {
@@ -119,7 +153,13 @@ export function App() {
         const projectId = historyProjectId();
         if (!projectId) return;
         const project = stored.find((candidate) => candidate.id === projectId);
-        if (project) setCurrent(project);
+        if (project) {
+          try {
+            setCurrent(normalizeProjectForLoad(project).project);
+          } catch (reason) {
+            setError(projectLoadError(project, reason));
+          }
+        }
       })
       .catch((reason) => setError(String(reason)))
       .finally(() => setLoading(false));
@@ -150,8 +190,22 @@ export function App() {
         .get(projectId)
         .then((project) => {
           if (revision !== historySyncRevision.current) return;
-          setCurrent(project ?? null);
-          if (!project) void refresh();
+          if (!project) {
+            setCurrent(null);
+            void refresh();
+            return;
+          }
+          try {
+            const loaded = normalizeProjectForLoad(project);
+            if (loaded.identityRepaired) {
+              void saveProject(loaded.project).catch((reason) => setError(String(reason)));
+              setError(identityRepairNotice(project, loaded.identityWarnings));
+            }
+            setCurrent(loaded.project);
+          } catch (reason) {
+            setCurrent(null);
+            setError(projectLoadError(project, reason));
+          }
         })
         .catch((reason) => setError(String(reason)));
     };
@@ -161,14 +215,26 @@ export function App() {
   }, [refresh]);
 
   const openProject = useCallback((project: ProjectRecord) => {
+    let loaded: ProjectRecord;
+    try {
+      const result = normalizeProjectForLoad(project);
+      loaded = result.project;
+      if (result.identityRepaired) {
+        void saveProject(loaded).catch((reason) => setError(String(reason)));
+        setError(identityRepairNotice(project, result.identityWarnings));
+      }
+    } catch (reason) {
+      setError(projectLoadError(project, reason));
+      return;
+    }
     historySyncRevision.current += 1;
-    setCurrent(project);
-    if (historyProjectId() === project.id) return;
+    setCurrent(loaded);
+    if (historyProjectId() === loaded.id) return;
 
     const currentState =
       window.history.state && typeof window.history.state === "object" ? window.history.state : {};
     window.history.pushState(
-      { ...currentState, [PROJECT_HISTORY_KEY]: project.id },
+      { ...currentState, [PROJECT_HISTORY_KEY]: loaded.id },
       "",
       window.location.href
     );
@@ -294,9 +360,10 @@ export function App() {
               .catch((reason) => setError(String(reason)));
           }}
           onImport={(file) => {
-            readProjectFile(file)
-              .then(async (project) => {
+            readProjectFileWithWarnings(file)
+              .then(async ({ project, identityRepaired, identityWarnings }) => {
                 await saveProject(project);
+                if (identityRepaired) setError(identityRepairNotice(project, identityWarnings));
                 await refresh();
                 openProject(project);
               })

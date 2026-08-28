@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   DEFAULT_CANVAS,
   migrateProject,
+  migrateProjectForLoad,
   PORTABLE_PROJECT_LIMITS
 } from "../packages/editor-core/src";
 
@@ -129,6 +130,105 @@ describe("project migrations", () => {
 
   it("accepts the current format", () => {
     expect(migrateProject(project).name).toBe("Figure");
+  });
+
+  it("repairs duplicate descendant IDs and keeps each subtree connector local", () => {
+    const connector = {
+      type: "Group",
+      OpenSketchType: "connector",
+      objects: [],
+      connector: {
+        fromObjectId: "endpoint",
+        fromAnchor: "center",
+        toObjectId: "target",
+        toAnchor: "center",
+        startArrowhead: "none",
+        endArrowhead: "triangle",
+        lineStyle: "solid",
+        curvature: 0
+      }
+    };
+    const duplicateProject = {
+      ...project,
+      objects: {
+        objects: [
+          {
+            type: "Group",
+            OpenSketchType: "group",
+            objectId: "group-one",
+            objects: [
+              { type: "Rect", objectId: "endpoint" },
+              { type: "Rect", objectId: "target" },
+              { ...connector, objectId: "connector-one" }
+            ]
+          },
+          {
+            type: "Group",
+            OpenSketchType: "group",
+            objectId: "group-two",
+            objects: [
+              { type: "Rect", objectId: "endpoint" },
+              { type: "Rect", objectId: "target" },
+              { ...structuredClone(connector), objectId: "connector-two" }
+            ]
+          }
+        ]
+      }
+    };
+
+    expect(() => migrateProject(duplicateProject)).toThrow("duplicated");
+    const first = migrateProjectForLoad(duplicateProject);
+    const second = migrateProjectForLoad(duplicateProject);
+    const objects = first.project.objects.objects as Array<Record<string, unknown>>;
+    const firstGroup = objects[0].objects as Array<Record<string, unknown>>;
+    const secondGroup = objects[1].objects as Array<Record<string, unknown>>;
+    const secondEndpointId = secondGroup[0].objectId;
+    const secondTargetId = secondGroup[1].objectId;
+    const secondBinding = secondGroup[2].connector as Record<string, unknown>;
+
+    expect(first.identityRepaired).toBe(true);
+    expect(first.identityWarnings.some((warning) => warning.includes('"endpoint"'))).toBe(true);
+    expect(
+      new Set(
+        objects.flatMap((group) => [
+          group.objectId,
+          ...(group.objects as Array<Record<string, unknown>>).map((item) => item.objectId)
+        ])
+      ).size
+    ).toBe(8);
+    expect(secondEndpointId).not.toBe("endpoint");
+    expect(secondTargetId).not.toBe("target");
+    expect(secondBinding.fromObjectId).toBe(secondEndpointId);
+    expect(secondBinding.toObjectId).toBe(secondTargetId);
+    expect(JSON.stringify(second.project)).toBe(JSON.stringify(first.project));
+    expect((firstGroup[2].connector as Record<string, unknown>).fromObjectId).toBe("endpoint");
+    const reloaded = migrateProjectForLoad(first.project);
+    expect(reloaded.identityRepaired).toBe(false);
+    expect(reloaded.project).toEqual(first.project);
+  });
+
+  it("rejects oversized or deeply nested scenes before identity repair", () => {
+    const tooMany = {
+      ...project,
+      objects: {
+        objects: Array.from({ length: PORTABLE_PROJECT_LIMITS.maxSceneObjects + 1 }, (_, index) => ({
+          type: "Rect",
+          objectId: `rect-${index}`
+        }))
+      }
+    };
+    expect(() => migrateProjectForLoad(tooMany)).toThrow("scene contains too many objects");
+
+    let tooDeep: Record<string, unknown> = { type: "Rect" };
+    for (let index = 0; index < PORTABLE_PROJECT_LIMITS.maxSceneDepth; index += 1) {
+      tooDeep = { type: "Group", objects: [tooDeep] };
+    }
+    expect(() =>
+      migrateProjectForLoad({
+        ...project,
+        objects: { objects: [tooDeep] }
+      })
+    ).toThrow("scene nesting limit");
   });
 
   it("adds the enabled double-click text preference to older projects", () => {

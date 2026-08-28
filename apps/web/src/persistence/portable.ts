@@ -1,4 +1,8 @@
-import { migrateProject, type PortableProject, type ProjectRecord } from "@workspace/editor-core";
+import {
+  migrateProjectForLoad,
+  type PortableProject,
+  type ProjectRecord
+} from "@workspace/editor-core";
 
 interface WritableProjectFile {
   write(data: Blob): Promise<void>;
@@ -40,6 +44,22 @@ export function supportsProjectDirectory(): boolean {
   return typeof (window as DirectoryPickerWindow).showDirectoryPicker === "function";
 }
 
+export interface ProjectLoadResult {
+  project: ProjectRecord;
+  identityRepaired: boolean;
+  identityWarnings: string[];
+}
+
+/** Validate a stored project while repairing legacy scene identity before Fabric sees it. */
+export function normalizeProjectForLoad(project: ProjectRecord): ProjectLoadResult {
+  const loaded = migrateProjectForLoad(project);
+  return {
+    project: { ...project, ...loaded.project },
+    identityRepaired: loaded.identityRepaired,
+    identityWarnings: loaded.identityWarnings
+  };
+}
+
 export async function saveProjectToDirectory(project: ProjectRecord): Promise<boolean> {
   const picker = (window as DirectoryPickerWindow).showDirectoryPicker;
   if (!picker) {
@@ -75,7 +95,7 @@ function readFileText(file: File): Promise<string> {
   });
 }
 
-export async function readProjectFile(file: File): Promise<ProjectRecord> {
+export async function readProjectFileWithWarnings(file: File): Promise<ProjectLoadResult> {
   if (file.size > 100 * 1024 * 1024) {
     throw new Error("This project is larger than the 100 MB safety limit.");
   }
@@ -85,14 +105,23 @@ export async function readProjectFile(file: File): Promise<ProjectRecord> {
   } catch {
     throw new Error("The project file contains invalid JSON.");
   }
-  const migrated = migrateProject(parsed);
+  const migrated = migrateProjectForLoad(parsed);
+  const now = new Date().toISOString();
   return {
-    ...migrated,
-    id: crypto.randomUUID(),
-    name: migrated.name,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    project: {
+      ...migrated.project,
+      id: crypto.randomUUID(),
+      name: migrated.project.name,
+      createdAt: now,
+      updatedAt: now
+    },
+    identityRepaired: migrated.identityRepaired,
+    identityWarnings: migrated.identityWarnings
   };
+}
+
+export async function readProjectFile(file: File): Promise<ProjectRecord> {
+  return (await readProjectFileWithWarnings(file)).project;
 }
 
 export function downloadBlob(blob: Blob, filename: string): void {
