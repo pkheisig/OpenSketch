@@ -53,9 +53,9 @@ describe("export provenance", () => {
       attribution: "Alpha author / Example",
       credit: "Alpha author / Example"
     });
-    expect(formatProvenanceCredits(first, "Figure", "", "OpenSketch")).toContain(
-      "SPDX ID: CC0-1.0"
-    );
+    const credits = formatProvenanceCredits(first, "Figure", "", "OpenSketch");
+    expect(credits).toContain("SPDX ID: CC0-1.0");
+    expect(credits.match(/Attribution: Alpha author \/ Example/g)).toHaveLength(1);
     expect(provenanceManifestJson(first)).toBe(provenanceManifestJson(second));
   });
 

@@ -166,7 +166,9 @@ export function formatProvenanceCredits(
     if (asset.spdxId) lines.push(`   SPDX ID: ${asset.spdxId}`);
     if (asset.licenseSpdx) lines.push(`   License SPDX: ${asset.licenseSpdx}`);
     if (asset.attribution) lines.push(`   Attribution: ${asset.attribution}`);
-    if (asset.credit) lines.push(`   Attribution: ${asset.credit}`);
+    if (asset.credit && asset.credit !== asset.attribution) {
+      lines.push(`   ${asset.attribution ? "Credit" : "Attribution"}: ${asset.credit}`);
+    }
   });
   return `${lines.join("\n")}\n`;
 }
