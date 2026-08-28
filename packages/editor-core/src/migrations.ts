@@ -706,7 +706,7 @@ function validateRasterResource(
 
 function assertSafeSvgText(value: string, path: string): void {
   if (
-    /<!doctype\b|<!entity\b|<\s*(?:script|foreignObject|iframe|object|embed|a)\b|\bon[a-z][\w:-]*\s*=|(?:href|xlink:href|src)\s*=\s*["']?\s*(?:https?:|\/\/|javascript:|data:text\/html)/i.test(
+    /<!doctype\b|<!entity\b|<\s*(?:script|foreignObject|iframe|object|embed)\b|\bon[a-z][\w:-]*\s*=|(?:href|xlink:href|src)\s*=\s*["']?\s*(?:https?:|\/\/|javascript:|data:text\/html)/i.test(
       value
     ) ||
     /url\(\s*["']?(?:https?:|\/\/|javascript:)/i.test(value)

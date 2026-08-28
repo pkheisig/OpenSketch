@@ -212,6 +212,19 @@ describe("project migrations", () => {
     ).toThrow("external or executable");
   });
 
+  it("accepts sanitized SVG anchors with internal targets", () => {
+    const svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><a href="#shape"><rect id="shape" width="10" height="10"/></a></svg>';
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: {
+          objects: [{ type: "Image", src: `data:image/svg+xml,${encodeURIComponent(svg)}` }]
+        }
+      })
+    ).not.toThrow();
+  });
+
   it("rejects malformed canvas and imported-media records", () => {
     expect(() =>
       migrateProject({
