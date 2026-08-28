@@ -339,6 +339,26 @@ describe("project migrations", () => {
         }
       })
     ).toThrow("unknown object ID");
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: {
+          objects: [
+            {
+              type: "Rect",
+              objectId: "member",
+              recognizedGroups: [
+                {
+                  objectId: "group",
+                  memberObjectIds: ["missing"],
+                  properties: {}
+                }
+              ]
+            }
+          ]
+        }
+      })
+    ).toThrow("unknown object ID");
 
     const oversizedSvg = `data:image/svg+xml,${"a".repeat(
       PORTABLE_PROJECT_LIMITS.maxDataUrlBytes + 1
