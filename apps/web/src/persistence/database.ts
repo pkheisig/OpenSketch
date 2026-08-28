@@ -261,9 +261,6 @@ export async function saveProject(project: ProjectRecord): Promise<ProjectSaveRe
     objects: compactProjectScene(candidate.objects, uploads),
     uploads
   };
-  // Validate the exact portable representation before touching IndexedDB. This
-  // keeps local state and exported state under one byte-budget contract.
-  serializeProject(prepared);
 
   const result = await db.transaction("rw", db.projects, async () => {
     const stored = await db.projects.get(prepared.id);
@@ -282,6 +279,9 @@ export async function saveProject(project: ProjectRecord): Promise<ProjectSaveRe
       revision: current ? current.revision + 1 : 1,
       updatedAt: new Date().toISOString()
     };
+    // Validate the exact portable representation that will be stored before
+    // touching IndexedDB. This keeps local state and exports under one budget.
+    serializeProject(next);
     await db.projects.put(next);
     return { status: "saved", project: next } as const;
   });

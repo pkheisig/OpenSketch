@@ -107,6 +107,41 @@ async function publishRemoteRevision(page: Page, projectId: string) {
   }, projectId);
 }
 
+async function publishRemoteDeletion(page: Page, projectId: string) {
+  return page.evaluate(async (id) => {
+    const database = await new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open("OpenSketch");
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const transaction = database.transaction("projects", "readwrite");
+    const store = transaction.objectStore("projects");
+    const current = await new Promise<Record<string, unknown>>((resolve, reject) => {
+      const request = store.get(id);
+      request.onsuccess = () => {
+        if (!request.result) reject(new Error("Project was not found."));
+        else resolve(request.result as Record<string, unknown>);
+      };
+      request.onerror = () => reject(request.error);
+    });
+    const revision = Number(current.revision ?? 0) + 1;
+    store.delete(id);
+    await new Promise<void>((resolve, reject) => {
+      transaction.oncomplete = () => resolve();
+      transaction.onerror = () => reject(transaction.error);
+      transaction.onabort = () => reject(transaction.error);
+    });
+    database.close();
+
+    const notice = { projectId: id, revision, sourceId: "playwright-peer", deleted: true };
+    localStorage.setItem("OpenSketch:project-change", JSON.stringify(notice));
+    const channel = new BroadcastChannel("OpenSketch:project-changed");
+    channel.postMessage(notice);
+    channel.close();
+    return revision;
+  }, projectId);
+}
+
 async function addRectangle(page: Page) {
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   const shapeMenu = page.getByRole("menu", { name: "Shape tools" });
@@ -193,6 +228,29 @@ test("reloads the newer revision without merging scenes", async ({ page }) => {
     await expect(page.getByLabel("Document title")).toHaveValue("Remote revision");
     await expect(page.getByRole("button", { name: "Reload newer version" })).toHaveCount(0);
     await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  } finally {
+    await peer.close();
+  }
+});
+
+test("surfaces a deletion conflict and preserves local work as a copy", async ({ page }) => {
+  const peer = await page.context().newPage();
+  try {
+    const projectId = await startProject(page);
+    await peer.goto("/");
+    await expect(peer.getByRole("button", { name: /^Untitled figure/ })).toBeVisible();
+
+    await publishRemoteDeletion(peer, projectId);
+    await expect(page.getByRole("button", { name: "Save this tab as a copy" })).toBeVisible();
+    await addRectangle(page);
+    await page.getByRole("button", { name: "Save this tab as a copy" }).click();
+    await expect(page.getByRole("button", { name: "Save this tab as a copy" })).toHaveCount(0);
+
+    const projects = await readProjects(page);
+    expect(projects).toHaveLength(1);
+    expect(projects[0]?.id).not.toBe(projectId);
+    expect(projects[0]?.name).toBe("Untitled figure copy");
+    expect(projects[0]?.objectCount).toBe(1);
   } finally {
     await peer.close();
   }

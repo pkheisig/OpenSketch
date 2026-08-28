@@ -968,11 +968,12 @@ export function EditorProvider({
       void getProject(project.id)
         .then((current) => {
           if (!active) return;
-          if (notice.deleted || !current || current.revision <= latestProject.current.revision) {
-            if (notice.deleted && !current) {
-              setProjectConflictError("");
-              setProjectConflict({ current: undefined });
-            }
+          if (notice.deleted) {
+            setProjectConflictError("");
+            setProjectConflict({ current });
+            return;
+          }
+          if (!current || current.revision <= latestProject.current.revision) {
             return;
           }
           setProjectConflictError("");
