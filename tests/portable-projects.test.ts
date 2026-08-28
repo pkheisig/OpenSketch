@@ -74,7 +74,8 @@ describe("portable OpenSketch projects", () => {
     expect(restored.uploads).toEqual(withImportedMedia.uploads);
     expect(restored.objects.objects).toContainEqual({
       type: "Image",
-      assetId: "import-1"
+      assetId: "import-1",
+      src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB"
     });
   });
 

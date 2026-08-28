@@ -16,6 +16,11 @@ export interface ImportedMediaLibraryRecord extends ImportedMediaRecord {
   contentHash: string;
 }
 
+export interface ImportedMediaSaveResult {
+  record: ImportedMediaLibraryRecord;
+  created: boolean;
+}
+
 class OpenSketchDatabase extends Dexie {
   projects!: EntityTable<ProjectRecord, "id">;
   folders!: EntityTable<ProjectFolderRecord, "id">;
@@ -191,6 +196,13 @@ export async function saveImportedMedia(
   media: ImportedMediaRecord,
   timestamp = new Date().toISOString()
 ): Promise<ImportedMediaLibraryRecord> {
+  return (await saveImportedMediaWithStatus(media, timestamp)).record;
+}
+
+export async function saveImportedMediaWithStatus(
+  media: ImportedMediaRecord,
+  timestamp = new Date().toISOString()
+): Promise<ImportedMediaSaveResult> {
   const contentHash = await importedMediaHash(media);
   const matching = await db.imports.where("contentHash").equals(contentHash).first();
   const record: ImportedMediaLibraryRecord = matching
@@ -203,7 +215,7 @@ export async function saveImportedMedia(
       };
   await db.imports.put(record);
   notifyImportLibraryChanged();
-  return record;
+  return { record, created: !matching };
 }
 
 export async function rememberProjectImports(

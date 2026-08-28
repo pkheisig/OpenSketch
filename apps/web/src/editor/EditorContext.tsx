@@ -121,8 +121,9 @@ import {
 import {
   duplicateProject,
   getProject,
+  deleteImportedMedia,
   rememberProjectImports,
-  saveImportedMedia as saveImportedMediaToLibrary,
+  saveImportedMediaWithStatus,
   saveProjectThumbnail,
   subscribeProjectChanges,
   type ProjectSaveResult
@@ -314,6 +315,7 @@ interface EditorContextValue {
   projectConflict: { current?: ProjectRecord } | null;
   projectConflictSaving: boolean;
   projectConflictError: string;
+  projectSaveError: string;
   setCanvasElement: (element: HTMLCanvasElement | null) => void;
   setCanvasSettings: (settings: Partial<CanvasSettings>) => void;
   setAlignmentEnabled: (enabled: boolean) => void;
@@ -901,6 +903,7 @@ export function EditorProvider({
   const [projectConflict, setProjectConflict] = useState<{ current?: ProjectRecord } | null>(null);
   const [projectConflictSaving, setProjectConflictSaving] = useState(false);
   const [projectConflictError, setProjectConflictError] = useState("");
+  const [projectSaveError, setProjectSaveError] = useState("");
   const assetInsertQueue = useRef<Promise<void>>(Promise.resolve());
   const importQueue = useRef<Promise<void>>(Promise.resolve());
   const latestProject = useRef(project);
@@ -1079,10 +1082,13 @@ export function EditorProvider({
 
   const saveSnapshot = useCallback(
     async (snapshot: string, revision: number) => {
+      let conflict = false;
       try {
         const next = snapshotProject(snapshot);
         const result = await onProjectChange(next);
         if (result.status === "conflict") {
+          conflict = true;
+          setProjectSaveError("");
           setProjectConflictError("");
           setProjectConflict({ current: result.current });
           const message = result.current
@@ -1094,8 +1100,10 @@ export function EditorProvider({
         durableProjectRevision.current = result.project.revision;
         savedRevision.current = Math.max(savedRevision.current, revision);
         lastSaveError.current = undefined;
+        setProjectSaveError("");
       } catch (reason) {
         lastSaveError.current = reason;
+        if (!conflict) setProjectSaveError(String(reason).replace(/^Error:\s*/, ""));
         throw reason;
       }
     },
@@ -2484,7 +2492,8 @@ export function EditorProvider({
   const placeImportedMedia = useCallback(
     async (media: ImportedMediaRecord, point?: Point) => {
       if (!canvas) return media;
-      const stored = await saveImportedMediaToLibrary(media);
+      const savedMedia = await saveImportedMediaWithStatus(media);
+      const stored = savedMedia.record;
       let object: FabricObject;
       if (stored.mimeType === "image/svg+xml") {
         const source = sanitizeImportedSvg(
@@ -2532,6 +2541,9 @@ export function EditorProvider({
           objects: nextObjects
         });
       } catch (reason) {
+        if (savedMedia.created) {
+          await deleteImportedMedia(stored.id).catch(() => undefined);
+        }
         canvas.remove(object);
         canvas.discardActiveObject();
         const restoredSelection = previousSelection.filter((candidate) =>
@@ -3594,6 +3606,7 @@ export function EditorProvider({
       projectConflict,
       projectConflictSaving,
       projectConflictError,
+      projectSaveError,
       setCanvasElement,
       setCanvasSettings,
       setAlignmentEnabled,
@@ -3682,6 +3695,7 @@ export function EditorProvider({
       projectConflict,
       projectConflictError,
       projectConflictSaving,
+      projectSaveError,
       project.id,
       previewZoom,
       placeCreationTool,

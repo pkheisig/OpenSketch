@@ -4215,6 +4215,15 @@ input[type="range"] {
   background: transparent;
 }
 
+.project-save-error {
+  align-items: start;
+}
+
+.project-save-error strong {
+  display: block;
+  margin-bottom: 2px;
+}
+
 .loading-screen {
   display: grid;
   height: 100%;

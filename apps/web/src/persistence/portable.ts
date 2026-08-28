@@ -2,6 +2,7 @@ import {
   migrateProject,
   normalizeProjectMedia,
   PROJECT_STORAGE_LIMITS,
+  rehydrateProjectScene,
   type PortableProject,
   type ProjectRecord
 } from "@workspace/editor-core";
@@ -29,7 +30,9 @@ function portableProject(project: ProjectLike): PortableProject {
   const media = normalizeProjectMedia(project.objects, project.uploads);
   const portable = {
     ...project,
-    objects: media.objects,
+    // Keep version-1 portable files readable by older OpenSketch loaders that
+    // pass Fabric image nodes directly to Fabric without resolving assetId.
+    objects: rehydrateProjectScene(media.objects, media.uploads),
     uploads: media.uploads
   } as PortableProject & {
     thumbnail?: string;

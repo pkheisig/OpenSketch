@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import type { ProjectRecord } from "@workspace/editor-core";
 import { EditorProvider } from "@/editor/EditorContext";
 import { ProjectConflictNotice } from "@/components/ProjectConflictNotice";
+import { ProjectSaveNotice } from "@/components/ProjectSaveNotice";
 import { CanvasWorkspace } from "@/components/CanvasWorkspace";
 import type { ProjectSaveResult } from "@/persistence/database";
 import { scheduleAssetPreviewWarmup } from "@/assets/previewWarmup";
@@ -62,6 +63,7 @@ export function EditorStudio({
       onRequestProjectSwitch={onProjectSwitch}
     >
       <ProjectConflictNotice />
+      <ProjectSaveNotice />
       <main className="editor-shell">
         <Suspense fallback={<header className="top-toolbar" aria-hidden="true" />}>
           <TopToolbar

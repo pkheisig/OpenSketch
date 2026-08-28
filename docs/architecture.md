@@ -92,8 +92,9 @@ The version-1 JSON key for imported media remains `uploads` solely for backward
 compatibility with existing `.OpenSketch` files; the interface and current code
 refer to the feature as importing media. Portable JSON is subject to the
 shared 100 MiB serialized-project budget and 25 MiB source-media limit. Before
-export or local persistence, unreferenced uploads are removed and raster image
-sources are compacted into the upload table; the sources are rehydrated before
+local persistence, unreferenced uploads are removed and raster image sources
+are compacted into the upload table. Version-1 portable exports rehydrate those
+sources for older loaders, and the current loader also rehydrates them before
 Fabric loads a scene. Imports that would exceed the budget fail without
 replacing the prior project state.
 
