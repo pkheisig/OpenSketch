@@ -349,7 +349,7 @@ describe("project migrations", () => {
               objectId: "member",
               recognizedGroups: [
                 {
-                  objectId: "group",
+                  objectId: "historical-group",
                   memberObjectIds: ["missing"],
                   properties: {}
                 }
@@ -358,7 +358,7 @@ describe("project migrations", () => {
           ]
         }
       })
-    ).toThrow("unknown object ID");
+    ).not.toThrow();
 
     const oversizedSvg = `data:image/svg+xml,${"a".repeat(
       PORTABLE_PROJECT_LIMITS.maxDataUrlBytes + 1

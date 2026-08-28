@@ -483,6 +483,18 @@ export function normalizeConnectorHeadOffsets(group: Group): boolean {
   return changed;
 }
 
+export function connectorsForRemovedIds<T extends { connector?: ConnectorBinding }>(
+  objects: readonly T[],
+  removedIds: ReadonlySet<string>
+): T[] {
+  return objects.filter((object) => {
+    const binding = object.connector;
+    return Boolean(
+      binding && (removedIds.has(binding.fromObjectId) || removedIds.has(binding.toObjectId))
+    );
+  });
+}
+
 export function createConnectorObject(
   from: Point,
   to: Point,

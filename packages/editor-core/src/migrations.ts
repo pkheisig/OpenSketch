@@ -422,7 +422,6 @@ interface ValidationContext {
   totalDataUrlBytes: number;
   dataUrls: Set<string>;
   objectIds: Set<string>;
-  recognizedGroupMembers: Array<{ path: string; objectId: string }>;
   connectorBindings: Array<{
     path: string;
     binding: JsonRecord;
@@ -1089,6 +1088,9 @@ function validateStringMap(value: unknown, path: string): void {
 }
 
 function validateRecognizedGroups(value: unknown, path: string, context: ValidationContext): void {
+  // Recognized groups are advisory lineage metadata mirrored onto scene members.
+  // Deleting a member can leave a historical ID behind; it is ignored by the
+  // recognition matcher and must not make an otherwise renderable project fail.
   assertArray(value, path, PORTABLE_PROJECT_LIMITS.maxMetadataEntries);
   value.forEach((item, index) => {
     const itemPath = `${path}[${index}]`;
@@ -1114,10 +1116,6 @@ function validateRecognizedGroups(value: unknown, path: string, context: Validat
       if (memberIds.has(memberId))
         fail(`${itemPath}.memberObjectIds`, "contains duplicate object IDs");
       memberIds.add(memberId);
-      context.recognizedGroupMembers.push({
-        path: `${itemPath}.memberObjectIds[${memberIndex}]`,
-        objectId: memberId
-      });
     });
     if (!isRecord(item.properties)) fail(`${itemPath}.properties`, "is invalid");
     validateCustomProperties(item.properties, `${itemPath}.properties`, context);
@@ -1515,7 +1513,6 @@ function createValidationContext(): ValidationContext {
     totalDataUrlBytes: 0,
     dataUrls: new Set(),
     objectIds: new Set(),
-    recognizedGroupMembers: [],
     connectorBindings: []
   };
 }
@@ -1548,11 +1545,6 @@ function validateScene(
       if (id.length === 0 && reference.allowEmptyIds) continue;
       if (!context.objectIds.has(id))
         fail(`${reference.path}.${key}`, "references an unknown object ID");
-    }
-  }
-  for (const reference of context.recognizedGroupMembers) {
-    if (!context.objectIds.has(reference.objectId)) {
-      fail(reference.path, "references an unknown object ID");
     }
   }
   return value;

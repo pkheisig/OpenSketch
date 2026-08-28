@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  connectorsForRemovedIds,
   createFreeConnectorObject,
   normalizeConnectorHeadOffsets,
   routeOrthogonal
@@ -35,6 +36,22 @@ const PATH_SHAPES: ConnectorPathShape[] = [
 const normalizedDegrees = (value: number) => ((value % 360) + 360) % 360;
 
 describe("orthogonal connector routing", () => {
+  it("finds connectors attached to removed objects", () => {
+    const attachedFrom = {
+      connector: { fromObjectId: "removed", toObjectId: "kept" } as ConnectorBinding
+    };
+    const attachedTo = {
+      connector: { fromObjectId: "kept", toObjectId: "removed" } as ConnectorBinding
+    };
+    const unrelated = {
+      connector: { fromObjectId: "other", toObjectId: "kept" } as ConnectorBinding
+    };
+
+    expect(
+      connectorsForRemovedIds([attachedFrom, attachedTo, unrelated], new Set(["removed"]))
+    ).toEqual([attachedFrom, attachedTo]);
+  });
+
   it("allows headless connectors to override their endpoint cap", () => {
     expect(connectorStrokeLineCap("none", "none", "butt")).toBe("butt");
     expect(connectorStrokeLineCap("none", "none", "round")).toBe("round");

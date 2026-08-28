@@ -33,19 +33,36 @@ describe("clone identity remapping", () => {
       connector: binding("from-source", "to-source")
     };
 
-    const group = new Group([from, to]);
+    const sourceRecognition = structuredClone(from.recognizedGroups);
+    const sourceStyle = structuredClone(from.defaultElementStyle);
+    const clonedFrom = new Rect({ width: 10 });
+    const clonedTo = new Rect({ width: 10 });
+    clonedFrom.objectId = from.objectId;
+    clonedTo.objectId = to.objectId;
+    clonedFrom.connector = from.connector;
+    clonedFrom.recognizedGroups = from.recognizedGroups;
+    clonedTo.recognizedGroups = to.recognizedGroups;
+    clonedFrom.defaultElementStyle = from.defaultElementStyle;
+    const group = new Group([clonedFrom, clonedTo]);
     group.objectId = "group-source";
-    assignFreshCloneIds([group]);
+    assignFreshCloneIds(group);
 
-    expect(new Set([group.objectId, from.objectId, to.objectId]).size).toBe(3);
-    expect(from.connector).toEqual(binding(from.objectId!, to.objectId!));
-    expect(from.defaultElementStyle?.connector).toEqual(binding(from.objectId!, to.objectId!));
-    expect(from.recognizedGroups?.[0]).toEqual({
+    expect(new Set([group.objectId, clonedFrom.objectId, clonedTo.objectId]).size).toBe(3);
+    expect(clonedFrom.connector).toEqual(binding(clonedFrom.objectId!, clonedTo.objectId!));
+    expect(clonedFrom.defaultElementStyle?.connector).toEqual(
+      binding(clonedFrom.objectId!, clonedTo.objectId!)
+    );
+    expect(clonedFrom.recognizedGroups?.[0]).toEqual({
       ...recognition,
-      objectId: from.recognizedGroups[0].objectId,
-      memberObjectIds: [from.objectId, to.objectId]
+      objectId: clonedFrom.recognizedGroups[0].objectId,
+      memberObjectIds: [clonedFrom.objectId, clonedTo.objectId]
     });
-    expect(to.recognizedGroups?.[0].objectId).toBe(from.recognizedGroups?.[0].objectId);
+    expect(clonedTo.recognizedGroups?.[0].objectId).toBe(clonedFrom.recognizedGroups?.[0].objectId);
+    expect(from.objectId).toBe("from-source");
+    expect(to.objectId).toBe("to-source");
+    expect(from.connector).toEqual(binding("from-source", "to-source"));
+    expect(from.recognizedGroups).toEqual(sourceRecognition);
+    expect(from.defaultElementStyle).toEqual(sourceStyle);
   });
 
   it("keeps external connector targets unchanged while refreshing clone IDs", () => {

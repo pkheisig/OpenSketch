@@ -44,6 +44,7 @@ import { createVectorThumbnail } from "@/persistence/projectThumbnail";
 import { GLOBAL_CREDIT } from "@/assets/credit";
 import {
   connectorAppearance,
+  connectorsForRemovedIds,
   createConnectorObject,
   createFreeConnectorObject,
   normalizeConnectorHeadOffsets
@@ -2496,7 +2497,13 @@ export function EditorProvider({
         canvas.setActiveObject(parentAsset);
         setSelection([parentAsset]);
       } else {
+        const removedIds = new Set(
+          [...parents].map((parent) => parent.objectId).filter((id): id is string => Boolean(id))
+        );
         parents.forEach((parent) => canvas.remove(parent));
+        connectorsForRemovedIds(canvas.getObjects(), removedIds).forEach((object) =>
+          canvas.remove(object)
+        );
         canvas.discardActiveObject();
         setSelection([]);
       }
@@ -2504,15 +2511,10 @@ export function EditorProvider({
       commit("Delete SVG part");
       return;
     }
-    const removedIds = new Set(active.map((object) => object.objectId).filter(Boolean));
-    const connected = canvas
-      .getObjects()
-      .filter(
-        (object) =>
-          object.connector &&
-          (removedIds.has(object.connector.fromObjectId) ||
-            removedIds.has(object.connector.toObjectId))
-      );
+    const removedIds = new Set(
+      active.map((object) => object.objectId).filter((id): id is string => Boolean(id))
+    );
+    const connected = connectorsForRemovedIds(canvas.getObjects(), removedIds);
     [...active, ...connected].forEach((object) => canvas.remove(object));
     canvas.discardActiveObject();
     setSelection([]);
@@ -2687,6 +2689,7 @@ export function EditorProvider({
   const ungroupSelection = useCallback(() => {
     if (!canvas || !isManualGroup(canvas.getActiveObject())) return;
     const group = canvas.getActiveObject() as Group;
+    const removedIds = new Set(group.objectId ? [group.objectId] : []);
     const parent = layerCollectionForObject(group, canvas);
     const index = parent.getObjects().indexOf(group);
     canvas.discardActiveObject();
@@ -2701,6 +2704,9 @@ export function EditorProvider({
         parent.dirty = true;
       }
     }
+    connectorsForRemovedIds(canvas.getObjects(), removedIds).forEach((object) =>
+      canvas.remove(object)
+    );
     const selectionObject = new ActiveSelection(objects, { canvas });
     configureSelectionControls(selectionObject, latestZoom.current);
     canvas.setActiveObject(selectionObject);

@@ -86,9 +86,11 @@ export function assignFreshCloneIds(objects: FabricObject | FabricObject[]): voi
       current.freeConnectorBinding = remapConnectorBinding(current.freeConnectorBinding, ids);
     }
     if (current.recognizedGroups) {
+      current.recognizedGroups = structuredClone(current.recognizedGroups);
       remapRecognizedGroupIds(current.recognizedGroups, ids, recognitionIds);
     }
     if (current.defaultElementStyle) {
+      current.defaultElementStyle = structuredClone(current.defaultElementStyle);
       remapStyleSnapshotIds(current.defaultElementStyle, ids);
     }
     if (current instanceof Group) current.getObjects().forEach(apply);
