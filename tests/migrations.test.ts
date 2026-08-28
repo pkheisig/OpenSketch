@@ -360,6 +360,40 @@ describe("project migrations", () => {
       })
     ).not.toThrow();
 
+    const historicalBinding = {
+      fromObjectId: "removed-from",
+      fromAnchor: "center",
+      toObjectId: "removed-to",
+      toAnchor: "center",
+      startArrowhead: "none",
+      endArrowhead: "triangle",
+      lineStyle: "solid",
+      curvature: 0
+    };
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: {
+          objects: [
+            {
+              type: "Rect",
+              recognizedGroups: [
+                {
+                  objectId: "historical-group",
+                  memberObjectIds: ["removed-member"],
+                  properties: { connector: historicalBinding }
+                }
+              ],
+              defaultElementStyle: {
+                properties: {},
+                connector: historicalBinding
+              }
+            }
+          ]
+        }
+      })
+    ).not.toThrow();
+
     const oversizedSvg = `data:image/svg+xml,${"a".repeat(
       PORTABLE_PROJECT_LIMITS.maxDataUrlBytes + 1
     )}`;

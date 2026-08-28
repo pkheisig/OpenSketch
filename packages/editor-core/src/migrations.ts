@@ -934,7 +934,7 @@ function validateFilter(value: unknown, path: string, context: ValidationContext
 function validateConnectorBinding(
   value: unknown,
   path: string,
-  context: ValidationContext,
+  context: ValidationContext | undefined,
   allowEmptyIds: boolean
 ): void {
   if (!isRecord(value)) fail(path, "is invalid");
@@ -982,7 +982,7 @@ function validateConnectorBinding(
     min: -PORTABLE_PROJECT_LIMITS.maxCurvature,
     max: PORTABLE_PROJECT_LIMITS.maxCurvature
   });
-  context.connectorBindings.push({ path, binding: value, allowEmptyIds });
+  context?.connectorBindings.push({ path, binding: value, allowEmptyIds });
 }
 
 function validatePoint(value: unknown, path: string): void {
@@ -1186,7 +1186,7 @@ function validateStyleSnapshot(
     }
   }
   if (value.connector !== undefined)
-    validateConnectorBinding(value.connector, `${path}.connector`, context, true);
+    validateConnectorBinding(value.connector, `${path}.connector`, undefined, true);
   if (value.children !== undefined) {
     assertArray(value.children, `${path}.children`, PORTABLE_PROJECT_LIMITS.maxSceneObjects);
     value.children.forEach((child, index) =>
@@ -1246,9 +1246,9 @@ function validateCustomProperties(
       if (!isRecord(item)) fail(`${path}.${key}`, "is invalid");
       validateGradient(item, `${path}.${key}`, context);
     } else if (key === "connector") {
-      validateConnectorBinding(item, `${path}.${key}`, context, false);
+      validateConnectorBinding(item, `${path}.${key}`, undefined, false);
     } else if (key === "freeConnectorBinding") {
-      validateConnectorBinding(item, `${path}.${key}`, context, true);
+      validateConnectorBinding(item, `${path}.${key}`, undefined, true);
     } else if (key === "freeConnectorGeometry") {
       if (!isRecord(item)) fail(`${path}.${key}`, "is invalid");
       assertKnownKeys(item, `${path}.${key}`, new Set(["from", "to"]));
