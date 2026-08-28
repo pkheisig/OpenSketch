@@ -107,14 +107,24 @@ compatible with files produced by earlier releases.
 
 SVG is the canonical vector export. Fabric emits the scene SVG; OpenSketch adds
 an accessible title, description, generator, used asset IDs, per-asset
-source/author/license records, and global NIH BioArt credit.
+source/author/license records, and global NIH BioArt credit. The per-asset
+records come from a versioned, recursively collected provenance manifest, so
+manual grouping cannot hide an asset from attribution. The manifest is
+deterministically ordered and includes asset/family identity, name, source
+URLs/references, author, license, license URL, SPDX identifiers, and
+attribution where available.
 
 PNG is rendered from a neutral logical viewport so editor zoom never changes
 output dimensions. Exports default to 1200 DPI; the selected 150–1500 DPI
 value determines raster scaling and is embedded as a valid PNG
-physical-resolution (`pHYs`) chunk.
+physical-resolution (`pHYs`) chunk. The same manifest is written as an
+uncompressed UTF-8 `iTXt` chunk with the `OpenSketch:provenance` keyword.
 
 PDF consumes the same generated SVG through `svg2pdf.js` and jsPDF, preserving
 supported vector paths and text. Bundled Source Sans 3 fonts keep default text
 searchable and visually faithful. PDF properties carry the title, description,
-author, generator, and artwork credit.
+author, generator, and artwork credit; a standards-compatible XMP packet carries
+the canonical manifest. Journal and image-processing workflows may discard
+format metadata, so the Export dialog also provides a human-readable `.txt`
+credits sidecar containing the same source, author, license, and attribution
+records.

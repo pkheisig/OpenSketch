@@ -45,7 +45,9 @@ After the first complete visit, the installable web app can reopen offline.
 The bundled library includes public-domain and openly licensed artwork from
 NIAID NIH BioArt, SciDraw, the Arcadia Science Free organism illustration
 library, BioIcons, and Servier Medical Art. Every asset retains its original
-source, author, and license metadata; exports preserve that provenance.
+source, author, and license metadata; exports preserve that provenance. If a
+downstream figure tool strips embedded metadata, use the Export dialog's
+readable credits download as a sidecar.
 
 OpenSketch itself is licensed under
 [AGPL-3.0-or-later](LICENSE). Artwork keeps its original license and is not

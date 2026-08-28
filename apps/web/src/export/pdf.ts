@@ -1,11 +1,13 @@
 import sourceSansRegularUrl from "@/assets/fonts/source-sans-3-regular.ttf?url";
 import sourceSansBoldUrl from "@/assets/fonts/source-sans-3-bold.ttf?url";
 import sourceSansItalicUrl from "@/assets/fonts/source-sans-3-italic.ttf?url";
+import { provenanceManifestJson, type ProvenanceManifest } from "@/export/provenance";
 
 export interface PdfExportMetadata {
   title: string;
   description: string;
   credit: string;
+  provenance: ProvenanceManifest;
 }
 
 const fontData = new Map<string, Promise<string>>();
@@ -51,6 +53,40 @@ async function registerBundledFonts(pdf: import("jspdf").jsPDF): Promise<void> {
   }
 }
 
+function escapeXml(value: string): string {
+  return value.replace(/[<>&'"]/g, (character) => {
+    const values: Record<string, string> = {
+      "<": "&lt;",
+      ">": "&gt;",
+      "&": "&amp;",
+      "'": "&apos;",
+      '"': "&quot;"
+    };
+    return values[character];
+  });
+}
+
+export function buildPdfXmpMetadata(metadata: PdfExportMetadata): string {
+  const manifest = escapeXml(provenanceManifestJson(metadata.provenance));
+  return `<?xpacket begin="\uFEFF" id="W5M0MpCehiHzreSzNTczkc9d"?>
+<x:xmpmeta xmlns:x="adobe:ns:meta/">
+  <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+    <rdf:Description rdf:about=""
+      xmlns:dc="http://purl.org/dc/elements/1.1/"
+      xmlns:pdf="http://ns.adobe.com/pdf/1.3/"
+      xmlns:opensketch="https://opensketch.app/ns/provenance/1.0/">
+      <dc:title><rdf:Alt><rdf:li xml:lang="x-default">${escapeXml(metadata.title)}</rdf:li></rdf:Alt></dc:title>
+      <dc:description><rdf:Alt><rdf:li xml:lang="x-default">${escapeXml(metadata.description)}</rdf:li></rdf:Alt></dc:description>
+      <dc:creator><rdf:Seq><rdf:li>Paul Heisig</rdf:li></rdf:Seq></dc:creator>
+      <pdf:Producer>OpenSketch</pdf:Producer>
+      <opensketch:applicationCredit>${escapeXml(metadata.credit)}</opensketch:applicationCredit>
+      <opensketch:provenanceManifest>${manifest}</opensketch:provenanceManifest>
+    </rdf:Description>
+  </rdf:RDF>
+</x:xmpmeta>
+<?xpacket end="w"?>`;
+}
+
 export async function svgToPdfBlob(
   svgSource: string,
   width: number,
@@ -73,11 +109,18 @@ export async function svgToPdfBlob(
   });
   pdf.setProperties({
     title: metadata.title,
-    subject: [metadata.description, metadata.credit].filter(Boolean).join("\n\n"),
+    subject: [
+      metadata.description,
+      metadata.credit,
+      ...metadata.provenance.assets.map((asset) => asset.credit).filter(Boolean)
+    ]
+      .filter(Boolean)
+      .join("\n\n"),
     author: "Paul Heisig",
     creator: "OpenSketch",
     keywords: "scientific figure, biology, vector illustration"
   });
+  pdf.addMetadata(buildPdfXmpMetadata(metadata), true);
   pdf.setDisplayMode("fullpage", "single");
   await registerBundledFonts(pdf);
   await pdf.svg(svg, {

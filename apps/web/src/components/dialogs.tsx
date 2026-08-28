@@ -133,6 +133,24 @@ export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => 
           >
             <Download size={17} /> {exporting ? "Preparing…" : `Export ${format.toUpperCase()}`}
           </button>
+          <button
+            className="button secondary wide"
+            disabled={exporting}
+            onClick={() => {
+              setExportError("");
+              try {
+                editor.exportCredits();
+                onClose();
+              } catch (reason) {
+                setExportError(String(reason).replace(/^Error:\s*/, ""));
+              }
+            }}
+          >
+            <FileText size={17} /> Download credits
+          </button>
+          <p className="dialog-note">
+            A readable credits file is available if another tool strips figure metadata.
+          </p>
         </section>
       </div>
     </MotionPresence>

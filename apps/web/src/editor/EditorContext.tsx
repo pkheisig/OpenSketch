@@ -39,6 +39,7 @@ import type {
 import { sanitizeImportedSvg } from "@/assets/browserSanitizer";
 import { setPngDpi } from "@/export/png";
 import { svgToPdfBlob } from "@/export/pdf";
+import { collectProvenanceManifest, formatProvenanceCredits } from "@/export/provenance";
 import { downloadBlob, safeFilename } from "@/persistence/portable";
 import { createVectorThumbnail } from "@/persistence/projectThumbnail";
 import { GLOBAL_CREDIT } from "@/assets/credit";
@@ -350,6 +351,7 @@ interface EditorContextValue {
   fitCanvas: () => void;
   fitRequest: number;
   exportSvg: (title?: string, description?: string) => void;
+  exportCredits: (title?: string, description?: string) => void;
   exportPdf: (title?: string, description?: string) => Promise<void>;
   exportPng: (
     scale: number,
@@ -3170,14 +3172,7 @@ export function EditorProvider({
           viewBox: { x: 0, y: 0, width: canvasSettings.width, height: canvasSettings.height }
         })
       );
-      const usedAssets = canvas
-        .getObjects()
-        .filter((object) => object.assetId && object.provenance)
-        .map((object) => ({
-          assetId: object.assetId,
-          familyId: object.familyId,
-          ...object.provenance
-        }));
+      const provenance = collectProvenanceManifest(canvas.getObjects());
       const metadata = `<metadata>${escapeXml(
         JSON.stringify({
           generator: "OpenSketch",
@@ -3185,7 +3180,10 @@ export function EditorProvider({
           title,
           description,
           credit: GLOBAL_CREDIT,
-          usedAssets
+          provenance,
+          // Retain the original field for consumers of the initial export
+          // metadata shape while making the versioned manifest canonical.
+          usedAssets: provenance.assets
         })
       )}</metadata><title>${escapeXml(title)}</title>${
         description ? `<desc>${escapeXml(description)}</desc>` : ""
@@ -3209,15 +3207,34 @@ export function EditorProvider({
       title = latestProject.current.name,
       description = latestProject.current.description ?? ""
     ) => {
+      if (!canvas) throw new Error("The figure canvas is not ready.");
       const svg = buildSvg(title, description);
       const blob = await svgToPdfBlob(svg, canvasSettings.width, canvasSettings.height, {
         title,
         description,
-        credit: GLOBAL_CREDIT
+        credit: GLOBAL_CREDIT,
+        provenance: collectProvenanceManifest(canvas.getObjects())
       });
       downloadBlob(blob, `${safeFilename(title)}.pdf`);
     },
-    [buildSvg, canvasSettings.height, canvasSettings.width]
+    [buildSvg, canvas, canvasSettings.height, canvasSettings.width]
+  );
+
+  const exportCredits = useCallback(
+    (title = latestProject.current.name, description = latestProject.current.description ?? "") => {
+      if (!canvas) throw new Error("The figure canvas is not ready.");
+      const credits = formatProvenanceCredits(
+        collectProvenanceManifest(canvas.getObjects()),
+        title,
+        description,
+        GLOBAL_CREDIT
+      );
+      downloadBlob(
+        new Blob([credits], { type: "text/plain;charset=utf-8" }),
+        `${safeFilename(title)}-credits.txt`
+      );
+    },
+    [canvas]
   );
 
   const exportPng = useCallback(
@@ -3244,7 +3261,9 @@ export function EditorProvider({
         canvas.requestRenderAll();
       }
       const response = await fetch(dataUrl);
-      const blob = await setPngDpi(await response.blob(), dpi);
+      const blob = await setPngDpi(await response.blob(), dpi, {
+        provenance: collectProvenanceManifest(canvas.getObjects())
+      });
       downloadBlob(blob, `${safeFilename(latestProject.current.name)}-${dpi}dpi.png`);
     },
     [canvas, canvasSettings]
@@ -3492,6 +3511,7 @@ export function EditorProvider({
       fitCanvas,
       fitRequest,
       exportSvg,
+      exportCredits,
       exportPdf,
       exportPng,
       commit
@@ -3522,6 +3542,7 @@ export function EditorProvider({
       exportPng,
       exportPdf,
       exportSvg,
+      exportCredits,
       fitCanvas,
       fitRequest,
       flip,

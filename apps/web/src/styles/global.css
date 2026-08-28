@@ -4006,6 +4006,16 @@ input[type="range"] {
   margin-top: 12px;
 }
 
+.export-dialog > .button.secondary {
+  margin-top: 8px;
+}
+
+.export-dialog > .dialog-note {
+  margin: 10px 0 0;
+  line-height: 1.45;
+  text-align: center;
+}
+
 .layers-collapse .motion-collapse-inner {
   overflow: clip;
 }
