@@ -61,6 +61,51 @@ describe("project migrations", () => {
     ).toThrow("external or executable");
   });
 
+  it("accepts Fabric gradients, default scale styles, and rejects hidden filter sources", () => {
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: {
+          objects: [
+            {
+              type: "Rect",
+              fill: {
+                type: "linear",
+                coords: { x1: 0, y1: 0, x2: 10, y2: 0 },
+                colorStops: [
+                  { offset: 0, color: "#000000" },
+                  { offset: 1, color: "#ffffff" }
+                ]
+              },
+              defaultElementStyle: {
+                properties: { scaleX: 2, scaleY: 0.5 }
+              }
+            }
+          ]
+        }
+      })
+    ).not.toThrow();
+
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: {
+          objects: [
+            {
+              type: "Rect",
+              filters: [
+                {
+                  type: "BlendImage",
+                  image: { type: "Image", src: "https://example.org/filter.png" }
+                }
+              ]
+            }
+          ]
+        }
+      })
+    ).toThrow("external or executable");
+  });
+
   it("rejects malformed canvas and imported-media records", () => {
     expect(() =>
       migrateProject({
@@ -200,6 +245,50 @@ describe("project migrations", () => {
         ]
       })
     ).toThrow("data URL size limit");
+  });
+
+  it("validates Fabric scalar fields and required connector enums", () => {
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: { objects: [{ type: "Rect", opacity: Number.NaN }] }
+      })
+    ).toThrow("opacity");
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: { objects: [{ type: "Rect", opacity: 2 }] }
+      })
+    ).toThrow("opacity");
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: { objects: [{ type: "Rect", exactBoundingBox: "yes" }] }
+      })
+    ).toThrow("exactBoundingBox");
+
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: {
+          objects: [
+            {
+              type: "Group",
+              objects: [],
+              connector: {
+                fromObjectId: "from",
+                toObjectId: "to",
+                toAnchor: "center",
+                startArrowhead: "none",
+                endArrowhead: "triangle",
+                lineStyle: "solid",
+                curvature: 0
+              }
+            }
+          ]
+        }
+      })
+    ).toThrow("fromAnchor");
   });
 
   it("keeps supported raster images and free connectors compatible", () => {

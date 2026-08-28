@@ -227,6 +227,7 @@ const SCENE_NUMERIC_PROPERTIES = new Set([
   "strokeMiterLimit",
   "scaleX",
   "scaleY",
+  "opacity",
   "angle",
   "skewX",
   "skewY",
@@ -290,6 +291,7 @@ const SCENE_BOOLEAN_PROPERTIES = new Set([
   "inverted",
   "absolutePositioned",
   "dirty",
+  "exactBoundingBox",
   "subTargetCheck",
   "interactive",
   "underline",
@@ -597,11 +599,22 @@ function validateDataUrl(
   }
 }
 
-function validateBoundedData(value: unknown, path: string, depth = 0): void {
+function validateBoundedData(
+  value: unknown,
+  path: string,
+  context: ValidationContext,
+  depth = 0
+): void {
   if (depth > PORTABLE_PROJECT_LIMITS.maxMetadataDepth) fail(path, "is too deeply nested");
   if (value === null || typeof value === "boolean") return;
   if (typeof value === "string") {
     assertString(value, path);
+    if (
+      /^(?:https?:|\/\/|javascript:|data:text\/html)/i.test(value.trim()) ||
+      /url\(\s*(?:https?:|\/\/|javascript:)/i.test(value)
+    ) {
+      throw new Error("The project contains an external or executable scene reference.");
+    }
     return;
   }
   if (typeof value === "number") {
@@ -610,7 +623,9 @@ function validateBoundedData(value: unknown, path: string, depth = 0): void {
   }
   if (Array.isArray(value)) {
     assertArray(value, path);
-    value.forEach((child, index) => validateBoundedData(child, `${path}[${index}]`, depth + 1));
+    value.forEach((child, index) =>
+      validateBoundedData(child, `${path}[${index}]`, context, depth + 1)
+    );
     return;
   }
   if (!isRecord(value)) fail(path, "contains an unsupported value");
@@ -619,7 +634,12 @@ function validateBoundedData(value: unknown, path: string, depth = 0): void {
   }
   for (const [key, child] of Object.entries(value)) {
     assertString(key, `${path} property name`, { maxLength: 128, nonEmpty: true });
-    validateBoundedData(child, `${path}.${key}`, depth + 1);
+    const childPath = `${path}.${key}`;
+    if (key.toLowerCase() === "src") {
+      validateDataUrl(child, childPath, context);
+    } else {
+      validateBoundedData(child, childPath, context, depth + 1);
+    }
   }
 }
 
@@ -710,7 +730,7 @@ function validatePaint(value: unknown, path: string, context: ValidationContext)
     return;
   }
   if (!isRecord(value)) fail(path, "contains an unsupported paint value");
-  if (value.type === "gradient") {
+  if (value.type === "linear" || value.type === "radial") {
     validateGradient(value, path, context);
     return;
   }
@@ -739,12 +759,12 @@ function validateShadow(value: unknown, path: string, context: ValidationContext
   }
 }
 
-function validateFilter(value: unknown, path: string): void {
+function validateFilter(value: unknown, path: string, context: ValidationContext): void {
   if (!isRecord(value)) fail(path, "is invalid");
   if (typeof value.type !== "string" || !SUPPORTED_FILTER_TYPES.has(value.type)) {
     fail(`${path}.type`, "is unsupported");
   }
-  validateBoundedData(value, path);
+  validateBoundedData(value, path, context);
 }
 
 function validateConnectorBinding(
@@ -777,6 +797,12 @@ function validateConnectorBinding(
     ["startArrowhead", CONNECTOR_ARROWHEADS],
     ["endArrowhead", CONNECTOR_ARROWHEADS],
     ["lineStyle", CONNECTOR_LINE_STYLES],
+  ] as const) {
+    if (typeof value[key] !== "string" || !allowed.has(value[key] as never)) {
+      fail(`${path}.${key}`, "is invalid");
+    }
+  }
+  for (const [key, allowed] of [
     ["lineCap", CONNECTOR_LINE_CAPS],
     ["routing", CONNECTOR_ROUTINGS],
     ["pathShape", CONNECTOR_PATH_SHAPES]
@@ -963,6 +989,8 @@ function validateStyleSnapshot(
     "charSpacing",
     "lineHeight",
     "textAlign",
+    "scaleX",
+    "scaleY",
     "assetTint",
     "assetTintAmount",
     "assetSaturation",
@@ -972,10 +1000,15 @@ function validateStyleSnapshot(
   for (const [key, item] of Object.entries(value.properties)) {
     if (!stylePropertyNames.has(key))
       fail(`${path}.properties.${key}`, "uses an unsupported property");
-    if (item === null || typeof item === "string" || typeof item === "boolean") {
+    if (key === "fill" || key === "stroke") {
+      validatePaint(item, `${path}.properties.${key}`, context);
+    } else if (item === null || typeof item === "string" || typeof item === "boolean") {
       if (typeof item === "string") assertString(item, `${path}.properties.${key}`);
     } else if (typeof item === "number") {
-      assertFiniteNumber(item, `${path}.properties.${key}`);
+      const max = ["scaleX", "scaleY"].includes(key)
+        ? PORTABLE_PROJECT_LIMITS.maxScale
+        : PORTABLE_PROJECT_LIMITS.maxCoordinate;
+      assertFiniteNumber(item, `${path}.properties.${key}`, { min: -max, max });
     } else if (Array.isArray(item)) {
       assertArray(item, `${path}.properties.${key}`, 128);
       item.forEach((number, index) =>
@@ -1146,7 +1179,10 @@ function validateSceneObject(
         key === "scaleX" || key === "scaleY"
           ? PORTABLE_PROJECT_LIMITS.maxScale
           : PORTABLE_PROJECT_LIMITS.maxCoordinate;
-      assertFiniteNumber(item, `${path}.${key}`, { min: -max, max });
+      assertFiniteNumber(item, `${path}.${key}`, {
+        min: key === "opacity" ? 0 : -max,
+        max: key === "opacity" ? 1 : max
+      });
     } else if (SCENE_BOOLEAN_PROPERTIES.has(key)) {
       assertBoolean(item, `${path}.${key}`);
     } else if (key === "fontWeight") {
@@ -1238,9 +1274,11 @@ function validateSceneObject(
       validateDataUrl(item, `${path}.src`, context);
     } else if (key === "filters") {
       assertArray(item, `${path}.filters`, 64);
-      item.forEach((filter, index) => validateFilter(filter, `${path}.filters[${index}]`));
+      item.forEach((filter, index) =>
+        validateFilter(filter, `${path}.filters[${index}]`, context)
+      );
     } else if (key === "resizeFilter") {
-      validateFilter(item, `${path}.resizeFilter`);
+      validateFilter(item, `${path}.resizeFilter`, context);
     } else if (key === "connector") {
       if (value.type !== "Group") fail(`${path}.connector`, "is only supported on groups");
       validateConnectorBinding(item, `${path}.connector`, context, false);
