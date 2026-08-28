@@ -87,6 +87,15 @@ The version-1 JSON key for imported media remains `uploads` solely for backward
 compatibility with existing `.OpenSketch` files; the interface and current code
 refer to the feature as importing media.
 
+Portable files pass through a strict, version-aware validation gate before they
+are saved or handed to Fabric. The gate bounds canvas dimensions and area,
+scene depth and object count, serialized arrays and strings, connector and
+custom metadata, path geometry, supported Fabric object types, and embedded
+image data URLs. It also rejects external or executable scene references and
+returns an isolated candidate containing only portable fields. A rejected file
+therefore cannot change the project library or allocate a renderer for an
+untrusted scene.
+
 Future format changes must add a migration in
 `packages/editor-core/src/migrations.ts` before increasing the format version.
 The `.OpenSketch` extension and current version-1 project schema remain

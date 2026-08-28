@@ -79,7 +79,13 @@ export async function readProjectFile(file: File): Promise<ProjectRecord> {
   if (file.size > 100 * 1024 * 1024) {
     throw new Error("This project is larger than the 100 MB safety limit.");
   }
-  const migrated = migrateProject(JSON.parse(await readFileText(file)));
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(await readFileText(file));
+  } catch {
+    throw new Error("The project file contains invalid JSON.");
+  }
+  const migrated = migrateProject(parsed);
   return {
     ...migrated,
     id: crypto.randomUUID(),

@@ -24,3 +24,5 @@
   and upload validation.
 - Added relevance-ranked biological search, late-loading font metric correction,
   and a verified portable example project with provenance-rich SVG output.
+- Added fail-closed validation for portable project bounds, Fabric scene
+  structure, connector metadata, and embedded media before import persistence.

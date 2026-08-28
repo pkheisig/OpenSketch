@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_CANVAS, migrateProject } from "../packages/editor-core/src";
+import {
+  DEFAULT_CANVAS,
+  migrateProject,
+  PORTABLE_PROJECT_LIMITS
+} from "../packages/editor-core/src";
 
 describe("project migrations", () => {
   const project = {
@@ -70,6 +74,195 @@ describe("project migrations", () => {
         uploads: [{ id: "x", name: "x", mimeType: "text/html", dataUrl: "javascript:evil()" }]
       })
     ).toThrow("imported media");
+  });
+
+  it("rejects non-finite and impractical canvas dimensions", () => {
+    expect(() =>
+      migrateProject({
+        ...project,
+        canvas: { ...project.canvas, width: Number.NaN }
+      })
+    ).toThrow("canvas width");
+    expect(() =>
+      migrateProject({
+        ...project,
+        canvas: { ...project.canvas, height: Number.POSITIVE_INFINITY }
+      })
+    ).toThrow("canvas height");
+    expect(() =>
+      migrateProject({
+        ...project,
+        canvas: {
+          ...project.canvas,
+          width: PORTABLE_PROJECT_LIMITS.maxCanvasDimension + 1
+        }
+      })
+    ).toThrow("canvas width");
+  });
+
+  it("rejects weak or oversized scene structures before Fabric sees them", () => {
+    expect(() => migrateProject({ ...project, objects: { objects: [null] } })).toThrow(
+      "scene.objects[0]"
+    );
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: { objects: [{ type: "UnknownFabricType" }] }
+      })
+    ).toThrow("unsupported");
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: { objects: [{ type: "Rect", executable: "payload" }] }
+      })
+    ).toThrow("unsupported property");
+
+    const nestedLeaf: Record<string, unknown> = { type: "Rect" };
+    let nested: Record<string, unknown> = nestedLeaf;
+    for (let index = 0; index <= PORTABLE_PROJECT_LIMITS.maxSceneDepth; index += 1) {
+      nested = { type: "Group", objects: [nested] };
+    }
+    expect(() => migrateProject({ ...project, objects: { objects: [nested] } })).toThrow(
+      "nesting limit"
+    );
+
+    const tooManyObjects = Array.from(
+      { length: PORTABLE_PROJECT_LIMITS.maxSceneObjects + 1 },
+      () => ({ type: "Rect" })
+    );
+    expect(() => migrateProject({ ...project, objects: { objects: tooManyObjects } })).toThrow(
+      "too many objects"
+    );
+  });
+
+  it("validates paths, connector metadata, and embedded resource bounds", () => {
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: { objects: [{ type: "Path", path: [["M", 0]] }] }
+      })
+    ).toThrow("wrong number of coordinates");
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: { objects: [{ type: "Path", path: [["M", Number.NaN, 0]] }] }
+      })
+    ).toThrow("is invalid");
+
+    const connector = {
+      type: "Group",
+      OpenSketchType: "connector",
+      objects: [],
+      connector: {
+        fromObjectId: "from",
+        fromAnchor: "center",
+        toObjectId: "to",
+        toAnchor: "center",
+        startArrowhead: "none",
+        endArrowhead: "triangle",
+        lineStyle: "solid",
+        curvature: 0
+      }
+    };
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: {
+          objects: [
+            { type: "Rect", objectId: "from" },
+            { type: "Rect", objectId: "to" },
+            { ...connector, connector: { ...connector.connector, curvature: Number.NaN } }
+          ]
+        }
+      })
+    ).toThrow("curvature");
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: {
+          objects: [
+            { type: "Rect", objectId: "from" },
+            { type: "Rect", objectId: "to" },
+            { ...connector, connector: { ...connector.connector, toObjectId: "missing" } }
+          ]
+        }
+      })
+    ).toThrow("unknown object ID");
+
+    const oversizedSvg = `data:image/svg+xml,${"a".repeat(
+      PORTABLE_PROJECT_LIMITS.maxDataUrlBytes + 1
+    )}`;
+    expect(() =>
+      migrateProject({
+        ...project,
+        uploads: [
+          { id: "large", name: "large.svg", mimeType: "image/svg+xml", dataUrl: oversizedSvg }
+        ]
+      })
+    ).toThrow("data URL size limit");
+  });
+
+  it("keeps supported raster images and free connectors compatible", () => {
+    const migrated = migrateProject({
+      ...project,
+      objects: {
+        version: "7.4.0",
+        objects: [
+          {
+            type: "Image",
+            OpenSketchType: "import",
+            src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB",
+            crossOrigin: null
+          },
+          {
+            type: "Group",
+            OpenSketchType: "arrow",
+            objects: [
+              {
+                type: "Path",
+                path: [
+                  ["M", 0, 0],
+                  ["L", 10, 0]
+                ]
+              },
+              { type: "Triangle" }
+            ],
+            freeConnectorBinding: {
+              fromObjectId: "",
+              fromAnchor: "center",
+              toObjectId: "",
+              toAnchor: "center",
+              startArrowhead: "none",
+              endArrowhead: "triangle",
+              lineStyle: "solid",
+              routing: "direct",
+              pathShape: "straight",
+              curvature: 0
+            },
+            freeConnectorGeometry: {
+              from: { x: 0, y: 0 },
+              to: { x: 10, y: 0 }
+            }
+          }
+        ]
+      }
+    });
+
+    expect(migrated.objects).toEqual(expect.objectContaining({ version: "7.4.0" }));
+  });
+
+  it("returns an isolated candidate and drops non-portable top-level fields", () => {
+    const raw = structuredClone(project) as {
+      canvas: { width: number };
+      extraLocalField?: string;
+    };
+    raw.extraLocalField = "must not persist";
+    const migrated = migrateProject(raw);
+
+    raw.canvas.width = 1;
+    expect(migrated.canvas.width).toBe(project.canvas.width);
+    expect(migrated.objects).not.toBe(raw.objects);
+    expect(migrated).not.toHaveProperty("extraLocalField");
   });
 
   it("rejects invalid project structure and asset references", () => {
