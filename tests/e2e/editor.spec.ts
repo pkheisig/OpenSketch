@@ -3,6 +3,47 @@ import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { PDFDocument } from "pdf-lib";
 
+function decodeXml(value: string): string {
+  return value.replace(/&(quot|apos|lt|gt|amp);/g, (_, entity: string) => {
+    const values: Record<string, string> = {
+      quot: '"',
+      apos: "'",
+      lt: "<",
+      gt: ">",
+      amp: "&"
+    };
+    return values[entity];
+  });
+}
+
+function svgExportMetadata(svg: string): { provenance: { version: number; assets: unknown[] } } {
+  const encoded = svg.match(/<metadata>([\s\S]*?)<\/metadata>/)?.[1];
+  if (!encoded) throw new Error("The SVG export has no metadata element.");
+  return JSON.parse(decodeXml(encoded)) as {
+    provenance: { version: number; assets: unknown[] };
+  };
+}
+
+function pngProvenance(bytes: Buffer): unknown {
+  let offset = 8;
+  while (offset + 12 <= bytes.length) {
+    const length = bytes.readUInt32BE(offset);
+    const type = bytes.toString("latin1", offset + 4, offset + 8);
+    const dataStart = offset + 8;
+    const dataEnd = dataStart + length;
+    if (dataEnd + 4 > bytes.length) throw new Error("The PNG export contains a truncated chunk.");
+    if (type === "iTXt") {
+      const keywordEnd = bytes.indexOf(0, dataStart);
+      const keyword = bytes.toString("utf8", dataStart, keywordEnd);
+      if (keyword === "OpenSketch:provenance") {
+        return JSON.parse(bytes.toString("utf8", keywordEnd + 5, dataEnd));
+      }
+    }
+    offset = dataEnd + 4;
+  }
+  throw new Error("The PNG export has no OpenSketch provenance metadata.");
+}
+
 async function selectUiOption(
   page: Page,
   label: string,
@@ -631,6 +672,20 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   const svgPath = await svgDownload.path();
   expect(svgPath).not.toBeNull();
   const svg = await readFile(svgPath!, "utf8");
+  const svgMetadata = svgExportMetadata(svg);
+  expect(svgMetadata.provenance.version).toBe(1);
+  expect(svgMetadata.provenance.assets).toHaveLength(1);
+  const assetRecord = svgMetadata.provenance.assets[0] as {
+    assetId: string;
+    source: string;
+    author: string;
+    license: string;
+    credit: string;
+  };
+  expect(assetRecord.source).toMatch(/^https?:/);
+  expect(assetRecord.author).toBeTruthy();
+  expect(assetRecord.license).toBeTruthy();
+  expect(assetRecord.credit).toBeTruthy();
   expect(svg).toContain("<metadata>");
   expect(svg).toContain("Per-asset authorship");
   expect(svg).toContain("<rect");
@@ -649,6 +704,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   const physicalChunk = png.indexOf(Buffer.from("pHYs"));
   expect(physicalChunk).toBeGreaterThan(0);
   expect(png.readUInt32BE(physicalChunk + 4)).toBe(5906);
+  expect(pngProvenance(png)).toEqual(svgMetadata.provenance);
 
   await page.getByRole("button", { name: "Export" }).click();
   await page.getByRole("tab", { name: /PDF/ }).click();
@@ -664,8 +720,21 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   expect(pdf.getTitle()).toBe("Untitled figure");
   expect(pdf.getAuthor()).toBe("Paul Heisig");
   expect(pdf.getCreator()).toBe("OpenSketch");
+  expect(pdf.getSubject()).toContain(assetRecord.credit);
+  expect(pdfBytes.toString("utf8")).toContain("opensketch:provenanceManifest");
+  expect(pdfBytes.toString("utf8")).toContain(assetRecord.assetId);
   const pageSize = pdf.getPage(0).getSize();
   expect(pageSize.width).toBeGreaterThan(pageSize.height);
+
+  await page.getByRole("button", { name: "Export" }).click();
+  const creditsDownloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Download credits" }).click();
+  const creditsPath = await (await creditsDownloadPromise).path();
+  expect(creditsPath).not.toBeNull();
+  const credits = await readFile(creditsPath!, "utf8");
+  expect(credits).toContain(assetRecord.source);
+  expect(credits).toContain(assetRecord.author);
+  expect(credits).toContain(assetRecord.license);
 
   await page.getByRole("button", { name: "Back to projects" }).click();
   await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();

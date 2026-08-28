@@ -1,5 +1,15 @@
+import {
+  PROVENANCE_METADATA_KEY,
+  provenanceManifestJson,
+  type ProvenanceManifest
+} from "@/export/provenance";
+
 const PNG_SIGNATURE_LENGTH = 8;
 const PNG_SIGNATURE = [137, 80, 78, 71, 13, 10, 26, 10];
+
+export interface PngExportMetadata {
+  provenance: ProvenanceManifest;
+}
 
 function crc32(bytes: Uint8Array): number {
   let crc = 0xffffffff;
@@ -28,6 +38,24 @@ function chunk(type: string, data: Uint8Array): Uint8Array {
   return result;
 }
 
+function itxt(keyword: string, text: string): Uint8Array {
+  const keywordBytes = new TextEncoder().encode(keyword);
+  const textBytes = new TextEncoder().encode(text);
+  const data = new Uint8Array(keywordBytes.length + 5 + textBytes.length);
+  data.set(keywordBytes, 0);
+  // iTXt: keyword terminator, uncompressed flag/method, language terminator,
+  // and translated-keyword terminator, followed by UTF-8 text.
+  data.set(textBytes, keywordBytes.length + 5);
+  return data;
+}
+
+function textChunkKeyword(type: string, data: Uint8Array): string | undefined {
+  if (type !== "tEXt" && type !== "iTXt") return undefined;
+  const terminator = data.indexOf(0);
+  if (terminator <= 0) return undefined;
+  return new TextDecoder().decode(data.subarray(0, terminator));
+}
+
 function readBlob(blob: Blob): Promise<ArrayBuffer> {
   if (typeof blob.arrayBuffer === "function") return blob.arrayBuffer();
   return new Promise((resolve, reject) => {
@@ -38,7 +66,11 @@ function readBlob(blob: Blob): Promise<ArrayBuffer> {
   });
 }
 
-export async function setPngDpi(blob: Blob, dpi: number): Promise<Blob> {
+export async function setPngDpi(
+  blob: Blob,
+  dpi: number,
+  metadata?: PngExportMetadata
+): Promise<Blob> {
   const source = new Uint8Array(await readBlob(blob));
   if (
     source.length < PNG_SIGNATURE_LENGTH ||
@@ -54,6 +86,9 @@ export async function setPngDpi(blob: Blob, dpi: number): Promise<Blob> {
   physicalView.setUint32(4, pixelsPerMeter);
   physical[8] = 1;
   const physicalChunk = chunk("pHYs", physical);
+  const provenanceChunk = metadata
+    ? chunk("iTXt", itxt(PROVENANCE_METADATA_KEY, provenanceManifestJson(metadata.provenance)))
+    : undefined;
 
   const parts: Uint8Array[] = [source.subarray(0, PNG_SIGNATURE_LENGTH)];
   let offset = PNG_SIGNATURE_LENGTH;
@@ -63,9 +98,17 @@ export async function setPngDpi(blob: Blob, dpi: number): Promise<Blob> {
     const end = offset + 12 + length;
     if (end > source.length) throw new Error("The raster export contains a truncated PNG chunk.");
     const type = new TextDecoder().decode(source.subarray(offset + 4, offset + 8));
-    if (type !== "pHYs") parts.push(source.subarray(offset, end));
+    const keyword = textChunkKeyword(type, source.subarray(offset + 8, end - 4));
+    const replacesProvenance =
+      provenanceChunk &&
+      (type === "tEXt" || type === "iTXt") &&
+      keyword === PROVENANCE_METADATA_KEY;
+    if (type !== "pHYs" && !replacesProvenance) {
+      parts.push(source.subarray(offset, end));
+    }
     if (type === "IHDR" && !inserted) {
       parts.push(physicalChunk);
+      if (provenanceChunk) parts.push(provenanceChunk);
       inserted = true;
     }
     offset = end;
