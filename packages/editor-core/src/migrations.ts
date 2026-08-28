@@ -1482,7 +1482,7 @@ function validateSceneObject(
   if (["Image", "image"].includes(value.type) && typeof value.src !== "string") {
     fail(`${path}.src`, "is required for images");
   }
-  if (value.OpenSketchType === "connector" && value.type !== "Group")
+  if (value.OpenSketchType === "connector" && !["Group", "Path"].includes(value.type))
     fail(`${path}.OpenSketchType`, "is invalid for this object type");
   if (["group", "nih-asset"].includes(String(value.OpenSketchType)) && value.type !== "Group") {
     fail(`${path}.OpenSketchType`, "is invalid for this object type");

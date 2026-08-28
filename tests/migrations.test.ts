@@ -398,6 +398,24 @@ describe("project migrations", () => {
     expect(() =>
       migrateProject({
         ...project,
+        objects: {
+          objects: [
+            {
+              type: "Path",
+              OpenSketchType: "connector",
+              path: [
+                ["M", 0, 40],
+                ["L", 180, 40]
+              ]
+            }
+          ]
+        }
+      })
+    ).not.toThrow();
+
+    expect(() =>
+      migrateProject({
+        ...project,
         objects: { objects: [{ type: "Rect", opacity: Number.NaN }] }
       })
     ).toThrow("opacity");
