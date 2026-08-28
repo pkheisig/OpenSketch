@@ -97,6 +97,7 @@ import {
   isSceneDescendant,
   removeSceneObject,
   replaceSceneObject,
+  sendSceneObjectToParentPlane,
   sceneObjectEntries,
   sceneObjectIndex,
   visitSceneObjects
@@ -1001,6 +1002,7 @@ export function EditorProvider({
         replacement.selectable = connector.selectable;
         replacement.evented = connector.evented;
         assignSceneIdentities(replacement);
+        sendSceneObjectToParentPlane(replacement, entry.parent);
         const active = canvas.getActiveObject() === connector;
         replaceSceneObject(entry, replacement);
         if (active) canvas.setActiveObject(replacement);

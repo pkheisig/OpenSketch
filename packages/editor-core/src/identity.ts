@@ -1,3 +1,5 @@
+import { PORTABLE_SCENE_LIMITS } from "./sceneLimits";
+
 type JsonRecord = Record<string, unknown>;
 
 interface IdentityNode {
@@ -6,6 +8,7 @@ interface IdentityNode {
   root: string;
   ancestors: IdentityNode[];
   originalId?: string;
+  duplicateOccurrence?: number;
   repairedId?: string;
 }
 
@@ -82,6 +85,40 @@ function collectNodes(scene: JsonRecord): IdentityNode[] {
 
 function isWithin(candidate: IdentityNode, scope: IdentityNode): boolean {
   return candidate === scope || candidate.ancestors.includes(scope);
+}
+
+/**
+ * Bound the only recursive walk in this repair phase before cloning or
+ * collecting duplicate-ID buckets from untrusted project data.
+ */
+function assertSceneBounds(input: unknown): void {
+  if (!isRecord(input) || !isRecord(input.objects)) return;
+  const scene = input.objects;
+  if (!Array.isArray(scene.objects)) return;
+
+  let objectCount = 0;
+  const walk = (value: unknown, path: string, depth: number): void => {
+    if (!isRecord(value)) return;
+    if (depth > PORTABLE_SCENE_LIMITS.maxSceneDepth) {
+      throw new Error(`The project ${path} exceeds the scene nesting limit.`);
+    }
+    objectCount += 1;
+    if (objectCount > PORTABLE_SCENE_LIMITS.maxSceneObjects) {
+      throw new Error("The project scene contains too many objects.");
+    }
+    if (Array.isArray(value.objects)) {
+      value.objects.forEach((child, index) => walk(child, `${path}.objects[${index}]`, depth + 1));
+    }
+    if (isRecord(value.clipPath)) walk(value.clipPath, `${path}.clipPath`, depth + 1);
+    if (isRecord(value.path) && typeof value.path.type === "string") {
+      walk(value.path, `${path}.path`, depth + 1);
+    }
+  };
+
+  scene.objects.forEach((object, index) => walk(object, `scene.objects[${index}]`, 1));
+  for (const key of ["backgroundImage", "overlayImage", "clipPath"]) {
+    if (isRecord(scene[key])) walk(scene[key], `scene.${key}`, 1);
+  }
 }
 
 function rewriteBinding(
@@ -253,6 +290,7 @@ function rewriteMetadata(
 }
 
 export function repairProjectIdentity(input: unknown): ProjectIdentityRepair {
+  assertSceneBounds(input);
   let project: unknown;
   try {
     project = structuredClone(input);
@@ -265,24 +303,27 @@ export function repairProjectIdentity(input: unknown): ProjectIdentityRepair {
 
   const nodes = collectNodes(project.objects);
   const candidatesById = new Map<string, IdentityNode[]>();
+  const occurrencesById = new Map<string, number>();
   nodes.forEach((node) => {
     if (!node.originalId) return;
-    candidatesById.set(node.originalId, [...(candidatesById.get(node.originalId) ?? []), node]);
+    const occurrence = occurrencesById.get(node.originalId) ?? 0;
+    node.duplicateOccurrence = occurrence;
+    occurrencesById.set(node.originalId, occurrence + 1);
+    const candidates = candidatesById.get(node.originalId);
+    if (candidates) candidates.push(node);
+    else candidatesById.set(node.originalId, [node]);
   });
 
   const usedIds = new Set(candidatesById.keys());
-  const duplicateOrdinals = new Map<string, number>();
   const warnings: string[] = [];
   nodes.forEach((node) => {
     if (!node.originalId) return;
-    const candidates = candidatesById.get(node.originalId)!;
-    const occurrence = candidates.indexOf(node);
+    const occurrence = node.duplicateOccurrence ?? 0;
     if (occurrence === 0) {
       node.repairedId = node.originalId;
       return;
     }
-    const ordinal = (duplicateOrdinals.get(node.originalId) ?? 0) + 1;
-    duplicateOrdinals.set(node.originalId, ordinal);
+    const ordinal = occurrence;
     node.repairedId = remintedId(node.originalId, node.path, ordinal, usedIds);
     usedIds.add(node.repairedId);
     warnings.push(

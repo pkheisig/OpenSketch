@@ -1,4 +1,4 @@
-import { ActiveSelection, Canvas, Group, type FabricObject } from "fabric";
+import { ActiveSelection, Canvas, Group, type FabricObject, util } from "fabric";
 
 export type SceneCollection = Canvas | Group;
 
@@ -69,6 +69,16 @@ export function assertUniqueSceneObjectIds(canvas: Canvas): void {
 export function isSceneDescendant(object: FabricObject, ancestor: FabricObject): boolean {
   if (object === ancestor) return true;
   return object.isDescendantOf(ancestor);
+}
+
+/** Keep a replacement's world-space appearance when inserting it into a group. */
+export function sendSceneObjectToParentPlane(
+  object: FabricObject,
+  parent: SceneCollection
+): void {
+  if (parent instanceof Group) {
+    util.sendObjectToPlane(object, undefined, parent.calcTransformMatrix());
+  }
 }
 
 export function replaceSceneObject(entry: SceneObjectEntry, replacement: FabricObject): void {

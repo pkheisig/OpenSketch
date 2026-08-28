@@ -207,6 +207,30 @@ describe("project migrations", () => {
     expect(reloaded.project).toEqual(first.project);
   });
 
+  it("rejects oversized or deeply nested scenes before identity repair", () => {
+    const tooMany = {
+      ...project,
+      objects: {
+        objects: Array.from({ length: PORTABLE_PROJECT_LIMITS.maxSceneObjects + 1 }, (_, index) => ({
+          type: "Rect",
+          objectId: `rect-${index}`
+        }))
+      }
+    };
+    expect(() => migrateProjectForLoad(tooMany)).toThrow("scene contains too many objects");
+
+    let tooDeep: Record<string, unknown> = { type: "Rect" };
+    for (let index = 0; index < PORTABLE_PROJECT_LIMITS.maxSceneDepth; index += 1) {
+      tooDeep = { type: "Group", objects: [tooDeep] };
+    }
+    expect(() =>
+      migrateProjectForLoad({
+        ...project,
+        objects: { objects: [tooDeep] }
+      })
+    ).toThrow("scene nesting limit");
+  });
+
   it("adds the enabled double-click text preference to older projects", () => {
     const legacyCanvas = { ...project.canvas } as Partial<typeof project.canvas>;
     delete legacyCanvas.doubleClickCreatesText;

@@ -11,6 +11,7 @@ import {
   type PortableProject
 } from "./types";
 import { repairProjectIdentity } from "./identity";
+import { PORTABLE_SCENE_LIMITS } from "./sceneLimits";
 
 export { repairProjectIdentity } from "./identity";
 export type { ProjectIdentityRepair } from "./identity";
@@ -27,8 +28,8 @@ export const PORTABLE_PROJECT_LIMITS = {
   maxStringLength: 100_000,
   maxObjectIdLength: 128,
   maxObjectNameLength: 512,
-  maxSceneObjects: 10_000,
-  maxSceneDepth: 32,
+  maxSceneObjects: PORTABLE_SCENE_LIMITS.maxSceneObjects,
+  maxSceneDepth: PORTABLE_SCENE_LIMITS.maxSceneDepth,
   maxArrayLength: 50_000,
   maxObjectProperties: 96,
   maxMetadataEntries: 256,

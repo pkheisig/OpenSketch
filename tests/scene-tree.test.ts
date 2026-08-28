@@ -1,9 +1,10 @@
-import { Canvas, Group, Rect } from "../apps/web/node_modules/fabric";
+import { Canvas, Group, Rect, util } from "../apps/web/node_modules/fabric";
 import { describe, expect, it } from "vitest";
 import {
   assertUniqueSceneObjectIds,
   sceneObjectEntries,
-  sceneObjectIndex
+  sceneObjectIndex,
+  sendSceneObjectToParentPlane
 } from "../apps/web/src/editor/sceneTree";
 
 describe("recursive scene identity", () => {
@@ -35,5 +36,26 @@ describe("recursive scene identity", () => {
     const canvas = { getObjects: () => [group] } as unknown as Canvas;
 
     expect(() => assertUniqueSceneObjectIds(canvas)).toThrow('"duplicate" is duplicated');
+  });
+
+  it("keeps a replacement in the same world plane when its parent is transformed", () => {
+    const parent = new Group([], {
+      left: 180,
+      top: 140,
+      angle: 28,
+      scaleX: 1.4,
+      scaleY: 0.8
+    });
+    const replacement = new Rect({ left: 30, top: 20, width: 80, height: 40, angle: 12 });
+    const worldBefore = replacement.calcTransformMatrix();
+
+    sendSceneObjectToParentPlane(replacement, parent);
+
+    const worldAfter = util.multiplyTransformMatrices(
+      parent.calcTransformMatrix(),
+      replacement.calcOwnMatrix()
+    );
+    expect(worldAfter).toHaveLength(worldBefore.length);
+    worldAfter.forEach((value, index) => expect(value).toBeCloseTo(worldBefore[index], 8));
   });
 });
