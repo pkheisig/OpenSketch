@@ -1,4 +1,11 @@
-import { migrateProject, type PortableProject, type ProjectRecord } from "@workspace/editor-core";
+import {
+  migrateProject,
+  normalizeProjectMedia,
+  PROJECT_STORAGE_LIMITS,
+  rehydrateProjectScene,
+  type PortableProject,
+  type ProjectRecord
+} from "@workspace/editor-core";
 
 interface WritableProjectFile {
   write(data: Blob): Promise<void>;
@@ -17,19 +24,57 @@ type DirectoryPickerWindow = Window & {
   showDirectoryPicker?: (options: { mode: "readwrite" }) => Promise<ProjectDirectoryHandle>;
 };
 
-export function serializeProject(project: ProjectRecord): string {
-  const portable = structuredClone(project) as PortableProject & {
+type ProjectLike = PortableProject | ProjectRecord;
+
+function portableProject(project: ProjectLike): PortableProject {
+  const media = normalizeProjectMedia(project.objects, project.uploads);
+  const portable = {
+    ...project,
+    // Keep version-1 portable files readable by older OpenSketch loaders that
+    // pass Fabric image nodes directly to Fabric without resolving assetId.
+    objects: rehydrateProjectScene(media.objects, media.uploads),
+    uploads: media.uploads
+  } as PortableProject & {
     thumbnail?: string;
     folderId?: string;
     archivedAt?: string;
+    revision?: number;
   };
   delete portable.thumbnail;
   delete portable.folderId;
   delete portable.archivedAt;
-  return JSON.stringify(portable, null, 2);
+  delete portable.revision;
+  return portable;
 }
 
-export function downloadProject(project: ProjectRecord): void {
+function serializedProject(project: ProjectLike): { value: string; bytes: number } {
+  const value = JSON.stringify(portableProject(project), null, 2);
+  return { value, bytes: new TextEncoder().encode(value).byteLength };
+}
+
+function assertSerializedProjectWithinBudget(bytes: number): void {
+  if (bytes > PROJECT_STORAGE_LIMITS.maxPortableProjectBytes) {
+    throw new Error(
+      `This project is larger than the ${PROJECT_STORAGE_LIMITS.maxPortableProjectBytes / (1024 * 1024)} MiB portable-project limit.`
+    );
+  }
+}
+
+export function assertPortableProjectWithinBudget(project: ProjectLike): void {
+  assertSerializedProjectWithinBudget(serializedProject(project).bytes);
+}
+
+export function serializedProjectBytes(project: ProjectLike): number {
+  return serializedProject(project).bytes;
+}
+
+export function serializeProject(project: ProjectLike): string {
+  const { value, bytes } = serializedProject(project);
+  assertSerializedProjectWithinBudget(bytes);
+  return value;
+}
+
+export function downloadProject(project: ProjectLike): void {
   const blob = new Blob([serializeProject(project)], {
     type: "application/vnd.OpenSketch+json"
   });
@@ -40,7 +85,7 @@ export function supportsProjectDirectory(): boolean {
   return typeof (window as DirectoryPickerWindow).showDirectoryPicker === "function";
 }
 
-export async function saveProjectToDirectory(project: ProjectRecord): Promise<boolean> {
+export async function saveProjectToDirectory(project: ProjectLike): Promise<boolean> {
   const picker = (window as DirectoryPickerWindow).showDirectoryPicker;
   if (!picker) {
     downloadProject(project);
@@ -76,17 +121,26 @@ function readFileText(file: File): Promise<string> {
 }
 
 export async function readProjectFile(file: File): Promise<ProjectRecord> {
-  if (file.size > 100 * 1024 * 1024) {
-    throw new Error("This project is larger than the 100 MB safety limit.");
+  if (file.size > PROJECT_STORAGE_LIMITS.maxPortableProjectBytes) {
+    throw new Error("This project is larger than the 100 MiB portable-project limit.");
   }
-  const migrated = migrateProject(JSON.parse(await readFileText(file)));
-  return {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(await readFileText(file));
+  } catch {
+    throw new Error("The project file contains invalid JSON.");
+  }
+  const migrated = migrateProject(parsed);
+  const imported: ProjectRecord = {
     ...migrated,
     id: crypto.randomUUID(),
     name: migrated.name,
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date().toISOString(),
+    revision: 0
   };
+  assertPortableProjectWithinBudget(imported);
+  return imported;
 }
 
 export function downloadBlob(blob: Blob, filename: string): void {

@@ -1,7 +1,10 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import type { ProjectRecord } from "@workspace/editor-core";
 import { EditorProvider } from "@/editor/EditorContext";
+import { ProjectConflictNotice } from "@/components/ProjectConflictNotice";
+import { ProjectSaveNotice } from "@/components/ProjectSaveNotice";
 import { CanvasWorkspace } from "@/components/CanvasWorkspace";
+import type { ProjectSaveResult } from "@/persistence/database";
 import { scheduleAssetPreviewWarmup } from "@/assets/previewWarmup";
 
 const TopToolbar = lazy(() =>
@@ -17,12 +20,14 @@ export function EditorStudio({
   project,
   onProjectChange,
   onHome,
+  onProjectSwitch,
   theme,
   onToggleTheme
 }: {
   project: ProjectRecord;
-  onProjectChange: (project: ProjectRecord) => Promise<void>;
+  onProjectChange: (project: ProjectRecord) => Promise<ProjectSaveResult>;
   onHome: () => void;
+  onProjectSwitch: (project: ProjectRecord) => void;
   theme: "light" | "dark";
   onToggleTheme: () => void;
 }) {
@@ -51,11 +56,14 @@ export function EditorStudio({
   }, []);
   return (
     <EditorProvider
-      key={project.id}
+      key={`${project.id}:${project.revision}`}
       project={project}
       onProjectChange={onProjectChange}
       onRequestExit={onHome}
+      onRequestProjectSwitch={onProjectSwitch}
     >
+      <ProjectConflictNotice />
+      <ProjectSaveNotice />
       <main className="editor-shell">
         <Suspense fallback={<header className="top-toolbar" aria-hidden="true" />}>
           <TopToolbar

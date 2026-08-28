@@ -4,15 +4,18 @@ import type { ProjectFolderRecord, ProjectRecord } from "@workspace/editor-core"
 import {
   createProjectFolder,
   createProject,
-  db,
+  deleteProject,
   deleteProjectFolder,
   duplicateProject,
+  getProject,
   listProjectFolders,
   listProjects,
   moveProjectToFolder,
   saveProjectFolder,
   saveProject,
-  saveProjectThumbnail
+  saveProjectThumbnail,
+  subscribeProjectChanges,
+  type ProjectSaveResult
 } from "@/persistence/database";
 import { downloadProject, readProjectFile } from "@/persistence/portable";
 import { isProjectThumbnailCurrent } from "@/persistence/thumbnailFormat";
@@ -38,6 +41,14 @@ function readTheme(): Theme {
 function historyProjectId() {
   const state = window.history.state as Record<string, unknown> | null;
   return typeof state?.[PROJECT_HISTORY_KEY] === "string" ? state[PROJECT_HISTORY_KEY] : null;
+}
+
+function projectSaveConflict(result: { status: "conflict"; current?: ProjectRecord }): Error {
+  return new Error(
+    result.current
+      ? "This project changed in another tab. Refresh it before applying this library action."
+      : "This project is no longer available in another tab. Refresh the project library."
+  );
 }
 
 export function App() {
@@ -81,7 +92,7 @@ export function App() {
     const stale = stored.filter(
       (project) =>
         project.id !== activeProjectId &&
-        !isProjectThumbnailCurrent(project.thumbnail, project.updatedAt)
+        !isProjectThumbnailCurrent(project.thumbnail, project.revision)
     );
     if (stale.length > 0) {
       void import("@/persistence/projectThumbnail")
@@ -92,7 +103,7 @@ export function App() {
               if (project.thumbnail === stale[index]?.thumbnail || !project.thumbnail) {
                 return undefined;
               }
-              return saveProjectThumbnail(project.id, project.updatedAt, project.thumbnail);
+              return saveProjectThumbnail(project.id, project.revision, project.thumbnail);
             })
           );
           if (revision !== refreshRevision.current) return;
@@ -104,7 +115,7 @@ export function App() {
           setProjects((existing) =>
             existing.map((project) => {
               const latest = byId.get(project.id);
-              return latest?.updatedAt === project.updatedAt ? latest : project;
+              return latest?.revision === project.revision ? latest : project;
             })
           );
         })
@@ -131,6 +142,8 @@ export function App() {
     return () => window.removeEventListener("opensketch:update-ready", markUpdateReady);
   }, []);
 
+  useEffect(() => subscribeProjectChanges(() => void refresh()), [refresh]);
+
   useEffect(() => {
     if (loading || current || !updateReady) return;
     window.dispatchEvent(new Event("opensketch:apply-update"));
@@ -146,8 +159,7 @@ export function App() {
         return;
       }
 
-      db.projects
-        .get(projectId)
+      getProject(projectId)
         .then((project) => {
           if (revision !== historySyncRevision.current) return;
           setCurrent(project ?? null);
@@ -186,17 +198,28 @@ export function App() {
   const newProject = async () => {
     try {
       const project = createProject();
-      await saveProject(project);
-      openProject(project);
+      const result = await saveProject(project);
+      if (result.status === "conflict") throw projectSaveConflict(result);
+      openProject(result.project);
       await refresh();
     } catch (reason) {
       setError(String(reason));
     }
   };
 
-  const updateProject = useCallback(async (project: ProjectRecord) => {
-    await saveProject(project);
-  }, []);
+  const updateProject = useCallback(
+    (project: ProjectRecord): Promise<ProjectSaveResult> => saveProject(project),
+    []
+  );
+
+  const saveLibraryProject = useCallback(
+    async (project: ProjectRecord) => {
+      const result = await saveProject(project);
+      if (result.status === "conflict") throw projectSaveConflict(result);
+      await refresh();
+    },
+    [refresh]
+  );
 
   if (loading) {
     return (
@@ -224,6 +247,7 @@ export function App() {
             project={current}
             onProjectChange={updateProject}
             onHome={returnToProjects}
+            onProjectSwitch={openProject}
             theme={theme}
             onToggleTheme={toggleTheme}
           />
@@ -248,27 +272,36 @@ export function App() {
           }}
           onDelete={(project) => {
             if (!window.confirm(`Delete “${project.name}”? This cannot be undone.`)) return;
-            db.projects
-              .delete(project.id)
-              .then(refresh)
+            deleteProject(project)
+              .then((result) => {
+                if (result.status === "conflict") throw projectSaveConflict(result);
+                return refresh();
+              })
               .catch((reason) => setError(String(reason)));
           }}
-          onExport={downloadProject}
+          onExport={(project) => {
+            try {
+              downloadProject(project);
+            } catch (reason) {
+              setError(String(reason));
+            }
+          }}
           onArchive={(project) => {
-            saveProject({ ...project, archivedAt: new Date().toISOString() })
-              .then(refresh)
-              .catch((reason) => setError(String(reason)));
+            saveLibraryProject({ ...project, archivedAt: new Date().toISOString() }).catch(
+              (reason) => setError(String(reason))
+            );
           }}
           onRestore={(project) => {
             const restored = { ...project };
             delete restored.archivedAt;
-            saveProject(restored)
-              .then(refresh)
-              .catch((reason) => setError(String(reason)));
+            saveLibraryProject(restored).catch((reason) => setError(String(reason)));
           }}
           onMoveProject={(project, folderId) => {
             moveProjectToFolder(project, folderId)
-              .then(refresh)
+              .then((result) => {
+                if (result.status === "conflict") throw projectSaveConflict(result);
+                return refresh();
+              })
               .catch((reason) => setError(String(reason)));
           }}
           onRenameFolder={(folder) => {
@@ -289,16 +322,17 @@ export function App() {
           onRename={(project) => {
             const name = window.prompt("Rename project", project.name)?.trim();
             if (!name || name === project.name) return;
-            saveProject({ ...project, name, updatedAt: new Date().toISOString() })
-              .then(refresh)
-              .catch((reason) => setError(String(reason)));
+            saveLibraryProject({ ...project, name, updatedAt: new Date().toISOString() }).catch(
+              (reason) => setError(String(reason))
+            );
           }}
           onImport={(file) => {
             readProjectFile(file)
               .then(async (project) => {
-                await saveProject(project);
+                const result = await saveProject(project);
+                if (result.status === "conflict") throw projectSaveConflict(result);
                 await refresh();
-                openProject(project);
+                openProject(result.project);
               })
               .catch((reason) => setError(String(reason)));
           }}

@@ -14,7 +14,8 @@ The browser owns all application behavior and state:
 - Canvas settings live in the project record.
 - Asset favorites, recent selections, and project-scoped viewport focal points
   live in `localStorage`.
-- Imported media is stored as data URLs inside the project.
+- Imported media is stored as project-owned data URLs, with raster scene nodes
+  referring to the upload record rather than duplicating its payload.
 - `.OpenSketch` is versioned JSON and passes through an explicit migration gate.
 - SVG, PNG, and PDF exports are calculated and generated locally.
 - Project and figure exports use browser-generated downloads, while project and
@@ -78,14 +79,24 @@ canvas settings, serialized Fabric scene, embedded imported media, and used
 built-in asset IDs. Built-in artwork uses stable manifest IDs and is bundled
 with the application.
 
-The IndexedDB library adds local-only `folderId`, `archivedAt`, and folder
-records for organization on the project home. Those fields are deliberately
-removed from `.OpenSketch` exports: folders and archive state organize the local
-library without changing the portable scientific document.
+The IndexedDB library adds a monotonic local `revision`, plus local-only
+`folderId`, `archivedAt`, and folder records for organization on the project
+home. Project writes compare the caller's revision inside one IndexedDB
+transaction and reject stale writers; successful writes publish a small
+cross-tab change notice. The revision is never imported from or exported to a
+portable file. Folders and archive state are deliberately removed from
+`.OpenSketch` exports: they organize the local library without changing the
+portable scientific document.
 
 The version-1 JSON key for imported media remains `uploads` solely for backward
 compatibility with existing `.OpenSketch` files; the interface and current code
-refer to the feature as importing media.
+refer to the feature as importing media. Portable JSON is subject to the
+shared 100 MiB serialized-project budget and 25 MiB source-media limit. Before
+local persistence, unreferenced uploads are removed and raster image sources
+are compacted into the upload table. Version-1 portable exports rehydrate those
+sources for older loaders, and the current loader also rehydrates them before
+Fabric loads a scene. Imports that would exceed the budget fail without
+replacing the prior project state.
 
 Future format changes must add a migration in
 `packages/editor-core/src/migrations.ts` before increasing the format version.

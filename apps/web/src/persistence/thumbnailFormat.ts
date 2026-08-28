@@ -12,7 +12,7 @@ export function isCurrentVectorThumbnail(thumbnail: string | undefined): boolean
 
 export function isProjectThumbnailCurrent(
   thumbnail: string | undefined,
-  projectRevision: string
+  projectRevision: string | number
 ): boolean {
   const revisionMarker = encodeURIComponent(
     `data-opensketch-project-revision="${projectRevision}"`

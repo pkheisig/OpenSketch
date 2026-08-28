@@ -20,7 +20,11 @@ import {
   Upload,
   X
 } from "lucide-react";
-import type { ProjectFolderRecord, ProjectRecord } from "@workspace/editor-core";
+import {
+  rehydrateProjectScene,
+  type ProjectFolderRecord,
+  type ProjectRecord
+} from "@workspace/editor-core";
 import { GLOBAL_CREDIT } from "@/assets/credit";
 import { MotionPresence } from "@/components/MotionPresence";
 import { Logo } from "./Logo";
@@ -646,7 +650,7 @@ function ProjectPreview({ project }: { project: ProjectRecord }) {
             enableRetinaScaling: true,
             renderOnAddRemove: false
           });
-          await preview.loadFromJSON(project.objects);
+          await preview.loadFromJSON(rehydrateProjectScene(project.objects, project.uploads));
           if (disposed) return;
           const scale = Math.min(width / project.canvas.width, height / project.canvas.height);
           preview.setViewportTransform([
@@ -668,7 +672,7 @@ function ProjectPreview({ project }: { project: ProjectRecord }) {
       cancelAnimationFrame(frame);
       void preview?.dispose();
     };
-  }, [project.canvas, project.objects, project.updatedAt]);
+  }, [project.canvas, project.objects, project.uploads, project.updatedAt]);
 
   return (
     <span className={className} aria-hidden="true" style={style}>
