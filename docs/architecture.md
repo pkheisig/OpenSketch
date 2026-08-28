@@ -61,9 +61,11 @@ the browser bundle and normal production build.
 
 ## Hosting and offline model
 
-Vite emits `dist/` with `base: "/OpenSketch/"`. GitHub Actions validates the
-source, builds the site, runs browser tests, and deploys only that directory
-through the GitHub Pages artifact mechanism.
+Vite emits `dist/` with `base: "/OpenSketch/"`. GitHub Actions validates pull
+requests without publishing. Pushes to the canonical release branch (`dev`,
+declared in `.github/repository-policy.json`) build the site, run browser
+tests, and deploy only that directory through the GitHub Pages artifact
+mechanism.
 
 The generated Workbox service worker precaches the app shell, compiled chunks,
 fonts, thumbnails, and full built-in SVG library. A completed first visit
