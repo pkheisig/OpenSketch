@@ -1,5 +1,20 @@
 import { expect, test } from "@playwright/test";
 
+test("keeps the complete asset library behind explicit offline preparation", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+
+  const offlineLibrary = page.getByRole("region", { name: "Offline asset library" });
+  await expect(offlineLibrary).toContainText("Not prepared for offline use");
+  await expect(
+    offlineLibrary.getByRole("button", { name: "Prepare offline library" })
+  ).toBeVisible();
+
+  const cachedLibraryNames = await page.evaluate(() => caches.keys());
+  expect(cachedLibraryNames).not.toContain("opensketch-asset-sources");
+  expect(cachedLibraryNames).not.toContain("opensketch-asset-previews");
+});
+
 test("reopens the production app and a saved project while offline", async ({ context, page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();

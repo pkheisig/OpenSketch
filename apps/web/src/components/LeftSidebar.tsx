@@ -74,6 +74,7 @@ import {
 import { loadStringList, saveStringList } from "@/editor/stringListStorage";
 import {
   ASSET_TEMPLATES_CHANGED_EVENT,
+  ASSET_TEMPLATES_ERROR_EVENT,
   deleteAssetTemplate,
   loadAssetTemplates,
   setTemplateDragPayload,
@@ -86,6 +87,7 @@ import {
 } from "@/editor/assetVariantDefaults";
 import { AssetVariantPicker } from "@/components/AssetVariantPicker";
 import { ColorPalettePicker } from "@/components/ColorPalettePicker";
+import { OfflineAssetLibraryCard } from "@/components/OfflineAssetLibraryCard";
 import { InspectorContent, LayersPanel } from "@/components/Inspector";
 import { UiSelect } from "@/components/UiSelect";
 import {
@@ -113,6 +115,10 @@ const DEFAULT_CREATION_DEFAULTS_DISCLOSURES: Record<CreationDefaultsSection, boo
   line: true
 };
 const ASSET_CATEGORIES = ["All", ...ASSET_CATEGORY_ORDER];
+
+function userErrorMessage(reason: unknown): string {
+  return reason instanceof Error ? reason.message : String(reason);
+}
 
 function loadCreationDefaultsDisclosures(): Record<CreationDefaultsSection, boolean> {
   try {
@@ -325,6 +331,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const [assetSourceFilter, setAssetSourceFilter] = useState(ALL_ASSET_FILTER_VALUE);
   const [assetVariantFilter, setAssetVariantFilter] = useState(ALL_ASSET_FILTER_VALUE);
   const [assetCatalog, setAssetCatalog] = useState<AssetManifest | null>(null);
+  const [assetPackVersion, setAssetPackVersion] = useState<string | null>(null);
   const sidebarRef = useRef<HTMLElement>(null);
   const primaryFamilyButtonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const handledSelection = useRef("");
@@ -422,8 +429,11 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   useEffect(() => {
     if (collapsed || tab !== "assets" || assetCatalog) return;
     let active = true;
-    void import("@/assets/manifest").then(({ assetManifest }) => {
-      if (active) setAssetCatalog(assetManifest);
+    void import("@/assets/manifest").then(({ assetManifest, ASSET_OFFLINE_PACK_VERSION }) => {
+      if (active) {
+        setAssetCatalog(assetManifest);
+        setAssetPackVersion(ASSET_OFFLINE_PACK_VERSION);
+      }
     });
     return () => {
       active = false;
@@ -762,9 +772,10 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
               aria-label={`${tab} tools`}
             >
               {tab === "assets" &&
-                (assetCatalog ? (
+                (assetCatalog && assetPackVersion ? (
                   <AssetsPanel
                     assetManifest={assetCatalog}
+                    offlinePackVersion={assetPackVersion}
                     query={assetQuery}
                     onQueryChange={setAssetQuery}
                     category={assetCategory}
@@ -804,6 +815,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
 
 function AssetsPanel({
   assetManifest,
+  offlinePackVersion,
   query,
   onQueryChange,
   category,
@@ -819,6 +831,7 @@ function AssetsPanel({
   onAssetDragEnd
 }: {
   assetManifest: AssetManifest;
+  offlinePackVersion: string;
   query: string;
   onQueryChange: (query: string) => void;
   category: string;
@@ -838,7 +851,7 @@ function AssetsPanel({
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [variants, setVariants] = useState(loadAssetVariantDefaults);
   const [favorites, setFavorites] = useState<Set<string>>(loadAssetFavorites);
-  const [templates, setTemplates] = useState<AssetTemplate[]>(loadAssetTemplates);
+  const [templates, setTemplates] = useState<AssetTemplate[]>([]);
   const [recent, setRecent] = useState<string[]>(() => loadStringList(RECENT_ASSETS_STORAGE_KEY));
   const [assetError, setAssetError] = useState("");
   const [assetListHeight, setAssetListHeight] = useState(0);
@@ -901,9 +914,29 @@ function AssetsPanel({
     return () => window.removeEventListener(ASSET_FAVORITES_CHANGED_EVENT, updateFavorites);
   }, []);
   useEffect(() => {
-    const updateTemplates = () => setTemplates(loadAssetTemplates());
+    let active = true;
+    const updateTemplates = () => {
+      void loadAssetTemplates()
+        .then((next) => {
+          if (active) setTemplates(next);
+        })
+        .catch((reason) => {
+          if (active) setAssetError(userErrorMessage(reason));
+        });
+    };
+    const updateTemplateError = (event: Event) => {
+      if (!(event instanceof CustomEvent)) return;
+      const message = event.detail?.message;
+      if (typeof message === "string" && message) setAssetError(message);
+    };
+    updateTemplates();
     window.addEventListener(ASSET_TEMPLATES_CHANGED_EVENT, updateTemplates);
-    return () => window.removeEventListener(ASSET_TEMPLATES_CHANGED_EVENT, updateTemplates);
+    window.addEventListener(ASSET_TEMPLATES_ERROR_EVENT, updateTemplateError);
+    return () => {
+      active = false;
+      window.removeEventListener(ASSET_TEMPLATES_CHANGED_EVENT, updateTemplates);
+      window.removeEventListener(ASSET_TEMPLATES_ERROR_EVENT, updateTemplateError);
+    };
   }, []);
   useEffect(() => {
     const updateVariants = () => setVariants(loadAssetVariantDefaults());
@@ -943,14 +976,12 @@ function AssetsPanel({
     setAssetError("");
     void editor
       .addAsset(family, variant)
-      .catch((reason) => setAssetError(String(reason).replace(/^Error:\s*/, "")));
+      .catch((reason) => setAssetError(userErrorMessage(reason)));
   };
 
   const insertTemplate = (template: AssetTemplate) => {
     setAssetError("");
-    void editor
-      .addTemplate(template)
-      .catch((reason) => setAssetError(String(reason).replace(/^Error:\s*/, "")));
+    void editor.addTemplate(template).catch((reason) => setAssetError(userErrorMessage(reason)));
   };
 
   const Row = ({ index, style }: ListChildComponentProps) => (
@@ -1039,6 +1070,7 @@ function AssetsPanel({
           </button>
         ) : null}
       </div>
+      <OfflineAssetLibraryCard assetManifest={assetManifest} version={offlinePackVersion} />
       <MotionCollapse
         open={filtersOpen && category !== "Templates"}
         className="asset-filter-collapse"
@@ -1121,7 +1153,11 @@ function AssetsPanel({
                   key={template.id}
                   template={template}
                   onInsert={() => insertTemplate(template)}
-                  onDelete={() => deleteAssetTemplate(template.id)}
+                  onDelete={() => {
+                    void deleteAssetTemplate(template.id).catch((reason) =>
+                      setAssetError(userErrorMessage(reason))
+                    );
+                  }}
                   onAssetDragStart={onAssetDragStart}
                   onAssetDragEnd={onAssetDragEnd}
                 />
@@ -1726,9 +1762,7 @@ function ImportsPanel() {
           const file = event.target.files?.[0];
           if (file) {
             setError("");
-            void editor
-              .importMedia(file)
-              .catch((reason) => setError(String(reason).replace(/^Error:\s*/, "")));
+            void editor.importMedia(file).catch((reason) => setError(userErrorMessage(reason)));
           }
           event.currentTarget.value = "";
         }}

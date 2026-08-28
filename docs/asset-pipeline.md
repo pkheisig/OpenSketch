@@ -85,7 +85,9 @@ page (and Commons page for a retained mirror entry) before adding overrides.
 the same family IDs and categories.
 
 BioIcons is pinned by commit in `scripts/assets/bioicons.ts`; update that commit
-deliberately when refreshing the catalog. Its SVGs and thumbnails are served
-from the OpenSketch origin and cached on demand. They are intentionally excluded
-from PWA precaching so the application's first visit does not download the
-entire scientific-art library.
+deliberately when refreshing the catalog. Its SVGs and thumbnails, like the
+other bundled libraries, are served from the OpenSketch origin and intentionally
+excluded from the app-shell precache. The Assets panel's versioned offline-pack
+action explicitly fetches and verifies every local SVG and WebP before declaring
+the complete library ready for cold offline use. Data-URL labware entries do not
+need a Cache Storage entry.

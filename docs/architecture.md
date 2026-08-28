@@ -68,9 +68,13 @@ tests, and deploy only that directory through the GitHub Pages artifact
 mechanism.
 
 The generated Workbox service worker precaches the app shell, compiled chunks,
-fonts, thumbnails, and full built-in SVG library. A completed first visit
-therefore supports offline reopening without substituting or omitting editor
-features. IndexedDB and Cache Storage are origin-scoped and never sent to the
+and fonts. The built-in SVG and WebP library is intentionally excluded from the
+app-shell precache because it is large. The Assets panel exposes an explicit
+versioned "Prepare offline library" action that downloads every required source
+and preview into Cache Storage, verifies the complete pack, and only then marks
+it ready. A normal first visit therefore supports offline editor reopening; a
+complete cold-offline asset workflow requires that explicit preparation to finish
+while online. IndexedDB and Cache Storage are origin-scoped and never sent to the
 deployment workflow.
 
 ## Persistence contract
@@ -80,8 +84,8 @@ canvas settings, serialized Fabric scene, embedded imported media, and used
 built-in asset IDs. Built-in artwork uses stable manifest IDs and is bundled
 with the application.
 
-The IndexedDB library adds local-only `folderId`, `archivedAt`, and folder
-records for organization on the project home. Those fields are deliberately
+The IndexedDB library adds local-only `folderId`, `archivedAt`, folder records,
+and durable saved-template records. Those fields are deliberately
 removed from `.OpenSketch` exports: folders and archive state organize the local
 library without changing the portable scientific document.
 

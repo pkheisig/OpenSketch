@@ -80,7 +80,7 @@ import {
 } from "@/editor/creationDrag";
 import { elementStyleKey } from "@/editor/elementStyles";
 import { loadAssetFavorites, toggleAssetFavorite } from "@/editor/assetFavorites";
-import { loadAssetTemplates, TEMPLATE_DRAG_TYPE } from "@/editor/assetTemplates";
+import { getAssetTemplate, TEMPLATE_DRAG_TYPE } from "@/editor/assetTemplates";
 import { CURSOR_GRABBING } from "@/editor/cursors";
 import { importedMediaFilesFromDataTransfer } from "@/editor/clipboardImport";
 import type { Point } from "@/editor/geometry";
@@ -685,8 +685,11 @@ export function CanvasWorkspace() {
     }
     const templateId = event.dataTransfer.getData(TEMPLATE_DRAG_TYPE);
     if (templateId) {
-      const template = loadAssetTemplates().find((item) => item.id === templateId);
-      if (template) void editor.addTemplate(template, point);
+      void getAssetTemplate(templateId)
+        .then((template) => {
+          if (template) void editor.addTemplate(template, point);
+        })
+        .catch(() => undefined);
       return;
     }
     const files = importedMediaFilesFromDataTransfer(event.dataTransfer);

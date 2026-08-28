@@ -29,7 +29,7 @@ installation, or application server is required.
 - Search and reuse thousands of bundled biological and laboratory illustrations.
 - Add text, shapes, arrows, inhibitors, connectors, and imported media.
 - Arrange, group, style, rotate, align, and layer objects on a freeform canvas.
-- Organize local projects in folders and reopen them offline.
+- Organize local projects in folders, save reusable templates, and reopen them offline.
 - Export editable SVG and PDF, high-resolution PNG, or portable `.OpenSketch`
   project files.
 
@@ -38,7 +38,10 @@ installation, or application server is required.
 Projects, settings, and imported media stay in your browser. OpenSketch has no
 account system, analytics, telemetry, or project-upload service. Export important
 work as an `.OpenSketch` file for backup, especially before clearing browser data.
-After the first complete visit, the installable web app can reopen offline.
+After the first visit, the installable web app can reopen its editor shell offline.
+Use the Assets panel's **Prepare offline library** action when the complete bundled
+illustration library is needed offline; this is an explicit, large download rather
+than an automatic first-visit download.
 
 ## Open artwork and software
 
