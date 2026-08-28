@@ -9,14 +9,15 @@ describe("project migrations", () => {
   const bytesDataUrl = (mimeType: string, bytes: number[]): string =>
     `data:${mimeType};base64,${btoa(String.fromCharCode(...bytes))}`;
 
-  const pngHeaderDataUrl = (width: number, height: number): string => {
+  const pngHeaderDataUrl = (width: number, height: number, marker?: number): string => {
     const bytes = new Uint8Array([
       137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 13, 73, 72, 68, 82, 0, 0, 0, 0, 0, 0, 0, 0
     ]);
-    const view = new DataView(bytes.buffer);
+    const payload = marker === undefined ? bytes : new Uint8Array([...bytes, marker]);
+    const view = new DataView(payload.buffer);
     view.setUint32(16, width);
     view.setUint32(20, height);
-    return `data:image/png;base64,${btoa(String.fromCharCode(...bytes))}`;
+    return `data:image/png;base64,${btoa(String.fromCharCode(...payload))}`;
   };
 
   const jpegHeaderDataUrl = (width: number, height: number): string =>
@@ -521,6 +522,28 @@ describe("project migrations", () => {
         }
       })
     ).toThrow("fromAnchor");
+  });
+
+  it("bounds aggregate decoded raster area across unique resources", () => {
+    const upload = (index: number) => ({
+      id: `raster-${index}`,
+      name: `raster-${index}.png`,
+      mimeType: "image/png",
+      dataUrl: pngHeaderDataUrl(10_000, 10_000, index)
+    });
+
+    expect(() =>
+      migrateProject({
+        ...project,
+        uploads: [upload(1), upload(2)]
+      })
+    ).not.toThrow();
+    expect(() =>
+      migrateProject({
+        ...project,
+        uploads: [upload(1), upload(2), upload(3)]
+      })
+    ).toThrow("total decoded raster area");
   });
 
   it("keeps supported raster images and free connectors compatible", () => {

@@ -2483,6 +2483,9 @@ export function EditorProvider({
     const active = canvas.getActiveObjects();
     const nested = active.filter((object) => editableAssetParent(object));
     if (nested.length > 0) {
+      const removedIds = new Set(
+        nested.map((object) => object.objectId).filter((id): id is string => Boolean(id))
+      );
       const parents = new Set<Group>();
       nested.forEach((object) => {
         const parent = object.group;
@@ -2494,13 +2497,16 @@ export function EditorProvider({
       });
       const parentAsset = [...parents][0];
       if (parentAsset && parentAsset.getObjects().length > 0) {
+        connectorsForRemovedIds(canvas.getObjects(), removedIds).forEach((object) =>
+          canvas.remove(object)
+        );
         canvas.setActiveObject(parentAsset);
         setSelection([parentAsset]);
       } else {
-        const removedIds = new Set(
-          [...parents].map((parent) => parent.objectId).filter((id): id is string => Boolean(id))
-        );
-        parents.forEach((parent) => canvas.remove(parent));
+        parents.forEach((parent) => {
+          if (parent.objectId) removedIds.add(parent.objectId);
+          canvas.remove(parent);
+        });
         connectorsForRemovedIds(canvas.getObjects(), removedIds).forEach((object) =>
           canvas.remove(object)
         );

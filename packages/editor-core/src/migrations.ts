@@ -38,6 +38,8 @@ export const PORTABLE_PROJECT_LIMITS = {
   maxTotalDataUrlBytes: 75 * 1024 * 1024,
   maxRasterDimension: 32_768,
   maxRasterArea: 100_000_000,
+  // Keep decoded RGBA memory near one gigabyte before browser/Fabric overhead.
+  maxTotalRasterArea: 250_000_000,
   maxCoordinate: 1_000_000,
   maxScale: 1_000,
   maxCurvature: 100
@@ -420,6 +422,7 @@ type JsonRecord = Record<string, unknown>;
 interface ValidationContext {
   objectCount: number;
   totalDataUrlBytes: number;
+  totalRasterArea: number;
   dataUrls: Set<string>;
   objectIds: Set<string>;
   connectorBindings: Array<{
@@ -688,8 +691,8 @@ function rasterDimensions(
 function validateRasterResource(
   parsed: NonNullable<ReturnType<typeof parseDataUrl>>,
   path: string
-): void {
-  if (parsed.mimeType === "image/svg+xml") return;
+): number | undefined {
+  if (parsed.mimeType === "image/svg+xml") return undefined;
   const bytes = decodeDataUrlBytes(parsed);
   const dimensions = bytes === undefined ? undefined : rasterDimensions(bytes, parsed.mimeType);
   if (!dimensions || dimensions.width <= 0 || dimensions.height <= 0) {
@@ -702,6 +705,7 @@ function validateRasterResource(
   ) {
     fail(path, "exceeds the decoded raster dimension limit");
   }
+  return dimensions.width * dimensions.height;
 }
 
 function assertSafeSvgText(value: string, path: string): void {
@@ -743,11 +747,18 @@ function validateDataUrl(
   if (!Number.isFinite(byteLength) || byteLength > PORTABLE_PROJECT_LIMITS.maxDataUrlBytes) {
     fail(path, "exceeds the embedded data URL size limit");
   }
+  const rasterArea = validateRasterResource(parsed, path);
   if (!context.dataUrls.has(value)) {
     context.dataUrls.add(value);
     context.totalDataUrlBytes += byteLength;
     if (context.totalDataUrlBytes > PORTABLE_PROJECT_LIMITS.maxTotalDataUrlBytes) {
       fail(path, "exceeds the total embedded data URL size limit");
+    }
+    if (rasterArea !== undefined) {
+      context.totalRasterArea += rasterArea;
+      if (context.totalRasterArea > PORTABLE_PROJECT_LIMITS.maxTotalRasterArea) {
+        fail(path, "exceeds the total decoded raster area limit");
+      }
     }
   }
   if (parsed.mimeType === "image/svg+xml") {
@@ -1511,6 +1522,7 @@ function createValidationContext(): ValidationContext {
   return {
     objectCount: 0,
     totalDataUrlBytes: 0,
+    totalRasterArea: 0,
     dataUrls: new Set(),
     objectIds: new Set(),
     connectorBindings: []
