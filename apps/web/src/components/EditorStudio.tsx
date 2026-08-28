@@ -1,8 +1,7 @@
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import type { ProjectRecord } from "@workspace/editor-core";
 import { EditorProvider } from "@/editor/EditorContext";
 import { CanvasWorkspace } from "@/components/CanvasWorkspace";
-import { scheduleAssetPreviewWarmup } from "@/assets/previewWarmup";
 
 const TopToolbar = lazy(() =>
   import("@/components/TopToolbar").then((module) => ({ default: module.TopToolbar }))
@@ -10,8 +9,6 @@ const TopToolbar = lazy(() =>
 const LeftSidebar = lazy(() =>
   import("@/components/LeftSidebar").then((module) => ({ default: module.LeftSidebar }))
 );
-
-const ASSET_PREVIEW_WARMUP_DELAY_MS = 10_000;
 
 export function EditorStudio({
   project,
@@ -36,19 +33,6 @@ export function EditorStudio({
       return next;
     });
   };
-  useEffect(() => {
-    const warmupTimer = window.setTimeout(() => {
-      void import("@/assets/manifest").then(({ assetManifest, ASSET_PREVIEW_CACHE_VERSION }) => {
-        scheduleAssetPreviewWarmup(
-          assetManifest.families.flatMap((family) =>
-            family.variants.map((variant) => variant.thumbnailPath)
-          ),
-          ASSET_PREVIEW_CACHE_VERSION
-        );
-      });
-    }, ASSET_PREVIEW_WARMUP_DELAY_MS);
-    return () => window.clearTimeout(warmupTimer);
-  }, []);
   return (
     <EditorProvider
       key={project.id}

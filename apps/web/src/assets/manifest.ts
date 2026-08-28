@@ -26,9 +26,11 @@ export const assetManifest: AssetManifest = {
   }))
 };
 
-export const ASSET_PREVIEW_CACHE_VERSION = [
+export const ASSET_OFFLINE_PACK_VERSION = [
+  "asset-pack-v1",
   (manifest as AssetManifest).generatedAt,
   (openAssetsManifest as AssetManifest).generatedAt,
   TOP_VIEW_LABWARE_FAMILIES.reduce((total, family) => total + family.variants.length, 0)
 ].join(":");
+export const ASSET_PREVIEW_CACHE_VERSION = ASSET_OFFLINE_PACK_VERSION;
 export const ASSET_CATEGORIES = ["All", ...ASSET_CATEGORY_ORDER];

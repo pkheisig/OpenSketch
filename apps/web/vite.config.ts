@@ -47,6 +47,9 @@ export default defineConfig({
           "assets/bioicons/**",
           "assets/bioicons-thumbnails/**"
         ],
+        // The complete asset pack is primed explicitly from the Assets panel.
+        // Do not evict entries: a ready pack must contain every required source
+        // and preview, and the pack manager clears these caches on version change.
         runtimeCaching: [
           {
             urlPattern:
@@ -54,10 +57,6 @@ export default defineConfig({
             handler: "CacheFirst",
             options: {
               cacheName: "opensketch-asset-previews",
-              expiration: {
-                maxEntries: 8_000,
-                maxAgeSeconds: 60 * 60 * 24 * 365
-              },
               cacheableResponse: {
                 statuses: [0, 200]
               }
@@ -68,10 +67,6 @@ export default defineConfig({
             handler: "CacheFirst",
             options: {
               cacheName: "opensketch-asset-sources",
-              expiration: {
-                maxEntries: 2_000,
-                maxAgeSeconds: 60 * 60 * 24 * 365
-              },
               cacheableResponse: {
                 statuses: [0, 200]
               }

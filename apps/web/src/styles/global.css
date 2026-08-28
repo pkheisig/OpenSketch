@@ -1397,6 +1397,115 @@ a:focus-visible {
   align-items: stretch;
 }
 
+.offline-asset-card {
+  display: grid;
+  gap: 7px;
+  margin-top: 9px;
+  padding: 10px;
+  border: 1px solid #cbded8;
+  border-radius: 8px;
+  color: #3e5b56;
+  background: #f2faf6;
+}
+
+.offline-asset-card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.offline-asset-card-heading > div {
+  display: grid;
+  gap: 2px;
+}
+
+.offline-asset-card-heading strong {
+  color: #224642;
+  font-size: 10px;
+}
+
+.offline-asset-card-heading span:not(.offline-asset-state) {
+  color: #6e8580;
+  font-size: 8px;
+}
+
+.offline-asset-state {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  margin-top: 3px;
+  border-radius: 50%;
+  background: #9daaa5;
+}
+
+.offline-asset-state-ready {
+  background: #29956c;
+  box-shadow: 0 0 0 3px rgba(41, 149, 108, 0.12);
+}
+
+.offline-asset-state-preparing {
+  background: #d29435;
+  box-shadow: 0 0 0 3px rgba(210, 148, 53, 0.13);
+  animation: offline-asset-pulse 1.2s ease-in-out infinite;
+}
+
+.offline-asset-state-error,
+.offline-asset-state-unavailable {
+  background: #c45c51;
+  box-shadow: 0 0 0 3px rgba(196, 92, 81, 0.12);
+}
+
+.offline-asset-card > p {
+  margin: 0;
+  color: #637975;
+  font-size: 8px;
+  line-height: 1.45;
+}
+
+.offline-asset-progress {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 7px;
+  color: #5c766f;
+  font-size: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.offline-asset-progress progress {
+  width: 100%;
+  height: 6px;
+  accent-color: #278d83;
+}
+
+.offline-asset-error {
+  padding-top: 2px;
+  color: #8a3d36 !important;
+}
+
+.offline-asset-button {
+  min-height: 28px;
+  padding: 0 9px;
+  border: 1px solid #8ab7ac;
+  border-radius: 5px;
+  color: #1d6961;
+  background: white;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.offline-asset-button:hover {
+  border-color: #3e9182;
+  background: #e8f5ef;
+}
+
+@keyframes offline-asset-pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
 .asset-filter-toggle {
   display: inline-flex;
   min-height: 38px;

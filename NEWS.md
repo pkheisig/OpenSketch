@@ -6,8 +6,11 @@
 - Converted OpenSketch into a static, browser-native GitHub Pages application
   while preserving the version-1 `.OpenSketch` project format and editor
   behavior.
-- Added a repository-base-aware Vite build, complete offline PWA cache, and
-  automated test/build/deploy workflow for `main`.
+- Added a repository-base-aware Vite build, an offline app shell with explicit
+  complete-library preparation, and an automated test/build/deploy workflow for
+  `main`.
+- Added durable IndexedDB saved templates with transactional legacy migration
+  and actionable browser-storage errors.
 - Added production-path, offline reload, and portable-project round-trip
   regression coverage.
 - Added the deterministic, public-domain-only NIH BioArt synchronization and

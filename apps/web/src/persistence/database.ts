@@ -13,10 +13,28 @@ export interface ImportedMediaLibraryRecord extends ImportedMediaRecord {
   contentHash: string;
 }
 
+export interface AssetTemplateRecord {
+  id: string;
+  name: string;
+  object: Record<string, unknown>;
+  thumbnail: string;
+  createdAt: string;
+  updatedAt: string;
+  schemaVersion: 1;
+}
+
+export interface AssetTemplateMigrationRecord {
+  id: string;
+  schemaVersion: 1;
+  completedAt: string;
+}
+
 class OpenSketchDatabase extends Dexie {
   projects!: EntityTable<ProjectRecord, "id">;
   folders!: EntityTable<ProjectFolderRecord, "id">;
   imports!: EntityTable<ImportedMediaLibraryRecord, "id">;
+  templates!: EntityTable<AssetTemplateRecord, "id">;
+  templateMigrations!: EntityTable<AssetTemplateMigrationRecord, "id">;
 
   constructor() {
     super("OpenSketch");
@@ -31,6 +49,13 @@ class OpenSketchDatabase extends Dexie {
       projects: "id, updatedAt, name, archivedAt, folderId",
       folders: "id, updatedAt, name",
       imports: "id, updatedAt, name, mimeType, contentHash"
+    });
+    this.version(4).stores({
+      projects: "id, updatedAt, name, archivedAt, folderId",
+      folders: "id, updatedAt, name",
+      imports: "id, updatedAt, name, mimeType, contentHash",
+      templates: "id, updatedAt, name",
+      templateMigrations: "id"
     });
   }
 }

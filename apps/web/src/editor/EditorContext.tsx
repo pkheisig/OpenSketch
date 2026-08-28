@@ -2608,12 +2608,15 @@ export function EditorProvider({
     } catch (reason) {
       console.warn("Template preview could not be rendered; the template is still saved.", reason);
     }
-    saveAssetTemplate({
+    const now = new Date().toISOString();
+    await saveAssetTemplate({
       id: crypto.randomUUID(),
       name,
       object: snapshotObject.toObject() as unknown as Record<string, unknown>,
       thumbnail,
-      createdAt: new Date().toISOString()
+      createdAt: now,
+      updatedAt: now,
+      schemaVersion: 1
     });
   }, [canvas]);
 
