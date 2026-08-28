@@ -1,5 +1,9 @@
 # OpenSketch 0.1.0
 
+- Project persistence now rejects stale cross-tab writers with an explicit
+  reload-or-copy recovery path and bounds portable projects to one shared
+  serialized-size policy.
+
 - Adopted the OpenGate visual system across the project library and editor,
   including warm light/dark surfaces, orange accents, compact Avenir Next/Inter
   controls, and a persisted theme switch.

@@ -1,5 +1,6 @@
 import { StaticCanvas, type Canvas } from "fabric";
 import type { CanvasSettings, ProjectRecord } from "@workspace/editor-core";
+import { rehydrateProjectScene } from "@workspace/editor-core";
 import {
   isProjectThumbnailCurrent,
   svgThumbnailDataUrl,
@@ -9,7 +10,7 @@ import {
 export function createVectorThumbnail(
   canvas: Canvas | StaticCanvas,
   settings: CanvasSettings,
-  projectRevision: string
+  projectRevision: string | number
 ): string {
   const viewport = [...canvas.viewportTransform] as [
     number,
@@ -46,8 +47,8 @@ async function renderSavedProjectThumbnail(project: ProjectRecord): Promise<stri
     backgroundColor: project.canvas.transparent ? "" : project.canvas.background
   });
   try {
-    await canvas.loadFromJSON(project.objects);
-    return createVectorThumbnail(canvas, project.canvas, project.updatedAt);
+    await canvas.loadFromJSON(rehydrateProjectScene(project.objects, project.uploads));
+    return createVectorThumbnail(canvas, project.canvas, project.revision);
   } finally {
     canvas.dispose();
   }
@@ -58,7 +59,7 @@ export async function upgradeProjectThumbnails(
 ): Promise<ProjectRecord[]> {
   const upgraded: ProjectRecord[] = [];
   for (const project of projects) {
-    if (isProjectThumbnailCurrent(project.thumbnail, project.updatedAt)) {
+    if (isProjectThumbnailCurrent(project.thumbnail, project.revision)) {
       upgraded.push(project);
       continue;
     }

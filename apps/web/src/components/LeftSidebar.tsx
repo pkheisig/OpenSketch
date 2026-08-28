@@ -1749,7 +1749,12 @@ function ImportsPanel() {
             >
               <button
                 className="import-library-preview"
-                onClick={() => void editor.addImportedMedia(media)}
+                onClick={() => {
+                  setError("");
+                  void editor
+                    .addImportedMedia(media)
+                    .catch((reason) => setError(String(reason).replace(/^Error:\s*/, "")));
+                }}
                 aria-label={`Insert ${media.name}`}
               >
                 <img src={media.dataUrl} alt="" draggable={false} />

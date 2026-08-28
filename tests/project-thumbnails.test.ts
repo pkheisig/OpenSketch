@@ -10,7 +10,7 @@ import {
 
 describe("project overview thumbnails", () => {
   it("stores SVG previews as vector image data", () => {
-    const revision = "2026-07-27T18:30:00.000Z";
+    const revision = 7;
     const svg =
       `<svg data-opensketch-thumbnail="${VECTOR_THUMBNAIL_VERSION}" ` +
       `data-opensketch-project-revision="${revision}" xmlns="http://www.w3.org/2000/svg">` +

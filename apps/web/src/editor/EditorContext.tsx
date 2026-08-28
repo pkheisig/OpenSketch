@@ -28,6 +28,7 @@ import {
   cache,
   util
 } from "fabric";
+import { PROJECT_STORAGE_LIMITS, rehydrateProjectScene } from "@workspace/editor-core";
 import type {
   AssetFamily,
   AssetVariant,
@@ -39,7 +40,11 @@ import type {
 import { sanitizeImportedSvg } from "@/assets/browserSanitizer";
 import { setPngDpi } from "@/export/png";
 import { svgToPdfBlob } from "@/export/pdf";
-import { downloadBlob, safeFilename } from "@/persistence/portable";
+import {
+  assertPortableProjectWithinBudget,
+  downloadBlob,
+  safeFilename
+} from "@/persistence/portable";
 import { createVectorThumbnail } from "@/persistence/projectThumbnail";
 import { GLOBAL_CREDIT } from "@/assets/credit";
 import {
@@ -114,8 +119,13 @@ import {
   importedMediaFilesFromClipboard
 } from "@/editor/clipboardImport";
 import {
+  duplicateProject,
+  getProject,
   rememberProjectImports,
-  saveImportedMedia as saveImportedMediaToLibrary
+  saveImportedMedia as saveImportedMediaToLibrary,
+  saveProjectThumbnail,
+  subscribeProjectChanges,
+  type ProjectSaveResult
 } from "@/persistence/database";
 import {
   CREATION_DEFAULTS_STORAGE_KEY,
@@ -301,12 +311,17 @@ interface EditorContextValue {
   alignmentEnabled: boolean;
   autoEditEnabled: boolean;
   projectDescription: string;
+  projectConflict: { current?: ProjectRecord } | null;
+  projectConflictSaving: boolean;
+  projectConflictError: string;
   setCanvasElement: (element: HTMLCanvasElement | null) => void;
   setCanvasSettings: (settings: Partial<CanvasSettings>) => void;
   setAlignmentEnabled: (enabled: boolean) => void;
   setAutoEditEnabled: (enabled: boolean) => void;
   setProjectName: (name: string) => void;
   setProjectDescription: (description: string) => void;
+  saveProjectCopy: () => Promise<void>;
+  reloadProject: () => void;
   selectParentAsset: () => void;
   closeGroupEdit: () => void;
   flushSave: () => Promise<void>;
@@ -806,11 +821,13 @@ export function EditorProvider({
   project,
   onProjectChange,
   onRequestExit,
+  onRequestProjectSwitch,
   children
 }: {
   project: ProjectRecord;
-  onProjectChange: (project: ProjectRecord) => Promise<void>;
+  onProjectChange: (project: ProjectRecord) => Promise<ProjectSaveResult>;
   onRequestExit: () => void;
+  onRequestProjectSwitch: (project: ProjectRecord) => void;
   children: ReactNode;
 }) {
   const [canvas, setCanvas] = useState<Canvas | null>(null);
@@ -879,7 +896,11 @@ export function EditorProvider({
   const exitPending = useRef(false);
   const saveRevision = useRef(0);
   const savedRevision = useRef(0);
+  const durableProjectRevision = useRef(project.revision);
   const lastSaveError = useRef<unknown>(undefined);
+  const [projectConflict, setProjectConflict] = useState<{ current?: ProjectRecord } | null>(null);
+  const [projectConflictSaving, setProjectConflictSaving] = useState(false);
+  const [projectConflictError, setProjectConflictError] = useState("");
   const assetInsertQueue = useRef<Promise<void>>(Promise.resolve());
   const importQueue = useRef<Promise<void>>(Promise.resolve());
   const latestProject = useRef(project);
@@ -939,6 +960,31 @@ export function EditorProvider({
     editingGroupRef.current = currentGroup;
     setEditingGroup(currentGroup);
   }, []);
+
+  useEffect(() => {
+    let active = true;
+    const unsubscribe = subscribeProjectChanges((notice) => {
+      if (notice.projectId !== project.id) return;
+      void getProject(project.id)
+        .then((current) => {
+          if (!active) return;
+          if (notice.deleted || !current || current.revision <= latestProject.current.revision) {
+            if (notice.deleted && !current) {
+              setProjectConflictError("");
+              setProjectConflict({ current: undefined });
+            }
+            return;
+          }
+          setProjectConflictError("");
+          setProjectConflict({ current });
+        })
+        .catch(() => undefined);
+    });
+    return () => {
+      active = false;
+      unsubscribe();
+    };
+  }, [project.id]);
 
   useEffect(() => {
     void rememberProjectImports(
@@ -1015,24 +1061,36 @@ export function EditorProvider({
     });
   }, []);
 
+  const snapshotProject = useCallback(
+    (snapshot = serialize()): ProjectRecord => {
+      const objects = JSON.parse(snapshot) as Record<string, unknown>;
+      return {
+        ...latestProject.current,
+        updatedAt: new Date().toISOString(),
+        canvas: latestCanvasSettings.current,
+        objects,
+        usedAssetIds: assetIdsFromSnapshot(objects),
+        thumbnail: undefined
+      };
+    },
+    [serialize]
+  );
+
   const saveSnapshot = useCallback(
     async (snapshot: string, revision: number) => {
       try {
-        const now = new Date().toISOString();
-        const current = latestProject.current;
-        const objects = JSON.parse(snapshot) as Record<string, unknown>;
-        const next: ProjectRecord = {
-          ...current,
-          updatedAt: now,
-          canvas: latestCanvasSettings.current,
-          objects,
-          usedAssetIds: assetIdsFromSnapshot(objects),
-          // The project data is the durable source of truth. Its derived preview
-          // is refreshed after the save queue drains or by the project overview.
-          thumbnail: undefined
-        };
-        await onProjectChange(next);
-        latestProject.current = next;
+        const next = snapshotProject(snapshot);
+        const result = await onProjectChange(next);
+        if (result.status === "conflict") {
+          setProjectConflictError("");
+          setProjectConflict({ current: result.current });
+          const message = result.current
+            ? "This project changed in another tab. Save this tab as a copy or reload the newer version."
+            : "This project was deleted in another tab. Save this tab as a copy before leaving.";
+          throw new Error(message);
+        }
+        latestProject.current = result.project;
+        durableProjectRevision.current = result.project.revision;
         savedRevision.current = Math.max(savedRevision.current, revision);
         lastSaveError.current = undefined;
       } catch (reason) {
@@ -1040,7 +1098,7 @@ export function EditorProvider({
         throw reason;
       }
     },
-    [onProjectChange]
+    [onProjectChange, snapshotProject]
   );
 
   const refreshThumbnail = useCallback(async () => {
@@ -1049,17 +1107,30 @@ export function EditorProvider({
       const thumbnail = createVectorThumbnail(
         canvas,
         latestCanvasSettings.current,
-        latestProject.current.updatedAt
+        durableProjectRevision.current
       );
-      const next = { ...latestProject.current, thumbnail };
-      await onProjectChange(next);
-      latestProject.current = next;
+      const saved = await saveProjectThumbnail(
+        latestProject.current.id,
+        durableProjectRevision.current,
+        thumbnail
+      );
+      if (!saved) {
+        setProjectConflictError("");
+        setProjectConflict({ current: undefined });
+        return;
+      }
+      if (saved.revision !== durableProjectRevision.current) {
+        setProjectConflictError("");
+        setProjectConflict({ current: saved });
+        return;
+      }
+      latestProject.current = saved;
     } catch (reason) {
       // A preview is derived and optional. Never discard or block navigation
       // after the actual project snapshot has already been saved.
       console.warn("Project preview could not be refreshed; project data is saved.", reason);
     }
-  }, [canvas, onProjectChange]);
+  }, [canvas]);
 
   const enqueuePendingSave = useCallback(() => {
     const pending = pendingSnapshot.current;
@@ -1100,6 +1171,30 @@ export function EditorProvider({
         exitPending.current = false;
       });
   }, [flushSave, onRequestExit]);
+
+  const reloadProject = useCallback(() => {
+    const current = projectConflict?.current;
+    if (!current) return;
+    setProjectConflictError("");
+    setProjectConflict(null);
+    onRequestProjectSwitch(current);
+  }, [onRequestProjectSwitch, projectConflict]);
+
+  const saveProjectCopy = useCallback(async () => {
+    if (!projectConflict || projectConflictSaving) return;
+    setProjectConflictSaving(true);
+    try {
+      const copy = await duplicateProject(snapshotProject());
+      setProjectConflictError("");
+      setProjectConflict(null);
+      onRequestProjectSwitch(copy);
+    } catch (reason) {
+      setProjectConflictError(String(reason).replace(/^Error:\s*/, ""));
+      throw reason;
+    } finally {
+      setProjectConflictSaving(false);
+    }
+  }, [onRequestProjectSwitch, projectConflict, projectConflictSaving, snapshotProject]);
 
   const persist = useCallback(
     (snapshot?: string) => {
@@ -1154,23 +1249,25 @@ export function EditorProvider({
       instance.setDimensions({ width: project.canvas.width, height: project.canvas.height });
       instance.backgroundColor = project.canvas.transparent ? "" : project.canvas.background;
       setCanvasReady(false);
-      instance.loadFromJSON(project.objects).then(async () => {
-        await restoreBundledSvgBlendModes(instance.getObjects());
-        instance.getObjects().forEach((object) => {
-          assignIdentity(
-            object,
-            object.name ?? "Untitled layer",
-            object.OpenSketchType ?? object.type
-          );
+      instance
+        .loadFromJSON(rehydrateProjectScene(project.objects, project.uploads))
+        .then(async () => {
+          await restoreBundledSvgBlendModes(instance.getObjects());
+          instance.getObjects().forEach((object) => {
+            assignIdentity(
+              object,
+              object.name ?? "Untitled layer",
+              object.OpenSketchType ?? object.type
+            );
+          });
+          configureCanvasAssets(instance.getObjects());
+          instance.requestRenderAll();
+          const initial = JSON.stringify(instance.toJSON());
+          history.current = [initial];
+          historyIndex.current = 0;
+          updateHistoryState();
+          setCanvasReady(true);
         });
-        configureCanvasAssets(instance.getObjects());
-        instance.requestRenderAll();
-        const initial = JSON.stringify(instance.toJSON());
-        history.current = [initial];
-        historyIndex.current = 0;
-        updateHistoryState();
-        setCanvasReady(true);
-      });
       setCanvas(instance);
     },
     [project, updateHistoryState]
@@ -2410,22 +2507,51 @@ export function EditorProvider({
       rememberOriginalColors(object);
       if (object instanceof Group) markSvgParts(object);
       configureAtomicSvgAsset(object);
-      latestProject.current = {
-        ...latestProject.current,
-        uploads: [
-          ...latestProject.current.uploads.filter((candidate) => candidate.id !== stored.id),
-          {
-            id: stored.id,
-            name: stored.name,
-            mimeType: stored.mimeType,
-            dataUrl: stored.dataUrl
-          }
-        ]
-      };
-      addObject(object, stored.name, "import", point);
+      const nextUploads = [
+        ...latestProject.current.uploads.filter((candidate) => candidate.id !== stored.id),
+        {
+          id: stored.id,
+          name: stored.name,
+          mimeType: stored.mimeType,
+          dataUrl: stored.dataUrl
+        }
+      ];
+      const previousSelection = canvas.getActiveObjects();
+      assignIdentity(object, stored.name, "import");
+      prepareElementStyle(object);
+      centerObject(object, point);
+      canvas.add(object);
+      canvas.setActiveObject(object);
+      setSelection([object]);
+      try {
+        assertPortableProjectWithinBudget({
+          ...latestProject.current,
+          uploads: nextUploads,
+          objects: canvas.toJSON()
+        });
+      } catch (reason) {
+        canvas.remove(object);
+        canvas.discardActiveObject();
+        const restoredSelection = previousSelection.filter((candidate) =>
+          canvas.getObjects().includes(candidate)
+        );
+        if (restoredSelection.length === 1) {
+          canvas.setActiveObject(restoredSelection[0]);
+        } else if (restoredSelection.length > 1) {
+          canvas.setActiveObject(new ActiveSelection(restoredSelection, { canvas }));
+        }
+        setSelection(restoredSelection);
+        canvas.requestRenderAll();
+        throw new Error(
+          `The image could not be added without exceeding the project budget. ${String(reason).replace(/^Error:\s*/, "")}`
+        );
+      }
+      latestProject.current = { ...latestProject.current, uploads: nextUploads };
+      canvas.requestRenderAll();
+      commit(`Add ${stored.name}`);
       return stored;
     },
-    [addObject, canvas]
+    [canvas, centerObject, commit, prepareElementStyle]
   );
 
   const addImportedMedia = useCallback(
@@ -2458,8 +2584,10 @@ export function EditorProvider({
         ) {
           throw new Error("Choose an SVG, PNG, JPEG, or WebP image.");
         }
-        if (file.size > 25 * 1024 * 1024) {
-          throw new Error("Images must be 25 MB or smaller.");
+        if (file.size > PROJECT_STORAGE_LIMITS.maxImportedMediaBytes) {
+          throw new Error(
+            `Images must be ${PROJECT_STORAGE_LIMITS.maxImportedMediaBytes / (1024 * 1024)} MiB or smaller.`
+          );
         }
         const importId = crypto.randomUUID();
         let dataUrl = await new Promise<string>((resolve, reject) => {
@@ -3457,12 +3585,17 @@ export function EditorProvider({
       alignmentEnabled,
       autoEditEnabled,
       projectDescription,
+      projectConflict,
+      projectConflictSaving,
+      projectConflictError,
       setCanvasElement,
       setCanvasSettings,
       setAlignmentEnabled,
       setAutoEditEnabled,
       setProjectName,
       setProjectDescription,
+      saveProjectCopy,
+      reloadProject,
       selectParentAsset,
       closeGroupEdit,
       flushSave,
@@ -3540,6 +3673,9 @@ export function EditorProvider({
       historyState,
       editingGroup,
       projectDescription,
+      projectConflict,
+      projectConflictError,
+      projectConflictSaving,
       project.id,
       previewZoom,
       placeCreationTool,
@@ -3557,6 +3693,8 @@ export function EditorProvider({
       resetSelectionStyle,
       setProjectName,
       setProjectDescription,
+      saveProjectCopy,
+      reloadProject,
       selectParentAsset,
       closeGroupEdit,
       flushSave,

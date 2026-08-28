@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
-import { migrateProject, type ProjectRecord } from "../packages/editor-core/src";
+import { migrateProject } from "../packages/editor-core/src";
 import {
   readProjectFile,
   saveProjectToDirectory,
@@ -16,6 +16,7 @@ describe("portable OpenSketch projects", () => {
   it("round-trips the established project schema without scene loss", () => {
     const serialized = serializeProject({
       ...fixture,
+      revision: 12,
       thumbnail: "data:image/png;base64,preview-only",
       folderId: "folder-1",
       archivedAt: "2026-07-27T12:00:00.000Z"
@@ -26,6 +27,7 @@ describe("portable OpenSketch projects", () => {
     expect(serialized).not.toContain("preview-only");
     expect(serialized).not.toContain("folder-1");
     expect(serialized).not.toContain("archivedAt");
+    expect(serialized).not.toContain('"revision"');
     expect((restored.objects.objects as unknown[]).length).toBe(6);
   });
 
@@ -45,8 +47,19 @@ describe("portable OpenSketch projects", () => {
   });
 
   it("preserves embedded imported media during export and import", () => {
-    const withImportedMedia: ProjectRecord = {
+    const withImportedMedia = {
       ...fixture,
+      objects: {
+        ...fixture.objects,
+        objects: [
+          ...(fixture.objects.objects as unknown[]),
+          {
+            type: "Image",
+            assetId: "import-1",
+            src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB"
+          }
+        ]
+      },
       uploads: [
         {
           id: "import-1",
@@ -59,6 +72,10 @@ describe("portable OpenSketch projects", () => {
 
     const restored = migrateProject(JSON.parse(serializeProject(withImportedMedia)));
     expect(restored.uploads).toEqual(withImportedMedia.uploads);
+    expect(restored.objects.objects).toContainEqual({
+      type: "Image",
+      assetId: "import-1"
+    });
   });
 
   it("writes a compatible project through direct directory access", async () => {
@@ -92,5 +109,16 @@ describe("portable OpenSketch projects", () => {
     } finally {
       Reflect.deleteProperty(window, "showDirectoryPicker");
     }
+  });
+
+  it("rejects a file larger than the portable-project limit before parsing", async () => {
+    const oversized = new File(["not JSON"], "oversized.OpenSketch", {
+      type: "application/vnd.OpenSketch+json"
+    });
+    Object.defineProperty(oversized, "size", {
+      value: 100 * 1024 * 1024 + 1
+    });
+
+    await expect(readProjectFile(oversized)).rejects.toThrow("100 MiB portable-project limit");
   });
 });
