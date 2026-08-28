@@ -44,6 +44,7 @@ import { createVectorThumbnail } from "@/persistence/projectThumbnail";
 import { GLOBAL_CREDIT } from "@/assets/credit";
 import {
   connectorAppearance,
+  connectorsForRemovedIds,
   createConnectorObject,
   createFreeConnectorObject,
   normalizeConnectorHeadOffsets
@@ -90,6 +91,7 @@ import {
   persistSavedElementStyles,
   styleTarget
 } from "@/editor/elementStyles";
+import { assignFreshCloneIds } from "@/editor/cloneIdentity";
 import {
   consumeRecognizedGroup,
   findRecognizedGroup,
@@ -478,29 +480,6 @@ function configureCanvasAssets(objects: FabricObject[]): void {
       object.interactive = false;
     }
   });
-}
-
-function assignFreshCloneIds(object: FabricObject): void {
-  const ids = new Map<string, string>();
-  const collect = (current: FabricObject) => {
-    if (current.objectId) ids.set(current.objectId, crypto.randomUUID());
-    if (current instanceof Group) current.getObjects().forEach(collect);
-  };
-  const apply = (current: FabricObject) => {
-    current.objectId = current.objectId
-      ? (ids.get(current.objectId) ?? crypto.randomUUID())
-      : crypto.randomUUID();
-    if (current.connector) {
-      current.connector = {
-        ...current.connector,
-        fromObjectId: ids.get(current.connector.fromObjectId) ?? current.connector.fromObjectId,
-        toObjectId: ids.get(current.connector.toObjectId) ?? current.connector.toObjectId
-      };
-    }
-    if (current instanceof Group) current.getObjects().forEach(apply);
-  };
-  collect(object);
-  apply(object);
 }
 
 function hitObjectsAtLevel(
@@ -1542,8 +1521,8 @@ export function EditorProvider({
     };
     const addDragDuplicate = (session: NonNullable<typeof dragDuplicate.current>): Promise<void> =>
       session.clones.then((clones) => {
+        assignFreshCloneIds(clones);
         clones.forEach((clone, index) => {
-          assignFreshCloneIds(clone);
           const source = session.sources[index];
           clone.name = `${source.name ?? "Object"} copy`;
           if (session.parent) {
@@ -2504,6 +2483,9 @@ export function EditorProvider({
     const active = canvas.getActiveObjects();
     const nested = active.filter((object) => editableAssetParent(object));
     if (nested.length > 0) {
+      const removedIds = new Set(
+        nested.map((object) => object.objectId).filter((id): id is string => Boolean(id))
+      );
       const parents = new Set<Group>();
       nested.forEach((object) => {
         const parent = object.group;
@@ -2515,10 +2497,19 @@ export function EditorProvider({
       });
       const parentAsset = [...parents][0];
       if (parentAsset && parentAsset.getObjects().length > 0) {
+        connectorsForRemovedIds(canvas.getObjects(), removedIds).forEach((object) =>
+          canvas.remove(object)
+        );
         canvas.setActiveObject(parentAsset);
         setSelection([parentAsset]);
       } else {
-        parents.forEach((parent) => canvas.remove(parent));
+        parents.forEach((parent) => {
+          if (parent.objectId) removedIds.add(parent.objectId);
+          canvas.remove(parent);
+        });
+        connectorsForRemovedIds(canvas.getObjects(), removedIds).forEach((object) =>
+          canvas.remove(object)
+        );
         canvas.discardActiveObject();
         setSelection([]);
       }
@@ -2526,15 +2517,10 @@ export function EditorProvider({
       commit("Delete SVG part");
       return;
     }
-    const removedIds = new Set(active.map((object) => object.objectId).filter(Boolean));
-    const connected = canvas
-      .getObjects()
-      .filter(
-        (object) =>
-          object.connector &&
-          (removedIds.has(object.connector.fromObjectId) ||
-            removedIds.has(object.connector.toObjectId))
-      );
+    const removedIds = new Set(
+      active.map((object) => object.objectId).filter((id): id is string => Boolean(id))
+    );
+    const connected = connectorsForRemovedIds(canvas.getObjects(), removedIds);
     [...active, ...connected].forEach((object) => canvas.remove(object));
     canvas.discardActiveObject();
     setSelection([]);
@@ -2581,9 +2567,9 @@ export function EditorProvider({
       nestedParent &&
       selectedObjects.every((object) => editableAssetParent(object) === nestedParent)
     ) {
+      assignFreshCloneIds(clones);
       clones.forEach((clone) => {
         clone.set({ left: (clone.left ?? 0) + 12, top: (clone.top ?? 0) + 12 });
-        clone.objectId = crypto.randomUUID();
         clone.name = `${selectedObjects[0].name ?? "Part"} copy`;
         clone.OpenSketchType = "svg-part";
         nestedParent.add(clone);
@@ -2596,9 +2582,9 @@ export function EditorProvider({
       commit("Duplicate SVG part");
       return;
     }
+    assignFreshCloneIds(clones);
     clones.forEach((clone) => {
       clone.set({ left: (clone.left ?? 0) + 28, top: (clone.top ?? 0) + 28 });
-      clone.objectId = crypto.randomUUID();
       canvas.add(clone);
     });
     const active = clones.length === 1 ? clones[0] : new ActiveSelection(clones, { canvas });
@@ -2649,12 +2635,12 @@ export function EditorProvider({
       Promise.all(clipboard.current.map((object) => object.clone()))
     ]);
     configureCanvasAssets(clones);
+    assignFreshCloneIds(clones);
     clones.forEach((clone) => {
       clone.set({
         left: (clone.left ?? 0) + 24,
         top: (clone.top ?? 0) + 24
       });
-      clone.objectId = crypto.randomUUID();
       canvas.add(clone);
     });
     nextClipboard.forEach((clone) => {
@@ -2709,6 +2695,7 @@ export function EditorProvider({
   const ungroupSelection = useCallback(() => {
     if (!canvas || !isManualGroup(canvas.getActiveObject())) return;
     const group = canvas.getActiveObject() as Group;
+    const removedIds = new Set(group.objectId ? [group.objectId] : []);
     const parent = layerCollectionForObject(group, canvas);
     const index = parent.getObjects().indexOf(group);
     canvas.discardActiveObject();
@@ -2723,6 +2710,9 @@ export function EditorProvider({
         parent.dirty = true;
       }
     }
+    connectorsForRemovedIds(canvas.getObjects(), removedIds).forEach((object) =>
+      canvas.remove(object)
+    );
     const selectionObject = new ActiveSelection(objects, { canvas });
     configureSelectionControls(selectionObject, latestZoom.current);
     canvas.setActiveObject(selectionObject);

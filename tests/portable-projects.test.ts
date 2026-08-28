@@ -44,6 +44,16 @@ describe("portable OpenSketch projects", () => {
     expect(imported.usedAssetIds).toEqual(fixture.usedAssetIds);
   });
 
+  it("rejects invalid JSON before an import can be persisted", async () => {
+    await expect(
+      readProjectFile(
+        new File(["{ definitely not json"], "broken.OpenSketch", {
+          type: "application/vnd.OpenSketch+json"
+        })
+      )
+    ).rejects.toThrow("invalid JSON");
+  });
+
   it("preserves embedded imported media during export and import", () => {
     const withImportedMedia: ProjectRecord = {
       ...fixture,
