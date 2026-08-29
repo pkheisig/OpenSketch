@@ -40,8 +40,13 @@ import { sanitizeImportedSvg } from "@/assets/browserSanitizer";
 import { setPngDpi } from "@/export/png";
 import { svgToPdfBlob } from "@/export/pdf";
 import { collectProvenanceManifest, formatProvenanceCredits } from "@/export/provenance";
-import { downloadBlob, safeFilename } from "@/persistence/portable";
+import { downloadBlob, downloadProject, safeFilename } from "@/persistence/portable";
 import { createVectorThumbnail } from "@/persistence/projectThumbnail";
+import {
+  hasUnsavedProjectRevision,
+  normalizeProjectSaveError,
+  type ProjectSaveState
+} from "@/editor/projectSaveState";
 import { GLOBAL_CREDIT } from "@/assets/credit";
 import {
   connectorAppearance,
@@ -128,7 +133,8 @@ import {
 } from "@/editor/clipboardImport";
 import {
   rememberProjectImports,
-  saveImportedMedia as saveImportedMediaToLibrary
+  saveImportedMedia as saveImportedMediaToLibrary,
+  saveProjectThumbnail
 } from "@/persistence/database";
 import {
   CREATION_DEFAULTS_STORAGE_KEY,
@@ -201,6 +207,7 @@ const RESTORABLE_GROUP_PROPERTIES = [
 const MAX_HISTORY = 120;
 const SVG_CACHE_LIMIT = 64;
 const DRAG_DUPLICATE_OPACITY = 0.35;
+const TITLE_PERSISTENCE_DELAY_MS = 250;
 const svgStringCache = new Map<string, string>();
 let assetManifestPromise: Promise<typeof import("@/assets/manifest")> | undefined;
 let bundledVariantsPromise: Promise<Map<string, AssetVariant>> | undefined;
@@ -322,7 +329,10 @@ interface EditorContextValue {
   setProjectDescription: (description: string) => void;
   selectParentAsset: () => void;
   closeGroupEdit: () => void;
+  saveState: ProjectSaveState;
+  retrySave: () => void;
   flushSave: () => Promise<void>;
+  exportProject: () => Promise<void>;
   creationTool: CreationTool | null;
   creationDefaults: CreationDefaults;
   setCreationTool: (tool: CreationTool | null) => void;
@@ -807,15 +817,18 @@ export function EditorProvider({
   project,
   onProjectChange,
   onRequestExit,
+  onNavigationGuardChange,
   children
 }: {
   project: ProjectRecord;
   onProjectChange: (project: ProjectRecord) => Promise<void>;
   onRequestExit: () => void;
+  onNavigationGuardChange: (guard: (() => boolean) | null) => void;
   children: ReactNode;
 }) {
   const [canvas, setCanvas] = useState<Canvas | null>(null);
   const [canvasReady, setCanvasReady] = useState(false);
+  const canvasReadyRef = useRef(false);
   const [selection, setSelection] = useState<FabricObject[]>([]);
   const [editingGroup, setEditingGroup] = useState<Group | null>(null);
   const editingGroupRef = useRef<Group | null>(null);
@@ -881,9 +894,74 @@ export function EditorProvider({
   const saveRevision = useRef(0);
   const savedRevision = useRef(0);
   const lastSaveError = useRef<unknown>(undefined);
+  const [saveState, setSaveState] = useState<ProjectSaveState>({ phase: "saved" });
   const assetInsertQueue = useRef<Promise<void>>(Promise.resolve());
   const importQueue = useRef<Promise<void>>(Promise.resolve());
+  const pendingEditorWork = useRef(0);
+  const pendingEditorWorkPromises = useRef(new Set<Promise<void>>());
+  const pendingTitlePersistence = useRef<{
+    timer: number;
+    complete: () => void;
+  } | null>(null);
   const latestProject = useRef(project);
+  const initialProjectObjects = useRef(project.objects);
+  const hasPendingNavigationWork = useCallback(
+    () =>
+      pendingEditorWork.current > 0 ||
+      hasUnsavedProjectRevision(
+        saveRevision.current,
+        savedRevision.current,
+        Boolean(pendingSnapshot.current)
+      ),
+    []
+  );
+  const guardNavigation = useCallback(() => {
+    const blocked = hasPendingNavigationWork();
+    if (blocked) exitPending.current = false;
+    return blocked;
+  }, [hasPendingNavigationWork]);
+  const markPendingEditorWorkComplete = useCallback(() => {
+    pendingEditorWork.current = Math.max(0, pendingEditorWork.current - 1);
+    if (!hasPendingNavigationWork()) {
+      setSaveState((current) => (current.phase === "saving" ? { phase: "saved" } : current));
+    }
+  }, [hasPendingNavigationWork]);
+  const beginPendingEditorWork = useCallback(() => {
+    let resolvePendingWork: () => void = () => undefined;
+    let completed = false;
+    const settled = new Promise<void>((resolve) => {
+      resolvePendingWork = resolve;
+    });
+    pendingEditorWorkPromises.current.add(settled);
+    pendingEditorWork.current += 1;
+    setSaveState((current) =>
+      current.phase === "error"
+        ? current
+        : current.phase === "saving"
+          ? current
+          : { phase: "saving" }
+    );
+    return () => {
+      if (completed) return;
+      completed = true;
+      pendingEditorWorkPromises.current.delete(settled);
+      resolvePendingWork();
+      markPendingEditorWorkComplete();
+    };
+  }, [markPendingEditorWorkComplete]);
+  const waitForPendingEditorWork = useCallback(async () => {
+    while (pendingEditorWorkPromises.current.size > 0) {
+      await Promise.all([...pendingEditorWorkPromises.current]);
+    }
+  }, []);
+  const trackPendingEditorWork = useCallback(
+    <T,>(operation: Promise<T>) => {
+      const complete = beginPendingEditorWork();
+      void operation.then(complete, complete);
+      return operation;
+    },
+    [beginPendingEditorWork]
+  );
   const initialProjectImports = useRef({
     imports: project.uploads,
     updatedAt: project.updatedAt
@@ -929,6 +1007,7 @@ export function EditorProvider({
         originalOpacity: number;
         activated: boolean;
         pendingAdd?: Promise<void>;
+        pendingWorkComplete?: () => void;
       }
     | undefined
   >(undefined);
@@ -1047,11 +1126,22 @@ export function EditorProvider({
           thumbnail: undefined
         };
         await onProjectChange(next);
-        latestProject.current = next;
+        const isLatestRevision = revision === saveRevision.current && !pendingSnapshot.current;
+        if (isLatestRevision) {
+          latestProject.current = next;
+        }
         savedRevision.current = Math.max(savedRevision.current, revision);
-        lastSaveError.current = undefined;
+        if (isLatestRevision && pendingEditorWork.current === 0) {
+          lastSaveError.current = undefined;
+          setSaveState({ phase: "saved" });
+        } else {
+          setSaveState((current) => (current.phase === "saving" ? current : { phase: "saving" }));
+        }
       } catch (reason) {
-        lastSaveError.current = reason;
+        if (revision === saveRevision.current) {
+          lastSaveError.current = reason;
+          setSaveState({ phase: "error", error: normalizeProjectSaveError(reason) });
+        }
         throw reason;
       }
     },
@@ -1061,20 +1151,23 @@ export function EditorProvider({
   const refreshThumbnail = useCallback(async () => {
     if (!canvas) return;
     try {
+      const projectRevision = latestProject.current.updatedAt;
+      const revision = saveRevision.current;
       const thumbnail = createVectorThumbnail(
         canvas,
         latestCanvasSettings.current,
-        latestProject.current.updatedAt
+        projectRevision
       );
-      const next = { ...latestProject.current, thumbnail };
-      await onProjectChange(next);
-      latestProject.current = next;
+      const next = await saveProjectThumbnail(latestProject.current.id, projectRevision, thumbnail);
+      if (next?.updatedAt === projectRevision && revision === saveRevision.current) {
+        latestProject.current = next;
+      }
     } catch (reason) {
       // A preview is derived and optional. Never discard or block navigation
       // after the actual project snapshot has already been saved.
       console.warn("Project preview could not be refreshed; project data is saved.", reason);
     }
-  }, [canvas, onProjectChange]);
+  }, [canvas]);
 
   const enqueuePendingSave = useCallback(() => {
     const pending = pendingSnapshot.current;
@@ -1091,20 +1184,76 @@ export function EditorProvider({
     return operation;
   }, [saveSnapshot]);
 
+  const persist = useCallback(
+    (snapshot?: string) => {
+      const revision = saveRevision.current + 1;
+      saveRevision.current = revision;
+      const snapshotToSave =
+        snapshot ??
+        (canvas && canvasReadyRef.current
+          ? serialize()
+          : JSON.stringify(initialProjectObjects.current));
+      pendingSnapshot.current = { snapshot: snapshotToSave, revision };
+      setSaveState((current) => (current.phase === "saving" ? current : { phase: "saving" }));
+      void enqueuePendingSave().catch(() => undefined);
+    },
+    [canvas, enqueuePendingSave, serialize]
+  );
+
+  const flushPendingTitle = useCallback(() => {
+    const pending = pendingTitlePersistence.current;
+    if (!pending) return;
+    window.clearTimeout(pending.timer);
+    pendingTitlePersistence.current = null;
+    try {
+      persist();
+    } finally {
+      pending.complete();
+    }
+  }, [persist]);
+
   const flushSave = useCallback(async () => {
     // A toolbar click can follow a library click before its SVG has finished
     // parsing. Treat that insertion as part of the action being flushed.
+    flushPendingTitle();
     await Promise.all([assetInsertQueue.current, importQueue.current]);
-    await saveQueue.current;
-    if (pendingSnapshot.current) {
-      await enqueuePendingSave().catch(() => undefined);
+    await waitForPendingEditorWork();
+    while (true) {
       await saveQueue.current;
+      if (!pendingSnapshot.current) break;
+      try {
+        await enqueuePendingSave();
+      } catch {
+        // The failed latest snapshot is requeued by enqueuePendingSave so the
+        // explicit Retry action can attempt it again without spinning here.
+        break;
+      }
     }
-    if (savedRevision.current < saveRevision.current && lastSaveError.current) {
-      throw lastSaveError.current;
+    if (
+      hasUnsavedProjectRevision(
+        saveRevision.current,
+        savedRevision.current,
+        Boolean(pendingSnapshot.current)
+      )
+    ) {
+      throw lastSaveError.current ?? new Error("The latest project revision was not saved.");
     }
     await refreshThumbnail();
-  }, [enqueuePendingSave, refreshThumbnail]);
+  }, [enqueuePendingSave, flushPendingTitle, refreshThumbnail, waitForPendingEditorWork]);
+
+  const retrySave = useCallback(() => {
+    if (
+      !hasUnsavedProjectRevision(
+        saveRevision.current,
+        savedRevision.current,
+        Boolean(pendingSnapshot.current)
+      )
+    ) {
+      return;
+    }
+    setSaveState((current) => (current.phase === "saving" ? current : { phase: "saving" }));
+    void enqueuePendingSave().catch(() => undefined);
+  }, [enqueuePendingSave]);
 
   const requestExit = useCallback(() => {
     if (exitPending.current) return;
@@ -1116,16 +1265,22 @@ export function EditorProvider({
       });
   }, [flushSave, onRequestExit]);
 
-  const persist = useCallback(
-    (snapshot?: string) => {
-      if (!canvas) return;
-      const revision = saveRevision.current + 1;
-      saveRevision.current = revision;
-      pendingSnapshot.current = { snapshot: snapshot ?? serialize(), revision };
-      void enqueuePendingSave().catch(() => undefined);
-    },
-    [canvas, enqueuePendingSave, serialize]
-  );
+  useEffect(() => {
+    const onBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (!hasPendingNavigationWork()) {
+        return;
+      }
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [hasPendingNavigationWork]);
+
+  useEffect(() => {
+    onNavigationGuardChange(guardNavigation);
+    return () => onNavigationGuardChange(null);
+  }, [guardNavigation, onNavigationGuardChange]);
 
   const commit = useCallback(
     (label = "Change") => {
@@ -1168,6 +1323,7 @@ export function EditorProvider({
       });
       instance.setDimensions({ width: project.canvas.width, height: project.canvas.height });
       instance.backgroundColor = project.canvas.transparent ? "" : project.canvas.background;
+      canvasReadyRef.current = false;
       setCanvasReady(false);
       instance.loadFromJSON(project.objects).then(async () => {
         await restoreBundledSvgBlendModes(instance.getObjects());
@@ -1179,6 +1335,7 @@ export function EditorProvider({
         history.current = [initial];
         historyIndex.current = 0;
         updateHistoryState();
+        canvasReadyRef.current = true;
         setCanvasReady(true);
       });
       setCanvas(instance);
@@ -1584,6 +1741,7 @@ export function EditorProvider({
       session.activated = true;
       target.set("opacity", Math.min(session.originalOpacity, DRAG_DUPLICATE_OPACITY));
       target.dirty = true;
+      session.pendingWorkComplete = beginPendingEditorWork();
       session.pendingAdd = addDragDuplicate(session);
       canvas.requestRenderAll();
     };
@@ -1608,6 +1766,10 @@ export function EditorProvider({
           ? dragDuplicate.current
           : undefined;
       if (duplicateSession) restoreDragDuplicateOpacity(duplicateSession);
+      const completeTextWork =
+        !duplicateSession && changed instanceof IText && "fonts" in document
+          ? beginPendingEditorWork()
+          : undefined;
       const finish = () => {
         if (changed instanceof IText) {
           cache.clearFontCache(changed.fontFamily);
@@ -1623,6 +1785,9 @@ export function EditorProvider({
         else cancelScheduledConnectorRefresh();
         canvas.requestRenderAll();
         commit(duplicateSession ? "Duplicate drag" : "Transform");
+        completeTextWork?.();
+        duplicateSession?.pendingWorkComplete?.();
+        if (duplicateSession) duplicateSession.pendingWorkComplete = undefined;
       };
       const finishAfterFonts = () => {
         if (!(changed instanceof IText) || !("fonts" in document)) {
@@ -1835,31 +2000,45 @@ export function EditorProvider({
       canvas.upperCanvasEl.removeEventListener("contextmenu", suppressModifierContextMenu, true);
       cancelScheduledConnectorRefresh();
       void enqueuePendingSave();
+      canvasReadyRef.current = false;
       setCanvasReady(false);
       canvas.dispose();
       setCanvas(null);
     };
-  }, [canvas, closeGroupEdit, commit, enqueuePendingSave, refreshConnectors, setEditingGroupPath]);
+  }, [
+    beginPendingEditorWork,
+    canvas,
+    closeGroupEdit,
+    commit,
+    enqueuePendingSave,
+    refreshConnectors,
+    setEditingGroupPath
+  ]);
 
   const restoreAt = useCallback(
     async (index: number) => {
       if (!canvas || !history.current[index]) return;
+      const complete = beginPendingEditorWork();
       restoring.current = true;
-      await canvas.loadFromJSON(history.current[index]);
-      assignSceneIdentities(canvas.getObjects());
-      configureCanvasAssets(canvas.getObjects());
-      assertUniqueSceneObjectIds(canvas);
-      refreshConnectors();
-      canvas.requestRenderAll();
-      historyIndex.current = index;
-      const repairedSnapshot = serialize();
-      history.current[index] = repairedSnapshot;
-      setSelection([]);
-      updateHistoryState();
-      restoring.current = false;
-      persist(repairedSnapshot);
+      try {
+        await canvas.loadFromJSON(history.current[index]);
+        assignSceneIdentities(canvas.getObjects());
+        configureCanvasAssets(canvas.getObjects());
+        assertUniqueSceneObjectIds(canvas);
+        refreshConnectors();
+        canvas.requestRenderAll();
+        historyIndex.current = index;
+        const repairedSnapshot = serialize();
+        history.current[index] = repairedSnapshot;
+        setSelection([]);
+        updateHistoryState();
+        persist(repairedSnapshot);
+      } finally {
+        restoring.current = false;
+        complete();
+      }
     },
-    [canvas, persist, refreshConnectors, serialize, updateHistoryState]
+    [beginPendingEditorWork, canvas, persist, refreshConnectors, serialize, updateHistoryState]
   );
 
   const undo = useCallback(() => {
@@ -2322,88 +2501,94 @@ export function EditorProvider({
 
   const addAsset = useCallback(
     (family: AssetFamily, variant: AssetVariant, point?: Point) => {
-      const operation = assetInsertQueue.current.then(async () => {
-        if (!canvas) return;
-        const group = await createBundledAssetGroup(family, variant);
-        const scale = assetInsertionScale(family.title, group.width || 1, group.height || 1);
-        group.scale(scale);
-        addObject(group, family.title, "nih-asset", point);
-      });
+      const operation = trackPendingEditorWork(
+        assetInsertQueue.current.then(async () => {
+          if (!canvas) return;
+          const group = await createBundledAssetGroup(family, variant);
+          const scale = assetInsertionScale(family.title, group.width || 1, group.height || 1);
+          group.scale(scale);
+          addObject(group, family.title, "nih-asset", point);
+        })
+      );
       assetInsertQueue.current = operation.catch(() => undefined);
       return operation;
     },
-    [addObject, canvas]
+    [addObject, canvas, trackPendingEditorWork]
   );
 
   const addTemplate = useCallback(
     (template: AssetTemplate, point?: Point) => {
-      const operation = assetInsertQueue.current.then(async () => {
-        if (!canvas) return;
-        const [object] = (await util.enlivenObjects([
-          structuredClone(template.object)
-        ])) as FabricObject[];
-        if (!object) return;
-        assignFreshCloneIds(object);
-        configureCanvasAssets([object]);
-        addObject(object, template.name, "group", point);
-      });
+      const operation = trackPendingEditorWork(
+        assetInsertQueue.current.then(async () => {
+          if (!canvas) return;
+          const [object] = (await util.enlivenObjects([
+            structuredClone(template.object)
+          ])) as FabricObject[];
+          if (!object) return;
+          assignFreshCloneIds(object);
+          configureCanvasAssets([object]);
+          addObject(object, template.name, "group", point);
+        })
+      );
       assetInsertQueue.current = operation.catch(() => undefined);
       return operation;
     },
-    [addObject, canvas]
+    [addObject, canvas, trackPendingEditorWork]
   );
 
   const setAssetVariant = useCallback(
     (variantId: string) => {
-      const operation = assetInsertQueue.current.then(async () => {
-        if (!canvas) return;
-        const current = canvas.getActiveObject();
-        if (!(current instanceof Group) || !current.familyId || current.assetId === variantId)
-          return;
-        const { assetManifest } = await loadAssetManifest();
-        const family = assetManifest.families.find(
-          (candidate) => candidate.familyId === current.familyId
-        );
-        const variant = family?.variants.find((candidate) => candidate.id === variantId);
-        if (!family || !variant) return;
+      const operation = trackPendingEditorWork(
+        assetInsertQueue.current.then(async () => {
+          if (!canvas) return;
+          const current = canvas.getActiveObject();
+          if (!(current instanceof Group) || !current.familyId || current.assetId === variantId)
+            return;
+          const { assetManifest } = await loadAssetManifest();
+          const family = assetManifest.families.find(
+            (candidate) => candidate.familyId === current.familyId
+          );
+          const variant = family?.variants.find((candidate) => candidate.id === variantId);
+          if (!family || !variant) return;
 
-        const replacement = await createBundledAssetGroup(family, variant);
-        if (!canvas.getObjects().includes(current)) return;
-        const center = current.getCenterPoint();
-        const renderedMaxSide = Math.max(current.getScaledWidth(), current.getScaledHeight());
-        const replacementMaxSide = Math.max(replacement.width || 1, replacement.height || 1);
-        const scale = renderedMaxSide / replacementMaxSide;
-        replacement.set({
-          objectId: current.objectId,
-          name: current.name ?? family.title,
-          OpenSketchType: "nih-asset",
-          scaleX: scale,
-          scaleY: scale,
-          angle: current.angle,
-          flipX: current.flipX,
-          flipY: current.flipY,
-          opacity: current.opacity,
-          visible: current.visible,
-          selectable: current.selectable,
-          evented: current.evented
-        });
-        replacement.setPositionByOrigin(center, "center", "center");
-        replacement.setCoords();
-        assignSceneIdentities(replacement);
+          const replacement = await createBundledAssetGroup(family, variant);
+          if (!canvas.getObjects().includes(current)) return;
+          const center = current.getCenterPoint();
+          const renderedMaxSide = Math.max(current.getScaledWidth(), current.getScaledHeight());
+          const replacementMaxSide = Math.max(replacement.width || 1, replacement.height || 1);
+          const scale = renderedMaxSide / replacementMaxSide;
+          replacement.set({
+            objectId: current.objectId,
+            name: current.name ?? family.title,
+            OpenSketchType: "nih-asset",
+            scaleX: scale,
+            scaleY: scale,
+            angle: current.angle,
+            flipX: current.flipX,
+            flipY: current.flipY,
+            opacity: current.opacity,
+            visible: current.visible,
+            selectable: current.selectable,
+            evented: current.evented
+          });
+          replacement.setPositionByOrigin(center, "center", "center");
+          replacement.setCoords();
+          assignSceneIdentities(replacement);
 
-        const index = canvas.getObjects().indexOf(current);
-        canvas.remove(current);
-        canvas.insertAt(index, replacement);
-        canvas.setActiveObject(replacement);
-        setSelection([replacement]);
-        if (replacement.objectId) refreshConnectors(replacement.objectId);
-        canvas.requestRenderAll();
-        commit("Change asset variant");
-      });
+          const index = canvas.getObjects().indexOf(current);
+          canvas.remove(current);
+          canvas.insertAt(index, replacement);
+          canvas.setActiveObject(replacement);
+          setSelection([replacement]);
+          if (replacement.objectId) refreshConnectors(replacement.objectId);
+          canvas.requestRenderAll();
+          commit("Change asset variant");
+        })
+      );
       assetInsertQueue.current = operation.catch(() => undefined);
       return operation;
     },
-    [canvas, commit, refreshConnectors]
+    [canvas, commit, refreshConnectors, trackPendingEditorWork]
   );
 
   const placeImportedMedia = useCallback(
@@ -2453,60 +2638,64 @@ export function EditorProvider({
 
   const addImportedMedia = useCallback(
     (media: ImportedMediaRecord, point?: Point) => {
-      const operation = importQueue.current.then(async () => {
-        await placeImportedMedia(media, point);
-      });
+      const operation = trackPendingEditorWork(
+        importQueue.current.then(async () => {
+          await placeImportedMedia(media, point);
+        })
+      );
       importQueue.current = operation.catch(() => undefined);
       return operation;
     },
-    [placeImportedMedia]
+    [placeImportedMedia, trackPendingEditorWork]
   );
 
   const importMedia = useCallback(
     (file: File, point?: Point) => {
-      const operation = importQueue.current.then(async () => {
-        const extension = file.name.toLowerCase().split(".").at(-1);
-        const inferredMimeType =
-          extension === "svg"
-            ? "image/svg+xml"
-            : extension === "jpg" || extension === "jpeg"
-              ? "image/jpeg"
-              : extension === "png"
-                ? "image/png"
-                : extension === "webp"
-                  ? "image/webp"
-                  : file.type;
-        if (
-          !["image/svg+xml", "image/png", "image/jpeg", "image/webp"].includes(inferredMimeType)
-        ) {
-          throw new Error("Choose an SVG, PNG, JPEG, or WebP image.");
-        }
-        if (file.size > 25 * 1024 * 1024) {
-          throw new Error("Images must be 25 MB or smaller.");
-        }
-        const importId = crypto.randomUUID();
-        let dataUrl = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(String(reader.result));
-          reader.onerror = () => reject(reader.error);
-          reader.readAsDataURL(file);
-        });
-        if (inferredMimeType === "image/svg+xml") {
-          const source = sanitizeImportedSvg(await file.text(), `import-${importId}`);
-          dataUrl = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(source)))}`;
-        }
-        const media: ImportedMediaRecord = {
-          id: importId,
-          name: file.name,
-          mimeType: inferredMimeType,
-          dataUrl
-        };
-        return placeImportedMedia(media, point);
-      });
+      const operation = trackPendingEditorWork(
+        importQueue.current.then(async () => {
+          const extension = file.name.toLowerCase().split(".").at(-1);
+          const inferredMimeType =
+            extension === "svg"
+              ? "image/svg+xml"
+              : extension === "jpg" || extension === "jpeg"
+                ? "image/jpeg"
+                : extension === "png"
+                  ? "image/png"
+                  : extension === "webp"
+                    ? "image/webp"
+                    : file.type;
+          if (
+            !["image/svg+xml", "image/png", "image/jpeg", "image/webp"].includes(inferredMimeType)
+          ) {
+            throw new Error("Choose an SVG, PNG, JPEG, or WebP image.");
+          }
+          if (file.size > 25 * 1024 * 1024) {
+            throw new Error("Images must be 25 MB or smaller.");
+          }
+          const importId = crypto.randomUUID();
+          let dataUrl = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(String(reader.result));
+            reader.onerror = () => reject(reader.error);
+            reader.readAsDataURL(file);
+          });
+          if (inferredMimeType === "image/svg+xml") {
+            const source = sanitizeImportedSvg(await file.text(), `import-${importId}`);
+            dataUrl = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(source)))}`;
+          }
+          const media: ImportedMediaRecord = {
+            id: importId,
+            name: file.name,
+            mimeType: inferredMimeType,
+            dataUrl
+          };
+          return placeImportedMedia(media, point);
+        })
+      );
       importQueue.current = operation.then(() => undefined).catch(() => undefined);
       return operation;
     },
-    [placeImportedMedia]
+    [placeImportedMedia, trackPendingEditorWork]
   );
 
   const selectParentAsset = useCallback(() => {
@@ -2622,40 +2811,45 @@ export function EditorProvider({
 
   const duplicateSelection = useCallback(async () => {
     if (!canvas) return;
-    const selectedObjects = canvas.getActiveObjects();
-    const clones = await Promise.all(selectedObjects.map((object) => object.clone()));
-    configureCanvasAssets(clones);
-    const nestedParent = editableAssetParent(selectedObjects[0]);
-    if (
-      nestedParent &&
-      selectedObjects.every((object) => editableAssetParent(object) === nestedParent)
-    ) {
+    const complete = beginPendingEditorWork();
+    try {
+      const selectedObjects = canvas.getActiveObjects();
+      const clones = await Promise.all(selectedObjects.map((object) => object.clone()));
+      configureCanvasAssets(clones);
+      const nestedParent = editableAssetParent(selectedObjects[0]);
+      if (
+        nestedParent &&
+        selectedObjects.every((object) => editableAssetParent(object) === nestedParent)
+      ) {
+        assignFreshCloneIds(clones);
+        clones.forEach((clone) => {
+          clone.set({ left: (clone.left ?? 0) + 12, top: (clone.top ?? 0) + 12 });
+          clone.name = `${selectedObjects[0].name ?? "Part"} copy`;
+          clone.OpenSketchType = "svg-part";
+          nestedParent.add(clone);
+        });
+        nestedParent.triggerLayout();
+        nestedParent.dirty = true;
+        canvas.setActiveObject(clones[0]);
+        setSelection([clones[0]]);
+        canvas.requestRenderAll();
+        commit("Duplicate SVG part");
+        return;
+      }
       assignFreshCloneIds(clones);
       clones.forEach((clone) => {
-        clone.set({ left: (clone.left ?? 0) + 12, top: (clone.top ?? 0) + 12 });
-        clone.name = `${selectedObjects[0].name ?? "Part"} copy`;
-        clone.OpenSketchType = "svg-part";
-        nestedParent.add(clone);
+        clone.set({ left: (clone.left ?? 0) + 28, top: (clone.top ?? 0) + 28 });
+        canvas.add(clone);
       });
-      nestedParent.triggerLayout();
-      nestedParent.dirty = true;
-      canvas.setActiveObject(clones[0]);
-      setSelection([clones[0]]);
+      const active = clones.length === 1 ? clones[0] : new ActiveSelection(clones, { canvas });
+      canvas.setActiveObject(active);
+      setSelection(clones);
       canvas.requestRenderAll();
-      commit("Duplicate SVG part");
-      return;
+      commit("Duplicate");
+    } finally {
+      complete();
     }
-    assignFreshCloneIds(clones);
-    clones.forEach((clone) => {
-      clone.set({ left: (clone.left ?? 0) + 28, top: (clone.top ?? 0) + 28 });
-      canvas.add(clone);
-    });
-    const active = clones.length === 1 ? clones[0] : new ActiveSelection(clones, { canvas });
-    canvas.setActiveObject(active);
-    setSelection(clones);
-    canvas.requestRenderAll();
-    commit("Duplicate");
-  }, [canvas, commit]);
+  }, [beginPendingEditorWork, canvas, commit]);
 
   const copySelectionToClipboard = useCallback(
     async (format: SelectionClipboardFormat = "png", cut = false) => {
@@ -2664,59 +2858,67 @@ export function EditorProvider({
       const selectedObjects = canvas.getActiveObjects();
       if (!activeObject || selectedObjects.length === 0) return;
 
-      const marker = `${SELECTION_CLIPBOARD_MARKER_PREFIX}${crypto.randomUUID()}`;
-      clipboardMarker.current = marker;
-      const systemWrite = writeSelectionToSystemClipboard(activeObject, format, marker).catch(
-        (error: unknown) => {
-          console.warn(`Could not copy the selection as ${format.toUpperCase()}.`, error);
-        }
-      );
-      const internalCopy = Promise.all(selectedObjects.map((object) => object.clone())).then(
-        (clones) => {
-          clipboard.current = clones;
-        }
-      );
-      pendingClipboardCopy.current = internalCopy;
+      const complete = cut ? beginPendingEditorWork() : undefined;
+      let internalCopy: Promise<void> | undefined;
       try {
+        const marker = `${SELECTION_CLIPBOARD_MARKER_PREFIX}${crypto.randomUUID()}`;
+        clipboardMarker.current = marker;
+        const systemWrite = writeSelectionToSystemClipboard(activeObject, format, marker).catch(
+          (error: unknown) => {
+            console.warn(`Could not copy the selection as ${format.toUpperCase()}.`, error);
+          }
+        );
+        internalCopy = Promise.all(selectedObjects.map((object) => object.clone())).then(
+          (clones) => {
+            clipboard.current = clones;
+          }
+        );
+        pendingClipboardCopy.current = internalCopy ?? null;
         await Promise.all([internalCopy, systemWrite]);
+        if (cut) deleteSelection();
       } finally {
         if (pendingClipboardCopy.current === internalCopy) {
           pendingClipboardCopy.current = null;
         }
+        complete?.();
       }
-      if (cut) deleteSelection();
     },
-    [canvas, deleteSelection]
+    [beginPendingEditorWork, canvas, deleteSelection]
   );
 
   const pasteSelection = useCallback(async () => {
     if (!canvas) return;
-    await pendingClipboardCopy.current;
-    if (clipboard.current.length === 0) return;
-    const [clones, nextClipboard] = await Promise.all([
-      Promise.all(clipboard.current.map((object) => object.clone())),
-      Promise.all(clipboard.current.map((object) => object.clone()))
-    ]);
-    configureCanvasAssets(clones);
-    assignFreshCloneIds(clones);
-    clones.forEach((clone) => {
-      clone.set({
-        left: (clone.left ?? 0) + 24,
-        top: (clone.top ?? 0) + 24
+    const complete = beginPendingEditorWork();
+    try {
+      await pendingClipboardCopy.current;
+      if (clipboard.current.length === 0) return;
+      const [clones, nextClipboard] = await Promise.all([
+        Promise.all(clipboard.current.map((object) => object.clone())),
+        Promise.all(clipboard.current.map((object) => object.clone()))
+      ]);
+      configureCanvasAssets(clones);
+      assignFreshCloneIds(clones);
+      clones.forEach((clone) => {
+        clone.set({
+          left: (clone.left ?? 0) + 24,
+          top: (clone.top ?? 0) + 24
+        });
+        canvas.add(clone);
       });
-      canvas.add(clone);
-    });
-    nextClipboard.forEach((clone) => {
-      clone.set({ left: (clone.left ?? 0) + 24, top: (clone.top ?? 0) + 24 });
-    });
-    clipboard.current = nextClipboard;
-    canvas.setActiveObject(
-      clones.length === 1 ? clones[0] : new ActiveSelection(clones, { canvas })
-    );
-    setSelection(clones);
-    canvas.requestRenderAll();
-    commit("Paste");
-  }, [canvas, commit]);
+      nextClipboard.forEach((clone) => {
+        clone.set({ left: (clone.left ?? 0) + 24, top: (clone.top ?? 0) + 24 });
+      });
+      clipboard.current = nextClipboard;
+      canvas.setActiveObject(
+        clones.length === 1 ? clones[0] : new ActiveSelection(clones, { canvas })
+      );
+      setSelection(clones);
+      canvas.requestRenderAll();
+      commit("Paste");
+    } finally {
+      complete();
+    }
+  }, [beginPendingEditorWork, canvas, commit]);
 
   const groupSelection = useCallback(() => {
     if (!canvas || !(canvas.getActiveObject() instanceof ActiveSelection)) return;
@@ -3104,28 +3306,30 @@ export function EditorProvider({
       if (!(object instanceof Group) || !object.familyId) return;
       const preset = ASSET_COLOR_PRESETS.find((item) => item.id === presetId);
       if (!preset) return;
-      void loadAssetManifest()
-        .then(({ assetManifest }) => {
-          const family = assetManifest.families.find((item) => item.familyId === object.familyId);
-          const profile = family ? colorProfileForFamily(family) : undefined;
-          if (
-            !profile ||
-            !canvas ||
-            !canvas.getObjects().includes(object) ||
-            canvas.getActiveObject() !== object
-          ) {
-            return;
-          }
-          const mapping = presetColorMap(originalPaints(object), profile, preset);
-          restoreOriginalColors(object);
-          applyPresetColors(object, mapping, preset.id);
-          canvas.requestRenderAll();
-          setSelection([...canvas.getActiveObjects()]);
-          commit("Apply color preset");
-        })
-        .catch(() => undefined);
+      void trackPendingEditorWork(
+        loadAssetManifest()
+          .then(({ assetManifest }) => {
+            const family = assetManifest.families.find((item) => item.familyId === object.familyId);
+            const profile = family ? colorProfileForFamily(family) : undefined;
+            if (
+              !profile ||
+              !canvas ||
+              !canvas.getObjects().includes(object) ||
+              canvas.getActiveObject() !== object
+            ) {
+              return;
+            }
+            const mapping = presetColorMap(originalPaints(object), profile, preset);
+            restoreOriginalColors(object);
+            applyPresetColors(object, mapping, preset.id);
+            canvas.requestRenderAll();
+            setSelection([...canvas.getActiveObjects()]);
+            commit("Apply color preset");
+          })
+          .catch(() => undefined)
+      );
     },
-    [canvas, commit, selection]
+    [canvas, commit, selection, trackPendingEditorWork]
   );
   const resetColors = useCallback(() => {
     if (!canvas) return;
@@ -3209,10 +3413,28 @@ export function EditorProvider({
 
   const setProjectName = useCallback(
     (name: string) => {
-      latestProject.current = { ...latestProject.current, name };
-      persist();
+      latestProject.current = {
+        ...latestProject.current,
+        name: name.trim() || "Untitled figure"
+      };
+      saveRevision.current += 1;
+      const pending = pendingTitlePersistence.current ?? {
+        timer: 0,
+        complete: beginPendingEditorWork()
+      };
+      pendingTitlePersistence.current = pending;
+      window.clearTimeout(pending.timer);
+      pending.timer = window.setTimeout(() => {
+        if (pendingTitlePersistence.current !== pending) return;
+        pendingTitlePersistence.current = null;
+        try {
+          persist();
+        } finally {
+          pending.complete();
+        }
+      }, TITLE_PERSISTENCE_DELAY_MS);
     },
-    [persist]
+    [beginPendingEditorWork, persist]
   );
   const setProjectDescription = useCallback(
     (description: string) => {
@@ -3222,6 +3444,22 @@ export function EditorProvider({
     },
     [persist]
   );
+
+  const exportProject = useCallback(async () => {
+    flushPendingTitle();
+    await waitForPendingEditorWork();
+    const snapshot =
+      canvas && canvasReady ? serialize() : JSON.stringify(initialProjectObjects.current);
+    const objects = JSON.parse(snapshot) as Record<string, unknown>;
+    downloadProject({
+      ...latestProject.current,
+      updatedAt: new Date().toISOString(),
+      canvas: latestCanvasSettings.current,
+      objects,
+      usedAssetIds: assetIdsFromSnapshot(objects),
+      thumbnail: undefined
+    });
+  }, [canvas, canvasReady, flushPendingTitle, serialize, waitForPendingEditorWork]);
 
   const buildSvg = useCallback(
     (title = latestProject.current.name, description = latestProject.current.description ?? "") => {
@@ -3496,6 +3734,7 @@ export function EditorProvider({
     canvas,
     canvasSettings.height,
     canvasSettings.width,
+    beginPendingEditorWork,
     commit,
     copySelectionToClipboard,
     creationTool,
@@ -3537,7 +3776,10 @@ export function EditorProvider({
       setProjectDescription,
       selectParentAsset,
       closeGroupEdit,
+      saveState,
+      retrySave,
       flushSave,
+      exportProject,
       creationTool,
       creationDefaults,
       setCreationTool,
@@ -3633,7 +3875,10 @@ export function EditorProvider({
       setProjectDescription,
       selectParentAsset,
       closeGroupEdit,
+      saveState,
+      retrySave,
       flushSave,
+      exportProject,
       setZoom,
       undo,
       ungroupSelection,

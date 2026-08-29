@@ -397,6 +397,35 @@ html[data-theme] :is(.ui-select-menu, .asset-variant-menu) button:focus-visible 
   background: var(--shell-border);
 }
 
+.opensketch-app .project-save-status--saved {
+  color: var(--shell-accent-strong);
+}
+
+.opensketch-app .project-save-status--saving {
+  color: var(--shell-muted);
+}
+
+.opensketch-app .project-save-status--error {
+  border-color: color-mix(in srgb, var(--shell-danger) 46%, var(--shell-border));
+  color: var(--shell-danger);
+  background: color-mix(in srgb, var(--shell-danger) 10%, var(--shell-card));
+}
+
+.opensketch-app .project-save-status-action {
+  border-color: color-mix(in srgb, var(--shell-danger) 42%, var(--shell-border));
+  color: var(--shell-danger);
+  background: var(--shell-card);
+}
+
+.opensketch-app .project-save-status-action:hover {
+  border-color: var(--shell-danger);
+  background: color-mix(in srgb, var(--shell-danger) 14%, var(--shell-card));
+}
+
+.opensketch-app .project-save-status-details {
+  color: var(--shell-muted);
+}
+
 .opensketch-app .document-title {
   color: var(--shell-text);
   font-size: 13px;

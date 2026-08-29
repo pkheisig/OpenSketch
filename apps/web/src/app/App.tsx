@@ -27,6 +27,7 @@ const EditorStudio = lazy(() =>
 );
 
 const PROJECT_HISTORY_KEY = "OpenSketchProjectId";
+const PROJECT_HISTORY_INDEX_KEY = "OpenSketchHistoryIndex";
 const THEME_STORAGE_KEY = "OpenSketch-theme";
 
 type Theme = "light" | "dark";
@@ -42,6 +43,22 @@ function readTheme(): Theme {
 function historyProjectId() {
   const state = window.history.state as Record<string, unknown> | null;
   return typeof state?.[PROJECT_HISTORY_KEY] === "string" ? state[PROJECT_HISTORY_KEY] : null;
+}
+
+function historyEntryIndex() {
+  const navigation = (
+    window as Window & {
+      navigation?: { currentEntry?: { index?: unknown } | null };
+    }
+  ).navigation;
+  const browserIndex = navigation?.currentEntry?.index;
+  if (typeof browserIndex === "number" && Number.isInteger(browserIndex)) {
+    return browserIndex;
+  }
+
+  const state = window.history.state as Record<string, unknown> | null;
+  const index = state?.[PROJECT_HISTORY_INDEX_KEY];
+  return typeof index === "number" && Number.isInteger(index) ? index : null;
 }
 
 function identityRepairNotice(project: ProjectRecord, warnings: string[]): string {
@@ -68,6 +85,8 @@ export function App() {
   );
   const refreshRevision = useRef(0);
   const historySyncRevision = useRef(0);
+  const historyIndex = useRef<number | null>(null);
+  const historyNavigationGuard = useRef<(() => boolean) | null>(null);
 
   const toggleTheme = useCallback(() => {
     setTheme((current) => {
@@ -85,6 +104,20 @@ export function App() {
     document.documentElement.dataset.theme = theme;
     document.documentElement.style.colorScheme = theme;
   }, [theme]);
+
+  useEffect(() => {
+    const state =
+      window.history.state && typeof window.history.state === "object" ? window.history.state : {};
+    const index = historyEntryIndex() ?? 0;
+    if (historyEntryIndex() !== index) {
+      window.history.replaceState(
+        { ...state, [PROJECT_HISTORY_INDEX_KEY]: index },
+        "",
+        window.location.href
+      );
+    }
+    historyIndex.current = index;
+  }, []);
 
   const refresh = useCallback(async () => {
     const revision = ++refreshRevision.current;
@@ -180,6 +213,20 @@ export function App() {
     const syncViewToHistory = () => {
       const revision = ++historySyncRevision.current;
       const projectId = historyProjectId();
+      if (projectId !== current?.id && historyNavigationGuard.current?.()) {
+        window.dispatchEvent(new Event("opensketch:navigation-blocked"));
+        const destinationIndex = historyEntryIndex();
+        const currentIndex = historyIndex.current;
+        if (destinationIndex !== null && currentIndex !== null) {
+          const correction = currentIndex - destinationIndex;
+          if (correction !== 0) window.history.go(correction);
+        } else {
+          window.history.forward();
+        }
+        return;
+      }
+      const destinationIndex = historyEntryIndex();
+      if (destinationIndex !== null) historyIndex.current = destinationIndex;
       if (!projectId) {
         setCurrent(null);
         void refresh();
@@ -212,7 +259,7 @@ export function App() {
 
     window.addEventListener("popstate", syncViewToHistory);
     return () => window.removeEventListener("popstate", syncViewToHistory);
-  }, [refresh]);
+  }, [current?.id, refresh]);
 
   const openProject = useCallback((project: ProjectRecord) => {
     let loaded: ProjectRecord;
@@ -233,11 +280,17 @@ export function App() {
 
     const currentState =
       window.history.state && typeof window.history.state === "object" ? window.history.state : {};
+    const nextHistoryIndex = (historyEntryIndex() ?? historyIndex.current ?? 0) + 1;
     window.history.pushState(
-      { ...currentState, [PROJECT_HISTORY_KEY]: loaded.id },
+      {
+        ...currentState,
+        [PROJECT_HISTORY_KEY]: loaded.id,
+        [PROJECT_HISTORY_INDEX_KEY]: nextHistoryIndex
+      },
       "",
       window.location.href
     );
+    historyIndex.current = nextHistoryIndex;
   }, []);
 
   const returnToProjects = useCallback(() => {
@@ -262,6 +315,10 @@ export function App() {
 
   const updateProject = useCallback(async (project: ProjectRecord) => {
     await saveProject(project);
+  }, []);
+
+  const setHistoryNavigationGuard = useCallback((guard: (() => boolean) | null) => {
+    historyNavigationGuard.current = guard;
   }, []);
 
   if (loading) {
@@ -290,6 +347,7 @@ export function App() {
             project={current}
             onProjectChange={updateProject}
             onHome={returnToProjects}
+            onNavigationGuardChange={setHistoryNavigationGuard}
             theme={theme}
             onToggleTheme={toggleTheme}
           />

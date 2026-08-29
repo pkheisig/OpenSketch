@@ -386,6 +386,54 @@ test("clears the text tool when another sidebar section or the page is clicked",
   await expect(textTool).toHaveAttribute("aria-pressed", "false");
 });
 
+test("debounces focused title saves and keeps blank titles loadable", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  const title = page.getByLabel("Document title");
+
+  await page.evaluate(() => {
+    const originalPut = IDBObjectStore.prototype.put;
+    let projectPuts = 0;
+    Object.defineProperty(window, "__opensketchProjectPutCount", {
+      configurable: true,
+      get: () => projectPuts
+    });
+    IDBObjectStore.prototype.put = new Proxy(originalPut, {
+      apply(target, thisArg, args) {
+        if ((thisArg as IDBObjectStore).name === "projects") projectPuts += 1;
+        return Reflect.apply(target, thisArg, args);
+      }
+    });
+  });
+
+  await title.fill("");
+  await title.pressSequentially("Draft figure");
+  await expect(page.locator('[data-save-state="saving"]')).toBeVisible();
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
+  expect(
+    await page.evaluate(
+      () =>
+        (window as typeof window & { __opensketchProjectPutCount?: number })
+          .__opensketchProjectPutCount
+    )
+  ).toBe(1);
+
+  await title.fill("   ");
+  await expect(page.locator('[data-save-state="saving"]')).toBeVisible();
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
+  expect(
+    await page.evaluate(
+      () =>
+        (window as typeof window & { __opensketchProjectPutCount?: number })
+          .__opensketchProjectPutCount
+    )
+  ).toBe(2);
+
+  await page.reload();
+  await expect(page.locator(".editor-shell")).toBeVisible();
+  await expect(page.getByLabel("Document title")).toHaveValue("Untitled figure");
+});
+
 test("rotates an object by dragging its rotation handle", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
@@ -919,8 +967,12 @@ test("extends a free line from one endpoint without scaling both dimensions", as
         request.onerror = () => reject(request.error);
       });
       const project = await new Promise<Record<string, any> | null>((resolve, reject) => {
-        const request = database.transaction("projects", "readonly").objectStore("projects").get(projectId);
-        request.onsuccess = () => resolve((request.result as Record<string, any> | undefined) ?? null);
+        const request = database
+          .transaction("projects", "readonly")
+          .objectStore("projects")
+          .get(projectId);
+        request.onsuccess = () =>
+          resolve((request.result as Record<string, any> | undefined) ?? null);
         request.onerror = () => reject(request.error);
       });
       database.close();
@@ -4255,6 +4307,233 @@ test("saves an inserted SVG before immediately leaving the editor", async ({ pag
   await expect(
     page.locator(".layer-list button").filter({ hasText: "Dendritic Cell" })
   ).toHaveCount(1);
+});
+
+test("keeps the latest project edits recoverable when autosave fails", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
+
+  await page.evaluate(() => {
+    const originalPut = IDBObjectStore.prototype.put;
+    Object.defineProperty(window, "__opensketchOriginalProjectPut", {
+      configurable: true,
+      value: originalPut
+    });
+    IDBObjectStore.prototype.put = new Proxy(originalPut, {
+      apply(target, thisArg, args) {
+        if ((thisArg as IDBObjectStore).name === "projects") {
+          throw new DOMException("The project store is full", "QuotaExceededError");
+        }
+        return Reflect.apply(target, thisArg, args);
+      }
+    });
+  });
+
+  await placeTool(page, "Rectangle");
+  const errorStatus = page.locator('[data-save-state="error"]');
+  await expect(errorStatus).toBeVisible();
+  await expect(errorStatus).toContainText("browser storage is full");
+  await expect(errorStatus.getByRole("button", { name: "Retry save" })).toBeVisible();
+
+  const title = page.getByLabel("Document title");
+  await title.fill("Draft figure");
+  await expect(title).toHaveValue("Draft figure");
+  await expect(errorStatus).toBeVisible();
+
+  await page.getByRole("tab", { name: "Imports", exact: true }).click();
+  await page.evaluate(() => {
+    const originalRead = FileReader.prototype.readAsDataURL;
+    const target = window as typeof window & {
+      __opensketchOriginalReadAsDataURL?: typeof originalRead;
+    };
+    Object.defineProperty(target, "__opensketchOriginalReadAsDataURL", {
+      configurable: true,
+      value: originalRead
+    });
+    FileReader.prototype.readAsDataURL = function (this: FileReader, blob: Blob) {
+      window.setTimeout(() => originalRead.call(this, blob), 1200);
+    };
+  });
+  await page
+    .locator('input[type="file"][accept*="image/svg+xml"]')
+    .setInputFiles("tests/fixtures/nested-groups.svg");
+  await expect(errorStatus).toBeVisible();
+
+  const guarded = await page.evaluate(() => {
+    const event = new Event("beforeunload", { cancelable: true });
+    window.dispatchEvent(event);
+    return event.defaultPrevented;
+  });
+  expect(guarded).toBe(true);
+
+  await page.goBack();
+  await expect(page.locator(".editor-shell")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Projects" })).toHaveCount(0);
+
+  const recoveryDownload = page.waitForEvent("download");
+  await errorStatus.getByRole("button", { name: "Export recovery copy" }).click();
+  const recovery = await recoveryDownload;
+  expect(recovery.suggestedFilename()).toMatch(/draft-figure\.OpenSketch$/i);
+  const recoveryPath = await recovery.path();
+  expect(recoveryPath).not.toBeNull();
+  const recoveryProject = JSON.parse(await readFile(recoveryPath!, "utf8")) as {
+    name?: string;
+    objects?: { objects?: unknown[] };
+  };
+  expect(recoveryProject.name).toBe("Draft figure");
+  expect(recoveryProject.objects?.objects).toHaveLength(2);
+
+  await page.evaluate(() => {
+    const target = window as typeof window & {
+      __opensketchOriginalReadAsDataURL?: typeof FileReader.prototype.readAsDataURL;
+    };
+    const originalRead = target.__opensketchOriginalReadAsDataURL;
+    if (!originalRead) throw new Error("The original FileReader method was not captured.");
+    FileReader.prototype.readAsDataURL = originalRead;
+  });
+
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await expect(page.locator(".editor-shell")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Projects" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Back to projects" })).toBeEnabled();
+
+  await page.evaluate(() => {
+    const target = window as typeof window & {
+      __opensketchOriginalProjectPut?: typeof IDBObjectStore.prototype.put;
+    };
+    const originalPut = target.__opensketchOriginalProjectPut;
+    if (!originalPut) throw new Error("The original project save method was not captured.");
+    IDBObjectStore.prototype.put = originalPut;
+  });
+  await page.getByRole("button", { name: "Retry save" }).click();
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
+
+  const unguarded = await page.evaluate(() => {
+    const event = new Event("beforeunload", { cancelable: true });
+    window.dispatchEvent(event);
+    return event.defaultPrevented;
+  });
+  expect(unguarded).toBe(false);
+
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
+});
+
+test("restores the current history entry when legacy unsaved Forward traversal is blocked", async ({
+  page
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible({ timeout: 30_000 });
+
+  const currentProjectId = await page.evaluate(
+    () => (history.state as Record<string, string> | null)?.OpenSketchProjectId
+  );
+  const currentHistoryIndex = await page.evaluate(
+    () => (history.state as Record<string, number> | null)?.OpenSketchHistoryIndex
+  );
+  if (!currentProjectId || typeof currentHistoryIndex !== "number") {
+    throw new Error("The active project history entry was not initialized.");
+  }
+
+  await page.evaluate(() => {
+    const state = history.state as Record<string, unknown> | null;
+    const legacyState = { ...(state ?? {}) };
+    delete legacyState.OpenSketchHistoryIndex;
+    history.pushState(
+      {
+        ...legacyState,
+        OpenSketchProjectId: "forward-target"
+      },
+      "",
+      window.location.href
+    );
+  });
+  await page.goBack();
+  await expect(page.locator(".editor-shell")).toBeVisible();
+
+  await page.evaluate(() => {
+    const originalPut = IDBObjectStore.prototype.put;
+    const target = window as typeof window & {
+      __opensketchOriginalProjectPut?: typeof originalPut;
+    };
+    Object.defineProperty(target, "__opensketchOriginalProjectPut", {
+      configurable: true,
+      value: originalPut
+    });
+    IDBObjectStore.prototype.put = new Proxy(originalPut, {
+      apply(target, thisArg, args) {
+        if ((thisArg as IDBObjectStore).name === "projects") {
+          throw new DOMException("The project store is full", "QuotaExceededError");
+        }
+        return Reflect.apply(target, thisArg, args);
+      }
+    });
+  });
+
+  await placeTool(page, "Rectangle");
+  await expect(page.locator('[data-save-state="error"]')).toBeVisible();
+  await page.goForward();
+  await expect
+    .poll(() =>
+      page.evaluate(() => (history.state as Record<string, string> | null)?.OpenSketchProjectId)
+    )
+    .toBe(currentProjectId);
+  await expect(page.locator(".editor-shell")).toBeVisible();
+});
+
+test("guards browser exit while an image import is still processing", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Imports", exact: true }).click();
+
+  await page.evaluate(() => {
+    const originalRead = FileReader.prototype.readAsDataURL;
+    const target = window as typeof window & {
+      __opensketchOriginalReadAsDataURL?: typeof originalRead;
+    };
+    Object.defineProperty(target, "__opensketchOriginalReadAsDataURL", {
+      configurable: true,
+      value: originalRead
+    });
+    FileReader.prototype.readAsDataURL = function (this: FileReader, blob: Blob) {
+      window.setTimeout(() => originalRead.call(this, blob), 1200);
+    };
+  });
+
+  const importInput = page.locator('input[type="file"][accept*="image/svg+xml"]');
+  await importInput.setInputFiles("tests/fixtures/nested-groups.svg");
+  await importInput.setInputFiles("tests/fixtures/nested-groups.svg");
+  await expect(page.locator('[data-save-state="saving"]')).toBeVisible();
+
+  const guarded = await page.evaluate(() => {
+    const event = new Event("beforeunload", { cancelable: true });
+    window.dispatchEvent(event);
+    return event.defaultPrevented;
+  });
+  expect(guarded).toBe(true);
+
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+  await expect(page.locator('[data-save-state="saving"]')).toBeVisible();
+
+  await page.evaluate(() => {
+    const target = window as typeof window & {
+      __opensketchOriginalReadAsDataURL?: typeof FileReader.prototype.readAsDataURL;
+    };
+    const originalRead = target.__opensketchOriginalReadAsDataURL;
+    if (!originalRead) throw new Error("The original FileReader method was not captured.");
+    FileReader.prototype.readAsDataURL = originalRead;
+  });
+  await expect(page.locator(".layers-title small")).toHaveText("2");
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
+
+  const unguarded = await page.evaluate(() => {
+    const event = new Event("beforeunload", { cancelable: true });
+    window.dispatchEvent(event);
+    return event.defaultPrevented;
+  });
+  expect(unguarded).toBe(false);
 });
 
 test("exports an atomic SVG asset with its vector parts intact", async ({ page }) => {
