@@ -23,6 +23,7 @@ import {
   Polygon,
   Rect,
   StaticCanvas,
+  Text,
   Textbox,
   Triangle,
   cache,
@@ -645,7 +646,7 @@ async function waitForCanvasTextFonts(objects: FabricObject[]): Promise<void> {
   if (typeof document === "undefined" || !("fonts" in document)) return;
 
   const descriptors = new Map<string, { descriptor: string; texts: Set<string> }>();
-  const addStyles = (object: IText, styles: TextFontStyle) => {
+  const addStyles = (object: Text, styles: TextFontStyle) => {
     const families = fontFamilyCandidates(styles.fontFamily ?? object.fontFamily);
     const fontStyle = normalizePdfFontStyle(styles.fontStyle ?? "normal");
     const fontWeight = String(
@@ -664,7 +665,7 @@ async function waitForCanvasTextFonts(objects: FabricObject[]): Promise<void> {
     }
   };
   const visit = (object: FabricObject) => {
-    if (object instanceof IText) {
+    if (object instanceof Text) {
       addStyles(object, object);
       object._textLines.forEach((line, lineIndex) => {
         line.forEach((_grapheme, charIndex) => {

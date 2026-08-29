@@ -4142,6 +4142,56 @@ test("waits for the selected browser font before exporting PDF", async ({ page }
   expect(downloadedAt - exportStartedAt).toBeGreaterThanOrEqual(releaseDelayMs - 250);
 });
 
+test("waits for imported Fabric text fonts before exporting PDF", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Imports", exact: true }).click();
+
+  await page.evaluate(() => {
+    const calls: Array<{ descriptor: string; text: string }> = [];
+    const fontSet = document.fonts as FontFaceSet & {
+      __originalLoad?: FontFaceSet["load"];
+    };
+    const originalLoad = fontSet.load.bind(fontSet);
+    fontSet.__originalLoad = originalLoad;
+    fontSet.load = (descriptor: string, text?: string) => {
+      calls.push({ descriptor, text: text ?? "" });
+      return originalLoad(descriptor, text);
+    };
+    (window as typeof window & { __pdfFontLoadCalls?: typeof calls }).__pdfFontLoadCalls = calls;
+  });
+
+  await page.locator('input[type="file"][accept*="image/svg+xml"]').setInputFiles({
+    name: "imported-text.svg",
+    mimeType: "image/svg+xml",
+    buffer: Buffer.from(
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 240"><text x="12" y="40" font-family="Noto Serif">Imported Γ text</text></svg>'
+    )
+  });
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+
+  await page.getByRole("button", { name: "Export" }).click();
+  await page.getByRole("tab", { name: /PDF/ }).click();
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export PDF" }).click();
+  expect(await (await downloadPromise).path()).not.toBeNull();
+
+  const fontLoadCalls = await page.evaluate(() => {
+    const calls = (
+      window as typeof window & {
+        __pdfFontLoadCalls?: Array<{ descriptor: string; text: string }>;
+      }
+    ).__pdfFontLoadCalls;
+    return calls ?? [];
+  });
+  expect(fontLoadCalls).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({ descriptor: expect.stringContaining('"Noto Serif"') })
+    ])
+  );
+  expect(fontLoadCalls.some(({ text }) => text === "Imported Γ text")).toBe(true);
+});
+
 test("preloads every text payload used by a PDF font face", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();

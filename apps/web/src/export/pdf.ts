@@ -306,7 +306,10 @@ function cssPdfAlpha(value: string): number | undefined {
 }
 
 function pdfPaintAlpha(value: string): number {
-  const normalized = value.trim().toLowerCase();
+  const normalized = value
+    .replace(/\s*!important\s*$/i, "")
+    .trim()
+    .toLowerCase();
   if (normalized === "none" || normalized === "transparent") return 0;
 
   const hex = normalized.match(/^#([0-9a-f]{4}|[0-9a-f]{8})$/i)?.[1];
@@ -535,11 +538,10 @@ function materializePdfTextStyles(svg: SVGSVGElement): void {
 }
 
 function svgInlineStyleValue(element: Element, property: string): string | undefined {
-  const attribute = element.getAttribute(property)?.trim();
-  if (attribute) return attribute;
   const style = element.getAttribute("style") ?? "";
   const match = style.match(new RegExp(`(?:^|;)\\s*${property}\\s*:\\s*([^;]+)`, "i"));
-  return match?.[1].trim();
+  if (match?.[1]) return match[1].trim();
+  return element.getAttribute(property)?.trim();
 }
 
 function svgFontFamilyCandidates(value: string): string[] {

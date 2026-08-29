@@ -340,4 +340,15 @@ describe("PDF export metadata", () => {
       getPdfFontRegistrationsReferencedBySvg(parsed.documentElement as unknown as SVGSVGElement)
     ).toEqual([]);
   });
+
+  it("respects inline paint declarations over presentation attributes", () => {
+    const parsed = new DOMParser().parseFromString(
+      '<svg xmlns="http://www.w3.org/2000/svg"><text font-family="Inter" fill="none" style="fill: black">AΓB</text></svg>',
+      "image/svg+xml"
+    );
+
+    expect(
+      getPdfFontRegistrationsReferencedBySvg(parsed.documentElement as unknown as SVGSVGElement)
+    ).toEqual(expect.arrayContaining([expect.objectContaining({ pdfFamily: "Inter" })]));
+  });
 });
