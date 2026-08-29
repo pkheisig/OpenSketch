@@ -178,6 +178,28 @@ describe("PDF export metadata", () => {
     ).toEqual(expect.arrayContaining([expect.objectContaining({ pdfFamily: "Inter" })]));
   });
 
+  it("preserves variable-font ranges in embedded CSS", () => {
+    const parsed = new DOMParser().parseFromString(
+      `<svg xmlns="http://www.w3.org/2000/svg"><style>@font-face { font-family: "Inter"; font-weight: 100 900; src: url(font.woff2); } .label { font-family: "Inter"; font-weight: 800; }</style><text class="label">x</text></svg>`,
+      "image/svg+xml"
+    );
+
+    expect(() => normalizePdfSvgFontFamilies(parsed.documentElement)).not.toThrow();
+    expect(parsed.querySelector("style")?.textContent).toContain("font-weight: 100 900");
+    expect(parsed.querySelector("style")?.textContent).toContain("font-weight: 700");
+  });
+
+  it("rejects visible textPath content instead of silently dropping it", () => {
+    const parsed = new DOMParser().parseFromString(
+      `<svg xmlns="http://www.w3.org/2000/svg"><path id="curve" d="M0 0"/><text font-family="Inter"><textPath href="#curve">x</textPath></text></svg>`,
+      "image/svg+xml"
+    );
+
+    expect(() =>
+      getPdfFontRegistrationsReferencedBySvg(parsed.documentElement as unknown as SVGSVGElement)
+    ).toThrow("textPath");
+  });
+
   it("fails closed for an unregistered imported font family", () => {
     const parsed = new DOMParser().parseFromString(
       `<svg xmlns="http://www.w3.org/2000/svg"><text font-family="Arial, 'Source Sans 3'">x</text></svg>`,

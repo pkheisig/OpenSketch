@@ -267,8 +267,13 @@ function normalizeCssFontFamilies(value: string): string {
 
 function normalizeCssFontWeights(value: string): string {
   return value.replace(
-    /(font-weight\s*:\s*)([^;}{]+)/gi,
-    (_match, prefix: string, weight: string) => prefix + normalizeFontWeightValue(weight)
+    /(@font-face\s*\{[^{}]*\})|(font-weight\s*:\s*)([^;}{]+)/gi,
+    (
+      match: string,
+      fontFace: string | undefined,
+      prefix: string | undefined,
+      weight: string | undefined
+    ) => fontFace ?? `${prefix}${normalizeFontWeightValue(weight ?? match)}`
   );
 }
 
@@ -499,7 +504,19 @@ function getPdfTextRuns(svg: SVGSVGElement): PdfTextRun[] {
   return runs;
 }
 
+function assertPdfTextPathsSupported(svg: SVGSVGElement): void {
+  for (const textPath of svg.querySelectorAll<SVGElement>("textPath")) {
+    if (hasHiddenPdfTextAncestor(textPath)) continue;
+    if (/\S/u.test(textPath.textContent ?? "")) {
+      throw new Error(
+        "PDF export cannot render <textPath> content yet. Convert text to regular text before exporting."
+      );
+    }
+  }
+}
+
 export function getPdfFontRegistrationsReferencedBySvg(svg: SVGSVGElement): PdfFontRegistration[] {
+  assertPdfTextPathsSupported(svg);
   const candidates = getPdfFontRegistrationPlan(getPdfFontFamiliesReferencedBySvg(svg));
   const used = new Set<string>();
   for (const { element, text } of getPdfTextRuns(svg)) {
@@ -531,6 +548,11 @@ function requiresOpenTypeShaping(character: string, codePoint: number): boolean 
   );
 }
 
+function isPdfLayoutWhitespace(character: string): boolean {
+  const codePoint = character.codePointAt(0);
+  return codePoint !== undefined && codePoint <= 0x20;
+}
+
 function assertPdfTextCoverage(
   svg: SVGSVGElement,
   pdf: import("jspdf").jsPDF,
@@ -545,7 +567,7 @@ function assertPdfTextCoverage(
     if (!codeMap) continue;
     for (const character of text) {
       const codePoint = character.codePointAt(0);
-      if (codePoint === undefined || /\s/u.test(character)) continue;
+      if (codePoint === undefined || isPdfLayoutWhitespace(character)) continue;
       if (codePoint > 0xffff || codeMap[String(codePoint)] == null) {
         throw new Error(
           `PDF export cannot render ${codePointLabel(codePoint ?? 0)} in ${registration.editorFamily} ${registration.weight} ${registration.style}. Choose a font with that glyph.`
