@@ -4000,6 +4000,12 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
       visibleDescendant: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" visibility="hidden"><tspan visibility="visible">Γ</tspan></text></svg>`
       ),
+      cdata: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Inter"><![CDATA[CDATA text]]></text></svg>`
+      ),
+      transparentGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><g opacity="0"><text x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></g></svg>`
+      ),
       complexScript: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Noto Sans">नमस्ते</text></svg>`
       )
@@ -4020,6 +4026,10 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
   expect(result.missingMixedGlyph.error).toContain("cannot render");
   expect(result.hiddenGlyph.error).toBeNull();
   expect(result.visibleDescendant.error).toContain("U+0393");
+  expect(result.cdata.error).toBeNull();
+  expect(result.cdata.pdf).toContain("/BaseFont /Inter");
+  expect(result.cdata.pdf).not.toContain("/BaseFont /Times");
+  expect(result.transparentGlyph.error).toBeNull();
   expect(result.complexScript.error).toContain("cannot shape");
 });
 

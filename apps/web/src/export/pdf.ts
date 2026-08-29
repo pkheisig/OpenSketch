@@ -281,10 +281,18 @@ function normalizeCssFontStyles(value: string): string {
 
 const PDF_HIDDEN_TEXT_ATTRIBUTE = "data-opensketch-pdf-hidden";
 const PDF_DISPLAY_NONE_ATTRIBUTE = "data-opensketch-pdf-display-none";
+const PDF_ZERO_OPACITY_ATTRIBUTE = "data-opensketch-pdf-zero-opacity";
+
+function isZeroPdfOpacity(value: string | null | undefined): boolean {
+  if (!value) return false;
+  const opacity = Number.parseFloat(value.replace(/\s*!important\s*$/i, "").trim());
+  return Number.isFinite(opacity) && opacity === 0;
+}
 
 function hasHiddenPdfTextAncestor(element: Element): boolean {
   for (let current: Element | null = element; current; current = current.parentElement) {
     if (current.getAttribute(PDF_DISPLAY_NONE_ATTRIBUTE) === "true") return true;
+    if (current.getAttribute(PDF_ZERO_OPACITY_ATTRIBUTE) === "true") return true;
 
     const display = current.getAttribute("display")?.trim().toLowerCase();
     if (display === "none") return true;
@@ -293,6 +301,9 @@ function hasHiddenPdfTextAncestor(element: Element): boolean {
     if (/(?:^|;)\s*display\s*:\s*none(?:\s*!important)?\s*(?:;|$)/i.test(style)) {
       return true;
     }
+    if (isZeroPdfOpacity(current.getAttribute("opacity"))) return true;
+    const opacity = style.match(/(?:^|;)\s*opacity\s*:\s*([^;]+)/i)?.[1];
+    if (isZeroPdfOpacity(opacity)) return true;
   }
 
   if (element.getAttribute(PDF_HIDDEN_TEXT_ATTRIBUTE) === "true") return true;
@@ -355,11 +366,23 @@ function materializePdfTextStyles(svg: SVGSVGElement): void {
     sourceElements.forEach((sourceElement, index) => {
       const clonedElement = clonedElements[index];
       if (!clonedElement) return;
+      const hasZeroOpacityAncestor = (() => {
+        for (
+          let current: Element | null = clonedElement;
+          current;
+          current = current.parentElement
+        ) {
+          if (isZeroPdfOpacity(frameWindow.getComputedStyle(current).opacity)) return true;
+        }
+        return false;
+      })();
       if (frameWindow.getComputedStyle(clonedElement).display === "none") {
         sourceElement.setAttribute(PDF_DISPLAY_NONE_ATTRIBUTE, "true");
       } else {
         sourceElement.removeAttribute(PDF_DISPLAY_NONE_ATTRIBUTE);
       }
+      if (hasZeroOpacityAncestor) sourceElement.setAttribute(PDF_ZERO_OPACITY_ATTRIBUTE, "true");
+      else sourceElement.removeAttribute(PDF_ZERO_OPACITY_ATTRIBUTE);
     });
 
     const sourceTextElements = Array.from(svg.querySelectorAll<SVGElement>("text, tspan"));
@@ -458,7 +481,7 @@ interface PdfTextRun {
 function getPdfTextRuns(svg: SVGSVGElement): PdfTextRun[] {
   const runs: PdfTextRun[] = [];
   const visit = (node: Node) => {
-    if (node.nodeType === 3) {
+    if (node.nodeType === 3 || node.nodeType === 4) {
       const parent = node.parentElement;
       const localName = parent?.localName?.toLowerCase();
       if (
