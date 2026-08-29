@@ -1085,11 +1085,12 @@ export function EditorProvider({
           thumbnail: undefined
         };
         await onProjectChange(next);
-        if (revision === saveRevision.current && !pendingSnapshot.current) {
+        const isLatestRevision = revision === saveRevision.current && !pendingSnapshot.current;
+        if (isLatestRevision) {
           latestProject.current = next;
         }
         savedRevision.current = Math.max(savedRevision.current, revision);
-        if (revision === saveRevision.current && !pendingSnapshot.current) {
+        if (isLatestRevision && pendingEditorWork.current === 0) {
           lastSaveError.current = undefined;
           setSaveState({ phase: "saved" });
         } else {

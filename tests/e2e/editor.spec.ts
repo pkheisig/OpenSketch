@@ -4343,13 +4343,13 @@ test("guards browser exit while an image import is still processing", async ({ p
       value: originalRead
     });
     FileReader.prototype.readAsDataURL = function (this: FileReader, blob: Blob) {
-      window.setTimeout(() => originalRead.call(this, blob), 800);
+      window.setTimeout(() => originalRead.call(this, blob), 1200);
     };
   });
 
-  await page
-    .locator('input[type="file"][accept*="image/svg+xml"]')
-    .setInputFiles("tests/fixtures/nested-groups.svg");
+  const importInput = page.locator('input[type="file"][accept*="image/svg+xml"]');
+  await importInput.setInputFiles("tests/fixtures/nested-groups.svg");
+  await importInput.setInputFiles("tests/fixtures/nested-groups.svg");
   await expect(page.locator('[data-save-state="saving"]')).toBeVisible();
 
   const guarded = await page.evaluate(() => {
@@ -4359,6 +4359,9 @@ test("guards browser exit while an image import is still processing", async ({ p
   });
   expect(guarded).toBe(true);
 
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+  await expect(page.locator('[data-save-state="saving"]')).toBeVisible();
+
   await page.evaluate(() => {
     const target = window as typeof window & {
       __opensketchOriginalReadAsDataURL?: typeof FileReader.prototype.readAsDataURL;
@@ -4367,7 +4370,7 @@ test("guards browser exit while an image import is still processing", async ({ p
     if (!originalRead) throw new Error("The original FileReader method was not captured.");
     FileReader.prototype.readAsDataURL = originalRead;
   });
-  await expect(page.locator(".layers-title small")).toHaveText("1");
+  await expect(page.locator(".layers-title small")).toHaveText("2");
   await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
 
   const unguarded = await page.evaluate(() => {
