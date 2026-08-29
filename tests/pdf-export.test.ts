@@ -3,6 +3,7 @@ import {
   buildPdfXmpMetadata,
   getJsPdfFontStyle,
   getPdfFontFamiliesReferencedBySvg,
+  getPdfFontRegistrationsReferencedBySvg,
   getPdfFontRegistrationPlan,
   loadPdfFontBase64,
   normalizePdfFontFamilyList,
@@ -69,7 +70,7 @@ describe("PDF export metadata", () => {
     const source =
       header +
       info +
-      `xref\n0 2\n0000000000 65535 f \n${String(infoOffset).padStart(10, "0")} 00000 n \ntrailer\n<< /Size 2 >>\nstartxref\n${xrefOffset}\n%%EOF\n`;
+      `xref\n0 2\n0000000000 65535 f \n${String(infoOffset).padStart(10, "0")} 00000 n \ntrailer\n<< /Size 2 /Info 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`;
     const sourceBytes = Uint8Array.from(source, (character) => character.charCodeAt(0));
     const patched = replacePdfProducer(sourceBytes.buffer, "jsPDF 4.2.1");
     const rawPdf = Buffer.from(patched).toString("latin1");
@@ -80,6 +81,30 @@ describe("PDF export metadata", () => {
     const infoRow = rawPdf.indexOf("\n0000000009") + 1;
     expect(Number(rawPdf.slice(infoRow, infoRow + 10))).toBe(infoOffset);
     expect(Number(rawPdf.match(/startxref\n(\d+)/)?.[1])).toBe(xrefIndex);
+  });
+
+  it("patches the Info dictionary when XMP contains the same producer marker", () => {
+    const header = "%PDF-1.3\n";
+    const xmp =
+      "1 0 obj\n<< /Type /Metadata /Subtype /XML /Length 24 >>\nstream\n/Producer (jsPDF 4.2.1)\nendstream\nendobj\n";
+    const info = "2 0 obj\n<< /Producer (jsPDF 4.2.1) >>\nendobj\n";
+    const infoOffset = header.length + xmp.length;
+    const xrefOffset = infoOffset + info.length;
+    const source =
+      header +
+      xmp +
+      info +
+      `xref\n0 3\n0000000000 65535 f \n${String(header.length).padStart(10, "0")} 00000 n \n${String(infoOffset).padStart(10, "0")} 00000 n \ntrailer\n<< /Size 3 /Info 2 0 R >>\nstartxref\n${xrefOffset}\n%%EOF\n`;
+    const patched = replacePdfProducer(
+      Uint8Array.from(source, (character) => character.charCodeAt(0)).buffer,
+      "jsPDF 4.2.1"
+    );
+    const rawPdf = Buffer.from(patched).toString("latin1");
+
+    expect(rawPdf).toContain("/Length 24");
+    expect(rawPdf).toContain("stream\n/Producer (jsPDF 4.2.1)\nendstream");
+    expect(rawPdf).toContain("2 0 obj\n<< /Producer (OpenSketch) >>");
+    expect(rawPdf).not.toContain("2 0 obj\n<< /Producer (jsPDF 4.2.1) >>");
   });
 
   it("maps every editor choice to all PDF weight and style registrations", () => {
@@ -127,6 +152,19 @@ describe("PDF export metadata", () => {
       "Inter",
       "Georgia"
     ]);
+  });
+
+  it("selects only the weight and style faces used by text runs", () => {
+    const parsed = new DOMParser().parseFromString(
+      `<svg xmlns="http://www.w3.org/2000/svg"><text font-family="Inter" font-weight="600" font-style="italic">x</text><text font-family="Source Sans 3">y</text></svg>`,
+      "image/svg+xml"
+    );
+
+    expect(
+      getPdfFontRegistrationsReferencedBySvg(
+        parsed.documentElement as unknown as SVGSVGElement
+      ).map(({ pdfFamily, weight, style }) => `${pdfFamily}|${weight}-${style}`)
+    ).toEqual(["Source Sans 3|400-normal", "Inter|600-italic"]);
   });
 
   it("normalizes the system Georgia choice to the bundled serif face", () => {

@@ -164,9 +164,9 @@ function assertRegisteredFont(pdf: import("jspdf").jsPDF, registration: PdfFontR
 
 async function registerBundledFonts(
   pdf: import("jspdf").jsPDF,
-  editorFamilies: readonly string[]
+  svg: SVGSVGElement
 ): Promise<PdfFontRegistration[]> {
-  const registrations = getPdfFontRegistrationPlan(editorFamilies);
+  const registrations = getPdfFontRegistrationsReferencedBySvg(svg);
   const loaded = await Promise.all(
     registrations.map(async (registration) => ({
       registration,
@@ -419,6 +419,43 @@ function pdfRegistrationForTextElement(
   );
 }
 
+interface PdfTextRun {
+  element: SVGElement;
+  text: string;
+}
+
+function getPdfTextRuns(svg: SVGSVGElement): PdfTextRun[] {
+  const runs: PdfTextRun[] = [];
+  const visit = (node: Node) => {
+    if (node.nodeType === 3) {
+      const parent = node.parentElement;
+      const localName = parent?.localName?.toLowerCase();
+      if (parent && (localName === "text" || localName === "tspan")) {
+        runs.push({ element: parent as unknown as SVGElement, text: node.nodeValue ?? "" });
+      }
+      return;
+    }
+    node.childNodes.forEach(visit);
+  };
+  visit(svg);
+  return runs;
+}
+
+export function getPdfFontRegistrationsReferencedBySvg(svg: SVGSVGElement): PdfFontRegistration[] {
+  const candidates = getPdfFontRegistrationPlan(getPdfFontFamiliesReferencedBySvg(svg));
+  const used = new Set<string>();
+  for (const { element, text } of getPdfTextRuns(svg)) {
+    if (!/\S/u.test(text)) continue;
+    const registration = pdfRegistrationForTextElement(element, candidates);
+    if (registration) {
+      used.add(`${registration.pdfFamily}|${registration.style}|${registration.weight}`);
+    }
+  }
+  return candidates.filter(({ pdfFamily, style, weight }) =>
+    used.has(`${pdfFamily}|${style}|${weight}`)
+  );
+}
+
 function codePointLabel(codePoint: number): string {
   return `U+${codePoint.toString(16).toUpperCase().padStart(4, "0")}`;
 }
@@ -443,21 +480,14 @@ function assertPdfTextCoverage(
   pdf: import("jspdf").jsPDF,
   registrations: readonly PdfFontRegistration[]
 ): void {
-  const runs: SVGElement[] = [];
-  for (const text of svg.querySelectorAll<SVGElement>("text")) {
-    const spans = Array.from(text.querySelectorAll<SVGElement>("tspan"));
-    if (spans.length === 0) runs.push(text);
-    else runs.push(...spans.filter((span) => span.querySelector("tspan") === null));
-  }
-
-  for (const element of runs) {
+  for (const { element, text } of getPdfTextRuns(svg)) {
     const registration = pdfRegistrationForTextElement(element, registrations);
     if (!registration) continue;
     pdf.setFont(registration.pdfFamily, registration.jsPdfStyle);
     const codeMap = pdf.getFont().metadata?.cmap?.unicode?.codeMap as
       Record<string, number> | undefined;
     if (!codeMap) continue;
-    for (const character of element.textContent ?? "") {
+    for (const character of text) {
       const codePoint = character.codePointAt(0);
       if (codePoint === undefined || /\s/u.test(character)) continue;
       if (codePoint > 0xffff || codeMap[String(codePoint)] == null) {
@@ -557,6 +587,139 @@ function writeFixedAsciiInteger(
   }
 }
 
+function isPdfWhitespace(value: number): boolean {
+  return value === 0x09 || value === 0x0a || value === 0x0c || value === 0x0d || value === 0x20;
+}
+
+function findPdfInfoObjectNumber(
+  source: Uint8Array,
+  trailerIndex: number,
+  trailerEnd: number
+): number | undefined {
+  const infoIndex = findBytes(source, asciiBytes("/Info"), trailerIndex);
+  if (infoIndex < 0 || infoIndex >= trailerEnd) return undefined;
+
+  let cursor = infoIndex + "/Info".length;
+  while (cursor < trailerEnd && isPdfWhitespace(source[cursor])) cursor += 1;
+  const objectStart = cursor;
+  while (cursor < trailerEnd && source[cursor] >= 0x30 && source[cursor] <= 0x39) cursor += 1;
+  const objectNumber = readAsciiInteger(source, objectStart, cursor);
+  if (objectNumber === undefined) return undefined;
+  while (cursor < trailerEnd && isPdfWhitespace(source[cursor])) cursor += 1;
+  if (source[cursor] !== 0x30) return undefined;
+  cursor += 1;
+  while (cursor < trailerEnd && isPdfWhitespace(source[cursor])) cursor += 1;
+  return source[cursor] === 0x52 ? objectNumber : undefined;
+}
+
+function readAsciiLine(source: Uint8Array, start: number, end: number): string {
+  let line = "";
+  for (let index = start; index < end; index += 1) line += String.fromCharCode(source[index]);
+  return line.trim();
+}
+
+function findPdfObjectOffset(
+  source: Uint8Array,
+  xrefIndex: number,
+  trailerIndex: number,
+  objectNumber: number
+): number | undefined {
+  let lineStart = xrefIndex + "xref\n".length;
+  let subsectionObject = -1;
+  let entriesRemaining = 0;
+  while (lineStart < trailerIndex) {
+    const lineEnd = findBytes(source, Uint8Array.of(0x0a), lineStart);
+    if (lineEnd < 0 || lineEnd > trailerIndex) return undefined;
+    const fields = readAsciiLine(source, lineStart, lineEnd).split(/\s+/);
+    if (fields.length === 2 && fields.every((field) => /^\d+$/.test(field))) {
+      subsectionObject = Number(fields[0]);
+      entriesRemaining = Number(fields[1]);
+    } else if (entriesRemaining > 0) {
+      if (subsectionObject === objectNumber && fields[2] === "n") {
+        return readAsciiInteger(source, lineStart, lineStart + 10);
+      }
+      subsectionObject += 1;
+      entriesRemaining -= 1;
+    }
+    lineStart = lineEnd + 1;
+  }
+  return undefined;
+}
+
+function findPdfObjectEnd(source: Uint8Array, start: number): number {
+  let literalDepth = 0;
+  let escaped = false;
+  let hexString = false;
+  let comment = false;
+  for (let index = start; index < source.length; index += 1) {
+    const value = source[index];
+    if (comment) {
+      if (value === 0x0a || value === 0x0d) comment = false;
+      continue;
+    }
+    if (literalDepth > 0) {
+      if (escaped) escaped = false;
+      else if (value === 0x5c) escaped = true;
+      else if (value === 0x28) literalDepth += 1;
+      else if (value === 0x29) literalDepth -= 1;
+      continue;
+    }
+    if (hexString) {
+      if (value === 0x3e) hexString = false;
+      continue;
+    }
+    if (value === 0x25) comment = true;
+    else if (value === 0x28) literalDepth = 1;
+    else if (value === 0x3c && source[index + 1] !== 0x3c && source[index - 1] !== 0x3c) {
+      hexString = true;
+    } else if (
+      value === 0x65 &&
+      findBytes(source, asciiBytes("endobj"), index) === index &&
+      (index === start || isPdfWhitespace(source[index - 1])) &&
+      (index + "endobj".length >= source.length || isPdfWhitespace(source[index + "endobj".length]))
+    ) {
+      return index;
+    }
+  }
+  return -1;
+}
+
+function findPdfProducerMarker(
+  source: Uint8Array,
+  start: number,
+  end: number,
+  marker: Uint8Array
+): number {
+  let literalDepth = 0;
+  let escaped = false;
+  let hexString = false;
+  let comment = false;
+  for (let index = start; index < end; index += 1) {
+    const value = source[index];
+    if (comment) {
+      if (value === 0x0a || value === 0x0d) comment = false;
+      continue;
+    }
+    if (literalDepth > 0) {
+      if (escaped) escaped = false;
+      else if (value === 0x5c) escaped = true;
+      else if (value === 0x28) literalDepth += 1;
+      else if (value === 0x29) literalDepth -= 1;
+      continue;
+    }
+    if (hexString) {
+      if (value === 0x3e) hexString = false;
+      continue;
+    }
+    if (value === 0x25) comment = true;
+    else if (value === 0x28) literalDepth = 1;
+    else if (value === 0x3c && source[index + 1] !== 0x3c && source[index - 1] !== 0x3c) {
+      hexString = true;
+    } else if (value === 0x2f && findBytes(source, marker, index) === index) return index;
+  }
+  return -1;
+}
+
 export function replacePdfProducer(
   arrayBuffer: ArrayBuffer,
   sourceProducer: string,
@@ -568,9 +731,34 @@ export function replacePdfProducer(
 
   const source = new Uint8Array(arrayBuffer);
   const sourceMarker = asciiBytes(`/Producer (${sourceProducer})`);
-  const sourceIndex = findBytes(source, sourceMarker);
+
+  const xrefLine = asciiBytes("\nxref\n");
+  const xrefPrefixIndex = findLastBytes(source, xrefLine);
+  const xrefIndex =
+    xrefPrefixIndex >= 0 ? xrefPrefixIndex + 1 : findLastBytes(source, asciiBytes("xref\n"));
+  const trailerIndex =
+    xrefIndex < 0 ? -1 : findBytes(source, asciiBytes("trailer\n"), xrefIndex + "xref\n".length);
+  const startxrefIndex = findLastBytes(source, asciiBytes("startxref\n"));
+  if (xrefIndex < 0 || trailerIndex < 0 || startxrefIndex < 0 || trailerIndex >= startxrefIndex) {
+    throw new Error("The PDF output did not contain a patchable cross-reference table.");
+  }
+
+  const infoObjectNumber = findPdfInfoObjectNumber(source, trailerIndex, startxrefIndex);
+  const infoOffset =
+    infoObjectNumber === undefined
+      ? undefined
+      : findPdfObjectOffset(source, xrefIndex, trailerIndex, infoObjectNumber);
+  const infoEnd = infoOffset === undefined ? -1 : findPdfObjectEnd(source, infoOffset);
+  const candidateSourceIndex =
+    infoOffset === undefined
+      ? -1
+      : findPdfProducerMarker(source, infoOffset, infoEnd, sourceMarker);
+  const sourceIndex =
+    candidateSourceIndex >= 0 && candidateSourceIndex < infoEnd ? candidateSourceIndex : -1;
   if (sourceIndex < 0) {
-    throw new Error(`The PDF output did not contain the expected producer "${sourceProducer}".`);
+    throw new Error(
+      `The PDF Info dictionary did not contain the expected producer "${sourceProducer}".`
+    );
   }
 
   const replacement = asciiBytes(`/Producer (${targetProducer})`);
@@ -580,20 +768,23 @@ export function replacePdfProducer(
   patched.set(replacement, sourceIndex);
   patched.set(source.subarray(sourceIndex + sourceMarker.length), sourceIndex + replacement.length);
 
-  const xrefLine = asciiBytes("\nxref\n");
-  const xrefPrefixIndex = findLastBytes(patched, xrefLine);
-  const xrefIndex =
-    xrefPrefixIndex >= 0 ? xrefPrefixIndex + 1 : findLastBytes(patched, asciiBytes("xref\n"));
-  const trailerIndex =
-    xrefIndex < 0 ? -1 : findBytes(patched, asciiBytes("trailer\n"), xrefIndex + "xref\n".length);
-  if (xrefIndex < 0 || trailerIndex < 0) {
+  const patchedXrefPrefixIndex = findLastBytes(patched, xrefLine);
+  const patchedXrefIndex =
+    patchedXrefPrefixIndex >= 0
+      ? patchedXrefPrefixIndex + 1
+      : findLastBytes(patched, asciiBytes("xref\n"));
+  const patchedTrailerIndex =
+    patchedXrefIndex < 0
+      ? -1
+      : findBytes(patched, asciiBytes("trailer\n"), patchedXrefIndex + "xref\n".length);
+  if (patchedXrefIndex < 0 || patchedTrailerIndex < 0) {
     throw new Error("The PDF output did not contain a patchable cross-reference table.");
   }
 
-  let lineStart = xrefIndex + "xref\n".length;
-  while (lineStart < trailerIndex) {
+  let lineStart = patchedXrefIndex + "xref\n".length;
+  while (lineStart < patchedTrailerIndex) {
     const lineEnd = findBytes(patched, Uint8Array.of(0x0a), lineStart);
-    if (lineEnd < 0 || lineEnd > trailerIndex) break;
+    if (lineEnd < 0 || lineEnd > patchedTrailerIndex) break;
     if (lineEnd - lineStart >= 18 && patched[lineStart + 17] === 0x6e) {
       const offset = readAsciiInteger(patched, lineStart, lineStart + 10);
       if (offset !== undefined && offset > sourceIndex) {
@@ -603,12 +794,12 @@ export function replacePdfProducer(
     lineStart = lineEnd + 1;
   }
 
-  const startxrefIndex = findLastBytes(patched, asciiBytes("startxref\n"));
-  const startxrefStart = startxrefIndex + "startxref\n".length;
+  const patchedStartxrefIndex = findLastBytes(patched, asciiBytes("startxref\n"));
+  const startxrefStart = patchedStartxrefIndex + "startxref\n".length;
   const startxrefEnd =
-    startxrefIndex < 0 ? -1 : findBytes(patched, Uint8Array.of(0x0a), startxrefStart);
+    patchedStartxrefIndex < 0 ? -1 : findBytes(patched, Uint8Array.of(0x0a), startxrefStart);
   const startxref =
-    startxrefIndex < 0 || startxrefEnd < 0
+    patchedStartxrefIndex < 0 || startxrefEnd < 0
       ? undefined
       : readAsciiInteger(patched, startxrefStart, startxrefEnd);
   if (startxref === undefined) {
@@ -688,7 +879,6 @@ export async function svgToPdfBlob(
   }
   const svg = parsed.documentElement as unknown as SVGSVGElement;
   materializePdfTextStyles(svg);
-  const referencedFamilies = getPdfFontFamiliesReferencedBySvg(svg);
   normalizePdfSvgFontFamilies(svg);
   const pdf = new jsPDF({
     orientation: width >= height ? "landscape" : "portrait",
@@ -715,7 +905,7 @@ export async function svgToPdfBlob(
   pdf.setProperties(properties);
   pdf.addMetadata(buildPdfXmpMetadata(metadata), true);
   pdf.setDisplayMode("fullpage", "single");
-  const registrations = await registerBundledFonts(pdf, referencedFamilies);
+  const registrations = await registerBundledFonts(pdf, svg);
   assertPdfTextCoverage(svg, pdf, registrations);
   try {
     await pdf.svg(svg, {

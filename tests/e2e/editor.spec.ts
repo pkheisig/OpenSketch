@@ -3986,6 +3986,9 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
       missingInheritedGlyph: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><g font-family="Atkinson Hyperlegible"><text x="12" y="40">AΓB</text></g></svg>`
       ),
+      missingMixedGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible">AΓ<tspan>B</tspan></text></svg>`
+      ),
       complexScript: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Noto Sans">नमस्ते</text></svg>`
       )
@@ -4000,7 +4003,37 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
   expect(result.missingGlyph.error).toContain("cannot render");
   expect(result.missingInheritedGlyph.error).toContain("U+0393");
   expect(result.missingInheritedGlyph.error).toContain("cannot render");
+  expect(result.missingMixedGlyph.error).toContain("U+0393");
+  expect(result.missingMixedGlyph.error).toContain("cannot render");
   expect(result.complexScript.error).toContain("cannot shape");
+});
+
+test("fetches only the PDF font face used by an SVG text run", async ({ page }) => {
+  const requests: string[] = [];
+  page.on("request", (request) => {
+    if (request.resourceType() === "fetch" && request.url().includes(".ttf")) {
+      requests.push(request.url());
+    }
+  });
+  await page.goto("/");
+  await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    await svgToPdfBlob(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Inter" font-weight="600" font-style="italic">Only one face</text></svg>`,
+      600,
+      240,
+      {
+        title: "PDF face loading",
+        description: "Only the used PDF face",
+        credit: "OpenSketch",
+        provenance: { version: 1 as const, assets: [] }
+      }
+    );
+  });
+
+  expect(requests).toHaveLength(1);
+  expect(requests[0]).toMatch(/inter-600-italic\.ttf/);
 });
 
 test("waits for the selected browser font before exporting PDF", async ({ page }) => {
