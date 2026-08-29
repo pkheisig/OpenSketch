@@ -4043,6 +4043,40 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
   expect(result.complexScript.error).toContain("cannot shape");
 });
 
+test("skips invisible PDF paint during glyph coverage", async ({ page }) => {
+  await page.goto("/");
+  const result = await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const metadata = {
+      title: "Invisible PDF paint",
+      description: "Invisible text should not require glyph coverage",
+      credit: "OpenSketch",
+      provenance: { version: 1 as const, assets: [] }
+    };
+    const render = async (svg: string) => {
+      try {
+        await svgToPdfBlob(svg, 600, 240, metadata);
+        return null;
+      } catch (error) {
+        return error instanceof Error ? error.message : String(error);
+      }
+    };
+
+    return {
+      transparent: await render(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" fill="transparent">AΓB</text></svg>'
+      ),
+      zeroFillOpacity: await render(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" fill-opacity="0">AΓB</text></svg>'
+      )
+    };
+  });
+
+  expect(result.transparent).toBeNull();
+  expect(result.zeroFillOpacity).toBeNull();
+});
+
 test("fetches only the PDF font face used by an SVG text run", async ({ page }) => {
   const requests: string[] = [];
   page.on("request", (request) => {

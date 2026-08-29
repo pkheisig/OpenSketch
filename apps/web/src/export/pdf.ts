@@ -295,6 +295,85 @@ function isZeroPdfOpacity(value: string | null | undefined): boolean {
   return Number.isFinite(opacity) && opacity === 0;
 }
 
+function cssPdfAlpha(value: string): number | undefined {
+  const normalized = value.trim().toLowerCase();
+  if (normalized.endsWith("%")) {
+    const percentage = Number.parseFloat(normalized.slice(0, -1));
+    return Number.isFinite(percentage) ? Math.max(0, Math.min(1, percentage / 100)) : undefined;
+  }
+  const numeric = Number.parseFloat(normalized);
+  return Number.isFinite(numeric) ? Math.max(0, Math.min(1, numeric)) : undefined;
+}
+
+function pdfPaintAlpha(value: string): number {
+  const normalized = value.trim().toLowerCase();
+  if (normalized === "none" || normalized === "transparent") return 0;
+
+  const hex = normalized.match(/^#([0-9a-f]{4}|[0-9a-f]{8})$/i)?.[1];
+  if (hex) return Number.parseInt(hex.slice(-2), 16) / 255;
+
+  const rgb = normalized.match(/^rgba?\((.*)\)$/i)?.[1];
+  if (rgb) {
+    const components = rgb
+      .split(/[\s,]+|\s*\/\s*/)
+      .map((component) => component.trim())
+      .filter(Boolean);
+    const alpha = components.length >= 4 ? cssPdfAlpha(components[3]) : undefined;
+    return alpha ?? 1;
+  }
+
+  return /\/\s*0(?:\.0*)?(?:%|\s*\))$/i.test(normalized) ? 0 : 1;
+}
+
+function pdfPaintIsInvisible(
+  value: string | undefined,
+  opacity: string | undefined,
+  defaultPaint: string
+): boolean {
+  return (
+    pdfPaintAlpha(value?.trim() ? value : defaultPaint) === 0 ||
+    (opacity !== undefined && cssPdfAlpha(opacity.replace(/\s*!important\s*$/i, "")) === 0)
+  );
+}
+
+function declaredPdfPaintValue(element: Element, property: string): string | undefined {
+  const value = svgInlineStyleValue(element, property);
+  if (!value || /^(?:inherit|unset|revert(?:-layer)?)$/i.test(value.trim())) return undefined;
+  return value;
+}
+
+function hasInvisiblePdfTextPaint(element: Element): boolean {
+  let fill: string | undefined;
+  let fillOpacity: string | undefined;
+  let stroke: string | undefined;
+  let strokeOpacity: string | undefined;
+  for (let current: Element | null = element; current; current = current.parentElement) {
+    fill ??= declaredPdfPaintValue(current, "fill");
+    fillOpacity ??= declaredPdfPaintValue(current, "fill-opacity");
+    stroke ??= declaredPdfPaintValue(current, "stroke");
+    strokeOpacity ??= declaredPdfPaintValue(current, "stroke-opacity");
+  }
+  return (
+    pdfPaintIsInvisible(fill, fillOpacity, "black") &&
+    pdfPaintIsInvisible(stroke, strokeOpacity, "none")
+  );
+}
+
+function computedPdfPaintIsInvisible(style: CSSStyleDeclaration): boolean {
+  return (
+    pdfPaintIsInvisible(
+      style.getPropertyValue("fill"),
+      style.getPropertyValue("fill-opacity"),
+      "black"
+    ) &&
+    pdfPaintIsInvisible(
+      style.getPropertyValue("stroke"),
+      style.getPropertyValue("stroke-opacity"),
+      "none"
+    )
+  );
+}
+
 type PdfVisibility = "hidden" | "visible";
 
 function declaredPdfVisibility(element: Element): PdfVisibility | undefined {
@@ -313,6 +392,8 @@ function declaredPdfVisibility(element: Element): PdfVisibility | undefined {
 }
 
 function hasHiddenPdfTextAncestor(element: Element): boolean {
+  if (hasInvisiblePdfTextPaint(element)) return true;
+
   let resolvedVisibility: PdfVisibility | undefined;
   for (let current: Element | null = element; current; current = current.parentElement) {
     if (current.getAttribute(PDF_DISPLAY_NONE_ATTRIBUTE) === "true") return true;
@@ -425,7 +506,9 @@ function materializePdfTextStyles(svg: SVGSVGElement): void {
       if (!clonedElement) return;
       const computed = frameWindow.getComputedStyle(clonedElement);
       const hidden =
-        computed.display === "none" || ["hidden", "collapse"].includes(computed.visibility);
+        computed.display === "none" ||
+        ["hidden", "collapse"].includes(computed.visibility) ||
+        computedPdfPaintIsInvisible(computed);
       if (hidden) {
         sourceElement.setAttribute(PDF_HIDDEN_TEXT_ATTRIBUTE, "true");
         sourceElement.removeAttribute(PDF_VISIBLE_TEXT_ATTRIBUTE);
@@ -931,7 +1014,18 @@ export function replacePdfProducer(
 }
 
 function escapeXml(value: string): string {
-  return value.replace(/[<>&'"]/g, (character) => {
+  const xmlSafeValue = Array.from(value, (character) => {
+    const codePoint = character.codePointAt(0) ?? 0;
+    const valid =
+      codePoint === 0x09 ||
+      codePoint === 0x0a ||
+      codePoint === 0x0d ||
+      (codePoint >= 0x20 && codePoint <= 0xd7ff) ||
+      (codePoint >= 0xe000 && codePoint <= 0xfffd) ||
+      (codePoint >= 0x10000 && codePoint <= 0x10ffff);
+    return valid ? character : "\uFFFD";
+  }).join("");
+  return xmlSafeValue.replace(/[<>&'"]/g, (character) => {
     const values: Record<string, string> = {
       "<": "&lt;",
       ">": "&gt;",

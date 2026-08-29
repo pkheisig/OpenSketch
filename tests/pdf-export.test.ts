@@ -309,4 +309,35 @@ describe("PDF export metadata", () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
     vi.unstubAllGlobals();
   });
+
+  it("replaces XML-invalid metadata code points", () => {
+    const xmp = buildPdfXmpMetadata({
+      ...metadata,
+      title: "Bad\u0000\u000b title",
+      author: "Author\u001f"
+    });
+
+    expect(xmp).toContain("Bad�� title");
+    expect(xmp).toContain("Author�");
+    expect(
+      [...xmp].some((character) => {
+        const codePoint = character.codePointAt(0) ?? 0;
+        return codePoint < 0x20 && ![0x09, 0x0a, 0x0d].includes(codePoint);
+      })
+    ).toBe(false);
+    expect(
+      new DOMParser().parseFromString(xmp, "application/xml").querySelector("parsererror")
+    ).toBeNull();
+  });
+
+  it("ignores text with no effective paint when selecting PDF fonts", () => {
+    const parsed = new DOMParser().parseFromString(
+      '<svg xmlns="http://www.w3.org/2000/svg"><text font-family="Atkinson Hyperlegible" fill-opacity="0">AΓB</text><text font-family="Inter" fill="transparent">AΓB</text></svg>',
+      "image/svg+xml"
+    );
+
+    expect(
+      getPdfFontRegistrationsReferencedBySvg(parsed.documentElement as unknown as SVGSVGElement)
+    ).toEqual([]);
+  });
 });
