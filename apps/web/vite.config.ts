@@ -45,12 +45,23 @@ export default defineConfig({
           "assets/organism-library/**",
           "assets/organism-library-thumbnails/**",
           "assets/bioicons/**",
-          "assets/bioicons-thumbnails/**"
+          "assets/bioicons-thumbnails/**",
+          "**/*.ttf"
         ],
         // The complete asset pack is primed explicitly from the Assets panel.
         // Do not evict entries: a ready pack must contain every required source
         // and preview, and the pack manager clears these caches on version change.
         runtimeCaching: [
+          {
+            urlPattern: /\/OpenSketch\/assets\/[^/]+\.ttf$/,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "opensketch-pdf-fonts",
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
           {
             urlPattern:
               /\/OpenSketch\/assets\/(?:nih-bioart|scidraw|organism-library|bioicons)-thumbnails\//,

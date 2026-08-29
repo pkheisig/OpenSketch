@@ -3948,6 +3948,61 @@ test("embeds every selectable editor font face in PDF resources", async ({ page 
   expect(rawPdf).not.toContain("/BaseFont /Times");
 });
 
+test("materializes imported PDF text styles and rejects unsafe glyph coverage", async ({
+  page
+}) => {
+  await page.goto("/");
+  const result = await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const metadata = {
+      title: "PDF text safety",
+      description: "Imported text style and glyph safety",
+      credit: "OpenSketch",
+      provenance: { version: 1 as const, assets: [] }
+    };
+    const render = async (svg: string) => {
+      try {
+        const blob = await svgToPdfBlob(svg, 600, 240, metadata);
+        return { error: null, pdf: new TextDecoder("latin1").decode(await blob.arrayBuffer()) };
+      } catch (error) {
+        return { error: error instanceof Error ? error.message : String(error), pdf: "" };
+      }
+    };
+
+    return {
+      shorthand: await render(`<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240">
+        <style>
+          .parent { font-family: "Inter"; font-weight: 400; }
+          .label { font: italic 600 18px "Inter" !important; }
+          .relative { font-family: "Source Serif 4"; font-weight: bolder; font-style: oblique; }
+        </style>
+        <text class="label" x="12" y="40">Shorthand</text>
+        <text class="parent" x="12" y="80"><tspan class="relative">Relative</tspan></text>
+      </svg>`),
+      missingGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></svg>`
+      ),
+      missingInheritedGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><g font-family="Atkinson Hyperlegible"><text x="12" y="40">AΓB</text></g></svg>`
+      ),
+      complexScript: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Noto Sans">नमस्ते</text></svg>`
+      )
+    };
+  });
+
+  expect(result.shorthand.error).toBeNull();
+  expect(result.shorthand.pdf).toContain("/BaseFont /Inter");
+  expect(result.shorthand.pdf).toContain("/BaseFont /Source#20Serif#204");
+  expect(result.shorthand.pdf).not.toContain("/BaseFont /Times");
+  expect(result.missingGlyph.error).toContain("U+0393");
+  expect(result.missingGlyph.error).toContain("cannot render");
+  expect(result.missingInheritedGlyph.error).toContain("U+0393");
+  expect(result.missingInheritedGlyph.error).toContain("cannot render");
+  expect(result.complexScript.error).toContain("cannot shape");
+});
+
 test("waits for the selected browser font before exporting PDF", async ({ page }) => {
   test.setTimeout(120_000);
   const releaseDelayMs = 2_000;

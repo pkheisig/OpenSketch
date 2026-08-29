@@ -165,7 +165,7 @@ function assertRegisteredFont(pdf: import("jspdf").jsPDF, registration: PdfFontR
 async function registerBundledFonts(
   pdf: import("jspdf").jsPDF,
   editorFamilies: readonly string[]
-): Promise<void> {
+): Promise<PdfFontRegistration[]> {
   const registrations = getPdfFontRegistrationPlan(editorFamilies);
   const loaded = await Promise.all(
     registrations.map(async (registration) => ({
@@ -197,6 +197,7 @@ async function registerBundledFonts(
     }
     assertRegisteredFont(pdf, registration);
   }
+  return registrations;
 }
 
 function normalizeFontFamilyList(value: string): string {
@@ -212,6 +213,29 @@ function normalizeFontFamilyList(value: string): string {
     .join(", ");
 }
 
+function normalizeFontFamilyValue(value: string): string {
+  const important = /\s*!important\s*$/i.test(value);
+  const withoutImportant = value.replace(/\s*!important\s*$/i, "");
+  return normalizeFontFamilyList(withoutImportant) + (important ? " !important" : "");
+}
+
+function serializeCssFontFamilyValue(value: string): string {
+  const important = /\s*!important\s*$/i.test(value);
+  const withoutImportant = value.replace(/\s*!important\s*$/i, "");
+  const families = withoutImportant
+    .split(",")
+    .map((candidate) => {
+      const trimmed = candidate.trim();
+      if (!trimmed) return "";
+      if (trimmed[0] === '"' || trimmed[0] === "'") return trimmed;
+      if (/^[A-Za-z][A-Za-z0-9_-]*$/.test(trimmed)) return trimmed;
+      return `"${trimmed.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
+    })
+    .filter(Boolean)
+    .join(", ");
+  return families + (important ? " !important" : "");
+}
+
 export function normalizePdfFontFamilyList(value: string): string {
   return normalizeFontFamilyList(value);
 }
@@ -219,12 +243,15 @@ export function normalizePdfFontFamilyList(value: string): string {
 function normalizeFontWeightValue(value: string): string {
   const trimmed = value.trim();
   const match = trimmed.match(
-    /^(normal|bold|bolder|lighter|[0-9]+(?:\.[0-9]+)?)(\s*!important)?$/i
+    /^(normal|bold|bolder|lighter|inherit|initial|unset|revert(?:-layer)?|[0-9]+(?:\.[0-9]+)?)(\s*!important)?$/i
   );
   if (!match) {
     throw new Error(
       `Unsupported imported font weight "${value}". Use a numeric weight, normal, bold, bolder, or lighter.`
     );
+  }
+  if (/^(?:inherit|initial|unset|revert(?:-layer)?)$/i.test(match[1])) {
+    return match[1] + (match[2] ?? "");
   }
   return String(normalizePdfFontWeight(match[1])) + (match[2] ?? "");
 }
@@ -232,10 +259,15 @@ function normalizeFontWeightValue(value: string): string {
 function normalizeFontStyleValue(value: string): string {
   const trimmed = value.trim();
   const match = trimmed.match(
-    /^(normal|italic|oblique(?:\s+[-+]?(?:\d*\.\d+|\d+\.?\d*)deg)?)(\s*!important)?$/i
+    /^(normal|italic|oblique(?:\s+[-+]?(?:\d*\.\d+|\d+\.?\d*)deg)?|inherit|initial|unset|revert(?:-layer)?)(\s*!important)?$/i
   );
   if (!match) {
-    throw new Error(`Unsupported imported font style "${value}". Use normal, italic, or oblique.`);
+    throw new Error(
+      `Unsupported imported font style "${value}". Use normal, italic, oblique, inherit, initial, unset, or revert.`
+    );
+  }
+  if (/^(?:inherit|initial|unset|revert(?:-layer)?)$/i.test(match[1])) {
+    return match[1] + (match[2] ?? "");
   }
   return normalizePdfFontStyle(match[1]) + (match[2] ?? "");
 }
@@ -243,7 +275,7 @@ function normalizeFontStyleValue(value: string): string {
 function normalizeCssFontFamilies(value: string): string {
   return value.replace(
     /(font-family\s*:\s*)([^;}{]+)/gi,
-    (_match, prefix: string, families: string) => prefix + normalizeFontFamilyList(families)
+    (_match, prefix: string, families: string) => prefix + normalizeFontFamilyValue(families)
   );
 }
 
@@ -270,7 +302,7 @@ export function normalizePdfSvgFontFamilies(svg: Element): void {
   ];
   for (const element of elements) {
     const fontFamily = element.getAttribute("font-family");
-    if (fontFamily) element.setAttribute("font-family", normalizeFontFamilyList(fontFamily));
+    if (fontFamily) element.setAttribute("font-family", normalizeFontFamilyValue(fontFamily));
     const fontStyle = element.getAttribute("font-style");
     if (fontStyle) element.setAttribute("font-style", normalizeFontStyleValue(fontStyle));
     const fontWeight = element.getAttribute("font-weight");
@@ -287,6 +319,158 @@ export function normalizePdfSvgFontFamilies(svg: Element): void {
     style.textContent = normalizeCssFontStyles(
       normalizeCssFontWeights(normalizeCssFontFamilies(style.textContent ?? ""))
     );
+  }
+}
+
+function materializePdfTextStyles(svg: SVGSVGElement): void {
+  if (typeof document === "undefined" || !document.body || typeof getComputedStyle !== "function") {
+    return;
+  }
+
+  const frame = document.createElement("iframe");
+  frame.setAttribute("aria-hidden", "true");
+  frame.style.cssText =
+    "position:absolute;left:-100000px;top:-100000px;width:1px;height:1px;border:0;opacity:0;pointer-events:none;";
+  document.body.appendChild(frame);
+  const frameDocument = frame.contentDocument;
+  const frameWindow = frame.contentWindow;
+  if (!frameDocument?.body || !frameWindow) {
+    frame.remove();
+    return;
+  }
+  const clone = frameDocument.importNode(svg, true) as SVGSVGElement;
+  frameDocument.body.appendChild(clone);
+  try {
+    const sourceTextElements = Array.from(svg.querySelectorAll<SVGElement>("text, tspan"));
+    const clonedTextElements = Array.from(clone.querySelectorAll<SVGElement>("text, tspan"));
+    sourceTextElements.forEach((sourceElement, index) => {
+      const clonedElement = clonedTextElements[index];
+      if (!clonedElement) return;
+      const clonedFamily = clonedElement.getAttribute("font-family");
+      const clonedStyle = clonedElement.getAttribute("style") ?? "";
+      if (clonedFamily && !/(?:^|;)\s*font-family\s*:/i.test(clonedStyle)) {
+        clonedElement.setAttribute(
+          "style",
+          `${clonedStyle}${clonedStyle.trim() ? "; " : ""}font-family: ${serializeCssFontFamilyValue(clonedFamily)}`
+        );
+      }
+      const computed = frameWindow.getComputedStyle(clonedElement);
+      for (const [property, value] of [
+        ["font-family", computed.fontFamily],
+        ["font-style", computed.fontStyle],
+        ["font-weight", computed.fontWeight]
+      ] as const) {
+        if (value) {
+          // Keep both forms: svg2pdf reads presentation attributes while the
+          // browser DOM exposes the computed declaration through CSSOM.
+          sourceElement.setAttribute(property, value);
+          sourceElement.style.setProperty(property, value, "important");
+        }
+      }
+    });
+  } finally {
+    frame.remove();
+  }
+}
+
+function svgInlineStyleValue(element: Element, property: string): string | undefined {
+  const attribute = element.getAttribute(property)?.trim();
+  if (attribute) return attribute;
+  const style = element.getAttribute("style") ?? "";
+  const match = style.match(new RegExp(`(?:^|;)\\s*${property}\\s*:\\s*([^;]+)`, "i"));
+  return match?.[1].trim();
+}
+
+function svgFontFamilyCandidates(value: string): string[] {
+  return value
+    .replace(/\s*!important\s*$/i, "")
+    .split(",")
+    .map((candidate) => {
+      const trimmed = candidate.trim();
+      const quote = trimmed[0] === '"' || trimmed[0] === "'" ? trimmed[0] : "";
+      return quote && trimmed.endsWith(quote) ? trimmed.slice(1, -1).trim() : trimmed;
+    })
+    .filter(Boolean);
+}
+
+function pdfRegistrationForTextElement(
+  element: Element,
+  registrations: readonly PdfFontRegistration[]
+): PdfFontRegistration | undefined {
+  const familyValue = svgInlineStyleValue(element, "font-family");
+  if (!familyValue) return undefined;
+  const definition = svgFontFamilyCandidates(familyValue)
+    .map((family) =>
+      TEXT_FONT_REGISTRY.find(
+        (candidate) => candidate.family.toLowerCase() === family.toLowerCase()
+      )
+    )
+    .find((candidate) => candidate !== undefined);
+  if (!definition) return undefined;
+  const styleValue = svgInlineStyleValue(element, "font-style") ?? "normal";
+  const weightValue = svgInlineStyleValue(element, "font-weight") ?? "400";
+  const style = normalizePdfFontStyle(styleValue.replace(/\s*!important\s*$/i, ""));
+  const weight = normalizePdfFontWeight(weightValue.replace(/\s*!important\s*$/i, ""));
+  return registrations.find(
+    (registration) =>
+      registration.pdfFamily === definition.pdfFamily &&
+      registration.style === style &&
+      registration.weight === weight
+  );
+}
+
+function codePointLabel(codePoint: number): string {
+  return `U+${codePoint.toString(16).toUpperCase().padStart(4, "0")}`;
+}
+
+function requiresOpenTypeShaping(character: string, codePoint: number): boolean {
+  if (/\p{Mark}/u.test(character)) return true;
+  return (
+    (codePoint >= 0x0590 && codePoint <= 0x08ff) ||
+    (codePoint >= 0x0900 && codePoint <= 0x0dff) ||
+    (codePoint >= 0x0f00 && codePoint <= 0x109f) ||
+    (codePoint >= 0x1780 && codePoint <= 0x17ff) ||
+    (codePoint >= 0x1a00 && codePoint <= 0x1cff) ||
+    (codePoint >= 0xa800 && codePoint <= 0xa8ff) ||
+    (codePoint >= 0xaa00 && codePoint <= 0xaaff) ||
+    (codePoint >= 0xab00 && codePoint <= 0xabff) ||
+    (codePoint >= 0xfb00 && codePoint <= 0xfeff)
+  );
+}
+
+function assertPdfTextCoverage(
+  svg: SVGSVGElement,
+  pdf: import("jspdf").jsPDF,
+  registrations: readonly PdfFontRegistration[]
+): void {
+  const runs: SVGElement[] = [];
+  for (const text of svg.querySelectorAll<SVGElement>("text")) {
+    const spans = Array.from(text.querySelectorAll<SVGElement>("tspan"));
+    if (spans.length === 0) runs.push(text);
+    else runs.push(...spans.filter((span) => span.querySelector("tspan") === null));
+  }
+
+  for (const element of runs) {
+    const registration = pdfRegistrationForTextElement(element, registrations);
+    if (!registration) continue;
+    pdf.setFont(registration.pdfFamily, registration.jsPdfStyle);
+    const codeMap = pdf.getFont().metadata?.cmap?.unicode?.codeMap as
+      Record<string, number> | undefined;
+    if (!codeMap) continue;
+    for (const character of element.textContent ?? "") {
+      const codePoint = character.codePointAt(0);
+      if (codePoint === undefined || /\s/u.test(character)) continue;
+      if (codePoint > 0xffff || codeMap[String(codePoint)] == null) {
+        throw new Error(
+          `PDF export cannot render ${codePointLabel(codePoint ?? 0)} in ${registration.editorFamily} ${registration.weight} ${registration.style}. Choose a font with that glyph.`
+        );
+      }
+      if (requiresOpenTypeShaping(character, codePoint)) {
+        throw new Error(
+          `PDF export cannot shape ${codePointLabel(codePoint)} in ${registration.editorFamily}. Complex-script text is not supported yet.`
+        );
+      }
+    }
   }
 }
 
@@ -312,7 +496,7 @@ export function getPdfFontFamiliesReferencedBySvg(svg: Element): string[] {
 
   const normalizedDeclarations = declaredFamilies.flatMap((value) =>
     value.split(",").map((candidate) => {
-      const trimmed = candidate.trim();
+      const trimmed = candidate.trim().replace(/\s*!important\s*$/i, "");
       const quote = trimmed[0] === '"' || trimmed[0] === "'" ? trimmed[0] : "";
       return quote && trimmed.endsWith(quote) ? trimmed.slice(1, -1).trim() : trimmed;
     })
@@ -502,7 +686,8 @@ export async function svgToPdfBlob(
   if (parsed.querySelector("parsererror")) {
     throw new Error("The generated SVG could not be parsed for PDF export.");
   }
-  const svg = parsed.documentElement;
+  const svg = parsed.documentElement as unknown as SVGSVGElement;
+  materializePdfTextStyles(svg);
   const referencedFamilies = getPdfFontFamiliesReferencedBySvg(svg);
   normalizePdfSvgFontFamilies(svg);
   const pdf = new jsPDF({
@@ -530,7 +715,8 @@ export async function svgToPdfBlob(
   pdf.setProperties(properties);
   pdf.addMetadata(buildPdfXmpMetadata(metadata), true);
   pdf.setDisplayMode("fullpage", "single");
-  await registerBundledFonts(pdf, referencedFamilies);
+  const registrations = await registerBundledFonts(pdf, referencedFamilies);
+  assertPdfTextCoverage(svg, pdf, registrations);
   try {
     await pdf.svg(svg, {
       x: 0,
