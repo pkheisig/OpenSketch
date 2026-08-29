@@ -981,6 +981,7 @@ export function EditorProvider({
         originalOpacity: number;
         activated: boolean;
         pendingAdd?: Promise<void>;
+        pendingWorkComplete?: () => void;
       }
     | undefined
   >(undefined);
@@ -1691,6 +1692,7 @@ export function EditorProvider({
       session.activated = true;
       target.set("opacity", Math.min(session.originalOpacity, DRAG_DUPLICATE_OPACITY));
       target.dirty = true;
+      session.pendingWorkComplete = beginPendingEditorWork();
       session.pendingAdd = addDragDuplicate(session);
       canvas.requestRenderAll();
     };
@@ -1715,6 +1717,10 @@ export function EditorProvider({
           ? dragDuplicate.current
           : undefined;
       if (duplicateSession) restoreDragDuplicateOpacity(duplicateSession);
+      const completeTextWork =
+        !duplicateSession && changed instanceof IText && "fonts" in document
+          ? beginPendingEditorWork()
+          : undefined;
       const finish = () => {
         if (changed instanceof IText) {
           cache.clearFontCache(changed.fontFamily);
@@ -1730,6 +1736,9 @@ export function EditorProvider({
         else cancelScheduledConnectorRefresh();
         canvas.requestRenderAll();
         commit(duplicateSession ? "Duplicate drag" : "Transform");
+        completeTextWork?.();
+        duplicateSession?.pendingWorkComplete?.();
+        if (duplicateSession) duplicateSession.pendingWorkComplete = undefined;
       };
       const finishAfterFonts = () => {
         if (!(changed instanceof IText) || !("fonts" in document)) {
@@ -3638,6 +3647,7 @@ export function EditorProvider({
     canvas,
     canvasSettings.height,
     canvasSettings.width,
+    beginPendingEditorWork,
     commit,
     copySelectionToClipboard,
     creationTool,
