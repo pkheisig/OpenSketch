@@ -285,6 +285,7 @@ function normalizeCssFontStyles(value: string): string {
 }
 
 const PDF_HIDDEN_TEXT_ATTRIBUTE = "data-opensketch-pdf-hidden";
+const PDF_VISIBLE_TEXT_ATTRIBUTE = "data-opensketch-pdf-visible";
 const PDF_DISPLAY_NONE_ATTRIBUTE = "data-opensketch-pdf-display-none";
 const PDF_ZERO_OPACITY_ATTRIBUTE = "data-opensketch-pdf-zero-opacity";
 
@@ -294,7 +295,25 @@ function isZeroPdfOpacity(value: string | null | undefined): boolean {
   return Number.isFinite(opacity) && opacity === 0;
 }
 
+type PdfVisibility = "hidden" | "visible";
+
+function declaredPdfVisibility(element: Element): PdfVisibility | undefined {
+  const attribute = element.getAttribute("visibility")?.trim().toLowerCase();
+  if (attribute === "hidden" || attribute === "collapse") return "hidden";
+  if (attribute === "visible") return "visible";
+
+  const style = element.getAttribute("style") ?? "";
+  const value = style
+    .match(/(?:^|;)\s*visibility\s*:\s*([^;]+)/i)?.[1]
+    .trim()
+    .toLowerCase();
+  if (value === "hidden" || value === "collapse") return "hidden";
+  if (value === "visible") return "visible";
+  return undefined;
+}
+
 function hasHiddenPdfTextAncestor(element: Element): boolean {
+  let resolvedVisibility: PdfVisibility | undefined;
   for (let current: Element | null = element; current; current = current.parentElement) {
     if (current.getAttribute(PDF_DISPLAY_NONE_ATTRIBUTE) === "true") return true;
     if (current.getAttribute(PDF_ZERO_OPACITY_ATTRIBUTE) === "true") return true;
@@ -309,13 +328,18 @@ function hasHiddenPdfTextAncestor(element: Element): boolean {
     if (isZeroPdfOpacity(current.getAttribute("opacity"))) return true;
     const opacity = style.match(/(?:^|;)\s*opacity\s*:\s*([^;]+)/i)?.[1];
     if (isZeroPdfOpacity(opacity)) return true;
-  }
 
-  if (element.getAttribute(PDF_HIDDEN_TEXT_ATTRIBUTE) === "true") return true;
-  const visibility = element.getAttribute("visibility")?.trim().toLowerCase();
-  if (visibility === "hidden" || visibility === "collapse") return true;
-  const style = element.getAttribute("style") ?? "";
-  return /(?:^|;)\s*visibility\s*:\s*(?:hidden|collapse)(?:\s*!important)?\s*(?:;|$)/i.test(style);
+    if (resolvedVisibility === undefined) {
+      const materializedVisibility =
+        current.getAttribute(PDF_HIDDEN_TEXT_ATTRIBUTE) === "true"
+          ? "hidden"
+          : current.getAttribute(PDF_VISIBLE_TEXT_ATTRIBUTE) === "true"
+            ? "visible"
+            : undefined;
+      resolvedVisibility = materializedVisibility ?? declaredPdfVisibility(current);
+    }
+  }
+  return resolvedVisibility === "hidden";
 }
 
 export function normalizePdfSvgFontFamilies(svg: Element): void {
@@ -390,16 +414,25 @@ function materializePdfTextStyles(svg: SVGSVGElement): void {
       else sourceElement.removeAttribute(PDF_ZERO_OPACITY_ATTRIBUTE);
     });
 
-    const sourceTextElements = Array.from(svg.querySelectorAll<SVGElement>("text, tspan"));
-    const clonedTextElements = Array.from(clone.querySelectorAll<SVGElement>("text, tspan"));
+    const sourceTextElements = Array.from(
+      svg.querySelectorAll<SVGElement>("text, tspan, textPath")
+    );
+    const clonedTextElements = Array.from(
+      clone.querySelectorAll<SVGElement>("text, tspan, textPath")
+    );
     sourceTextElements.forEach((sourceElement, index) => {
       const clonedElement = clonedTextElements[index];
       if (!clonedElement) return;
       const computed = frameWindow.getComputedStyle(clonedElement);
       const hidden =
         computed.display === "none" || ["hidden", "collapse"].includes(computed.visibility);
-      if (hidden) sourceElement.setAttribute(PDF_HIDDEN_TEXT_ATTRIBUTE, "true");
-      else sourceElement.removeAttribute(PDF_HIDDEN_TEXT_ATTRIBUTE);
+      if (hidden) {
+        sourceElement.setAttribute(PDF_HIDDEN_TEXT_ATTRIBUTE, "true");
+        sourceElement.removeAttribute(PDF_VISIBLE_TEXT_ATTRIBUTE);
+      } else {
+        sourceElement.removeAttribute(PDF_HIDDEN_TEXT_ATTRIBUTE);
+        sourceElement.setAttribute(PDF_VISIBLE_TEXT_ATTRIBUTE, "true");
+      }
       for (const [property, value] of [
         ["font-family", computed.fontFamily],
         ["font-style", computed.fontStyle],
@@ -507,7 +540,7 @@ function getPdfTextRuns(svg: SVGSVGElement): PdfTextRun[] {
 function assertPdfTextPathsSupported(svg: SVGSVGElement): void {
   for (const textPath of svg.querySelectorAll<SVGElement>("textPath")) {
     if (hasHiddenPdfTextAncestor(textPath)) continue;
-    if (/\S/u.test(textPath.textContent ?? "")) {
+    if (hasPdfRenderableText(textPath.textContent ?? "")) {
       throw new Error(
         "PDF export cannot render <textPath> content yet. Convert text to regular text before exporting."
       );
@@ -520,7 +553,7 @@ export function getPdfFontRegistrationsReferencedBySvg(svg: SVGSVGElement): PdfF
   const candidates = getPdfFontRegistrationPlan(getPdfFontFamiliesReferencedBySvg(svg));
   const used = new Set<string>();
   for (const { element, text } of getPdfTextRuns(svg)) {
-    if (!/\S/u.test(text)) continue;
+    if (!hasPdfRenderableText(text)) continue;
     const registration = requirePdfRegistrationForTextElement(element, candidates);
     used.add(`${registration.pdfFamily}|${registration.style}|${registration.weight}`);
   }
@@ -553,13 +586,17 @@ function isPdfLayoutWhitespace(character: string): boolean {
   return codePoint !== undefined && codePoint <= 0x20;
 }
 
+function hasPdfRenderableText(text: string): boolean {
+  return Array.from(text).some((character) => !isPdfLayoutWhitespace(character));
+}
+
 function assertPdfTextCoverage(
   svg: SVGSVGElement,
   pdf: import("jspdf").jsPDF,
   registrations: readonly PdfFontRegistration[]
 ): void {
   for (const { element, text } of getPdfTextRuns(svg)) {
-    if (!/\S/u.test(text)) continue;
+    if (!hasPdfRenderableText(text)) continue;
     const registration = requirePdfRegistrationForTextElement(element, registrations);
     pdf.setFont(registration.pdfFamily, registration.jsPdfStyle);
     const codeMap = pdf.getFont().metadata?.cmap?.unicode?.codeMap as

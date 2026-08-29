@@ -4009,6 +4009,9 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
       missingTypographicSpace: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible">A\u2009B</text></svg>`
       ),
+      standaloneTypographicSpace: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible">\u2009</text></svg>`
+      ),
       complexScript: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Noto Sans">नमस्ते</text></svg>`
       )
@@ -4035,6 +4038,8 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
   expect(result.transparentGlyph.error).toBeNull();
   expect(result.missingTypographicSpace.error).toContain("U+2009");
   expect(result.missingTypographicSpace.error).toContain("cannot render");
+  expect(result.standaloneTypographicSpace.error).toContain("U+2009");
+  expect(result.standaloneTypographicSpace.error).toContain("cannot render");
   expect(result.complexScript.error).toContain("cannot shape");
 });
 
