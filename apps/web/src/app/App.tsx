@@ -68,6 +68,7 @@ export function App() {
   );
   const refreshRevision = useRef(0);
   const historySyncRevision = useRef(0);
+  const historyNavigationGuard = useRef<(() => boolean) | null>(null);
 
   const toggleTheme = useCallback(() => {
     setTheme((current) => {
@@ -180,6 +181,10 @@ export function App() {
     const syncViewToHistory = () => {
       const revision = ++historySyncRevision.current;
       const projectId = historyProjectId();
+      if (projectId !== current?.id && historyNavigationGuard.current?.()) {
+        window.history.forward();
+        return;
+      }
       if (!projectId) {
         setCurrent(null);
         void refresh();
@@ -212,7 +217,7 @@ export function App() {
 
     window.addEventListener("popstate", syncViewToHistory);
     return () => window.removeEventListener("popstate", syncViewToHistory);
-  }, [refresh]);
+  }, [current?.id, refresh]);
 
   const openProject = useCallback((project: ProjectRecord) => {
     let loaded: ProjectRecord;
@@ -264,6 +269,10 @@ export function App() {
     await saveProject(project);
   }, []);
 
+  const setHistoryNavigationGuard = useCallback((guard: (() => boolean) | null) => {
+    historyNavigationGuard.current = guard;
+  }, []);
+
   if (loading) {
     return (
       <div className={`opensketch-app theme-${theme}`}>
@@ -290,6 +299,7 @@ export function App() {
             project={current}
             onProjectChange={updateProject}
             onHome={returnToProjects}
+            onNavigationGuardChange={setHistoryNavigationGuard}
             theme={theme}
             onToggleTheme={toggleTheme}
           />

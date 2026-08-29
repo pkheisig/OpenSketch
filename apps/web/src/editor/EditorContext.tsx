@@ -815,11 +815,13 @@ export function EditorProvider({
   project,
   onProjectChange,
   onRequestExit,
+  onNavigationGuardChange,
   children
 }: {
   project: ProjectRecord;
   onProjectChange: (project: ProjectRecord) => Promise<void>;
   onRequestExit: () => void;
+  onNavigationGuardChange: (guard: (() => boolean) | null) => void;
   children: ReactNode;
 }) {
   const [canvas, setCanvas] = useState<Canvas | null>(null);
@@ -894,19 +896,22 @@ export function EditorProvider({
   const importQueue = useRef<Promise<void>>(Promise.resolve());
   const pendingEditorWork = useRef(0);
   const latestProject = useRef(project);
-  const markPendingEditorWorkComplete = useCallback(() => {
-    pendingEditorWork.current = Math.max(0, pendingEditorWork.current - 1);
-    if (
-      pendingEditorWork.current === 0 &&
-      !hasUnsavedProjectRevision(
+  const hasPendingNavigationWork = useCallback(
+    () =>
+      pendingEditorWork.current > 0 ||
+      hasUnsavedProjectRevision(
         saveRevision.current,
         savedRevision.current,
         Boolean(pendingSnapshot.current)
-      )
-    ) {
+      ),
+    []
+  );
+  const markPendingEditorWorkComplete = useCallback(() => {
+    pendingEditorWork.current = Math.max(0, pendingEditorWork.current - 1);
+    if (!hasPendingNavigationWork()) {
       setSaveState((current) => (current.phase === "saving" ? { phase: "saved" } : current));
     }
-  }, []);
+  }, [hasPendingNavigationWork]);
   const trackPendingEditorWork = useCallback(
     <T,>(operation: Promise<T>) => {
       pendingEditorWork.current += 1;
@@ -1205,14 +1210,7 @@ export function EditorProvider({
 
   useEffect(() => {
     const onBeforeUnload = (event: BeforeUnloadEvent) => {
-      if (
-        pendingEditorWork.current === 0 &&
-        !hasUnsavedProjectRevision(
-          saveRevision.current,
-          savedRevision.current,
-          Boolean(pendingSnapshot.current)
-        )
-      ) {
+      if (!hasPendingNavigationWork()) {
         return;
       }
       event.preventDefault();
@@ -1220,7 +1218,12 @@ export function EditorProvider({
     };
     window.addEventListener("beforeunload", onBeforeUnload);
     return () => window.removeEventListener("beforeunload", onBeforeUnload);
-  }, []);
+  }, [hasPendingNavigationWork]);
+
+  useEffect(() => {
+    onNavigationGuardChange(hasPendingNavigationWork);
+    return () => onNavigationGuardChange(null);
+  }, [hasPendingNavigationWork, onNavigationGuardChange]);
 
   const commit = useCallback(
     (label = "Change") => {

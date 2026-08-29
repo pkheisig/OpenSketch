@@ -4291,6 +4291,10 @@ test("keeps the latest project edits recoverable when autosave fails", async ({ 
   });
   expect(guarded).toBe(true);
 
+  await page.goBack();
+  await expect(page.locator(".editor-shell")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Projects" })).toHaveCount(0);
+
   const recoveryDownload = page.waitForEvent("download");
   await errorStatus.getByRole("button", { name: "Export recovery copy" }).click();
   const recovery = await recoveryDownload;

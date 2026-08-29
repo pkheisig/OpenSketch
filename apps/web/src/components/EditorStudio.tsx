@@ -14,12 +14,14 @@ export function EditorStudio({
   project,
   onProjectChange,
   onHome,
+  onNavigationGuardChange,
   theme,
   onToggleTheme
 }: {
   project: ProjectRecord;
   onProjectChange: (project: ProjectRecord) => Promise<void>;
   onHome: () => void;
+  onNavigationGuardChange: (guard: (() => boolean) | null) => void;
   theme: "light" | "dark";
   onToggleTheme: () => void;
 }) {
@@ -39,6 +41,7 @@ export function EditorStudio({
       project={project}
       onProjectChange={onProjectChange}
       onRequestExit={onHome}
+      onNavigationGuardChange={onNavigationGuardChange}
     >
       <main className="editor-shell">
         <Suspense fallback={<header className="top-toolbar" aria-hidden="true" />}>
