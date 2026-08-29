@@ -160,7 +160,7 @@ export function TopToolbar({
           onChange={(event) => {
             const next = event.target.value;
             setTitle(next);
-            editor.setProjectName(next);
+            editor.setProjectName(next.trim() || "Untitled figure");
           }}
           onBlur={(event) => {
             const next = event.target.value.trim() || "Untitled figure";

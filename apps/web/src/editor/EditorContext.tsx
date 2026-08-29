@@ -897,6 +897,7 @@ export function EditorProvider({
   const pendingEditorWork = useRef(0);
   const pendingEditorWorkPromises = useRef(new Set<Promise<void>>());
   const latestProject = useRef(project);
+  const initialProjectObjects = useRef(project.objects);
   const hasPendingNavigationWork = useCallback(
     () =>
       pendingEditorWork.current > 0 ||
@@ -1226,14 +1227,16 @@ export function EditorProvider({
 
   const persist = useCallback(
     (snapshot?: string) => {
-      if (!canvas) return;
       const revision = saveRevision.current + 1;
       saveRevision.current = revision;
-      pendingSnapshot.current = { snapshot: snapshot ?? serialize(), revision };
+      const snapshotToSave =
+        snapshot ??
+        (canvas && canvasReady ? serialize() : JSON.stringify(initialProjectObjects.current));
+      pendingSnapshot.current = { snapshot: snapshotToSave, revision };
       setSaveState((current) => (current.phase === "saving" ? current : { phase: "saving" }));
       void enqueuePendingSave().catch(() => undefined);
     },
-    [canvas, enqueuePendingSave, serialize]
+    [canvas, canvasReady, enqueuePendingSave, serialize]
   );
 
   useEffect(() => {
@@ -1986,22 +1989,27 @@ export function EditorProvider({
   const restoreAt = useCallback(
     async (index: number) => {
       if (!canvas || !history.current[index]) return;
+      const complete = beginPendingEditorWork();
       restoring.current = true;
-      await canvas.loadFromJSON(history.current[index]);
-      assignSceneIdentities(canvas.getObjects());
-      configureCanvasAssets(canvas.getObjects());
-      assertUniqueSceneObjectIds(canvas);
-      refreshConnectors();
-      canvas.requestRenderAll();
-      historyIndex.current = index;
-      const repairedSnapshot = serialize();
-      history.current[index] = repairedSnapshot;
-      setSelection([]);
-      updateHistoryState();
-      restoring.current = false;
-      persist(repairedSnapshot);
+      try {
+        await canvas.loadFromJSON(history.current[index]);
+        assignSceneIdentities(canvas.getObjects());
+        configureCanvasAssets(canvas.getObjects());
+        assertUniqueSceneObjectIds(canvas);
+        refreshConnectors();
+        canvas.requestRenderAll();
+        historyIndex.current = index;
+        const repairedSnapshot = serialize();
+        history.current[index] = repairedSnapshot;
+        setSelection([]);
+        updateHistoryState();
+        persist(repairedSnapshot);
+      } finally {
+        restoring.current = false;
+        complete();
+      }
     },
-    [canvas, persist, refreshConnectors, serialize, updateHistoryState]
+    [beginPendingEditorWork, canvas, persist, refreshConnectors, serialize, updateHistoryState]
   );
 
   const undo = useCallback(() => {
