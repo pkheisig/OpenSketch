@@ -3407,6 +3407,7 @@ export function EditorProvider({
         ...latestProject.current,
         name: name.trim() || "Untitled figure"
       };
+      saveRevision.current += 1;
       const pending = pendingTitlePersistence.current ?? {
         timer: 0,
         complete: beginPendingEditorWork()
