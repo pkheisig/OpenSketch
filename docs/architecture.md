@@ -125,10 +125,15 @@ physical-resolution (`pHYs`) chunk. The same manifest is written as an
 uncompressed UTF-8 `iTXt` chunk with the `OpenSketch:provenance` keyword.
 
 PDF consumes the same generated SVG through `svg2pdf.js` and jsPDF, preserving
-supported vector paths and text. Bundled Source Sans 3 fonts keep default text
-searchable and visually faithful. PDF properties carry the title, description,
-author, generator, and artwork credit; a standards-compatible XMP packet carries
-the canonical manifest. Journal and image-processing workflows may discard
-format metadata, so the Export dialog also provides a human-readable `.txt`
-credits sidecar containing the same source, author, license, and attribution
-records.
+supported vector paths and text. A canonical editor/PDF font registry maps each
+selectable family, weight, and style to merged bundled TrueType faces; the
+system-only Georgia choice maps explicitly to bundled Noto Serif. PDF properties
+carry the title, description, optional document author, OpenSketch creator, and
+artwork credit. The document author is absent unless explicitly supplied, while
+asset authors remain in the provenance manifest. Atkinson Hyperlegible and Lato
+have no native 600 face in the bundled distribution, so that editor choice maps
+to their 700 face, matching browser font selection. A standards-compatible XMP
+packet carries the canonical manifest. Journal and image-processing workflows
+may discard format metadata, so the Export dialog also provides a human-readable
+`.txt` credits sidecar containing the same source, author, license, and
+attribution records.

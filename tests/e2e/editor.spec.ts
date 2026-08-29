@@ -191,7 +191,10 @@ async function expectLayerCount(page: Page, count: number) {
 
 async function placeTool(page: Page, name: string | RegExp, xRatio = 0.5, yRatio = 0.5) {
   if (name === "Text") {
-    await page.getByRole("button", { name: "Text", exact: true }).click();
+    await page
+      .getByLabel("Editor tools")
+      .getByRole("button", { name: "Text", exact: true })
+      .click();
   } else if (name === "Line" || name === "Arrow") {
     const lineMenu = page.getByRole("menu", { name: "Line and arrow tools" });
     if (!(await lineMenu.isVisible().catch(() => false))) {
@@ -766,7 +769,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   const pdf = await PDFDocument.load(pdfBytes);
   expect(pdf.getPageCount()).toBe(1);
   expect(pdf.getTitle()).toBe("Untitled figure");
-  expect(pdf.getAuthor()).toBe("Paul Heisig");
+  expect(pdf.getAuthor()).toBeUndefined();
   expect(pdf.getCreator()).toBe("OpenSketch");
   expect(pdf.getSubject()).toContain(assetRecord.credit);
   expect(pdfBytes.toString("utf8")).toContain("opensketch:provenanceManifest");
@@ -3802,6 +3805,58 @@ test("uses title-free insert panels and supports the expanded offline font catal
   await page.getByRole("tab", { name: "Imports", exact: true }).click();
   await expect(page.getByRole("heading", { name: "Imports", exact: true })).toHaveCount(0);
   await expect(page.getByText(/Imported SVGs are sanitized locally/)).toHaveCount(0);
+});
+
+test("embeds every selectable editor font in PDF output", async ({ page }) => {
+  test.setTimeout(120_000);
+  const fonts = [
+    "Source Sans 3",
+    "Inter",
+    "Atkinson Hyperlegible",
+    "IBM Plex Sans",
+    "Lato",
+    "Noto Sans",
+    "Source Serif 4",
+    "IBM Plex Serif",
+    "Merriweather",
+    "Noto Serif",
+    "STIX Two Text",
+    "Roboto Mono",
+    "Georgia"
+  ];
+
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+
+  for (const [index, font] of fonts.entries()) {
+    await placeTool(page, "Text", index % 2 === 0 ? 0.25 : 0.75, 0.1 + index * 0.06);
+    await page.keyboard.type(`PDF ${font}`);
+    await page.keyboard.press("Escape");
+    await ensureEditorOpen(page);
+    await selectUiOption(page, "Font", font);
+    await selectUiOption(page, "Weight", index % 2 === 0 ? "Regular" : "Bold");
+    if (index === 2) {
+      const italic = page.locator(".inspector-embedded .segmented-icons.text-style button").first();
+      await italic.click();
+      await expect(italic).toHaveClass(/active/);
+    }
+  }
+
+  await page.getByRole("button", { name: "Export" }).click();
+  await page.getByRole("tab", { name: /PDF/ }).click();
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export PDF" }).click();
+  const path = await (await downloadPromise).path();
+  expect(path).not.toBeNull();
+  const pdfBytes = await readFile(path!);
+  const rawPdf = pdfBytes.toString("latin1");
+  const expectedFamilies = new Set(fonts.map((font) => (font === "Georgia" ? "Noto Serif" : font)));
+  for (const family of expectedFamilies) {
+    const pdfName = family.replace(/ /g, "#20");
+    expect(rawPdf).toContain(`/BaseFont /${pdfName}`);
+  }
+  expect(rawPdf).not.toContain("/BaseFont /Times");
 });
 
 test("shows favorites only in a dedicated asset category", async ({ page }) => {
