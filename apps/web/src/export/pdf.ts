@@ -293,6 +293,28 @@ function normalizeCssFontStyles(value: string): string {
   );
 }
 
+const PDF_HIDDEN_TEXT_ATTRIBUTE = "data-opensketch-pdf-hidden";
+
+function hasHiddenPdfTextAncestor(element: Element): boolean {
+  for (let current: Element | null = element; current; current = current.parentElement) {
+    if (current.getAttribute(PDF_HIDDEN_TEXT_ATTRIBUTE) === "true") return true;
+
+    const display = current.getAttribute("display")?.trim().toLowerCase();
+    if (display === "none") return true;
+    const visibility = current.getAttribute("visibility")?.trim().toLowerCase();
+    if (visibility === "hidden" || visibility === "collapse") return true;
+
+    const style = current.getAttribute("style") ?? "";
+    if (/(?:^|;)\s*display\s*:\s*none(?:\s*!important)?\s*(?:;|$)/i.test(style)) {
+      return true;
+    }
+    if (/(?:^|;)\s*visibility\s*:\s*(?:hidden|collapse)(?:\s*!important)?\s*(?:;|$)/i.test(style)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export function normalizePdfSvgFontFamilies(svg: Element): void {
   const elements = [
     svg,
@@ -355,6 +377,10 @@ function materializePdfTextStyles(svg: SVGSVGElement): void {
         );
       }
       const computed = frameWindow.getComputedStyle(clonedElement);
+      const hidden =
+        computed.display === "none" || ["hidden", "collapse"].includes(computed.visibility);
+      if (hidden) sourceElement.setAttribute(PDF_HIDDEN_TEXT_ATTRIBUTE, "true");
+      else sourceElement.removeAttribute(PDF_HIDDEN_TEXT_ATTRIBUTE);
       for (const [property, value] of [
         ["font-family", computed.fontFamily],
         ["font-style", computed.fontStyle],
@@ -430,7 +456,11 @@ function getPdfTextRuns(svg: SVGSVGElement): PdfTextRun[] {
     if (node.nodeType === 3) {
       const parent = node.parentElement;
       const localName = parent?.localName?.toLowerCase();
-      if (parent && (localName === "text" || localName === "tspan")) {
+      if (
+        parent &&
+        (localName === "text" || localName === "tspan") &&
+        !hasHiddenPdfTextAncestor(parent)
+      ) {
         runs.push({ element: parent as unknown as SVGElement, text: node.nodeValue ?? "" });
       }
       return;
