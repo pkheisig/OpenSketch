@@ -206,6 +206,7 @@ const RESTORABLE_GROUP_PROPERTIES = [
 const MAX_HISTORY = 120;
 const SVG_CACHE_LIMIT = 64;
 const DRAG_DUPLICATE_OPACITY = 0.35;
+const TITLE_PERSISTENCE_DELAY_MS = 250;
 const svgStringCache = new Map<string, string>();
 let assetManifestPromise: Promise<typeof import("@/assets/manifest")> | undefined;
 let bundledVariantsPromise: Promise<Map<string, AssetVariant>> | undefined;
@@ -896,6 +897,10 @@ export function EditorProvider({
   const importQueue = useRef<Promise<void>>(Promise.resolve());
   const pendingEditorWork = useRef(0);
   const pendingEditorWorkPromises = useRef(new Set<Promise<void>>());
+  const pendingTitlePersistence = useRef<{
+    timer: number;
+    complete: () => void;
+  } | null>(null);
   const latestProject = useRef(project);
   const initialProjectObjects = useRef(project.objects);
   const hasPendingNavigationWork = useCallback(
@@ -1174,10 +1179,38 @@ export function EditorProvider({
     return operation;
   }, [saveSnapshot]);
 
+  const persist = useCallback(
+    (snapshot?: string) => {
+      const revision = saveRevision.current + 1;
+      saveRevision.current = revision;
+      const snapshotToSave =
+        snapshot ??
+        (canvas && canvasReady ? serialize() : JSON.stringify(initialProjectObjects.current));
+      pendingSnapshot.current = { snapshot: snapshotToSave, revision };
+      setSaveState((current) => (current.phase === "saving" ? current : { phase: "saving" }));
+      void enqueuePendingSave().catch(() => undefined);
+    },
+    [canvas, canvasReady, enqueuePendingSave, serialize]
+  );
+
+  const flushPendingTitle = useCallback(() => {
+    const pending = pendingTitlePersistence.current;
+    if (!pending) return;
+    window.clearTimeout(pending.timer);
+    pendingTitlePersistence.current = null;
+    try {
+      persist();
+    } finally {
+      pending.complete();
+    }
+  }, [persist]);
+
   const flushSave = useCallback(async () => {
     // A toolbar click can follow a library click before its SVG has finished
     // parsing. Treat that insertion as part of the action being flushed.
+    flushPendingTitle();
     await Promise.all([assetInsertQueue.current, importQueue.current]);
+    await waitForPendingEditorWork();
     while (true) {
       await saveQueue.current;
       if (!pendingSnapshot.current) break;
@@ -1199,7 +1232,7 @@ export function EditorProvider({
       throw lastSaveError.current ?? new Error("The latest project revision was not saved.");
     }
     await refreshThumbnail();
-  }, [enqueuePendingSave, refreshThumbnail]);
+  }, [enqueuePendingSave, flushPendingTitle, refreshThumbnail, waitForPendingEditorWork]);
 
   const retrySave = useCallback(() => {
     if (
@@ -1224,20 +1257,6 @@ export function EditorProvider({
         exitPending.current = false;
       });
   }, [flushSave, onRequestExit]);
-
-  const persist = useCallback(
-    (snapshot?: string) => {
-      const revision = saveRevision.current + 1;
-      saveRevision.current = revision;
-      const snapshotToSave =
-        snapshot ??
-        (canvas && canvasReady ? serialize() : JSON.stringify(initialProjectObjects.current));
-      pendingSnapshot.current = { snapshot: snapshotToSave, revision };
-      setSaveState((current) => (current.phase === "saving" ? current : { phase: "saving" }));
-      void enqueuePendingSave().catch(() => undefined);
-    },
-    [canvas, canvasReady, enqueuePendingSave, serialize]
-  );
 
   useEffect(() => {
     const onBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -3384,10 +3403,27 @@ export function EditorProvider({
 
   const setProjectName = useCallback(
     (name: string) => {
-      latestProject.current = { ...latestProject.current, name };
-      persist();
+      latestProject.current = {
+        ...latestProject.current,
+        name: name.trim() || "Untitled figure"
+      };
+      const pending = pendingTitlePersistence.current ?? {
+        timer: 0,
+        complete: beginPendingEditorWork()
+      };
+      pendingTitlePersistence.current = pending;
+      window.clearTimeout(pending.timer);
+      pending.timer = window.setTimeout(() => {
+        if (pendingTitlePersistence.current !== pending) return;
+        pendingTitlePersistence.current = null;
+        try {
+          persist();
+        } finally {
+          pending.complete();
+        }
+      }, TITLE_PERSISTENCE_DELAY_MS);
     },
-    [persist]
+    [beginPendingEditorWork, persist]
   );
   const setProjectDescription = useCallback(
     (description: string) => {
@@ -3399,8 +3435,11 @@ export function EditorProvider({
   );
 
   const exportProject = useCallback(async () => {
+    flushPendingTitle();
     await waitForPendingEditorWork();
-    const objects = JSON.parse(serialize()) as Record<string, unknown>;
+    const snapshot =
+      canvas && canvasReady ? serialize() : JSON.stringify(initialProjectObjects.current);
+    const objects = JSON.parse(snapshot) as Record<string, unknown>;
     downloadProject({
       ...latestProject.current,
       updatedAt: new Date().toISOString(),
@@ -3409,7 +3448,7 @@ export function EditorProvider({
       usedAssetIds: assetIdsFromSnapshot(objects),
       thumbnail: undefined
     });
-  }, [serialize, waitForPendingEditorWork]);
+  }, [canvas, canvasReady, flushPendingTitle, serialize, waitForPendingEditorWork]);
 
   const buildSvg = useCallback(
     (title = latestProject.current.name, description = latestProject.current.description ?? "") => {

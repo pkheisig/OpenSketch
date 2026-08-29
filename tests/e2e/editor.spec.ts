@@ -386,6 +386,54 @@ test("clears the text tool when another sidebar section or the page is clicked",
   await expect(textTool).toHaveAttribute("aria-pressed", "false");
 });
 
+test("debounces focused title saves and keeps blank titles loadable", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  const title = page.getByLabel("Document title");
+
+  await page.evaluate(() => {
+    const originalPut = IDBObjectStore.prototype.put;
+    let projectPuts = 0;
+    Object.defineProperty(window, "__opensketchProjectPutCount", {
+      configurable: true,
+      get: () => projectPuts
+    });
+    IDBObjectStore.prototype.put = new Proxy(originalPut, {
+      apply(target, thisArg, args) {
+        if ((thisArg as IDBObjectStore).name === "projects") projectPuts += 1;
+        return Reflect.apply(target, thisArg, args);
+      }
+    });
+  });
+
+  await title.fill("");
+  await title.pressSequentially("Draft figure");
+  await expect(page.locator('[data-save-state="saving"]')).toBeVisible();
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
+  expect(
+    await page.evaluate(
+      () =>
+        (window as typeof window & { __opensketchProjectPutCount?: number })
+          .__opensketchProjectPutCount
+    )
+  ).toBe(1);
+
+  await title.fill("   ");
+  await expect(page.locator('[data-save-state="saving"]')).toBeVisible();
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
+  expect(
+    await page.evaluate(
+      () =>
+        (window as typeof window & { __opensketchProjectPutCount?: number })
+          .__opensketchProjectPutCount
+    )
+  ).toBe(2);
+
+  await page.reload();
+  await expect(page.locator(".editor-shell")).toBeVisible();
+  await expect(page.getByLabel("Document title")).toHaveValue("Untitled figure");
+});
+
 test("rotates an object by dragging its rotation handle", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
@@ -919,8 +967,12 @@ test("extends a free line from one endpoint without scaling both dimensions", as
         request.onerror = () => reject(request.error);
       });
       const project = await new Promise<Record<string, any> | null>((resolve, reject) => {
-        const request = database.transaction("projects", "readonly").objectStore("projects").get(projectId);
-        request.onsuccess = () => resolve((request.result as Record<string, any> | undefined) ?? null);
+        const request = database
+          .transaction("projects", "readonly")
+          .objectStore("projects")
+          .get(projectId);
+        request.onsuccess = () =>
+          resolve((request.result as Record<string, any> | undefined) ?? null);
         request.onerror = () => reject(request.error);
       });
       database.close();
@@ -4303,9 +4355,9 @@ test("keeps the latest project edits recoverable when autosave fails", async ({ 
       window.setTimeout(() => originalRead.call(this, blob), 1200);
     };
   });
-  await page.locator('input[type="file"][accept*="image/svg+xml"]').setInputFiles(
-    "tests/fixtures/nested-groups.svg"
-  );
+  await page
+    .locator('input[type="file"][accept*="image/svg+xml"]')
+    .setInputFiles("tests/fixtures/nested-groups.svg");
   await expect(errorStatus).toBeVisible();
 
   const guarded = await page.evaluate(() => {
