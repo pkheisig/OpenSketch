@@ -4328,6 +4328,56 @@ test("keeps the latest project edits recoverable when autosave fails", async ({ 
   await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
 });
 
+test("guards browser exit while an image import is still processing", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Imports", exact: true }).click();
+
+  await page.evaluate(() => {
+    const originalRead = FileReader.prototype.readAsDataURL;
+    const target = window as typeof window & {
+      __opensketchOriginalReadAsDataURL?: typeof originalRead;
+    };
+    Object.defineProperty(target, "__opensketchOriginalReadAsDataURL", {
+      configurable: true,
+      value: originalRead
+    });
+    FileReader.prototype.readAsDataURL = function (this: FileReader, blob: Blob) {
+      window.setTimeout(() => originalRead.call(this, blob), 800);
+    };
+  });
+
+  await page
+    .locator('input[type="file"][accept*="image/svg+xml"]')
+    .setInputFiles("tests/fixtures/nested-groups.svg");
+  await expect(page.locator('[data-save-state="saving"]')).toBeVisible();
+
+  const guarded = await page.evaluate(() => {
+    const event = new Event("beforeunload", { cancelable: true });
+    window.dispatchEvent(event);
+    return event.defaultPrevented;
+  });
+  expect(guarded).toBe(true);
+
+  await page.evaluate(() => {
+    const target = window as typeof window & {
+      __opensketchOriginalReadAsDataURL?: typeof FileReader.prototype.readAsDataURL;
+    };
+    const originalRead = target.__opensketchOriginalReadAsDataURL;
+    if (!originalRead) throw new Error("The original FileReader method was not captured.");
+    FileReader.prototype.readAsDataURL = originalRead;
+  });
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
+
+  const unguarded = await page.evaluate(() => {
+    const event = new Event("beforeunload", { cancelable: true });
+    window.dispatchEvent(event);
+    return event.defaultPrevented;
+  });
+  expect(unguarded).toBe(false);
+});
+
 test("exports an atomic SVG asset with its vector parts intact", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();

@@ -892,7 +892,36 @@ export function EditorProvider({
   const [saveState, setSaveState] = useState<ProjectSaveState>({ phase: "saved" });
   const assetInsertQueue = useRef<Promise<void>>(Promise.resolve());
   const importQueue = useRef<Promise<void>>(Promise.resolve());
+  const pendingEditorWork = useRef(0);
   const latestProject = useRef(project);
+  const markPendingEditorWorkComplete = useCallback(() => {
+    pendingEditorWork.current = Math.max(0, pendingEditorWork.current - 1);
+    if (
+      pendingEditorWork.current === 0 &&
+      !hasUnsavedProjectRevision(
+        saveRevision.current,
+        savedRevision.current,
+        Boolean(pendingSnapshot.current)
+      )
+    ) {
+      setSaveState((current) => (current.phase === "saving" ? { phase: "saved" } : current));
+    }
+  }, []);
+  const trackPendingEditorWork = useCallback(
+    <T,>(operation: Promise<T>) => {
+      pendingEditorWork.current += 1;
+      setSaveState((current) =>
+        current.phase === "error"
+          ? current
+          : current.phase === "saving"
+            ? current
+            : { phase: "saving" }
+      );
+      void operation.then(markPendingEditorWorkComplete, markPendingEditorWorkComplete);
+      return operation;
+    },
+    [markPendingEditorWorkComplete]
+  );
   const initialProjectImports = useRef({
     imports: project.uploads,
     updatedAt: project.updatedAt
@@ -1176,6 +1205,7 @@ export function EditorProvider({
   useEffect(() => {
     const onBeforeUnload = (event: BeforeUnloadEvent) => {
       if (
+        pendingEditorWork.current === 0 &&
         !hasUnsavedProjectRevision(
           saveRevision.current,
           savedRevision.current,
@@ -2386,88 +2416,94 @@ export function EditorProvider({
 
   const addAsset = useCallback(
     (family: AssetFamily, variant: AssetVariant, point?: Point) => {
-      const operation = assetInsertQueue.current.then(async () => {
-        if (!canvas) return;
-        const group = await createBundledAssetGroup(family, variant);
-        const scale = assetInsertionScale(family.title, group.width || 1, group.height || 1);
-        group.scale(scale);
-        addObject(group, family.title, "nih-asset", point);
-      });
+      const operation = trackPendingEditorWork(
+        assetInsertQueue.current.then(async () => {
+          if (!canvas) return;
+          const group = await createBundledAssetGroup(family, variant);
+          const scale = assetInsertionScale(family.title, group.width || 1, group.height || 1);
+          group.scale(scale);
+          addObject(group, family.title, "nih-asset", point);
+        })
+      );
       assetInsertQueue.current = operation.catch(() => undefined);
       return operation;
     },
-    [addObject, canvas]
+    [addObject, canvas, trackPendingEditorWork]
   );
 
   const addTemplate = useCallback(
     (template: AssetTemplate, point?: Point) => {
-      const operation = assetInsertQueue.current.then(async () => {
-        if (!canvas) return;
-        const [object] = (await util.enlivenObjects([
-          structuredClone(template.object)
-        ])) as FabricObject[];
-        if (!object) return;
-        assignFreshCloneIds(object);
-        configureCanvasAssets([object]);
-        addObject(object, template.name, "group", point);
-      });
+      const operation = trackPendingEditorWork(
+        assetInsertQueue.current.then(async () => {
+          if (!canvas) return;
+          const [object] = (await util.enlivenObjects([
+            structuredClone(template.object)
+          ])) as FabricObject[];
+          if (!object) return;
+          assignFreshCloneIds(object);
+          configureCanvasAssets([object]);
+          addObject(object, template.name, "group", point);
+        })
+      );
       assetInsertQueue.current = operation.catch(() => undefined);
       return operation;
     },
-    [addObject, canvas]
+    [addObject, canvas, trackPendingEditorWork]
   );
 
   const setAssetVariant = useCallback(
     (variantId: string) => {
-      const operation = assetInsertQueue.current.then(async () => {
-        if (!canvas) return;
-        const current = canvas.getActiveObject();
-        if (!(current instanceof Group) || !current.familyId || current.assetId === variantId)
-          return;
-        const { assetManifest } = await loadAssetManifest();
-        const family = assetManifest.families.find(
-          (candidate) => candidate.familyId === current.familyId
-        );
-        const variant = family?.variants.find((candidate) => candidate.id === variantId);
-        if (!family || !variant) return;
+      const operation = trackPendingEditorWork(
+        assetInsertQueue.current.then(async () => {
+          if (!canvas) return;
+          const current = canvas.getActiveObject();
+          if (!(current instanceof Group) || !current.familyId || current.assetId === variantId)
+            return;
+          const { assetManifest } = await loadAssetManifest();
+          const family = assetManifest.families.find(
+            (candidate) => candidate.familyId === current.familyId
+          );
+          const variant = family?.variants.find((candidate) => candidate.id === variantId);
+          if (!family || !variant) return;
 
-        const replacement = await createBundledAssetGroup(family, variant);
-        if (!canvas.getObjects().includes(current)) return;
-        const center = current.getCenterPoint();
-        const renderedMaxSide = Math.max(current.getScaledWidth(), current.getScaledHeight());
-        const replacementMaxSide = Math.max(replacement.width || 1, replacement.height || 1);
-        const scale = renderedMaxSide / replacementMaxSide;
-        replacement.set({
-          objectId: current.objectId,
-          name: current.name ?? family.title,
-          OpenSketchType: "nih-asset",
-          scaleX: scale,
-          scaleY: scale,
-          angle: current.angle,
-          flipX: current.flipX,
-          flipY: current.flipY,
-          opacity: current.opacity,
-          visible: current.visible,
-          selectable: current.selectable,
-          evented: current.evented
-        });
-        replacement.setPositionByOrigin(center, "center", "center");
-        replacement.setCoords();
-        assignSceneIdentities(replacement);
+          const replacement = await createBundledAssetGroup(family, variant);
+          if (!canvas.getObjects().includes(current)) return;
+          const center = current.getCenterPoint();
+          const renderedMaxSide = Math.max(current.getScaledWidth(), current.getScaledHeight());
+          const replacementMaxSide = Math.max(replacement.width || 1, replacement.height || 1);
+          const scale = renderedMaxSide / replacementMaxSide;
+          replacement.set({
+            objectId: current.objectId,
+            name: current.name ?? family.title,
+            OpenSketchType: "nih-asset",
+            scaleX: scale,
+            scaleY: scale,
+            angle: current.angle,
+            flipX: current.flipX,
+            flipY: current.flipY,
+            opacity: current.opacity,
+            visible: current.visible,
+            selectable: current.selectable,
+            evented: current.evented
+          });
+          replacement.setPositionByOrigin(center, "center", "center");
+          replacement.setCoords();
+          assignSceneIdentities(replacement);
 
-        const index = canvas.getObjects().indexOf(current);
-        canvas.remove(current);
-        canvas.insertAt(index, replacement);
-        canvas.setActiveObject(replacement);
-        setSelection([replacement]);
-        if (replacement.objectId) refreshConnectors(replacement.objectId);
-        canvas.requestRenderAll();
-        commit("Change asset variant");
-      });
+          const index = canvas.getObjects().indexOf(current);
+          canvas.remove(current);
+          canvas.insertAt(index, replacement);
+          canvas.setActiveObject(replacement);
+          setSelection([replacement]);
+          if (replacement.objectId) refreshConnectors(replacement.objectId);
+          canvas.requestRenderAll();
+          commit("Change asset variant");
+        })
+      );
       assetInsertQueue.current = operation.catch(() => undefined);
       return operation;
     },
-    [canvas, commit, refreshConnectors]
+    [canvas, commit, refreshConnectors, trackPendingEditorWork]
   );
 
   const placeImportedMedia = useCallback(
@@ -2517,60 +2553,64 @@ export function EditorProvider({
 
   const addImportedMedia = useCallback(
     (media: ImportedMediaRecord, point?: Point) => {
-      const operation = importQueue.current.then(async () => {
-        await placeImportedMedia(media, point);
-      });
+      const operation = trackPendingEditorWork(
+        importQueue.current.then(async () => {
+          await placeImportedMedia(media, point);
+        })
+      );
       importQueue.current = operation.catch(() => undefined);
       return operation;
     },
-    [placeImportedMedia]
+    [placeImportedMedia, trackPendingEditorWork]
   );
 
   const importMedia = useCallback(
     (file: File, point?: Point) => {
-      const operation = importQueue.current.then(async () => {
-        const extension = file.name.toLowerCase().split(".").at(-1);
-        const inferredMimeType =
-          extension === "svg"
-            ? "image/svg+xml"
-            : extension === "jpg" || extension === "jpeg"
-              ? "image/jpeg"
-              : extension === "png"
-                ? "image/png"
-                : extension === "webp"
-                  ? "image/webp"
-                  : file.type;
-        if (
-          !["image/svg+xml", "image/png", "image/jpeg", "image/webp"].includes(inferredMimeType)
-        ) {
-          throw new Error("Choose an SVG, PNG, JPEG, or WebP image.");
-        }
-        if (file.size > 25 * 1024 * 1024) {
-          throw new Error("Images must be 25 MB or smaller.");
-        }
-        const importId = crypto.randomUUID();
-        let dataUrl = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(String(reader.result));
-          reader.onerror = () => reject(reader.error);
-          reader.readAsDataURL(file);
-        });
-        if (inferredMimeType === "image/svg+xml") {
-          const source = sanitizeImportedSvg(await file.text(), `import-${importId}`);
-          dataUrl = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(source)))}`;
-        }
-        const media: ImportedMediaRecord = {
-          id: importId,
-          name: file.name,
-          mimeType: inferredMimeType,
-          dataUrl
-        };
-        return placeImportedMedia(media, point);
-      });
+      const operation = trackPendingEditorWork(
+        importQueue.current.then(async () => {
+          const extension = file.name.toLowerCase().split(".").at(-1);
+          const inferredMimeType =
+            extension === "svg"
+              ? "image/svg+xml"
+              : extension === "jpg" || extension === "jpeg"
+                ? "image/jpeg"
+                : extension === "png"
+                  ? "image/png"
+                  : extension === "webp"
+                    ? "image/webp"
+                    : file.type;
+          if (
+            !["image/svg+xml", "image/png", "image/jpeg", "image/webp"].includes(inferredMimeType)
+          ) {
+            throw new Error("Choose an SVG, PNG, JPEG, or WebP image.");
+          }
+          if (file.size > 25 * 1024 * 1024) {
+            throw new Error("Images must be 25 MB or smaller.");
+          }
+          const importId = crypto.randomUUID();
+          let dataUrl = await new Promise<string>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(String(reader.result));
+            reader.onerror = () => reject(reader.error);
+            reader.readAsDataURL(file);
+          });
+          if (inferredMimeType === "image/svg+xml") {
+            const source = sanitizeImportedSvg(await file.text(), `import-${importId}`);
+            dataUrl = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(source)))}`;
+          }
+          const media: ImportedMediaRecord = {
+            id: importId,
+            name: file.name,
+            mimeType: inferredMimeType,
+            dataUrl
+          };
+          return placeImportedMedia(media, point);
+        })
+      );
       importQueue.current = operation.then(() => undefined).catch(() => undefined);
       return operation;
     },
-    [placeImportedMedia]
+    [placeImportedMedia, trackPendingEditorWork]
   );
 
   const selectParentAsset = useCallback(() => {
