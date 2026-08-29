@@ -76,7 +76,6 @@ export function getPdfFontRegistrationPlan(
   const selectedDefinitions = TEXT_FONT_REGISTRY.filter(({ family }) =>
     requestedFamilies.has(family)
   );
-  if (selectedDefinitions.length === 0) selectedDefinitions.push(TEXT_FONT_REGISTRY[0]);
 
   const seenPdfFaces = new Set<string>();
   return selectedDefinitions.flatMap((definition) => {
@@ -203,14 +202,36 @@ export function normalizePdfSvgFontFamilies(svg: Element): void {
 }
 
 export function getPdfFontFamiliesReferencedBySvg(svg: Element): string[] {
-  const serialized = new XMLSerializer().serializeToString(svg);
-  const referenced = TEXT_FONT_REGISTRY.filter(({ family }) => serialized.includes(family)).map(
+  if (!svg.querySelector("text, tspan")) return [];
+
+  const declaredFamilies: string[] = [];
+  const collectDeclarations = (value: string | null) => {
+    if (!value) return;
+    const matches = value.matchAll(/(?:^|[;{])\s*font-family\s*:\s*([^;}{]+)/gi);
+    for (const match of matches) declaredFamilies.push(match[1]);
+  };
+
+  const elements = [svg, ...Array.from(svg.querySelectorAll<SVGElement>("[font-family], [style]"))];
+  for (const element of elements) {
+    const attribute = element.getAttribute("font-family");
+    if (attribute) declaredFamilies.push(attribute);
+    collectDeclarations(element.getAttribute("style"));
+  }
+  for (const style of svg.querySelectorAll("style")) {
+    collectDeclarations(style.textContent);
+  }
+
+  const normalizedDeclarations = declaredFamilies.flatMap((value) =>
+    value.split(",").map((candidate) => {
+      const trimmed = candidate.trim();
+      const quote = trimmed[0] === '"' || trimmed[0] === "'" ? trimmed[0] : "";
+      return quote && trimmed.endsWith(quote) ? trimmed.slice(1, -1).trim() : trimmed;
+    })
+  );
+  const normalizedSet = new Set(normalizedDeclarations.map((family) => family.toLowerCase()));
+  return TEXT_FONT_REGISTRY.filter(({ family }) => normalizedSet.has(family.toLowerCase())).map(
     ({ family }) => family
   );
-  if (referenced.length === 0 && svg.querySelector("text")) {
-    return [TEXT_FONT_REGISTRY[0].family];
-  }
-  return referenced;
 }
 
 function escapeXml(value: string): string {

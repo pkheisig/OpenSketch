@@ -3879,6 +3879,43 @@ test("embeds every selectable editor font in PDF output", async ({ page }) => {
   expect(rawPdf).not.toContain("/BaseFont /Times");
 });
 
+test("waits for the selected browser font before exporting PDF", async ({ page }) => {
+  test.setTimeout(120_000);
+  const releaseDelayMs = 2_000;
+  let fontRequestStartedAt = 0;
+  let fontRequestReleasedAt = 0;
+
+  await page.route(/noto-serif-latin-400-normal\.woff2(?:\?.*)?$/, async (route) => {
+    fontRequestStartedAt = Date.now();
+    await new Promise((resolve) => setTimeout(resolve, releaseDelayMs));
+    fontRequestReleasedAt = Date.now();
+    await route.continue();
+  });
+
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  await placeTool(page, "Text", 0.5, 0.5);
+  await page.keyboard.type("Noto Serif race");
+  await page.keyboard.press("Escape");
+  await ensureEditorOpen(page);
+  await selectUiOption(page, "Font", "Noto Serif");
+  await expect.poll(() => fontRequestStartedAt).toBeGreaterThan(0);
+
+  await page.getByRole("button", { name: "Export" }).click();
+  await page.getByRole("tab", { name: /PDF/ }).click();
+  const exportStartedAt = Date.now();
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export PDF" }).click();
+  const download = await downloadPromise;
+  const downloadedAt = Date.now();
+
+  expect(await download.path()).not.toBeNull();
+  expect(fontRequestReleasedAt).toBeGreaterThanOrEqual(fontRequestStartedAt + releaseDelayMs);
+  expect(downloadedAt).toBeGreaterThanOrEqual(fontRequestReleasedAt);
+  expect(downloadedAt - exportStartedAt).toBeGreaterThanOrEqual(releaseDelayMs - 250);
+});
+
 test("shows favorites only in a dedicated asset category", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();

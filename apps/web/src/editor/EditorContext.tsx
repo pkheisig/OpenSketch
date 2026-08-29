@@ -623,6 +623,77 @@ function refreshTextMetrics(objects: FabricObject[]): void {
   objects.forEach(visit);
 }
 
+interface TextFontStyle {
+  fontFamily?: string;
+  fontStyle?: string;
+  fontWeight?: string | number;
+  fontSize?: number;
+}
+
+function fontFamilyCandidates(value: string): string[] {
+  return value
+    .split(",")
+    .map((candidate) => {
+      const trimmed = candidate.trim();
+      const quote = trimmed[0] === '"' || trimmed[0] === "'" ? trimmed[0] : "";
+      return quote && trimmed.endsWith(quote) ? trimmed.slice(1, -1).trim() : trimmed;
+    })
+    .filter(Boolean);
+}
+
+async function waitForCanvasTextFonts(objects: FabricObject[]): Promise<void> {
+  if (typeof document === "undefined" || !("fonts" in document)) return;
+
+  const descriptors = new Map<string, { descriptor: string; text: string }>();
+  const addStyles = (object: IText, styles: TextFontStyle) => {
+    const families = fontFamilyCandidates(styles.fontFamily ?? object.fontFamily);
+    const fontStyle =
+      styles.fontStyle === "italic"
+        ? "italic"
+        : styles.fontStyle === "oblique"
+          ? "oblique"
+          : "normal";
+    const fontWeight = String(styles.fontWeight ?? object.fontWeight ?? 400);
+    const fontSize =
+      typeof styles.fontSize === "number" && Number.isFinite(styles.fontSize) && styles.fontSize > 0
+        ? styles.fontSize
+        : object.fontSize;
+    for (const family of families) {
+      const key = [fontStyle, fontWeight, family].join("|");
+      if (!descriptors.has(key)) {
+        descriptors.set(key, {
+          descriptor: `${fontStyle} ${fontWeight} ${fontSize}px "${family}"`,
+          text: object.text
+        });
+      }
+    }
+  };
+  const visit = (object: FabricObject) => {
+    if (object instanceof IText) {
+      addStyles(object, object);
+      object._textLines.forEach((line, lineIndex) => {
+        line.forEach((_grapheme, charIndex) => {
+          addStyles(object, object.getCompleteStyleDeclaration(lineIndex, charIndex));
+        });
+      });
+    }
+    if (object instanceof Group) object.getObjects().forEach(visit);
+  };
+  objects.forEach(visit);
+
+  const fontSet = document.fonts;
+  await Promise.all(
+    [...descriptors.values()].map(async ({ descriptor, text }) => {
+      try {
+        await fontSet.load(descriptor, text);
+      } catch (error) {
+        const reason = error instanceof Error ? error.message : String(error);
+        throw new Error(`Could not load editor font for PDF export (${descriptor}): ${reason}`);
+      }
+    })
+  );
+}
+
 function assetIdsFromSnapshot(snapshot: Record<string, unknown>): string[] {
   const assetIds = new Set<string>();
   const visit = (value: unknown) => {
@@ -3509,6 +3580,8 @@ export function EditorProvider({
       description = latestProject.current.description ?? ""
     ) => {
       if (!canvas) throw new Error("The figure canvas is not ready.");
+      await waitForPendingEditorWork();
+      await waitForCanvasTextFonts(canvas.getObjects());
       const svg = buildSvg(title, description);
       const blob = await svgToPdfBlob(svg, canvasSettings.width, canvasSettings.height, {
         title,
@@ -3518,7 +3591,7 @@ export function EditorProvider({
       });
       downloadBlob(blob, `${safeFilename(title)}.pdf`);
     },
-    [buildSvg, canvas, canvasSettings.height, canvasSettings.width]
+    [buildSvg, canvas, canvasSettings.height, canvasSettings.width, waitForPendingEditorWork]
   );
 
   const exportCredits = useCallback(

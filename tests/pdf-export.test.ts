@@ -61,6 +61,7 @@ describe("PDF export metadata", () => {
   it("maps every editor choice to all PDF weight and style registrations", () => {
     expect(TEXT_FONT_REGISTRY.map(({ family }) => family)).toEqual(TEXT_FONT_FAMILIES);
     expect(getPdfFontRegistrationPlan()).toHaveLength(72);
+    expect(getPdfFontRegistrationPlan([])).toEqual([]);
     expect(getJsPdfFontStyle("normal", 400)).toBe("normal");
     expect(getJsPdfFontStyle("normal", 600)).toBe("600normal");
     expect(getJsPdfFontStyle("normal", 700)).toBe("bold");
@@ -85,6 +86,23 @@ describe("PDF export metadata", () => {
         ])
       );
     }
+  });
+
+  it("discovers only declared font families in text-bearing SVGs", () => {
+    const textFree = new DOMParser().parseFromString(
+      `<svg xmlns="http://www.w3.org/2000/svg"><title>Inter and Noto Serif</title><desc>font-family: Lato</desc><metadata>{"fontFamily":"Roboto Mono"}</metadata></svg>`,
+      "image/svg+xml"
+    );
+    expect(getPdfFontFamiliesReferencedBySvg(textFree.documentElement)).toEqual([]);
+
+    const declared = new DOMParser().parseFromString(
+      `<svg xmlns="http://www.w3.org/2000/svg"><style>.label { font-family: "Georgia", serif; }</style><text style="font-family: 'Inter', sans-serif">x</text></svg>`,
+      "image/svg+xml"
+    );
+    expect(getPdfFontFamiliesReferencedBySvg(declared.documentElement)).toEqual([
+      "Inter",
+      "Georgia"
+    ]);
   });
 
   it("normalizes the system Georgia choice to the bundled serif face", () => {
