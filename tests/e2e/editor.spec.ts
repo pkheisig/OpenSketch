@@ -3829,6 +3829,26 @@ test("embeds every selectable editor font in PDF output", async ({ page }) => {
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
 
+  const missingBrowserFaces = await page.evaluate(async (families) => {
+    const faces = families
+      .filter((family) => family !== "Georgia")
+      .flatMap((family) =>
+        (["normal", "italic"] as const).flatMap((style) =>
+          ([400, 600, 700] as const).map((weight) => ({ family, style, weight }))
+        )
+      );
+    return (
+      await Promise.all(
+        faces.map(async ({ family, style, weight }) => {
+          const descriptor = `${style} ${weight} 16px "${family}"`;
+          await document.fonts.load(descriptor);
+          return document.fonts.check(descriptor) ? null : descriptor;
+        })
+      )
+    ).filter((descriptor): descriptor is string => descriptor !== null);
+  }, fonts);
+  expect(missingBrowserFaces).toEqual([]);
+
   for (const [index, font] of fonts.entries()) {
     await placeTool(page, "Text", index % 2 === 0 ? 0.25 : 0.75, 0.1 + index * 0.06);
     await page.keyboard.type(`PDF ${font}`);
