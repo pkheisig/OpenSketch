@@ -27,6 +27,7 @@ const EditorStudio = lazy(() =>
 );
 
 const PROJECT_HISTORY_KEY = "OpenSketchProjectId";
+const PROJECT_HISTORY_INDEX_KEY = "OpenSketchHistoryIndex";
 const THEME_STORAGE_KEY = "OpenSketch-theme";
 
 type Theme = "light" | "dark";
@@ -42,6 +43,12 @@ function readTheme(): Theme {
 function historyProjectId() {
   const state = window.history.state as Record<string, unknown> | null;
   return typeof state?.[PROJECT_HISTORY_KEY] === "string" ? state[PROJECT_HISTORY_KEY] : null;
+}
+
+function historyEntryIndex() {
+  const state = window.history.state as Record<string, unknown> | null;
+  const index = state?.[PROJECT_HISTORY_INDEX_KEY];
+  return typeof index === "number" && Number.isInteger(index) ? index : null;
 }
 
 function identityRepairNotice(project: ProjectRecord, warnings: string[]): string {
@@ -68,6 +75,7 @@ export function App() {
   );
   const refreshRevision = useRef(0);
   const historySyncRevision = useRef(0);
+  const historyIndex = useRef<number | null>(null);
   const historyNavigationGuard = useRef<(() => boolean) | null>(null);
 
   const toggleTheme = useCallback(() => {
@@ -86,6 +94,20 @@ export function App() {
     document.documentElement.dataset.theme = theme;
     document.documentElement.style.colorScheme = theme;
   }, [theme]);
+
+  useEffect(() => {
+    const state =
+      window.history.state && typeof window.history.state === "object" ? window.history.state : {};
+    const index = historyEntryIndex() ?? 0;
+    if (historyEntryIndex() !== index) {
+      window.history.replaceState(
+        { ...state, [PROJECT_HISTORY_INDEX_KEY]: index },
+        "",
+        window.location.href
+      );
+    }
+    historyIndex.current = index;
+  }, []);
 
   const refresh = useCallback(async () => {
     const revision = ++refreshRevision.current;
@@ -183,9 +205,18 @@ export function App() {
       const projectId = historyProjectId();
       if (projectId !== current?.id && historyNavigationGuard.current?.()) {
         window.dispatchEvent(new Event("opensketch:navigation-blocked"));
-        window.history.forward();
+        const destinationIndex = historyEntryIndex();
+        const currentIndex = historyIndex.current;
+        if (destinationIndex !== null && currentIndex !== null) {
+          const correction = currentIndex - destinationIndex;
+          if (correction !== 0) window.history.go(correction);
+        } else {
+          window.history.forward();
+        }
         return;
       }
+      const destinationIndex = historyEntryIndex();
+      if (destinationIndex !== null) historyIndex.current = destinationIndex;
       if (!projectId) {
         setCurrent(null);
         void refresh();
@@ -239,11 +270,17 @@ export function App() {
 
     const currentState =
       window.history.state && typeof window.history.state === "object" ? window.history.state : {};
+    const nextHistoryIndex = (historyEntryIndex() ?? historyIndex.current ?? 0) + 1;
     window.history.pushState(
-      { ...currentState, [PROJECT_HISTORY_KEY]: loaded.id },
+      {
+        ...currentState,
+        [PROJECT_HISTORY_KEY]: loaded.id,
+        [PROJECT_HISTORY_INDEX_KEY]: nextHistoryIndex
+      },
       "",
       window.location.href
     );
+    historyIndex.current = nextHistoryIndex;
   }, []);
 
   const returnToProjects = useCallback(() => {

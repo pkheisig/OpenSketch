@@ -4420,6 +4420,71 @@ test("keeps the latest project edits recoverable when autosave fails", async ({ 
   await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
 });
 
+test("restores the current history entry when unsaved Forward traversal is blocked", async ({
+  page
+}) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
+
+  const currentProjectId = await page.evaluate(
+    () => (history.state as Record<string, string> | null)?.OpenSketchProjectId
+  );
+  const currentHistoryIndex = await page.evaluate(
+    () => (history.state as Record<string, number> | null)?.OpenSketchHistoryIndex
+  );
+  if (!currentProjectId || typeof currentHistoryIndex !== "number") {
+    throw new Error("The active project history entry was not initialized.");
+  }
+
+  await page.evaluate(
+    ({ historyIndex }) => {
+      const state = history.state as Record<string, unknown> | null;
+      history.pushState(
+        {
+          ...state,
+          OpenSketchProjectId: "forward-target",
+          OpenSketchHistoryIndex: historyIndex + 1
+        },
+        "",
+        window.location.href
+      );
+    },
+    { historyIndex: currentHistoryIndex }
+  );
+  await page.goBack();
+  await expect(page.locator(".editor-shell")).toBeVisible();
+
+  await page.evaluate(() => {
+    const originalPut = IDBObjectStore.prototype.put;
+    const target = window as typeof window & {
+      __opensketchOriginalProjectPut?: typeof originalPut;
+    };
+    Object.defineProperty(target, "__opensketchOriginalProjectPut", {
+      configurable: true,
+      value: originalPut
+    });
+    IDBObjectStore.prototype.put = new Proxy(originalPut, {
+      apply(target, thisArg, args) {
+        if ((thisArg as IDBObjectStore).name === "projects") {
+          throw new DOMException("The project store is full", "QuotaExceededError");
+        }
+        return Reflect.apply(target, thisArg, args);
+      }
+    });
+  });
+
+  await placeTool(page, "Rectangle");
+  await expect(page.locator('[data-save-state="error"]')).toBeVisible();
+  await page.goForward();
+  await expect
+    .poll(() =>
+      page.evaluate(() => (history.state as Record<string, string> | null)?.OpenSketchProjectId)
+    )
+    .toBe(currentProjectId);
+  await expect(page.locator(".editor-shell")).toBeVisible();
+});
+
 test("guards browser exit while an image import is still processing", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
