@@ -917,20 +917,24 @@ export function EditorProvider({
       setSaveState((current) => (current.phase === "saving" ? { phase: "saved" } : current));
     }
   }, [hasPendingNavigationWork]);
+  const beginPendingEditorWork = useCallback(() => {
+    pendingEditorWork.current += 1;
+    setSaveState((current) =>
+      current.phase === "error"
+        ? current
+        : current.phase === "saving"
+          ? current
+          : { phase: "saving" }
+    );
+    return markPendingEditorWorkComplete;
+  }, [markPendingEditorWorkComplete]);
   const trackPendingEditorWork = useCallback(
     <T,>(operation: Promise<T>) => {
-      pendingEditorWork.current += 1;
-      setSaveState((current) =>
-        current.phase === "error"
-          ? current
-          : current.phase === "saving"
-            ? current
-            : { phase: "saving" }
-      );
-      void operation.then(markPendingEditorWorkComplete, markPendingEditorWorkComplete);
+      const complete = beginPendingEditorWork();
+      void operation.then(complete, complete);
       return operation;
     },
-    [markPendingEditorWorkComplete]
+    [beginPendingEditorWork]
   );
   const initialProjectImports = useRef({
     imports: project.uploads,
@@ -2735,40 +2739,45 @@ export function EditorProvider({
 
   const duplicateSelection = useCallback(async () => {
     if (!canvas) return;
-    const selectedObjects = canvas.getActiveObjects();
-    const clones = await Promise.all(selectedObjects.map((object) => object.clone()));
-    configureCanvasAssets(clones);
-    const nestedParent = editableAssetParent(selectedObjects[0]);
-    if (
-      nestedParent &&
-      selectedObjects.every((object) => editableAssetParent(object) === nestedParent)
-    ) {
+    const complete = beginPendingEditorWork();
+    try {
+      const selectedObjects = canvas.getActiveObjects();
+      const clones = await Promise.all(selectedObjects.map((object) => object.clone()));
+      configureCanvasAssets(clones);
+      const nestedParent = editableAssetParent(selectedObjects[0]);
+      if (
+        nestedParent &&
+        selectedObjects.every((object) => editableAssetParent(object) === nestedParent)
+      ) {
+        assignFreshCloneIds(clones);
+        clones.forEach((clone) => {
+          clone.set({ left: (clone.left ?? 0) + 12, top: (clone.top ?? 0) + 12 });
+          clone.name = `${selectedObjects[0].name ?? "Part"} copy`;
+          clone.OpenSketchType = "svg-part";
+          nestedParent.add(clone);
+        });
+        nestedParent.triggerLayout();
+        nestedParent.dirty = true;
+        canvas.setActiveObject(clones[0]);
+        setSelection([clones[0]]);
+        canvas.requestRenderAll();
+        commit("Duplicate SVG part");
+        return;
+      }
       assignFreshCloneIds(clones);
       clones.forEach((clone) => {
-        clone.set({ left: (clone.left ?? 0) + 12, top: (clone.top ?? 0) + 12 });
-        clone.name = `${selectedObjects[0].name ?? "Part"} copy`;
-        clone.OpenSketchType = "svg-part";
-        nestedParent.add(clone);
+        clone.set({ left: (clone.left ?? 0) + 28, top: (clone.top ?? 0) + 28 });
+        canvas.add(clone);
       });
-      nestedParent.triggerLayout();
-      nestedParent.dirty = true;
-      canvas.setActiveObject(clones[0]);
-      setSelection([clones[0]]);
+      const active = clones.length === 1 ? clones[0] : new ActiveSelection(clones, { canvas });
+      canvas.setActiveObject(active);
+      setSelection(clones);
       canvas.requestRenderAll();
-      commit("Duplicate SVG part");
-      return;
+      commit("Duplicate");
+    } finally {
+      complete();
     }
-    assignFreshCloneIds(clones);
-    clones.forEach((clone) => {
-      clone.set({ left: (clone.left ?? 0) + 28, top: (clone.top ?? 0) + 28 });
-      canvas.add(clone);
-    });
-    const active = clones.length === 1 ? clones[0] : new ActiveSelection(clones, { canvas });
-    canvas.setActiveObject(active);
-    setSelection(clones);
-    canvas.requestRenderAll();
-    commit("Duplicate");
-  }, [canvas, commit]);
+  }, [beginPendingEditorWork, canvas, commit]);
 
   const copySelectionToClipboard = useCallback(
     async (format: SelectionClipboardFormat = "png", cut = false) => {
@@ -2777,59 +2786,67 @@ export function EditorProvider({
       const selectedObjects = canvas.getActiveObjects();
       if (!activeObject || selectedObjects.length === 0) return;
 
-      const marker = `${SELECTION_CLIPBOARD_MARKER_PREFIX}${crypto.randomUUID()}`;
-      clipboardMarker.current = marker;
-      const systemWrite = writeSelectionToSystemClipboard(activeObject, format, marker).catch(
-        (error: unknown) => {
-          console.warn(`Could not copy the selection as ${format.toUpperCase()}.`, error);
-        }
-      );
-      const internalCopy = Promise.all(selectedObjects.map((object) => object.clone())).then(
-        (clones) => {
-          clipboard.current = clones;
-        }
-      );
-      pendingClipboardCopy.current = internalCopy;
+      const complete = cut ? beginPendingEditorWork() : undefined;
+      let internalCopy: Promise<void> | undefined;
       try {
+        const marker = `${SELECTION_CLIPBOARD_MARKER_PREFIX}${crypto.randomUUID()}`;
+        clipboardMarker.current = marker;
+        const systemWrite = writeSelectionToSystemClipboard(activeObject, format, marker).catch(
+          (error: unknown) => {
+            console.warn(`Could not copy the selection as ${format.toUpperCase()}.`, error);
+          }
+        );
+        internalCopy = Promise.all(selectedObjects.map((object) => object.clone())).then(
+          (clones) => {
+            clipboard.current = clones;
+          }
+        );
+        pendingClipboardCopy.current = internalCopy ?? null;
         await Promise.all([internalCopy, systemWrite]);
+        if (cut) deleteSelection();
       } finally {
         if (pendingClipboardCopy.current === internalCopy) {
           pendingClipboardCopy.current = null;
         }
+        complete?.();
       }
-      if (cut) deleteSelection();
     },
-    [canvas, deleteSelection]
+    [beginPendingEditorWork, canvas, deleteSelection]
   );
 
   const pasteSelection = useCallback(async () => {
     if (!canvas) return;
-    await pendingClipboardCopy.current;
-    if (clipboard.current.length === 0) return;
-    const [clones, nextClipboard] = await Promise.all([
-      Promise.all(clipboard.current.map((object) => object.clone())),
-      Promise.all(clipboard.current.map((object) => object.clone()))
-    ]);
-    configureCanvasAssets(clones);
-    assignFreshCloneIds(clones);
-    clones.forEach((clone) => {
-      clone.set({
-        left: (clone.left ?? 0) + 24,
-        top: (clone.top ?? 0) + 24
+    const complete = beginPendingEditorWork();
+    try {
+      await pendingClipboardCopy.current;
+      if (clipboard.current.length === 0) return;
+      const [clones, nextClipboard] = await Promise.all([
+        Promise.all(clipboard.current.map((object) => object.clone())),
+        Promise.all(clipboard.current.map((object) => object.clone()))
+      ]);
+      configureCanvasAssets(clones);
+      assignFreshCloneIds(clones);
+      clones.forEach((clone) => {
+        clone.set({
+          left: (clone.left ?? 0) + 24,
+          top: (clone.top ?? 0) + 24
+        });
+        canvas.add(clone);
       });
-      canvas.add(clone);
-    });
-    nextClipboard.forEach((clone) => {
-      clone.set({ left: (clone.left ?? 0) + 24, top: (clone.top ?? 0) + 24 });
-    });
-    clipboard.current = nextClipboard;
-    canvas.setActiveObject(
-      clones.length === 1 ? clones[0] : new ActiveSelection(clones, { canvas })
-    );
-    setSelection(clones);
-    canvas.requestRenderAll();
-    commit("Paste");
-  }, [canvas, commit]);
+      nextClipboard.forEach((clone) => {
+        clone.set({ left: (clone.left ?? 0) + 24, top: (clone.top ?? 0) + 24 });
+      });
+      clipboard.current = nextClipboard;
+      canvas.setActiveObject(
+        clones.length === 1 ? clones[0] : new ActiveSelection(clones, { canvas })
+      );
+      setSelection(clones);
+      canvas.requestRenderAll();
+      commit("Paste");
+    } finally {
+      complete();
+    }
+  }, [beginPendingEditorWork, canvas, commit]);
 
   const groupSelection = useCallback(() => {
     if (!canvas || !(canvas.getActiveObject() instanceof ActiveSelection)) return;
