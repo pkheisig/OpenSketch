@@ -125,6 +125,7 @@ export function TopToolbar({
 }) {
   const editor = useEditor();
   const [leaving, setLeaving] = useState(false);
+  const [title, setTitle] = useState(project.name);
   const [exportOpen, setExportOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const helpRef = useModalDialog(helpOpen, () => setHelpOpen(false));
@@ -154,9 +155,18 @@ export function TopToolbar({
         <span className="toolbar-rule" />
         <input
           className="document-title"
-          defaultValue={project.name}
+          value={title}
           aria-label="Document title"
-          onBlur={(event) => editor.setProjectName(event.target.value.trim() || "Untitled figure")}
+          onChange={(event) => {
+            const next = event.target.value;
+            setTitle(next);
+            editor.setProjectName(next);
+          }}
+          onBlur={(event) => {
+            const next = event.target.value.trim() || "Untitled figure";
+            setTitle(next);
+            if (next !== event.target.value) editor.setProjectName(next);
+          }}
         />
         <div className="toolbar-center">
           <button

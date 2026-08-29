@@ -4284,6 +4284,11 @@ test("keeps the latest project edits recoverable when autosave fails", async ({ 
   await expect(errorStatus).toContainText("browser storage is full");
   await expect(errorStatus.getByRole("button", { name: "Retry save" })).toBeVisible();
 
+  const title = page.getByLabel("Document title");
+  await title.fill("Draft figure");
+  await expect(title).toHaveValue("Draft figure");
+  await expect(errorStatus).toBeVisible();
+
   const guarded = await page.evaluate(() => {
     const event = new Event("beforeunload", { cancelable: true });
     window.dispatchEvent(event);
@@ -4298,12 +4303,14 @@ test("keeps the latest project edits recoverable when autosave fails", async ({ 
   const recoveryDownload = page.waitForEvent("download");
   await errorStatus.getByRole("button", { name: "Export recovery copy" }).click();
   const recovery = await recoveryDownload;
-  expect(recovery.suggestedFilename()).toMatch(/untitled-figure\.OpenSketch$/i);
+  expect(recovery.suggestedFilename()).toMatch(/draft-figure\.OpenSketch$/i);
   const recoveryPath = await recovery.path();
   expect(recoveryPath).not.toBeNull();
   const recoveryProject = JSON.parse(await readFile(recoveryPath!, "utf8")) as {
+    name?: string;
     objects?: { objects?: unknown[] };
   };
+  expect(recoveryProject.name).toBe("Draft figure");
   expect(recoveryProject.objects?.objects).toHaveLength(1);
 
   await page.getByRole("button", { name: "Back to projects" }).click();
