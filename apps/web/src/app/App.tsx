@@ -46,6 +46,16 @@ function historyProjectId() {
 }
 
 function historyEntryIndex() {
+  const navigation = (
+    window as Window & {
+      navigation?: { currentEntry?: { index?: unknown } | null };
+    }
+  ).navigation;
+  const browserIndex = navigation?.currentEntry?.index;
+  if (typeof browserIndex === "number" && Number.isInteger(browserIndex)) {
+    return browserIndex;
+  }
+
   const state = window.history.state as Record<string, unknown> | null;
   const index = state?.[PROJECT_HISTORY_INDEX_KEY];
   return typeof index === "number" && Number.isInteger(index) ? index : null;

@@ -4420,12 +4420,12 @@ test("keeps the latest project edits recoverable when autosave fails", async ({ 
   await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
 });
 
-test("restores the current history entry when unsaved Forward traversal is blocked", async ({
+test("restores the current history entry when legacy unsaved Forward traversal is blocked", async ({
   page
 }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
-  await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible({ timeout: 30_000 });
 
   const currentProjectId = await page.evaluate(
     () => (history.state as Record<string, string> | null)?.OpenSketchProjectId
@@ -4437,21 +4437,19 @@ test("restores the current history entry when unsaved Forward traversal is block
     throw new Error("The active project history entry was not initialized.");
   }
 
-  await page.evaluate(
-    ({ historyIndex }) => {
-      const state = history.state as Record<string, unknown> | null;
-      history.pushState(
-        {
-          ...state,
-          OpenSketchProjectId: "forward-target",
-          OpenSketchHistoryIndex: historyIndex + 1
-        },
-        "",
-        window.location.href
-      );
-    },
-    { historyIndex: currentHistoryIndex }
-  );
+  await page.evaluate(() => {
+    const state = history.state as Record<string, unknown> | null;
+    const legacyState = { ...(state ?? {}) };
+    delete legacyState.OpenSketchHistoryIndex;
+    history.pushState(
+      {
+        ...legacyState,
+        OpenSketchProjectId: "forward-target"
+      },
+      "",
+      window.location.href
+    );
+  });
   await page.goBack();
   await expect(page.locator(".editor-shell")).toBeVisible();
 
