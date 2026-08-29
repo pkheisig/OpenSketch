@@ -47,6 +47,9 @@ export function loadPdfFontBase64(url: string): Promise<string> {
       return btoa(binary);
     });
   fontData.set(url, pending);
+  void pending.catch(() => {
+    if (fontData.get(url) === pending) fontData.delete(url);
+  });
   return pending;
 }
 

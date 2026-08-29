@@ -238,4 +238,20 @@ describe("PDF export metadata", () => {
     );
     vi.unstubAllGlobals();
   });
+
+  it("retries a PDF font after a transient fetch failure", async () => {
+    const fetchMock = vi
+      .fn()
+      .mockRejectedValueOnce(new Error("offline"))
+      .mockResolvedValueOnce({
+        ok: true,
+        arrayBuffer: async () => Uint8Array.of(0x00, 0x01, 0x00, 0x00).buffer
+      });
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(loadPdfFontBase64("/retryable-pdf-font.ttf")).rejects.toThrow("offline");
+    await expect(loadPdfFontBase64("/retryable-pdf-font.ttf")).resolves.toBeTruthy();
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    vi.unstubAllGlobals();
+  });
 });
