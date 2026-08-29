@@ -906,6 +906,11 @@ export function EditorProvider({
       ),
     []
   );
+  const guardNavigation = useCallback(() => {
+    const blocked = hasPendingNavigationWork();
+    if (blocked) exitPending.current = false;
+    return blocked;
+  }, [hasPendingNavigationWork]);
   const markPendingEditorWorkComplete = useCallback(() => {
     pendingEditorWork.current = Math.max(0, pendingEditorWork.current - 1);
     if (!hasPendingNavigationWork()) {
@@ -1221,9 +1226,9 @@ export function EditorProvider({
   }, [hasPendingNavigationWork]);
 
   useEffect(() => {
-    onNavigationGuardChange(hasPendingNavigationWork);
+    onNavigationGuardChange(guardNavigation);
     return () => onNavigationGuardChange(null);
-  }, [hasPendingNavigationWork, onNavigationGuardChange]);
+  }, [guardNavigation, onNavigationGuardChange]);
 
   const commit = useCallback(
     (label = "Change") => {

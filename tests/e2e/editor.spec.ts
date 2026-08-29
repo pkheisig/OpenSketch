@@ -4309,6 +4309,7 @@ test("keeps the latest project edits recoverable when autosave fails", async ({ 
   await page.getByRole("button", { name: "Back to projects" }).click();
   await expect(page.locator(".editor-shell")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Projects" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Back to projects" })).toBeEnabled();
 
   await page.evaluate(() => {
     const target = window as typeof window & {

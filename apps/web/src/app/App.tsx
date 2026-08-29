@@ -182,6 +182,7 @@ export function App() {
       const revision = ++historySyncRevision.current;
       const projectId = historyProjectId();
       if (projectId !== current?.id && historyNavigationGuard.current?.()) {
+        window.dispatchEvent(new Event("opensketch:navigation-blocked"));
         window.history.forward();
         return;
       }

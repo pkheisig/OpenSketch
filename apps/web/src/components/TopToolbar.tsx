@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   AlertTriangle,
   ArrowLeft,
@@ -128,6 +128,11 @@ export function TopToolbar({
   const [exportOpen, setExportOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
   const helpRef = useModalDialog(helpOpen, () => setHelpOpen(false));
+  useEffect(() => {
+    const onNavigationBlocked = () => setLeaving(false);
+    window.addEventListener("opensketch:navigation-blocked", onNavigationBlocked);
+    return () => window.removeEventListener("opensketch:navigation-blocked", onNavigationBlocked);
+  }, []);
   return (
     <>
       <header className="top-toolbar">
