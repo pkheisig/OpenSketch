@@ -133,7 +133,8 @@ import {
 } from "@/editor/clipboardImport";
 import {
   rememberProjectImports,
-  saveImportedMedia as saveImportedMediaToLibrary
+  saveImportedMedia as saveImportedMediaToLibrary,
+  saveProjectThumbnail
 } from "@/persistence/database";
 import {
   CREATION_DEFAULTS_STORAGE_KEY,
@@ -827,6 +828,7 @@ export function EditorProvider({
 }) {
   const [canvas, setCanvas] = useState<Canvas | null>(null);
   const [canvasReady, setCanvasReady] = useState(false);
+  const canvasReadyRef = useRef(false);
   const [selection, setSelection] = useState<FabricObject[]>([]);
   const [editingGroup, setEditingGroup] = useState<Group | null>(null);
   const editingGroupRef = useRef<Group | null>(null);
@@ -1149,20 +1151,23 @@ export function EditorProvider({
   const refreshThumbnail = useCallback(async () => {
     if (!canvas) return;
     try {
+      const projectRevision = latestProject.current.updatedAt;
+      const revision = saveRevision.current;
       const thumbnail = createVectorThumbnail(
         canvas,
         latestCanvasSettings.current,
-        latestProject.current.updatedAt
+        projectRevision
       );
-      const next = { ...latestProject.current, thumbnail };
-      await onProjectChange(next);
-      latestProject.current = next;
+      const next = await saveProjectThumbnail(latestProject.current.id, projectRevision, thumbnail);
+      if (next?.updatedAt === projectRevision && revision === saveRevision.current) {
+        latestProject.current = next;
+      }
     } catch (reason) {
       // A preview is derived and optional. Never discard or block navigation
       // after the actual project snapshot has already been saved.
       console.warn("Project preview could not be refreshed; project data is saved.", reason);
     }
-  }, [canvas, onProjectChange]);
+  }, [canvas]);
 
   const enqueuePendingSave = useCallback(() => {
     const pending = pendingSnapshot.current;
@@ -1185,12 +1190,14 @@ export function EditorProvider({
       saveRevision.current = revision;
       const snapshotToSave =
         snapshot ??
-        (canvas && canvasReady ? serialize() : JSON.stringify(initialProjectObjects.current));
+        (canvas && canvasReadyRef.current
+          ? serialize()
+          : JSON.stringify(initialProjectObjects.current));
       pendingSnapshot.current = { snapshot: snapshotToSave, revision };
       setSaveState((current) => (current.phase === "saving" ? current : { phase: "saving" }));
       void enqueuePendingSave().catch(() => undefined);
     },
-    [canvas, canvasReady, enqueuePendingSave, serialize]
+    [canvas, enqueuePendingSave, serialize]
   );
 
   const flushPendingTitle = useCallback(() => {
@@ -1316,6 +1323,7 @@ export function EditorProvider({
       });
       instance.setDimensions({ width: project.canvas.width, height: project.canvas.height });
       instance.backgroundColor = project.canvas.transparent ? "" : project.canvas.background;
+      canvasReadyRef.current = false;
       setCanvasReady(false);
       instance.loadFromJSON(project.objects).then(async () => {
         await restoreBundledSvgBlendModes(instance.getObjects());
@@ -1327,6 +1335,7 @@ export function EditorProvider({
         history.current = [initial];
         historyIndex.current = 0;
         updateHistoryState();
+        canvasReadyRef.current = true;
         setCanvasReady(true);
       });
       setCanvas(instance);
@@ -1991,6 +2000,7 @@ export function EditorProvider({
       canvas.upperCanvasEl.removeEventListener("contextmenu", suppressModifierContextMenu, true);
       cancelScheduledConnectorRefresh();
       void enqueuePendingSave();
+      canvasReadyRef.current = false;
       setCanvasReady(false);
       canvas.dispose();
       setCanvas(null);
