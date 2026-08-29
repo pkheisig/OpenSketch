@@ -38,7 +38,7 @@ import type {
 } from "@workspace/editor-core";
 import { sanitizeImportedSvg } from "@/assets/browserSanitizer";
 import { setPngDpi } from "@/export/png";
-import { svgToPdfBlob } from "@/export/pdf";
+import { normalizePdfFontStyle, normalizePdfFontWeight, svgToPdfBlob } from "@/export/pdf";
 import { collectProvenanceManifest, formatProvenanceCredits } from "@/export/provenance";
 import { downloadBlob, downloadProject, safeFilename } from "@/persistence/portable";
 import { createVectorThumbnail } from "@/persistence/projectThumbnail";
@@ -647,13 +647,10 @@ async function waitForCanvasTextFonts(objects: FabricObject[]): Promise<void> {
   const descriptors = new Map<string, { descriptor: string; texts: Set<string> }>();
   const addStyles = (object: IText, styles: TextFontStyle) => {
     const families = fontFamilyCandidates(styles.fontFamily ?? object.fontFamily);
-    const fontStyle =
-      styles.fontStyle === "italic"
-        ? "italic"
-        : styles.fontStyle === "oblique"
-          ? "oblique"
-          : "normal";
-    const fontWeight = String(styles.fontWeight ?? object.fontWeight ?? 400);
+    const fontStyle = normalizePdfFontStyle(styles.fontStyle ?? "normal");
+    const fontWeight = String(
+      normalizePdfFontWeight(styles.fontWeight ?? object.fontWeight ?? 400)
+    );
     const fontSize =
       typeof styles.fontSize === "number" && Number.isFinite(styles.fontSize) && styles.fontSize > 0
         ? styles.fontSize
@@ -1865,13 +1862,14 @@ export function EditorProvider({
           finish();
           return;
         }
-        const weight = String(changed.fontWeight ?? 400);
+        const weight = normalizePdfFontWeight(changed.fontWeight ?? 400);
+        const fontStyle = normalizePdfFontStyle(changed.fontStyle ?? "normal");
         const family = changed.fontFamily
           .split(",")[0]
           .trim()
           .replace(/^['"]|['"]$/g, "");
         void document.fonts
-          .load(`${weight} ${changed.fontSize ?? 54}px "${family}"`)
+          .load(`${fontStyle} ${weight} ${changed.fontSize ?? 54}px "${family}"`)
           .then(finish, finish);
       };
       if (duplicateSession?.pendingAdd) {

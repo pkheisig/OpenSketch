@@ -63,9 +63,13 @@ export function normalizePdfFontWeight(weight: string | number): PdfFontWeight {
       ? 400
       : normalized === "bold"
         ? 700
-        : typeof normalized === "number"
-          ? normalized
-          : Number(normalized);
+        : normalized === "bolder"
+          ? 700
+          : normalized === "lighter"
+            ? 400
+            : typeof normalized === "number"
+              ? normalized
+              : Number(normalized);
   const clampedWeight = Number.isFinite(numericWeight)
     ? Math.max(1, Math.min(1_000, numericWeight))
     : 400;
@@ -76,6 +80,13 @@ export function normalizePdfFontWeight(weight: string | number): PdfFontWeight {
   if (clampedWeight <= 500) return 400;
   if (clampedWeight <= 600) return 600;
   return 700;
+}
+
+export function normalizePdfFontStyle(style: string): PdfFontStyle {
+  const normalized = style.trim().toLowerCase();
+  return normalized === "italic" || normalized === "oblique" || normalized.startsWith("oblique ")
+    ? "italic"
+    : "normal";
 }
 
 export interface PdfFontRegistration {
@@ -207,9 +218,26 @@ export function normalizePdfFontFamilyList(value: string): string {
 
 function normalizeFontWeightValue(value: string): string {
   const trimmed = value.trim();
-  const match = trimmed.match(/^(normal|bold|[0-9]+(?:\.[0-9]+)?)(\s*!important)?$/i);
-  if (!match) return trimmed;
+  const match = trimmed.match(
+    /^(normal|bold|bolder|lighter|[0-9]+(?:\.[0-9]+)?)(\s*!important)?$/i
+  );
+  if (!match) {
+    throw new Error(
+      `Unsupported imported font weight "${value}". Use a numeric weight, normal, bold, bolder, or lighter.`
+    );
+  }
   return String(normalizePdfFontWeight(match[1])) + (match[2] ?? "");
+}
+
+function normalizeFontStyleValue(value: string): string {
+  const trimmed = value.trim();
+  const match = trimmed.match(
+    /^(normal|italic|oblique(?:\s+[-+]?(?:\d*\.\d+|\d+\.?\d*)deg)?)(\s*!important)?$/i
+  );
+  if (!match) {
+    throw new Error(`Unsupported imported font style "${value}". Use normal, italic, or oblique.`);
+  }
+  return normalizePdfFontStyle(match[1]) + (match[2] ?? "");
 }
 
 function normalizeCssFontFamilies(value: string): string {
@@ -226,23 +254,39 @@ function normalizeCssFontWeights(value: string): string {
   );
 }
 
+function normalizeCssFontStyles(value: string): string {
+  return value.replace(
+    /(font-style\s*:\s*)([^;}{]+)/gi,
+    (_match, prefix: string, style: string) => prefix + normalizeFontStyleValue(style)
+  );
+}
+
 export function normalizePdfSvgFontFamilies(svg: Element): void {
   const elements = [
     svg,
-    ...Array.from(svg.querySelectorAll<SVGElement>("[font-family], [font-weight], [style]"))
+    ...Array.from(
+      svg.querySelectorAll<SVGElement>("[font-family], [font-style], [font-weight], [style]")
+    )
   ];
   for (const element of elements) {
     const fontFamily = element.getAttribute("font-family");
     if (fontFamily) element.setAttribute("font-family", normalizeFontFamilyList(fontFamily));
+    const fontStyle = element.getAttribute("font-style");
+    if (fontStyle) element.setAttribute("font-style", normalizeFontStyleValue(fontStyle));
     const fontWeight = element.getAttribute("font-weight");
     if (fontWeight) element.setAttribute("font-weight", normalizeFontWeightValue(fontWeight));
     const style = element.getAttribute("style");
     if (style) {
-      element.setAttribute("style", normalizeCssFontWeights(normalizeCssFontFamilies(style)));
+      element.setAttribute(
+        "style",
+        normalizeCssFontStyles(normalizeCssFontWeights(normalizeCssFontFamilies(style)))
+      );
     }
   }
   for (const style of svg.querySelectorAll("style")) {
-    style.textContent = normalizeCssFontWeights(normalizeCssFontFamilies(style.textContent ?? ""));
+    style.textContent = normalizeCssFontStyles(
+      normalizeCssFontWeights(normalizeCssFontFamilies(style.textContent ?? ""))
+    );
   }
 }
 
@@ -277,6 +321,123 @@ export function getPdfFontFamiliesReferencedBySvg(svg: Element): string[] {
   return TEXT_FONT_REGISTRY.filter(({ family }) => normalizedSet.has(family.toLowerCase())).map(
     ({ family }) => family
   );
+}
+
+function asciiBytes(value: string): Uint8Array {
+  return Uint8Array.from(value, (character) => character.charCodeAt(0));
+}
+
+function findBytes(source: Uint8Array, needle: Uint8Array, fromIndex = 0): number {
+  if (needle.length === 0) return fromIndex;
+  outer: for (let index = fromIndex; index <= source.length - needle.length; index += 1) {
+    for (let offset = 0; offset < needle.length; offset += 1) {
+      if (source[index + offset] !== needle[offset]) continue outer;
+    }
+    return index;
+  }
+  return -1;
+}
+
+function findLastBytes(source: Uint8Array, needle: Uint8Array): number {
+  let lastIndex = -1;
+  let fromIndex = 0;
+  while (true) {
+    const index = findBytes(source, needle, fromIndex);
+    if (index < 0) return lastIndex;
+    lastIndex = index;
+    fromIndex = index + 1;
+  }
+}
+
+function readAsciiInteger(source: Uint8Array, start: number, end: number): number | undefined {
+  if (start >= end) return undefined;
+  let value = 0;
+  for (let index = start; index < end; index += 1) {
+    const digit = source[index] - 0x30;
+    if (digit < 0 || digit > 9) return undefined;
+    value = value * 10 + digit;
+  }
+  return value;
+}
+
+function writeFixedAsciiInteger(
+  target: Uint8Array,
+  start: number,
+  width: number,
+  value: number
+): void {
+  const encoded = String(value).padStart(width, "0");
+  if (encoded.length > width) throw new Error("The PDF cross-reference offset is too large.");
+  for (let offset = 0; offset < width; offset += 1) {
+    target[start + offset] = encoded.charCodeAt(offset);
+  }
+}
+
+export function replacePdfProducer(
+  arrayBuffer: ArrayBuffer,
+  sourceProducer: string,
+  targetProducer = "OpenSketch"
+): ArrayBuffer {
+  if (!/^[\x20-\x7e]+$/.test(targetProducer) || /[()\\]/.test(targetProducer)) {
+    throw new Error("The PDF producer contains characters that cannot be written safely.");
+  }
+
+  const source = new Uint8Array(arrayBuffer);
+  const sourceMarker = asciiBytes(`/Producer (${sourceProducer})`);
+  const sourceIndex = findBytes(source, sourceMarker);
+  if (sourceIndex < 0) {
+    throw new Error(`The PDF output did not contain the expected producer "${sourceProducer}".`);
+  }
+
+  const replacement = asciiBytes(`/Producer (${targetProducer})`);
+  const byteShift = replacement.length - sourceMarker.length;
+  const patched = new Uint8Array(source.length + byteShift);
+  patched.set(source.subarray(0, sourceIndex));
+  patched.set(replacement, sourceIndex);
+  patched.set(source.subarray(sourceIndex + sourceMarker.length), sourceIndex + replacement.length);
+
+  const xrefLine = asciiBytes("\nxref\n");
+  const xrefPrefixIndex = findLastBytes(patched, xrefLine);
+  const xrefIndex =
+    xrefPrefixIndex >= 0 ? xrefPrefixIndex + 1 : findLastBytes(patched, asciiBytes("xref\n"));
+  const trailerIndex =
+    xrefIndex < 0 ? -1 : findBytes(patched, asciiBytes("trailer\n"), xrefIndex + "xref\n".length);
+  if (xrefIndex < 0 || trailerIndex < 0) {
+    throw new Error("The PDF output did not contain a patchable cross-reference table.");
+  }
+
+  let lineStart = xrefIndex + "xref\n".length;
+  while (lineStart < trailerIndex) {
+    const lineEnd = findBytes(patched, Uint8Array.of(0x0a), lineStart);
+    if (lineEnd < 0 || lineEnd > trailerIndex) break;
+    if (lineEnd - lineStart >= 18 && patched[lineStart + 17] === 0x6e) {
+      const offset = readAsciiInteger(patched, lineStart, lineStart + 10);
+      if (offset !== undefined && offset > sourceIndex) {
+        writeFixedAsciiInteger(patched, lineStart, 10, offset + byteShift);
+      }
+    }
+    lineStart = lineEnd + 1;
+  }
+
+  const startxrefIndex = findLastBytes(patched, asciiBytes("startxref\n"));
+  const startxrefStart = startxrefIndex + "startxref\n".length;
+  const startxrefEnd =
+    startxrefIndex < 0 ? -1 : findBytes(patched, Uint8Array.of(0x0a), startxrefStart);
+  const startxref =
+    startxrefIndex < 0 || startxrefEnd < 0
+      ? undefined
+      : readAsciiInteger(patched, startxrefStart, startxrefEnd);
+  if (startxref === undefined) {
+    throw new Error("The PDF output did not contain a valid cross-reference offset.");
+  }
+  writeFixedAsciiInteger(
+    patched,
+    startxrefStart,
+    startxrefEnd - startxrefStart,
+    startxref + byteShift
+  );
+
+  return patched.buffer as ArrayBuffer;
 }
 
 function escapeXml(value: string): string {
@@ -382,5 +543,8 @@ export async function svgToPdfBlob(
     const reason = error instanceof Error ? error.message : String(error);
     throw new Error("PDF export could not render the figure: " + reason);
   }
-  return pdf.output("blob");
+  const output = pdf.output("arraybuffer") as ArrayBuffer;
+  return new Blob([replacePdfProducer(output, "jsPDF " + jsPDF.version)], {
+    type: "application/pdf"
+  });
 }

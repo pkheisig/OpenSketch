@@ -766,6 +766,8 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   const pdfBytes = await readFile(pdfPath!);
   expect(pdfBytes.subarray(0, 5).toString()).toBe("%PDF-");
   expect(pdfBytes.toString("latin1")).toContain("/FontName /Source#20Sans#203");
+  expect(pdfBytes.toString("latin1")).toContain("/Producer (OpenSketch)");
+  expect(pdfBytes.toString("latin1")).not.toContain("/Producer (jsPDF");
   const pdf = await PDFDocument.load(pdfBytes);
   expect(pdf.getPageCount()).toBe(1);
   expect(pdf.getTitle()).toBe("Untitled figure");
@@ -3830,6 +3832,16 @@ test("embeds every selectable editor font in PDF output", async ({ page }) => {
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
 
   const missingBrowserFaces = await page.evaluate(async (families) => {
+    const coverageSamples: Record<string, string> = {
+      "Atkinson Hyperlegible": "Zażółć gęślą",
+      "IBM Plex Sans": "Γειά σου кириллица",
+      "IBM Plex Serif": "Жизнь науки",
+      Lato: "Zażółć gęślą",
+      Merriweather: "Жизнь науки",
+      "Noto Sans": "Γειά σου кириллица नमस्ते",
+      "Noto Serif": "Γειά σου кириллица",
+      "Roboto Mono": "Γειά σου кириллица"
+    };
     const faces = families
       .filter((family) => family !== "Georgia")
       .flatMap((family) =>
@@ -3841,7 +3853,7 @@ test("embeds every selectable editor font in PDF output", async ({ page }) => {
       await Promise.all(
         faces.map(async ({ family, style, weight }) => {
           const descriptor = `${style} ${weight} 16px "${family}"`;
-          await document.fonts.load(descriptor);
+          await document.fonts.load(descriptor, coverageSamples[family] ?? "OpenSketch");
           return document.fonts.check(descriptor) ? null : descriptor;
         })
       )
@@ -3875,6 +3887,63 @@ test("embeds every selectable editor font in PDF output", async ({ page }) => {
   for (const family of expectedFamilies) {
     const pdfName = family.replace(/ /g, "#20");
     expect(rawPdf).toContain(`/BaseFont /${pdfName}`);
+  }
+  expect(rawPdf).not.toContain("/BaseFont /Times");
+});
+
+test("embeds every selectable editor font face in PDF resources", async ({ page }) => {
+  test.setTimeout(180_000);
+  const fonts = [
+    "Source Sans 3",
+    "Inter",
+    "Atkinson Hyperlegible",
+    "IBM Plex Sans",
+    "Lato",
+    "Noto Sans",
+    "Source Serif 4",
+    "IBM Plex Serif",
+    "Merriweather",
+    "Noto Serif",
+    "STIX Two Text",
+    "Roboto Mono",
+    "Georgia"
+  ];
+
+  await page.goto("/");
+  const rawPdf = await page.evaluate(async (families) => {
+    const combinations = [
+      { weight: 400, style: "normal" },
+      { weight: 600, style: "normal" },
+      { weight: 700, style: "normal" },
+      { weight: 400, style: "italic" },
+      { weight: 600, style: "italic" },
+      { weight: 700, style: "italic" }
+    ];
+    const textNodes = families
+      .flatMap((family, familyIndex) =>
+        combinations.map(({ weight, style }, combinationIndex) => {
+          const y = 24 + (familyIndex * combinations.length + combinationIndex) * 18;
+          return `<text x="12" y="${y}" font-family="${family}" font-size="12" font-style="${style}" font-weight="${weight}">${family} ${weight} ${style}</text>`;
+        })
+      )
+      .join("");
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1450">${textNodes}</svg>`;
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const blob = await svgToPdfBlob(svg, 900, 1450, {
+      title: "PDF font face matrix",
+      description: "Every selectable OpenSketch text font face",
+      credit: "OpenSketch",
+      provenance: { version: 1, assets: [] }
+    });
+    return new TextDecoder("latin1").decode(await blob.arrayBuffer());
+  }, fonts);
+
+  const expectedFamilies = new Set(fonts.map((font) => (font === "Georgia" ? "Noto Serif" : font)));
+  for (const family of expectedFamilies) {
+    const pdfName = family.replace(/ /g, "#20");
+    const resourceCount = rawPdf.split(`/BaseFont /${pdfName}`).length - 1;
+    expect(resourceCount, `${family} face resources`).toBeGreaterThanOrEqual(6);
   }
   expect(rawPdf).not.toContain("/BaseFont /Times");
 });
