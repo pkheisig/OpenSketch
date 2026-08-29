@@ -3916,6 +3916,53 @@ test("waits for the selected browser font before exporting PDF", async ({ page }
   expect(downloadedAt - exportStartedAt).toBeGreaterThanOrEqual(releaseDelayMs - 250);
 });
 
+test("preloads every text payload used by a PDF font face", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+
+  await placeTool(page, "Text", 0.3, 0.35);
+  await page.keyboard.type("Latin glyphs");
+  await page.keyboard.press("Escape");
+  await placeTool(page, "Text", 0.7, 0.65);
+  await page.keyboard.type("Γειά σου");
+  await page.keyboard.press("Escape");
+
+  await page.evaluate(() => {
+    const calls: Array<{ descriptor: string; text: string }> = [];
+    const fontSet = document.fonts as FontFaceSet & {
+      __originalLoad?: FontFaceSet["load"];
+    };
+    const originalLoad = fontSet.load.bind(fontSet);
+    fontSet.__originalLoad = originalLoad;
+    fontSet.load = (descriptor: string, text?: string) => {
+      calls.push({ descriptor, text: text ?? "" });
+      return originalLoad(descriptor, text);
+    };
+    (window as typeof window & { __pdfFontLoadCalls?: typeof calls }).__pdfFontLoadCalls = calls;
+  });
+
+  await page.getByRole("button", { name: "Export" }).click();
+  await page.getByRole("tab", { name: /PDF/ }).click();
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export PDF" }).click();
+  expect(await (await downloadPromise).path()).not.toBeNull();
+
+  const fontLoadTexts = await page.evaluate(() => {
+    const calls = (
+      window as typeof window & {
+        __pdfFontLoadCalls?: Array<{ descriptor: string; text: string }>;
+      }
+    ).__pdfFontLoadCalls;
+    return (
+      calls
+        ?.filter(({ descriptor }) => descriptor.includes('"Source Sans 3"'))
+        .map(({ text }) => text) ?? []
+    );
+  });
+  expect(fontLoadTexts).toEqual(expect.arrayContaining(["Latin glyphs", "Γειά σου"]));
+});
+
 test("shows favorites only in a dedicated asset category", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();

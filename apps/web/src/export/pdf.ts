@@ -56,6 +56,28 @@ export function getJsPdfFontStyle(style: PdfFontStyle, weight: PdfFontWeight): s
   return String(weight) + style;
 }
 
+export function normalizePdfFontWeight(weight: string | number): PdfFontWeight {
+  const normalized = typeof weight === "number" ? weight : weight.trim().toLowerCase();
+  const numericWeight =
+    normalized === "normal"
+      ? 400
+      : normalized === "bold"
+        ? 700
+        : typeof normalized === "number"
+          ? normalized
+          : Number(normalized);
+  const clampedWeight = Number.isFinite(numericWeight)
+    ? Math.max(1, Math.min(1_000, numericWeight))
+    : 400;
+
+  // Match CSS font selection with the bundled 400/600/700 faces. CSS checks
+  // 400 before heavier faces for requests through 500, then checks 600 before
+  // 700 for requests above 500.
+  if (clampedWeight <= 500) return 400;
+  if (clampedWeight <= 600) return 600;
+  return 700;
+}
+
 export interface PdfFontRegistration {
   editorFamily: string;
   pdfFamily: string;
@@ -71,10 +93,12 @@ export function getPdfFontRegistrationPlan(
   editorFamilies?: readonly string[]
 ): PdfFontRegistration[] {
   const requestedFamilies = new Set(
-    editorFamilies ?? TEXT_FONT_REGISTRY.map(({ family }) => family)
+    (editorFamilies ?? TEXT_FONT_REGISTRY.map(({ family }) => family)).map((family) =>
+      family.trim().toLowerCase()
+    )
   );
   const selectedDefinitions = TEXT_FONT_REGISTRY.filter(({ family }) =>
-    requestedFamilies.has(family)
+    requestedFamilies.has(family.toLowerCase())
   );
 
   const seenPdfFaces = new Set<string>();
@@ -181,6 +205,13 @@ export function normalizePdfFontFamilyList(value: string): string {
   return normalizeFontFamilyList(value);
 }
 
+function normalizeFontWeightValue(value: string): string {
+  const trimmed = value.trim();
+  const match = trimmed.match(/^(normal|bold|[0-9]+(?:\.[0-9]+)?)(\s*!important)?$/i);
+  if (!match) return trimmed;
+  return String(normalizePdfFontWeight(match[1])) + (match[2] ?? "");
+}
+
 function normalizeCssFontFamilies(value: string): string {
   return value.replace(
     /(font-family\s*:\s*)([^;}{]+)/gi,
@@ -188,16 +219,30 @@ function normalizeCssFontFamilies(value: string): string {
   );
 }
 
+function normalizeCssFontWeights(value: string): string {
+  return value.replace(
+    /(font-weight\s*:\s*)([^;}{]+)/gi,
+    (_match, prefix: string, weight: string) => prefix + normalizeFontWeightValue(weight)
+  );
+}
+
 export function normalizePdfSvgFontFamilies(svg: Element): void {
-  const elements = [svg, ...Array.from(svg.querySelectorAll<SVGElement>("[font-family], [style]"))];
+  const elements = [
+    svg,
+    ...Array.from(svg.querySelectorAll<SVGElement>("[font-family], [font-weight], [style]"))
+  ];
   for (const element of elements) {
     const fontFamily = element.getAttribute("font-family");
     if (fontFamily) element.setAttribute("font-family", normalizeFontFamilyList(fontFamily));
+    const fontWeight = element.getAttribute("font-weight");
+    if (fontWeight) element.setAttribute("font-weight", normalizeFontWeightValue(fontWeight));
     const style = element.getAttribute("style");
-    if (style) element.setAttribute("style", normalizeCssFontFamilies(style));
+    if (style) {
+      element.setAttribute("style", normalizeCssFontWeights(normalizeCssFontFamilies(style)));
+    }
   }
   for (const style of svg.querySelectorAll("style")) {
-    style.textContent = normalizeCssFontFamilies(style.textContent ?? "");
+    style.textContent = normalizeCssFontWeights(normalizeCssFontFamilies(style.textContent ?? ""));
   }
 }
 

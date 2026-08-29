@@ -132,8 +132,9 @@ carry the title, description, optional document author, OpenSketch creator, and
 artwork credit. The document author is absent unless explicitly supplied, while
 asset authors remain in the provenance manifest. Atkinson Hyperlegible and Lato
 have no native 600 face in the bundled distribution, so that editor choice maps
-to their 700 face, matching browser font selection. A standards-compatible XMP
-packet carries the canonical manifest. Journal and image-processing workflows
-may discard format metadata, so the Export dialog also provides a human-readable
-`.txt` credits sidecar containing the same source, author, license, and
-attribution records.
+to their 700 face, matching browser font selection. Imported CSS numeric weights
+outside the editor choices are normalized with the same browser matching rules
+before PDF rendering. A standards-compatible XMP packet carries the canonical
+manifest. Journal and image-processing workflows may discard format metadata, so
+the Export dialog also provides a human-readable `.txt` credits sidecar
+containing the same source, author, license, and attribution records.

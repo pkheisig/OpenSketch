@@ -26,5 +26,9 @@ export const TEXT_FONT_FAMILIES = TEXT_FONT_REGISTRY.map(
 ) as TextFontFamily[];
 
 export function getPdfFontFamily(family: string): string {
-  return TEXT_FONT_REGISTRY.find((definition) => definition.family === family)?.pdfFamily ?? family;
+  const normalizedFamily = family.trim().toLowerCase();
+  return (
+    TEXT_FONT_REGISTRY.find((definition) => definition.family.toLowerCase() === normalizedFamily)
+      ?.pdfFamily ?? family
+  );
 }

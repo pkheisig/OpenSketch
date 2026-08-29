@@ -24,7 +24,9 @@ The PDF exporter uses merged TrueType faces from the same Fontsource families
 for every editor weight/style combination. Georgia is an explicit PDF mapping
 to the bundled Noto Serif face; PDF export never depends on a system Georgia
 installation. Atkinson Hyperlegible and Lato ship only 400/700 faces, so their
-editor 600 choice follows the browser's nearest-face matching to 700.
+editor 600 choice follows the browser's nearest-face matching to 700. Imported
+numeric weights outside the editor choices are normalized to the same bundled
+faces before PDF rendering.
 
 The NIAID NIH BioArt illustrations bundled by OpenSketch remain in the public
 domain. Their per-asset author, source, Commons record, and public-domain status

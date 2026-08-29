@@ -644,7 +644,7 @@ function fontFamilyCandidates(value: string): string[] {
 async function waitForCanvasTextFonts(objects: FabricObject[]): Promise<void> {
   if (typeof document === "undefined" || !("fonts" in document)) return;
 
-  const descriptors = new Map<string, { descriptor: string; text: string }>();
+  const descriptors = new Map<string, { descriptor: string; texts: Set<string> }>();
   const addStyles = (object: IText, styles: TextFontStyle) => {
     const families = fontFamilyCandidates(styles.fontFamily ?? object.fontFamily);
     const fontStyle =
@@ -660,12 +660,10 @@ async function waitForCanvasTextFonts(objects: FabricObject[]): Promise<void> {
         : object.fontSize;
     for (const family of families) {
       const key = [fontStyle, fontWeight, family].join("|");
-      if (!descriptors.has(key)) {
-        descriptors.set(key, {
-          descriptor: `${fontStyle} ${fontWeight} ${fontSize}px "${family}"`,
-          text: object.text
-        });
-      }
+      const descriptor = `${fontStyle} ${fontWeight} ${fontSize}px "${family}"`;
+      const existing = descriptors.get(key);
+      if (existing) existing.texts.add(object.text);
+      else descriptors.set(key, { descriptor, texts: new Set([object.text]) });
     }
   };
   const visit = (object: FabricObject) => {
@@ -683,14 +681,16 @@ async function waitForCanvasTextFonts(objects: FabricObject[]): Promise<void> {
 
   const fontSet = document.fonts;
   await Promise.all(
-    [...descriptors.values()].map(async ({ descriptor, text }) => {
-      try {
-        await fontSet.load(descriptor, text);
-      } catch (error) {
-        const reason = error instanceof Error ? error.message : String(error);
-        throw new Error(`Could not load editor font for PDF export (${descriptor}): ${reason}`);
-      }
-    })
+    [...descriptors.values()].flatMap(({ descriptor, texts }) =>
+      [...texts].map(async (text) => {
+        try {
+          await fontSet.load(descriptor, text);
+        } catch (error) {
+          const reason = error instanceof Error ? error.message : String(error);
+          throw new Error(`Could not load editor font for PDF export (${descriptor}): ${reason}`);
+        }
+      })
+    )
   );
 }
 
