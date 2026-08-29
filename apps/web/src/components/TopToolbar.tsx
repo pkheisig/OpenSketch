@@ -1,11 +1,15 @@
 import { useState } from "react";
 import {
+  AlertTriangle,
   ArrowLeft,
+  Check,
   ChevronDown,
   Download,
   HelpCircle,
+  LoaderCircle,
   Moon,
   Redo2,
+  RotateCcw,
   Sun,
   Undo2
 } from "lucide-react";
@@ -13,6 +17,7 @@ import type { ProjectRecord } from "@workspace/editor-core";
 import { GLOBAL_CREDIT } from "@/assets/credit";
 import { MotionPresence } from "@/components/MotionPresence";
 import { useEditor } from "@/editor/EditorContext";
+import type { ProjectSaveState } from "@/editor/projectSaveState";
 import { ExportDialog } from "./dialogs";
 import { useModalDialog } from "./useModalDialog";
 
@@ -45,6 +50,68 @@ function ShortcutKeys({ combinations }: { combinations: string[][] }) {
   );
 }
 
+function ProjectSaveStatus({
+  state,
+  onRetry,
+  onExport
+}: {
+  state: ProjectSaveState;
+  onRetry: () => void;
+  onExport: () => void;
+}) {
+  if (state.phase === "saved") {
+    return (
+      <div
+        className="project-save-status project-save-status--saved"
+        data-save-state="saved"
+        role="status"
+      >
+        <Check size={14} aria-hidden="true" />
+        <span>Saved</span>
+      </div>
+    );
+  }
+
+  if (state.phase === "saving") {
+    return (
+      <div
+        className="project-save-status project-save-status--saving"
+        data-save-state="saving"
+        role="status"
+      >
+        <LoaderCircle className="project-save-spinner" size={14} aria-hidden="true" />
+        <span>Saving…</span>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className="project-save-status project-save-status--error"
+      data-save-state="error"
+      role="alert"
+      aria-live="assertive"
+    >
+      <div className="project-save-status-message">
+        <AlertTriangle size={15} aria-hidden="true" />
+        <span>{state.error.message}</span>
+      </div>
+      <div className="project-save-status-actions">
+        <button className="project-save-status-action" type="button" onClick={onRetry}>
+          <RotateCcw size={13} aria-hidden="true" /> Retry save
+        </button>
+        <button className="project-save-status-action" type="button" onClick={onExport}>
+          <Download size={13} aria-hidden="true" /> Export recovery copy
+        </button>
+      </div>
+      <details className="project-save-status-details">
+        <summary>Technical details</summary>
+        <span>{state.error.detail}</span>
+      </details>
+    </div>
+  );
+}
+
 export function TopToolbar({
   project,
   onHome,
@@ -69,7 +136,10 @@ export function TopToolbar({
           disabled={leaving}
           onClick={() => {
             setLeaving(true);
-            void editor.flushSave().then(onHome, () => setLeaving(false));
+            void editor
+              .flushSave()
+              .then(onHome)
+              .catch(() => setLeaving(false));
           }}
           aria-label="Back to projects"
         >
@@ -101,6 +171,11 @@ export function TopToolbar({
             <Redo2 size={17} />
           </button>
         </div>
+        <ProjectSaveStatus
+          state={editor.saveState}
+          onRetry={editor.retrySave}
+          onExport={editor.exportProject}
+        />
         <div className="toolbar-actions">
           <button
             className="icon-button theme-toggle"

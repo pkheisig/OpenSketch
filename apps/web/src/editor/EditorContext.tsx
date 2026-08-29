@@ -40,8 +40,13 @@ import { sanitizeImportedSvg } from "@/assets/browserSanitizer";
 import { setPngDpi } from "@/export/png";
 import { svgToPdfBlob } from "@/export/pdf";
 import { collectProvenanceManifest, formatProvenanceCredits } from "@/export/provenance";
-import { downloadBlob, safeFilename } from "@/persistence/portable";
+import { downloadBlob, downloadProject, safeFilename } from "@/persistence/portable";
 import { createVectorThumbnail } from "@/persistence/projectThumbnail";
+import {
+  hasUnsavedProjectRevision,
+  normalizeProjectSaveError,
+  type ProjectSaveState
+} from "@/editor/projectSaveState";
 import { GLOBAL_CREDIT } from "@/assets/credit";
 import {
   connectorAppearance,
@@ -322,7 +327,10 @@ interface EditorContextValue {
   setProjectDescription: (description: string) => void;
   selectParentAsset: () => void;
   closeGroupEdit: () => void;
+  saveState: ProjectSaveState;
+  retrySave: () => void;
   flushSave: () => Promise<void>;
+  exportProject: () => void;
   creationTool: CreationTool | null;
   creationDefaults: CreationDefaults;
   setCreationTool: (tool: CreationTool | null) => void;
@@ -881,6 +889,7 @@ export function EditorProvider({
   const saveRevision = useRef(0);
   const savedRevision = useRef(0);
   const lastSaveError = useRef<unknown>(undefined);
+  const [saveState, setSaveState] = useState<ProjectSaveState>({ phase: "saved" });
   const assetInsertQueue = useRef<Promise<void>>(Promise.resolve());
   const importQueue = useRef<Promise<void>>(Promise.resolve());
   const latestProject = useRef(project);
@@ -1047,11 +1056,21 @@ export function EditorProvider({
           thumbnail: undefined
         };
         await onProjectChange(next);
-        latestProject.current = next;
+        if (revision === saveRevision.current && !pendingSnapshot.current) {
+          latestProject.current = next;
+        }
         savedRevision.current = Math.max(savedRevision.current, revision);
-        lastSaveError.current = undefined;
+        if (revision === saveRevision.current && !pendingSnapshot.current) {
+          lastSaveError.current = undefined;
+          setSaveState({ phase: "saved" });
+        } else {
+          setSaveState((current) => (current.phase === "saving" ? current : { phase: "saving" }));
+        }
       } catch (reason) {
-        lastSaveError.current = reason;
+        if (revision === saveRevision.current) {
+          lastSaveError.current = reason;
+          setSaveState({ phase: "error", error: normalizeProjectSaveError(reason) });
+        }
         throw reason;
       }
     },
@@ -1095,16 +1114,42 @@ export function EditorProvider({
     // A toolbar click can follow a library click before its SVG has finished
     // parsing. Treat that insertion as part of the action being flushed.
     await Promise.all([assetInsertQueue.current, importQueue.current]);
-    await saveQueue.current;
-    if (pendingSnapshot.current) {
-      await enqueuePendingSave().catch(() => undefined);
+    while (true) {
       await saveQueue.current;
+      if (!pendingSnapshot.current) break;
+      try {
+        await enqueuePendingSave();
+      } catch {
+        // The failed latest snapshot is requeued by enqueuePendingSave so the
+        // explicit Retry action can attempt it again without spinning here.
+        break;
+      }
     }
-    if (savedRevision.current < saveRevision.current && lastSaveError.current) {
-      throw lastSaveError.current;
+    if (
+      hasUnsavedProjectRevision(
+        saveRevision.current,
+        savedRevision.current,
+        Boolean(pendingSnapshot.current)
+      )
+    ) {
+      throw lastSaveError.current ?? new Error("The latest project revision was not saved.");
     }
     await refreshThumbnail();
   }, [enqueuePendingSave, refreshThumbnail]);
+
+  const retrySave = useCallback(() => {
+    if (
+      !hasUnsavedProjectRevision(
+        saveRevision.current,
+        savedRevision.current,
+        Boolean(pendingSnapshot.current)
+      )
+    ) {
+      return;
+    }
+    setSaveState((current) => (current.phase === "saving" ? current : { phase: "saving" }));
+    void enqueuePendingSave().catch(() => undefined);
+  }, [enqueuePendingSave]);
 
   const requestExit = useCallback(() => {
     if (exitPending.current) return;
@@ -1122,10 +1167,29 @@ export function EditorProvider({
       const revision = saveRevision.current + 1;
       saveRevision.current = revision;
       pendingSnapshot.current = { snapshot: snapshot ?? serialize(), revision };
+      setSaveState((current) => (current.phase === "saving" ? current : { phase: "saving" }));
       void enqueuePendingSave().catch(() => undefined);
     },
     [canvas, enqueuePendingSave, serialize]
   );
+
+  useEffect(() => {
+    const onBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (
+        !hasUnsavedProjectRevision(
+          saveRevision.current,
+          savedRevision.current,
+          Boolean(pendingSnapshot.current)
+        )
+      ) {
+        return;
+      }
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, []);
 
   const commit = useCallback(
     (label = "Change") => {
@@ -3223,6 +3287,18 @@ export function EditorProvider({
     [persist]
   );
 
+  const exportProject = useCallback(() => {
+    const objects = JSON.parse(serialize()) as Record<string, unknown>;
+    downloadProject({
+      ...latestProject.current,
+      updatedAt: new Date().toISOString(),
+      canvas: latestCanvasSettings.current,
+      objects,
+      usedAssetIds: assetIdsFromSnapshot(objects),
+      thumbnail: undefined
+    });
+  }, [serialize]);
+
   const buildSvg = useCallback(
     (title = latestProject.current.name, description = latestProject.current.description ?? "") => {
       if (!canvas) throw new Error("The figure canvas is not ready.");
@@ -3537,7 +3613,10 @@ export function EditorProvider({
       setProjectDescription,
       selectParentAsset,
       closeGroupEdit,
+      saveState,
+      retrySave,
       flushSave,
+      exportProject,
       creationTool,
       creationDefaults,
       setCreationTool,
@@ -3633,7 +3712,10 @@ export function EditorProvider({
       setProjectDescription,
       selectParentAsset,
       closeGroupEdit,
+      saveState,
+      retrySave,
       flushSave,
+      exportProject,
       setZoom,
       undo,
       ungroupSelection,

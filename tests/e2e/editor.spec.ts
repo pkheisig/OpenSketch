@@ -4257,6 +4257,77 @@ test("saves an inserted SVG before immediately leaving the editor", async ({ pag
   ).toHaveCount(1);
 });
 
+test("keeps the latest project edits recoverable when autosave fails", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
+
+  await page.evaluate(() => {
+    const originalPut = IDBObjectStore.prototype.put;
+    Object.defineProperty(window, "__opensketchOriginalProjectPut", {
+      configurable: true,
+      value: originalPut
+    });
+    IDBObjectStore.prototype.put = new Proxy(originalPut, {
+      apply(target, thisArg, args) {
+        if ((thisArg as IDBObjectStore).name === "projects") {
+          throw new DOMException("The project store is full", "QuotaExceededError");
+        }
+        return Reflect.apply(target, thisArg, args);
+      }
+    });
+  });
+
+  await placeTool(page, "Rectangle");
+  const errorStatus = page.locator('[data-save-state="error"]');
+  await expect(errorStatus).toBeVisible();
+  await expect(errorStatus).toContainText("browser storage is full");
+  await expect(errorStatus.getByRole("button", { name: "Retry save" })).toBeVisible();
+
+  const guarded = await page.evaluate(() => {
+    const event = new Event("beforeunload", { cancelable: true });
+    window.dispatchEvent(event);
+    return event.defaultPrevented;
+  });
+  expect(guarded).toBe(true);
+
+  const recoveryDownload = page.waitForEvent("download");
+  await errorStatus.getByRole("button", { name: "Export recovery copy" }).click();
+  const recovery = await recoveryDownload;
+  expect(recovery.suggestedFilename()).toMatch(/untitled-figure\.OpenSketch$/i);
+  const recoveryPath = await recovery.path();
+  expect(recoveryPath).not.toBeNull();
+  const recoveryProject = JSON.parse(await readFile(recoveryPath!, "utf8")) as {
+    objects?: { objects?: unknown[] };
+  };
+  expect(recoveryProject.objects?.objects).toHaveLength(1);
+
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await expect(page.locator(".editor-shell")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Projects" })).toHaveCount(0);
+
+  await page.evaluate(() => {
+    const target = window as typeof window & {
+      __opensketchOriginalProjectPut?: typeof IDBObjectStore.prototype.put;
+    };
+    const originalPut = target.__opensketchOriginalProjectPut;
+    if (!originalPut) throw new Error("The original project save method was not captured.");
+    IDBObjectStore.prototype.put = originalPut;
+  });
+  await page.getByRole("button", { name: "Retry save" }).click();
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
+
+  const unguarded = await page.evaluate(() => {
+    const event = new Event("beforeunload", { cancelable: true });
+    window.dispatchEvent(event);
+    return event.defaultPrevented;
+  });
+  expect(unguarded).toBe(false);
+
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
+});
+
 test("exports an atomic SVG asset with its vector parts intact", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
