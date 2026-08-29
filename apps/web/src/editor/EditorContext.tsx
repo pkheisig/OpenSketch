@@ -1955,7 +1955,15 @@ export function EditorProvider({
       canvas.dispose();
       setCanvas(null);
     };
-  }, [canvas, closeGroupEdit, commit, enqueuePendingSave, refreshConnectors, setEditingGroupPath]);
+  }, [
+    beginPendingEditorWork,
+    canvas,
+    closeGroupEdit,
+    commit,
+    enqueuePendingSave,
+    refreshConnectors,
+    setEditingGroupPath
+  ]);
 
   const restoreAt = useCallback(
     async (index: number) => {
