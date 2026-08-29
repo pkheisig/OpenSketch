@@ -614,7 +614,7 @@ async function renderTemplateThumbnail(object: FabricObject): Promise<string> {
 function refreshTextMetrics(objects: FabricObject[]): void {
   cache.clearFontCache();
   const visit = (object: FabricObject) => {
-    if (object instanceof IText) {
+    if (object instanceof Text) {
       object.initDimensions();
       object.dirty = true;
       object.setCoords();
