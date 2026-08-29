@@ -330,7 +330,7 @@ interface EditorContextValue {
   saveState: ProjectSaveState;
   retrySave: () => void;
   flushSave: () => Promise<void>;
-  exportProject: () => void;
+  exportProject: () => Promise<void>;
   creationTool: CreationTool | null;
   creationDefaults: CreationDefaults;
   setCreationTool: (tool: CreationTool | null) => void;
@@ -895,6 +895,7 @@ export function EditorProvider({
   const assetInsertQueue = useRef<Promise<void>>(Promise.resolve());
   const importQueue = useRef<Promise<void>>(Promise.resolve());
   const pendingEditorWork = useRef(0);
+  const pendingEditorWorkPromises = useRef(new Set<Promise<void>>());
   const latestProject = useRef(project);
   const hasPendingNavigationWork = useCallback(
     () =>
@@ -918,6 +919,12 @@ export function EditorProvider({
     }
   }, [hasPendingNavigationWork]);
   const beginPendingEditorWork = useCallback(() => {
+    let resolvePendingWork: () => void = () => undefined;
+    let completed = false;
+    const settled = new Promise<void>((resolve) => {
+      resolvePendingWork = resolve;
+    });
+    pendingEditorWorkPromises.current.add(settled);
     pendingEditorWork.current += 1;
     setSaveState((current) =>
       current.phase === "error"
@@ -926,8 +933,19 @@ export function EditorProvider({
           ? current
           : { phase: "saving" }
     );
-    return markPendingEditorWorkComplete;
+    return () => {
+      if (completed) return;
+      completed = true;
+      pendingEditorWorkPromises.current.delete(settled);
+      resolvePendingWork();
+      markPendingEditorWorkComplete();
+    };
   }, [markPendingEditorWorkComplete]);
+  const waitForPendingEditorWork = useCallback(async () => {
+    while (pendingEditorWorkPromises.current.size > 0) {
+      await Promise.all([...pendingEditorWorkPromises.current]);
+    }
+  }, []);
   const trackPendingEditorWork = useCallback(
     <T,>(operation: Promise<T>) => {
       const complete = beginPendingEditorWork();
@@ -3370,7 +3388,8 @@ export function EditorProvider({
     [persist]
   );
 
-  const exportProject = useCallback(() => {
+  const exportProject = useCallback(async () => {
+    await waitForPendingEditorWork();
     const objects = JSON.parse(serialize()) as Record<string, unknown>;
     downloadProject({
       ...latestProject.current,
@@ -3380,7 +3399,7 @@ export function EditorProvider({
       usedAssetIds: assetIdsFromSnapshot(objects),
       thumbnail: undefined
     });
-  }, [serialize]);
+  }, [serialize, waitForPendingEditorWork]);
 
   const buildSvg = useCallback(
     (title = latestProject.current.name, description = latestProject.current.description ?? "") => {

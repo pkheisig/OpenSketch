@@ -4289,6 +4289,25 @@ test("keeps the latest project edits recoverable when autosave fails", async ({ 
   await expect(title).toHaveValue("Draft figure");
   await expect(errorStatus).toBeVisible();
 
+  await page.getByRole("tab", { name: "Imports", exact: true }).click();
+  await page.evaluate(() => {
+    const originalRead = FileReader.prototype.readAsDataURL;
+    const target = window as typeof window & {
+      __opensketchOriginalReadAsDataURL?: typeof originalRead;
+    };
+    Object.defineProperty(target, "__opensketchOriginalReadAsDataURL", {
+      configurable: true,
+      value: originalRead
+    });
+    FileReader.prototype.readAsDataURL = function (this: FileReader, blob: Blob) {
+      window.setTimeout(() => originalRead.call(this, blob), 1200);
+    };
+  });
+  await page.locator('input[type="file"][accept*="image/svg+xml"]').setInputFiles(
+    "tests/fixtures/nested-groups.svg"
+  );
+  await expect(errorStatus).toBeVisible();
+
   const guarded = await page.evaluate(() => {
     const event = new Event("beforeunload", { cancelable: true });
     window.dispatchEvent(event);
@@ -4311,7 +4330,16 @@ test("keeps the latest project edits recoverable when autosave fails", async ({ 
     objects?: { objects?: unknown[] };
   };
   expect(recoveryProject.name).toBe("Draft figure");
-  expect(recoveryProject.objects?.objects).toHaveLength(1);
+  expect(recoveryProject.objects?.objects).toHaveLength(2);
+
+  await page.evaluate(() => {
+    const target = window as typeof window & {
+      __opensketchOriginalReadAsDataURL?: typeof FileReader.prototype.readAsDataURL;
+    };
+    const originalRead = target.__opensketchOriginalReadAsDataURL;
+    if (!originalRead) throw new Error("The original FileReader method was not captured.");
+    FileReader.prototype.readAsDataURL = originalRead;
+  });
 
   await page.getByRole("button", { name: "Back to projects" }).click();
   await expect(page.locator(".editor-shell")).toBeVisible();
