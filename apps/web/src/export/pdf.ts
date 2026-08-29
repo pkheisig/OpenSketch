@@ -415,14 +415,11 @@ function pdfRegistrationForTextElement(
   registrations: readonly PdfFontRegistration[]
 ): PdfFontRegistration | undefined {
   const familyValue = svgInlineStyleValue(element, "font-family");
-  if (!familyValue) return undefined;
-  const definition = svgFontFamilyCandidates(familyValue)
-    .map((family) =>
-      TEXT_FONT_REGISTRY.find(
-        (candidate) => candidate.family.toLowerCase() === family.toLowerCase()
-      )
-    )
-    .find((candidate) => candidate !== undefined);
+  const family = familyValue ? svgFontFamilyCandidates(familyValue)[0] : undefined;
+  if (!family) return undefined;
+  const definition = TEXT_FONT_REGISTRY.find(
+    (candidate) => candidate.family.toLowerCase() === family.toLowerCase()
+  );
   if (!definition) return undefined;
   const styleValue = svgInlineStyleValue(element, "font-style") ?? "normal";
   const weightValue = svgInlineStyleValue(element, "font-weight") ?? "400";
@@ -433,6 +430,23 @@ function pdfRegistrationForTextElement(
       registration.pdfFamily === definition.pdfFamily &&
       registration.style === style &&
       registration.weight === weight
+  );
+}
+
+function requirePdfRegistrationForTextElement(
+  element: Element,
+  registrations: readonly PdfFontRegistration[]
+): PdfFontRegistration {
+  const registration = pdfRegistrationForTextElement(element, registrations);
+  if (registration) return registration;
+  const family = svgFontFamilyCandidates(svgInlineStyleValue(element, "font-family") ?? "")[0];
+  if (!family) {
+    throw new Error(
+      "PDF export cannot render text without a registered font family. Choose a bundled editor font."
+    );
+  }
+  throw new Error(
+    `PDF export cannot render text with unregistered font family "${family}". Choose a bundled editor font.`
   );
 }
 
@@ -467,10 +481,8 @@ export function getPdfFontRegistrationsReferencedBySvg(svg: SVGSVGElement): PdfF
   const used = new Set<string>();
   for (const { element, text } of getPdfTextRuns(svg)) {
     if (!/\S/u.test(text)) continue;
-    const registration = pdfRegistrationForTextElement(element, candidates);
-    if (registration) {
-      used.add(`${registration.pdfFamily}|${registration.style}|${registration.weight}`);
-    }
+    const registration = requirePdfRegistrationForTextElement(element, candidates);
+    used.add(`${registration.pdfFamily}|${registration.style}|${registration.weight}`);
   }
   return candidates.filter(({ pdfFamily, style, weight }) =>
     used.has(`${pdfFamily}|${style}|${weight}`)
@@ -502,8 +514,8 @@ function assertPdfTextCoverage(
   registrations: readonly PdfFontRegistration[]
 ): void {
   for (const { element, text } of getPdfTextRuns(svg)) {
-    const registration = pdfRegistrationForTextElement(element, registrations);
-    if (!registration) continue;
+    if (!/\S/u.test(text)) continue;
+    const registration = requirePdfRegistrationForTextElement(element, registrations);
     pdf.setFont(registration.pdfFamily, registration.jsPdfStyle);
     const codeMap = pdf.getFont().metadata?.cmap?.unicode?.codeMap as
       Record<string, number> | undefined;

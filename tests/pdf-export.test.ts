@@ -167,6 +167,17 @@ describe("PDF export metadata", () => {
     ).toEqual(["Source Sans 3|400-normal", "Inter|600-italic"]);
   });
 
+  it("fails closed for an unregistered imported font family", () => {
+    const parsed = new DOMParser().parseFromString(
+      `<svg xmlns="http://www.w3.org/2000/svg"><text font-family="Arial, 'Source Sans 3'">x</text></svg>`,
+      "image/svg+xml"
+    );
+
+    expect(() =>
+      getPdfFontRegistrationsReferencedBySvg(parsed.documentElement as unknown as SVGSVGElement)
+    ).toThrow('unregistered font family "Arial"');
+  });
+
   it("normalizes the system Georgia choice to the bundled serif face", () => {
     expect(getPdfFontFamily("georgia")).toBe("Noto Serif");
     expect(getPdfFontRegistrationPlan(["georgia"])).toHaveLength(6);
