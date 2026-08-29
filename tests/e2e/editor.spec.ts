@@ -3980,6 +3980,11 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
         <text class="label" x="12" y="40">Shorthand</text>
         <text class="parent" x="12" y="80"><tspan class="relative">Relative</tspan></text>
       </svg>`),
+      stylesheetWins:
+        await render(`<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240">
+        <style>.label { font-family: "Lato"; }</style>
+        <text class="label" font-family="Inter" x="12" y="40">Stylesheet wins</text>
+      </svg>`),
       missingGlyph: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></svg>`
       ),
@@ -3992,6 +3997,9 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
       hiddenGlyph: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><g style="visibility: hidden"><text x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></g></svg>`
       ),
+      visibleDescendant: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" visibility="hidden"><tspan visibility="visible">Γ</tspan></text></svg>`
+      ),
       complexScript: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Noto Sans">नमस्ते</text></svg>`
       )
@@ -4002,6 +4010,8 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
   expect(result.shorthand.pdf).toContain("/BaseFont /Inter");
   expect(result.shorthand.pdf).toContain("/BaseFont /Source#20Serif#204");
   expect(result.shorthand.pdf).not.toContain("/BaseFont /Times");
+  expect(result.stylesheetWins.error).toBeNull();
+  expect(result.stylesheetWins.pdf).toContain("/BaseFont /Lato");
   expect(result.missingGlyph.error).toContain("U+0393");
   expect(result.missingGlyph.error).toContain("cannot render");
   expect(result.missingInheritedGlyph.error).toContain("U+0393");
@@ -4009,6 +4019,7 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
   expect(result.missingMixedGlyph.error).toContain("U+0393");
   expect(result.missingMixedGlyph.error).toContain("cannot render");
   expect(result.hiddenGlyph.error).toBeNull();
+  expect(result.visibleDescendant.error).toContain("U+0393");
   expect(result.complexScript.error).toContain("cannot shape");
 });
 

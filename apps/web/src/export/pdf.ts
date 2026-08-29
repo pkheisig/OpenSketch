@@ -219,23 +219,6 @@ function normalizeFontFamilyValue(value: string): string {
   return normalizeFontFamilyList(withoutImportant) + (important ? " !important" : "");
 }
 
-function serializeCssFontFamilyValue(value: string): string {
-  const important = /\s*!important\s*$/i.test(value);
-  const withoutImportant = value.replace(/\s*!important\s*$/i, "");
-  const families = withoutImportant
-    .split(",")
-    .map((candidate) => {
-      const trimmed = candidate.trim();
-      if (!trimmed) return "";
-      if (trimmed[0] === '"' || trimmed[0] === "'") return trimmed;
-      if (/^[A-Za-z][A-Za-z0-9_-]*$/.test(trimmed)) return trimmed;
-      return `"${trimmed.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
-    })
-    .filter(Boolean)
-    .join(", ");
-  return families + (important ? " !important" : "");
-}
-
 export function normalizePdfFontFamilyList(value: string): string {
   return normalizeFontFamilyList(value);
 }
@@ -294,25 +277,26 @@ function normalizeCssFontStyles(value: string): string {
 }
 
 const PDF_HIDDEN_TEXT_ATTRIBUTE = "data-opensketch-pdf-hidden";
+const PDF_DISPLAY_NONE_ATTRIBUTE = "data-opensketch-pdf-display-none";
 
 function hasHiddenPdfTextAncestor(element: Element): boolean {
   for (let current: Element | null = element; current; current = current.parentElement) {
-    if (current.getAttribute(PDF_HIDDEN_TEXT_ATTRIBUTE) === "true") return true;
+    if (current.getAttribute(PDF_DISPLAY_NONE_ATTRIBUTE) === "true") return true;
 
     const display = current.getAttribute("display")?.trim().toLowerCase();
     if (display === "none") return true;
-    const visibility = current.getAttribute("visibility")?.trim().toLowerCase();
-    if (visibility === "hidden" || visibility === "collapse") return true;
 
     const style = current.getAttribute("style") ?? "";
     if (/(?:^|;)\s*display\s*:\s*none(?:\s*!important)?\s*(?:;|$)/i.test(style)) {
       return true;
     }
-    if (/(?:^|;)\s*visibility\s*:\s*(?:hidden|collapse)(?:\s*!important)?\s*(?:;|$)/i.test(style)) {
-      return true;
-    }
   }
-  return false;
+
+  if (element.getAttribute(PDF_HIDDEN_TEXT_ATTRIBUTE) === "true") return true;
+  const visibility = element.getAttribute("visibility")?.trim().toLowerCase();
+  if (visibility === "hidden" || visibility === "collapse") return true;
+  const style = element.getAttribute("style") ?? "";
+  return /(?:^|;)\s*visibility\s*:\s*(?:hidden|collapse)(?:\s*!important)?\s*(?:;|$)/i.test(style);
 }
 
 export function normalizePdfSvgFontFamilies(svg: Element): void {
@@ -363,19 +347,23 @@ function materializePdfTextStyles(svg: SVGSVGElement): void {
   const clone = frameDocument.importNode(svg, true) as SVGSVGElement;
   frameDocument.body.appendChild(clone);
   try {
+    const sourceElements = [svg, ...Array.from(svg.querySelectorAll<SVGElement>("*"))];
+    const clonedElements = [clone, ...Array.from(clone.querySelectorAll<SVGElement>("*"))];
+    sourceElements.forEach((sourceElement, index) => {
+      const clonedElement = clonedElements[index];
+      if (!clonedElement) return;
+      if (frameWindow.getComputedStyle(clonedElement).display === "none") {
+        sourceElement.setAttribute(PDF_DISPLAY_NONE_ATTRIBUTE, "true");
+      } else {
+        sourceElement.removeAttribute(PDF_DISPLAY_NONE_ATTRIBUTE);
+      }
+    });
+
     const sourceTextElements = Array.from(svg.querySelectorAll<SVGElement>("text, tspan"));
     const clonedTextElements = Array.from(clone.querySelectorAll<SVGElement>("text, tspan"));
     sourceTextElements.forEach((sourceElement, index) => {
       const clonedElement = clonedTextElements[index];
       if (!clonedElement) return;
-      const clonedFamily = clonedElement.getAttribute("font-family");
-      const clonedStyle = clonedElement.getAttribute("style") ?? "";
-      if (clonedFamily && !/(?:^|;)\s*font-family\s*:/i.test(clonedStyle)) {
-        clonedElement.setAttribute(
-          "style",
-          `${clonedStyle}${clonedStyle.trim() ? "; " : ""}font-family: ${serializeCssFontFamilyValue(clonedFamily)}`
-        );
-      }
       const computed = frameWindow.getComputedStyle(clonedElement);
       const hidden =
         computed.display === "none" || ["hidden", "collapse"].includes(computed.visibility);
