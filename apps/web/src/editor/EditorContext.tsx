@@ -3277,28 +3277,30 @@ export function EditorProvider({
       if (!(object instanceof Group) || !object.familyId) return;
       const preset = ASSET_COLOR_PRESETS.find((item) => item.id === presetId);
       if (!preset) return;
-      void loadAssetManifest()
-        .then(({ assetManifest }) => {
-          const family = assetManifest.families.find((item) => item.familyId === object.familyId);
-          const profile = family ? colorProfileForFamily(family) : undefined;
-          if (
-            !profile ||
-            !canvas ||
-            !canvas.getObjects().includes(object) ||
-            canvas.getActiveObject() !== object
-          ) {
-            return;
-          }
-          const mapping = presetColorMap(originalPaints(object), profile, preset);
-          restoreOriginalColors(object);
-          applyPresetColors(object, mapping, preset.id);
-          canvas.requestRenderAll();
-          setSelection([...canvas.getActiveObjects()]);
-          commit("Apply color preset");
-        })
-        .catch(() => undefined);
+      void trackPendingEditorWork(
+        loadAssetManifest()
+          .then(({ assetManifest }) => {
+            const family = assetManifest.families.find((item) => item.familyId === object.familyId);
+            const profile = family ? colorProfileForFamily(family) : undefined;
+            if (
+              !profile ||
+              !canvas ||
+              !canvas.getObjects().includes(object) ||
+              canvas.getActiveObject() !== object
+            ) {
+              return;
+            }
+            const mapping = presetColorMap(originalPaints(object), profile, preset);
+            restoreOriginalColors(object);
+            applyPresetColors(object, mapping, preset.id);
+            canvas.requestRenderAll();
+            setSelection([...canvas.getActiveObjects()]);
+            commit("Apply color preset");
+          })
+          .catch(() => undefined)
+      );
     },
-    [canvas, commit, selection]
+    [canvas, commit, selection, trackPendingEditorWork]
   );
   const resetColors = useCallback(() => {
     if (!canvas) return;
