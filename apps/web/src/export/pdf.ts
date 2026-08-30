@@ -312,6 +312,40 @@ const PDF_HIDDEN_ELEMENT_ATTRIBUTE = "data-opensketch-pdf-hidden-element";
 const PDF_VISIBLE_ELEMENT_ATTRIBUTE = "data-opensketch-pdf-visible-element";
 const PDF_ZERO_OPACITY_ATTRIBUTE = "data-opensketch-pdf-zero-opacity";
 const PDF_USE_VISIBLE_TEXT_ATTRIBUTE = "data-opensketch-pdf-use-visible-text";
+const PDF_COMPUTED_URL_REFERENCES_ATTRIBUTE = "data-opensketch-pdf-computed-url-references";
+const PDF_URL_REFERENCE_ATTRIBUTES = new Set([
+  "color-profile",
+  "clip-path",
+  "cursor",
+  "fill",
+  "filter",
+  "marker-end",
+  "marker-mid",
+  "marker-start",
+  "mask",
+  "stroke"
+]);
+const PDF_URL_REFERENCE_PROPERTIES = new Set([
+  ...PDF_URL_REFERENCE_ATTRIBUTES,
+  "background",
+  "background-image",
+  "mask-image",
+  "mask-border-source",
+  "motion-path",
+  "offset-path"
+]);
+const PDF_HREF_REFERENCE_ELEMENTS = new Set([
+  "feimage",
+  "filter",
+  "image",
+  "lineargradient",
+  "mask",
+  "mpath",
+  "pattern",
+  "radialgradient",
+  "textpath",
+  "use"
+]);
 const PDF_USE_TEXT_STYLE_PROPERTIES = [
   "font-family",
   "font-style",
@@ -806,6 +840,16 @@ function materializePdfTextStyles(svg: SVGSVGElement): void {
       const clonedElement = clonedElements[index];
       if (!clonedElement) return;
       const computed = frameWindow.getComputedStyle(clonedElement);
+      const computedUrlReferences = Array.from(PDF_URL_REFERENCE_PROPERTIES, (property) =>
+        computed.getPropertyValue(property)
+      )
+        .filter((value) => /\burl\s*\(/i.test(value))
+        .join("; ");
+      if (computedUrlReferences) {
+        sourceElement.setAttribute(PDF_COMPUTED_URL_REFERENCES_ATTRIBUTE, computedUrlReferences);
+      } else {
+        sourceElement.removeAttribute(PDF_COMPUTED_URL_REFERENCES_ATTRIBUTE);
+      }
       const hasZeroOpacityAncestor = (() => {
         for (
           let current: Element | null = clonedElement;
@@ -965,28 +1009,6 @@ function pdfReferenceIdsInValue(value: string, allowExactReference = false): str
   return ids;
 }
 
-const PDF_URL_REFERENCE_ATTRIBUTES = new Set([
-  "color-profile",
-  "clip-path",
-  "cursor",
-  "fill",
-  "filter",
-  "marker-end",
-  "marker-mid",
-  "marker-start",
-  "mask",
-  "stroke"
-]);
-const PDF_URL_REFERENCE_PROPERTIES = new Set([
-  ...PDF_URL_REFERENCE_ATTRIBUTES,
-  "background",
-  "background-image",
-  "mask-image",
-  "mask-border-source",
-  "motion-path",
-  "offset-path"
-]);
-
 function pdfReferenceIdsInCssDeclarations(value: string): string[] {
   const references: string[] = [];
   for (const match of stripCssComments(value).matchAll(/(?:^|[;{])\s*([\w-]+)\s*:\s*([^;}{]+)/g)) {
@@ -1024,12 +1046,19 @@ function pdfUseVisibilityIsHidden(use: Element): boolean {
   return visibility === "hidden";
 }
 
-function isPdfNonRenderedUse(svg: SVGSVGElement, element: Element): boolean {
-  if (element.localName.toLowerCase() !== "use") return false;
-
+function isPdfNonRenderedElement(element: Element): boolean {
   for (let current: Element | null = element; current; current = current.parentElement) {
+    if (current.getAttribute(PDF_DISPLAY_NONE_ATTRIBUTE) === "true") return true;
+    if (current.getAttribute(PDF_ZERO_OPACITY_ATTRIBUTE) === "true") return true;
+
+    // Once the iframe has materialized computed state, do not let raw SVG
+    // declarations override a stylesheet's winning display or opacity.
+    const hasMaterializedElementState =
+      current.hasAttribute(PDF_HIDDEN_ELEMENT_ATTRIBUTE) ||
+      current.hasAttribute(PDF_VISIBLE_ELEMENT_ATTRIBUTE);
+    if (hasMaterializedElementState) continue;
+
     if (
-      current.getAttribute(PDF_DISPLAY_NONE_ATTRIBUTE) === "true" ||
       svgInlineStyleValue(current, "display")
         ?.replace(/\s*!important\s*$/i, "")
         .trim()
@@ -1037,31 +1066,46 @@ function isPdfNonRenderedUse(svg: SVGSVGElement, element: Element): boolean {
     ) {
       return true;
     }
-    if (
-      current.getAttribute(PDF_ZERO_OPACITY_ATTRIBUTE) === "true" ||
-      isZeroPdfOpacity(svgInlineStyleValue(current, "opacity"))
-    ) {
-      return true;
-    }
+    if (isZeroPdfOpacity(svgInlineStyleValue(current, "opacity"))) return true;
   }
+  return false;
+}
+
+function isPdfNonRenderedUse(svg: SVGSVGElement, element: Element): boolean {
+  if (element.localName.toLowerCase() !== "use") return false;
+  if (isPdfNonRenderedElement(element)) return true;
 
   return pdfUseVisibilityIsHidden(element) && !pdfUseHasVisibleTextOverride(svg, element);
+}
+
+function pdfTextRunElement(node: Node, svg: SVGSVGElement): SVGElement | undefined {
+  for (
+    let current: Element | null = node.parentElement;
+    current && current !== svg;
+    current = current.parentElement
+  ) {
+    if (["text", "tspan"].includes(current.localName.toLowerCase())) {
+      return current as SVGElement;
+    }
+  }
+  return undefined;
 }
 
 function addPdfReferenceIds(element: Element, references: string[]): void {
   for (const attribute of Array.from(element.attributes)) {
     const attributeName = attribute.name.toLowerCase();
     if (attributeName === "href" || attributeName === "xlink:href") {
-      references.push(...pdfReferenceIdsInValue(attribute.value, true));
+      if (PDF_HREF_REFERENCE_ELEMENTS.has(element.localName.toLowerCase())) {
+        references.push(...pdfReferenceIdsInValue(attribute.value, true));
+      }
     } else if (attributeName === "style") {
       references.push(...pdfReferenceIdsInCssDeclarations(attribute.value));
     } else if (PDF_URL_REFERENCE_ATTRIBUTES.has(attributeName)) {
       references.push(...pdfReferenceIdsInValue(attribute.value));
     }
   }
-  if (element.localName.toLowerCase() === "style") {
-    references.push(...pdfReferenceIdsInCssDeclarations(element.textContent ?? ""));
-  }
+  const computedUrlReferences = element.getAttribute(PDF_COMPUTED_URL_REFERENCES_ATTRIBUTE);
+  if (computedUrlReferences) references.push(...pdfReferenceIdsInValue(computedUrlReferences));
 }
 
 function isPdfNestedDefinitionElement(element: Element, definition: Element): boolean {
@@ -1088,7 +1132,7 @@ function getPdfReachableDefinitionIds(svg: SVGSVGElement): Set<string> {
   const pending: string[] = [];
   let nextPendingIndex = 0;
   const collectReferences = (element: Element) => {
-    if (isPdfNonRenderedUse(svg, element)) return;
+    if (isPdfNonRenderedElement(element) || isPdfNonRenderedUse(svg, element)) return;
     addPdfReferenceIds(element, pending);
   };
 
@@ -1146,14 +1190,14 @@ function getPdfTextRuns(
   const visit = (node: Node) => {
     if (node.nodeType === 3 || node.nodeType === 4) {
       const parent = node.parentElement;
-      const localName = parent?.localName?.toLowerCase();
+      const textElement = parent ? pdfTextRunElement(node, svg) : undefined;
       if (
         parent &&
+        textElement &&
         !isPdfTextInUnreferencedDefinition(parent, svg, reachableDefinitionIds) &&
-        (localName === "text" || localName === "tspan") &&
         !hasHiddenPdfTextAncestor(parent)
       ) {
-        runs.push({ element: parent as unknown as SVGElement, text: node.nodeValue ?? "" });
+        runs.push({ element: textElement, text: node.nodeValue ?? "" });
       }
       return;
     }
