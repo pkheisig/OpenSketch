@@ -4093,6 +4093,9 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
       visibleHiddenUseGlyph: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="hidden-label" x="12" y="40" font-family="Atkinson Hyperlegible" visibility="visible">AΓB</text></defs><use href="#hidden-label" style="visibility: hidden" /></svg>`
       ),
+      visibleIdStyledHiddenUseGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><style>#visible-label { visibility: visible; }</style><defs><text id="visible-label" x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><use href="#visible-label" style="visibility: hidden" /></svg>`
+      ),
       visibleNestedHiddenUseGlyph: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="hidden-label" x="12" y="40" font-family="Atkinson Hyperlegible" visibility="visible">AΓB</text><g id="hidden-wrapper"><use href="#hidden-label" visibility="visible" /></g></defs><use href="#hidden-wrapper" style="visibility: hidden" /></svg>`
       ),
@@ -4113,6 +4116,9 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
       ),
       linkedTextGlyph: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible"><a href="#missing-link-target">AΓB</a></text></svg>`
+      ),
+      linkedLocalFontStyle: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Inter"><a font-family="Lato">Linked font</a></text></svg>`
       ),
       linkedNavigation: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="unused-link-target" font-family="Atkinson Hyperlegible">AΓB</text></defs><text x="12" y="40" font-family="Inter"><a href="#unused-link-target">Linked text</a></text></svg>`
@@ -4191,6 +4197,8 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
   expect(result.hiddenVisibilityUseGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
   expect(result.visibleHiddenUseGlyph.error).toContain("U+0393");
   expect(result.visibleHiddenUseGlyph.pdf).toBe("");
+  expect(result.visibleIdStyledHiddenUseGlyph.error).toContain("U+0393");
+  expect(result.visibleIdStyledHiddenUseGlyph.pdf).toBe("");
   expect(result.visibleNestedHiddenUseGlyph.error).toContain("U+0393");
   expect(result.visibleNestedHiddenUseGlyph.pdf).toBe("");
   expect(result.cssDisplayOpacityUseOverride.error).toContain("U+0393");
@@ -4205,6 +4213,9 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
   expect(result.hiddenTextPathDescendant.pdf).toBe("");
   expect(result.linkedTextGlyph.error).toContain("U+0393");
   expect(result.linkedTextGlyph.pdf).toBe("");
+  expect(result.linkedLocalFontStyle.error).toBeNull();
+  expect(result.linkedLocalFontStyle.pdf).toContain("/BaseFont /Lato");
+  expect(result.linkedLocalFontStyle.pdf).not.toContain("/BaseFont /Inter");
   expect(result.linkedNavigation.error).toBeNull();
   expect(result.linkedNavigation.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
   expect(result.visibleDescendant.error).toContain("U+0393");

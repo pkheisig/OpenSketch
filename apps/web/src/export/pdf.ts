@@ -405,6 +405,8 @@ const PDF_USE_COMPUTED_STYLE_PROPERTIES = [
   "text-decoration",
   "text-rendering",
   "transform",
+  "transform-box",
+  "transform-origin",
   "vector-effect",
   "visibility",
   "word-spacing",
@@ -637,12 +639,18 @@ function pdfElementsById(root: Element, id: string): Element | undefined {
   );
 }
 
-function pdfTextElements(root: Element): SVGElement[] {
+function pdfTextStyleElements(root: Element): SVGElement[] {
   const elements: SVGElement[] = [];
-  if (["text", "tspan", "textPath"].includes(root.localName.toLowerCase())) {
-    elements.push(root as SVGElement);
-  }
-  elements.push(...Array.from(root.querySelectorAll<SVGElement>("text, tspan, textPath")));
+  const add = (element: Element): void => {
+    const name = element.localName.toLowerCase();
+    if (["text", "tspan", "textpath"].includes(name)) {
+      elements.push(element as SVGElement);
+    } else if (name === "a" && element.textContent) {
+      elements.push(element as SVGElement);
+    }
+  };
+  add(root);
+  root.querySelectorAll<SVGElement>("text, tspan, textPath, a").forEach(add);
   return elements;
 }
 
@@ -677,7 +685,7 @@ function pdfReferenceContainsText(
   reference: Element,
   visitedIds = new Set<string>()
 ): boolean {
-  if (pdfTextElements(reference).length > 0) return true;
+  if (pdfTextStyleElements(reference).length > 0) return true;
 
   const referenceId = reference.getAttribute("id");
   if (referenceId) {
@@ -766,7 +774,8 @@ function copyPdfUseComputedStyles(
   frameWindow: Window,
   probeRoot: Element,
   sourceRoot: SVGElement,
-  cloneRoot: SVGElement
+  cloneRoot: SVGElement,
+  visibleVisibilityOverrides = new Set<number>()
 ): void {
   const probeElements = pdfAllElements(probeRoot);
   const sourceElements = pdfAllElements(sourceRoot);
@@ -816,7 +825,9 @@ function copyPdfUseComputedStyles(
       cloneElement.setAttribute("visibility", value);
     } else if (
       visibility === "visible" &&
-      (parentVisibility === "hidden" || parentVisibility === "collapse")
+      (parentVisibility === "hidden" ||
+        parentVisibility === "collapse" ||
+        visibleVisibilityOverrides.has(index))
     ) {
       sourceElement.style.setProperty("visibility", "visible", "important");
       cloneElement.style.setProperty("visibility", "visible", "important");
@@ -884,8 +895,8 @@ function materializePdfUseTextStyles(
     (clonedReference.parentElement ?? clone).appendChild(probeGroup);
 
     try {
-      const sourceTextElements = pdfTextElements(sourceReference);
-      const probeTextElements = pdfTextElements(probeReference);
+      const sourceTextElements = pdfTextStyleElements(sourceReference);
+      const probeTextElements = pdfTextStyleElements(probeReference);
       const sourcePaintElements = pdfPaintElements(sourceReference);
       const probePaintElements = pdfPaintElements(probeReference);
       const contextVisibility = frameWindow.getComputedStyle(contextUse).visibility;
@@ -906,8 +917,8 @@ function materializePdfUseTextStyles(
       const materializedClone = clonedReference.cloneNode(true) as SVGElement;
       materializedSource.setAttribute("id", materializedId);
       materializedClone.setAttribute("id", materializedId);
-      const materializedSourceTextElements = pdfTextElements(materializedSource);
-      const materializedCloneTextElements = pdfTextElements(materializedClone);
+      const materializedSourceTextElements = pdfTextStyleElements(materializedSource);
+      const materializedCloneTextElements = pdfTextStyleElements(materializedClone);
       const materializedSourcePaintElements = pdfPaintElements(materializedSource);
       const materializedClonePaintElements = pdfPaintElements(materializedClone);
       const sourceNestedUses = pdfUseElements(materializedSource);
@@ -932,13 +943,30 @@ function materializePdfUseTextStyles(
       // for detecting visibility overrides and would otherwise contaminate
       // the copied visibility values.
       const probeVisibility = probeGroup.getAttribute("visibility");
+      const probeVisibilityOverrides = new Set<number>();
+      pdfAllElements(probeReference).forEach((probeElement, index) => {
+        const visibility = frameWindow
+          .getComputedStyle(probeElement)
+          .visibility.trim()
+          .toLowerCase();
+        const parentVisibility = probeElement.parentElement
+          ? frameWindow.getComputedStyle(probeElement.parentElement).visibility.trim().toLowerCase()
+          : "visible";
+        if (
+          visibility === "visible" &&
+          (parentVisibility === "hidden" || parentVisibility === "collapse")
+        ) {
+          probeVisibilityOverrides.add(index);
+        }
+      });
       probeGroup.removeAttribute("visibility");
       try {
         copyPdfUseComputedStyles(
           frameWindow,
           probeReference,
           materializedSource,
-          materializedClone
+          materializedClone,
+          probeVisibilityOverrides
         );
       } finally {
         if (probeVisibility) probeGroup.setAttribute("visibility", probeVisibility);
@@ -1077,12 +1105,8 @@ function materializePdfTextStyles(svg: SVGSVGElement): void {
       else sourceElement.removeAttribute(PDF_ZERO_OPACITY_ATTRIBUTE);
     });
 
-    const sourceTextElements = Array.from(
-      svg.querySelectorAll<SVGElement>("text, tspan, textPath")
-    );
-    const clonedTextElements = Array.from(
-      clone.querySelectorAll<SVGElement>("text, tspan, textPath")
-    );
+    const sourceTextElements = pdfTextStyleElements(svg);
+    const clonedTextElements = pdfTextStyleElements(clone);
     sourceTextElements.forEach((sourceElement, index) => {
       const clonedElement = clonedTextElements[index];
       if (!clonedElement) return;
@@ -1117,6 +1141,61 @@ function materializePdfTextStyles(svg: SVGSVGElement): void {
           sourceElement.style.setProperty(property, value, "important");
         }
       }
+    });
+
+    const isPdfTextOnlyLink = (link: SVGElement, root: Element): boolean => {
+      let insideText = false;
+      for (
+        let current: Element | null = link.parentElement;
+        current && current !== root;
+        current = current.parentElement
+      ) {
+        if (["text", "tspan", "textpath"].includes(current.localName.toLowerCase())) {
+          insideText = true;
+          break;
+        }
+      }
+      if (!insideText) return false;
+      return Array.from(link.querySelectorAll<SVGElement>("*")).every((element) =>
+        ["tspan", "textpath"].includes(element.localName.toLowerCase())
+      );
+    };
+    const sourceLinks = Array.from(svg.querySelectorAll<SVGElement>("a")).filter((link) =>
+      isPdfTextOnlyLink(link, svg)
+    );
+    const clonedLinks = Array.from(clone.querySelectorAll<SVGElement>("a")).filter((link) =>
+      isPdfTextOnlyLink(link, clone)
+    );
+    sourceLinks.forEach((sourceLink, index) => {
+      const clonedLink = clonedLinks[index];
+      if (!clonedLink) return;
+      const replacement = svg.ownerDocument.createElementNS("http://www.w3.org/2000/svg", "tspan");
+      const computed = frameWindow.getComputedStyle(clonedLink);
+      for (const property of PDF_USE_COMPUTED_STYLE_PROPERTIES) {
+        const value = PDF_USE_TEXT_STYLE_PROPERTIES.includes(
+          property as (typeof PDF_USE_TEXT_STYLE_PROPERTIES)[number]
+        )
+          ? pdfComputedFontProperty(
+              frameWindow,
+              clonedLink,
+              property as (typeof PDF_USE_TEXT_STYLE_PROPERTIES)[number]
+            )
+          : computed.getPropertyValue(property).trim();
+        if (!value) continue;
+        replacement.style.setProperty(property, value, "important");
+        if (property !== "visibility") replacement.setAttribute(property, value);
+      }
+      for (const attribute of [
+        PDF_HIDDEN_TEXT_ATTRIBUTE,
+        PDF_VISIBLE_TEXT_ATTRIBUTE,
+        PDF_DISPLAY_NONE_ATTRIBUTE,
+        PDF_ZERO_OPACITY_ATTRIBUTE
+      ]) {
+        const value = sourceLink.getAttribute(attribute);
+        if (value) replacement.setAttribute(attribute, value);
+      }
+      while (sourceLink.firstChild) replacement.appendChild(sourceLink.firstChild);
+      sourceLink.replaceWith(replacement);
     });
   } finally {
     frame.remove();
@@ -1310,7 +1389,7 @@ function pdfTextRunElement(node: Node, svg: SVGSVGElement): SVGElement | undefin
     current && current !== svg;
     current = current.parentElement
   ) {
-    if (["text", "tspan"].includes(current.localName.toLowerCase())) {
+    if (["text", "tspan", "textpath", "a"].includes(current.localName.toLowerCase())) {
       return current as SVGElement;
     }
   }
@@ -1435,10 +1514,7 @@ function getPdfTextRuns(
 }
 
 function hasPdfVisibleTextContent(element: Element): boolean {
-  const candidates = [
-    element,
-    ...Array.from(element.querySelectorAll<SVGElement>("text, tspan, textPath"))
-  ];
+  const candidates = pdfTextStyleElements(element);
   return candidates.some((candidate) => {
     const hasDirectRenderableText = Array.from(candidate.childNodes).some(
       (node) =>
@@ -1483,7 +1559,7 @@ function isPdfClipElementHidden(element: Element): boolean {
 }
 
 function hasPdfVisibleClipTextContent(element: Element): boolean {
-  return pdfTextElements(element).some((candidate) => {
+  return pdfTextStyleElements(element).some((candidate) => {
     const hasDirectRenderableText = Array.from(candidate.childNodes).some(
       (node) =>
         (node.nodeType === 3 || node.nodeType === 4) && hasPdfRenderableText(node.nodeValue ?? "")
@@ -1618,7 +1694,7 @@ function assertPdfTextCoverage(
 }
 
 export function getPdfFontFamiliesReferencedBySvg(svg: Element): string[] {
-  if (!svg.querySelector("text, tspan")) return [];
+  if (pdfTextStyleElements(svg).length === 0) return [];
 
   const declaredFamilies: string[] = [];
   const collectDeclarations = (value: string | null) => {
