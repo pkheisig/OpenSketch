@@ -224,6 +224,28 @@ describe("PDF export metadata", () => {
     ).toEqual([]);
   });
 
+  it("ignores references originating in unreferenced SVG definitions", () => {
+    const parsed = new DOMParser().parseFromString(
+      `<svg xmlns="http://www.w3.org/2000/svg"><defs><g id="unused"><use href="#label"/></g><text id="label" font-family="Atkinson Hyperlegible">AΓB</text></defs><rect width="100" height="40"/></svg>`,
+      "image/svg+xml"
+    );
+
+    expect(
+      getPdfFontRegistrationsReferencedBySvg(parsed.documentElement as unknown as SVGSVGElement)
+    ).toEqual([]);
+  });
+
+  it("follows references through rendered SVG definitions", () => {
+    const parsed = new DOMParser().parseFromString(
+      `<svg xmlns="http://www.w3.org/2000/svg"><defs><g id="used"><use href="#label"/></g><text id="label" font-family="Inter">x</text></defs><use href="#used"/></svg>`,
+      "image/svg+xml"
+    );
+
+    expect(
+      getPdfFontRegistrationsReferencedBySvg(parsed.documentElement as unknown as SVGSVGElement)
+    ).toEqual(expect.arrayContaining([expect.objectContaining({ pdfFamily: "Inter" })]));
+  });
+
   it("ignores font declarations inside CSS comments", () => {
     const parsed = new DOMParser().parseFromString(
       `<svg xmlns="http://www.w3.org/2000/svg"><style>.label { /* font-weight: invalid; font-style: invalid; */ font-weight: 400; font-style: normal; }</style><text class="label">x</text></svg>`,
@@ -256,6 +278,28 @@ describe("PDF export metadata", () => {
     expect(
       getPdfFontRegistrationsReferencedBySvg(parsed.documentElement as unknown as SVGSVGElement)
     ).toEqual([]);
+  });
+
+  it("rejects textPath content restored by a visible descendant", () => {
+    const parsed = new DOMParser().parseFromString(
+      `<svg xmlns="http://www.w3.org/2000/svg"><path id="curve" d="M0 0"/><text font-family="Inter"><textPath visibility="hidden" href="#curve"><tspan visibility="visible">x</tspan></textPath></text></svg>`,
+      "image/svg+xml"
+    );
+
+    expect(() =>
+      getPdfFontRegistrationsReferencedBySvg(parsed.documentElement as unknown as SVGSVGElement)
+    ).toThrow("textPath");
+  });
+
+  it("rejects clipping text restored by a visible descendant", () => {
+    const parsed = new DOMParser().parseFromString(
+      `<svg xmlns="http://www.w3.org/2000/svg"><defs><clipPath id="label-clip"><text visibility="hidden"><tspan visibility="visible">Label</tspan></text></clipPath></defs><rect width="100" height="40" clip-path="url(#label-clip)"/></svg>`,
+      "image/svg+xml"
+    );
+
+    expect(() =>
+      getPdfFontRegistrationsReferencedBySvg(parsed.documentElement as unknown as SVGSVGElement)
+    ).toThrow("text-based clip paths");
   });
 
   it("fails closed for an unregistered imported font family", () => {

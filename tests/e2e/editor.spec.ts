@@ -4041,8 +4041,14 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
       clipPathText: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><clipPath id="label-clip"><text x="12" y="40" font-family="Inter" fill="none">Label</text></clipPath></defs><rect width="600" height="240" fill="black" clip-path="url(#label-clip)" /></svg>`
       ),
+      hiddenClipPathDescendant: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><clipPath id="label-clip"><text visibility="hidden"><tspan visibility="visible">Label</tspan></text></clipPath></defs><rect width="600" height="240" fill="black" clip-path="url(#label-clip)" /></svg>`
+      ),
       unusedDefinitionGlyph: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><rect width="600" height="240" fill="black" /></svg>`
+      ),
+      hiddenTextPathDescendant: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><path id="curve" d="M0 0"/><text font-family="Inter"><textPath visibility="hidden" href="#curve"><tspan visibility="visible">Label</tspan></textPath></text></svg>`
       ),
       visibleDescendant: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" visibility="hidden"><tspan visibility="visible">Γ</tspan></text></svg>`
@@ -4091,8 +4097,12 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
   expect(result.cssFunctions.pdf).not.toContain("/BaseFont /Times");
   expect(result.clipPathText.error).toContain("text-based clip paths");
   expect(result.clipPathText.pdf).toBe("");
+  expect(result.hiddenClipPathDescendant.error).toContain("text-based clip paths");
+  expect(result.hiddenClipPathDescendant.pdf).toBe("");
   expect(result.unusedDefinitionGlyph.error).toBeNull();
   expect(result.unusedDefinitionGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
+  expect(result.hiddenTextPathDescendant.error).toContain("textPath");
+  expect(result.hiddenTextPathDescendant.pdf).toBe("");
   expect(result.visibleDescendant.error).toContain("U+0393");
   expect(result.cdata.error).toBeNull();
   expect(result.cdata.pdf).toContain("/BaseFont /Inter");

@@ -664,51 +664,113 @@ interface PdfTextRun {
   text: string;
 }
 
-function svgValueReferencesPdfId(value: string, id: string): boolean {
-  const reference = `#${id}`;
-  return (
-    value.trim() === reference ||
-    new RegExp(`url\\(\\s*["']?${escapeRegExp(reference)}["']?\\s*\\)`, "i").test(value)
-  );
-}
-
-function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-function isPdfDefinitionReferenced(svg: SVGSVGElement, definition: Element): boolean {
-  const id = definition.getAttribute("id");
-  if (!id) return false;
-  const candidates = [svg, ...Array.from(svg.querySelectorAll<SVGElement>("*"))];
-  for (const candidate of candidates) {
-    if (definition.contains(candidate)) continue;
-    for (const attribute of Array.from(candidate.attributes)) {
-      if (svgValueReferencesPdfId(attribute.value, id)) return true;
-    }
-  }
-  for (const style of svg.querySelectorAll("style")) {
-    if (!definition.contains(style) && svgValueReferencesPdfId(style.textContent ?? "", id)) {
-      return true;
-    }
+function isPdfDefinitionElement(element: Element, svg: SVGSVGElement): boolean {
+  for (
+    let current: Element | null = element;
+    current && current !== svg;
+    current = current.parentElement
+  ) {
+    if (current.localName.toLowerCase() === "defs") return true;
   }
   return false;
 }
 
-function isPdfTextInUnreferencedDefinition(element: Element, svg: SVGSVGElement): boolean {
+function pdfReferenceIdsInValue(value: string): string[] {
+  const ids: string[] = [];
+  const exactReference = value.trim().match(/^#([^\s]+)$/);
+  if (exactReference) ids.push(exactReference[1]);
+  for (const match of value.matchAll(/url\(\s*["']?#([^"')\s]+)["']?\s*\)/gi)) {
+    ids.push(match[1]);
+  }
+  return ids;
+}
+
+function addPdfReferenceIds(element: Element, references: string[]): void {
+  for (const attribute of Array.from(element.attributes)) {
+    references.push(...pdfReferenceIdsInValue(attribute.value));
+  }
+  if (element.localName.toLowerCase() === "style") {
+    references.push(...pdfReferenceIdsInValue(stripCssComments(element.textContent ?? "")));
+  }
+}
+
+function isPdfNestedDefinitionElement(element: Element, definition: Element): boolean {
+  for (
+    let current: Element | null = element;
+    current && current !== definition;
+    current = current.parentElement
+  ) {
+    if (current.localName.toLowerCase() === "defs") return true;
+  }
+  return false;
+}
+
+function getPdfReachableDefinitionIds(svg: SVGSVGElement): Set<string> {
+  const definitionsById = new Map<string, Element>();
+  const elements = [svg, ...Array.from(svg.querySelectorAll<SVGElement>("*"))];
+  for (const element of elements) {
+    if (!isPdfDefinitionElement(element, svg)) continue;
+    const id = element.getAttribute("id");
+    if (id) definitionsById.set(id, element);
+  }
+
+  const reachable = new Set<string>();
+  const pending: string[] = [];
+  let nextPendingIndex = 0;
+  const collectReferences = (element: Element) => {
+    addPdfReferenceIds(element, pending);
+  };
+
+  for (const element of elements) {
+    if (!isPdfDefinitionElement(element, svg)) collectReferences(element);
+  }
+
+  while (nextPendingIndex < pending.length) {
+    const id = pending[nextPendingIndex];
+    nextPendingIndex += 1;
+    if (!id || reachable.has(id)) continue;
+    reachable.add(id);
+    const definition = definitionsById.get(id);
+    if (!definition) continue;
+    const definitionElements = [
+      definition,
+      ...Array.from(definition.querySelectorAll<SVGElement>("*"))
+    ];
+    for (const element of definitionElements) {
+      if (isPdfNestedDefinitionElement(element, definition)) continue;
+      collectReferences(element);
+    }
+  }
+  return reachable;
+}
+
+function isPdfTextInUnreferencedDefinition(
+  element: Element,
+  svg: SVGSVGElement,
+  reachableDefinitionIds: ReadonlySet<string>
+): boolean {
   let current: Element | null = element;
   let insideDefinitions = false;
   while (current && current !== svg) {
+    if (
+      current.hasAttribute("id") &&
+      reachableDefinitionIds.has(current.getAttribute("id") ?? "")
+    ) {
+      return false;
+    }
     if (current.localName.toLowerCase() === "defs") {
       insideDefinitions = true;
       break;
     }
-    if (current.hasAttribute("id") && isPdfDefinitionReferenced(svg, current)) return false;
     current = current.parentElement;
   }
   return insideDefinitions;
 }
 
-function getPdfTextRuns(svg: SVGSVGElement): PdfTextRun[] {
+function getPdfTextRuns(
+  svg: SVGSVGElement,
+  reachableDefinitionIds = getPdfReachableDefinitionIds(svg)
+): PdfTextRun[] {
   const runs: PdfTextRun[] = [];
   const visit = (node: Node) => {
     if (node.nodeType === 3 || node.nodeType === 4) {
@@ -716,7 +778,7 @@ function getPdfTextRuns(svg: SVGSVGElement): PdfTextRun[] {
       const localName = parent?.localName?.toLowerCase();
       if (
         parent &&
-        !isPdfTextInUnreferencedDefinition(parent, svg) &&
+        !isPdfTextInUnreferencedDefinition(parent, svg, reachableDefinitionIds) &&
         (localName === "text" || localName === "tspan") &&
         !hasHiddenPdfTextAncestor(parent)
       ) {
@@ -730,11 +792,30 @@ function getPdfTextRuns(svg: SVGSVGElement): PdfTextRun[] {
   return runs;
 }
 
-function assertPdfTextPathsSupported(svg: SVGSVGElement): void {
+function hasPdfVisibleTextContent(element: Element): boolean {
+  const candidates = [
+    element,
+    ...Array.from(element.querySelectorAll<SVGElement>("text, tspan, textPath"))
+  ];
+  return candidates.some((candidate) => {
+    const hasDirectRenderableText = Array.from(candidate.childNodes).some(
+      (node) =>
+        (node.nodeType === 3 || node.nodeType === 4) && hasPdfRenderableText(node.nodeValue ?? "")
+    );
+    if (!hasDirectRenderableText) return false;
+    if (candidate.getAttribute(PDF_HIDDEN_TEXT_ATTRIBUTE) === "true") return false;
+    if (candidate.getAttribute(PDF_VISIBLE_TEXT_ATTRIBUTE) === "true") return true;
+    return !hasHiddenPdfTextAncestor(candidate);
+  });
+}
+
+function assertPdfTextPathsSupported(
+  svg: SVGSVGElement,
+  reachableDefinitionIds: ReadonlySet<string>
+): void {
   for (const textPath of svg.querySelectorAll<SVGElement>("textPath")) {
-    if (isPdfTextInUnreferencedDefinition(textPath, svg)) continue;
-    if (hasHiddenPdfTextAncestor(textPath)) continue;
-    if (hasPdfRenderableText(textPath.textContent ?? "")) {
+    if (isPdfTextInUnreferencedDefinition(textPath, svg, reachableDefinitionIds)) continue;
+    if (hasPdfVisibleTextContent(textPath)) {
       throw new Error(
         "PDF export cannot render <textPath> content yet. Convert text to regular text before exporting."
       );
@@ -742,11 +823,13 @@ function assertPdfTextPathsSupported(svg: SVGSVGElement): void {
   }
 }
 
-function assertPdfTextClipPathsSupported(svg: SVGSVGElement): void {
+function assertPdfTextClipPathsSupported(
+  svg: SVGSVGElement,
+  reachableDefinitionIds: ReadonlySet<string>
+): void {
   for (const text of svg.querySelectorAll<SVGElement>("clipPath text")) {
-    if (isPdfTextInUnreferencedDefinition(text, svg)) continue;
-    if (hasHiddenPdfTextAncestor(text)) continue;
-    if (hasPdfRenderableText(text.textContent ?? "")) {
+    if (isPdfTextInUnreferencedDefinition(text, svg, reachableDefinitionIds)) continue;
+    if (hasPdfVisibleTextContent(text)) {
       throw new Error(
         "PDF export cannot render text-based clip paths yet. Convert clipping text to paths before exporting."
       );
@@ -755,11 +838,12 @@ function assertPdfTextClipPathsSupported(svg: SVGSVGElement): void {
 }
 
 export function getPdfFontRegistrationsReferencedBySvg(svg: SVGSVGElement): PdfFontRegistration[] {
-  assertPdfTextClipPathsSupported(svg);
-  assertPdfTextPathsSupported(svg);
+  const reachableDefinitionIds = getPdfReachableDefinitionIds(svg);
+  assertPdfTextClipPathsSupported(svg, reachableDefinitionIds);
+  assertPdfTextPathsSupported(svg, reachableDefinitionIds);
   const candidates = getPdfFontRegistrationPlan(getPdfFontFamiliesReferencedBySvg(svg));
   const used = new Set<string>();
-  for (const { element, text } of getPdfTextRuns(svg)) {
+  for (const { element, text } of getPdfTextRuns(svg, reachableDefinitionIds)) {
     if (!hasPdfRenderableText(text)) continue;
     const registration = requirePdfRegistrationForTextElement(element, candidates);
     used.add(`${registration.pdfFamily}|${registration.style}|${registration.weight}`);
