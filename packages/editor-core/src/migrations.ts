@@ -503,7 +503,9 @@ function assertSafeSvgText(value: string, path: string): void {
   ) {
     throw new Error("The project contains an external or executable scene reference.");
   }
-  if (value.length > PORTABLE_PROJECT_LIMITS.maxDataUrlBytes) fail(path, "is invalid");
+  if (new TextEncoder().encode(value).byteLength > PORTABLE_PROJECT_LIMITS.maxDataUrlBytes) {
+    fail(path, "is invalid");
+  }
 }
 
 function validateDataUrl(

@@ -36,7 +36,6 @@ import {
   type CanvasSettings,
   type ConnectorBinding,
   type ImportedMediaRecord,
-  type ParsedImageDataUrl,
   type ProjectRecord,
   type RasterInspection,
   imageDataUrlByteLength,
@@ -234,9 +233,10 @@ let bundledVariantsPromise: Promise<Map<string, AssetVariant>> | undefined;
 
 function validateImportedMediaRecord(
   media: ImportedMediaRecord,
-  existingRasterPixels = 0
+  existingRasterPixels = 0,
+  knownInspection?: RasterInspection
 ): RasterInspection | undefined {
-  const { inspection } = inspectImportedMediaRecord(media);
+  const { inspection } = inspectImportedMediaRecord(media, knownInspection);
   if (!inspection) return undefined;
   const limitMessage = rasterLimitMessage(inspection, existingRasterPixels);
   if (limitMessage) throw new Error(limitMessage);
@@ -245,20 +245,34 @@ function validateImportedMediaRecord(
 
 function rasterMediaInScene(canvas: Canvas): ImportedMediaRecord[] {
   const media: ImportedMediaRecord[] = [];
-  visitSceneObjects(canvas.getObjects(), (object) => {
-    if (!(object instanceof FabricImage)) return;
-    const source = object.getSrc();
-    const parsed = parseImageDataUrl(source);
-    if (!parsed)
-      throw new Error("The document contains an external or unsupported image reference.");
-    if (parsed.mimeType === "image/svg+xml") return;
-    media.push({
-      id: `scene-${media.length}`,
-      name: "Scene image",
-      mimeType: parsed.mimeType,
-      dataUrl: source
-    });
-  });
+  const roots = [
+    ...canvas.getObjects(),
+    canvas.backgroundImage,
+    canvas.overlayImage,
+    canvas.clipPath
+  ].filter((object): object is FabricObject => object instanceof FabricObject);
+  const visited = new Set<FabricObject>();
+  const visit = (object: FabricObject): void => {
+    if (visited.has(object)) return;
+    visited.add(object);
+    if (object instanceof FabricImage) {
+      const source = object.getSrc();
+      const parsed = parseImageDataUrl(source);
+      if (!parsed)
+        throw new Error("The document contains an external or unsupported image reference.");
+      if (parsed.mimeType !== "image/svg+xml") {
+        media.push({
+          id: `scene-${media.length}`,
+          name: "Scene image",
+          mimeType: parsed.mimeType,
+          dataUrl: source
+        });
+      }
+    }
+    if (object.clipPath) visit(object.clipPath as FabricObject);
+    if (object instanceof Group) object.getObjects().forEach(visit);
+  };
+  roots.forEach(visit);
   return media;
 }
 
@@ -268,18 +282,53 @@ interface ProjectMediaTotals {
 }
 
 interface ImportedMediaInspection {
-  parsed: ParsedImageDataUrl;
+  mimeType: string;
   byteLength: number;
   inspection?: RasterInspection;
 }
 
 const importedMediaInspectionCache = new Map<string, ImportedMediaInspection>();
-const IMPORTED_MEDIA_INSPECTION_CACHE_LIMIT = 512;
+const IMPORTED_MEDIA_INSPECTION_CACHE_MAX_CHARS = 8 * 1024 * 1024;
+let importedMediaInspectionCacheChars = 0;
 
-function inspectImportedMediaRecord(media: ImportedMediaRecord): ImportedMediaInspection {
+function cachedImportedMediaInspection(
+  dataUrl: string,
+  mimeType: string
+): ImportedMediaInspection | undefined {
+  const cached = importedMediaInspectionCache.get(dataUrl);
+  if (!cached || cached.mimeType !== mimeType) return undefined;
+  importedMediaInspectionCache.delete(dataUrl);
+  importedMediaInspectionCache.set(dataUrl, cached);
+  return cached;
+}
+
+function cacheImportedMediaInspection(dataUrl: string, inspection: ImportedMediaInspection): void {
+  if (dataUrl.length > IMPORTED_MEDIA_INSPECTION_CACHE_MAX_CHARS) return;
+  const previous = importedMediaInspectionCache.get(dataUrl);
+  if (previous) {
+    importedMediaInspectionCache.delete(dataUrl);
+    importedMediaInspectionCacheChars -= dataUrl.length;
+  }
+  while (
+    importedMediaInspectionCacheChars + dataUrl.length >
+    IMPORTED_MEDIA_INSPECTION_CACHE_MAX_CHARS
+  ) {
+    const oldest = importedMediaInspectionCache.keys().next().value;
+    if (oldest === undefined) return;
+    importedMediaInspectionCache.delete(oldest);
+    importedMediaInspectionCacheChars -= oldest.length;
+  }
+  importedMediaInspectionCache.set(dataUrl, inspection);
+  importedMediaInspectionCacheChars += dataUrl.length;
+}
+
+function inspectImportedMediaRecord(
+  media: ImportedMediaRecord,
+  knownInspection?: RasterInspection
+): ImportedMediaInspection {
   const mimeType = media.mimeType.toLowerCase();
-  const cached = importedMediaInspectionCache.get(media.dataUrl);
-  if (cached?.parsed.mimeType === mimeType) return cached;
+  const cached = cachedImportedMediaInspection(media.dataUrl, mimeType);
+  if (cached) return cached;
 
   if (!isSupportedImageMimeType(mimeType)) {
     throw new Error("Choose an SVG, PNG, JPEG, or WebP image.");
@@ -305,19 +354,20 @@ function inspectImportedMediaRecord(media: ImportedMediaRecord): ImportedMediaIn
     throw new Error("The imported image exceeds the supported 25 MB size limit.");
   }
   const result: ImportedMediaInspection = {
-    parsed,
+    mimeType,
     byteLength,
     inspection:
-      mimeType === "image/svg+xml" ? undefined : inspectRasterDataUrl(media.dataUrl, mimeType)
+      mimeType === "image/svg+xml"
+        ? undefined
+        : (knownInspection ?? inspectRasterDataUrl(media.dataUrl, mimeType))
   };
   if (mimeType !== "image/svg+xml" && !result.inspection) {
     throw new Error("The imported raster is malformed or its content does not match its type.");
   }
-  importedMediaInspectionCache.set(media.dataUrl, result);
-  if (importedMediaInspectionCache.size > IMPORTED_MEDIA_INSPECTION_CACHE_LIMIT) {
-    const oldest = importedMediaInspectionCache.keys().next().value;
-    if (oldest) importedMediaInspectionCache.delete(oldest);
+  if (result.inspection && result.inspection.mimeType !== mimeType) {
+    throw new Error("The imported image type does not match its content type.");
   }
+  cacheImportedMediaInspection(media.dataUrl, result);
   return result;
 }
 
@@ -2817,14 +2867,14 @@ export function EditorProvider({
   );
 
   const placeImportedMedia = useCallback(
-    async (media: ImportedMediaRecord, point?: Point) => {
+    async (media: ImportedMediaRecord, point?: Point, knownInspection?: RasterInspection) => {
       const existingMedia = projectMediaTotals(
         latestProject.current.uploads,
         canvas,
         media.id,
         media.dataUrl
       );
-      validateImportedMediaRecord(media, existingMedia.rasterPixels);
+      validateImportedMediaRecord(media, existingMedia.rasterPixels, knownInspection);
       const parsed = parseImageDataUrl(media.dataUrl);
       if (!parsed) throw new Error("The imported image data is invalid.");
       if (
@@ -2914,6 +2964,10 @@ export function EditorProvider({
           if (!inferredMimeType) {
             throw new Error("The file is not a valid PNG, JPEG, WebP, or SVG image.");
           }
+          if (rasterInspection) {
+            const limitMessage = rasterLimitMessage(rasterInspection);
+            if (limitMessage) throw new Error(limitMessage);
+          }
           const importId = crypto.randomUUID();
           let dataUrl = await new Promise<string>((resolve, reject) => {
             const reader = new FileReader();
@@ -2931,7 +2985,7 @@ export function EditorProvider({
             mimeType: inferredMimeType,
             dataUrl
           };
-          return placeImportedMedia(media, point);
+          return placeImportedMedia(media, point, rasterInspection);
         })
       );
       importQueue.current = operation.then(() => undefined).catch(() => undefined);
