@@ -640,6 +640,7 @@ function pdfElementsById(root: Element, id: string): Element | undefined {
 }
 
 const PDF_NON_RENDERED_TEXT_CONTAINER_NAMES = new Set(["title", "desc", "metadata"]);
+const PDF_TEXT_CONTAINER_NAMES = new Set(["text", "tspan", "textpath"]);
 
 function isPdfNonRenderedTextContainer(element: Element): boolean {
   return PDF_NON_RENDERED_TEXT_CONTAINER_NAMES.has(element.localName.toLowerCase());
@@ -648,6 +649,13 @@ function isPdfNonRenderedTextContainer(element: Element): boolean {
 function pdfTextElementIsInNonRenderedContainer(element: Element): boolean {
   for (let current: Element | null = element; current; current = current.parentElement) {
     if (isPdfNonRenderedTextContainer(current)) return true;
+  }
+  return false;
+}
+
+function pdfAnchorIsInsideTextContainer(link: Element): boolean {
+  for (let current = link.parentElement; current; current = current.parentElement) {
+    if (PDF_TEXT_CONTAINER_NAMES.has(current.localName.toLowerCase())) return true;
   }
   return false;
 }
@@ -662,7 +670,7 @@ function pdfAnchorContainsRenderedText(link: Element): boolean {
     if (isPdfNonRenderedTextContainer(element)) return false;
     return Array.from(element.childNodes).some(visit);
   };
-  return Array.from(link.childNodes).some(visit);
+  return pdfAnchorIsInsideTextContainer(link) && Array.from(link.childNodes).some(visit);
 }
 
 function pdfTextStyleElements(root: Element): SVGElement[] {
@@ -670,7 +678,7 @@ function pdfTextStyleElements(root: Element): SVGElement[] {
   const add = (element: Element): void => {
     if (pdfTextElementIsInNonRenderedContainer(element)) return;
     const name = element.localName.toLowerCase();
-    if (["text", "tspan", "textpath"].includes(name)) {
+    if (PDF_TEXT_CONTAINER_NAMES.has(name)) {
       elements.push(element as SVGElement);
     } else if (name === "a" && pdfAnchorContainsRenderedText(element)) {
       elements.push(element as SVGElement);
@@ -1417,9 +1425,11 @@ function pdfTextRunElement(node: Node, svg: SVGSVGElement): SVGElement | undefin
     current = current.parentElement
   ) {
     if (isPdfNonRenderedTextContainer(current)) return undefined;
-    if (["text", "tspan", "textpath", "a"].includes(current.localName.toLowerCase())) {
+    const name = current.localName.toLowerCase();
+    if (PDF_TEXT_CONTAINER_NAMES.has(name)) {
       return current as SVGElement;
     }
+    if (name === "a" && pdfAnchorIsInsideTextContainer(current)) return current as SVGElement;
   }
   return undefined;
 }

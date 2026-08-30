@@ -4123,6 +4123,9 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
       linkedAccessibilityMetadata: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><a font-family="Atkinson Hyperlegible"><title>AΓB</title><rect x="12" y="12" width="40" height="40" fill="black" /></a></svg>`
       ),
+      orphanedLinkText: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><a font-family="Atkinson Hyperlegible"><rect x="12" y="12" width="40" height="40" fill="black" />AΓB</a></svg>`
+      ),
       linkedNavigation: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="unused-link-target" font-family="Atkinson Hyperlegible">AΓB</text></defs><text x="12" y="40" font-family="Inter"><a href="#unused-link-target">Linked text</a></text></svg>`
       ),
@@ -4220,6 +4223,7 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
   expect(result.linkedLocalFontStyle.pdf).toContain("/BaseFont /Lato");
   expect(result.linkedLocalFontStyle.pdf).not.toContain("/BaseFont /Inter");
   expect(result.linkedAccessibilityMetadata.error).toBeNull();
+  expect(result.orphanedLinkText.error).toBeNull();
   expect(result.linkedNavigation.error).toBeNull();
   expect(result.linkedNavigation.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
   expect(result.visibleDescendant.error).toContain("U+0393");
