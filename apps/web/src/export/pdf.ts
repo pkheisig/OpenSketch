@@ -395,7 +395,17 @@ function declaredPdfVisibility(element: Element): PdfVisibility | undefined {
 }
 
 function hasHiddenPdfTextAncestor(element: Element): boolean {
-  if (hasInvisiblePdfTextPaint(element)) return true;
+  let hasMaterializedTextState = false;
+  for (let current: Element | null = element; current; current = current.parentElement) {
+    if (
+      current.getAttribute(PDF_HIDDEN_TEXT_ATTRIBUTE) === "true" ||
+      current.getAttribute(PDF_VISIBLE_TEXT_ATTRIBUTE) === "true"
+    ) {
+      hasMaterializedTextState = true;
+      break;
+    }
+  }
+  if (!hasMaterializedTextState && hasInvisiblePdfTextPaint(element)) return true;
 
   let resolvedVisibility: PdfVisibility | undefined;
   for (let current: Element | null = element; current; current = current.parentElement) {
