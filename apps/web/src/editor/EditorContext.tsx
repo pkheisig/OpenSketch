@@ -290,34 +290,37 @@ function rasterMediaInScene(canvas: Canvas): ImportedMediaRecord[] {
   return media;
 }
 
-function rasterPixelsInProject(
+interface ProjectMediaTotals {
+  rasterPixels: number;
+  dataUrlBytes: number;
+}
+
+function projectMediaTotals(
   uploads: ImportedMediaRecord[],
-  canvas: Canvas,
+  canvas: Canvas | null | undefined,
   excludedId?: string,
   excludedDataUrl?: string
-): number {
+): ProjectMediaTotals {
   const seenDataUrls = new Set<string>();
-  let total = 0;
-  for (const media of [...uploads, ...rasterMediaInScene(canvas)]) {
-    if (
-      media.id === excludedId ||
-      media.dataUrl === excludedDataUrl ||
-      media.mimeType.toLowerCase() === "image/svg+xml"
-    )
-      continue;
+  let rasterPixels = 0;
+  let dataUrlBytes = 0;
+  for (const media of [...uploads, ...(canvas ? rasterMediaInScene(canvas) : [])]) {
+    if (media.id === excludedId || media.dataUrl === excludedDataUrl) continue;
     if (seenDataUrls.has(media.dataUrl)) continue;
     seenDataUrls.add(media.dataUrl);
-    try {
-      const inspection = validateImportedMediaRecord(media);
-      if (inspection) total += inspection.pixels;
-    } catch {
-      throw new Error("The document contains an oversized or malformed raster image.");
+    const inspection = validateImportedMediaRecord(media);
+    const parsed = parseImageDataUrl(media.dataUrl);
+    if (!parsed) throw new Error("The document contains invalid image data.");
+    dataUrlBytes += imageDataUrlByteLength(parsed);
+    if (dataUrlBytes > PORTABLE_PROJECT_LIMITS.maxTotalDataUrlBytes) {
+      throw new Error("The document already exceeds its embedded data budget.");
     }
+    if (inspection) rasterPixels += inspection.pixels;
   }
-  if (total > PORTABLE_PROJECT_LIMITS.maxTotalRasterArea) {
+  if (rasterPixels > PORTABLE_PROJECT_LIMITS.maxTotalRasterArea) {
     throw new Error("The document already exceeds its decoded raster area budget.");
   }
-  return total;
+  return { rasterPixels, dataUrlBytes };
 }
 
 function loadAssetManifest() {
@@ -2791,14 +2794,22 @@ export function EditorProvider({
 
   const placeImportedMedia = useCallback(
     async (media: ImportedMediaRecord, point?: Point) => {
-      if (!canvas) return media;
-      const existingRasterPixels = rasterPixelsInProject(
+      const existingMedia = projectMediaTotals(
         latestProject.current.uploads,
         canvas,
         media.id,
         media.dataUrl
       );
-      validateImportedMediaRecord(media, existingRasterPixels);
+      validateImportedMediaRecord(media, existingMedia.rasterPixels);
+      const parsed = parseImageDataUrl(media.dataUrl);
+      if (!parsed) throw new Error("The imported image data is invalid.");
+      if (
+        existingMedia.dataUrlBytes + imageDataUrlByteLength(parsed) >
+        PORTABLE_PROJECT_LIMITS.maxTotalDataUrlBytes
+      ) {
+        throw new Error("Adding this image would exceed the document's embedded data budget.");
+      }
+      if (!canvas) return media;
       const stored = await saveImportedMediaToLibrary(media);
       let object: FabricObject;
       if (stored.mimeType === "image/svg+xml") {
@@ -2879,13 +2890,18 @@ export function EditorProvider({
           if (!inferredMimeType) {
             throw new Error("The file is not a valid PNG, JPEG, WebP, or SVG image.");
           }
-          if (rasterInspection && canvas) {
-            const existingRasterPixels = rasterPixelsInProject(
-              latestProject.current.uploads,
-              canvas
-            );
-            const limitMessage = rasterLimitMessage(rasterInspection, existingRasterPixels);
+          if (rasterInspection) {
+            const existingMedia = projectMediaTotals(latestProject.current.uploads, canvas);
+            const limitMessage = rasterLimitMessage(rasterInspection, existingMedia.rasterPixels);
             if (limitMessage) throw new Error(limitMessage);
+            if (
+              existingMedia.dataUrlBytes + file.size >
+              PORTABLE_PROJECT_LIMITS.maxTotalDataUrlBytes
+            ) {
+              throw new Error(
+                "Adding this image would exceed the document's embedded data budget."
+              );
+            }
           }
           const importId = crypto.randomUUID();
           let dataUrl = await new Promise<string>((resolve, reject) => {
