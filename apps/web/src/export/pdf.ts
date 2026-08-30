@@ -639,13 +639,40 @@ function pdfElementsById(root: Element, id: string): Element | undefined {
   );
 }
 
+const PDF_NON_RENDERED_TEXT_CONTAINER_NAMES = new Set(["title", "desc", "metadata"]);
+
+function isPdfNonRenderedTextContainer(element: Element): boolean {
+  return PDF_NON_RENDERED_TEXT_CONTAINER_NAMES.has(element.localName.toLowerCase());
+}
+
+function pdfTextElementIsInNonRenderedContainer(element: Element): boolean {
+  for (let current: Element | null = element; current; current = current.parentElement) {
+    if (isPdfNonRenderedTextContainer(current)) return true;
+  }
+  return false;
+}
+
+function pdfAnchorContainsRenderedText(link: Element): boolean {
+  const visit = (node: Node): boolean => {
+    if (node.nodeType === 3 || node.nodeType === 4) {
+      return hasPdfRenderableText(node.nodeValue ?? "");
+    }
+    if (node.nodeType !== 1) return false;
+    const element = node as Element;
+    if (isPdfNonRenderedTextContainer(element)) return false;
+    return Array.from(element.childNodes).some(visit);
+  };
+  return Array.from(link.childNodes).some(visit);
+}
+
 function pdfTextStyleElements(root: Element): SVGElement[] {
   const elements: SVGElement[] = [];
   const add = (element: Element): void => {
+    if (pdfTextElementIsInNonRenderedContainer(element)) return;
     const name = element.localName.toLowerCase();
     if (["text", "tspan", "textpath"].includes(name)) {
       elements.push(element as SVGElement);
-    } else if (name === "a" && element.textContent) {
+    } else if (name === "a" && pdfAnchorContainsRenderedText(element)) {
       elements.push(element as SVGElement);
     }
   };
@@ -1389,6 +1416,7 @@ function pdfTextRunElement(node: Node, svg: SVGSVGElement): SVGElement | undefin
     current && current !== svg;
     current = current.parentElement
   ) {
+    if (isPdfNonRenderedTextContainer(current)) return undefined;
     if (["text", "tspan", "textpath", "a"].includes(current.localName.toLowerCase())) {
       return current as SVGElement;
     }
