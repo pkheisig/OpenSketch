@@ -700,7 +700,9 @@ function requiresOpenTypeShaping(character: string, codePoint: number): boolean 
 
 function isPdfLayoutWhitespace(character: string): boolean {
   const codePoint = character.codePointAt(0);
-  return codePoint !== undefined && (codePoint <= 0x20 || codePoint === 0xfeff);
+  return (
+    codePoint !== undefined && (codePoint <= 0x20 || codePoint === 0x200b || codePoint === 0xfeff)
+  );
 }
 
 function hasPdfRenderableText(text: string): boolean {

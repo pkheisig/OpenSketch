@@ -4127,6 +4127,9 @@ test("skips invisible PDF paint during glyph coverage", async ({ page }) => {
       ),
       zeroWidthBom: await render(
         '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible">A\uFEFFB</text></svg>'
+      ),
+      zeroWidthSpace: await render(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible">A\u200BB</text></svg>'
       )
     };
   });
@@ -4137,6 +4140,7 @@ test("skips invisible PDF paint during glyph coverage", async ({ page }) => {
   expect(result.zeroFillHex).toBeNull();
   expect(result.visibleFillZeroStroke).toContain("U+0393");
   expect(result.zeroWidthBom).toBeNull();
+  expect(result.zeroWidthSpace).toBeNull();
 });
 
 test("fetches only the PDF font face used by an SVG text run", async ({ page }) => {
