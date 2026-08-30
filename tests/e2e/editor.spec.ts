@@ -3948,6 +3948,35 @@ test("embeds every selectable editor font face in PDF resources", async ({ page 
   expect(rawPdf).not.toContain("/BaseFont /Times");
 });
 
+test("writes an explicit PDF document author when supplied", async ({ page }) => {
+  await page.goto("/");
+  const encodedPdf = await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const blob = await svgToPdfBlob(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><rect width="600" height="240" fill="white" /></svg>',
+      600,
+      240,
+      {
+        title: "Explicit author",
+        description: "PDF author metadata",
+        credit: "OpenSketch",
+        author: "Ada & Research",
+        provenance: { version: 1 as const, assets: [] }
+      }
+    );
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    let binary = "";
+    for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+    }
+    return btoa(binary);
+  });
+
+  const pdf = await PDFDocument.load(Buffer.from(encodedPdf, "base64"));
+  expect(pdf.getAuthor()).toBe("Ada & Research");
+});
+
 test("materializes imported PDF text styles and rejects unsafe glyph coverage", async ({
   page
 }) => {
