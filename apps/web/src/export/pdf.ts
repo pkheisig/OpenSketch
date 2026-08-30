@@ -339,6 +339,12 @@ function pdfPaintIsInvisible(
   );
 }
 
+function isZeroPdfStrokeWidth(value: string | undefined): boolean {
+  if (!value) return false;
+  const width = Number.parseFloat(value.replace(/\s*!important\s*$/i, "").trim());
+  return Number.isFinite(width) && width === 0;
+}
+
 function declaredPdfPaintValue(element: Element, property: string): string | undefined {
   const value = svgInlineStyleValue(element, property);
   if (!value || /^(?:inherit|unset|revert(?:-layer)?)$/i.test(value.trim())) return undefined;
@@ -350,15 +356,17 @@ function hasInvisiblePdfTextPaint(element: Element): boolean {
   let fillOpacity: string | undefined;
   let stroke: string | undefined;
   let strokeOpacity: string | undefined;
+  let strokeWidth: string | undefined;
   for (let current: Element | null = element; current; current = current.parentElement) {
     fill ??= declaredPdfPaintValue(current, "fill");
     fillOpacity ??= declaredPdfPaintValue(current, "fill-opacity");
     stroke ??= declaredPdfPaintValue(current, "stroke");
     strokeOpacity ??= declaredPdfPaintValue(current, "stroke-opacity");
+    strokeWidth ??= declaredPdfPaintValue(current, "stroke-width");
   }
   return (
     pdfPaintIsInvisible(fill, fillOpacity, "black") &&
-    pdfPaintIsInvisible(stroke, strokeOpacity, "none")
+    (pdfPaintIsInvisible(stroke, strokeOpacity, "none") || isZeroPdfStrokeWidth(strokeWidth))
   );
 }
 
@@ -369,11 +377,12 @@ function computedPdfPaintIsInvisible(style: CSSStyleDeclaration): boolean {
       style.getPropertyValue("fill-opacity"),
       "black"
     ) &&
-    pdfPaintIsInvisible(
+    (pdfPaintIsInvisible(
       style.getPropertyValue("stroke"),
       style.getPropertyValue("stroke-opacity"),
       "none"
-    )
+    ) ||
+      isZeroPdfStrokeWidth(style.getPropertyValue("stroke-width")))
   );
 }
 
