@@ -28,6 +28,12 @@ describe("stylesheet ownership checks", () => {
     ).toEqual([".foo:is(.a, .b)", '.bar[data-label="a,b"]', ".baz"]);
   });
 
+  it("preserves comment-like text inside selector strings", () => {
+    expect(topLevelSelectors('.foo[data-label="a/*b*/c"] { color: red; }')).toEqual([
+      '.foo[data-label="a/*b*/c"]'
+    ]);
+  });
+
   it("checks selectors nested in responsive at-rules", () => {
     expect(
       topLevelSelectors(`
@@ -38,8 +44,14 @@ describe("stylesheet ownership checks", () => {
     ).toEqual([".foo:is(.a, .b)"]);
   });
 
+  it("canonicalizes selector comments, attribute quotes, and HTML element case", () => {
+    expect(topLevelSelectors(`HTML[data-theme='light'] { color: red; }`)).toEqual([
+      "html[data-theme=light]"
+    ]);
+  });
+
   it("accepts the repository stylesheet inventory", () => {
-    expect(checkStyleOwnership().files).toBe(6);
+    expect(checkStyleOwnership().modules).toBe(6);
   });
 
   it("rejects duplicate selectors across modules, including comment variants", () => {
@@ -51,6 +63,11 @@ describe("stylesheet ownership checks", () => {
       fs.appendFileSync(path.join(stylesDir, "base.css"), "\n.commented {}\n");
       fs.appendFileSync(path.join(stylesDir, "home.css"), "\n.commented /* note */ {}\n");
     }, "selector .commented is owned by both");
+    expectFixtureFailure(
+      (stylesDir) =>
+        fs.appendFileSync(path.join(stylesDir, "home.css"), "\nHTML[data-theme='light'] {}\n"),
+      "selector html[data-theme=light] is owned by both"
+    );
   });
 
   it("rejects unmanaged and retired stylesheets", () => {
@@ -72,5 +89,41 @@ describe("stylesheet ownership checks", () => {
         fs.readFileSync(appPath, "utf8").replace("./home.css", "./base.css")
       );
     }, "deterministic ownership order");
+  });
+
+  it("rejects imports and missing ownership declarations in modules", () => {
+    expectFixtureFailure((stylesDir) => {
+      fs.appendFileSync(path.join(stylesDir, "home.css"), '\n@IMPORT "./other.css";\n');
+    }, "home.css must not import another stylesheet");
+    expectFixtureFailure((stylesDir) => {
+      const basePath = path.join(stylesDir, "base.css");
+      fs.writeFileSync(
+        basePath,
+        fs.readFileSync(basePath, "utf8").replace("shared primitive ownership", "shared primitives")
+      );
+    }, "base.css must declare its stylesheet ownership");
+  });
+
+  it("ignores import text inside comments and strings", () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), "opensketch-style-"));
+    const stylesDir = path.join(root, "apps/web/src/styles");
+    fs.mkdirSync(stylesDir, { recursive: true });
+    fs.cpSync(sourceStyles, stylesDir, { recursive: true });
+    try {
+      fs.appendFileSync(
+        path.join(stylesDir, "home.css"),
+        '\n/* @import "./comment.css"; */\n.import-copy { content: "@import ./string.css"; }\n'
+      );
+      expect(() => checkStyleOwnership(root)).not.toThrow();
+    } finally {
+      fs.rmSync(root, { recursive: true, force: true });
+    }
+  });
+
+  it("keeps body-portal menu selectors independent of the app wrapper", () => {
+    const canvas = fs.readFileSync(path.join(sourceStyles, "canvas.css"), "utf8");
+    const inspector = fs.readFileSync(path.join(sourceStyles, "inspector.css"), "utf8");
+    expect(canvas).not.toMatch(/\.opensketch-app \.canvas-context-menu/);
+    expect(inspector).not.toMatch(/\.opensketch-app \.asset-variant-menu/);
   });
 });

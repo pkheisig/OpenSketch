@@ -43,6 +43,19 @@ summary {
   cursor: pointer;
 }
 
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  font-family: var(--font-sans);
+}
+
+button {
+  color: inherit;
+  cursor: pointer;
+}
+
 button:focus-visible {
   outline: none;
   filter: brightness(0.94);

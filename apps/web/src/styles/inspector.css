@@ -2346,7 +2346,7 @@ html[data-theme] .ui-select-menu {
   font-size: 12px;
 }
 
-.opensketch-app .asset-variant-menu {
+.asset-variant-menu {
   position: fixed;
   z-index: 320;
   display: grid;
@@ -2373,7 +2373,7 @@ html[data-theme] .ui-select-menu button {
   font-size: 12px;
 }
 
-.opensketch-app .asset-variant-menu > button {
+.asset-variant-menu > button {
   display: grid;
   min-width: 0;
   gap: 5px;
@@ -2396,13 +2396,13 @@ html[data-theme] .ui-select-menu button.active {
   background: var(--shell-accent-soft);
 }
 
-.opensketch-app .asset-variant-menu > button:hover {
+.asset-variant-menu > button:hover {
   border-color: #3e928d;
   color: var(--shell-text);
   background: var(--shell-accent-soft);
 }
 
-.opensketch-app .asset-variant-menu > button.selected {
+.asset-variant-menu > button.selected {
   border-color: #3e928d;
   color: var(--shell-text);
   background: var(--shell-accent-soft);

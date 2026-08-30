@@ -862,7 +862,7 @@
   background: var(--shell-accent-soft);
 }
 
-.opensketch-app .canvas-context-menu {
+.canvas-context-menu {
   position: fixed;
   z-index: 400;
   display: grid;
@@ -880,7 +880,7 @@
   color: var(--shell-text);
 }
 
-.opensketch-app .canvas-context-label {
+.canvas-context-label {
   overflow: hidden;
   padding: 6px 9px 7px;
   color: var(--shell-muted);
@@ -892,7 +892,7 @@
   white-space: nowrap;
 }
 
-.opensketch-app .canvas-context-menu kbd {
+.canvas-context-menu kbd {
   color: var(--shell-muted);
   font:
     500 8px/1.2 ui-monospace,
@@ -901,7 +901,7 @@
     monospace;
 }
 
-.opensketch-app .canvas-context-menu button {
+.canvas-context-menu button {
   display: grid;
   grid-template-columns: 20px 1fr auto;
   min-height: 34px;
@@ -920,19 +920,19 @@
     background 100ms ease;
 }
 
-.opensketch-app .canvas-context-menu button:hover {
+.canvas-context-menu button:hover {
   outline: none;
   color: var(--shell-text);
   background: var(--shell-accent-soft);
 }
 
-.opensketch-app .canvas-context-menu button:focus-visible {
+.canvas-context-menu button:focus-visible {
   outline: none;
   color: var(--shell-text);
   background: var(--shell-accent-soft);
 }
 
-.opensketch-app .canvas-context-menu button.separator-before {
+.canvas-context-menu button.separator-before {
   margin-top: 5px;
   border-top: 1px solid #dfe4e0;
   border-radius: 0 0 5px 5px;
