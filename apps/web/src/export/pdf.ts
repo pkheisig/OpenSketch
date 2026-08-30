@@ -359,6 +359,57 @@ const PDF_USE_PAINT_PROPERTIES = [
   "stroke-opacity",
   "stroke-width"
 ] as const;
+const PDF_USE_COMPUTED_STYLE_PROPERTIES = [
+  "alignment-baseline",
+  "baseline-shift",
+  "clip-path",
+  "clip-rule",
+  "color",
+  "color-interpolation",
+  "color-interpolation-filters",
+  "color-rendering",
+  "dominant-baseline",
+  "display",
+  "fill",
+  "fill-opacity",
+  "fill-rule",
+  "filter",
+  "flood-color",
+  "flood-opacity",
+  "font-family",
+  "font-size",
+  "font-style",
+  "font-weight",
+  "image-rendering",
+  "letter-spacing",
+  "lighting-color",
+  "marker-end",
+  "marker-mid",
+  "marker-start",
+  "mask",
+  "opacity",
+  "overflow",
+  "paint-order",
+  "shape-rendering",
+  "stop-color",
+  "stop-opacity",
+  "stroke",
+  "stroke-dasharray",
+  "stroke-dashoffset",
+  "stroke-linecap",
+  "stroke-linejoin",
+  "stroke-miterlimit",
+  "stroke-opacity",
+  "stroke-width",
+  "text-anchor",
+  "text-decoration",
+  "text-rendering",
+  "transform",
+  "vector-effect",
+  "visibility",
+  "word-spacing",
+  "writing-mode"
+] as const;
 const PDF_PAINTABLE_ELEMENT_NAMES = new Set([
   "circle",
   "ellipse",
@@ -602,6 +653,10 @@ function pdfUseElements(root: Element): SVGElement[] {
   return elements;
 }
 
+function pdfAllElements(root: Element): SVGElement[] {
+  return [root as SVGElement, ...Array.from(root.querySelectorAll<SVGElement>("*"))];
+}
+
 function pdfPaintElements(root: Element): SVGElement[] {
   const elements: SVGElement[] = [];
   if (PDF_PAINTABLE_ELEMENT_NAMES.has(root.localName.toLowerCase())) {
@@ -707,6 +762,70 @@ function pdfComputedFontProperty(
   return computed;
 }
 
+function copyPdfUseComputedStyles(
+  frameWindow: Window,
+  probeRoot: Element,
+  sourceRoot: SVGElement,
+  cloneRoot: SVGElement
+): void {
+  const probeElements = pdfAllElements(probeRoot);
+  const sourceElements = pdfAllElements(sourceRoot);
+  const cloneElements = pdfAllElements(cloneRoot);
+  if (
+    probeElements.length !== sourceElements.length ||
+    probeElements.length !== cloneElements.length
+  ) {
+    return;
+  }
+
+  probeElements.forEach((probeElement, index) => {
+    const sourceElement = sourceElements[index];
+    const cloneElement = cloneElements[index];
+    const computed = frameWindow.getComputedStyle(probeElement);
+    const isTextElement = ["text", "tspan", "textpath"].includes(
+      probeElement.localName.toLowerCase()
+    );
+    for (const property of PDF_USE_COMPUTED_STYLE_PROPERTIES) {
+      if (
+        isTextElement &&
+        (PDF_USE_TEXT_STYLE_PROPERTIES as readonly string[]).includes(property)
+      ) {
+        continue;
+      }
+      const value = computed.getPropertyValue(property).trim();
+      if (!value) continue;
+      sourceElement.style.setProperty(property, value, "important");
+      cloneElement.style.setProperty(property, value, "important");
+      if (property !== "visibility") {
+        sourceElement.setAttribute(property, value);
+        cloneElement.setAttribute(property, value);
+      }
+    }
+
+    // Visibility is inherited. Preserve hidden targets and explicit visible
+    // descendants without making every cloned target override a hidden use.
+    const visibility = computed.visibility.trim().toLowerCase();
+    const parentVisibility = probeElement.parentElement
+      ? frameWindow.getComputedStyle(probeElement.parentElement).visibility.trim().toLowerCase()
+      : "visible";
+    if (visibility === "hidden" || visibility === "collapse") {
+      const value = visibility === "collapse" ? "hidden" : visibility;
+      sourceElement.style.setProperty("visibility", value, "important");
+      cloneElement.style.setProperty("visibility", value, "important");
+      sourceElement.setAttribute("visibility", value);
+      cloneElement.setAttribute("visibility", value);
+    } else if (
+      visibility === "visible" &&
+      (parentVisibility === "hidden" || parentVisibility === "collapse")
+    ) {
+      sourceElement.style.setProperty("visibility", "visible", "important");
+      cloneElement.style.setProperty("visibility", "visible", "important");
+      sourceElement.setAttribute("visibility", "visible");
+      cloneElement.setAttribute("visibility", "visible");
+    }
+  });
+}
+
 function materializePdfUseTextStyles(
   svg: SVGSVGElement,
   clone: SVGSVGElement,
@@ -804,6 +923,25 @@ function materializePdfUseTextStyles(
         sourceNestedUses.length !== contextNestedUses.length
       ) {
         return hasVisibleTextInContext;
+      }
+
+      // The generated ID is needed to give each <use> instance an isolated
+      // definition. Resolve the original target's computed styles first so
+      // selectors such as #shape { display: none; transform: ... } do not
+      // disappear when that ID is replaced. The hidden probe group is only
+      // for detecting visibility overrides and would otherwise contaminate
+      // the copied visibility values.
+      const probeVisibility = probeGroup.getAttribute("visibility");
+      probeGroup.removeAttribute("visibility");
+      try {
+        copyPdfUseComputedStyles(
+          frameWindow,
+          probeReference,
+          materializedSource,
+          materializedClone
+        );
+      } finally {
+        if (probeVisibility) probeGroup.setAttribute("visibility", probeVisibility);
       }
 
       probeTextElements.forEach((probeTextElement, index) => {
@@ -1109,8 +1247,12 @@ function pdfUseVisibilityIsHidden(use: Element): boolean {
   return visibility === "hidden";
 }
 
-function isPdfNonRenderedElement(element: Element): boolean {
+function isPdfNonRenderedByDisplayOrOpacity(element: Element): boolean {
+  const path: Element[] = [];
   for (let current: Element | null = element; current; current = current.parentElement) {
+    path.unshift(current);
+  }
+  for (const current of path) {
     if (current.getAttribute(PDF_DISPLAY_NONE_ATTRIBUTE) === "true") return true;
     if (current.getAttribute(PDF_ZERO_OPACITY_ATTRIBUTE) === "true") return true;
 
@@ -1134,9 +1276,30 @@ function isPdfNonRenderedElement(element: Element): boolean {
   return false;
 }
 
+function isPdfNonRenderedElement(element: Element): boolean {
+  if (isPdfNonRenderedByDisplayOrOpacity(element)) return true;
+
+  const path: Element[] = [];
+  for (let current: Element | null = element; current; current = current.parentElement) {
+    path.unshift(current);
+  }
+  let hiddenByVisibility = false;
+  for (const current of path) {
+    if (current.getAttribute(PDF_HIDDEN_ELEMENT_ATTRIBUTE) === "true") {
+      hiddenByVisibility = true;
+    } else if (current.getAttribute(PDF_VISIBLE_ELEMENT_ATTRIBUTE) === "true") {
+      hiddenByVisibility = false;
+    } else {
+      const visibility = declaredPdfVisibility(current);
+      if (visibility) hiddenByVisibility = visibility === "hidden";
+    }
+  }
+  return hiddenByVisibility;
+}
+
 function isPdfNonRenderedUse(svg: SVGSVGElement, element: Element): boolean {
   if (element.localName.toLowerCase() !== "use") return false;
-  if (isPdfNonRenderedElement(element)) return true;
+  if (isPdfNonRenderedByDisplayOrOpacity(element)) return true;
 
   return pdfUseVisibilityIsHidden(element) && !pdfUseHasVisibleTextOverride(svg, element);
 }
@@ -1195,7 +1358,8 @@ function getPdfReachableDefinitionIds(svg: SVGSVGElement): Set<string> {
   const pending: string[] = [];
   let nextPendingIndex = 0;
   const collectReferences = (element: Element) => {
-    if (isPdfNonRenderedElement(element) || isPdfNonRenderedUse(svg, element)) return;
+    const isUse = element.localName.toLowerCase() === "use";
+    if (isUse ? isPdfNonRenderedUse(svg, element) : isPdfNonRenderedElement(element)) return;
     addPdfReferenceIds(element, pending);
   };
 
@@ -1341,7 +1505,7 @@ function pdfReferenceContainsVisibleClipText(
     visitedIds = new Set(visitedIds).add(referenceId);
   }
   return pdfUseElements(reference).some((use) => {
-    if (isPdfClipElementHidden(use)) return false;
+    if (isPdfClipElementHidden(use) && !pdfUseHasVisibleTextOverride(svg, use)) return false;
     const nestedReferenceId = pdfUseReferenceId(use);
     const nestedReference = nestedReferenceId ? pdfElementsById(svg, nestedReferenceId) : undefined;
     return nestedReference

@@ -4060,6 +4060,12 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
       indirectClipPathText: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="clip-label" x="12" y="40" font-family="Inter">Label</text><clipPath id="indirect-label-clip"><use href="#clip-label" /></clipPath></defs><rect width="600" height="240" fill="black" clip-path="url(#indirect-label-clip)" /></svg>`
       ),
+      hiddenVisibilityClipPathElement: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><clipPath id="hidden-visibility-clip"><text x="12" y="40" font-family="Inter">Label</text></clipPath></defs><rect style="visibility: hidden" width="600" height="240" fill="black" clip-path="url(#hidden-visibility-clip)" /></svg>`
+      ),
+      hiddenIndirectClipPathText: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="visible-clip-label" visibility="visible" x="12" y="40" font-family="Inter">Label</text><clipPath id="hidden-indirect-label-clip"><use href="#visible-clip-label" style="visibility: hidden" /></clipPath></defs><rect width="600" height="240" fill="black" clip-path="url(#hidden-indirect-label-clip)" /></svg>`
+      ),
       hiddenClipPathElement: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><clipPath id="hidden-clip"><text x="12" y="40" font-family="Inter">Label</text></clipPath></defs><rect display="none" width="600" height="240" fill="black" clip-path="url(#hidden-clip)" /></svg>`
       ),
@@ -4163,6 +4169,10 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
   expect(result.clipPathText.pdf).toBe("");
   expect(result.indirectClipPathText.error).toContain("text-based clip paths");
   expect(result.indirectClipPathText.pdf).toBe("");
+  expect(result.hiddenVisibilityClipPathElement.error).toBeNull();
+  expect(result.hiddenVisibilityClipPathElement.pdf).not.toContain("text-based clip paths");
+  expect(result.hiddenIndirectClipPathText.error).toContain("text-based clip paths");
+  expect(result.hiddenIndirectClipPathText.pdf).toBe("");
   expect(result.hiddenClipPathElement.error).toBeNull();
   expect(result.hiddenClipPathElement.pdf).not.toContain("text-based clip paths");
   expect(result.hiddenClipPathDescendant.error).toContain("text-based clip paths");
@@ -4360,6 +4370,49 @@ test("preserves per-instance paint for shape and mixed SVG use targets", async (
   expect(content).toContain("4. w");
   expect(rawPdf).not.toContain("/BaseFont /Times");
   expect(rawPdf).toContain("/BaseFont /Inter");
+});
+
+test("preserves ID-based computed styles for cloned SVG use targets", async ({ page }) => {
+  await page.goto("/");
+  const encodedPdf = await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const blob = await svgToPdfBlob(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240">
+        <style>
+          #hidden-shape { display: none; }
+          #transparent-shape { opacity: 0; }
+        </style>
+        <defs>
+          <path id="hidden-shape" d="M0 0h40v40H0z" />
+          <path id="transparent-shape" d="M0 0h40v40H0z" />
+        </defs>
+        <use href="#hidden-shape" fill="red" x="12" y="12" />
+        <use href="#transparent-shape" fill="blue" x="72" y="12" />
+      </svg>`,
+      600,
+      240,
+      {
+        title: "SVG use computed styles",
+        description: "ID-based styles remain applied to cloned SVG targets",
+        credit: "OpenSketch",
+        provenance: { version: 1 as const, assets: [] }
+      }
+    );
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    let binary = "";
+    for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+    }
+    return btoa(binary);
+  });
+
+  const pdf = await PDFDocument.load(Buffer.from(encodedPdf, "base64"));
+  const shapeStreams = decodedPdfContentStreams(pdf).filter(
+    (stream) => stream.includes("0. 0. m") && stream.includes("40. 40. l")
+  );
+  expect(shapeStreams).toHaveLength(1);
+  expect(shapeStreams[0]).toContain("/GS2 gs");
 });
 
 test("keeps visible SVG use targets from rendering twice", async ({ page }) => {
