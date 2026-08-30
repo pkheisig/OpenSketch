@@ -12,10 +12,9 @@ import {
 } from "./types";
 import { repairProjectIdentity } from "./identity";
 import {
-  decodeImageDataUrlBytes,
   decodeImageDataUrlText,
   imageDataUrlByteLength,
-  inspectRasterBytes,
+  inspectRasterDataUrl,
   isSupportedImageMimeType,
   parseImageDataUrl,
   type ParsedImageDataUrl
@@ -475,11 +474,14 @@ function assertNonEmptyString(
   assertString(value, path, { maxLength, nonEmpty: true });
 }
 
-function validateRasterResource(parsed: ParsedImageDataUrl, path: string): number | undefined {
+function validateRasterResource(
+  value: string,
+  parsed: ParsedImageDataUrl,
+  path: string
+): number | undefined {
   if (parsed.mimeType === "image/svg+xml") return undefined;
-  const bytes = decodeImageDataUrlBytes(parsed, 1024 * 1024);
-  const inspection = bytes === undefined ? undefined : inspectRasterBytes(bytes);
-  if (!inspection || inspection.mimeType !== parsed.mimeType) {
+  const inspection = inspectRasterDataUrl(value, parsed.mimeType);
+  if (!inspection) {
     fail(path, "does not contain readable raster dimensions");
   }
   if (
@@ -534,7 +536,7 @@ function validateDataUrl(
   if (!Number.isFinite(byteLength) || byteLength > PORTABLE_PROJECT_LIMITS.maxDataUrlBytes) {
     fail(path, "exceeds the embedded data URL size limit");
   }
-  const rasterArea = validateRasterResource(parsed, path);
+  const rasterArea = validateRasterResource(value, parsed, path);
   if (!context.dataUrls.has(value)) {
     context.dataUrls.add(value);
     context.totalDataUrlBytes += byteLength;

@@ -272,42 +272,33 @@ function validateImportedMediaRecord(
   return inspection;
 }
 
-function rasterMediaInScene(value: unknown): ImportedMediaRecord[] {
+function rasterMediaInScene(canvas: Canvas): ImportedMediaRecord[] {
   const media: ImportedMediaRecord[] = [];
-  const visited = new Set<object>();
-  const visit = (candidate: unknown) => {
-    if (candidate === null || typeof candidate !== "object") return;
-    if (visited.has(candidate)) return;
-    visited.add(candidate);
-    if (!Array.isArray(candidate)) {
-      const source = (candidate as Record<string, unknown>).src;
-      if (typeof source === "string") {
-        const parsed = parseImageDataUrl(source);
-        if (parsed && parsed.mimeType !== "image/svg+xml") {
-          media.push({
-            id: `scene-${media.length}`,
-            name: "Scene image",
-            mimeType: parsed.mimeType,
-            dataUrl: source
-          });
-        }
-      }
+  visitSceneObjects(canvas.getObjects(), (object) => {
+    if (!(object instanceof FabricImage)) return;
+    const source = object.getSrc();
+    const parsed = parseImageDataUrl(source);
+    if (parsed && parsed.mimeType !== "image/svg+xml") {
+      media.push({
+        id: `scene-${media.length}`,
+        name: "Scene image",
+        mimeType: parsed.mimeType,
+        dataUrl: source
+      });
     }
-    for (const child of Object.values(candidate)) visit(child);
-  };
-  visit(value);
+  });
   return media;
 }
 
 function rasterPixelsInProject(
   uploads: ImportedMediaRecord[],
-  objects: Record<string, unknown>,
+  canvas: Canvas,
   excludedId?: string,
   excludedDataUrl?: string
 ): number {
   const seenDataUrls = new Set<string>();
   let total = 0;
-  for (const media of [...uploads, ...rasterMediaInScene(objects)]) {
+  for (const media of [...uploads, ...rasterMediaInScene(canvas)]) {
     if (
       media.id === excludedId ||
       media.dataUrl === excludedDataUrl ||
@@ -2803,7 +2794,7 @@ export function EditorProvider({
       if (!canvas) return media;
       const existingRasterPixels = rasterPixelsInProject(
         latestProject.current.uploads,
-        latestProject.current.objects,
+        canvas,
         media.id,
         media.dataUrl
       );
@@ -2888,10 +2879,10 @@ export function EditorProvider({
           if (!inferredMimeType) {
             throw new Error("The file is not a valid PNG, JPEG, WebP, or SVG image.");
           }
-          if (rasterInspection) {
+          if (rasterInspection && canvas) {
             const existingRasterPixels = rasterPixelsInProject(
               latestProject.current.uploads,
-              latestProject.current.objects
+              canvas
             );
             const limitMessage = rasterLimitMessage(rasterInspection, existingRasterPixels);
             if (limitMessage) throw new Error(limitMessage);
@@ -2919,7 +2910,7 @@ export function EditorProvider({
       importQueue.current = operation.then(() => undefined).catch(() => undefined);
       return operation;
     },
-    [placeImportedMedia, trackPendingEditorWork]
+    [canvas, placeImportedMedia, trackPendingEditorWork]
   );
 
   const selectParentAsset = useCallback(() => {
