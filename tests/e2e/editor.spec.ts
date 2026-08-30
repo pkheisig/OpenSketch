@@ -4003,6 +4003,9 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
       stylesheetPaintOverride: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><style>.visible { fill: black; }</style><text class="visible" x="12" y="40" font-family="Atkinson Hyperlegible" fill="none">CSS visible</text></svg>`
       ),
+      stylesheetOpacityOverride: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" opacity="0" style="opacity: 1">CSS visible</text></svg>`
+      ),
       visibleDescendant: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" visibility="hidden"><tspan visibility="visible">Γ</tspan></text></svg>`
       ),
@@ -4042,6 +4045,9 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
   expect(result.stylesheetPaintOverride.error).toBeNull();
   expect(result.stylesheetPaintOverride.pdf).toContain("/BaseFont /Atkinson#20Hyperlegible");
   expect(result.stylesheetPaintOverride.pdf).not.toContain("/BaseFont /Times");
+  expect(result.stylesheetOpacityOverride.error).toBeNull();
+  expect(result.stylesheetOpacityOverride.pdf).toContain("/BaseFont /Atkinson#20Hyperlegible");
+  expect(result.stylesheetOpacityOverride.pdf).not.toContain("/BaseFont /Times");
   expect(result.visibleDescendant.error).toContain("U+0393");
   expect(result.cdata.error).toBeNull();
   expect(result.cdata.pdf).toContain("/BaseFont /Inter");

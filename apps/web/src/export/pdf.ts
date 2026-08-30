@@ -412,16 +412,18 @@ function hasHiddenPdfTextAncestor(element: Element): boolean {
     if (current.getAttribute(PDF_DISPLAY_NONE_ATTRIBUTE) === "true") return true;
     if (current.getAttribute(PDF_ZERO_OPACITY_ATTRIBUTE) === "true") return true;
 
-    const display = current.getAttribute("display")?.trim().toLowerCase();
-    if (display === "none") return true;
+    if (!hasMaterializedTextState) {
+      const display = current.getAttribute("display")?.trim().toLowerCase();
+      if (display === "none") return true;
 
-    const style = current.getAttribute("style") ?? "";
-    if (/(?:^|;)\s*display\s*:\s*none(?:\s*!important)?\s*(?:;|$)/i.test(style)) {
-      return true;
+      const style = current.getAttribute("style") ?? "";
+      if (/(?:^|;)\s*display\s*:\s*none(?:\s*!important)?\s*(?:;|$)/i.test(style)) {
+        return true;
+      }
+      if (isZeroPdfOpacity(current.getAttribute("opacity"))) return true;
+      const opacity = style.match(/(?:^|;)\s*opacity\s*:\s*([^;]+)/i)?.[1];
+      if (isZeroPdfOpacity(opacity)) return true;
     }
-    if (isZeroPdfOpacity(current.getAttribute("opacity"))) return true;
-    const opacity = style.match(/(?:^|;)\s*opacity\s*:\s*([^;]+)/i)?.[1];
-    if (isZeroPdfOpacity(opacity)) return true;
 
     if (resolvedVisibility === undefined) {
       const materializedVisibility =
@@ -430,7 +432,9 @@ function hasHiddenPdfTextAncestor(element: Element): boolean {
           : current.getAttribute(PDF_VISIBLE_TEXT_ATTRIBUTE) === "true"
             ? "visible"
             : undefined;
-      resolvedVisibility = materializedVisibility ?? declaredPdfVisibility(current);
+      resolvedVisibility =
+        materializedVisibility ??
+        (hasMaterializedTextState ? undefined : declaredPdfVisibility(current));
     }
   }
   return resolvedVisibility === "hidden";
