@@ -24,6 +24,7 @@ import { PORTABLE_PROJECT_LIMITS } from "./resourceLimits";
 
 export { repairProjectIdentity } from "./identity";
 export type { ProjectIdentityRepair } from "./identity";
+export { PORTABLE_PROJECT_LIMITS } from "./resourceLimits";
 
 const SUPPORTED_SCENE_TYPES = new Set([
   "Circle",
@@ -476,7 +477,7 @@ function assertNonEmptyString(
 
 function validateRasterResource(parsed: ParsedImageDataUrl, path: string): number | undefined {
   if (parsed.mimeType === "image/svg+xml") return undefined;
-  const bytes = decodeImageDataUrlBytes(parsed);
+  const bytes = decodeImageDataUrlBytes(parsed, 1024 * 1024);
   const inspection = bytes === undefined ? undefined : inspectRasterBytes(bytes);
   if (!inspection || inspection.mimeType !== parsed.mimeType) {
     fail(path, "does not contain readable raster dimensions");
@@ -522,7 +523,10 @@ function validateDataUrl(
   }
   if (
     parsed.base64 &&
-    (parsed.payload.length % 4 === 1 || !/^[A-Za-z0-9+/]*={0,2}$/.test(parsed.payload))
+    (() => {
+      const payload = parsed.payload.replace(/[\t\n\f\r ]+/g, "");
+      return payload.length % 4 === 1 || !/^[A-Za-z0-9+/]*={0,2}$/.test(payload);
+    })()
   ) {
     fail(path, "contains invalid base64 data");
   }

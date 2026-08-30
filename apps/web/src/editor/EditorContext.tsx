@@ -251,7 +251,10 @@ function validateImportedMediaRecord(
   }
   if (
     parsed.base64 &&
-    (parsed.payload.length % 4 === 1 || !/^[A-Za-z0-9+/]*={0,2}$/.test(parsed.payload))
+    (() => {
+      const payload = parsed.payload.replace(/[\t\n\f\r ]+/g, "");
+      return payload.length % 4 === 1 || !/^[A-Za-z0-9+/]*={0,2}$/.test(payload);
+    })()
   ) {
     throw new Error("The imported image contains invalid encoded data.");
   }
@@ -285,9 +288,12 @@ function rasterPixelsInUploads(
       continue;
     if (seenDataUrls.has(media.dataUrl)) continue;
     seenDataUrls.add(media.dataUrl);
-    const inspection = validateImportedMediaRecord(media);
-    if (!inspection) continue;
-    total += inspection.pixels;
+    try {
+      const inspection = validateImportedMediaRecord(media);
+      if (inspection) total += inspection.pixels;
+    } catch {
+      throw new Error("The document contains an oversized or malformed raster image.");
+    }
   }
   if (total > PORTABLE_PROJECT_LIMITS.maxTotalRasterArea) {
     throw new Error("The document already exceeds its decoded raster area budget.");
@@ -2854,7 +2860,8 @@ export function EditorProvider({
             throw new Error("The file is not a valid PNG, JPEG, WebP, or SVG image.");
           }
           if (rasterInspection) {
-            const limitMessage = rasterLimitMessage(rasterInspection);
+            const existingRasterPixels = rasterPixelsInUploads(latestProject.current.uploads);
+            const limitMessage = rasterLimitMessage(rasterInspection, existingRasterPixels);
             if (limitMessage) throw new Error(limitMessage);
           }
           const importId = crypto.randomUUID();

@@ -55,21 +55,34 @@ export function imageDataUrlByteLength(parsed: ParsedImageDataUrl): number {
       return Number.POSITIVE_INFINITY;
     }
   }
-  const unpaddedLength = parsed.payload.replace(/=+$/, "").length;
+  const unpaddedLength = normalizedBase64Payload(parsed).replace(/=+$/, "").length;
   return Math.floor((unpaddedLength * 3) / 4);
 }
 
-export function decodeImageDataUrlBytes(parsed: ParsedImageDataUrl): Uint8Array | undefined {
+function normalizedBase64Payload(parsed: ParsedImageDataUrl): string {
+  return parsed.payload.replace(/[\t\n\f\r ]+/g, "");
+}
+
+export function decodeImageDataUrlBytes(
+  parsed: ParsedImageDataUrl,
+  maxBytes = Number.POSITIVE_INFINITY
+): Uint8Array | undefined {
   if (!parsed.base64) {
     try {
-      return new TextEncoder().encode(decodeURIComponent(parsed.payload));
+      const bytes = new TextEncoder().encode(decodeURIComponent(parsed.payload));
+      return Number.isFinite(maxBytes) ? bytes.slice(0, maxBytes) : bytes;
     } catch {
       return undefined;
     }
   }
   try {
-    const binary = atob(parsed.payload);
-    return Uint8Array.from(binary, (character) => character.charCodeAt(0));
+    const payload = normalizedBase64Payload(parsed);
+    const boundedPayload = Number.isFinite(maxBytes)
+      ? payload.slice(0, Math.ceil(maxBytes / 3) * 4)
+      : payload;
+    const binary = atob(boundedPayload);
+    const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
+    return Number.isFinite(maxBytes) ? bytes.slice(0, maxBytes) : bytes;
   } catch {
     return undefined;
   }
@@ -283,11 +296,14 @@ export function inspectRasterDataUrl(
   if (expectedMimeType && parsed.mimeType !== expectedMimeType.toLowerCase()) return undefined;
   if (
     parsed.base64 &&
-    (parsed.payload.length % 4 === 1 || !/^[A-Za-z0-9+/]*={0,2}$/.test(parsed.payload))
+    (() => {
+      const payload = normalizedBase64Payload(parsed);
+      return payload.length % 4 === 1 || !/^[A-Za-z0-9+/]*={0,2}$/.test(payload);
+    })()
   ) {
     return undefined;
   }
-  const bytes = decodeImageDataUrlBytes(parsed);
+  const bytes = decodeImageDataUrlBytes(parsed, RASTER_HEADER_READ_BYTES);
   const inspection = bytes === undefined ? undefined : inspectRasterBytes(bytes);
   return inspection?.mimeType === parsed.mimeType ? inspection : undefined;
 }

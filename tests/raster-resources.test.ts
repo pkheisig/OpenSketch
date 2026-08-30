@@ -10,7 +10,11 @@ import {
 } from "../packages/editor-core/src";
 
 function dataUrl(mimeType: string, bytes: Uint8Array): string {
-  return `data:${mimeType};base64,${btoa(String.fromCharCode(...bytes))}`;
+  let binary = "";
+  for (let offset = 0; offset < bytes.length; offset += 32_768) {
+    binary += String.fromCharCode(...bytes.subarray(offset, offset + 32_768));
+  }
+  return `data:${mimeType};base64,${btoa(binary)}`;
 }
 
 function pngHeader(width: number, height: number): Uint8Array {
@@ -104,6 +108,23 @@ describe("raster resource inspection", () => {
       "image/jpeg"
     );
     expect(inspectRasterDataUrl(dataUrl("image/png", jpeg), "image/png")).toBeUndefined();
+  });
+
+  it("accepts base64 whitespace while keeping data-url inspection bounded", () => {
+    const header = pngHeader(64, 32);
+    const bytes = new Uint8Array(header.length + 2_000_000);
+    bytes.set(header);
+    const encoded = dataUrl("image/png", bytes).split(",", 2)[1];
+    const decode = vi.spyOn(globalThis, "atob");
+    const inspected = inspectRasterDataUrl(
+      `data:image/png;base64,${encoded.slice(0, 32)}\n${encoded.slice(32)}`,
+      "image/png"
+    );
+
+    expect(inspected).toMatchObject({ mimeType: "image/png", width: 64, height: 32 });
+    expect(decode).toHaveBeenCalledWith(expect.stringMatching(/^.{1,1400000}$/s));
+    expect(decode.mock.calls[0][0].length).toBeLessThan(encoded.length);
+    decode.mockRestore();
   });
 
   it("rejects truncated, malformed, and non-raster headers", () => {
