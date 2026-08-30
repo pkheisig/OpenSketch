@@ -1,0 +1,665 @@
+/* Home/library surface ownership. */
+
+.home-content {
+  width: 100%;
+  max-width: 1184px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+.new-figure-section {
+  padding: 34px 0;
+  padding-bottom: 38px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 16px;
+}
+
+.project-row {
+  display: flex;
+  width: 100%;
+  gap: 14px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px 2px 12px;
+  scroll-padding-inline: 2px;
+  scroll-snap-type: x proximity;
+  scrollbar-color: #aab7b2 transparent;
+  transition:
+    background 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.folder-row {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 2px 2px 11px;
+  scrollbar-color: #aab7b2 transparent;
+}
+
+.project-card[draggable="true"] {
+  cursor: grab;
+}
+
+.project-card[draggable="true"]:active {
+  cursor: grabbing;
+}
+
+.project-card.archived .project-preview {
+  opacity: 0.76;
+}
+
+.project-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: auto;
+}
+
+.project-preview-vector {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.project-preview-vector svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.project-preview-vector canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.project-preview-vector.transparent {
+  background:
+    linear-gradient(45deg, #eef0ec 25%, transparent 25%),
+    linear-gradient(-45deg, #eef0ec 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #eef0ec 75%),
+    linear-gradient(-45deg, transparent 75%, #eef0ec 75%), #fff;
+  background-position:
+    0 0,
+    0 8px,
+    8px -8px,
+    -8px 0;
+  background-size: 16px 16px;
+}
+
+.project-card-meta {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 10px 10px 10px 12px;
+}
+
+.project-card details {
+  position: relative;
+  margin-left: auto;
+}
+
+.project-card summary {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 5px;
+  list-style: none;
+  transition:
+    color var(--motion-ui),
+    background var(--motion-ui),
+    transform var(--motion-ui);
+}
+
+.project-card summary:active {
+  transform: scale(0.94);
+}
+
+.project-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.project-card .menu {
+  max-height: 170px;
+  overflow-y: auto;
+}
+
+.folder-card-main > span:last-child {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+}
+
+.folder-card-main strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.folder-card-actions {
+  position: absolute;
+  display: flex;
+  right: 9px;
+  top: 25px;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 140ms ease;
+}
+
+.folder-card:hover .folder-card-actions {
+  opacity: 1;
+}
+
+.folder-card:focus-within .folder-card-actions {
+  opacity: 1;
+}
+
+.folder-drawer-heading strong {
+  font-size: 12px;
+}
+
+.folder-drawer-heading button:hover {
+  background: #dce5e0;
+}
+
+.folder-project-row {
+  padding-bottom: 2px;
+}
+
+@keyframes folder-drawer-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.archive-disclosure svg {
+  transition: transform 220ms ease;
+}
+
+.archive-disclosure[aria-expanded="true"] svg {
+  transform: rotate(180deg);
+}
+
+.archive-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 260ms ease,
+    opacity 180ms ease;
+}
+
+.archive-panel.open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.archive-panel-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.archived-project-row {
+  padding-top: 4px;
+}
+
+.creation-defaults {
+  margin-top: 10px;
+  border: 1px solid #d4dbd7;
+  border-radius: 7px;
+  background: #fbfcfa;
+}
+
+.creation-defaults-summary::before {
+  width: 8px;
+  color: #5d7470;
+  content: "›";
+  font-size: 15px;
+  line-height: 1;
+  transform: rotate(0deg);
+  transition: transform var(--motion-disclosure);
+}
+
+.creation-defaults.open .creation-defaults-summary::before {
+  transform: rotate(90deg);
+}
+
+.creation-defaults .field {
+  font-size: 10px;
+}
+
+.creation-defaults .mini-field {
+  font-size: 10px;
+}
+
+.tool-defaults-inline .creation-defaults {
+  margin: 0 0 14px;
+}
+
+.tool-defaults-flyout .creation-defaults {
+  margin: 0 0 14px;
+}
+
+.tool-defaults-inline .creation-defaults:last-child {
+  margin-bottom: 0;
+}
+
+.tool-defaults-flyout .creation-defaults:last-child {
+  margin-bottom: 0;
+}
+
+.opensketch-app .home-shell {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  height: 100%;
+  overflow: auto;
+  background: var(--shell-bg);
+  color: var(--shell-text);
+}
+
+.opensketch-app .home-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1184px;
+  height: 68px;
+  margin: 0 auto;
+  padding: 0 32px;
+  border-bottom: 1px solid #d3d9d5;
+  border-bottom-color: var(--shell-border);
+}
+
+.opensketch-app .home-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.opensketch-app .projects-section {
+  padding: 34px 0;
+  border-top: 1px solid #d3d9d5;
+  border-color: var(--shell-border);
+}
+
+.opensketch-app .archived-section {
+  padding: 0 0 34px;
+  border-top: 1px solid #d3d9d5;
+  border-color: var(--shell-border);
+}
+
+.opensketch-app .home-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: calc(100% - 64px);
+  max-width: 1120px;
+  margin: auto;
+  padding: 16px 0 22px;
+  border-top: 1px solid #d3d9d5;
+  color: var(--shell-muted);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-color: var(--shell-border);
+}
+
+.opensketch-app .section-heading h1 {
+  margin: 0;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.opensketch-app .section-heading h2 {
+  margin: 0;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.opensketch-app .project-count {
+  display: grid;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  place-items: center;
+  border-radius: 10px;
+  color: var(--shell-muted);
+  background: var(--shell-accent-soft);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.opensketch-app .new-figure-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 11px;
+  min-width: 220px;
+  min-height: 64px;
+  padding: 9px 12px;
+  border: 1px solid #c9d0cc;
+  border-radius: 6px;
+  background: var(--shell-card);
+  text-align: left;
+  transition:
+    border-color 120ms ease,
+    background 120ms ease;
+  font-size: 12px;
+  font-weight: 400;
+  border-color: var(--shell-border);
+  color: var(--shell-text);
+}
+
+.opensketch-app .project-title {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.opensketch-app .new-figure-button:hover {
+  border-color: var(--shell-accent);
+  background: var(--shell-accent-soft);
+  color: var(--shell-text);
+}
+
+.opensketch-app .new-figure-icon {
+  display: grid;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid #d3ddd8;
+  border-radius: 5px;
+  color: var(--shell-on-accent);
+  border-color: var(--shell-accent);
+  background: var(--shell-accent);
+}
+
+.opensketch-app .project-card summary:hover {
+  color: var(--shell-accent);
+  background: var(--shell-accent-soft);
+}
+
+.opensketch-app .folder-card-actions button:hover {
+  background: var(--shell-accent-soft);
+  color: var(--shell-accent);
+}
+
+.opensketch-app .project-title small {
+  color: var(--shell-muted);
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.opensketch-app .folder-card-main small {
+  color: var(--shell-muted);
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.opensketch-app .empty-projects {
+  margin: 0;
+  padding: 24px 0 34px;
+  color: var(--shell-muted);
+  font-size: 12px;
+}
+
+.opensketch-app .folder-drawer-heading span {
+  display: grid;
+  min-width: 19px;
+  height: 19px;
+  padding: 0 5px;
+  place-items: center;
+  border-radius: 10px;
+  color: var(--shell-muted);
+  background: var(--shell-accent-soft);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.opensketch-app .archive-disclosure small {
+  display: grid;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  place-items: center;
+  border-radius: 10px;
+  color: var(--shell-muted);
+  background: var(--shell-accent-soft);
+  font-size: 9px;
+}
+
+.opensketch-app .project-card {
+  position: relative;
+  display: grid;
+  flex: 0 0 260px;
+  grid-template-rows: 148px auto;
+  width: 260px;
+  min-height: 202px;
+  overflow: visible;
+  border: 1px solid #c9d0cc;
+  border-radius: 7px;
+  background: var(--shell-card);
+  scroll-snap-align: start;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease,
+    opacity 150ms ease;
+  border-color: var(--shell-border);
+  color: var(--shell-text);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--shell-text) 8%, transparent);
+}
+
+.opensketch-app .project-card:hover {
+  border-color: var(--shell-accent);
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--shell-text) 12%, transparent);
+}
+
+.opensketch-app .project-card.archived {
+  background: var(--shell-row);
+}
+
+.opensketch-app .project-preview {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid #dde1dc;
+  border-radius: 8px 8px 0 0;
+  background: var(--shell-input);
+  border-bottom-color: var(--shell-border);
+}
+
+.opensketch-app .folder-card {
+  position: relative;
+  display: grid;
+  flex: 0 0 230px;
+  width: 230px;
+  min-height: 80px;
+  overflow: visible;
+  border: 1px solid #c9d0cc;
+  border-radius: 7px;
+  background: var(--shell-row);
+  scroll-snap-align: start;
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+  border-color: var(--shell-border);
+  color: var(--shell-text);
+  box-shadow: 0 8px 24px color-mix(in srgb, var(--shell-text) 8%, transparent);
+}
+
+.opensketch-app .folder-card:hover {
+  border-color: var(--shell-accent);
+  background: var(--shell-focus);
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--shell-text) 12%, transparent);
+}
+
+.opensketch-app .folder-card.open {
+  border-color: var(--shell-accent);
+  background: var(--shell-focus);
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--shell-text) 12%, transparent);
+}
+
+.opensketch-app .folder-card.drop-target {
+  border-color: var(--shell-accent);
+  background: var(--shell-accent-soft);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--shell-accent) 14%, transparent);
+  transform: translateY(-2px);
+}
+
+.opensketch-app .project-row.drop-target {
+  border-radius: 9px;
+  background: var(--shell-accent-soft);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--shell-accent) 14%, transparent);
+  border-color: var(--shell-accent);
+}
+
+.opensketch-app .folder-card-main {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  height: 100%;
+  padding: 13px 46px 13px 13px;
+  gap: 11px;
+  border: 0;
+  border-radius: inherit;
+  color: var(--shell-text);
+  background: transparent;
+  text-align: left;
+}
+
+.opensketch-app .folder-card-icon {
+  display: grid;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 44px;
+  place-items: center;
+  border-radius: 12px;
+  color: var(--shell-accent);
+  background: color-mix(in srgb, var(--shell-card) 72%, transparent);
+}
+
+.opensketch-app .folder-card-actions button {
+  display: grid;
+  width: 25px;
+  height: 25px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 4px;
+  color: var(--shell-muted);
+  background: color-mix(in srgb, var(--shell-card) 86%, transparent);
+}
+
+.opensketch-app .folder-drawer {
+  margin-top: 12px;
+  padding: 13px 14px 14px;
+  border: 1px solid #cad4cf;
+  border-radius: 9px;
+  background: var(--shell-input);
+  animation: folder-drawer-in 220ms ease both;
+  border-color: var(--shell-border);
+  color: var(--shell-text);
+}
+
+.opensketch-app .folder-drawer-heading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 30px;
+  color: var(--shell-text);
+}
+
+.opensketch-app .folder-drawer-heading button {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  margin-left: auto;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 5px;
+  color: var(--shell-muted);
+  background: transparent;
+}
+
+.opensketch-app .archive-disclosure {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 8px;
+  padding: 17px 0;
+  border: 0;
+  color: var(--shell-muted);
+  background: transparent;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.opensketch-app .empty-folder {
+  margin: 8px 0 2px;
+  padding: 24px;
+  border: 1px dashed #b8c7c1;
+  border-radius: 7px;
+  color: var(--shell-muted);
+  font-size: 11px;
+  text-align: center;
+  border-color: var(--shell-border-strong);
+}
+
+.opensketch-app .creation-defaults-body {
+  display: grid;
+  gap: 10px;
+  padding: 2px 11px 12px;
+  border-color: var(--shell-border);
+  color: var(--shell-text);
+  background: var(--shell-input);
+}
+
+.opensketch-app .creation-defaults-summary {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 11px 12px;
+  border: 0;
+  color: var(--shell-muted);
+  background: transparent;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition:
+    color var(--motion-ui),
+    background var(--motion-ui);
+}
+
+.opensketch-app .creation-defaults-summary:hover {
+  color: var(--shell-accent);
+  background: var(--shell-accent-soft);
+}

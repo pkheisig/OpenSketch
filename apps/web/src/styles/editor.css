@@ -1,0 +1,248 @@
+/* Editor shell and chrome ownership. */
+
+.toolbar-center {
+  display: flex;
+  align-items: center;
+  justify-self: center;
+  gap: 2px;
+}
+
+.project-save-status {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  justify-self: end;
+  gap: 5px;
+  color: var(--ink-soft);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+
+.project-save-status-message {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.project-save-status-message span {
+  min-width: 0;
+}
+
+.project-save-status-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin-top: 3px;
+}
+
+.project-save-status-details summary {
+  color: inherit;
+  font-weight: 700;
+}
+
+.project-save-status-details span {
+  display: block;
+  max-width: 42ch;
+  margin-top: 3px;
+  overflow-wrap: anywhere;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 500;
+}
+
+.zoom-group {
+  display: flex;
+  align-items: center;
+  margin-left: 4px;
+}
+
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  gap: 4px;
+}
+
+.spectrum-editor {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22px;
+  gap: 9px;
+  height: 184px;
+}
+
+.opensketch-app .button.export-button {
+  border-color: var(--shell-accent);
+  color: var(--shell-on-accent);
+  background: var(--shell-accent);
+  box-shadow: 0 2px 5px color-mix(in srgb, var(--shell-accent-strong) 22%, transparent);
+}
+
+.opensketch-app .button.export-button:hover:not(:disabled) {
+  border-color: var(--shell-accent-strong);
+  color: var(--shell-on-accent);
+  background: color-mix(in srgb, var(--shell-accent) 88%, #000);
+}
+
+.opensketch-app .editor-shell {
+  display: grid;
+  grid-template-rows: 58px 1fr;
+  width: 100%;
+  height: 100%;
+  color: var(--shell-text);
+  background: var(--shell-canvas);
+  padding: 7px;
+  gap: 7px;
+}
+
+.opensketch-app .top-toolbar {
+  position: relative;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: auto auto minmax(120px, 1fr) auto minmax(0, auto) auto;
+  align-items: center;
+  gap: 7px;
+  padding: 0 10px;
+  border-bottom: 1px solid #c8d0cc;
+  background: color-mix(in srgb, var(--shell-card) 96%, transparent);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--shell-text) 9%, transparent);
+  min-height: 44px;
+  border: 1px solid var(--shell-border);
+  border-radius: 7px;
+  backdrop-filter: blur(14px);
+  color: var(--shell-text);
+}
+
+.opensketch-app .back-to-projects-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid #c8d0cc;
+  border-radius: 5px;
+  color: var(--shell-text);
+  background: var(--shell-card);
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+  border-color: var(--shell-border);
+}
+
+.opensketch-app .back-to-projects-button:hover {
+  border-color: var(--shell-accent);
+  background: var(--shell-accent-soft);
+}
+
+.opensketch-app .toolbar-rule {
+  width: 1px;
+  height: 22px;
+  margin: 0 3px;
+  background: var(--shell-border);
+}
+
+.opensketch-app .project-save-status--saved {
+  color: var(--shell-accent-strong);
+}
+
+.opensketch-app .project-save-status--saving {
+  color: var(--shell-muted);
+}
+
+.opensketch-app .project-save-status--error {
+  display: grid;
+  max-width: min(460px, 36vw);
+  padding: 5px 7px;
+  border: 1px solid color-mix(in srgb, var(--danger) 42%, var(--line));
+  border-radius: 6px;
+  color: var(--shell-danger);
+  background: color-mix(in srgb, var(--shell-danger) 10%, var(--shell-card));
+  white-space: normal;
+  border-color: color-mix(in srgb, var(--shell-danger) 46%, var(--shell-border));
+}
+
+.opensketch-app .project-save-status-action {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 6px;
+  border: 1px solid color-mix(in srgb, var(--danger) 35%, var(--line));
+  border-radius: 4px;
+  color: var(--shell-danger);
+  background: var(--shell-card);
+  font-size: 10px;
+  font-weight: 800;
+  border-color: color-mix(in srgb, var(--shell-danger) 42%, var(--shell-border));
+}
+
+.opensketch-app .project-save-status-action:hover {
+  border-color: var(--shell-danger);
+  background: color-mix(in srgb, var(--shell-danger) 14%, var(--shell-card));
+}
+
+.opensketch-app .project-save-status-details {
+  margin-top: 3px;
+  color: var(--shell-muted);
+  font-size: 9px;
+}
+
+.opensketch-app .document-title {
+  min-width: 110px;
+  max-width: 280px;
+  padding: 7px 8px;
+  overflow: hidden;
+  border: 1px solid transparent;
+  border-radius: 5px;
+  outline: none;
+  background: transparent;
+  font-size: 13px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  color: var(--shell-text);
+}
+
+.opensketch-app .document-title:hover {
+  border-color: var(--shell-accent);
+  background: var(--shell-accent-soft);
+}
+
+.opensketch-app .document-title:focus {
+  border-color: var(--shell-accent);
+  background: var(--shell-accent-soft);
+}
+
+.opensketch-app .zoom-value {
+  width: 48px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--shell-muted);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.opensketch-app .export-button {
+  min-height: 32px;
+  border-color: #116f6e;
+  color: white;
+  background: #116f6e;
+}
+
+.opensketch-app .editor-grid {
+  --left-sidebar-width: 304px;
+  --right-sidebar-width: 288px;
+  --editor-ruler-size: 24px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 0;
+  transition: grid-template-columns var(--motion-panel);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #c8d1cd;
+  border-radius: 10px;
+  background: var(--shell-canvas);
+  border-color: var(--shell-border);
+}

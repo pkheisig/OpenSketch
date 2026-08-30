@@ -72,8 +72,7 @@ import "@fontsource/roboto-mono/700.css";
 import "@fontsource/roboto-mono/400-italic.css";
 import "@fontsource/roboto-mono/600-italic.css";
 import "@fontsource/roboto-mono/700-italic.css";
-import "./styles/global.css";
-import "./styles/opengate-theme.css";
+import "./styles/app.css";
 
 const updateServiceWorker = registerSW({
   immediate: true,

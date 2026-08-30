@@ -30,3 +30,10 @@ Keep `.OpenSketch` compatibility behind the explicit migration gate. Add a
 regression fixture before changing the portable project schema. Use focused
 commits, document user-visible changes in `NEWS.md`, and include a regression
 test for every defect fix.
+
+CSS has one entry point at `apps/web/src/styles/app.css`. Shared semantic
+tokens live in `tokens.css`; each surface owns one module (`base.css`,
+`home.css`, `editor.css`, `inspector.css`, `canvas.css`, or `dialogs.css`). Do
+not add a second theme adapter or rely on import order to resolve duplicate
+selectors. Run `corepack pnpm styles:check` after CSS changes; the check is also
+part of `corepack pnpm test`.

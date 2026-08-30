@@ -1,0 +1,8 @@
+/* Deterministic stylesheet entry point. Each module owns one UI surface. */
+@import "./tokens.css";
+@import "./base.css";
+@import "./home.css";
+@import "./editor.css";
+@import "./inspector.css";
+@import "./canvas.css";
+@import "./dialogs.css";
