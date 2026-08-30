@@ -8,7 +8,10 @@ export function refreshTextMetrics(objects: FabricObject[]): void {
       object.dirty = true;
       object.setCoords();
     }
-    if (object instanceof Group) object.getObjects().forEach(visit);
+    if (object instanceof Group) {
+      object.getObjects().forEach(visit);
+      object.triggerLayout();
+    }
   };
   objects.forEach(visit);
 }

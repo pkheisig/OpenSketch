@@ -28,5 +28,6 @@ describe("editor text metrics", () => {
 
     expect(initDimensions).toHaveBeenCalledTimes(1);
     expect(importedText.width).toBeGreaterThan(0);
+    expect(group.width).toBeGreaterThan(0);
   });
 });

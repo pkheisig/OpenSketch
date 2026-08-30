@@ -284,13 +284,16 @@ function normalizeCssFontFamilies(value: string): string {
 
 function normalizeCssFontWeights(value: string): string {
   return stripCssComments(value).replace(
-    /(@font-face\s*\{[^{}]*\})|(font-weight\s*:\s*)([^;}{]+)/gi,
+    /(@font-face\s*\{[^{}]*\})|(^|[^-\w])(font-weight\s*:\s*)([^;}{]+)/gi,
     (
       match: string,
       fontFace: string | undefined,
+      boundary: string | undefined,
       prefix: string | undefined,
       weight: string | undefined
-    ) => fontFace ?? `${prefix}${normalizeCssFontValue(weight ?? match, normalizeFontWeightValue)}`
+    ) =>
+      fontFace ??
+      `${boundary ?? ""}${prefix}${normalizeCssFontValue(weight ?? match, normalizeFontWeightValue)}`
   );
 }
 
