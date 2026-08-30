@@ -512,6 +512,12 @@ function materializePdfTextStyles(svg: SVGSVGElement): void {
         computed.display === "none" ||
         ["hidden", "collapse"].includes(computed.visibility) ||
         computedPdfPaintIsInvisible(computed);
+      if (computed.visibility === "collapse") {
+        // svg2pdf only recognizes the exact `hidden` value. Materialize SVG's
+        // collapse state so skipped text cannot leak into the PDF renderer.
+        sourceElement.setAttribute("visibility", "hidden");
+        sourceElement.style.setProperty("visibility", "hidden", "important");
+      }
       if (hidden) {
         sourceElement.setAttribute(PDF_HIDDEN_TEXT_ATTRIBUTE, "true");
         sourceElement.removeAttribute(PDF_VISIBLE_TEXT_ATTRIBUTE);
