@@ -680,6 +680,17 @@ input[type="range"] {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 .shape-flyout-grid {
   width: 224px;
   grid-template-columns: repeat(4, 1fr);

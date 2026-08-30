@@ -93,6 +93,20 @@
   background-size: 16px 16px;
 }
 
+html[data-theme="dark"] .project-preview-vector.transparent {
+  background:
+    linear-gradient(45deg, #40382f 25%, transparent 25%),
+    linear-gradient(-45deg, #40382f 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, #40382f 75%),
+    linear-gradient(-45deg, transparent 75%, #40382f 75%), var(--shell-card);
+  background-position:
+    0 0,
+    0 8px,
+    8px -8px,
+    -8px 0;
+  background-size: 16px 16px;
+}
+
 .project-card-meta {
   position: relative;
   display: flex;
