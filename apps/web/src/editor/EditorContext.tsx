@@ -36,6 +36,7 @@ import {
   type CanvasSettings,
   type ConnectorBinding,
   type ImportedMediaRecord,
+  type ParsedImageDataUrl,
   type ProjectRecord,
   type RasterInspection,
   imageDataUrlByteLength,
@@ -235,12 +236,53 @@ function validateImportedMediaRecord(
   media: ImportedMediaRecord,
   existingRasterPixels = 0
 ): RasterInspection | undefined {
+  const { inspection } = inspectImportedMediaRecord(media);
+  if (!inspection) return undefined;
+  const limitMessage = rasterLimitMessage(inspection, existingRasterPixels);
+  if (limitMessage) throw new Error(limitMessage);
+  return inspection;
+}
+
+function rasterMediaInScene(canvas: Canvas): ImportedMediaRecord[] {
+  const media: ImportedMediaRecord[] = [];
+  visitSceneObjects(canvas.getObjects(), (object) => {
+    if (!(object instanceof FabricImage)) return;
+    const source = object.getSrc();
+    const parsed = parseImageDataUrl(source);
+    if (!parsed)
+      throw new Error("The document contains an external or unsupported image reference.");
+    if (parsed.mimeType === "image/svg+xml") return;
+    media.push({
+      id: `scene-${media.length}`,
+      name: "Scene image",
+      mimeType: parsed.mimeType,
+      dataUrl: source
+    });
+  });
+  return media;
+}
+
+interface ProjectMediaTotals {
+  rasterPixels: number;
+  dataUrlBytes: number;
+}
+
+interface ImportedMediaInspection {
+  parsed: ParsedImageDataUrl;
+  byteLength: number;
+  inspection?: RasterInspection;
+}
+
+const importedMediaInspectionCache = new Map<string, ImportedMediaInspection>();
+const IMPORTED_MEDIA_INSPECTION_CACHE_LIMIT = 512;
+
+function inspectImportedMediaRecord(media: ImportedMediaRecord): ImportedMediaInspection {
   const mimeType = media.mimeType.toLowerCase();
+  const cached = importedMediaInspectionCache.get(media.dataUrl);
+  if (cached?.parsed.mimeType === mimeType) return cached;
+
   if (!isSupportedImageMimeType(mimeType)) {
     throw new Error("Choose an SVG, PNG, JPEG, or WebP image.");
-  }
-  if (media.dataUrl.length > PORTABLE_PROJECT_LIMITS.maxDataUrlBytes * 2) {
-    throw new Error("The imported image exceeds the supported embedded data size.");
   }
   const parsed = parseImageDataUrl(media.dataUrl);
   if (!parsed || parsed.payload.length === 0) {
@@ -262,37 +304,21 @@ function validateImportedMediaRecord(
   if (!Number.isFinite(byteLength) || byteLength > PORTABLE_PROJECT_LIMITS.maxDataUrlBytes) {
     throw new Error("The imported image exceeds the supported 25 MB size limit.");
   }
-  if (mimeType === "image/svg+xml") return undefined;
-  const inspection = inspectRasterDataUrl(media.dataUrl, mimeType);
-  if (!inspection) {
+  const result: ImportedMediaInspection = {
+    parsed,
+    byteLength,
+    inspection:
+      mimeType === "image/svg+xml" ? undefined : inspectRasterDataUrl(media.dataUrl, mimeType)
+  };
+  if (mimeType !== "image/svg+xml" && !result.inspection) {
     throw new Error("The imported raster is malformed or its content does not match its type.");
   }
-  const limitMessage = rasterLimitMessage(inspection, existingRasterPixels);
-  if (limitMessage) throw new Error(limitMessage);
-  return inspection;
-}
-
-function rasterMediaInScene(canvas: Canvas): ImportedMediaRecord[] {
-  const media: ImportedMediaRecord[] = [];
-  visitSceneObjects(canvas.getObjects(), (object) => {
-    if (!(object instanceof FabricImage)) return;
-    const source = object.getSrc();
-    const parsed = parseImageDataUrl(source);
-    if (parsed && parsed.mimeType !== "image/svg+xml") {
-      media.push({
-        id: `scene-${media.length}`,
-        name: "Scene image",
-        mimeType: parsed.mimeType,
-        dataUrl: source
-      });
-    }
-  });
-  return media;
-}
-
-interface ProjectMediaTotals {
-  rasterPixels: number;
-  dataUrlBytes: number;
+  importedMediaInspectionCache.set(media.dataUrl, result);
+  if (importedMediaInspectionCache.size > IMPORTED_MEDIA_INSPECTION_CACHE_LIMIT) {
+    const oldest = importedMediaInspectionCache.keys().next().value;
+    if (oldest) importedMediaInspectionCache.delete(oldest);
+  }
+  return result;
 }
 
 function projectMediaTotals(
@@ -308,10 +334,8 @@ function projectMediaTotals(
     if (media.id === excludedId || media.dataUrl === excludedDataUrl) continue;
     if (seenDataUrls.has(media.dataUrl)) continue;
     seenDataUrls.add(media.dataUrl);
-    const inspection = validateImportedMediaRecord(media);
-    const parsed = parseImageDataUrl(media.dataUrl);
-    if (!parsed) throw new Error("The document contains invalid image data.");
-    dataUrlBytes += imageDataUrlByteLength(parsed);
+    const { byteLength, inspection } = inspectImportedMediaRecord(media);
+    dataUrlBytes += byteLength;
     if (dataUrlBytes > PORTABLE_PROJECT_LIMITS.maxTotalDataUrlBytes) {
       throw new Error("The document already exceeds its embedded data budget.");
     }
@@ -2890,24 +2914,11 @@ export function EditorProvider({
           if (!inferredMimeType) {
             throw new Error("The file is not a valid PNG, JPEG, WebP, or SVG image.");
           }
-          if (rasterInspection) {
-            const existingMedia = projectMediaTotals(latestProject.current.uploads, canvas);
-            const limitMessage = rasterLimitMessage(rasterInspection, existingMedia.rasterPixels);
-            if (limitMessage) throw new Error(limitMessage);
-            if (
-              existingMedia.dataUrlBytes + file.size >
-              PORTABLE_PROJECT_LIMITS.maxTotalDataUrlBytes
-            ) {
-              throw new Error(
-                "Adding this image would exceed the document's embedded data budget."
-              );
-            }
-          }
           const importId = crypto.randomUUID();
           let dataUrl = await new Promise<string>((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => resolve(String(reader.result));
-            reader.onerror = () => reject(reader.error);
+            reader.onerror = () => reject(reader.error ?? new Error("Unable to read the image."));
             reader.readAsDataURL(new Blob([file], { type: inferredMimeType }));
           });
           if (inferredMimeType === "image/svg+xml") {
@@ -2926,7 +2937,7 @@ export function EditorProvider({
       importQueue.current = operation.then(() => undefined).catch(() => undefined);
       return operation;
     },
-    [canvas, placeImportedMedia, trackPendingEditorWork]
+    [placeImportedMedia, trackPendingEditorWork]
   );
 
   const selectParentAsset = useCallback(() => {

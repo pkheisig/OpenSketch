@@ -167,6 +167,14 @@ describe("raster resource inspection", () => {
       width: 24,
       height: 12
     });
+
+    const encoded = dataUrl("image/jpeg", bytes).split(",", 2)[1];
+    expect(
+      inspectRasterDataUrl(
+        `data:image/jpeg;base64,${encoded.slice(0, 17_000)}\n${encoded.slice(17_000)}`,
+        "image/jpeg"
+      )
+    ).toMatchObject({ mimeType: "image/jpeg", width: 24, height: 12 });
   });
 
   it("applies the canonical per-image and aggregate pixel limits", () => {

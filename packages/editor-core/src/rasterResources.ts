@@ -78,7 +78,8 @@ export function decodeImageDataUrlBytes(
   try {
     const payload = normalizedBase64Payload(parsed);
     const boundedPayload = Number.isFinite(maxBytes)
-      ? payload.slice(0, Math.ceil(maxBytes / 3) * 4)
+      ? // Round up to include the complete base64 quantum containing maxBytes.
+        payload.slice(0, Math.ceil(maxBytes / 3) * 4)
       : payload;
     const binary = atob(boundedPayload);
     const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
