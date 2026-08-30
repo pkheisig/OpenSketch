@@ -4089,9 +4089,8 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
   expect(result.cssFunctions.error).toBeNull();
   expect(result.cssFunctions.pdf).toContain("/BaseFont /Inter");
   expect(result.cssFunctions.pdf).not.toContain("/BaseFont /Times");
-  expect(result.clipPathText.error).toBeNull();
-  expect(result.clipPathText.pdf).toContain("/BaseFont /Inter");
-  expect(result.clipPathText.pdf).not.toContain("/BaseFont /Times");
+  expect(result.clipPathText.error).toContain("text-based clip paths");
+  expect(result.clipPathText.pdf).toBe("");
   expect(result.unusedDefinitionGlyph.error).toBeNull();
   expect(result.unusedDefinitionGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
   expect(result.visibleDescendant.error).toContain("U+0393");

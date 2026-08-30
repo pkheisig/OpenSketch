@@ -202,21 +202,15 @@ describe("PDF export metadata", () => {
     expect(parsed.querySelector("style")?.textContent).toContain("font-style: oblique calc(12deg)");
   });
 
-  it("registers paint-invisible text used as clipping geometry", () => {
+  it("rejects referenced text clip paths instead of changing their geometry", () => {
     const parsed = new DOMParser().parseFromString(
       `<svg xmlns="http://www.w3.org/2000/svg"><defs><clipPath id="label-clip"><text font-family="Inter" fill="none">Label</text></clipPath></defs><rect width="100" height="40" clip-path="url(#label-clip)"/></svg>`,
       "image/svg+xml"
     );
 
-    expect(
+    expect(() =>
       getPdfFontRegistrationsReferencedBySvg(parsed.documentElement as unknown as SVGSVGElement)
-    ).toEqual([
-      expect.objectContaining({
-        pdfFamily: "Inter",
-        style: "normal",
-        weight: 400
-      })
-    ]);
+    ).toThrow("text-based clip paths");
   });
 
   it("ignores text in unreferenced SVG definitions", () => {

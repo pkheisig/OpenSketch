@@ -742,7 +742,20 @@ function assertPdfTextPathsSupported(svg: SVGSVGElement): void {
   }
 }
 
+function assertPdfTextClipPathsSupported(svg: SVGSVGElement): void {
+  for (const text of svg.querySelectorAll<SVGElement>("clipPath text")) {
+    if (isPdfTextInUnreferencedDefinition(text, svg)) continue;
+    if (hasHiddenPdfTextAncestor(text)) continue;
+    if (hasPdfRenderableText(text.textContent ?? "")) {
+      throw new Error(
+        "PDF export cannot render text-based clip paths yet. Convert clipping text to paths before exporting."
+      );
+    }
+  }
+}
+
 export function getPdfFontRegistrationsReferencedBySvg(svg: SVGSVGElement): PdfFontRegistration[] {
+  assertPdfTextClipPathsSupported(svg);
   assertPdfTextPathsSupported(svg);
   const candidates = getPdfFontRegistrationPlan(getPdfFontFamiliesReferencedBySvg(svg));
   const used = new Set<string>();
