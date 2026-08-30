@@ -30,13 +30,22 @@ import {
   cache,
   util
 } from "fabric";
-import type {
-  AssetFamily,
-  AssetVariant,
-  CanvasSettings,
-  ConnectorBinding,
-  ProjectRecord,
-  ImportedMediaRecord
+import {
+  type AssetFamily,
+  type AssetVariant,
+  type CanvasSettings,
+  type ConnectorBinding,
+  type ImportedMediaRecord,
+  type ProjectRecord,
+  type RasterInspection,
+  imageDataUrlByteLength,
+  inspectRasterBlob,
+  inspectRasterDataUrl,
+  isSupportedImageMimeType,
+  isSupportedRasterMimeType,
+  parseImageDataUrl,
+  PORTABLE_PROJECT_LIMITS,
+  rasterLimitMessage
 } from "@workspace/editor-core";
 import { sanitizeImportedSvg } from "@/assets/browserSanitizer";
 import { calculatePngExportResource, setPngDpi } from "@/export/png";
@@ -221,6 +230,70 @@ const TITLE_PERSISTENCE_DELAY_MS = 250;
 const svgStringCache = new Map<string, string>();
 let assetManifestPromise: Promise<typeof import("@/assets/manifest")> | undefined;
 let bundledVariantsPromise: Promise<Map<string, AssetVariant>> | undefined;
+
+function validateImportedMediaRecord(
+  media: ImportedMediaRecord,
+  existingRasterPixels = 0
+): RasterInspection | undefined {
+  const mimeType = media.mimeType.toLowerCase();
+  if (!isSupportedImageMimeType(mimeType)) {
+    throw new Error("Choose an SVG, PNG, JPEG, or WebP image.");
+  }
+  if (media.dataUrl.length > PORTABLE_PROJECT_LIMITS.maxDataUrlBytes * 2) {
+    throw new Error("The imported image exceeds the supported embedded data size.");
+  }
+  const parsed = parseImageDataUrl(media.dataUrl);
+  if (!parsed || parsed.payload.length === 0) {
+    throw new Error("The imported image data is invalid.");
+  }
+  if (parsed.mimeType !== mimeType) {
+    throw new Error("The imported image type does not match its content type.");
+  }
+  if (
+    parsed.base64 &&
+    (parsed.payload.length % 4 === 1 || !/^[A-Za-z0-9+/]*={0,2}$/.test(parsed.payload))
+  ) {
+    throw new Error("The imported image contains invalid encoded data.");
+  }
+  const byteLength = imageDataUrlByteLength(parsed);
+  if (!Number.isFinite(byteLength) || byteLength > PORTABLE_PROJECT_LIMITS.maxDataUrlBytes) {
+    throw new Error("The imported image exceeds the supported 25 MB size limit.");
+  }
+  if (mimeType === "image/svg+xml") return undefined;
+  const inspection = inspectRasterDataUrl(media.dataUrl, mimeType);
+  if (!inspection) {
+    throw new Error("The imported raster is malformed or its content does not match its type.");
+  }
+  const limitMessage = rasterLimitMessage(inspection, existingRasterPixels);
+  if (limitMessage) throw new Error(limitMessage);
+  return inspection;
+}
+
+function rasterPixelsInUploads(
+  uploads: ImportedMediaRecord[],
+  excludedId?: string,
+  excludedDataUrl?: string
+): number {
+  const seenDataUrls = new Set<string>();
+  let total = 0;
+  for (const media of uploads) {
+    if (
+      media.id === excludedId ||
+      media.dataUrl === excludedDataUrl ||
+      media.mimeType.toLowerCase() === "image/svg+xml"
+    )
+      continue;
+    if (seenDataUrls.has(media.dataUrl)) continue;
+    seenDataUrls.add(media.dataUrl);
+    const inspection = validateImportedMediaRecord(media);
+    if (!inspection) continue;
+    total += inspection.pixels;
+  }
+  if (total > PORTABLE_PROJECT_LIMITS.maxTotalRasterArea) {
+    throw new Error("The document already exceeds its decoded raster area budget.");
+  }
+  return total;
+}
 
 function loadAssetManifest() {
   if (!assetManifestPromise) assetManifestPromise = import("@/assets/manifest");
@@ -2694,6 +2767,12 @@ export function EditorProvider({
   const placeImportedMedia = useCallback(
     async (media: ImportedMediaRecord, point?: Point) => {
       if (!canvas) return media;
+      const existingRasterPixels = rasterPixelsInUploads(
+        latestProject.current.uploads,
+        media.id,
+        media.dataUrl
+      );
+      validateImportedMediaRecord(media, existingRasterPixels);
       const stored = await saveImportedMediaToLibrary(media);
       let object: FabricObject;
       if (stored.mimeType === "image/svg+xml") {
@@ -2754,30 +2833,36 @@ export function EditorProvider({
       const operation = trackPendingEditorWork(
         importQueue.current.then(async () => {
           const extension = file.name.toLowerCase().split(".").at(-1);
-          const inferredMimeType =
-            extension === "svg"
-              ? "image/svg+xml"
-              : extension === "jpg" || extension === "jpeg"
-                ? "image/jpeg"
-                : extension === "png"
-                  ? "image/png"
-                  : extension === "webp"
-                    ? "image/webp"
-                    : file.type;
-          if (
-            !["image/svg+xml", "image/png", "image/jpeg", "image/webp"].includes(inferredMimeType)
-          ) {
-            throw new Error("Choose an SVG, PNG, JPEG, or WebP image.");
-          }
-          if (file.size > 25 * 1024 * 1024) {
+          if (file.size > PORTABLE_PROJECT_LIMITS.maxDataUrlBytes) {
             throw new Error("Images must be 25 MB or smaller.");
+          }
+          const rasterInspection = await inspectRasterBlob(file);
+          const declaredRasterMimeType = file.type.toLowerCase();
+          const rasterExtension = ["png", "jpg", "jpeg", "webp"].includes(extension ?? "");
+          if (
+            !rasterInspection &&
+            (isSupportedRasterMimeType(declaredRasterMimeType) || rasterExtension)
+          ) {
+            throw new Error("The file is not a valid PNG, JPEG, or WebP image.");
+          }
+          const inferredMimeType =
+            rasterInspection?.mimeType ??
+            (file.type.toLowerCase() === "image/svg+xml" || extension === "svg"
+              ? "image/svg+xml"
+              : "");
+          if (!inferredMimeType) {
+            throw new Error("The file is not a valid PNG, JPEG, WebP, or SVG image.");
+          }
+          if (rasterInspection) {
+            const limitMessage = rasterLimitMessage(rasterInspection);
+            if (limitMessage) throw new Error(limitMessage);
           }
           const importId = crypto.randomUUID();
           let dataUrl = await new Promise<string>((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => resolve(String(reader.result));
             reader.onerror = () => reject(reader.error);
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(new Blob([file], { type: inferredMimeType }));
           });
           if (inferredMimeType === "image/svg+xml") {
             const source = sanitizeImportedSvg(await file.text(), `import-${importId}`);

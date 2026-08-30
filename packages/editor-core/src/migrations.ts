@@ -11,44 +11,19 @@ import {
   type PortableProject
 } from "./types";
 import { repairProjectIdentity } from "./identity";
-import { PORTABLE_SCENE_LIMITS } from "./sceneLimits";
+import {
+  decodeImageDataUrlBytes,
+  decodeImageDataUrlText,
+  imageDataUrlByteLength,
+  inspectRasterBytes,
+  isSupportedImageMimeType,
+  parseImageDataUrl,
+  type ParsedImageDataUrl
+} from "./rasterResources";
+import { PORTABLE_PROJECT_LIMITS } from "./resourceLimits";
 
 export { repairProjectIdentity } from "./identity";
 export type { ProjectIdentityRepair } from "./identity";
-
-/** Resource bounds applied before a portable project reaches Fabric or persistence. */
-export const PORTABLE_PROJECT_LIMITS = {
-  maxProjectIdLength: 128,
-  maxProjectNameLength: 256,
-  maxTimestampLength: 64,
-  maxDescriptionLength: 16_384,
-  maxCanvasDimension: 32_768,
-  maxCanvasArea: 100_000_000,
-  maxDpi: 2_400,
-  maxStringLength: 100_000,
-  maxObjectIdLength: 128,
-  maxObjectNameLength: 512,
-  maxSceneObjects: PORTABLE_SCENE_LIMITS.maxSceneObjects,
-  maxSceneDepth: PORTABLE_SCENE_LIMITS.maxSceneDepth,
-  maxArrayLength: 50_000,
-  maxObjectProperties: 96,
-  maxMetadataEntries: 256,
-  maxMetadataDepth: 8,
-  maxPathCommands: 50_000,
-  maxPoints: 50_000,
-  maxTextStyles: 10_000,
-  maxUploads: 256,
-  maxUsedAssetIds: 10_000,
-  maxDataUrlBytes: 25 * 1024 * 1024,
-  maxTotalDataUrlBytes: 75 * 1024 * 1024,
-  maxRasterDimension: 32_768,
-  maxRasterArea: 100_000_000,
-  // Keep decoded RGBA memory near one gigabyte before browser/Fabric overhead.
-  maxTotalRasterArea: 250_000_000,
-  maxCoordinate: 1_000_000,
-  maxScale: 1_000,
-  maxCurvature: 100
-} as const;
 
 const SUPPORTED_SCENE_TYPES = new Set([
   "Circle",
@@ -357,13 +332,6 @@ const PAINT_PROPERTIES = new Set([
   "textBackgroundColor"
 ]);
 
-const SUPPORTED_IMAGE_MIME_TYPES = new Set([
-  "image/svg+xml",
-  "image/png",
-  "image/jpeg",
-  "image/webp"
-]);
-
 const SUPPORTED_FILTER_TYPES = new Set([
   "BaseFilter",
   "BlackWhite",
@@ -506,211 +474,21 @@ function assertNonEmptyString(
   assertString(value, path, { maxLength, nonEmpty: true });
 }
 
-function utf8ByteLength(value: string): number {
-  return new TextEncoder().encode(value).byteLength;
-}
-
-function parseDataUrl(
-  value: string
-): { mimeType: string; payload: string; base64: boolean } | undefined {
-  const match =
-    /^data:(image\/(?:svg\+xml|png|jpeg|webp))(?:;charset=[A-Za-z0-9._-]+)?(;base64)?,([\s\S]*)$/i.exec(
-      value
-    );
-  if (!match) return undefined;
-  return {
-    mimeType: match[1].toLowerCase(),
-    base64: Boolean(match[2]),
-    payload: match[3]
-  };
-}
-
-function dataUrlByteLength(parsed: NonNullable<ReturnType<typeof parseDataUrl>>): number {
-  if (!parsed.base64) {
-    try {
-      return utf8ByteLength(decodeURIComponent(parsed.payload));
-    } catch {
-      return Number.POSITIVE_INFINITY;
-    }
-  }
-  const unpaddedLength = parsed.payload.replace(/=+$/, "").length;
-  return Math.floor((unpaddedLength * 3) / 4);
-}
-
-function decodeDataUrlBytes(
-  parsed: NonNullable<ReturnType<typeof parseDataUrl>>
-): Uint8Array | undefined {
-  if (!parsed.base64) {
-    try {
-      return new TextEncoder().encode(decodeURIComponent(parsed.payload));
-    } catch {
-      return undefined;
-    }
-  }
-  try {
-    const binary = atob(parsed.payload);
-    return Uint8Array.from(binary, (character) => character.charCodeAt(0));
-  } catch {
-    return undefined;
-  }
-}
-
-function decodeDataUrlText(
-  parsed: NonNullable<ReturnType<typeof parseDataUrl>>
-): string | undefined {
-  const bytes = decodeDataUrlBytes(parsed);
-  return bytes === undefined ? undefined : new TextDecoder().decode(bytes);
-}
-
-function readUint16BE(bytes: Uint8Array, offset: number): number | undefined {
-  if (offset + 2 > bytes.length) return undefined;
-  return (bytes[offset] << 8) | bytes[offset + 1];
-}
-
-function readUint32BE(bytes: Uint8Array, offset: number): number | undefined {
-  if (offset + 4 > bytes.length) return undefined;
-  return (
-    bytes[offset] * 0x1000000 +
-    (bytes[offset + 1] << 16) +
-    (bytes[offset + 2] << 8) +
-    bytes[offset + 3]
-  );
-}
-
-function readUint16LE(bytes: Uint8Array, offset: number): number | undefined {
-  if (offset + 2 > bytes.length) return undefined;
-  return bytes[offset] | (bytes[offset + 1] << 8);
-}
-
-function readUint24LE(bytes: Uint8Array, offset: number): number | undefined {
-  if (offset + 3 > bytes.length) return undefined;
-  return bytes[offset] | (bytes[offset + 1] << 8) | (bytes[offset + 2] << 16);
-}
-
-function rasterDimensions(
-  bytes: Uint8Array,
-  mimeType: string
-): { width: number; height: number } | undefined {
-  if (mimeType === "image/png") {
-    const signature = [137, 80, 78, 71, 13, 10, 26, 10];
-    if (
-      bytes.length < 24 ||
-      !signature.every((byte, index) => bytes[index] === byte) ||
-      bytes[12] !== 73 ||
-      bytes[13] !== 72 ||
-      bytes[14] !== 68 ||
-      bytes[15] !== 82
-    ) {
-      return undefined;
-    }
-    const width = readUint32BE(bytes, 16);
-    const height = readUint32BE(bytes, 20);
-    return width === undefined || height === undefined ? undefined : { width, height };
-  }
-
-  if (mimeType === "image/jpeg") {
-    if (bytes.length < 2 || bytes[0] !== 0xff || bytes[1] !== 0xd8) return undefined;
-    let offset = 2;
-    for (let segment = 0; segment < 1_024 && offset < bytes.length; segment += 1) {
-      while (offset < bytes.length && bytes[offset] === 0xff) offset += 1;
-      if (offset >= bytes.length) return undefined;
-      const marker = bytes[offset];
-      offset += 1;
-      if (marker === 0xd9 || marker === 0xda) return undefined;
-      if (marker === 0x01 || (marker >= 0xd0 && marker <= 0xd7)) continue;
-      const segmentLength = readUint16BE(bytes, offset);
-      if (segmentLength === undefined || segmentLength < 2) return undefined;
-      if (offset + segmentLength > bytes.length) return undefined;
-      if (marker >= 0xc0 && marker <= 0xcf && ![0xc4, 0xc8, 0xcc].includes(marker)) {
-        if (segmentLength < 7) return undefined;
-        const height = readUint16BE(bytes, offset + 3);
-        const width = readUint16BE(bytes, offset + 5);
-        return width === undefined || height === undefined ? undefined : { width, height };
-      }
-      offset += segmentLength;
-    }
-    return undefined;
-  }
-
-  if (
-    mimeType === "image/webp" &&
-    bytes.length >= 12 &&
-    bytes[0] === 0x52 &&
-    bytes[1] === 0x49 &&
-    bytes[2] === 0x46 &&
-    bytes[3] === 0x46 &&
-    bytes[8] === 0x57 &&
-    bytes[9] === 0x45 &&
-    bytes[10] === 0x42 &&
-    bytes[11] === 0x50
-  ) {
-    let offset = 12;
-    for (let chunk = 0; chunk < 1_024 && offset + 8 <= bytes.length; chunk += 1) {
-      const chunkType = String.fromCharCode(
-        bytes[offset],
-        bytes[offset + 1],
-        bytes[offset + 2],
-        bytes[offset + 3]
-      );
-      const chunkLength =
-        bytes[offset + 4] |
-        (bytes[offset + 5] << 8) |
-        (bytes[offset + 6] << 16) |
-        (bytes[offset + 7] << 24);
-      if (chunkLength < 0 || offset + 8 + chunkLength > bytes.length) return undefined;
-      const payload = offset + 8;
-      if (chunkType === "VP8X" && chunkLength >= 10) {
-        const widthMinusOne = readUint24LE(bytes, payload + 4);
-        const heightMinusOne = readUint24LE(bytes, payload + 7);
-        if (widthMinusOne === undefined || heightMinusOne === undefined) return undefined;
-        return { width: widthMinusOne + 1, height: heightMinusOne + 1 };
-      }
-      if (chunkType === "VP8 " && chunkLength >= 10) {
-        if (
-          bytes[payload + 3] !== 0x9d ||
-          bytes[payload + 4] !== 0x01 ||
-          bytes[payload + 5] !== 0x2a
-        ) {
-          return undefined;
-        }
-        const width = readUint16LE(bytes, payload + 6);
-        const height = readUint16LE(bytes, payload + 8);
-        if (width === undefined || height === undefined) return undefined;
-        return { width: width & 0x3fff, height: height & 0x3fff };
-      }
-      if (chunkType === "VP8L" && chunkLength >= 5 && bytes[payload] === 0x2f) {
-        const width = 1 + (bytes[payload + 1] | ((bytes[payload + 2] & 0x3f) << 8));
-        const height =
-          1 +
-          ((bytes[payload + 2] >> 6) |
-            (bytes[payload + 3] << 2) |
-            ((bytes[payload + 4] & 0x0f) << 10));
-        return { width, height };
-      }
-      offset += 8 + chunkLength + (chunkLength % 2);
-    }
-  }
-  return undefined;
-}
-
-function validateRasterResource(
-  parsed: NonNullable<ReturnType<typeof parseDataUrl>>,
-  path: string
-): number | undefined {
+function validateRasterResource(parsed: ParsedImageDataUrl, path: string): number | undefined {
   if (parsed.mimeType === "image/svg+xml") return undefined;
-  const bytes = decodeDataUrlBytes(parsed);
-  const dimensions = bytes === undefined ? undefined : rasterDimensions(bytes, parsed.mimeType);
-  if (!dimensions || dimensions.width <= 0 || dimensions.height <= 0) {
+  const bytes = decodeImageDataUrlBytes(parsed);
+  const inspection = bytes === undefined ? undefined : inspectRasterBytes(bytes);
+  if (!inspection || inspection.mimeType !== parsed.mimeType) {
     fail(path, "does not contain readable raster dimensions");
   }
   if (
-    dimensions.width > PORTABLE_PROJECT_LIMITS.maxRasterDimension ||
-    dimensions.height > PORTABLE_PROJECT_LIMITS.maxRasterDimension ||
-    dimensions.width * dimensions.height > PORTABLE_PROJECT_LIMITS.maxRasterArea
+    inspection.width > PORTABLE_PROJECT_LIMITS.maxRasterDimension ||
+    inspection.height > PORTABLE_PROJECT_LIMITS.maxRasterDimension ||
+    inspection.pixels > PORTABLE_PROJECT_LIMITS.maxRasterArea
   ) {
     fail(path, "exceeds the decoded raster dimension limit");
   }
-  return dimensions.width * dimensions.height;
+  return inspection.pixels;
 }
 
 function assertSafeSvgText(value: string, path: string): void {
@@ -735,8 +513,8 @@ function validateDataUrl(
   if (/^(?:https?:|\/\/|javascript:)/i.test(value.trim())) {
     throw new Error("The project contains an external or executable scene reference.");
   }
-  const parsed = parseDataUrl(value);
-  if (!parsed || !SUPPORTED_IMAGE_MIME_TYPES.has(parsed.mimeType) || parsed.payload.length === 0) {
+  const parsed = parseImageDataUrl(value);
+  if (!parsed || !isSupportedImageMimeType(parsed.mimeType) || parsed.payload.length === 0) {
     fail(path, "must be a supported image data URL");
   }
   if (expectedMimeType && parsed.mimeType !== expectedMimeType.toLowerCase()) {
@@ -748,7 +526,7 @@ function validateDataUrl(
   ) {
     fail(path, "contains invalid base64 data");
   }
-  const byteLength = dataUrlByteLength(parsed);
+  const byteLength = imageDataUrlByteLength(parsed);
   if (!Number.isFinite(byteLength) || byteLength > PORTABLE_PROJECT_LIMITS.maxDataUrlBytes) {
     fail(path, "exceeds the embedded data URL size limit");
   }
@@ -767,11 +545,9 @@ function validateDataUrl(
     }
   }
   if (parsed.mimeType === "image/svg+xml") {
-    const text = decodeDataUrlText(parsed);
+    const text = decodeImageDataUrlText(parsed);
     if (text === undefined) fail(path, "contains unreadable SVG data");
     assertSafeSvgText(text, path);
-  } else {
-    validateRasterResource(parsed, path);
   }
 }
 
@@ -1655,7 +1431,7 @@ function validateUploads(value: unknown, context: ValidationContext): ImportedMe
     });
     assertString(media.mimeType, `${path}.mimeType`, { maxLength: 128, nonEmpty: true });
     const mimeType = media.mimeType.toLowerCase();
-    if (!SUPPORTED_IMAGE_MIME_TYPES.has(mimeType)) fail(`${path}.mimeType`, "is unsupported");
+    if (!isSupportedImageMimeType(mimeType)) fail(`${path}.mimeType`, "is unsupported");
     validateDataUrl(media.dataUrl, `${path}.dataUrl`, context, mimeType);
     return { id: media.id, name: media.name, mimeType, dataUrl: media.dataUrl };
   });
