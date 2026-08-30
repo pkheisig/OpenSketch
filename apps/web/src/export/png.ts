@@ -7,6 +7,96 @@ import {
 const PNG_SIGNATURE_LENGTH = 8;
 const PNG_SIGNATURE = [137, 80, 78, 71, 13, 10, 26, 10];
 
+export const PNG_EXPORT_MAX_DIMENSION = 8_192;
+export const PNG_EXPORT_MAX_PIXELS = 64_000_000;
+const PNG_RGBA_BYTES_PER_PIXEL = 4;
+
+export interface PngExportResource {
+  width: number;
+  height: number;
+  pixels: number;
+  scale: number;
+  estimatedRgbaBytes: number;
+}
+
+export interface PngExportResourceCheck {
+  resource?: PngExportResource;
+  error?: string;
+}
+
+function formatBytes(bytes: number): string {
+  return `${(bytes / 1024 / 1024).toFixed(1)} MiB`;
+}
+
+function invalidPngResource(): Error {
+  return new Error(
+    "PNG export dimensions are invalid. Choose a finite, positive canvas DPI and output DPI."
+  );
+}
+
+export function calculatePngExportResource(
+  canvasWidth: number,
+  canvasHeight: number,
+  canvasDpi: number,
+  outputDpi: number
+): PngExportResource {
+  if (
+    ![canvasWidth, canvasHeight, canvasDpi, outputDpi].every(
+      (value) => Number.isFinite(value) && value > 0
+    )
+  ) {
+    throw invalidPngResource();
+  }
+
+  const scale = outputDpi / canvasDpi;
+  const exactWidth = canvasWidth * scale;
+  const exactHeight = canvasHeight * scale;
+  if (
+    !Number.isFinite(scale) ||
+    !Number.isFinite(exactWidth) ||
+    !Number.isFinite(exactHeight) ||
+    exactWidth < 1 ||
+    exactHeight < 1
+  ) {
+    throw invalidPngResource();
+  }
+
+  const width = Math.ceil(exactWidth);
+  const height = Math.ceil(exactHeight);
+  const pixels = width > Number.MAX_SAFE_INTEGER / height ? Infinity : width * height;
+  const estimatedRgbaBytes = pixels * PNG_RGBA_BYTES_PER_PIXEL;
+  if (
+    !Number.isFinite(pixels) ||
+    !Number.isFinite(estimatedRgbaBytes) ||
+    width > PNG_EXPORT_MAX_DIMENSION ||
+    height > PNG_EXPORT_MAX_DIMENSION ||
+    pixels > PNG_EXPORT_MAX_PIXELS
+  ) {
+    throw new Error(
+      `PNG export at ${outputDpi} DPI would create ${width} × ${height} pixels ` +
+        `(${formatBytes(estimatedRgbaBytes)}) and exceeds the safe raster budget. ` +
+        "Choose a lower DPI or export SVG/PDF instead."
+    );
+  }
+
+  return { width, height, pixels, scale, estimatedRgbaBytes };
+}
+
+export function inspectPngExportResource(
+  canvasWidth: number,
+  canvasHeight: number,
+  canvasDpi: number,
+  outputDpi: number
+): PngExportResourceCheck {
+  try {
+    return {
+      resource: calculatePngExportResource(canvasWidth, canvasHeight, canvasDpi, outputDpi)
+    };
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : String(error) };
+  }
+}
+
 export interface PngExportMetadata {
   provenance: ProvenanceManifest;
 }

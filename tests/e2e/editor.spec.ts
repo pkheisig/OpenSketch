@@ -1854,6 +1854,26 @@ test("uses accessible in-app dropdowns with keyboard and outside-click behavior"
   await expect(page.getByLabel("Accessible description")).toHaveCount(0);
 });
 
+test("prevents PNG export above the browser raster budget", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "Canvas size", exact: true }).click();
+  await selectUiOption(page, "Preset", "A4 portrait");
+  await page.getByRole("button", { name: "Canvas size", exact: true }).click();
+
+  await page.getByRole("button", { name: "Export", exact: true }).click();
+  await page.getByRole("tab", { name: /PNG/ }).click();
+  const outputDpi = page.getByRole("combobox", { name: "Output DPI" });
+  await outputDpi.click();
+  const unavailableDpi = page.getByRole("option", { name: "1200 DPI" });
+  await expect(unavailableDpi).toBeDisabled();
+  await page.keyboard.press("Escape");
+
+  await expect(page.getByRole("button", { name: "Export PNG" })).toBeDisabled();
+  await expect(page.getByRole("alert")).toContainText("9920 × 14032 pixels");
+  await expect(page.getByRole("alert")).toContainText("SVG/PDF");
+});
+
 test("offers selection-aware canvas context actions", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "New figure" }).click();
