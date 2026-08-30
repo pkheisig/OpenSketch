@@ -191,11 +191,12 @@ describe("PDF export metadata", () => {
 
   it("preserves unresolved CSS font functions after text styles are materialized", () => {
     const parsed = new DOMParser().parseFromString(
-      `<svg xmlns="http://www.w3.org/2000/svg"><style>.label { font-weight: var(--weight); font-style: var(--style); }.calculated { font-weight: calc(400 + 300); font-style: oblique calc(12deg); }</style><text class="label calculated">x</text></svg>`,
+      `<svg xmlns="http://www.w3.org/2000/svg"><style>:root { --font-style: compact; }.label { font-weight: var(--weight); font-style: var(--style); }.calculated { font-weight: calc(400 + 300); font-style: oblique calc(12deg); }</style><text class="label calculated">x</text></svg>`,
       "image/svg+xml"
     );
 
     expect(() => normalizePdfSvgFontFamilies(parsed.documentElement)).not.toThrow();
+    expect(parsed.querySelector("style")?.textContent).toContain("--font-style: compact");
     expect(parsed.querySelector("style")?.textContent).toContain("font-weight: var(--weight)");
     expect(parsed.querySelector("style")?.textContent).toContain("font-style: var(--style)");
     expect(parsed.querySelector("style")?.textContent).toContain("font-weight: calc(400 + 300)");

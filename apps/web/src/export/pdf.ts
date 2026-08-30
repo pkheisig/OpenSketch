@@ -299,15 +299,16 @@ function normalizeCssFontWeights(value: string): string {
 
 function normalizeCssFontStyles(value: string): string {
   return stripCssComments(value).replace(
-    /(font-style\s*:\s*)([^;}{]+)/gi,
-    (_match, prefix: string, style: string) =>
-      prefix + normalizeCssFontValue(style, normalizeFontStyleValue)
+    /(^|[^-\w])(font-style\s*:\s*)([^;}{]+)/gi,
+    (_match, boundary: string | undefined, prefix: string, style: string) =>
+      `${boundary ?? ""}${prefix}${normalizeCssFontValue(style, normalizeFontStyleValue)}`
   );
 }
 
 const PDF_HIDDEN_TEXT_ATTRIBUTE = "data-opensketch-pdf-hidden";
 const PDF_VISIBLE_TEXT_ATTRIBUTE = "data-opensketch-pdf-visible";
 const PDF_DISPLAY_NONE_ATTRIBUTE = "data-opensketch-pdf-display-none";
+const PDF_HIDDEN_ELEMENT_ATTRIBUTE = "data-opensketch-pdf-hidden-element";
 const PDF_ZERO_OPACITY_ATTRIBUTE = "data-opensketch-pdf-zero-opacity";
 const PDF_USE_TEXT_STYLE_PROPERTIES = [
   "font-family",
@@ -797,6 +798,7 @@ function materializePdfTextStyles(svg: SVGSVGElement): void {
     sourceElements.forEach((sourceElement, index) => {
       const clonedElement = clonedElements[index];
       if (!clonedElement) return;
+      const computed = frameWindow.getComputedStyle(clonedElement);
       const hasZeroOpacityAncestor = (() => {
         for (
           let current: Element | null = clonedElement;
@@ -807,10 +809,15 @@ function materializePdfTextStyles(svg: SVGSVGElement): void {
         }
         return false;
       })();
-      if (frameWindow.getComputedStyle(clonedElement).display === "none") {
+      if (computed.display === "none") {
         sourceElement.setAttribute(PDF_DISPLAY_NONE_ATTRIBUTE, "true");
       } else {
         sourceElement.removeAttribute(PDF_DISPLAY_NONE_ATTRIBUTE);
+      }
+      if (["hidden", "collapse"].includes(computed.visibility)) {
+        sourceElement.setAttribute(PDF_HIDDEN_ELEMENT_ATTRIBUTE, "true");
+      } else {
+        sourceElement.removeAttribute(PDF_HIDDEN_ELEMENT_ATTRIBUTE);
       }
       if (hasZeroOpacityAncestor) sourceElement.setAttribute(PDF_ZERO_OPACITY_ATTRIBUTE, "true");
       else sourceElement.removeAttribute(PDF_ZERO_OPACITY_ATTRIBUTE);
@@ -947,6 +954,29 @@ function pdfReferenceIdsInValue(value: string): string[] {
   return ids;
 }
 
+function isPdfNonRenderedUse(element: Element): boolean {
+  if (element.localName.toLowerCase() !== "use") return false;
+  if (
+    [PDF_DISPLAY_NONE_ATTRIBUTE, PDF_HIDDEN_ELEMENT_ATTRIBUTE, PDF_ZERO_OPACITY_ATTRIBUTE].some(
+      (attribute) => element.getAttribute(attribute) === "true"
+    )
+  ) {
+    return true;
+  }
+
+  const display = svgInlineStyleValue(element, "display")?.replace(/\s*!important\s*$/i, "");
+  const visibility = svgInlineStyleValue(element, "visibility")
+    ?.replace(/\s*!important\s*$/i, "")
+    .trim()
+    .toLowerCase();
+  return (
+    display?.trim().toLowerCase() === "none" ||
+    visibility === "hidden" ||
+    visibility === "collapse" ||
+    isZeroPdfOpacity(svgInlineStyleValue(element, "opacity"))
+  );
+}
+
 function addPdfReferenceIds(element: Element, references: string[]): void {
   for (const attribute of Array.from(element.attributes)) {
     references.push(...pdfReferenceIdsInValue(attribute.value));
@@ -980,6 +1010,7 @@ function getPdfReachableDefinitionIds(svg: SVGSVGElement): Set<string> {
   const pending: string[] = [];
   let nextPendingIndex = 0;
   const collectReferences = (element: Element) => {
+    if (isPdfNonRenderedUse(element)) return;
     addPdfReferenceIds(element, pending);
   };
 

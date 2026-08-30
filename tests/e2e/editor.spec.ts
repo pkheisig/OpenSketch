@@ -4044,7 +4044,7 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" opacity="0" style="opacity: 1">CSS visible</text></svg>`
       ),
       cssFunctions: await render(
-        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><style>:root { --pdf-weight: 600; --pdf-style: italic; --font-weight: compact; } .label { font-family: "Inter"; font-weight: var(--pdf-weight); font-style: var(--pdf-style); }</style><text class="label" x="12" y="40">CSS functions</text></svg>`
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><style>:root { --pdf-weight: 600; --pdf-style: italic; --font-weight: compact; --font-style: compact; } .label { font-family: "Inter"; font-weight: var(--pdf-weight); font-style: var(--pdf-style); }</style><text class="label" x="12" y="40">CSS functions</text></svg>`
       ),
       clipPathText: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><clipPath id="label-clip"><text x="12" y="40" font-family="Inter" fill="none">Label</text></clipPath></defs><rect width="600" height="240" fill="black" clip-path="url(#label-clip)" /></svg>`
@@ -4054,6 +4054,15 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
       ),
       unusedDefinitionGlyph: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><rect width="600" height="240" fill="black" /></svg>`
+      ),
+      hiddenUseGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="hidden-label" x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><use href="#hidden-label" display="none" /></svg>`
+      ),
+      hiddenVisibilityUseGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="hidden-label" x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><use href="#hidden-label" style="visibility: hidden" /></svg>`
+      ),
+      transparentUseGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="hidden-label" x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><use href="#hidden-label" opacity="0" /></svg>`
       ),
       hiddenTextPathDescendant: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><path id="curve" d="M0 0"/><text font-family="Inter"><textPath visibility="hidden" href="#curve"><tspan visibility="visible">Label</tspan></textPath></text></svg>`
@@ -4109,6 +4118,12 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
   expect(result.hiddenClipPathDescendant.pdf).toBe("");
   expect(result.unusedDefinitionGlyph.error).toBeNull();
   expect(result.unusedDefinitionGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
+  expect(result.hiddenUseGlyph.error).toBeNull();
+  expect(result.hiddenUseGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
+  expect(result.hiddenVisibilityUseGlyph.error).toBeNull();
+  expect(result.hiddenVisibilityUseGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
+  expect(result.transparentUseGlyph.error).toBeNull();
+  expect(result.transparentUseGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
   expect(result.hiddenTextPathDescendant.error).toContain("textPath");
   expect(result.hiddenTextPathDescendant.pdf).toBe("");
   expect(result.visibleDescendant.error).toContain("U+0393");
