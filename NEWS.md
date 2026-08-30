@@ -25,6 +25,9 @@
 - Added scientific typography controls, gradient-aware tint/saturation/brightness
   adjustments, project descriptions, keyboard-safe dialogs, and stricter project
   and upload validation.
+- Added deterministic PDF mappings for every selectable editor font, including
+  the documented Georgia-to-Noto Serif equivalent, and removed the default
+  human document-author attribution from PDF exports.
 - Added relevance-ranked biological search, late-loading font metric correction,
   and a verified portable example project with provenance-rich SVG output.
 - Added fail-closed validation for portable project bounds, Fabric scene

@@ -67,10 +67,12 @@ declared in `.github/repository-policy.json`) build the site, run browser
 tests, and deploy only that directory through the GitHub Pages artifact
 mechanism.
 
-The generated Workbox service worker precaches the app shell, compiled chunks,
-and fonts. The built-in SVG and WebP library is intentionally excluded from the
-app-shell precache because it is large. The Assets panel exposes an explicit
-versioned "Prepare offline library" action that downloads every required source
+The generated Workbox service worker precaches the app shell and compiled
+chunks. Browser and PDF font binaries are fetched into runtime caches when the
+corresponding families are used. The built-in SVG and WebP library is
+intentionally excluded from the app-shell precache because it is large. The
+Assets panel exposes an explicit versioned "Prepare offline library" action that
+downloads every required source
 and preview into Cache Storage, verifies the complete pack, and only then marks
 it ready. A normal first visit therefore supports offline editor reopening; a
 complete cold-offline asset workflow requires that explicit preparation to finish
@@ -125,10 +127,27 @@ physical-resolution (`pHYs`) chunk. The same manifest is written as an
 uncompressed UTF-8 `iTXt` chunk with the `OpenSketch:provenance` keyword.
 
 PDF consumes the same generated SVG through `svg2pdf.js` and jsPDF, preserving
-supported vector paths and text. Bundled Source Sans 3 fonts keep default text
-searchable and visually faithful. PDF properties carry the title, description,
-author, generator, and artwork credit; a standards-compatible XMP packet carries
-the canonical manifest. Journal and image-processing workflows may discard
-format metadata, so the Export dialog also provides a human-readable `.txt`
-credits sidecar containing the same source, author, license, and attribution
-records.
+supported vector paths and text. A canonical editor/PDF font registry maps each
+selectable family, weight, and style to merged bundled TrueType faces; the
+system-only Georgia choice maps explicitly to bundled Noto Serif. PDF properties
+carry the title, description, optional document author, OpenSketch creator, and
+artwork credit. The document author is absent unless explicitly supplied, while
+asset authors remain in the provenance manifest. Atkinson Hyperlegible and Lato
+have no native 600 face in the bundled distribution, so that editor choice maps
+to their 700 face, matching browser font selection. Imported CSS font shorthand,
+relative weights, and inherited styles are resolved before PDF rendering. Each
+text run is checked against its embedded font; export fails clearly rather than
+silently dropping missing glyphs or emitting scripts that require OpenType
+shaping. Only the faces used by text runs are registered and passed to each
+jsPDF conversion. Browser and PDF font binaries are runtime-cached after use
+rather than included in the app-shell precache, keeping normal installation
+small; while online, the editor warms each PDF face used by the current project
+so later offline export does not require a prior export. A
+standards-compatible XMP packet carries the canonical manifest. Georgia remains
+a system-only editor choice, so its Noto Serif mapping is deterministic but may
+not be pixel-identical to every installed Georgia; mixed or wrapped Georgia
+layouts should receive the same visual review as any substituted face. Journal and
+image-processing workflows may
+discard format metadata, so the Export dialog also provides a human-readable
+`.txt` credits sidecar containing the same source, author, license, and
+attribution records.

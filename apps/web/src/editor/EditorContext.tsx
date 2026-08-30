@@ -23,6 +23,7 @@ import {
   Polygon,
   Rect,
   StaticCanvas,
+  Text,
   Textbox,
   Triangle,
   cache,
@@ -38,7 +39,12 @@ import type {
 } from "@workspace/editor-core";
 import { sanitizeImportedSvg } from "@/assets/browserSanitizer";
 import { setPngDpi } from "@/export/png";
-import { svgToPdfBlob } from "@/export/pdf";
+import {
+  normalizePdfFontStyle,
+  normalizePdfFontWeight,
+  svgToPdfBlob,
+  warmPdfFontFaces
+} from "@/export/pdf";
 import { collectProvenanceManifest, formatProvenanceCredits } from "@/export/provenance";
 import { downloadBlob, downloadProject, safeFilename } from "@/persistence/portable";
 import { createVectorThumbnail } from "@/persistence/projectThumbnail";
@@ -88,6 +94,7 @@ import {
 import { CURSOR_GRAB, CURSOR_GRABBING } from "@/editor/cursors";
 import { assetInsertionScale } from "@/editor/assetInsertion";
 import { copySvgBlendModes, loadEditableSvg } from "@/editor/svg";
+import { refreshTextMetrics } from "@/editor/textMetrics";
 import { zoomedCanvasDimensions } from "@/editor/zoom";
 import {
   applyElementStyle,
@@ -610,17 +617,100 @@ async function renderTemplateThumbnail(object: FabricObject): Promise<string> {
   return thumbnail;
 }
 
-function refreshTextMetrics(objects: FabricObject[]): void {
-  cache.clearFontCache();
+interface TextFontStyle {
+  fontFamily?: string;
+  fontStyle?: string;
+  fontWeight?: string | number;
+  fontSize?: number;
+}
+
+function fontFamilyCandidates(value: string): string[] {
+  return value
+    .split(",")
+    .map((candidate) => {
+      const trimmed = candidate.trim();
+      const quote = trimmed[0] === '"' || trimmed[0] === "'" ? trimmed[0] : "";
+      return quote && trimmed.endsWith(quote) ? trimmed.slice(1, -1).trim() : trimmed;
+    })
+    .filter(Boolean);
+}
+
+function canvasTextFontFamilies(objects: FabricObject[]): string[] {
+  const families = new Set<string>();
+  const add = (value: string | undefined) => {
+    if (!value) return;
+    fontFamilyCandidates(value).forEach((family) => families.add(family));
+  };
   const visit = (object: FabricObject) => {
-    if (object instanceof IText) {
-      object.initDimensions();
-      object.dirty = true;
-      object.setCoords();
+    if (object instanceof Text) {
+      add(object.fontFamily);
+      object._textLines.forEach((line, lineIndex) => {
+        line.forEach((_grapheme, charIndex) => {
+          add(object.getCompleteStyleDeclaration(lineIndex, charIndex).fontFamily);
+        });
+      });
     }
     if (object instanceof Group) object.getObjects().forEach(visit);
   };
   objects.forEach(visit);
+  return [...families];
+}
+
+function warmCanvasPdfFonts(canvas: Canvas): void {
+  if (typeof navigator !== "undefined" && navigator.onLine === false) return;
+  const families = canvasTextFontFamilies(canvas.getObjects());
+  if (families.length === 0) return;
+  void warmPdfFontFaces(families).catch(() => undefined);
+}
+
+async function waitForCanvasTextFonts(objects: FabricObject[]): Promise<void> {
+  if (typeof document === "undefined" || !("fonts" in document)) return;
+
+  const descriptors = new Map<string, { descriptor: string; texts: Set<string> }>();
+  const addStyles = (object: Text, styles: TextFontStyle) => {
+    const families = fontFamilyCandidates(styles.fontFamily ?? object.fontFamily);
+    const fontStyle = normalizePdfFontStyle(styles.fontStyle ?? "normal");
+    const fontWeight = String(
+      normalizePdfFontWeight(styles.fontWeight ?? object.fontWeight ?? 400)
+    );
+    const fontSize =
+      typeof styles.fontSize === "number" && Number.isFinite(styles.fontSize) && styles.fontSize > 0
+        ? styles.fontSize
+        : object.fontSize;
+    for (const family of families) {
+      const key = [fontStyle, fontWeight, family].join("|");
+      const descriptor = `${fontStyle} ${fontWeight} ${fontSize}px "${family}"`;
+      const existing = descriptors.get(key);
+      if (existing) existing.texts.add(object.text);
+      else descriptors.set(key, { descriptor, texts: new Set([object.text]) });
+    }
+  };
+  const visit = (object: FabricObject) => {
+    if (object instanceof Text) {
+      addStyles(object, object);
+      object._textLines.forEach((line, lineIndex) => {
+        line.forEach((_grapheme, charIndex) => {
+          addStyles(object, object.getCompleteStyleDeclaration(lineIndex, charIndex));
+        });
+      });
+    }
+    if (object instanceof Group) object.getObjects().forEach(visit);
+  };
+  objects.forEach(visit);
+
+  const fontSet = document.fonts;
+  await Promise.all(
+    [...descriptors.values()].flatMap(({ descriptor, texts }) =>
+      [...texts].map(async (text) => {
+        try {
+          await fontSet.load(descriptor, text);
+        } catch (error) {
+          const reason = error instanceof Error ? error.message : String(error);
+          throw new Error(`Could not load editor font for PDF export (${descriptor}): ${reason}`);
+        }
+      })
+    )
+  );
 }
 
 function assetIdsFromSnapshot(snapshot: Record<string, unknown>): string[] {
@@ -1304,6 +1394,7 @@ export function EditorProvider({
       lastCommit.current = { label, at: now };
       updateHistoryState();
       persist(snapshot);
+      warmCanvasPdfFonts(canvas);
     },
     [canvas, persist, serialize, updateHistoryState]
   );
@@ -1347,6 +1438,14 @@ export function EditorProvider({
     if (!canvas || !canvasReady) return;
     refreshConnectors();
   }, [canvas, canvasReady, refreshConnectors]);
+
+  useEffect(() => {
+    if (!canvas || !canvasReady) return;
+    const warm = () => warmCanvasPdfFonts(canvas);
+    warm();
+    window.addEventListener("online", warm);
+    return () => window.removeEventListener("online", warm);
+  }, [canvas, canvasReady]);
 
   const closeGroupEdit = useCallback(() => {
     const path = editingGroupPathRef.current;
@@ -1794,13 +1893,14 @@ export function EditorProvider({
           finish();
           return;
         }
-        const weight = String(changed.fontWeight ?? 400);
+        const weight = normalizePdfFontWeight(changed.fontWeight ?? 400);
+        const fontStyle = normalizePdfFontStyle(changed.fontStyle ?? "normal");
         const family = changed.fontFamily
           .split(",")[0]
           .trim()
           .replace(/^['"]|['"]$/g, "");
         void document.fonts
-          .load(`${weight} ${changed.fontSize ?? 54}px "${family}"`)
+          .load(`${fontStyle} ${weight} ${changed.fontSize ?? 54}px "${family}"`)
           .then(finish, finish);
       };
       if (duplicateSession?.pendingAdd) {
@@ -3509,6 +3609,8 @@ export function EditorProvider({
       description = latestProject.current.description ?? ""
     ) => {
       if (!canvas) throw new Error("The figure canvas is not ready.");
+      await waitForPendingEditorWork();
+      await waitForCanvasTextFonts(canvas.getObjects());
       const svg = buildSvg(title, description);
       const blob = await svgToPdfBlob(svg, canvasSettings.width, canvasSettings.height, {
         title,
@@ -3518,7 +3620,7 @@ export function EditorProvider({
       });
       downloadBlob(blob, `${safeFilename(title)}.pdf`);
     },
-    [buildSvg, canvas, canvasSettings.height, canvasSettings.width]
+    [buildSvg, canvas, canvasSettings.height, canvasSettings.width, waitForPendingEditorWork]
   );
 
   const exportCredits = useCallback(
