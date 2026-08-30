@@ -271,15 +271,19 @@ function normalizeCssFontValue(value: string, normalize: (value: string) => stri
   }
 }
 
+function stripCssComments(value: string): string {
+  return value.replace(/\/\*[\s\S]*?\*\//g, "");
+}
+
 function normalizeCssFontFamilies(value: string): string {
-  return value.replace(
+  return stripCssComments(value).replace(
     /(font-family\s*:\s*)([^;}{]+)/gi,
     (_match, prefix: string, families: string) => prefix + normalizeFontFamilyValue(families)
   );
 }
 
 function normalizeCssFontWeights(value: string): string {
-  return value.replace(
+  return stripCssComments(value).replace(
     /(@font-face\s*\{[^{}]*\})|(font-weight\s*:\s*)([^;}{]+)/gi,
     (
       match: string,
@@ -291,7 +295,7 @@ function normalizeCssFontWeights(value: string): string {
 }
 
 function normalizeCssFontStyles(value: string): string {
-  return value.replace(
+  return stripCssComments(value).replace(
     /(font-style\s*:\s*)([^;}{]+)/gi,
     (_match, prefix: string, style: string) =>
       prefix + normalizeCssFontValue(style, normalizeFontStyleValue)
@@ -660,6 +664,50 @@ interface PdfTextRun {
   text: string;
 }
 
+function svgValueReferencesPdfId(value: string, id: string): boolean {
+  const reference = `#${id}`;
+  return (
+    value.trim() === reference ||
+    new RegExp(`url\\(\\s*["']?${escapeRegExp(reference)}["']?\\s*\\)`, "i").test(value)
+  );
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function isPdfDefinitionReferenced(svg: SVGSVGElement, definition: Element): boolean {
+  const id = definition.getAttribute("id");
+  if (!id) return false;
+  const candidates = [svg, ...Array.from(svg.querySelectorAll<SVGElement>("*"))];
+  for (const candidate of candidates) {
+    if (definition.contains(candidate)) continue;
+    for (const attribute of Array.from(candidate.attributes)) {
+      if (svgValueReferencesPdfId(attribute.value, id)) return true;
+    }
+  }
+  for (const style of svg.querySelectorAll("style")) {
+    if (!definition.contains(style) && svgValueReferencesPdfId(style.textContent ?? "", id)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function isPdfTextInUnreferencedDefinition(element: Element, svg: SVGSVGElement): boolean {
+  let current: Element | null = element;
+  let insideDefinitions = false;
+  while (current && current !== svg) {
+    if (current.localName.toLowerCase() === "defs") {
+      insideDefinitions = true;
+      break;
+    }
+    if (current.hasAttribute("id") && isPdfDefinitionReferenced(svg, current)) return false;
+    current = current.parentElement;
+  }
+  return insideDefinitions;
+}
+
 function getPdfTextRuns(svg: SVGSVGElement): PdfTextRun[] {
   const runs: PdfTextRun[] = [];
   const visit = (node: Node) => {
@@ -668,6 +716,7 @@ function getPdfTextRuns(svg: SVGSVGElement): PdfTextRun[] {
       const localName = parent?.localName?.toLowerCase();
       if (
         parent &&
+        !isPdfTextInUnreferencedDefinition(parent, svg) &&
         (localName === "text" || localName === "tspan") &&
         !hasHiddenPdfTextAncestor(parent)
       ) {
@@ -683,6 +732,7 @@ function getPdfTextRuns(svg: SVGSVGElement): PdfTextRun[] {
 
 function assertPdfTextPathsSupported(svg: SVGSVGElement): void {
   for (const textPath of svg.querySelectorAll<SVGElement>("textPath")) {
+    if (isPdfTextInUnreferencedDefinition(textPath, svg)) continue;
     if (hasHiddenPdfTextAncestor(textPath)) continue;
     if (hasPdfRenderableText(textPath.textContent ?? "")) {
       throw new Error(

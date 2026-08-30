@@ -219,6 +219,29 @@ describe("PDF export metadata", () => {
     ]);
   });
 
+  it("ignores text in unreferenced SVG definitions", () => {
+    const parsed = new DOMParser().parseFromString(
+      `<svg xmlns="http://www.w3.org/2000/svg"><defs><text font-family="Atkinson Hyperlegible">AΓB</text></defs><rect width="100" height="40"/></svg>`,
+      "image/svg+xml"
+    );
+
+    expect(
+      getPdfFontRegistrationsReferencedBySvg(parsed.documentElement as unknown as SVGSVGElement)
+    ).toEqual([]);
+  });
+
+  it("ignores font declarations inside CSS comments", () => {
+    const parsed = new DOMParser().parseFromString(
+      `<svg xmlns="http://www.w3.org/2000/svg"><style>.label { /* font-weight: invalid; font-style: invalid; */ font-weight: 400; font-style: normal; }</style><text class="label">x</text></svg>`,
+      "image/svg+xml"
+    );
+
+    expect(() => normalizePdfSvgFontFamilies(parsed.documentElement)).not.toThrow();
+    expect(parsed.querySelector("style")?.textContent).not.toContain("font-weight: invalid");
+    expect(parsed.querySelector("style")?.textContent).toContain("font-weight: 400");
+    expect(parsed.querySelector("style")?.textContent).toContain("font-style: normal");
+  });
+
   it("rejects visible textPath content instead of silently dropping it", () => {
     const parsed = new DOMParser().parseFromString(
       `<svg xmlns="http://www.w3.org/2000/svg"><path id="curve" d="M0 0"/><text font-family="Inter"><textPath href="#curve">x</textPath></text></svg>`,
