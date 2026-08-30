@@ -306,6 +306,12 @@ const PDF_HIDDEN_TEXT_ATTRIBUTE = "data-opensketch-pdf-hidden";
 const PDF_VISIBLE_TEXT_ATTRIBUTE = "data-opensketch-pdf-visible";
 const PDF_DISPLAY_NONE_ATTRIBUTE = "data-opensketch-pdf-display-none";
 const PDF_ZERO_OPACITY_ATTRIBUTE = "data-opensketch-pdf-zero-opacity";
+const PDF_USE_TEXT_STYLE_PROPERTIES = [
+  "font-family",
+  "font-style",
+  "font-weight",
+  "font-size"
+] as const;
 
 function isZeroPdfOpacity(value: string | null | undefined): boolean {
   if (!value) return false;
@@ -512,6 +518,175 @@ export function normalizePdfSvgFontFamilies(svg: Element): void {
   }
 }
 
+function pdfElementsById(root: Element, id: string): Element | undefined {
+  if (root.getAttribute("id") === id) return root;
+  return Array.from(root.querySelectorAll<SVGElement>("[id]")).find(
+    (element) => element.getAttribute("id") === id
+  );
+}
+
+function pdfTextElements(root: Element): SVGElement[] {
+  const elements: SVGElement[] = [];
+  if (["text", "tspan", "textPath"].includes(root.localName.toLowerCase())) {
+    elements.push(root as SVGElement);
+  }
+  elements.push(...Array.from(root.querySelectorAll<SVGElement>("text, tspan, textPath")));
+  return elements;
+}
+
+function pdfInheritedSvgStyleValue(element: Element, property: string): string | undefined {
+  for (let current: Element | null = element; current; current = current.parentElement) {
+    const value = svgInlineStyleValue(current, property);
+    if (value && !/^(?:inherit|initial|unset|revert(?:-layer)?)$/i.test(value.trim())) {
+      return value;
+    }
+  }
+  return undefined;
+}
+
+function pdfComputedFontProperty(
+  frameWindow: Window,
+  element: Element,
+  property: (typeof PDF_USE_TEXT_STYLE_PROPERTIES)[number]
+): string {
+  const computed = frameWindow.getComputedStyle(element).getPropertyValue(property).trim();
+  const declared = pdfInheritedSvgStyleValue(element, property);
+  if (!declared) return computed;
+
+  const normalizedComputed = computed
+    .replace(/\s*!important\s*$/i, "")
+    .trim()
+    .toLowerCase();
+  const normalizedDeclared = declared
+    .replace(/\s*!important\s*$/i, "")
+    .trim()
+    .toLowerCase();
+  const computedFamily = svgFontFamilyCandidates(normalizedComputed)[0];
+  const declaredFamily = svgFontFamilyCandidates(normalizedDeclared)[0];
+  if (
+    property === "font-family" &&
+    (computedFamily === "times" || computedFamily === "times new roman") &&
+    declaredFamily
+  ) {
+    return declared;
+  }
+  if (
+    property === "font-style" &&
+    normalizePdfFontStyle(normalizedComputed) === "normal" &&
+    normalizePdfFontStyle(normalizedDeclared) === "italic"
+  ) {
+    return declared;
+  }
+  if (
+    property === "font-weight" &&
+    normalizePdfFontWeight(normalizedComputed) === 400 &&
+    normalizePdfFontWeight(normalizedDeclared) !== 400
+  ) {
+    return declared;
+  }
+  if (
+    property === "font-size" &&
+    normalizedComputed === "16px" &&
+    normalizedDeclared !== "medium"
+  ) {
+    return declared;
+  }
+  return computed;
+}
+
+function materializePdfUseTextStyles(
+  svg: SVGSVGElement,
+  clone: SVGSVGElement,
+  frameWindow: Window
+): void {
+  const sourceUses = Array.from(svg.querySelectorAll<SVGElement>("use"));
+  const clonedUses = Array.from(clone.querySelectorAll<SVGElement>("use"));
+
+  sourceUses.forEach((sourceUse, useIndex) => {
+    const clonedUse = clonedUses[useIndex];
+    if (!clonedUse) return;
+    const referenceId = (sourceUse.getAttribute("href") ?? sourceUse.getAttribute("xlink:href"))
+      ?.trim()
+      .match(/^#(.+)$/)?.[1];
+    if (!referenceId) return;
+
+    const sourceReference = pdfElementsById(svg, referenceId);
+    const clonedReference = pdfElementsById(clone, referenceId);
+    if (!sourceReference || !clonedReference) return;
+    const sourceTextElements = pdfTextElements(sourceReference);
+    const clonedTextElements = pdfTextElements(clonedReference);
+    if (
+      sourceTextElements.length === 0 ||
+      sourceTextElements.length !== clonedTextElements.length
+    ) {
+      return;
+    }
+
+    // svg2pdf renders <use> definitions with a fresh default text context and
+    // does not carry the use element's inherited font properties into that
+    // context. Probe an equivalent local clone in the browser so each use can
+    // receive its own explicit text styles without changing shared definitions.
+    const probeGroup = clone.ownerDocument.createElementNS("http://www.w3.org/2000/svg", "g");
+    for (const property of PDF_USE_TEXT_STYLE_PROPERTIES) {
+      const value = pdfComputedFontProperty(frameWindow, clonedUse, property);
+      if (value) probeGroup.setAttribute(property, value);
+    }
+    probeGroup.setAttribute("visibility", "hidden");
+    const probeReference = clonedReference.cloneNode(true) as SVGElement;
+    probeGroup.appendChild(probeReference);
+    (clonedReference.parentElement ?? clone).appendChild(probeGroup);
+
+    try {
+      const probeTextElements = pdfTextElements(probeReference);
+      if (
+        probeTextElements.length === 0 ||
+        probeTextElements.length !== sourceTextElements.length
+      ) {
+        return;
+      }
+
+      const materializedId = `opensketch-pdf-use-${useIndex}`;
+      const materializedSource = sourceReference.cloneNode(true) as SVGElement;
+      const materializedClone = clonedReference.cloneNode(true) as SVGElement;
+      materializedSource.setAttribute("id", materializedId);
+      materializedClone.setAttribute("id", materializedId);
+      const materializedSourceTextElements = pdfTextElements(materializedSource);
+      const materializedCloneTextElements = pdfTextElements(materializedClone);
+      if (
+        materializedSourceTextElements.length !== probeTextElements.length ||
+        materializedCloneTextElements.length !== probeTextElements.length
+      ) {
+        return;
+      }
+
+      probeTextElements.forEach((probeTextElement, index) => {
+        for (const property of PDF_USE_TEXT_STYLE_PROPERTIES) {
+          const value = pdfComputedFontProperty(frameWindow, probeTextElement, property);
+          if (!value) continue;
+          materializedSourceTextElements[index].style.setProperty(property, value, "important");
+          materializedCloneTextElements[index].style.setProperty(property, value, "important");
+        }
+      });
+
+      const sourceParent = sourceReference.parentElement;
+      const cloneParent = clonedReference.parentElement;
+      if (!sourceParent || !cloneParent) return;
+      sourceParent.appendChild(materializedSource);
+      cloneParent.appendChild(materializedClone);
+      for (const attribute of ["href", "xlink:href"]) {
+        if (sourceUse.hasAttribute(attribute)) {
+          sourceUse.setAttribute(attribute, `#${materializedId}`);
+        }
+        if (clonedUse.hasAttribute(attribute)) {
+          clonedUse.setAttribute(attribute, `#${materializedId}`);
+        }
+      }
+    } finally {
+      probeGroup.remove();
+    }
+  });
+}
+
 function materializePdfTextStyles(svg: SVGSVGElement): void {
   if (typeof document === "undefined" || !document.body || typeof getComputedStyle !== "function") {
     return;
@@ -531,6 +706,7 @@ function materializePdfTextStyles(svg: SVGSVGElement): void {
   const clone = frameDocument.importNode(svg, true) as SVGSVGElement;
   frameDocument.body.appendChild(clone);
   try {
+    materializePdfUseTextStyles(svg, clone, frameWindow);
     const sourceElements = [svg, ...Array.from(svg.querySelectorAll<SVGElement>("*"))];
     const clonedElements = [clone, ...Array.from(clone.querySelectorAll<SVGElement>("*"))];
     sourceElements.forEach((sourceElement, index) => {
@@ -583,9 +759,9 @@ function materializePdfTextStyles(svg: SVGSVGElement): void {
         sourceElement.setAttribute(PDF_VISIBLE_TEXT_ATTRIBUTE, "true");
       }
       for (const [property, value] of [
-        ["font-family", computed.fontFamily],
-        ["font-style", computed.fontStyle],
-        ["font-weight", computed.fontWeight]
+        ["font-family", pdfComputedFontProperty(frameWindow, clonedElement, "font-family")],
+        ["font-style", pdfComputedFontProperty(frameWindow, clonedElement, "font-style")],
+        ["font-weight", pdfComputedFontProperty(frameWindow, clonedElement, "font-weight")]
       ] as const) {
         if (value) {
           // Keep both forms: svg2pdf reads presentation attributes while the

@@ -78,3 +78,49 @@ test("keeps an active production editing session open across an offline reload",
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
   await expect(page.locator(".home-shell")).toHaveCount(0);
 });
+
+test("exports text-bearing PDFs offline from the precached font face", async ({
+  context,
+  page
+}) => {
+  await page.goto("/");
+  await page.evaluate(async () => {
+    await navigator.serviceWorker.ready;
+    if (!navigator.serviceWorker.controller) {
+      await new Promise<void>((resolve) => {
+        navigator.serviceWorker.addEventListener("controllerchange", () => resolve(), {
+          once: true
+        });
+      });
+    }
+  });
+  await expect
+    .poll(() => page.evaluate(() => document.documentElement.dataset.offlineReady ?? null))
+    .toBe("true");
+
+  await context.setOffline(true);
+  await page.reload();
+  await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  await page.getByLabel("Editor tools").getByRole("button", { name: "Text", exact: true }).click();
+  const artboard = await page.locator(".artboard-stage").boundingBox();
+  if (!artboard) throw new Error("Artboard is not visible.");
+  await page.mouse.click(artboard.x + artboard.width / 2, artboard.y + artboard.height / 2);
+  await page.keyboard.type("Offline PDF text");
+  await page.keyboard.press("Escape");
+  await page.getByLabel("Editor tools").getByRole("button", { name: "Edit", exact: true }).click();
+  await page.getByRole("combobox", { name: "Font" }).click();
+  await page.getByRole("option", { name: "Source Sans 3", exact: true }).click();
+
+  await page.getByRole("button", { name: "Export", exact: true }).click();
+  await page.getByRole("tab", { name: /PDF/ }).click();
+  const fontResponsePromise = page.waitForResponse((response) =>
+    response.url().includes("source-sans-3-400-normal")
+  );
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export PDF" }).click();
+  expect(await (await downloadPromise).path()).not.toBeNull();
+
+  expect((await fontResponsePromise).fromServiceWorker()).toBe(true);
+});

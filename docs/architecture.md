@@ -139,7 +139,10 @@ silently dropping missing glyphs or emitting scripts that require OpenType
 shaping. Only the faces used by text runs are registered and passed to each
 jsPDF conversion. The merged PDF faces remain in the PWA precache so the first
 text-bearing PDF export also works after the app is taken offline. A
-standards-compatible XMP packet carries the canonical manifest. Journal and
+standards-compatible XMP packet carries the canonical manifest. Georgia remains
+a system-only editor choice, so its Noto Serif mapping is deterministic but may
+not be pixel-identical to every installed Georgia; mixed or wrapped Georgia
+layouts should receive the same visual review as any substituted face. Journal and
 image-processing workflows may
 discard format metadata, so the Export dialog also provides a human-readable
 `.txt` credits sidecar containing the same source, author, license, and

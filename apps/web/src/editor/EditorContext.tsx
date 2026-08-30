@@ -89,6 +89,7 @@ import {
 import { CURSOR_GRAB, CURSOR_GRABBING } from "@/editor/cursors";
 import { assetInsertionScale } from "@/editor/assetInsertion";
 import { copySvgBlendModes, loadEditableSvg } from "@/editor/svg";
+import { refreshTextMetrics } from "@/editor/textMetrics";
 import { zoomedCanvasDimensions } from "@/editor/zoom";
 import {
   applyElementStyle,
@@ -609,19 +610,6 @@ async function renderTemplateThumbnail(object: FabricObject): Promise<string> {
   const thumbnail = previewCanvas.toDataURL({ format: "png", multiplier: 1 });
   previewCanvas.dispose();
   return thumbnail;
-}
-
-function refreshTextMetrics(objects: FabricObject[]): void {
-  cache.clearFontCache();
-  const visit = (object: FabricObject) => {
-    if (object instanceof Text) {
-      object.initDimensions();
-      object.dirty = true;
-      object.setCoords();
-    }
-    if (object instanceof Group) object.getObjects().forEach(visit);
-  };
-  objects.forEach(visit);
 }
 
 interface TextFontStyle {

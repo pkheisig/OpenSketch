@@ -4197,6 +4197,34 @@ test("fetches only the PDF font face used by an SVG text run", async ({ page }) 
   expect(requests[0]).toMatch(/inter-600-italic\.ttf/);
 });
 
+test("resolves font styles for each rendered SVG use instance", async ({ page }) => {
+  await page.goto("/");
+  const rawPdf = await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const blob = await svgToPdfBlob(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240">
+        <defs><text id="label">Reusable label</text></defs>
+        <use href="#label" font-family="Inter" x="12" y="40" />
+        <use href="#label" font-family="Lato" font-weight="700" x="12" y="80" />
+      </svg>`,
+      600,
+      240,
+      {
+        title: "PDF use styles",
+        description: "Each rendered SVG use instance keeps its font",
+        credit: "OpenSketch",
+        provenance: { version: 1 as const, assets: [] }
+      }
+    );
+    return new TextDecoder("latin1").decode(await blob.arrayBuffer());
+  });
+
+  expect(rawPdf).toContain("/BaseFont /Inter");
+  expect(rawPdf).toContain("/BaseFont /Lato");
+  expect(rawPdf).not.toContain("/BaseFont /Times");
+});
+
 test("waits for the selected browser font before exporting PDF", async ({ page }) => {
   test.setTimeout(120_000);
   const releaseDelayMs = 2_000;
