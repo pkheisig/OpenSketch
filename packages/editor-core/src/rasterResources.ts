@@ -273,18 +273,27 @@ export function inspectRasterBytes(bytes: Uint8Array): RasterInspection | undefi
 }
 
 export async function inspectRasterBlob(blob: Blob): Promise<RasterInspection | undefined> {
-  const boundedBlob = blob.slice(0, Math.min(blob.size, RASTER_HEADER_READ_BYTES));
-  const buffer =
-    typeof boundedBlob.arrayBuffer === "function"
-      ? await boundedBlob.arrayBuffer()
-      : await new Promise<ArrayBuffer>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result as ArrayBuffer);
-          reader.onerror = () => reject(reader.error);
-          reader.readAsArrayBuffer(boundedBlob);
-        });
-  const header = new Uint8Array(buffer);
-  return inspectRasterBytes(header);
+  const maxReadBytes = Math.min(blob.size, PORTABLE_PROJECT_LIMITS.maxDataUrlBytes);
+  let readBytes = Math.min(maxReadBytes, RASTER_HEADER_READ_BYTES);
+  while (readBytes > 0) {
+    const boundedBlob = blob.slice(0, readBytes);
+    const buffer =
+      typeof boundedBlob.arrayBuffer === "function"
+        ? await boundedBlob.arrayBuffer()
+        : await new Promise<ArrayBuffer>((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result as ArrayBuffer);
+            reader.onerror = () => reject(reader.error);
+            reader.readAsArrayBuffer(boundedBlob);
+          });
+    const header = new Uint8Array(buffer);
+    const inspection = inspectRasterBytes(header);
+    if (inspection) return inspection;
+    const mimeType = sniffRasterMimeType(header);
+    if (!mimeType || mimeType === "image/png" || readBytes >= maxReadBytes) return undefined;
+    readBytes = Math.min(maxReadBytes, readBytes * 2);
+  }
+  return undefined;
 }
 
 export function inspectRasterDataUrl(
@@ -303,9 +312,20 @@ export function inspectRasterDataUrl(
   ) {
     return undefined;
   }
-  const bytes = decodeImageDataUrlBytes(parsed, RASTER_HEADER_READ_BYTES);
-  const inspection = bytes === undefined ? undefined : inspectRasterBytes(bytes);
-  return inspection?.mimeType === parsed.mimeType ? inspection : undefined;
+  const availableBytes = Math.min(
+    imageDataUrlByteLength(parsed),
+    PORTABLE_PROJECT_LIMITS.maxDataUrlBytes
+  );
+  let readBytes = Math.min(availableBytes, RASTER_HEADER_READ_BYTES);
+  while (readBytes > 0) {
+    const bytes = decodeImageDataUrlBytes(parsed, readBytes);
+    const inspection = bytes === undefined ? undefined : inspectRasterBytes(bytes);
+    if (inspection) return inspection.mimeType === parsed.mimeType ? inspection : undefined;
+    const mimeType = bytes === undefined ? undefined : sniffRasterMimeType(bytes);
+    if (!mimeType || mimeType === "image/png" || readBytes >= availableBytes) return undefined;
+    readBytes = Math.min(availableBytes, readBytes * 2);
+  }
+  return undefined;
 }
 
 export function rasterFitsLimits(

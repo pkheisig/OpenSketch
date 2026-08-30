@@ -148,6 +148,27 @@ describe("raster resource inspection", () => {
     slice.mockRestore();
   });
 
+  it("progressively inspects JPEG metadata without decoding the image", async () => {
+    const jpeg = jpegHeader(24, 12);
+    const appSegmentLength = 65_535;
+    const appSegmentCount = 17;
+    const bytes = new Uint8Array(2 + appSegmentCount * (appSegmentLength + 2) + jpeg.length - 2);
+    bytes.set(jpeg.subarray(0, 2));
+    let offset = 2;
+    for (let segment = 0; segment < appSegmentCount; segment += 1) {
+      bytes.set([0xff, 0xe1, appSegmentLength >> 8, appSegmentLength & 0xff], offset);
+      offset += 2 + appSegmentLength;
+    }
+    bytes.set(jpeg.subarray(2), offset);
+    const file = new Blob([bytes], { type: "image/jpeg" });
+
+    await expect(inspectRasterBlob(file)).resolves.toMatchObject({
+      mimeType: "image/jpeg",
+      width: 24,
+      height: 12
+    });
+  });
+
   it("applies the canonical per-image and aggregate pixel limits", () => {
     const ordinary = inspectRasterBytes(pngHeader(1_000, 1_000))!;
     expect(rasterFitsLimits(ordinary)).toBe(true);

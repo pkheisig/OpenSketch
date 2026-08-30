@@ -272,14 +272,42 @@ function validateImportedMediaRecord(
   return inspection;
 }
 
-function rasterPixelsInUploads(
+function rasterMediaInScene(value: unknown): ImportedMediaRecord[] {
+  const media: ImportedMediaRecord[] = [];
+  const visited = new Set<object>();
+  const visit = (candidate: unknown) => {
+    if (candidate === null || typeof candidate !== "object") return;
+    if (visited.has(candidate)) return;
+    visited.add(candidate);
+    if (!Array.isArray(candidate)) {
+      const source = (candidate as Record<string, unknown>).src;
+      if (typeof source === "string") {
+        const parsed = parseImageDataUrl(source);
+        if (parsed && parsed.mimeType !== "image/svg+xml") {
+          media.push({
+            id: `scene-${media.length}`,
+            name: "Scene image",
+            mimeType: parsed.mimeType,
+            dataUrl: source
+          });
+        }
+      }
+    }
+    for (const child of Object.values(candidate)) visit(child);
+  };
+  visit(value);
+  return media;
+}
+
+function rasterPixelsInProject(
   uploads: ImportedMediaRecord[],
+  objects: Record<string, unknown>,
   excludedId?: string,
   excludedDataUrl?: string
 ): number {
   const seenDataUrls = new Set<string>();
   let total = 0;
-  for (const media of uploads) {
+  for (const media of [...uploads, ...rasterMediaInScene(objects)]) {
     if (
       media.id === excludedId ||
       media.dataUrl === excludedDataUrl ||
@@ -2773,8 +2801,9 @@ export function EditorProvider({
   const placeImportedMedia = useCallback(
     async (media: ImportedMediaRecord, point?: Point) => {
       if (!canvas) return media;
-      const existingRasterPixels = rasterPixelsInUploads(
+      const existingRasterPixels = rasterPixelsInProject(
         latestProject.current.uploads,
+        latestProject.current.objects,
         media.id,
         media.dataUrl
       );
@@ -2860,7 +2889,10 @@ export function EditorProvider({
             throw new Error("The file is not a valid PNG, JPEG, WebP, or SVG image.");
           }
           if (rasterInspection) {
-            const existingRasterPixels = rasterPixelsInUploads(latestProject.current.uploads);
+            const existingRasterPixels = rasterPixelsInProject(
+              latestProject.current.uploads,
+              latestProject.current.objects
+            );
             const limitMessage = rasterLimitMessage(rasterInspection, existingRasterPixels);
             if (limitMessage) throw new Error(limitMessage);
           }
