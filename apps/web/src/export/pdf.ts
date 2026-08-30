@@ -537,6 +537,64 @@ function pdfTextElements(root: Element): SVGElement[] {
   return elements;
 }
 
+function pdfUseElements(root: Element): SVGElement[] {
+  const elements: SVGElement[] = [];
+  if (root.localName.toLowerCase() === "use") elements.push(root as SVGElement);
+  elements.push(...Array.from(root.querySelectorAll<SVGElement>("use")));
+  return elements;
+}
+
+function pdfUseReferenceId(use: Element): string | undefined {
+  return (use.getAttribute("href") ?? use.getAttribute("xlink:href"))?.trim().match(/^#(.+)$/)?.[1];
+}
+
+function pdfReferenceContainsText(
+  root: SVGSVGElement,
+  reference: Element,
+  visitedIds = new Set<string>()
+): boolean {
+  if (pdfTextElements(reference).length > 0) return true;
+
+  const referenceId = reference.getAttribute("id");
+  if (referenceId) {
+    if (visitedIds.has(referenceId)) return false;
+    visitedIds = new Set(visitedIds).add(referenceId);
+  }
+  return pdfUseElements(reference).some((use) => {
+    const nestedReferenceId = pdfUseReferenceId(use);
+    const nestedReference = nestedReferenceId
+      ? pdfElementsById(root, nestedReferenceId)
+      : undefined;
+    return nestedReference ? pdfReferenceContainsText(root, nestedReference, visitedIds) : false;
+  });
+}
+
+function pdfRootDefinitions(root: SVGSVGElement): SVGDefsElement {
+  const existing = Array.from(root.children).find(
+    (element) => element.localName.toLowerCase() === "defs"
+  );
+  if (existing) return existing as SVGDefsElement;
+  const definitions = root.ownerDocument.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "defs"
+  ) as SVGDefsElement;
+  root.insertBefore(definitions, root.firstChild);
+  return definitions;
+}
+
+function pdfRetargetUse(use: Element, referenceId: string): void {
+  for (const attribute of ["href", "xlink:href"]) {
+    if (use.hasAttribute(attribute)) use.setAttribute(attribute, `#${referenceId}`);
+  }
+}
+
+function pdfIsInsideDefinitions(element: Element): boolean {
+  for (let current = element.parentElement; current; current = current.parentElement) {
+    if (current.localName.toLowerCase() === "defs") return true;
+  }
+  return false;
+}
+
 function pdfInheritedSvgStyleValue(element: Element, property: string): string | undefined {
   for (let current: Element | null = element; current; current = current.parentElement) {
     const value = svgInlineStyleValue(current, property);
@@ -602,26 +660,32 @@ function materializePdfUseTextStyles(
   clone: SVGSVGElement,
   frameWindow: Window
 ): void {
-  const sourceUses = Array.from(svg.querySelectorAll<SVGElement>("use"));
-  const clonedUses = Array.from(clone.querySelectorAll<SVGElement>("use"));
+  const sourceDefinitions = pdfRootDefinitions(svg);
+  const cloneDefinitions = pdfRootDefinitions(clone);
+  let materializedIdIndex = 0;
+  const nextMaterializedId = (): string => {
+    let materializedId = "";
+    do {
+      materializedId = `opensketch-pdf-use-${materializedIdIndex}`;
+      materializedIdIndex += 1;
+    } while (pdfElementsById(svg, materializedId) || pdfElementsById(clone, materializedId));
+    return materializedId;
+  };
 
-  sourceUses.forEach((sourceUse, useIndex) => {
-    const clonedUse = clonedUses[useIndex];
-    if (!clonedUse) return;
-    const referenceId = (sourceUse.getAttribute("href") ?? sourceUse.getAttribute("xlink:href"))
-      ?.trim()
-      .match(/^#(.+)$/)?.[1];
-    if (!referenceId) return;
+  const materializeUse = (
+    sourceUse: SVGElement,
+    contextUse: SVGElement,
+    outputSourceUse: SVGElement,
+    outputCloneUse: SVGElement,
+    materializedId: string,
+    activeReferenceIds: ReadonlySet<string>
+  ): void => {
+    const referenceId = pdfUseReferenceId(sourceUse);
+    if (!referenceId || activeReferenceIds.has(referenceId)) return;
 
     const sourceReference = pdfElementsById(svg, referenceId);
     const clonedReference = pdfElementsById(clone, referenceId);
-    if (!sourceReference || !clonedReference) return;
-    const sourceTextElements = pdfTextElements(sourceReference);
-    const clonedTextElements = pdfTextElements(clonedReference);
-    if (
-      sourceTextElements.length === 0 ||
-      sourceTextElements.length !== clonedTextElements.length
-    ) {
+    if (!sourceReference || !clonedReference || !pdfReferenceContainsText(svg, sourceReference)) {
       return;
     }
 
@@ -631,7 +695,7 @@ function materializePdfUseTextStyles(
     // receive its own explicit text styles without changing shared definitions.
     const probeGroup = clone.ownerDocument.createElementNS("http://www.w3.org/2000/svg", "g");
     for (const property of PDF_USE_TEXT_STYLE_PROPERTIES) {
-      const value = pdfComputedFontProperty(frameWindow, clonedUse, property);
+      const value = pdfComputedFontProperty(frameWindow, contextUse, property);
       if (value) probeGroup.setAttribute(property, value);
     }
     probeGroup.setAttribute("visibility", "hidden");
@@ -640,24 +704,24 @@ function materializePdfUseTextStyles(
     (clonedReference.parentElement ?? clone).appendChild(probeGroup);
 
     try {
+      const sourceTextElements = pdfTextElements(sourceReference);
       const probeTextElements = pdfTextElements(probeReference);
-      if (
-        probeTextElements.length === 0 ||
-        probeTextElements.length !== sourceTextElements.length
-      ) {
-        return;
-      }
+      if (sourceTextElements.length !== probeTextElements.length) return;
 
-      const materializedId = `opensketch-pdf-use-${useIndex}`;
       const materializedSource = sourceReference.cloneNode(true) as SVGElement;
       const materializedClone = clonedReference.cloneNode(true) as SVGElement;
       materializedSource.setAttribute("id", materializedId);
       materializedClone.setAttribute("id", materializedId);
       const materializedSourceTextElements = pdfTextElements(materializedSource);
       const materializedCloneTextElements = pdfTextElements(materializedClone);
+      const sourceNestedUses = pdfUseElements(materializedSource);
+      const cloneNestedUses = pdfUseElements(materializedClone);
+      const contextNestedUses = pdfUseElements(probeReference);
       if (
         materializedSourceTextElements.length !== probeTextElements.length ||
-        materializedCloneTextElements.length !== probeTextElements.length
+        materializedCloneTextElements.length !== probeTextElements.length ||
+        sourceNestedUses.length !== cloneNestedUses.length ||
+        sourceNestedUses.length !== contextNestedUses.length
       ) {
         return;
       }
@@ -671,22 +735,40 @@ function materializePdfUseTextStyles(
         }
       });
 
-      const sourceParent = sourceReference.parentElement;
-      const cloneParent = clonedReference.parentElement;
-      if (!sourceParent || !cloneParent) return;
-      sourceParent.appendChild(materializedSource);
-      cloneParent.appendChild(materializedClone);
-      for (const attribute of ["href", "xlink:href"]) {
-        if (sourceUse.hasAttribute(attribute)) {
-          sourceUse.setAttribute(attribute, `#${materializedId}`);
-        }
-        if (clonedUse.hasAttribute(attribute)) {
-          clonedUse.setAttribute(attribute, `#${materializedId}`);
-        }
-      }
+      // Keep generated targets in <defs>. Appending a clone beside a target
+      // that is already visible would render that target a second time.
+      sourceDefinitions.appendChild(materializedSource);
+      cloneDefinitions.appendChild(materializedClone);
+      pdfRetargetUse(outputSourceUse, materializedId);
+      pdfRetargetUse(outputCloneUse, materializedId);
+
+      const nextActiveReferenceIds = new Set(activeReferenceIds).add(referenceId);
+      sourceNestedUses.forEach((nestedSourceUse, index) => {
+        const nestedCloneUse = cloneNestedUses[index];
+        const nestedContextUse = contextNestedUses[index];
+        if (!nestedCloneUse || !nestedContextUse) return;
+        const nestedReferenceId = pdfUseReferenceId(nestedSourceUse);
+        if (!nestedReferenceId || nextActiveReferenceIds.has(nestedReferenceId)) return;
+        materializeUse(
+          nestedSourceUse,
+          nestedContextUse,
+          nestedSourceUse,
+          nestedCloneUse,
+          nextMaterializedId(),
+          nextActiveReferenceIds
+        );
+      });
     } finally {
       probeGroup.remove();
     }
+  };
+
+  const sourceUses = pdfUseElements(svg).filter((use) => !pdfIsInsideDefinitions(use));
+  const clonedUses = pdfUseElements(clone).filter((use) => !pdfIsInsideDefinitions(use));
+  sourceUses.forEach((sourceUse, useIndex) => {
+    const clonedUse = clonedUses[useIndex];
+    if (!clonedUse) return;
+    materializeUse(sourceUse, clonedUse, sourceUse, clonedUse, nextMaterializedId(), new Set());
   });
 }
 
@@ -764,7 +846,8 @@ function materializePdfTextStyles(svg: SVGSVGElement): void {
       for (const [property, value] of [
         ["font-family", pdfComputedFontProperty(frameWindow, clonedElement, "font-family")],
         ["font-style", pdfComputedFontProperty(frameWindow, clonedElement, "font-style")],
-        ["font-weight", pdfComputedFontProperty(frameWindow, clonedElement, "font-weight")]
+        ["font-weight", pdfComputedFontProperty(frameWindow, clonedElement, "font-weight")],
+        ["font-size", pdfComputedFontProperty(frameWindow, clonedElement, "font-size")]
       ] as const) {
         if (value) {
           // Keep both forms: svg2pdf reads presentation attributes while the

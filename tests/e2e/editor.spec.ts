@@ -1,7 +1,7 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
-import { PDFDocument } from "pdf-lib";
+import { decodePDFRawStream, PDFDocument, PDFRawStream } from "pdf-lib";
 
 function decodeXml(value: string): string {
   return value.replace(/&(quot|apos|lt|gt|amp);/g, (_, entity: string) => {
@@ -42,6 +42,14 @@ function pngProvenance(bytes: Buffer): unknown {
     offset = dataEnd + 4;
   }
   throw new Error("The PNG export has no OpenSketch provenance metadata.");
+}
+
+function decodedPdfTextStreams(pdf: PDFDocument): string[] {
+  return pdf.context.enumerateIndirectObjects().flatMap(([, object]) => {
+    if (!(object instanceof PDFRawStream)) return [];
+    const decoded = new TextDecoder("latin1").decode(decodePDFRawStream(object).decode());
+    return decoded.includes(" Tf") && decoded.includes(" Tj") ? [decoded] : [];
+  });
 }
 
 async function selectUiOption(
@@ -4223,6 +4231,109 @@ test("resolves font styles for each rendered SVG use instance", async ({ page })
   expect(rawPdf).toContain("/BaseFont /Inter");
   expect(rawPdf).toContain("/BaseFont /Lato");
   expect(rawPdf).not.toContain("/BaseFont /Times");
+});
+
+test("keeps visible SVG use targets from rendering twice", async ({ page }) => {
+  await page.goto("/");
+  const encodedPdf = await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const blob = await svgToPdfBlob(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240">
+        <text id="label" x="12" y="40" font-family="Inter">Visible label</text>
+        <use href="#label" font-family="Inter" x="12" y="80" />
+      </svg>`,
+      600,
+      240,
+      {
+        title: "PDF use target",
+        description: "A visible SVG use target renders once per instance",
+        credit: "OpenSketch",
+        provenance: { version: 1 as const, assets: [] }
+      }
+    );
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    let binary = "";
+    for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+    }
+    return btoa(binary);
+  });
+
+  const pdf = await PDFDocument.load(Buffer.from(encodedPdf, "base64"));
+  const renderedTextOperators = decodedPdfTextStreams(pdf)
+    .join("\n")
+    .match(/\bTj\b/g);
+  expect(renderedTextOperators).toHaveLength(2);
+});
+
+test("preserves nested SVG use font context and computed size", async ({ page }) => {
+  await page.goto("/");
+  const encodedPdf = await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const blob = await svgToPdfBlob(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240">
+        <defs>
+          <text id="label">Nested label</text>
+          <g id="wrapper"><use href="#label" /></g>
+        </defs>
+        <use href="#wrapper" font-family="Lato" font-size="24px" x="12" y="40" />
+      </svg>`,
+      600,
+      240,
+      {
+        title: "Nested PDF use styles",
+        description: "Nested SVG use instances preserve inherited font context",
+        credit: "OpenSketch",
+        provenance: { version: 1 as const, assets: [] }
+      }
+    );
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    let binary = "";
+    for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+    }
+    return btoa(binary);
+  });
+
+  const rawPdf = Buffer.from(encodedPdf, "base64").toString("latin1");
+  const pdf = await PDFDocument.load(Buffer.from(encodedPdf, "base64"));
+  const textStreams = decodedPdfTextStreams(pdf).join("\n");
+  expect(rawPdf).toContain("/BaseFont /Lato");
+  expect(rawPdf).not.toContain("/BaseFont /Times");
+  expect(textStreams).toContain("24 Tf");
+});
+
+test("preserves computed PDF text size from CSS shorthand", async ({ page }) => {
+  await page.goto("/");
+  const encodedPdf = await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const blob = await svgToPdfBlob(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240">
+        <style>.label { font: italic 600 24px "Inter"; }</style>
+        <text class="label" x="12" y="40">Sized label</text>
+      </svg>`,
+      600,
+      240,
+      {
+        title: "PDF text size",
+        description: "Computed CSS text size remains explicit in PDF output",
+        credit: "OpenSketch",
+        provenance: { version: 1 as const, assets: [] }
+      }
+    );
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    let binary = "";
+    for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+    }
+    return btoa(binary);
+  });
+
+  const pdf = await PDFDocument.load(Buffer.from(encodedPdf, "base64"));
+  expect(decodedPdfTextStreams(pdf).join("\n")).toContain("24 Tf");
 });
 
 test("waits for the selected browser font before exporting PDF", async ({ page }) => {
