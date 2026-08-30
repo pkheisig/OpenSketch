@@ -6,6 +6,7 @@ import { MotionPresence } from "@/components/MotionPresence";
 import { useEditor } from "@/editor/EditorContext";
 import { UiSelect } from "@/components/UiSelect";
 import { EXPORT_DPI_OPTIONS, loadExportDpi, saveExportDpi } from "@/export/preferences";
+import { inspectPngExportResource } from "@/export/png";
 import { useModalDialog } from "./useModalDialog";
 
 export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
@@ -17,7 +18,26 @@ export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => 
   const [background, setBackground] = useState(editor.canvasSettings.background);
   const [exportError, setExportError] = useState("");
   const [exporting, setExporting] = useState(false);
-  const pngMultiplier = dpi / editor.canvasSettings.dpi;
+  const pngResource = inspectPngExportResource(
+    editor.canvasSettings.width,
+    editor.canvasSettings.height,
+    editor.canvasSettings.dpi,
+    dpi
+  );
+  const pngDpiOptions = EXPORT_DPI_OPTIONS.map((value) => {
+    const resource = inspectPngExportResource(
+      editor.canvasSettings.width,
+      editor.canvasSettings.height,
+      editor.canvasSettings.dpi,
+      value
+    );
+    return {
+      value,
+      label: `${value} DPI`,
+      disabled: Boolean(resource.error)
+    };
+  });
+  const displayedError = exportError || (format === "png" ? pngResource.error : "");
   return (
     <MotionPresence open={open} exitMs={180}>
       <div className="dialog-backdrop" onMouseDown={onClose}>
@@ -79,10 +99,7 @@ export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => 
                 className="field"
                 label="Output DPI"
                 value={dpi}
-                options={EXPORT_DPI_OPTIONS.map((value) => ({
-                  value,
-                  label: `${value} DPI`
-                }))}
+                options={pngDpiOptions}
                 onChange={(dpi) => {
                   setDpi(saveExportDpi(dpi));
                 }}
@@ -108,21 +125,21 @@ export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => 
               </MotionCollapse>
             </div>
           </MotionCollapse>
-          {exportError ? (
+          {displayedError ? (
             <p className="panel-error" role="alert">
-              {exportError}
+              {displayedError}
             </p>
           ) : null}
           <button
             className="button primary wide"
-            disabled={exporting}
+            disabled={exporting || (format === "png" && Boolean(pngResource.error))}
             onClick={async () => {
               setExporting(true);
               setExportError("");
               try {
                 if (format === "svg") editor.exportSvg();
                 else if (format === "pdf") await editor.exportPdf();
-                else await editor.exportPng(pngMultiplier, transparent, dpi, background);
+                else await editor.exportPng(transparent, dpi, background);
                 setExporting(false);
                 onClose();
               } catch (reason) {

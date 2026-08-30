@@ -38,7 +38,7 @@ import type {
   ImportedMediaRecord
 } from "@workspace/editor-core";
 import { sanitizeImportedSvg } from "@/assets/browserSanitizer";
-import { setPngDpi } from "@/export/png";
+import { calculatePngExportResource, setPngDpi } from "@/export/png";
 import {
   normalizePdfFontStyle,
   normalizePdfFontWeight,
@@ -380,12 +380,7 @@ interface EditorContextValue {
   exportSvg: (title?: string, description?: string) => void;
   exportCredits: (title?: string, description?: string) => void;
   exportPdf: (title?: string, description?: string) => Promise<void>;
-  exportPng: (
-    scale: number,
-    transparent: boolean,
-    dpi: number,
-    background?: string
-  ) => Promise<void>;
+  exportPng: (transparent: boolean, dpi: number, background?: string) => Promise<void>;
   commit: (label?: string) => void;
 }
 
@@ -3641,13 +3636,14 @@ export function EditorProvider({
   );
 
   const exportPng = useCallback(
-    async (
-      scale: number,
-      transparent: boolean,
-      dpi: number,
-      background = canvasSettings.background
-    ) => {
+    async (transparent: boolean, dpi: number, background = canvasSettings.background) => {
       if (!canvas) return;
+      const resource = calculatePngExportResource(
+        canvasSettings.width,
+        canvasSettings.height,
+        canvasSettings.dpi,
+        dpi
+      );
       const previous = canvas.backgroundColor;
       canvas.backgroundColor = transparent ? "" : background;
       let dataUrl: string;
@@ -3655,7 +3651,7 @@ export function EditorProvider({
         dataUrl = withLogicalViewport(canvas, canvasSettings, () =>
           canvas.toDataURL({
             format: "png",
-            multiplier: scale,
+            multiplier: resource.scale,
             enableRetinaScaling: false
           })
         );

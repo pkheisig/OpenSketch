@@ -124,7 +124,12 @@ PNG is rendered from a neutral logical viewport so editor zoom never changes
 output dimensions. Exports default to 1200 DPI; the selected 150–1500 DPI
 value determines raster scaling and is embedded as a valid PNG
 physical-resolution (`pHYs`) chunk. The same manifest is written as an
-uncompressed UTF-8 `iTXt` chunk with the `OpenSketch:provenance` keyword.
+uncompressed UTF-8 `iTXt` chunk with the `OpenSketch:provenance` keyword. Before
+Fabric allocates a raster canvas, the export path rejects requests above the
+conservative single-canvas budget of 8,192 pixels per side or 64 million total
+pixels. The export dialog marks those DPI choices unavailable and explains
+that a lower DPI or SVG/PDF export is required; this does not change the
+persisted project format or vector export behavior.
 
 PDF consumes the same generated SVG through `svg2pdf.js` and jsPDF, preserving
 supported vector paths and text. A canonical editor/PDF font registry maps each
