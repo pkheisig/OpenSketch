@@ -67,10 +67,12 @@ declared in `.github/repository-policy.json`) build the site, run browser
 tests, and deploy only that directory through the GitHub Pages artifact
 mechanism.
 
-The generated Workbox service worker precaches the app shell, compiled chunks,
-and fonts. The built-in SVG and WebP library is intentionally excluded from the
-app-shell precache because it is large. The Assets panel exposes an explicit
-versioned "Prepare offline library" action that downloads every required source
+The generated Workbox service worker precaches the app shell and compiled
+chunks. Browser and PDF font binaries are fetched into runtime caches when the
+corresponding families are used. The built-in SVG and WebP library is
+intentionally excluded from the app-shell precache because it is large. The
+Assets panel exposes an explicit versioned "Prepare offline library" action that
+downloads every required source
 and preview into Cache Storage, verifies the complete pack, and only then marks
 it ready. A normal first visit therefore supports offline editor reopening; a
 complete cold-offline asset workflow requires that explicit preparation to finish
@@ -139,8 +141,8 @@ silently dropping missing glyphs or emitting scripts that require OpenType
 shaping. Only the faces used by text runs are registered and passed to each
 jsPDF conversion. Browser and PDF font binaries are runtime-cached after use
 rather than included in the app-shell precache, keeping normal installation
-small; an online export therefore warms each PDF face needed for later offline
-work. A
+small; while online, the editor warms each PDF face used by the current project
+so later offline export does not require a prior export. A
 standards-compatible XMP packet carries the canonical manifest. Georgia remains
 a system-only editor choice, so its Noto Serif mapping is deterministic but may
 not be pixel-identical to every installed Georgia; mixed or wrapped Georgia
