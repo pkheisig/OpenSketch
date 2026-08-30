@@ -48,6 +48,12 @@ coherent commit path.
 `useEditor()` remains as a compatibility hook for internal migration/testing,
 but production panels must use `useEditorFields()` with an explicit field list.
 
+The CSS entry point and surface ownership rules are documented in
+[`docs/css-architecture.md`](css-architecture.md). `tokens.css` owns semantic
+theme values, while the base, home, editor, inspector, canvas, and dialog
+modules each own one set of selectors. The production bundle no longer relies
+on a global stylesheet followed by a high-specificity theme adapter.
+
 Pure geometry and color transforms live in
 `apps/web/src/editor/geometry.ts` and `colors.ts`, while `connectors.ts` owns
 connector construction and Manhattan route search. Attached connectors are
