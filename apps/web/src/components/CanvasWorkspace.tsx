@@ -62,7 +62,7 @@ import { ColorPalettePicker } from "@/components/ColorPalettePicker";
 import { CanvasRulers } from "@/components/CanvasRulers";
 import { MotionPresence } from "@/components/MotionPresence";
 import { UiSelect } from "@/components/UiSelect";
-import { useEditor } from "@/editor/EditorContext";
+import { useEditorFields } from "@/editor/editorHooks";
 import { isManualGroup } from "@/editor/grouping";
 import {
   captureZoomAnchor,
@@ -237,7 +237,47 @@ function storedViewport(projectId: string): StoredViewport | null {
 }
 
 export function CanvasWorkspace() {
-  const editor = useEditor();
+  const editor = useEditorFields([
+    "projectId",
+    "canvas",
+    "canvasReady",
+    "selection",
+    "editingGroup",
+    "zoom",
+    "fitRequest",
+    "canvasSettings",
+    "autoEditEnabled",
+    "creationTool",
+    "creationDefaults",
+    "setCanvasElement",
+    "setCanvasSettings",
+    "setAutoEditEnabled",
+    "setCreationDefaults",
+    "placeCreationTool",
+    "placeCreation",
+    "addAsset",
+    "addTemplate",
+    "addImportedMedia",
+    "importMedia",
+    "deleteSelection",
+    "duplicateSelection",
+    "saveSelectionAsTemplate",
+    "copySelectionToClipboard",
+    "pasteSelection",
+    "groupSelection",
+    "ungroupSelection",
+    "arrange",
+    "align",
+    "distribute",
+    "flip",
+    "setObject",
+    "saveSelectionStyle",
+    "resetSelectionStyle",
+    "closeGroupEdit",
+    "setZoom",
+    "previewZoom",
+    "fitCanvas"
+  ]);
   const {
     setCanvasElement,
     canvas,

@@ -39,7 +39,7 @@ import {
 import { AssetPreviewImage } from "@/components/AssetPreviewImage";
 import { MotionCollapse } from "@/components/MotionCollapse";
 import { MotionPresence } from "@/components/MotionPresence";
-import { useEditor } from "@/editor/EditorContext";
+import { useEditorFields } from "@/editor/editorHooks";
 import {
   buildConnectorGeometry,
   connectorArrowheadPoint,
@@ -340,7 +340,14 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const draggedShapePreset = useRef(false);
   const pressedShapePreset = useRef(false);
   const draggedAsset = useRef(false);
-  const editor = useEditor();
+  const editor = useEditorFields([
+    "autoEditEnabled",
+    "canvas",
+    "creationTool",
+    "selection",
+    "setCreationDefaults",
+    "setCreationTool"
+  ]);
   const autoEditWasEnabled = useRef(editor.autoEditEnabled);
   const setCreationTool = editor.setCreationTool;
   const canEdit = editor.selection.length > 0;
@@ -846,7 +853,7 @@ function AssetsPanel({
   onAssetDragStart: () => void;
   onAssetDragEnd: () => void;
 }) {
-  const editor = useEditor();
+  const editor = useEditorFields(["addAsset", "addTemplate"]);
   const [debouncedQuery, setDebouncedQuery] = useState(query);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [variants, setVariants] = useState(loadAssetVariantDefaults);
@@ -1529,7 +1536,7 @@ function CreationDefaultsDisclosure({
 }
 
 function ShapesPanel() {
-  const editor = useEditor();
+  const editor = useEditorFields(["creationDefaults", "setCreationDefaults"]);
   const [openSections, setOpenSections] = useState(loadCreationDefaultsDisclosures);
   const setSectionOpen = (section: CreationDefaultsSection, open: boolean) => {
     setOpenSections((current) => {
@@ -1726,7 +1733,7 @@ function CreationArrowheadSelect({
 }
 
 function ImportsPanel() {
-  const editor = useEditor();
+  const editor = useEditorFields(["addImportedMedia", "importMedia"]);
   const input = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
   const [imports, setImports] = useState<ImportedMediaLibraryRecord[]>([]);

@@ -16,7 +16,7 @@ import {
 import type { ProjectRecord } from "@workspace/editor-core";
 import { GLOBAL_CREDIT } from "@/assets/credit";
 import { MotionPresence } from "@/components/MotionPresence";
-import { useEditor } from "@/editor/EditorContext";
+import { useEditorFields } from "@/editor/editorHooks";
 import type { ProjectSaveState } from "@/editor/projectSaveState";
 import { ExportDialog } from "./dialogs";
 import { useModalDialog } from "./useModalDialog";
@@ -123,7 +123,16 @@ export function TopToolbar({
   theme: "light" | "dark";
   onToggleTheme: () => void;
 }) {
-  const editor = useEditor();
+  const editor = useEditorFields([
+    "flushSave",
+    "setProjectName",
+    "historyState",
+    "undo",
+    "redo",
+    "saveState",
+    "retrySave",
+    "exportProject"
+  ]);
   const [leaving, setLeaving] = useState(false);
   const [title, setTitle] = useState(project.name);
   const [exportOpen, setExportOpen] = useState(false);

@@ -30,10 +30,23 @@ services.
 `packages/editor-core` contains data contracts, canvas presets, search
 normalization, and project migrations. It has no browser or Fabric dependency.
 
-`apps/web/src/editor/EditorContext.tsx` is the editor service boundary. React
-panels invoke semantic operations such as `addAsset`, `align`, `replaceColor`,
-and `exportSvg`; panels do not manipulate the Fabric canvas directly except for
-layer selection.
+`apps/web/src/editor/EditorContext.tsx` owns the editor implementation and its
+single scene-mutation transaction boundary. React panels invoke semantic
+operations such as `addAsset`, `align`, `replaceColor`, and `exportSvg`; panels
+do not manipulate the Fabric canvas directly except for layer selection.
+
+Panels read through the selector-backed `useEditorFields()` seam rather than
+subscribing to the complete editor value. Each panel declares the fields it
+renders or commands it invokes, so selection, viewport, save, export, creation,
+and object-edit changes invalidate only the relevant readers. The provider
+stages one complete snapshot and publishes it after commit; selectors compare
+their selected fields shallowly. This is a subscription optimization, not a
+second source of truth: Fabric, history, connector refresh, project revisions,
+and autosave remain owned by `EditorProvider` and continue through the same
+coherent commit path.
+
+`useEditor()` remains as a compatibility hook for internal migration/testing,
+but production panels must use `useEditorFields()` with an explicit field list.
 
 Pure geometry and color transforms live in
 `apps/web/src/editor/geometry.ts` and `colors.ts`, while `connectors.ts` owns
