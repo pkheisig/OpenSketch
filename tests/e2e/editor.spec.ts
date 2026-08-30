@@ -4022,6 +4022,9 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
         <style>.label { font-family: "Lato"; }</style>
         <text class="label" font-family="Inter" x="12" y="40">Stylesheet wins</text>
       </svg>`),
+      stylesheetOverridesPresentationStyles: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><style>.label { font-family: "Inter"; font-style: normal; font-weight: 400; font-size: 16px; }</style><g font-family="Lato" font-style="italic" font-weight="700" font-size="24px"><text class="label" x="12" y="40">Cascade wins</text></g></svg>`
+      ),
       missingGlyph: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></svg>`
       ),
@@ -4064,6 +4067,12 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
       hiddenVisibilityUseGlyph: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="hidden-label" x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><use href="#hidden-label" style="visibility: hidden" /></svg>`
       ),
+      visibleHiddenUseGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="hidden-label" x="12" y="40" font-family="Atkinson Hyperlegible" visibility="visible">AΓB</text></defs><use href="#hidden-label" style="visibility: hidden" /></svg>`
+      ),
+      visibleNestedHiddenUseGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="hidden-label" x="12" y="40" font-family="Atkinson Hyperlegible" visibility="visible">AΓB</text><g id="hidden-wrapper"><use href="#hidden-label" visibility="visible" /></g></defs><use href="#hidden-wrapper" style="visibility: hidden" /></svg>`
+      ),
       transparentUseGlyph: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="hidden-label" x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><use href="#hidden-label" opacity="0" /></svg>`
       ),
@@ -4100,6 +4109,9 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
   expect(result.shorthand.pdf).not.toContain("/BaseFont /Times");
   expect(result.stylesheetWins.error).toBeNull();
   expect(result.stylesheetWins.pdf).toContain("/BaseFont /Lato");
+  expect(result.stylesheetOverridesPresentationStyles.error).toBeNull();
+  expect(result.stylesheetOverridesPresentationStyles.pdf).toContain("/BaseFont /Inter");
+  expect(result.stylesheetOverridesPresentationStyles.pdf).not.toContain("/BaseFont /Lato");
   expect(result.missingGlyph.error).toContain("U+0393");
   expect(result.missingGlyph.error).toContain("cannot render");
   expect(result.missingInheritedGlyph.error).toContain("U+0393");
@@ -4130,6 +4142,10 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
   expect(result.hiddenAncestorUseGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
   expect(result.hiddenVisibilityUseGlyph.error).toBeNull();
   expect(result.hiddenVisibilityUseGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
+  expect(result.visibleHiddenUseGlyph.error).toContain("U+0393");
+  expect(result.visibleHiddenUseGlyph.pdf).toBe("");
+  expect(result.visibleNestedHiddenUseGlyph.error).toContain("U+0393");
+  expect(result.visibleNestedHiddenUseGlyph.pdf).toBe("");
   expect(result.transparentUseGlyph.error).toBeNull();
   expect(result.transparentUseGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
   expect(result.paintHexDefinitionId.error).toBeNull();
@@ -4359,6 +4375,46 @@ test("preserves computed PDF text size from CSS shorthand", async ({ page }) => 
 
   const pdf = await PDFDocument.load(Buffer.from(encodedPdf, "base64"));
   expect(decodedPdfTextStreams(pdf).join("\n")).toContain("24 Tf");
+});
+
+test("preserves stylesheet font cascade over inherited SVG presentation attributes", async ({
+  page
+}) => {
+  const requests: string[] = [];
+  page.on("request", (request) => {
+    if (request.resourceType() === "fetch" && request.url().includes(".ttf")) {
+      requests.push(request.url());
+    }
+  });
+  await page.goto("/");
+  const encodedPdf = await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const blob = await svgToPdfBlob(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><style>.label { font-family: "Inter"; font-style: normal; font-weight: 400; font-size: 16px; }</style><g font-family="Lato" font-style="italic" font-weight="700" font-size="24px"><text class="label" x="12" y="40">Cascade wins</text></g></svg>`,
+      600,
+      240,
+      {
+        title: "PDF font cascade",
+        description: "Stylesheet declarations override inherited SVG presentation attributes",
+        credit: "OpenSketch",
+        provenance: { version: 1 as const, assets: [] }
+      }
+    );
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    let binary = "";
+    for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+    }
+    return btoa(binary);
+  });
+
+  expect(requests).toContainEqual(expect.stringMatching(/inter-400-normal\.ttf/));
+  expect(requests).not.toContainEqual(expect.stringMatching(/inter-700-italic\.ttf/));
+  const pdf = await PDFDocument.load(Buffer.from(encodedPdf, "base64"));
+  const textStreams = decodedPdfTextStreams(pdf).join("\n");
+  expect(textStreams).toContain("16 Tf");
+  expect(textStreams).not.toContain("24 Tf");
 });
 
 test("waits for the selected browser font before exporting PDF", async ({ page }) => {

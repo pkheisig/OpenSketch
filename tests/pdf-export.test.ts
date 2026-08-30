@@ -247,6 +247,17 @@ describe("PDF export metadata", () => {
     ).toEqual([]);
   });
 
+  it("ignores metadata that only looks like an SVG definition reference", () => {
+    const parsed = new DOMParser().parseFromString(
+      `<svg xmlns="http://www.w3.org/2000/svg"><defs><text id="unused" font-family="Atkinson Hyperlegible">AΓB</text></defs><rect width="100" height="40" data-note="url(#unused)" aria-label="url(#unused)" /></svg>`,
+      "image/svg+xml"
+    );
+
+    expect(
+      getPdfFontRegistrationsReferencedBySvg(parsed.documentElement as unknown as SVGSVGElement)
+    ).toEqual([]);
+  });
+
   it("follows references through rendered SVG definitions", () => {
     const parsed = new DOMParser().parseFromString(
       `<svg xmlns="http://www.w3.org/2000/svg"><defs><g id="used"><use href="#label"/></g><text id="label" font-family="Inter">x</text></defs><use href="#used"/></svg>`,
