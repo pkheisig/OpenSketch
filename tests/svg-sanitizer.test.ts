@@ -119,6 +119,15 @@ describe("SVG sanitization", () => {
     expect(built).toContain("mix-blend-mode:multiply");
   });
 
+  it("preserves browser rewriting for numeric-start IDs", () => {
+    const source = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+      <style>#123abc { fill: #456; }</style>
+      <rect id="123abc" width="10" height="10" />
+    </svg>`;
+
+    expect(sanitizeImportedSvg(source, "import")).toContain("#import-123abc");
+  });
+
   it("does not confuse hex colors with internal IDs", () => {
     const colorLikeId = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
       <style>#fff { stroke: #fff; }</style>

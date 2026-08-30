@@ -156,7 +156,7 @@ function mappedSelectorAt(
 ): { value: string; end: number } | null {
   const start = hashIndex + 1;
   const first = selector[start];
-  if (!first || (!/[A-Za-z_]/.test(first) && first !== "-")) return null;
+  if (!first) return null;
 
   for (const [oldId, newId] of entries) {
     if (!selector.startsWith(oldId, start)) continue;
