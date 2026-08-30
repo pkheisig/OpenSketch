@@ -313,7 +313,10 @@ function pdfPaintAlpha(value: string): number {
   if (normalized === "none" || normalized === "transparent") return 0;
 
   const hex = normalized.match(/^#([0-9a-f]{4}|[0-9a-f]{8})$/i)?.[1];
-  if (hex) return Number.parseInt(hex.slice(-2), 16) / 255;
+  if (hex) {
+    const alpha = hex.length === 4 ? hex[3].repeat(2) : hex.slice(-2);
+    return Number.parseInt(alpha, 16) / 255;
+  }
 
   const rgb = normalized.match(/^rgba?\((.*)\)$/i)?.[1];
   if (rgb) {

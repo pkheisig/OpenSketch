@@ -4090,6 +4090,9 @@ test("skips invisible PDF paint during glyph coverage", async ({ page }) => {
       zeroStrokeWidth: await render(
         '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" fill="none" stroke="black" stroke-width="0">AΓB</text></svg>'
       ),
+      zeroFillHex: await render(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" fill="#fff0">AΓB</text></svg>'
+      ),
       visibleFillZeroStroke: await render(
         '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" fill="black" stroke="black" stroke-width="0">AΓB</text></svg>'
       ),
@@ -4102,6 +4105,7 @@ test("skips invisible PDF paint during glyph coverage", async ({ page }) => {
   expect(result.transparent).toBeNull();
   expect(result.zeroFillOpacity).toBeNull();
   expect(result.zeroStrokeWidth).toBeNull();
+  expect(result.zeroFillHex).toBeNull();
   expect(result.visibleFillZeroStroke).toContain("U+0393");
   expect(result.zeroWidthBom).toBeNull();
 });
