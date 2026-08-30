@@ -1,4 +1,5 @@
 import DOMPurify from "dompurify";
+import { rewriteSvgCssSelectors } from "@workspace/editor-core";
 
 const EXECUTABLE = /(?:javascript:|@import|<\s*(?:script|foreignObject)\b)/i;
 const NETWORK = /(?:https?:\/\/|^\/\/)/i;
@@ -100,11 +101,8 @@ export function sanitizeImportedSvg(
     if (/@import|https?:|javascript:/i.test(content) || EXTERNAL_STYLE_URL.test(content)) {
       style.remove();
     } else {
+      content = rewriteSvgCssSelectors(content, mapping);
       for (const [oldId, newId] of mapping) {
-        content = content.replace(
-          new RegExp(`(^|[},>+~])(\\s*)#${escapeRegExp(oldId)}(?=\\s*[{,.:[>+~#])`, "gm"),
-          `$1$2#${newId}`
-        );
         content = content.replace(
           new RegExp(`url\\((['"]?)#${escapeRegExp(oldId)}\\1\\)`, "g"),
           `url(#${newId})`

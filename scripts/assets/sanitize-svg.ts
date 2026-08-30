@@ -1,6 +1,7 @@
 import { JSDOM } from "jsdom";
 import createDOMPurify from "dompurify";
 import { optimize } from "svgo";
+import { rewriteSvgCssSelectors } from "../../packages/editor-core/src/svgSelectors";
 
 const BLOCKED_TAGS = ["script", "foreignObject", "iframe", "object", "embed", "audio", "video"];
 const URL_ATTRIBUTES = [
@@ -42,16 +43,11 @@ function prefixInternalIds(svg: SVGSVGElement, assetId: string): void {
     }
   });
   svg.querySelectorAll("style").forEach((style) => {
-    const content = (style.textContent ?? "")
-      .replace(/([^{}]+)\{/g, (rule, selector: string) => {
-        const rewritten = selector.replace(/#([A-Za-z_][\w:.-]*)/g, (reference, id: string) =>
-          idMap.has(id) ? `#${idMap.get(id)}` : reference
-        );
-        return `${rewritten}{`;
-      })
-      .replace(/url\(\s*(['"]?)#([^)'"]+)\1\s*\)/g, (reference, _quote: string, id: string) =>
+    const content = rewriteSvgCssSelectors(style.textContent ?? "", idMap).replace(
+      /url\(\s*(['"]?)#([^)'"]+)\1\s*\)/g,
+      (reference, _quote: string, id: string) =>
         idMap.has(id) ? `url(#${idMap.get(id)})` : reference
-      );
+    );
     style.textContent = content;
   });
 }
