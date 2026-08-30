@@ -4058,11 +4058,17 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
       hiddenUseGlyph: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="hidden-label" x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><use href="#hidden-label" display="none" /></svg>`
       ),
+      hiddenAncestorUseGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="hidden-label" x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><g style="display: none"><use href="#hidden-label" /></g></svg>`
+      ),
       hiddenVisibilityUseGlyph: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="hidden-label" x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><use href="#hidden-label" style="visibility: hidden" /></svg>`
       ),
       transparentUseGlyph: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="hidden-label" x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><use href="#hidden-label" opacity="0" /></svg>`
+      ),
+      paintHexDefinitionId: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="fff" x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><rect width="600" height="240" fill="#fff" /></svg>`
       ),
       hiddenTextPathDescendant: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><path id="curve" d="M0 0"/><text font-family="Inter"><textPath visibility="hidden" href="#curve"><tspan visibility="visible">Label</tspan></textPath></text></svg>`
@@ -4120,10 +4126,14 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
   expect(result.unusedDefinitionGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
   expect(result.hiddenUseGlyph.error).toBeNull();
   expect(result.hiddenUseGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
+  expect(result.hiddenAncestorUseGlyph.error).toBeNull();
+  expect(result.hiddenAncestorUseGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
   expect(result.hiddenVisibilityUseGlyph.error).toBeNull();
   expect(result.hiddenVisibilityUseGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
   expect(result.transparentUseGlyph.error).toBeNull();
   expect(result.transparentUseGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
+  expect(result.paintHexDefinitionId.error).toBeNull();
+  expect(result.paintHexDefinitionId.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
   expect(result.hiddenTextPathDescendant.error).toContain("textPath");
   expect(result.hiddenTextPathDescendant.pdf).toBe("");
   expect(result.visibleDescendant.error).toContain("U+0393");

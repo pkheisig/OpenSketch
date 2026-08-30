@@ -944,10 +944,12 @@ function isPdfDefinitionElement(element: Element, svg: SVGSVGElement): boolean {
   return false;
 }
 
-function pdfReferenceIdsInValue(value: string): string[] {
+function pdfReferenceIdsInValue(value: string, allowExactReference = false): string[] {
   const ids: string[] = [];
-  const exactReference = value.trim().match(/^#([^\s]+)$/);
-  if (exactReference) ids.push(exactReference[1]);
+  if (allowExactReference) {
+    const exactReference = value.trim().match(/^#([^\s]+)$/);
+    if (exactReference) ids.push(exactReference[1]);
+  }
   for (const match of value.matchAll(/url\(\s*["']?#([^"')\s]+)["']?\s*\)/gi)) {
     ids.push(match[1]);
   }
@@ -956,21 +958,27 @@ function pdfReferenceIdsInValue(value: string): string[] {
 
 function isPdfNonRenderedUse(element: Element): boolean {
   if (element.localName.toLowerCase() !== "use") return false;
-  if (
-    [PDF_DISPLAY_NONE_ATTRIBUTE, PDF_HIDDEN_ELEMENT_ATTRIBUTE, PDF_ZERO_OPACITY_ATTRIBUTE].some(
-      (attribute) => element.getAttribute(attribute) === "true"
-    )
-  ) {
-    return true;
+
+  for (let current: Element | null = element; current; current = current.parentElement) {
+    if (
+      [PDF_DISPLAY_NONE_ATTRIBUTE, PDF_HIDDEN_ELEMENT_ATTRIBUTE, PDF_ZERO_OPACITY_ATTRIBUTE].some(
+        (attribute) => current.getAttribute(attribute) === "true"
+      )
+    ) {
+      return true;
+    }
+    const display = svgInlineStyleValue(current, "display")
+      ?.replace(/\s*!important\s*$/i, "")
+      .trim()
+      .toLowerCase();
+    if (display === "none") return true;
   }
 
-  const display = svgInlineStyleValue(element, "display")?.replace(/\s*!important\s*$/i, "");
   const visibility = svgInlineStyleValue(element, "visibility")
     ?.replace(/\s*!important\s*$/i, "")
     .trim()
     .toLowerCase();
   return (
-    display?.trim().toLowerCase() === "none" ||
     visibility === "hidden" ||
     visibility === "collapse" ||
     isZeroPdfOpacity(svgInlineStyleValue(element, "opacity"))
@@ -979,7 +987,9 @@ function isPdfNonRenderedUse(element: Element): boolean {
 
 function addPdfReferenceIds(element: Element, references: string[]): void {
   for (const attribute of Array.from(element.attributes)) {
-    references.push(...pdfReferenceIdsInValue(attribute.value));
+    references.push(
+      ...pdfReferenceIdsInValue(attribute.value, attribute.localName.toLowerCase() === "href")
+    );
   }
   if (element.localName.toLowerCase() === "style") {
     references.push(...pdfReferenceIdsInValue(stripCssComments(element.textContent ?? "")));
