@@ -45,8 +45,7 @@ export default defineConfig({
           "assets/organism-library/**",
           "assets/organism-library-thumbnails/**",
           "assets/bioicons/**",
-          "assets/bioicons-thumbnails/**",
-          "**/*.ttf"
+          "assets/bioicons-thumbnails/**"
         ],
         // The complete asset pack is primed explicitly from the Assets panel.
         // Do not evict entries: a ready pack must contain every required source
