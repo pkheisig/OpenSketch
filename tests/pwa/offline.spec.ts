@@ -79,7 +79,7 @@ test("keeps an active production editing session open across an offline reload",
   await expect(page.locator(".home-shell")).toHaveCount(0);
 });
 
-test("exports text-bearing PDFs offline from the precached font face", async ({
+test("exports text-bearing PDFs offline from a runtime-cached font face", async ({
   context,
   page
 }) => {
@@ -98,20 +98,32 @@ test("exports text-bearing PDFs offline from the precached font face", async ({
     .poll(() => page.evaluate(() => document.documentElement.dataset.offlineReady ?? null))
     .toBe("true");
 
-  await context.setOffline(true);
-  await page.reload();
-  await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
+  // Runtime-cached PDF faces are warmed through the production UI while online
+  // so a later offline export exercises the same browser cache path.
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await page.getByLabel("Editor tools").getByRole("button", { name: "Text", exact: true }).click();
-  const artboard = await page.locator(".artboard-stage").boundingBox();
-  if (!artboard) throw new Error("Artboard is not visible.");
-  await page.mouse.click(artboard.x + artboard.width / 2, artboard.y + artboard.height / 2);
+  const onlineArtboard = await page.locator(".artboard-stage").boundingBox();
+  if (!onlineArtboard) throw new Error("Artboard is not visible.");
+  await page.mouse.click(
+    onlineArtboard.x + onlineArtboard.width / 2,
+    onlineArtboard.y + onlineArtboard.height / 2
+  );
   await page.keyboard.type("Offline PDF text");
   await page.keyboard.press("Escape");
   await page.getByLabel("Editor tools").getByRole("button", { name: "Edit", exact: true }).click();
   await page.getByRole("combobox", { name: "Font" }).click();
   await page.getByRole("option", { name: "Source Sans 3", exact: true }).click();
+
+  await page.getByRole("button", { name: "Export", exact: true }).click();
+  await page.getByRole("tab", { name: /PDF/ }).click();
+  const warmDownloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export PDF" }).click();
+  expect(await (await warmDownloadPromise).path()).not.toBeNull();
+
+  await context.setOffline(true);
+  await page.reload();
+  await expect(page.locator(".editor-shell")).toBeVisible();
 
   await page.getByRole("button", { name: "Export", exact: true }).click();
   await page.getByRole("tab", { name: /PDF/ }).click();

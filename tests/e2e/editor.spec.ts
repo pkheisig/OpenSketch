@@ -44,12 +44,17 @@ function pngProvenance(bytes: Buffer): unknown {
   throw new Error("The PNG export has no OpenSketch provenance metadata.");
 }
 
-function decodedPdfTextStreams(pdf: PDFDocument): string[] {
+function decodedPdfContentStreams(pdf: PDFDocument): string[] {
   return pdf.context.enumerateIndirectObjects().flatMap(([, object]) => {
     if (!(object instanceof PDFRawStream)) return [];
-    const decoded = new TextDecoder("latin1").decode(decodePDFRawStream(object).decode());
-    return decoded.includes(" Tf") && decoded.includes(" Tj") ? [decoded] : [];
+    return [new TextDecoder("latin1").decode(decodePDFRawStream(object).decode())];
   });
+}
+
+function decodedPdfTextStreams(pdf: PDFDocument): string[] {
+  return decodedPdfContentStreams(pdf).filter(
+    (stream) => stream.includes(" Tf") && stream.includes(" Tj")
+  );
 }
 
 async function selectUiOption(
@@ -4052,6 +4057,9 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
       clipPathText: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><clipPath id="label-clip"><text x="12" y="40" font-family="Inter" fill="none">Label</text></clipPath></defs><rect width="600" height="240" fill="black" clip-path="url(#label-clip)" /></svg>`
       ),
+      indirectClipPathText: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="clip-label" x="12" y="40" font-family="Inter">Label</text><clipPath id="indirect-label-clip"><use href="#clip-label" /></clipPath></defs><rect width="600" height="240" fill="black" clip-path="url(#indirect-label-clip)" /></svg>`
+      ),
       hiddenClipPathElement: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><clipPath id="hidden-clip"><text x="12" y="40" font-family="Inter">Label</text></clipPath></defs><rect display="none" width="600" height="240" fill="black" clip-path="url(#hidden-clip)" /></svg>`
       ),
@@ -4153,6 +4161,8 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
   expect(result.cssFunctions.pdf).not.toContain("/BaseFont /Times");
   expect(result.clipPathText.error).toContain("text-based clip paths");
   expect(result.clipPathText.pdf).toBe("");
+  expect(result.indirectClipPathText.error).toContain("text-based clip paths");
+  expect(result.indirectClipPathText.pdf).toBe("");
   expect(result.hiddenClipPathElement.error).toBeNull();
   expect(result.hiddenClipPathElement.pdf).not.toContain("text-based clip paths");
   expect(result.hiddenClipPathDescendant.error).toContain("text-based clip paths");
@@ -4307,6 +4317,49 @@ test("resolves font styles for each rendered SVG use instance", async ({ page })
   expect(rawPdf).toContain("/BaseFont /Inter");
   expect(rawPdf).toContain("/BaseFont /Lato");
   expect(rawPdf).not.toContain("/BaseFont /Times");
+});
+
+test("preserves per-instance paint for shape and mixed SVG use targets", async ({ page }) => {
+  await page.goto("/");
+  const encodedPdf = await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const blob = await svgToPdfBlob(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240">
+        <defs>
+          <path id="shape" d="M0 0h40v40H0z" />
+          <g id="mixed"><path d="M0 0h40v40H0z" /><text x="4" y="28" font-family="Inter">Mixed</text></g>
+        </defs>
+        <use href="#shape" fill="red" x="12" y="12" />
+        <use href="#shape" fill="none" stroke="blue" stroke-width="4" x="72" y="12" />
+        <use href="#shape" fill="none" stroke="none" x="132" y="12" />
+        <use href="#mixed" fill="green" font-family="Inter" x="192" y="12" />
+      </svg>`,
+      600,
+      240,
+      {
+        title: "SVG use paint",
+        description: "Per-instance shape and mixed target paint",
+        credit: "OpenSketch",
+        provenance: { version: 1 as const, assets: [] }
+      }
+    );
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    let binary = "";
+    for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+    }
+    return btoa(binary);
+  });
+
+  const pdf = await PDFDocument.load(Buffer.from(encodedPdf, "base64"));
+  const content = decodedPdfContentStreams(pdf).join("\n");
+  const rawPdf = Buffer.from(encodedPdf, "base64").toString("latin1");
+  expect(content).toContain("1. 0. 0. rg");
+  expect(content).toContain("0. 0. 1. RG");
+  expect(content).toContain("4. w");
+  expect(rawPdf).not.toContain("/BaseFont /Times");
+  expect(rawPdf).toContain("/BaseFont /Inter");
 });
 
 test("keeps visible SVG use targets from rendering twice", async ({ page }) => {

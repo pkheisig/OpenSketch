@@ -137,8 +137,10 @@ relative weights, and inherited styles are resolved before PDF rendering. Each
 text run is checked against its embedded font; export fails clearly rather than
 silently dropping missing glyphs or emitting scripts that require OpenType
 shaping. Only the faces used by text runs are registered and passed to each
-jsPDF conversion. The merged PDF faces remain in the PWA precache so the first
-text-bearing PDF export also works after the app is taken offline. A
+jsPDF conversion. Browser and PDF font binaries are runtime-cached after use
+rather than included in the app-shell precache, keeping normal installation
+small; an online export therefore warms each PDF face needed for later offline
+work. A
 standards-compatible XMP packet carries the canonical manifest. Georgia remains
 a system-only editor choice, so its Noto Serif mapping is deterministic but may
 not be pixel-identical to every installed Georgia; mixed or wrapped Georgia

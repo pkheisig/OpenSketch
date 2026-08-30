@@ -36,7 +36,10 @@ export default defineConfig({
         clientsClaim: true,
         cleanupOutdatedCaches: true,
         navigateFallback: "/OpenSketch/index.html",
-        globPatterns: ["**/*.{html,js,css,svg,png,webp,woff,woff2,ttf,txt}"],
+        // Font binaries are fetched and cached when a family or PDF face is
+        // actually used. Keeping them out of the app-shell precache avoids
+        // making every installation download the complete font catalog.
+        globPatterns: ["**/*.{html,js,css,svg,png,webp,txt}"],
         globIgnores: [
           "assets/nih-bioart/**",
           "assets/nih-bioart-thumbnails/**",
@@ -56,6 +59,16 @@ export default defineConfig({
             handler: "CacheFirst",
             options: {
               cacheName: "opensketch-pdf-fonts",
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          },
+          {
+            urlPattern: /\/OpenSketch\/assets\/[^/]+\.woff2?$/,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "opensketch-browser-fonts",
               cacheableResponse: {
                 statuses: [0, 200]
               }

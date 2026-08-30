@@ -359,6 +359,20 @@ const PDF_USE_PAINT_PROPERTIES = [
   "stroke-opacity",
   "stroke-width"
 ] as const;
+const PDF_PAINTABLE_ELEMENT_NAMES = new Set([
+  "circle",
+  "ellipse",
+  "image",
+  "line",
+  "path",
+  "polygon",
+  "polyline",
+  "rect",
+  "text",
+  "tspan",
+  "textpath",
+  "use"
+]);
 
 function isZeroPdfOpacity(value: string | null | undefined): boolean {
   if (!value) return false;
@@ -588,6 +602,17 @@ function pdfUseElements(root: Element): SVGElement[] {
   return elements;
 }
 
+function pdfPaintElements(root: Element): SVGElement[] {
+  const elements: SVGElement[] = [];
+  if (PDF_PAINTABLE_ELEMENT_NAMES.has(root.localName.toLowerCase())) {
+    elements.push(root as SVGElement);
+  }
+  elements.push(
+    ...Array.from(root.querySelectorAll<SVGElement>([...PDF_PAINTABLE_ELEMENT_NAMES].join(",")))
+  );
+  return elements;
+}
+
 function pdfUseReferenceId(use: Element): string | undefined {
   return (use.getAttribute("href") ?? use.getAttribute("xlink:href"))?.trim().match(/^#(.+)$/)?.[1];
 }
@@ -611,6 +636,10 @@ function pdfReferenceContainsText(
       : undefined;
     return nestedReference ? pdfReferenceContainsText(root, nestedReference, visitedIds) : false;
   });
+}
+
+function pdfReferenceContainsPaintableContent(reference: Element): boolean {
+  return pdfPaintElements(reference).length > 0;
 }
 
 function pdfRootDefinitions(root: SVGSVGElement): SVGDefsElement {
@@ -708,7 +737,11 @@ function materializePdfUseTextStyles(
 
     const sourceReference = pdfElementsById(svg, referenceId);
     const clonedReference = pdfElementsById(clone, referenceId);
-    if (!sourceReference || !clonedReference || !pdfReferenceContainsText(svg, sourceReference)) {
+    if (
+      !sourceReference ||
+      !clonedReference ||
+      !pdfReferenceContainsPaintableContent(sourceReference)
+    ) {
       return false;
     }
 
@@ -734,6 +767,8 @@ function materializePdfUseTextStyles(
     try {
       const sourceTextElements = pdfTextElements(sourceReference);
       const probeTextElements = pdfTextElements(probeReference);
+      const sourcePaintElements = pdfPaintElements(sourceReference);
+      const probePaintElements = pdfPaintElements(probeReference);
       const contextVisibility = frameWindow.getComputedStyle(contextUse).visibility;
       const contextIsHidden = ["hidden", "collapse"].includes(contextVisibility);
       const hasVisibleTextOverride =
@@ -754,12 +789,17 @@ function materializePdfUseTextStyles(
       materializedClone.setAttribute("id", materializedId);
       const materializedSourceTextElements = pdfTextElements(materializedSource);
       const materializedCloneTextElements = pdfTextElements(materializedClone);
+      const materializedSourcePaintElements = pdfPaintElements(materializedSource);
+      const materializedClonePaintElements = pdfPaintElements(materializedClone);
       const sourceNestedUses = pdfUseElements(materializedSource);
       const cloneNestedUses = pdfUseElements(materializedClone);
       const contextNestedUses = pdfUseElements(probeReference);
       if (
         materializedSourceTextElements.length !== probeTextElements.length ||
         materializedCloneTextElements.length !== probeTextElements.length ||
+        sourcePaintElements.length !== probePaintElements.length ||
+        materializedSourcePaintElements.length !== probePaintElements.length ||
+        materializedClonePaintElements.length !== probePaintElements.length ||
         sourceNestedUses.length !== cloneNestedUses.length ||
         sourceNestedUses.length !== contextNestedUses.length
       ) {
@@ -773,14 +813,16 @@ function materializePdfUseTextStyles(
           materializedSourceTextElements[index].style.setProperty(property, value, "important");
           materializedCloneTextElements[index].style.setProperty(property, value, "important");
         }
-        const computedPaint = frameWindow.getComputedStyle(probeTextElement);
+      });
+      probePaintElements.forEach((probePaintElement, index) => {
+        const computedPaint = frameWindow.getComputedStyle(probePaintElement);
         for (const property of PDF_USE_PAINT_PROPERTIES) {
           const value = computedPaint.getPropertyValue(property).trim();
           if (!value) continue;
-          materializedSourceTextElements[index].setAttribute(property, value);
-          materializedCloneTextElements[index].setAttribute(property, value);
-          materializedSourceTextElements[index].style.setProperty(property, value, "important");
-          materializedCloneTextElements[index].style.setProperty(property, value, "important");
+          materializedSourcePaintElements[index].setAttribute(property, value);
+          materializedClonePaintElements[index].setAttribute(property, value);
+          materializedSourcePaintElements[index].style.setProperty(property, value, "important");
+          materializedClonePaintElements[index].style.setProperty(property, value, "important");
         }
       });
 
@@ -1245,6 +1287,69 @@ function hasPdfVisibleTextContent(element: Element): boolean {
   });
 }
 
+function isPdfClipElementHidden(element: Element): boolean {
+  const path: Element[] = [];
+  for (let current: Element | null = element; current; current = current.parentElement) {
+    path.unshift(current);
+  }
+
+  let hidden = false;
+  for (const current of path) {
+    if (current.getAttribute(PDF_DISPLAY_NONE_ATTRIBUTE) === "true") return true;
+    if (current.getAttribute(PDF_HIDDEN_ELEMENT_ATTRIBUTE) === "true") {
+      hidden = true;
+      continue;
+    }
+    if (current.getAttribute(PDF_VISIBLE_ELEMENT_ATTRIBUTE) === "true") {
+      hidden = false;
+      continue;
+    }
+    if (
+      svgInlineStyleValue(current, "display")
+        ?.replace(/\s*!important\s*$/i, "")
+        .trim()
+        .toLowerCase() === "none"
+    ) {
+      return true;
+    }
+    const visibility = declaredPdfVisibility(current);
+    if (visibility) hidden = visibility === "hidden";
+  }
+  return hidden;
+}
+
+function hasPdfVisibleClipTextContent(element: Element): boolean {
+  return pdfTextElements(element).some((candidate) => {
+    const hasDirectRenderableText = Array.from(candidate.childNodes).some(
+      (node) =>
+        (node.nodeType === 3 || node.nodeType === 4) && hasPdfRenderableText(node.nodeValue ?? "")
+    );
+    return hasDirectRenderableText && !isPdfClipElementHidden(candidate);
+  });
+}
+
+function pdfReferenceContainsVisibleClipText(
+  svg: SVGSVGElement,
+  reference: Element,
+  visitedIds = new Set<string>()
+): boolean {
+  if (hasPdfVisibleClipTextContent(reference)) return true;
+
+  const referenceId = reference.getAttribute("id");
+  if (referenceId) {
+    if (visitedIds.has(referenceId)) return false;
+    visitedIds = new Set(visitedIds).add(referenceId);
+  }
+  return pdfUseElements(reference).some((use) => {
+    if (isPdfClipElementHidden(use)) return false;
+    const nestedReferenceId = pdfUseReferenceId(use);
+    const nestedReference = nestedReferenceId ? pdfElementsById(svg, nestedReferenceId) : undefined;
+    return nestedReference
+      ? pdfReferenceContainsVisibleClipText(svg, nestedReference, visitedIds)
+      : false;
+  });
+}
+
 function assertPdfTextPathsSupported(
   svg: SVGSVGElement,
   reachableDefinitionIds: ReadonlySet<string>
@@ -1263,9 +1368,9 @@ function assertPdfTextClipPathsSupported(
   svg: SVGSVGElement,
   reachableDefinitionIds: ReadonlySet<string>
 ): void {
-  for (const text of svg.querySelectorAll<SVGElement>("clipPath text")) {
-    if (isPdfTextInUnreferencedDefinition(text, svg, reachableDefinitionIds)) continue;
-    if (hasPdfVisibleTextContent(text)) {
+  for (const clipPath of svg.querySelectorAll<SVGElement>("clipPath")) {
+    if (isPdfTextInUnreferencedDefinition(clipPath, svg, reachableDefinitionIds)) continue;
+    if (pdfReferenceContainsVisibleClipText(svg, clipPath)) {
       throw new Error(
         "PDF export cannot render text-based clip paths yet. Convert clipping text to paths before exporting."
       );
