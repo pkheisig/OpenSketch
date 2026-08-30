@@ -92,6 +92,33 @@ describe("SVG sanitization", () => {
     expect(clean).toContain("url(#safe-paint)");
   });
 
+  it("rewrites namespaced IDs throughout supported CSS selectors in both sanitizers", () => {
+    const styled = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+      <style>
+        .parent #shape,
+        g #shape,
+        .a > #shape,
+        .a + #shape,
+        .a ~ #shape,
+        #shape.class,
+        .scope :not(#shape),
+        .scope :is(#shape) { fill: #fff; stroke: #112233; mix-blend-mode: multiply; }
+      </style>
+      <g class="parent"><rect id="shape" class="class" width="10" height="10"/></g>
+    </svg>`;
+
+    const imported = sanitizeImportedSvg(styled, "import");
+    expect(imported).toContain("#import-shape");
+    expect(imported).not.toContain("#shape");
+    expect(imported).toContain("#fff");
+    expect(imported).toContain("#112233");
+
+    const built = sanitizeSvg(styled, "import");
+    expect(built).not.toContain("#shape");
+    expect(built).toContain("fill:#fff");
+    expect(built).toContain("mix-blend-mode:multiply");
+  });
+
   it("does not confuse hex colors with internal IDs", () => {
     const colorLikeId = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
       <style>#fff { stroke: #fff; }</style>
