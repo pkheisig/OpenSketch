@@ -20,7 +20,9 @@ Feature rules use semantic tokens. Light and dark differences belong in the
 token layer or in a narrowly scoped feature rule that is unique to that
 feature. A component must not be restyled in a second adapter stylesheet.
 Selectors are kept at one owner even when a surface is rendered through a
-portal; the owning module can target that portal's stable class directly.
+portal; the owning module can target that portal's stable class directly. A
+same-module selector may repeat inside a responsive rule when it intentionally
+overrides the base declaration; the checker still rejects cross-module repeats.
 
 ## Governance
 

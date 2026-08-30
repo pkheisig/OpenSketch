@@ -1,4 +1,4 @@
-/* Semantic design tokens. Components consume these values instead of
+/* Semantic token ownership. Components consume these values instead of
    replaying theme-specific declarations in a second stylesheet. */
 :root,
 html[data-theme="light"] {

@@ -12,6 +12,11 @@ const ownedFiles = [
   "canvas.css",
   "dialogs.css"
 ];
+const selectorFiles = ["tokens.css", ...ownedFiles];
+
+function stripCssComments(source) {
+  return source.replace(/\/\*[\s\S]*?\*\//g, " ");
+}
 
 function findClosingBrace(source, openIndex) {
   let depth = 1;
@@ -148,7 +153,7 @@ export function topLevelSelectors(source) {
     }
     if (delimiter !== "{") throw new Error("Malformed CSS prelude");
     const close = findClosingBrace(source, index);
-    const prelude = source.slice(start, index).trim();
+    const prelude = stripCssComments(source.slice(start, index)).trim();
     if (!prelude.startsWith("@")) {
       for (const selector of splitSelectorList(prelude)) {
         const normalized = selector.trim().replace(/\s+/g, " ");
@@ -174,15 +179,20 @@ export function checkStyleOwnership(root = repoRoot) {
     '@import "./canvas.css";',
     '@import "./dialogs.css";'
   ];
-  const imports = appEntry
+  const imports = stripCssComments(appEntry)
     .split(/\r?\n/)
     .map((line) => line.replace(/^\uFEFF/, "").trim())
     .filter((line) => line.startsWith("@import "))
-    .map((line) => line.replace(/\s*\/\*.*?\*\/\s*$/, ""));
+    .map((line) => line.trim());
   if (imports.join("\n") !== expectedImports.join("\n")) {
     throw new Error("app.css imports do not match the deterministic ownership order");
   }
-  const expectedStyleFiles = new Set(["app.css", "tokens.css", ...ownedFiles]);
+  for (const legacyFile of ["global.css", "opengate-theme.css"]) {
+    if (fs.existsSync(path.join(stylesDir, legacyFile))) {
+      throw new Error(`retired stylesheet still exists: ${legacyFile}`);
+    }
+  }
+  const expectedStyleFiles = new Set(["app.css", ...selectorFiles]);
   const actualStyleFiles = fs
     .readdirSync(stylesDir)
     .filter((file) => file.endsWith(".css"))
@@ -190,18 +200,17 @@ export function checkStyleOwnership(root = repoRoot) {
   if (actualStyleFiles.join("\n") !== [...expectedStyleFiles].sort().join("\n")) {
     throw new Error("styles directory contains an unowned or missing stylesheet");
   }
-  for (const legacyFile of ["global.css", "opengate-theme.css"]) {
-    if (fs.existsSync(path.join(stylesDir, legacyFile))) {
-      throw new Error(`retired stylesheet still exists: ${legacyFile}`);
-    }
-  }
   const seen = new Map();
-  for (const file of ownedFiles) {
+  for (const file of selectorFiles) {
     const filePath = path.join(stylesDir, file);
     const source = fs.readFileSync(filePath, "utf8");
     const normalizedSource = source.replace(/^\uFEFF/, "").trimStart();
-    if (!normalizedSource.startsWith("/*") || !source.includes("ownership")) {
+    const header = normalizedSource.match(/^\/\*[\s\S]*?\*\//)?.[0] ?? "";
+    if (!header || !/ownership/i.test(header)) {
       throw new Error(`${file} must declare its stylesheet ownership`);
+    }
+    if (source.includes("@import")) {
+      throw new Error(`${file} must not import another stylesheet`);
     }
     for (const selector of topLevelSelectors(source)) {
       const prior = seen.get(selector);
