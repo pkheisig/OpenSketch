@@ -3,6 +3,7 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -153,6 +154,8 @@ import {
   type ShapeKind,
   type TextKind
 } from "@/editor/creation";
+import { EditorSnapshotProvider } from "@/editor/editorSnapshotProvider";
+import { createSnapshotStore, type SnapshotStore } from "@/editor/editorStore";
 import { DEFAULT_TEXT_LINE_HEIGHT } from "@/editor/text";
 
 FabricObject.customProperties = [
@@ -316,7 +319,7 @@ async function restoreBundledSvgBlendModes(objects: FabricObject[]): Promise<voi
   );
 }
 
-interface EditorContextValue {
+export interface EditorContextValue {
   projectId: string;
   canvas: Canvas | null;
   canvasReady: boolean;
@@ -911,6 +914,8 @@ export function EditorProvider({
   onNavigationGuardChange: (guard: (() => boolean) | null) => void;
   children: ReactNode;
 }) {
+  const editorStore = useRef<SnapshotStore<EditorContextValue> | null>(null);
+  if (!editorStore.current) editorStore.current = createSnapshotStore<EditorContextValue>();
   const [canvas, setCanvas] = useState<Canvas | null>(null);
   const [canvasReady, setCanvasReady] = useState(false);
   const canvasReadyRef = useRef(false);
@@ -3984,7 +3989,16 @@ export function EditorProvider({
       zoom
     ]
   );
-  return <EditorContext.Provider value={value}>{children}</EditorContext.Provider>;
+  const store = editorStore.current;
+  store.setSnapshot(value);
+  useLayoutEffect(() => {
+    store.publish();
+  }, [store, value]);
+  return (
+    <EditorSnapshotProvider store={store}>
+      <EditorContext.Provider value={value}>{children}</EditorContext.Provider>
+    </EditorSnapshotProvider>
+  );
 }
 
 function escapeXml(value: string): string {

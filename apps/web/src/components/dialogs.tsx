@@ -3,14 +3,20 @@ import { Download, FileImage, FileText, FileType2, X } from "lucide-react";
 import { ColorPalettePicker } from "@/components/ColorPalettePicker";
 import { MotionCollapse } from "@/components/MotionCollapse";
 import { MotionPresence } from "@/components/MotionPresence";
-import { useEditor } from "@/editor/EditorContext";
+import { useEditorFields } from "@/editor/editorHooks";
 import { UiSelect } from "@/components/UiSelect";
 import { EXPORT_DPI_OPTIONS, loadExportDpi, saveExportDpi } from "@/export/preferences";
 import { inspectPngExportResource } from "@/export/png";
 import { useModalDialog } from "./useModalDialog";
 
 export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const editor = useEditor();
+  const editor = useEditorFields([
+    "canvasSettings",
+    "exportSvg",
+    "exportPdf",
+    "exportPng",
+    "exportCredits"
+  ]);
   const dialogRef = useModalDialog(open, onClose);
   const [format, setFormat] = useState<"svg" | "png" | "pdf">("svg");
   const [dpi, setDpi] = useState(() => loadExportDpi());

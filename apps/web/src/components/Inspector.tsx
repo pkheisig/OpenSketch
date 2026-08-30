@@ -34,7 +34,7 @@ import {
   type ConnectorRouting
 } from "@workspace/editor-core";
 import { Color, FabricObject, Group as FabricGroup, Text } from "fabric";
-import { useEditor } from "@/editor/EditorContext";
+import { useEditorFields } from "@/editor/editorHooks";
 import { TEXT_FONT_FAMILIES } from "@/editor/fonts";
 import { isManualGroup } from "@/editor/grouping";
 import { AssetVariantGrid } from "@/components/AssetVariantPicker";
@@ -51,7 +51,7 @@ function number(value: number | undefined, digits = 0) {
 }
 
 export function InspectorContent({ onClose }: { onClose?: () => void }) {
-  const editor = useEditor();
+  const editor = useEditorFields(["selection", "selectParentAsset"]);
   const selected = editor.selection[0];
   if (!selected) return null;
   const isSvgPart = selected?.OpenSketchType === "svg-part";
@@ -83,7 +83,21 @@ export function InspectorContent({ onClose }: { onClose?: () => void }) {
 }
 
 function ObjectInspector({ object }: { object: FabricObject }) {
-  const editor = useEditor();
+  const editor = useEditorFields([
+    "selection",
+    "setObject",
+    "setAssetVariant",
+    "updateConnector",
+    "applyTextScript",
+    "deleteSelection",
+    "duplicateSelection",
+    "groupSelection",
+    "ungroupSelection",
+    "selectParentAsset",
+    "align",
+    "distribute",
+    "flip"
+  ]);
   const [aspectLocked, setAspectLocked] = useState(true);
   const [assetFamilies, setAssetFamilies] = useState<AssetFamily[] | null>(null);
   const objectType = object.OpenSketchType ?? "";
@@ -695,7 +709,7 @@ function svgPartParent(object: FabricObject): FabricGroup | null {
 }
 
 export function LayersPanel() {
-  const editor = useEditor();
+  const editor = useEditorFields(["canvas", "selection", "arrange"]);
   const [open, setOpen] = useState(false);
   const objects = [...(editor.canvas?.getObjects() ?? [])].reverse();
   return (
@@ -710,27 +724,27 @@ export function LayersPanel() {
       <MotionCollapse open={open} className="layers-collapse">
         <div>
           <div className="layer-list">
-          {objects.length === 0 && <p>No objects yet</p>}
-          {objects.map((object, index) => (
-            <button
-              key={object.objectId ?? `${object.type}-${index}`}
-              className={editor.selection.includes(object) ? "active" : ""}
-              onClick={() => {
-                editor.canvas?.setActiveObject(object);
-                editor.canvas?.requestRenderAll();
-                object.fire("selected");
-              }}
-            >
-              <span className="layer-icon">
-                {(object.name ?? object.type).slice(0, 1).toUpperCase()}
-              </span>
-              <span className="layer-copy">
-                <strong>{object.name ?? object.type}</strong>
-                <small>{object.OpenSketchType ?? object.type}</small>
-              </span>
-              {object.visible === false ? <EyeOff size={13} /> : <Eye size={13} />}
-            </button>
-          ))}
+            {objects.length === 0 && <p>No objects yet</p>}
+            {objects.map((object, index) => (
+              <button
+                key={object.objectId ?? `${object.type}-${index}`}
+                className={editor.selection.includes(object) ? "active" : ""}
+                onClick={() => {
+                  editor.canvas?.setActiveObject(object);
+                  editor.canvas?.requestRenderAll();
+                  object.fire("selected");
+                }}
+              >
+                <span className="layer-icon">
+                  {(object.name ?? object.type).slice(0, 1).toUpperCase()}
+                </span>
+                <span className="layer-copy">
+                  <strong>{object.name ?? object.type}</strong>
+                  <small>{object.OpenSketchType ?? object.type}</small>
+                </span>
+                {object.visible === false ? <EyeOff size={13} /> : <Eye size={13} />}
+              </button>
+            ))}
           </div>
           {objects.length > 0 ? (
             <div className="layer-controls">
