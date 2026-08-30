@@ -189,6 +189,36 @@ describe("PDF export metadata", () => {
     expect(parsed.querySelector("style")?.textContent).toContain("font-weight: 700");
   });
 
+  it("preserves unresolved CSS font functions after text styles are materialized", () => {
+    const parsed = new DOMParser().parseFromString(
+      `<svg xmlns="http://www.w3.org/2000/svg"><style>.label { font-weight: var(--weight); font-style: var(--style); }.calculated { font-weight: calc(400 + 300); font-style: oblique calc(12deg); }</style><text class="label calculated">x</text></svg>`,
+      "image/svg+xml"
+    );
+
+    expect(() => normalizePdfSvgFontFamilies(parsed.documentElement)).not.toThrow();
+    expect(parsed.querySelector("style")?.textContent).toContain("font-weight: var(--weight)");
+    expect(parsed.querySelector("style")?.textContent).toContain("font-style: var(--style)");
+    expect(parsed.querySelector("style")?.textContent).toContain("font-weight: calc(400 + 300)");
+    expect(parsed.querySelector("style")?.textContent).toContain("font-style: oblique calc(12deg)");
+  });
+
+  it("registers paint-invisible text used as clipping geometry", () => {
+    const parsed = new DOMParser().parseFromString(
+      `<svg xmlns="http://www.w3.org/2000/svg"><defs><clipPath id="label-clip"><text font-family="Inter" fill="none">Label</text></clipPath></defs><rect width="100" height="40" clip-path="url(#label-clip)"/></svg>`,
+      "image/svg+xml"
+    );
+
+    expect(
+      getPdfFontRegistrationsReferencedBySvg(parsed.documentElement as unknown as SVGSVGElement)
+    ).toEqual([
+      expect.objectContaining({
+        pdfFamily: "Inter",
+        style: "normal",
+        weight: 400
+      })
+    ]);
+  });
+
   it("rejects visible textPath content instead of silently dropping it", () => {
     const parsed = new DOMParser().parseFromString(
       `<svg xmlns="http://www.w3.org/2000/svg"><path id="curve" d="M0 0"/><text font-family="Inter"><textPath href="#curve">x</textPath></text></svg>`,

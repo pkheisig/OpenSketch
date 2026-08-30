@@ -4035,6 +4035,12 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
       stylesheetOpacityOverride: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" opacity="0" style="opacity: 1">CSS visible</text></svg>`
       ),
+      cssFunctions: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><style>:root { --pdf-weight: 600; --pdf-style: italic; } .label { font-family: "Inter"; font-weight: var(--pdf-weight); font-style: var(--pdf-style); }</style><text class="label" x="12" y="40">CSS functions</text></svg>`
+      ),
+      clipPathText: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><clipPath id="label-clip"><text x="12" y="40" font-family="Inter" fill="none">Label</text></clipPath></defs><rect width="600" height="240" fill="black" clip-path="url(#label-clip)" /></svg>`
+      ),
       visibleDescendant: await render(
         `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" visibility="hidden"><tspan visibility="visible">Γ</tspan></text></svg>`
       ),
@@ -4077,6 +4083,12 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
   expect(result.stylesheetOpacityOverride.error).toBeNull();
   expect(result.stylesheetOpacityOverride.pdf).toContain("/BaseFont /Atkinson#20Hyperlegible");
   expect(result.stylesheetOpacityOverride.pdf).not.toContain("/BaseFont /Times");
+  expect(result.cssFunctions.error).toBeNull();
+  expect(result.cssFunctions.pdf).toContain("/BaseFont /Inter");
+  expect(result.cssFunctions.pdf).not.toContain("/BaseFont /Times");
+  expect(result.clipPathText.error).toBeNull();
+  expect(result.clipPathText.pdf).toContain("/BaseFont /Inter");
+  expect(result.clipPathText.pdf).not.toContain("/BaseFont /Times");
   expect(result.visibleDescendant.error).toContain("U+0393");
   expect(result.cdata.error).toBeNull();
   expect(result.cdata.pdf).toContain("/BaseFont /Inter");

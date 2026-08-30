@@ -258,6 +258,19 @@ function normalizeFontStyleValue(value: string): string {
   return normalizePdfFontStyle(match[1]) + (match[2] ?? "");
 }
 
+function normalizeCssFontValue(value: string, normalize: (value: string) => string): string {
+  try {
+    return normalize(value);
+  } catch (error) {
+    // The browser resolves valid var()/calc()/range-function declarations on
+    // text elements before this stylesheet pass. Preserve the original rule
+    // so the inline computed value remains authoritative without masking
+    // malformed literal font declarations.
+    if (/\b(?:var|calc|min|max|clamp)\s*\(/i.test(value)) return value;
+    throw error;
+  }
+}
+
 function normalizeCssFontFamilies(value: string): string {
   return value.replace(
     /(font-family\s*:\s*)([^;}{]+)/gi,
@@ -273,14 +286,15 @@ function normalizeCssFontWeights(value: string): string {
       fontFace: string | undefined,
       prefix: string | undefined,
       weight: string | undefined
-    ) => fontFace ?? `${prefix}${normalizeFontWeightValue(weight ?? match)}`
+    ) => fontFace ?? `${prefix}${normalizeCssFontValue(weight ?? match, normalizeFontWeightValue)}`
   );
 }
 
 function normalizeCssFontStyles(value: string): string {
   return value.replace(
     /(font-style\s*:\s*)([^;}{]+)/gi,
-    (_match, prefix: string, style: string) => prefix + normalizeFontStyleValue(style)
+    (_match, prefix: string, style: string) =>
+      prefix + normalizeCssFontValue(style, normalizeFontStyleValue)
   );
 }
 
@@ -373,6 +387,13 @@ function hasInvisiblePdfTextPaint(element: Element): boolean {
   );
 }
 
+function isWithinPdfClipPath(element: Element): boolean {
+  for (let current = element.parentElement; current; current = current.parentElement) {
+    if (current.localName.toLowerCase() === "clippath") return true;
+  }
+  return false;
+}
+
 function computedPdfPaintIsInvisible(style: CSSStyleDeclaration): boolean {
   return (
     pdfPaintIsInvisible(
@@ -417,7 +438,13 @@ function hasHiddenPdfTextAncestor(element: Element): boolean {
       break;
     }
   }
-  if (!hasMaterializedTextState && hasInvisiblePdfTextPaint(element)) return true;
+  if (
+    !hasMaterializedTextState &&
+    !isWithinPdfClipPath(element) &&
+    hasInvisiblePdfTextPaint(element)
+  ) {
+    return true;
+  }
 
   let resolvedVisibility: PdfVisibility | undefined;
   for (let current: Element | null = element; current; current = current.parentElement) {
@@ -537,7 +564,7 @@ function materializePdfTextStyles(svg: SVGSVGElement): void {
       const hidden =
         computed.display === "none" ||
         ["hidden", "collapse"].includes(computed.visibility) ||
-        computedPdfPaintIsInvisible(computed);
+        (!isWithinPdfClipPath(sourceElement) && computedPdfPaintIsInvisible(computed));
       if (computed.visibility === "collapse") {
         // svg2pdf only recognizes the exact `hidden` value. Materialize SVG's
         // collapse state so skipped text cannot leak into the PDF renderer.
