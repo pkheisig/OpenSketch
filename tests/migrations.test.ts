@@ -46,6 +46,47 @@ describe("project migrations", () => {
       0x00
     ]);
 
+  const progressiveJpegHeaderDataUrl = (width: number, height: number): string => {
+    const jpeg = new Uint8Array([
+      0xff,
+      0xd8,
+      0xff,
+      0xc0,
+      0x00,
+      0x11,
+      0x08,
+      (height >> 8) & 0xff,
+      height & 0xff,
+      (width >> 8) & 0xff,
+      width & 0xff,
+      0x03,
+      0x01,
+      0x11,
+      0x00,
+      0x02,
+      0x11,
+      0x00,
+      0x03,
+      0x11,
+      0x00
+    ]);
+    const appSegmentLength = 65_535;
+    const appSegmentCount = 17;
+    const bytes = new Uint8Array(2 + appSegmentCount * (appSegmentLength + 2) + jpeg.length - 2);
+    bytes.set(jpeg.subarray(0, 2));
+    let offset = 2;
+    for (let segment = 0; segment < appSegmentCount; segment += 1) {
+      bytes.set([0xff, 0xe1, appSegmentLength >> 8, appSegmentLength & 0xff], offset);
+      offset += 2 + appSegmentLength;
+    }
+    bytes.set(jpeg.subarray(2), offset);
+    let binary = "";
+    for (let index = 0; index < bytes.length; index += 32_768) {
+      binary += String.fromCharCode(...bytes.subarray(index, index + 32_768));
+    }
+    return `data:image/jpeg;base64,${btoa(binary)}`;
+  };
+
   const webpVp8xHeaderDataUrl = (width: number, height: number): string =>
     bytesDataUrl("image/webp", [
       0x52,
@@ -211,10 +252,13 @@ describe("project migrations", () => {
     const tooMany = {
       ...project,
       objects: {
-        objects: Array.from({ length: PORTABLE_PROJECT_LIMITS.maxSceneObjects + 1 }, (_, index) => ({
-          type: "Rect",
-          objectId: `rect-${index}`
-        }))
+        objects: Array.from(
+          { length: PORTABLE_PROJECT_LIMITS.maxSceneObjects + 1 },
+          (_, index) => ({
+            type: "Rect",
+            objectId: `rect-${index}`
+          })
+        )
       }
     };
     expect(() => migrateProjectForLoad(tooMany)).toThrow("scene contains too many objects");
@@ -644,6 +688,40 @@ describe("project migrations", () => {
         uploads: [upload(1), upload(2), upload(3)]
       })
     ).toThrow("total decoded raster area");
+  });
+
+  it("bounds aggregate decoded raster area across scene-only image sources", () => {
+    const sceneRaster = (index: number) => ({
+      type: "Image",
+      OpenSketchType: "import",
+      src: pngHeaderDataUrl(10_000, 10_000, index),
+      crossOrigin: null
+    });
+
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: { objects: [sceneRaster(1), sceneRaster(2), sceneRaster(3)] }
+      })
+    ).toThrow("total decoded raster area");
+  });
+
+  it("keeps portable validation aligned with progressive JPEG inspection", () => {
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: {
+          objects: [
+            {
+              type: "Image",
+              OpenSketchType: "import",
+              src: progressiveJpegHeaderDataUrl(24, 12),
+              crossOrigin: null
+            }
+          ]
+        }
+      })
+    ).not.toThrow();
   });
 
   it("keeps supported raster images and free connectors compatible", () => {

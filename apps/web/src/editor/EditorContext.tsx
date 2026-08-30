@@ -30,13 +30,22 @@ import {
   cache,
   util
 } from "fabric";
-import type {
-  AssetFamily,
-  AssetVariant,
-  CanvasSettings,
-  ConnectorBinding,
-  ProjectRecord,
-  ImportedMediaRecord
+import {
+  type AssetFamily,
+  type AssetVariant,
+  type CanvasSettings,
+  type ConnectorBinding,
+  type ImportedMediaRecord,
+  type ProjectRecord,
+  type RasterInspection,
+  imageDataUrlByteLength,
+  inspectRasterBlob,
+  inspectRasterDataUrl,
+  isSupportedImageMimeType,
+  isSupportedRasterMimeType,
+  parseImageDataUrl,
+  PORTABLE_PROJECT_LIMITS,
+  rasterLimitMessage
 } from "@workspace/editor-core";
 import { sanitizeImportedSvg } from "@/assets/browserSanitizer";
 import { calculatePngExportResource, setPngDpi } from "@/export/png";
@@ -221,6 +230,172 @@ const TITLE_PERSISTENCE_DELAY_MS = 250;
 const svgStringCache = new Map<string, string>();
 let assetManifestPromise: Promise<typeof import("@/assets/manifest")> | undefined;
 let bundledVariantsPromise: Promise<Map<string, AssetVariant>> | undefined;
+
+function validateImportedMediaRecord(
+  media: ImportedMediaRecord,
+  existingRasterPixels = 0,
+  knownInspection?: RasterInspection
+): RasterInspection | undefined {
+  const { inspection } = inspectImportedMediaRecord(media, knownInspection);
+  if (!inspection) return undefined;
+  const limitMessage = rasterLimitMessage(inspection, existingRasterPixels);
+  if (limitMessage) throw new Error(limitMessage);
+  return inspection;
+}
+
+function rasterMediaInScene(canvas: Canvas): ImportedMediaRecord[] {
+  const media: ImportedMediaRecord[] = [];
+  const roots = [
+    ...canvas.getObjects(),
+    canvas.backgroundImage,
+    canvas.overlayImage,
+    canvas.clipPath
+  ].filter((object): object is FabricObject => object instanceof FabricObject);
+  const visited = new Set<FabricObject>();
+  const visit = (object: FabricObject): void => {
+    if (visited.has(object)) return;
+    visited.add(object);
+    if (object instanceof FabricImage) {
+      const source = object.getSrc();
+      const parsed = parseImageDataUrl(source);
+      if (!parsed)
+        throw new Error("The document contains an external or unsupported image reference.");
+      if (parsed.mimeType !== "image/svg+xml") {
+        media.push({
+          id: `scene-${media.length}`,
+          name: "Scene image",
+          mimeType: parsed.mimeType,
+          dataUrl: source
+        });
+      }
+    }
+    if (object.clipPath) visit(object.clipPath as FabricObject);
+    if (object instanceof Group) object.getObjects().forEach(visit);
+  };
+  roots.forEach(visit);
+  return media;
+}
+
+interface ProjectMediaTotals {
+  rasterPixels: number;
+  dataUrlBytes: number;
+}
+
+interface ImportedMediaInspection {
+  mimeType: string;
+  byteLength: number;
+  inspection?: RasterInspection;
+}
+
+const importedMediaInspectionCache = new Map<string, ImportedMediaInspection>();
+const IMPORTED_MEDIA_INSPECTION_CACHE_MAX_CHARS = 8 * 1024 * 1024;
+let importedMediaInspectionCacheChars = 0;
+
+function cachedImportedMediaInspection(
+  dataUrl: string,
+  mimeType: string
+): ImportedMediaInspection | undefined {
+  const cached = importedMediaInspectionCache.get(dataUrl);
+  if (!cached || cached.mimeType !== mimeType) return undefined;
+  importedMediaInspectionCache.delete(dataUrl);
+  importedMediaInspectionCache.set(dataUrl, cached);
+  return cached;
+}
+
+function cacheImportedMediaInspection(dataUrl: string, inspection: ImportedMediaInspection): void {
+  if (dataUrl.length > IMPORTED_MEDIA_INSPECTION_CACHE_MAX_CHARS) return;
+  const previous = importedMediaInspectionCache.get(dataUrl);
+  if (previous) {
+    importedMediaInspectionCache.delete(dataUrl);
+    importedMediaInspectionCacheChars -= dataUrl.length;
+  }
+  while (
+    importedMediaInspectionCacheChars + dataUrl.length >
+    IMPORTED_MEDIA_INSPECTION_CACHE_MAX_CHARS
+  ) {
+    const oldest = importedMediaInspectionCache.keys().next().value;
+    if (oldest === undefined) return;
+    importedMediaInspectionCache.delete(oldest);
+    importedMediaInspectionCacheChars -= oldest.length;
+  }
+  importedMediaInspectionCache.set(dataUrl, inspection);
+  importedMediaInspectionCacheChars += dataUrl.length;
+}
+
+function inspectImportedMediaRecord(
+  media: ImportedMediaRecord,
+  knownInspection?: RasterInspection
+): ImportedMediaInspection {
+  const mimeType = media.mimeType.toLowerCase();
+  const cached = cachedImportedMediaInspection(media.dataUrl, mimeType);
+  if (cached) return cached;
+
+  if (!isSupportedImageMimeType(mimeType)) {
+    throw new Error("Choose an SVG, PNG, JPEG, or WebP image.");
+  }
+  const parsed = parseImageDataUrl(media.dataUrl);
+  if (!parsed || parsed.payload.length === 0) {
+    throw new Error("The imported image data is invalid.");
+  }
+  if (parsed.mimeType !== mimeType) {
+    throw new Error("The imported image type does not match its content type.");
+  }
+  if (
+    parsed.base64 &&
+    (() => {
+      const payload = parsed.payload.replace(/[\t\n\f\r ]+/g, "");
+      return payload.length % 4 === 1 || !/^[A-Za-z0-9+/]*={0,2}$/.test(payload);
+    })()
+  ) {
+    throw new Error("The imported image contains invalid encoded data.");
+  }
+  const byteLength = imageDataUrlByteLength(parsed);
+  if (!Number.isFinite(byteLength) || byteLength > PORTABLE_PROJECT_LIMITS.maxDataUrlBytes) {
+    throw new Error("The imported image exceeds the supported 25 MB size limit.");
+  }
+  const result: ImportedMediaInspection = {
+    mimeType,
+    byteLength,
+    inspection:
+      mimeType === "image/svg+xml"
+        ? undefined
+        : (knownInspection ?? inspectRasterDataUrl(media.dataUrl, mimeType))
+  };
+  if (mimeType !== "image/svg+xml" && !result.inspection) {
+    throw new Error("The imported raster is malformed or its content does not match its type.");
+  }
+  if (result.inspection && result.inspection.mimeType !== mimeType) {
+    throw new Error("The imported image type does not match its content type.");
+  }
+  cacheImportedMediaInspection(media.dataUrl, result);
+  return result;
+}
+
+function projectMediaTotals(
+  uploads: ImportedMediaRecord[],
+  canvas: Canvas | null | undefined,
+  excludedId?: string,
+  excludedDataUrl?: string
+): ProjectMediaTotals {
+  const seenDataUrls = new Set<string>();
+  let rasterPixels = 0;
+  let dataUrlBytes = 0;
+  for (const media of [...uploads, ...(canvas ? rasterMediaInScene(canvas) : [])]) {
+    if (media.id === excludedId || media.dataUrl === excludedDataUrl) continue;
+    if (seenDataUrls.has(media.dataUrl)) continue;
+    seenDataUrls.add(media.dataUrl);
+    const { byteLength, inspection } = inspectImportedMediaRecord(media);
+    dataUrlBytes += byteLength;
+    if (dataUrlBytes > PORTABLE_PROJECT_LIMITS.maxTotalDataUrlBytes) {
+      throw new Error("The document already exceeds its embedded data budget.");
+    }
+    if (inspection) rasterPixels += inspection.pixels;
+  }
+  if (rasterPixels > PORTABLE_PROJECT_LIMITS.maxTotalRasterArea) {
+    throw new Error("The document already exceeds its decoded raster area budget.");
+  }
+  return { rasterPixels, dataUrlBytes };
+}
 
 function loadAssetManifest() {
   if (!assetManifestPromise) assetManifestPromise = import("@/assets/manifest");
@@ -2692,7 +2867,22 @@ export function EditorProvider({
   );
 
   const placeImportedMedia = useCallback(
-    async (media: ImportedMediaRecord, point?: Point) => {
+    async (media: ImportedMediaRecord, point?: Point, knownInspection?: RasterInspection) => {
+      const existingMedia = projectMediaTotals(
+        latestProject.current.uploads,
+        canvas,
+        media.id,
+        media.dataUrl
+      );
+      validateImportedMediaRecord(media, existingMedia.rasterPixels, knownInspection);
+      const parsed = parseImageDataUrl(media.dataUrl);
+      if (!parsed) throw new Error("The imported image data is invalid.");
+      if (
+        existingMedia.dataUrlBytes + imageDataUrlByteLength(parsed) >
+        PORTABLE_PROJECT_LIMITS.maxTotalDataUrlBytes
+      ) {
+        throw new Error("Adding this image would exceed the document's embedded data budget.");
+      }
       if (!canvas) return media;
       const stored = await saveImportedMediaToLibrary(media);
       let object: FabricObject;
@@ -2754,30 +2944,36 @@ export function EditorProvider({
       const operation = trackPendingEditorWork(
         importQueue.current.then(async () => {
           const extension = file.name.toLowerCase().split(".").at(-1);
-          const inferredMimeType =
-            extension === "svg"
-              ? "image/svg+xml"
-              : extension === "jpg" || extension === "jpeg"
-                ? "image/jpeg"
-                : extension === "png"
-                  ? "image/png"
-                  : extension === "webp"
-                    ? "image/webp"
-                    : file.type;
-          if (
-            !["image/svg+xml", "image/png", "image/jpeg", "image/webp"].includes(inferredMimeType)
-          ) {
-            throw new Error("Choose an SVG, PNG, JPEG, or WebP image.");
-          }
-          if (file.size > 25 * 1024 * 1024) {
+          if (file.size > PORTABLE_PROJECT_LIMITS.maxDataUrlBytes) {
             throw new Error("Images must be 25 MB or smaller.");
+          }
+          const rasterInspection = await inspectRasterBlob(file);
+          const declaredRasterMimeType = file.type.toLowerCase();
+          const rasterExtension = ["png", "jpg", "jpeg", "webp"].includes(extension ?? "");
+          if (
+            !rasterInspection &&
+            (isSupportedRasterMimeType(declaredRasterMimeType) || rasterExtension)
+          ) {
+            throw new Error("The file is not a valid PNG, JPEG, or WebP image.");
+          }
+          const inferredMimeType =
+            rasterInspection?.mimeType ??
+            (file.type.toLowerCase() === "image/svg+xml" || extension === "svg"
+              ? "image/svg+xml"
+              : "");
+          if (!inferredMimeType) {
+            throw new Error("The file is not a valid PNG, JPEG, WebP, or SVG image.");
+          }
+          if (rasterInspection) {
+            const limitMessage = rasterLimitMessage(rasterInspection);
+            if (limitMessage) throw new Error(limitMessage);
           }
           const importId = crypto.randomUUID();
           let dataUrl = await new Promise<string>((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => resolve(String(reader.result));
-            reader.onerror = () => reject(reader.error);
-            reader.readAsDataURL(file);
+            reader.onerror = () => reject(reader.error ?? new Error("Unable to read the image."));
+            reader.readAsDataURL(new Blob([file], { type: inferredMimeType }));
           });
           if (inferredMimeType === "image/svg+xml") {
             const source = sanitizeImportedSvg(await file.text(), `import-${importId}`);
@@ -2789,7 +2985,7 @@ export function EditorProvider({
             mimeType: inferredMimeType,
             dataUrl
           };
-          return placeImportedMedia(media, point);
+          return placeImportedMedia(media, point, rasterInspection);
         })
       );
       importQueue.current = operation.then(() => undefined).catch(() => undefined);
