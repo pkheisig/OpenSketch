@@ -47,6 +47,50 @@ function findClosingBrace(source, openIndex) {
   throw new Error("Unclosed CSS block");
 }
 
+function splitSelectorList(prelude) {
+  const selectors = [];
+  let start = 0;
+  let quote = null;
+  let comment = false;
+  let parentheses = 0;
+  let brackets = 0;
+  for (let index = 0; index < prelude.length; index += 1) {
+    const character = prelude[index];
+    const next = prelude[index + 1];
+    if (comment) {
+      if (character === "*" && next === "/") {
+        comment = false;
+        index += 1;
+      }
+      continue;
+    }
+    if (quote) {
+      if (character === "\\") index += 1;
+      else if (character === quote) quote = null;
+      continue;
+    }
+    if (character === "/" && next === "*") {
+      comment = true;
+      index += 1;
+    } else if (character === '"' || character === "'") {
+      quote = character;
+    } else if (character === "(") {
+      parentheses += 1;
+    } else if (character === ")") {
+      parentheses -= 1;
+    } else if (character === "[") {
+      brackets += 1;
+    } else if (character === "]") {
+      brackets -= 1;
+    } else if (character === "," && parentheses === 0 && brackets === 0) {
+      selectors.push(prelude.slice(start, index));
+      start = index + 1;
+    }
+  }
+  selectors.push(prelude.slice(start));
+  return selectors;
+}
+
 export function topLevelSelectors(source) {
   const selectors = [];
   let index = 0;
@@ -106,7 +150,7 @@ export function topLevelSelectors(source) {
     const close = findClosingBrace(source, index);
     const prelude = source.slice(start, index).trim();
     if (!prelude.startsWith("@")) {
-      for (const selector of prelude.split(",")) {
+      for (const selector of splitSelectorList(prelude)) {
         const normalized = selector.trim().replace(/\s+/g, " ");
         if (normalized) selectors.push(normalized);
       }
@@ -130,9 +174,21 @@ export function checkStyleOwnership(root = repoRoot) {
     '@import "./canvas.css";',
     '@import "./dialogs.css";'
   ];
-  const imports = appEntry.split("\n").filter((line) => line.startsWith("@import "));
+  const imports = appEntry
+    .split(/\r?\n/)
+    .map((line) => line.replace(/^\uFEFF/, "").trim())
+    .filter((line) => line.startsWith("@import "))
+    .map((line) => line.replace(/\s*\/\*.*?\*\/\s*$/, ""));
   if (imports.join("\n") !== expectedImports.join("\n")) {
     throw new Error("app.css imports do not match the deterministic ownership order");
+  }
+  const expectedStyleFiles = new Set(["app.css", "tokens.css", ...ownedFiles]);
+  const actualStyleFiles = fs
+    .readdirSync(stylesDir)
+    .filter((file) => file.endsWith(".css"))
+    .sort();
+  if (actualStyleFiles.join("\n") !== [...expectedStyleFiles].sort().join("\n")) {
+    throw new Error("styles directory contains an unowned or missing stylesheet");
   }
   for (const legacyFile of ["global.css", "opengate-theme.css"]) {
     if (fs.existsSync(path.join(stylesDir, legacyFile))) {
@@ -143,7 +199,8 @@ export function checkStyleOwnership(root = repoRoot) {
   for (const file of ownedFiles) {
     const filePath = path.join(stylesDir, file);
     const source = fs.readFileSync(filePath, "utf8");
-    if (!source.startsWith("/*") || !source.includes("ownership")) {
+    const normalizedSource = source.replace(/^\uFEFF/, "").trimStart();
+    if (!normalizedSource.startsWith("/*") || !source.includes("ownership")) {
       throw new Error(`${file} must declare its stylesheet ownership`);
     }
     for (const selector of topLevelSelectors(source)) {
