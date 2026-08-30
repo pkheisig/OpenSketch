@@ -39,7 +39,12 @@ import type {
 } from "@workspace/editor-core";
 import { sanitizeImportedSvg } from "@/assets/browserSanitizer";
 import { setPngDpi } from "@/export/png";
-import { normalizePdfFontStyle, normalizePdfFontWeight, svgToPdfBlob } from "@/export/pdf";
+import {
+  normalizePdfFontStyle,
+  normalizePdfFontWeight,
+  svgToPdfBlob,
+  warmPdfFontFaces
+} from "@/export/pdf";
 import { collectProvenanceManifest, formatProvenanceCredits } from "@/export/provenance";
 import { downloadBlob, downloadProject, safeFilename } from "@/persistence/portable";
 import { createVectorThumbnail } from "@/persistence/projectThumbnail";
@@ -628,6 +633,34 @@ function fontFamilyCandidates(value: string): string[] {
       return quote && trimmed.endsWith(quote) ? trimmed.slice(1, -1).trim() : trimmed;
     })
     .filter(Boolean);
+}
+
+function canvasTextFontFamilies(objects: FabricObject[]): string[] {
+  const families = new Set<string>();
+  const add = (value: string | undefined) => {
+    if (!value) return;
+    fontFamilyCandidates(value).forEach((family) => families.add(family));
+  };
+  const visit = (object: FabricObject) => {
+    if (object instanceof Text) {
+      add(object.fontFamily);
+      object._textLines.forEach((line, lineIndex) => {
+        line.forEach((_grapheme, charIndex) => {
+          add(object.getCompleteStyleDeclaration(lineIndex, charIndex).fontFamily);
+        });
+      });
+    }
+    if (object instanceof Group) object.getObjects().forEach(visit);
+  };
+  objects.forEach(visit);
+  return [...families];
+}
+
+function warmCanvasPdfFonts(canvas: Canvas): void {
+  if (typeof navigator !== "undefined" && navigator.onLine === false) return;
+  const families = canvasTextFontFamilies(canvas.getObjects());
+  if (families.length === 0) return;
+  void warmPdfFontFaces(families).catch(() => undefined);
 }
 
 async function waitForCanvasTextFonts(objects: FabricObject[]): Promise<void> {
@@ -1361,6 +1394,7 @@ export function EditorProvider({
       lastCommit.current = { label, at: now };
       updateHistoryState();
       persist(snapshot);
+      warmCanvasPdfFonts(canvas);
     },
     [canvas, persist, serialize, updateHistoryState]
   );
@@ -1404,6 +1438,14 @@ export function EditorProvider({
     if (!canvas || !canvasReady) return;
     refreshConnectors();
   }, [canvas, canvasReady, refreshConnectors]);
+
+  useEffect(() => {
+    if (!canvas || !canvasReady) return;
+    const warm = () => warmCanvasPdfFonts(canvas);
+    warm();
+    window.addEventListener("online", warm);
+    return () => window.removeEventListener("online", warm);
+  }, [canvas, canvasReady]);
 
   const closeGroupEdit = useCallback(() => {
     const path = editingGroupPathRef.current;

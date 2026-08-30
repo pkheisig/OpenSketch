@@ -98,8 +98,12 @@ test("exports text-bearing PDFs offline from a runtime-cached font face", async 
     .poll(() => page.evaluate(() => document.documentElement.dataset.offlineReady ?? null))
     .toBe("true");
 
-  // Runtime-cached PDF faces are warmed through the production UI while online
-  // so a later offline export exercises the same browser cache path.
+  // The editor proactively warms the PDF face used by the current project while
+  // online so a later offline export does not depend on a prior export.
+  const fontResponsePromise = page.waitForResponse(
+    (response) =>
+      response.url().includes("source-sans-3-400-normal") && response.url().endsWith(".ttf")
+  );
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await page.getByLabel("Editor tools").getByRole("button", { name: "Text", exact: true }).click();
@@ -114,12 +118,8 @@ test("exports text-bearing PDFs offline from a runtime-cached font face", async 
   await page.getByLabel("Editor tools").getByRole("button", { name: "Edit", exact: true }).click();
   await page.getByRole("combobox", { name: "Font" }).click();
   await page.getByRole("option", { name: "Source Sans 3", exact: true }).click();
-
-  await page.getByRole("button", { name: "Export", exact: true }).click();
-  await page.getByRole("tab", { name: /PDF/ }).click();
-  const warmDownloadPromise = page.waitForEvent("download");
-  await page.getByRole("button", { name: "Export PDF" }).click();
-  expect(await (await warmDownloadPromise).path()).not.toBeNull();
+  expect((await fontResponsePromise).fromServiceWorker()).toBe(true);
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
 
   await context.setOffline(true);
   await page.reload();
@@ -127,12 +127,7 @@ test("exports text-bearing PDFs offline from a runtime-cached font face", async 
 
   await page.getByRole("button", { name: "Export", exact: true }).click();
   await page.getByRole("tab", { name: /PDF/ }).click();
-  const fontResponsePromise = page.waitForResponse((response) =>
-    response.url().includes("source-sans-3-400-normal")
-  );
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export PDF" }).click();
   expect(await (await downloadPromise).path()).not.toBeNull();
-
-  expect((await fontResponsePromise).fromServiceWorker()).toBe(true);
 });

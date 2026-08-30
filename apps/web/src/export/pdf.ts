@@ -53,6 +53,16 @@ export function loadPdfFontBase64(url: string): Promise<string> {
   return pending;
 }
 
+export async function warmPdfFontFaces(editorFamilies: readonly string[]): Promise<void> {
+  if (editorFamilies.length === 0) return;
+  if (typeof navigator !== "undefined" && navigator.onLine === false) return;
+
+  const urls = new Set(
+    getPdfFontRegistrationPlan(editorFamilies).map((registration) => registration.url)
+  );
+  await Promise.all([...urls].map((url) => loadPdfFontBase64(url)));
+}
+
 export function getJsPdfFontStyle(style: PdfFontStyle, weight: PdfFontWeight): string {
   if (weight === 400) return style === "italic" ? "italic" : "normal";
   if (weight === 700) return style === "italic" ? "bolditalic" : "bold";
