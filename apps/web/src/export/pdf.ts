@@ -352,6 +352,13 @@ const PDF_USE_TEXT_STYLE_PROPERTIES = [
   "font-weight",
   "font-size"
 ] as const;
+const PDF_USE_PAINT_PROPERTIES = [
+  "fill",
+  "fill-opacity",
+  "stroke",
+  "stroke-opacity",
+  "stroke-width"
+] as const;
 
 function isZeroPdfOpacity(value: string | null | undefined): boolean {
   if (!value) return false;
@@ -714,6 +721,11 @@ function materializePdfUseTextStyles(
       const value = pdfComputedFontProperty(frameWindow, contextUse, property);
       if (value) probeGroup.setAttribute(property, value);
     }
+    const contextUseStyle = frameWindow.getComputedStyle(contextUse);
+    for (const property of PDF_USE_PAINT_PROPERTIES) {
+      const value = contextUseStyle.getPropertyValue(property).trim();
+      if (value) probeGroup.style.setProperty(property, value, "important");
+    }
     probeGroup.setAttribute("visibility", "hidden");
     const probeReference = clonedReference.cloneNode(true) as SVGElement;
     probeGroup.appendChild(probeReference);
@@ -758,6 +770,15 @@ function materializePdfUseTextStyles(
         for (const property of PDF_USE_TEXT_STYLE_PROPERTIES) {
           const value = pdfComputedFontProperty(frameWindow, probeTextElement, property);
           if (!value) continue;
+          materializedSourceTextElements[index].style.setProperty(property, value, "important");
+          materializedCloneTextElements[index].style.setProperty(property, value, "important");
+        }
+        const computedPaint = frameWindow.getComputedStyle(probeTextElement);
+        for (const property of PDF_USE_PAINT_PROPERTIES) {
+          const value = computedPaint.getPropertyValue(property).trim();
+          if (!value) continue;
+          materializedSourceTextElements[index].setAttribute(property, value);
+          materializedCloneTextElements[index].setAttribute(property, value);
           materializedSourceTextElements[index].style.setProperty(property, value, "important");
           materializedCloneTextElements[index].style.setProperty(property, value, "important");
         }
