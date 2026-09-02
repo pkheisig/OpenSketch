@@ -28,6 +28,18 @@ export interface ConnectorAppearance {
   opacity: number;
 }
 
+export interface CircularArcOptions {
+  center: Point;
+  radius: number;
+  startAngle: number;
+  endAngle: number;
+  clockwise: boolean;
+  startArrowhead: ConnectorArrowhead;
+  endArrowhead: ConnectorArrowhead;
+  lineStyle: ConnectorLineStyle;
+  lineCap?: ConnectorBinding["lineCap"];
+}
+
 const dashFor = (style: ConnectorLineStyle, width: number) => {
   if (style === "dashed") return [width * 3, width * 2];
   if (style === "dotted") return [width * 0.4, width * 1.8];
@@ -455,6 +467,92 @@ function arrowhead(
   });
 }
 
+/** Creates one exact circular segment in canvas coordinates. */
+export function createCircularArcObject(
+  options: CircularArcOptions,
+  appearance: ConnectorAppearance
+): Group {
+  const radians = (degrees: number) => (degrees * Math.PI) / 180;
+  const startRadians = radians(options.startAngle);
+  const endRadians = radians(options.endAngle);
+  const pointOnCircle = (angle: number): Point => ({
+    x: options.center.x + Math.cos(angle) * options.radius,
+    y: options.center.y + Math.sin(angle) * options.radius
+  });
+  const start = pointOnCircle(startRadians);
+  const end = pointOnCircle(endRadians);
+  const clockwiseSweep = (((options.endAngle - options.startAngle) % 360) + 360) % 360;
+  const counterclockwiseSweep = (((options.startAngle - options.endAngle) % 360) + 360) % 360;
+  const sweepDegrees = options.clockwise ? clockwiseSweep : counterclockwiseSweep;
+  const sweepFlag = options.clockwise ? 1 : 0;
+  const largeArcFlag = sweepDegrees > 180 ? 1 : 0;
+  const path = new Path(
+    `M ${start.x} ${start.y} A ${options.radius} ${options.radius} 0 ${largeArcFlag} ${sweepFlag} ${end.x} ${end.y}`,
+    {
+      fill: "",
+      stroke: appearance.color,
+      strokeWidth: appearance.width,
+      strokeLineCap: connectorStrokeLineCap(
+        options.startArrowhead,
+        options.endArrowhead,
+        options.lineCap
+      ),
+      strokeLineJoin: "round",
+      strokeDashArray: dashFor(options.lineStyle, appearance.width),
+      selectable: false,
+      evented: false
+    }
+  );
+  const tangentDirection = options.clockwise ? 1 : -1;
+  const startForwardAngle = startRadians + tangentDirection * (Math.PI / 2);
+  const endForwardAngle = endRadians + tangentDirection * (Math.PI / 2);
+  const objects: FabricObject[] = [path];
+  const startHead = arrowhead(
+    options.startArrowhead,
+    start,
+    startForwardAngle + Math.PI,
+    appearance.color,
+    appearance.width
+  );
+  const endHead = arrowhead(
+    options.endArrowhead,
+    end,
+    endForwardAngle,
+    appearance.color,
+    appearance.width
+  );
+  if (startHead) objects.push(startHead);
+  if (endHead) objects.push(endHead);
+  const group = new Group(objects, {
+    objectCaching: false,
+    subTargetCheck: false,
+    opacity: appearance.opacity,
+    stroke: appearance.color,
+    strokeWidth: appearance.width,
+    lockScalingX: true,
+    lockScalingY: true
+  });
+  const binding: ConnectorBinding = {
+    fromObjectId: "",
+    fromAnchor: "center",
+    toObjectId: "",
+    toAnchor: "center",
+    startArrowhead: options.startArrowhead,
+    endArrowhead: options.endArrowhead,
+    lineStyle: options.lineStyle,
+    ...(options.lineCap ? { lineCap: options.lineCap } : {}),
+    routing: "direct",
+    pathShape: "circular",
+    curvature: (options.clockwise ? 1 : -1) * (sweepDegrees / 180)
+  };
+  group.setCoords();
+  group.freeConnectorBinding = binding;
+  group.freeConnectorGeometry = localConnectorGeometry(group, start, end);
+  group.OpenSketchType = "curved-arrow";
+  group.name = "Circular arc";
+  return group;
+}
+
 const CONNECTOR_HEAD_OFFSET_VERSION = 1;
 
 export function normalizeConnectorHeadOffsets(group: Group): boolean {
@@ -581,11 +679,7 @@ export function createFreeConnectorObject(
   return group;
 }
 
-function localConnectorGeometry(
-  group: Group,
-  from: Point,
-  to: Point
-): { from: Point; to: Point } {
+function localConnectorGeometry(group: Group, from: Point, to: Point): { from: Point; to: Point } {
   const inverse = util.invertTransform(group.calcOwnMatrix());
   const localFrom = util.transformPoint(new FabricPoint(from.x, from.y), inverse);
   const localTo = util.transformPoint(new FabricPoint(to.x, to.y), inverse);
@@ -644,10 +738,7 @@ export function updateFreeConnectorEndpoint(
 
   const matrix = group.calcOwnMatrix();
   const fixedLocal = endpoint === "from" ? endpoints.to : endpoints.from;
-  const fixedParent = util.transformPoint(
-    new FabricPoint(fixedLocal.x, fixedLocal.y),
-    matrix
-  );
+  const fixedParent = util.transformPoint(new FabricPoint(fixedLocal.x, fixedLocal.y), matrix);
   const nextFrom = endpoint === "from" ? parentPoint : { x: fixedParent.x, y: fixedParent.y };
   const nextTo = endpoint === "to" ? parentPoint : { x: fixedParent.x, y: fixedParent.y };
   if (Math.hypot(nextTo.x - nextFrom.x, nextTo.y - nextFrom.y) < EPSILON) return false;
