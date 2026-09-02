@@ -102,7 +102,13 @@ export const MUTATION_COMMAND_NAMES = [
   "duplicate_objects",
   "delete_objects",
   "group_objects",
-  "ungroup_objects"
+  "ungroup_objects",
+  "compose_labeled_group",
+  "compose_interaction",
+  "create_particle_field",
+  "create_annotation",
+  "fit_text",
+  "normalize_styles"
 ] as const;
 
 const number = (minimum?: number, maximum?: number): JsonSchema => ({
@@ -1510,6 +1516,303 @@ definitions.push(
       additionalProperties: false
     },
     outputSchema: output({ planId: objectId(), objectIds: objectIds(0) })
+  },
+  {
+    name: "compose_labeled_group",
+    title: "Compose labeled scientific group",
+    description:
+      "Atomically compose existing scientific content with a stage label and optional title/subtitle using semantic roles.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        objectIds: objectIds(1),
+        label: { type: "string", minLength: 1, maxLength: 240 },
+        title: { type: "string", maxLength: 240 },
+        subtitle: { type: "string", maxLength: 400 },
+        placement: { type: "string", enum: ["outward", "top", "right", "bottom", "left"] },
+        stageId: { type: "string", maxLength: 120 },
+        stageIndex: integer(0, 999),
+        x: number(-100000, 100000),
+        y: number(-100000, 100000)
+      },
+      required: ["objectIds", "label"],
+      additionalProperties: false
+    },
+    outputSchema: output({
+      objectId: objectId(),
+      contentObjectId: objectId(),
+      labelObjectId: objectId(),
+      objectIds: objectIds(0)
+    })
+  },
+  {
+    name: "compose_interaction",
+    title: "Compose scientific interaction",
+    description:
+      "Place two semantic participants and optional mediator geometry for a bounded scientific interaction relation.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        sourceObjectId: objectId(),
+        targetObjectId: objectId(),
+        mode: {
+          type: "string",
+          enum: [
+            "contact",
+            "binding",
+            "secretion",
+            "engulfment",
+            "migration",
+            "cross-boundary",
+            "progression"
+          ]
+        },
+        offset: number(0, 10000),
+        mediatorObjectId: objectId(),
+        relationId: objectId()
+      },
+      required: ["sourceObjectId", "targetObjectId", "mode"],
+      additionalProperties: false
+    },
+    outputSchema: output({
+      relation: semanticRelationSchema,
+      source: point(),
+      target: point(),
+      mediator: point()
+    })
+  },
+  {
+    name: "create_particle_field",
+    title: "Create bounded particle field",
+    description:
+      "Create a deterministic editable particle group within a bounded region or between semantic endpoints.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        count: integer(1, 256),
+        distribution: {
+          type: "string",
+          enum: ["cloud", "uniform", "linear", "arc", "gradient", "source-fan", "target-converging"]
+        },
+        seed: { type: "string", minLength: 1, maxLength: 120 },
+        bounds: {
+          type: "object",
+          properties: {
+            left: number(),
+            top: number(),
+            width: number(1, 100000),
+            height: number(1, 100000)
+          },
+          required: ["left", "top", "width", "height"],
+          additionalProperties: false
+        },
+        sourceObjectId: objectId(),
+        targetObjectId: objectId(),
+        semanticType: { type: "string", maxLength: 120 },
+        role: semanticRole
+      },
+      required: ["count", "distribution", "seed", "bounds"],
+      additionalProperties: false
+    },
+    outputSchema: output({
+      objectId: objectId(),
+      particleIds: objectIds(0),
+      seed: { type: "string" },
+      points: { type: "array", maxItems: 256 }
+    })
+  },
+  {
+    name: "create_annotation",
+    title: "Create target-bound annotation",
+    description:
+      "Create an annotation with deterministic candidate placement and an optional bound leader to one semantic target.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        targetObjectId: objectId(),
+        text: { type: "string", minLength: 1, maxLength: 800 },
+        placement: { type: "string", enum: ["top", "right", "bottom", "left"] },
+        gap: number(0, 1000),
+        fontSize: number(6, 200),
+        leader: { type: "boolean" }
+      },
+      required: ["targetObjectId", "text"],
+      additionalProperties: false
+    },
+    outputSchema: output({
+      objectId: objectId(),
+      leaderObjectId: objectId(),
+      targetObjectId: objectId(),
+      position: point()
+    })
+  },
+  {
+    name: "fit_text",
+    title: "Fit text to bounds",
+    description:
+      "Fit editable text using Fabric font metrics and a bounded search without mutating when no fit exists.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        objectId: objectId(),
+        maxWidth: number(1, 100000),
+        maxHeight: number(1, 100000),
+        minFontSize: number(6, 200),
+        maxFontSize: number(6, 400),
+        maxLines: integer(1, 64)
+      },
+      required: ["objectId", "maxWidth", "maxHeight"],
+      additionalProperties: false
+    },
+    outputSchema: output({
+      objectId: objectId(),
+      fitted: { type: "boolean" },
+      fontSize: number(6),
+      width: number(0),
+      height: number(0),
+      lines: integer(1)
+    })
+  },
+  {
+    name: "normalize_styles",
+    title: "Normalize semantic styles",
+    description:
+      "Apply canonical role presets to explicit objects or semantic roles without recoloring bundled assets.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        objectIds: objectIds(0),
+        roles: { type: "array", maxItems: 16, items: semanticRole },
+        presetId: { type: "string", maxLength: 64 },
+        includeAssets: { type: "boolean" }
+      },
+      additionalProperties: false
+    },
+    outputSchema: output({
+      objectIds: objectIds(0),
+      changed: integer(0, 256),
+      skipped: { type: "array", maxItems: 256, items: objectId() }
+    })
+  },
+  {
+    name: "analyze_composition",
+    title: "Analyze composition",
+    description:
+      "Run a bounded deterministic read-only analysis of geometry, text, connectors, relations, scientific stages, and styles.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "read_only",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        profile: {
+          type: "string",
+          enum: ["scientific-diagram", "publication", "presentation", "cycle"]
+        },
+        categories: {
+          type: "array",
+          maxItems: 6,
+          items: {
+            type: "string",
+            enum: ["geometry", "text", "connectors", "relations", "scientific", "style"]
+          }
+        },
+        maxFindings: integer(1, 256),
+        clearance: number(0, 1000),
+        padding: number(0, 1000)
+      },
+      additionalProperties: false
+    },
+    outputSchema: output({
+      version: { type: "string" },
+      profile: { type: "string" },
+      sceneRevision: objectId(),
+      findings: { type: "array", maxItems: 256 },
+      counts: { type: "object" },
+      metrics: { type: "object" },
+      truncated: { type: "boolean" },
+      skipped: { type: "array", maxItems: 32 },
+      pass: { type: "boolean" }
+    })
+  },
+  {
+    name: "validate_figure",
+    title: "Validate figure",
+    description:
+      "Validate a figure against versioned scientific-diagram, publication, presentation, or cycle thresholds without mutation.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "read_only",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        profile: {
+          type: "string",
+          enum: ["scientific-diagram", "publication", "presentation", "cycle"]
+        },
+        maxFindings: integer(1, 256),
+        clearance: number(0, 1000),
+        padding: number(0, 1000)
+      },
+      required: ["profile"],
+      additionalProperties: false
+    },
+    outputSchema: output({
+      version: { type: "string" },
+      profile: { type: "string" },
+      findings: { type: "array", maxItems: 256 },
+      pass: { type: "boolean" }
+    })
   }
 );
 

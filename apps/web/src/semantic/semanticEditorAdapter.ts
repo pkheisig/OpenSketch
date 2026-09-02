@@ -1,4 +1,14 @@
-import { ActiveSelection, Canvas, FabricObject, Group, IText, Point, Textbox, util } from "fabric";
+import {
+  ActiveSelection,
+  Canvas,
+  Circle,
+  FabricObject,
+  Group,
+  IText,
+  Point,
+  Textbox,
+  util
+} from "fabric";
 import {
   filterAssetFamilies,
   type AssetFamily,
@@ -63,6 +73,17 @@ import {
   type SemanticLayoutPlan,
   type SemanticPort
 } from "./composition";
+import {
+  annotationCandidates,
+  planInteraction,
+  planParticleField,
+  stylePreset,
+  type InteractionMode,
+  type LabelPlacement,
+  type ParticleDistribution
+} from "./compound";
+import { analyzeComposition, validateFigure } from "./analysis";
+import { refreshTextMetrics } from "@/editor/textMetrics";
 
 export class SemanticAdapterError extends Error {
   code: string;
@@ -952,6 +973,560 @@ export function createSemanticEditorAdapter(
         },
         changedObjectIds: [objectId]
       };
+    }
+    if (command === "compose_labeled_group") {
+      const requestedStageId = typeof input.stageId === "string" ? input.stageId : undefined;
+      if (requestedStageId) {
+        const existingStage = sceneObjectEntries(canvas).find(
+          ({ object }) =>
+            metadataOf(object)?.semanticRole === "stage" &&
+            metadataOf(object)?.stageId === requestedStageId
+        )?.object;
+        const existingLabelGroup = isGroup(existingStage)
+          ? existingStage
+              .getObjects()
+              .find(
+                (object) => isGroup(object) && metadataOf(object)?.semanticRole === "stage-label"
+              )
+          : undefined;
+        const existingTexts = isGroup(existingLabelGroup)
+          ? existingLabelGroup
+              .getObjects()
+              .filter((object): object is IText => object instanceof IText)
+          : [];
+        if (existingStage && existingLabelGroup && existingTexts.length > 0) {
+          const values = [input.label, input.title, input.subtitle].filter(
+            (value): value is string => typeof value === "string" && value.length > 0
+          );
+          values.forEach((value, index) => {
+            if (existingTexts[index]) existingTexts[index].set("text", value);
+          });
+          refreshTextMetrics(existingTexts);
+          existingStage.setCoords();
+          canvas.requestRenderAll();
+          commitSemantic("Semantic update labeled group");
+          return {
+            data: {
+              objectId: existingStage.objectId,
+              labelObjectId: existingLabelGroup.objectId,
+              objectIds: [existingStage.objectId, existingLabelGroup.objectId]
+            },
+            changedObjectIds: [existingStage.objectId!, existingLabelGroup.objectId!]
+          };
+        }
+      }
+      const ids = objectIds(input);
+      const contentObjects = resolveObjects(canvas, ids);
+      assertNonOverlappingTargets(contentObjects);
+      if (contentObjects.some((object) => object.group))
+        throw new SemanticAdapterError(
+          "INVALID_SELECTION",
+          "Labeled-group content must be top-level objects."
+        );
+      const label = boundedText(input.label, 240);
+      if (!label) throw new SemanticAdapterError("INVALID_INPUT", "label must not be empty.");
+      const bounds = unionBounds(contentObjects);
+      const placement = (input.placement ?? "outward") as LabelPlacement;
+      const settings = dependencies.getCanvasSettings();
+      const center = { x: bounds.left + bounds.width / 2, y: bounds.top + bounds.height / 2 };
+      const labelX =
+        placement === "left"
+          ? bounds.left - 24
+          : placement === "right"
+            ? bounds.left + bounds.width + 24
+            : center.x;
+      const labelY =
+        placement === "top" || placement === "outward"
+          ? bounds.top - 28
+          : placement === "bottom"
+            ? bounds.top + bounds.height + 28
+            : center.y;
+      const defaults = dependencies.creationDefaults();
+      const makeLabel = (text: string, size: number): IText => {
+        const object = new IText(text, {
+          fill: defaults.text.color,
+          fontFamily: defaults.text.fontFamily,
+          fontSize: size,
+          fontWeight: defaults.text.fontWeight,
+          left: labelX,
+          top: labelY,
+          originX: "center",
+          originY: "center"
+        });
+        configureTextObject(object);
+        return object;
+      };
+      const title =
+        typeof input.title === "string" && input.title
+          ? makeLabel(input.title, Math.max(18, defaults.text.fontSize))
+          : undefined;
+      const subtitle =
+        typeof input.subtitle === "string" && input.subtitle
+          ? makeLabel(input.subtitle, Math.max(14, defaults.text.fontSize - 4))
+          : undefined;
+      const labelObject = makeLabel(label, Math.max(16, defaults.text.fontSize));
+      if (title) title.set({ top: labelY - 28 });
+      if (subtitle) subtitle.set({ top: labelY + 28 });
+      canvas.remove(...contentObjects);
+      const contentGroup = new Group(contentObjects);
+      contentGroup.objectId = crypto.randomUUID();
+      contentGroup.name = "Stage content";
+      contentGroup.OpenSketchType = "group";
+      const stageId =
+        typeof input.stageId === "string" && input.stageId ? input.stageId : contentGroup.objectId;
+      contentGroup.semanticMetadata = {
+        version: 1,
+        semanticRole: "stage-content",
+        stageId,
+        ...(input.stageIndex === undefined ? {} : { stageIndex: input.stageIndex as number })
+      };
+      const labelChildren = [
+        labelObject,
+        ...(title ? [title] : []),
+        ...(subtitle ? [subtitle] : [])
+      ];
+      labelChildren.forEach((object) => {
+        object.objectId ??= crypto.randomUUID();
+      });
+      const labelGroup = new Group(labelChildren);
+      labelGroup.objectId = crypto.randomUUID();
+      labelGroup.name = "Stage label";
+      labelGroup.OpenSketchType = "group";
+      labelGroup.semanticMetadata = {
+        version: 1,
+        semanticRole: "stage-label",
+        stageId,
+        ...(input.stageIndex === undefined ? {} : { stageIndex: input.stageIndex as number })
+      };
+      const stageGroup = new Group([contentGroup, labelGroup]);
+      stageGroup.objectId = crypto.randomUUID();
+      stageGroup.name = label;
+      stageGroup.OpenSketchType = "group";
+      stageGroup.semanticMetadata = {
+        version: 1,
+        semanticRole: "stage",
+        stageId,
+        ...(input.stageIndex === undefined ? {} : { stageIndex: input.stageIndex as number })
+      };
+      dependencies.configureCanvasAssets([stageGroup]);
+      const requestedLocation =
+        input.x === undefined && input.y === undefined
+          ? undefined
+          : locationFromInput(canvas, settings, input);
+      if (requestedLocation) moveAnchorTo(stageGroup, "center", requestedLocation);
+      canvas.add(stageGroup);
+      stageGroup.setCoords();
+      canvas.requestRenderAll();
+      commitSemantic("Semantic compose labeled group");
+      return {
+        data: {
+          objectId: stageGroup.objectId,
+          contentObjectId: contentGroup.objectId,
+          labelObjectId: labelGroup.objectId,
+          objectIds: [stageGroup.objectId, contentGroup.objectId, labelGroup.objectId]
+        },
+        changedObjectIds: [stageGroup.objectId, contentGroup.objectId, labelGroup.objectId, ...ids]
+      };
+    }
+    if (command === "compose_interaction") {
+      const sourceObjectId = input.sourceObjectId as string;
+      const targetObjectId = input.targetObjectId as string;
+      const [source, target] = resolveObjects(canvas, [sourceObjectId, targetObjectId]);
+      if (source === target)
+        throw new SemanticAdapterError("INVALID_INPUT", "Interaction endpoints must differ.");
+      assertIndependentPlacementObjects([source, target]);
+      const plan = planInteraction(
+        inspectSemanticGeometry(source).visualBounds,
+        inspectSemanticGeometry(target).visualBounds,
+        input.mode as InteractionMode,
+        input.offset === undefined ? undefined : finiteNumber(input.offset, "offset")
+      );
+      moveAnchorTo(source, "center", plan.source);
+      moveAnchorTo(target, "center", plan.target);
+      const mediatorObjectId =
+        typeof input.mediatorObjectId === "string" ? input.mediatorObjectId : undefined;
+      if (mediatorObjectId && plan.mediator)
+        moveAnchorTo(resolveObjects(canvas, [mediatorObjectId])[0], "center", plan.mediator);
+      const relation = normalizeRelation({
+        id:
+          typeof input.relationId === "string"
+            ? input.relationId
+            : `interaction-${sourceObjectId}-${targetObjectId}`,
+        kind: plan.relationKind,
+        sourceObjectId,
+        targetObjectId,
+        ...(mediatorObjectId ? { mediatorObjectIds: [mediatorObjectId] } : {}),
+        direction: "forward",
+        allowedOverlap: plan.allowedOverlap
+      });
+      const sourceMetadata = metadataOf(source) ?? { version: 1 as const };
+      source.semanticMetadata = {
+        ...sourceMetadata,
+        relationIds: [...new Set([...(sourceMetadata.relationIds ?? []), relation.id])]
+      };
+      source.semanticRelations = [
+        ...(source.semanticRelations ?? []).filter((item) => item.id !== relation.id),
+        relation
+      ];
+      dependencies.refreshConnectors();
+      canvas.requestRenderAll();
+      commitSemantic("Semantic compose interaction");
+      return {
+        data: {
+          relation,
+          source: plan.source,
+          target: plan.target,
+          ...(plan.mediator ? { mediator: plan.mediator } : {}),
+          warnings: plan.warnings
+        },
+        changedObjectIds: [
+          sourceObjectId,
+          targetObjectId,
+          ...(mediatorObjectId ? [mediatorObjectId] : [])
+        ]
+      };
+    }
+    if (command === "create_particle_field") {
+      const seed = input.seed as string;
+      const existingField = sceneObjectEntries(canvas).find(
+        ({ object }) =>
+          isGroup(object) &&
+          metadataOf(object)?.semanticRole === "particle-field" &&
+          metadataOf(object)?.semanticName === `particle-field:${seed}`
+      )?.object;
+      if (isGroup(existingField)) {
+        const particleIds = existingField
+          .getObjects()
+          .map((object) => object.objectId)
+          .filter((id): id is string => Boolean(id));
+        return {
+          data: { objectId: existingField.objectId, particleIds, seed, reused: true },
+          changedObjectIds: []
+        };
+      }
+      const rawBounds = input.bounds as Record<string, unknown>;
+      const fieldBounds = {
+        left: finiteNumber(rawBounds.left, "bounds.left"),
+        top: finiteNumber(rawBounds.top, "bounds.top"),
+        width: finiteNumber(rawBounds.width, "bounds.width"),
+        height: finiteNumber(rawBounds.height, "bounds.height")
+      };
+      if (fieldBounds.width <= 0 || fieldBounds.height <= 0)
+        throw new SemanticAdapterError("INVALID_INPUT", "Particle bounds must be positive.");
+      const source =
+        typeof input.sourceObjectId === "string"
+          ? inspectSemanticGeometry(resolveObjects(canvas, [input.sourceObjectId])[0]).center
+          : undefined;
+      const target =
+        typeof input.targetObjectId === "string"
+          ? inspectSemanticGeometry(resolveObjects(canvas, [input.targetObjectId])[0]).center
+          : undefined;
+      const plan = planParticleField(
+        fieldBounds,
+        finiteNumber(input.count, "count"),
+        input.distribution as ParticleDistribution,
+        seed,
+        source,
+        target
+      );
+      const defaults = dependencies.creationDefaults();
+      const particles = plan.points.map((position, index) => {
+        const particle = new Circle({
+          radius: 4,
+          left: position.x,
+          top: position.y,
+          originX: "center",
+          originY: "center",
+          fill: defaults.shape.fill,
+          stroke: defaults.shape.stroke,
+          strokeWidth: Math.max(1, defaults.shape.strokeWidth * 0.5)
+        });
+        particle.objectId = `${input.seed}-particle-${index}`;
+        particle.name = "Particle";
+        particle.OpenSketchType = "particle";
+        particle.semanticMetadata = {
+          version: 1,
+          semanticRole:
+            (input.role as string | undefined) === "decorative" ? "decorative" : "particle-field",
+          semanticType: typeof input.semanticType === "string" ? input.semanticType : "particle"
+        };
+        return particle;
+      });
+      const field = new Group(particles);
+      field.objectId = crypto.randomUUID();
+      field.name = "Particle field";
+      field.OpenSketchType = "group";
+      field.semanticMetadata = {
+        version: 1,
+        semanticRole: "particle-field",
+        semanticType:
+          typeof input.semanticType === "string" ? input.semanticType : "particle-field",
+        semanticName: `particle-field:${seed}`
+      };
+      dependencies.configureCanvasAssets([field]);
+      canvas.add(field);
+      field.setCoords();
+      canvas.requestRenderAll();
+      commitSemantic("Semantic create particle field");
+      return {
+        data: {
+          objectId: field.objectId,
+          particleIds: particles.map((particle) => particle.objectId!),
+          seed: plan.seed,
+          distribution: plan.distribution,
+          points: plan.points
+        },
+        changedObjectIds: [field.objectId, ...particles.map((particle) => particle.objectId!)]
+      };
+    }
+    if (command === "create_annotation") {
+      const targetObjectId = input.targetObjectId as string;
+      const [target] = resolveObjects(canvas, [targetObjectId]);
+      const defaults = dependencies.creationDefaults();
+      const annotation = new Textbox(input.text as string, {
+        width: 260,
+        fontFamily: defaults.text.fontFamily,
+        fontSize: typeof input.fontSize === "number" ? input.fontSize : defaults.text.fontSize,
+        fill: defaults.text.color,
+        originX: "center",
+        originY: "center"
+      });
+      configureTextObject(annotation);
+      refreshTextMetrics([annotation]);
+      const candidates = annotationCandidates(
+        inspectSemanticGeometry(target).visualBounds,
+        boundsOf(annotation),
+        typeof input.gap === "number" ? input.gap : 24
+      );
+      const preferred =
+        typeof input.placement === "string"
+          ? ({ top: 0, right: 2, bottom: 3, left: 1 }[input.placement] ?? 0)
+          : 0;
+      const sceneObjects = canvas
+        .getObjects()
+        .filter((object) => object !== target && object.visible !== false && !object.connector);
+      const chosen =
+        candidates[(preferred + candidates.length) % candidates.length] ?? candidates[0];
+      const position =
+        candidates.find(
+          (candidate) =>
+            !sceneObjects.some((object) => {
+              const candidateBounds = {
+                left: candidate.position.x - boundsOf(annotation).width / 2,
+                top: candidate.position.y - boundsOf(annotation).height / 2,
+                width: boundsOf(annotation).width,
+                height: boundsOf(annotation).height
+              };
+              return (
+                candidateBounds.left < boundsOf(object).left + boundsOf(object).width &&
+                candidateBounds.left + candidateBounds.width > boundsOf(object).left &&
+                candidateBounds.top < boundsOf(object).top + boundsOf(object).height &&
+                candidateBounds.top + candidateBounds.height > boundsOf(object).top
+              );
+            })
+        ) ?? (sceneObjects.length === 0 ? chosen : undefined);
+      if (!position)
+        throw new SemanticAdapterError(
+          "NO_FEASIBLE_PLACEMENT",
+          "No annotation candidate avoids existing visible geometry."
+        );
+      const annotationId = addObject(
+        canvas,
+        annotation,
+        "Annotation",
+        "text",
+        position.position,
+        false
+      );
+      annotation.semanticMetadata = {
+        version: 1,
+        semanticRole: "annotation",
+        semanticType: "annotation"
+      };
+      let leaderObjectId: string | undefined;
+      if (input.leader !== false) {
+        const leader = await createBoundConnector(
+          {
+            fromObjectId: targetObjectId,
+            toObjectId: annotationId,
+            arrowhead: "none",
+            routeType: "straight"
+          },
+          false
+        );
+        leaderObjectId = leader.objectId;
+        const [leaderObject] = resolveObjects(canvas, [leaderObjectId]);
+        leaderObject.semanticMetadata = {
+          version: 1,
+          semanticRole: "annotation-leader",
+          semanticType: "annotation-leader"
+        };
+      }
+      const relation = normalizeRelation({
+        id: `label-${targetObjectId}-${annotationId}`,
+        kind: "labels",
+        sourceObjectId: targetObjectId,
+        targetObjectId: annotationId
+      });
+      target.semanticRelations = [...(target.semanticRelations ?? []), relation];
+      target.semanticMetadata = {
+        ...(metadataOf(target) ?? { version: 1 as const }),
+        relationIds: [...new Set([...(metadataOf(target)?.relationIds ?? []), relation.id])]
+      };
+      canvas.requestRenderAll();
+      commitSemantic("Semantic create annotation");
+      return {
+        data: {
+          objectId: annotationId,
+          ...(leaderObjectId ? { leaderObjectId } : {}),
+          targetObjectId,
+          position: position.position
+        },
+        changedObjectIds: [
+          annotationId,
+          targetObjectId,
+          ...(leaderObjectId ? [leaderObjectId] : [])
+        ]
+      };
+    }
+    if (command === "fit_text") {
+      const objectId = input.objectId as string;
+      const [object] = resolveObjects(canvas, [objectId]);
+      if (!(object instanceof IText) && !(object instanceof Textbox))
+        throw new SemanticAdapterError(
+          "INVALID_SELECTION",
+          `Scene object "${objectId}" is not editable text.`
+        );
+      const minFontSize = typeof input.minFontSize === "number" ? input.minFontSize : 6;
+      const maxFontSize = typeof input.maxFontSize === "number" ? input.maxFontSize : 96;
+      if (minFontSize > maxFontSize)
+        throw new SemanticAdapterError("INVALID_INPUT", "minFontSize must not exceed maxFontSize.");
+      const originalFontSize = object.fontSize;
+      const originalWidth = object.width;
+      const maxWidth = finiteNumber(input.maxWidth, "maxWidth");
+      const maxHeight = finiteNumber(input.maxHeight, "maxHeight");
+      const maxLines = typeof input.maxLines === "number" ? input.maxLines : 64;
+      let fitted = false;
+      for (let size = Math.floor(maxFontSize); size >= Math.ceil(minFontSize); size -= 1) {
+        object.set("fontSize", size);
+        if (object instanceof Textbox) object.set("width", Math.min(originalWidth, maxWidth));
+        refreshTextMetrics([object]);
+        const lines = object.text.split("\n").length;
+        if (
+          (object.width ?? 0) <= maxWidth + 0.01 &&
+          (object.height ?? 0) <= maxHeight + 0.01 &&
+          lines <= maxLines
+        ) {
+          fitted = true;
+          break;
+        }
+      }
+      if (!fitted) {
+        object.set({ fontSize: originalFontSize, width: originalWidth });
+        refreshTextMetrics([object]);
+        return {
+          data: {
+            objectId,
+            fitted: false,
+            fontSize: originalFontSize,
+            width: object.width ?? 0,
+            height: object.height ?? 0,
+            lines: object.text.split("\n").length
+          },
+          changedObjectIds: []
+        };
+      }
+      object.setCoords();
+      refreshParentGroups(object);
+      canvas.requestRenderAll();
+      commitSemantic("Semantic fit text");
+      return {
+        data: {
+          objectId,
+          fitted: true,
+          fontSize: object.fontSize,
+          width: object.width ?? 0,
+          height: object.height ?? 0,
+          lines: object.text.split("\n").length
+        },
+        changedObjectIds: [objectId]
+      };
+    }
+    if (command === "normalize_styles") {
+      const requestedIds = input.objectIds === undefined ? [] : objectIds(input);
+      const roles = Array.isArray(input.roles) ? new Set(input.roles as string[]) : undefined;
+      const presetId = typeof input.presetId === "string" ? input.presetId : undefined;
+      const targets =
+        requestedIds.length > 0
+          ? resolveObjects(canvas, requestedIds)
+          : sceneObjectEntries(canvas)
+              .map(({ object }) => object)
+              .filter((object) => !roles || roles.has(metadataOf(object)?.semanticRole ?? ""));
+      const skipped: string[] = [];
+      const changed: string[] = [];
+      targets.forEach((object) => {
+        if (object.familyId && input.includeAssets !== true) {
+          skipped.push(object.objectId!);
+          return;
+        }
+        const role = presetId ?? metadataOf(object)?.semanticRole;
+        const preset = role ? stylePreset(role) : undefined;
+        if (!preset) {
+          skipped.push(object.objectId!);
+          return;
+        }
+        object.set({
+          fill: preset.fill,
+          stroke: preset.stroke,
+          strokeWidth: preset.strokeWidth,
+          ...(object instanceof IText || object instanceof Textbox
+            ? { fontSize: preset.fontSize, fontWeight: preset.fontWeight }
+            : {})
+        });
+        object.setCoords();
+        changed.push(object.objectId!);
+      });
+      if (changed.length > 0) {
+        dependencies.refreshConnectors();
+        canvas.requestRenderAll();
+        commitSemantic("Semantic normalize styles");
+      }
+      return {
+        data: { objectIds: changed, changed: changed.length, skipped },
+        changedObjectIds: changed
+      };
+    }
+    if (command === "analyze_composition") {
+      const settings = dependencies.getCanvasSettings();
+      const result = analyzeComposition(
+        canvas,
+        { width: settings.width, height: settings.height },
+        sceneRevision(canvas),
+        {
+          profile: input.profile as
+            "scientific-diagram" | "publication" | "presentation" | "cycle" | undefined,
+          categories: input.categories as never,
+          maxFindings: input.maxFindings as number | undefined,
+          clearance: input.clearance as number | undefined,
+          padding: input.padding as number | undefined
+        }
+      );
+      return { data: result, changedObjectIds: [] };
+    }
+    if (command === "validate_figure") {
+      const settings = dependencies.getCanvasSettings();
+      const result = validateFigure(
+        canvas,
+        { width: settings.width, height: settings.height },
+        sceneRevision(canvas),
+        input.profile as "scientific-diagram" | "publication" | "presentation" | "cycle",
+        {
+          maxFindings: input.maxFindings as number | undefined,
+          clearance: input.clearance as number | undefined,
+          padding: input.padding as number | undefined
+        }
+      );
+      return { data: result, changedObjectIds: [] };
     }
     if (command === "create_bound_connector") {
       const result = await createBoundConnector(input, true);
