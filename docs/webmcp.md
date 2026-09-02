@@ -148,7 +148,7 @@ pnpm test:deployment
 ```
 
 The root variant uses `netlify.toml`: it runs
-`pnpm build:root`, publishes `dist`, uses Node 22, and serves the SPA fallback
+`pnpm build:root`, publishes `dist`, uses Node 24, and serves the SPA fallback
 from `/index.html`. The same normalized base then drives Vite assets, PWA scope
 and `start_url`, Workbox navigation fallback, and runtime font/scientific-asset
 cache paths. No generated `dist` directory is committed, and the deployment
@@ -165,12 +165,12 @@ The repository does not encode an external WebMCP Challenge start timestamp.
 For an auditable, reproducible source boundary, this guide records the
 following history instead:
 
-| Boundary               | Evidence                                                                                                                                                                                                                      |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Pre-WebMCP baseline    | [`d8c7428`](https://github.com/pkheisig/OpenSketch/commit/d8c74284435605a72d7ed5ce60a854da74e56399), a dated merge commit from 2026-08-30; this is the parent of the first semantic-runtime commit                            |
-| First semantic runtime | [`8373141`](https://github.com/pkheisig/OpenSketch/commit/83731418a85916f50b536c5426e75920237d80d7), `feat: add semantic editor runtime`, dated 2026-09-02                                                                    |
-| WebMCP exposure        | [`2ca786b`](https://github.com/pkheisig/OpenSketch/commit/2ca786b3e6243279faab34e86f89e9e63ed5ad7b), `feat: expose semantic workflows through WebMCP`, dated 2026-09-02                                                       |
-| WebMCP hardening       | [`771c41f`](https://github.com/pkheisig/OpenSketch/commit/771c41f876601f3988cf9b19e9ec02f167229572) and [`557efd7`](https://github.com/pkheisig/OpenSketch/commit/557efd7c7c1f0accbc43eb79909da5e60b22c34b), dated 2026-09-02 |
+| Boundary               | Evidence                                                                                                                                                                                                                                                                                                                 |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Pre-WebMCP baseline    | [`920de47`](https://github.com/pkheisig/OpenSketch/commit/920de476e9e802f97ff3a2af78337c4b6311da69), the direct parent of the first semantic-runtime commit; the nearest dated pre-semantic merge is [`d8c7428`](https://github.com/pkheisig/OpenSketch/commit/d8c74284435605a72d7ed5ce60a854da74e56399) from 2026-08-30 |
+| First semantic runtime | [`8373141`](https://github.com/pkheisig/OpenSketch/commit/83731418a85916f50b536c5426e75920237d80d7), `feat: add semantic editor runtime`, dated 2026-09-02                                                                                                                                                               |
+| WebMCP exposure        | [`2ca786b`](https://github.com/pkheisig/OpenSketch/commit/2ca786b3e6243279faab34e86f89e9e63ed5ad7b), `feat: expose semantic workflows through WebMCP`, dated 2026-09-02                                                                                                                                                  |
+| WebMCP hardening       | [`771c41f`](https://github.com/pkheisig/OpenSketch/commit/771c41f876601f3988cf9b19e9ec02f167229572) and [`557efd7`](https://github.com/pkheisig/OpenSketch/commit/557efd7c7c1f0accbc43eb79909da5e60b22c34b), dated 2026-09-02                                                                                            |
 
 Before that recorded boundary, OpenSketch already had the browser editor,
 Fabric canvas, local projects and history, offline assets, manual figure
