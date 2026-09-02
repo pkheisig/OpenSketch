@@ -515,6 +515,13 @@ function boundedText(value: unknown, maximum = 320): string | undefined {
   return normalized ? normalized.slice(0, maximum) : undefined;
 }
 
+function boundedRelationId(prefix: string, ...ids: string[]): string {
+  const raw = `${prefix}-${ids.join("-")}`;
+  if (raw.length <= 200) return raw;
+  const suffix = ids.map((id) => id.slice(0, 88)).join("-");
+  return `${prefix}-${suffix}`.slice(0, 200);
+}
+
 function assetSummary(family: AssetFamily) {
   return {
     familyId: family.familyId,
@@ -1148,18 +1155,11 @@ export function createSemanticEditorAdapter(
         input.mode as InteractionMode,
         input.offset === undefined ? undefined : finiteNumber(input.offset, "offset")
       );
-      moveAnchorTo(source, "center", plan.source);
-      moveAnchorTo(target, "center", plan.target);
-      const mediatorPosition = plan.mediator ?? {
-        x: (plan.source.x + plan.target.x) / 2,
-        y: (plan.source.y + plan.target.y) / 2
-      };
-      if (mediatorObject) moveAnchorTo(mediatorObject, "center", mediatorPosition);
       const relation = normalizeRelation({
         id:
           typeof input.relationId === "string"
             ? input.relationId
-            : `interaction-${sourceObjectId}-${targetObjectId}`,
+            : boundedRelationId("interaction", sourceObjectId, targetObjectId),
         kind: plan.relationKind,
         sourceObjectId,
         targetObjectId,
@@ -1167,6 +1167,13 @@ export function createSemanticEditorAdapter(
         direction: "forward",
         allowedOverlap: plan.allowedOverlap
       });
+      moveAnchorTo(source, "center", plan.source);
+      moveAnchorTo(target, "center", plan.target);
+      const mediatorPosition = plan.mediator ?? {
+        x: (plan.source.x + plan.target.x) / 2,
+        y: (plan.source.y + plan.target.y) / 2
+      };
+      if (mediatorObject) moveAnchorTo(mediatorObject, "center", mediatorPosition);
       const sourceMetadata = metadataOf(source) ?? { version: 1 as const };
       source.semanticMetadata = {
         ...sourceMetadata,
@@ -1271,6 +1278,19 @@ export function createSemanticEditorAdapter(
           typeof input.semanticType === "string" ? input.semanticType : "particle-field",
         semanticName: `particle-field:${seed}`
       };
+      const existingIds = new Set(
+        sceneObjectEntries(canvas)
+          .map(({ object }) => object.objectId)
+          .filter((id): id is string => Boolean(id))
+      );
+      const duplicateParticle = particles.find(
+        (particle) => particle.objectId !== undefined && existingIds.has(particle.objectId)
+      );
+      if (duplicateParticle)
+        throw new SemanticAdapterError(
+          "DUPLICATE_OBJECT_ID",
+          `Particle ID "${duplicateParticle.objectId}" already exists.`
+        );
       dependencies.configureCanvasAssets([field]);
       canvas.add(field);
       field.setCoords();
@@ -1472,16 +1492,16 @@ export function createSemanticEditorAdapter(
               .map(({ object }) => object)
               .filter((object) => !roles || roles.has(metadataOf(object)?.semanticRole ?? ""));
       const skipped: string[] = [];
-      const changed: string[] = [];
-      targets.forEach((object) => {
+      const changed = new Set<string>();
+      const applyPreset = (object: FabricObject): void => {
         if (object.familyId && input.includeAssets !== true) {
-          skipped.push(object.objectId!);
+          if (object.objectId) skipped.push(object.objectId);
           return;
         }
         const role = presetId ?? metadataOf(object)?.semanticRole;
         const preset = role ? stylePreset(role) : undefined;
         if (!preset) {
-          skipped.push(object.objectId!);
+          if (object.objectId) skipped.push(object.objectId);
           return;
         }
         object.set({
@@ -1493,16 +1513,20 @@ export function createSemanticEditorAdapter(
             : {})
         });
         object.setCoords();
-        changed.push(object.objectId!);
+        if (object.objectId) changed.add(object.objectId);
+      };
+      targets.forEach((object) => {
+        visitSceneObjects(object, applyPreset);
       });
-      if (changed.length > 0) {
+      const changedObjectIds = [...changed];
+      if (changedObjectIds.length > 0) {
         dependencies.refreshConnectors();
         canvas.requestRenderAll();
         commitSemantic("Semantic normalize styles");
       }
       return {
-        data: { objectIds: changed, changed: changed.length, skipped },
-        changedObjectIds: changed
+        data: { objectIds: changedObjectIds, changed: changedObjectIds.length, skipped },
+        changedObjectIds: changedObjectIds
       };
     }
     if (command === "analyze_composition") {

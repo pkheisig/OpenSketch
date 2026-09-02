@@ -288,6 +288,7 @@ export function analyzeComposition(
   });
   if (profile === "cycle") {
     const stages = allEntries
+      .filter(({ object }) => metadataOf(object)?.semanticRole === "stage")
       .map(({ object }) => metadataOf(object)?.stageIndex)
       .filter((value): value is number => value !== undefined)
       .sort((a, b) => a - b);

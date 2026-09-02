@@ -1526,7 +1526,7 @@ definitions.push(
     risk: "reversible_mutation",
     confirmation: "none",
     retryable: true,
-    idempotent: true,
+    idempotent: false,
     cancellable: false,
     requires: ["project", "canvas"],
     inputSchema: {
@@ -1561,7 +1561,7 @@ definitions.push(
     risk: "reversible_mutation",
     confirmation: "none",
     retryable: true,
-    idempotent: true,
+    idempotent: false,
     cancellable: false,
     requires: ["project", "canvas"],
     inputSchema: {
@@ -1651,7 +1651,7 @@ definitions.push(
     risk: "reversible_mutation",
     confirmation: "none",
     retryable: true,
-    idempotent: true,
+    idempotent: false,
     cancellable: false,
     requires: ["project", "canvas"],
     inputSchema: {
