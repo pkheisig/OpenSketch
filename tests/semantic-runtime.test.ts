@@ -63,6 +63,9 @@ function fakeAdapter(ready = true): SemanticEditorAdapter & {
     }),
     inspectObject: (objectId) =>
       state.objectIds.includes(objectId) ? descriptor(objectId) : undefined,
+    searchAssets: async () => ({ results: [], total: 0 }),
+    inspectAsset: async () => ({ family: {} }),
+    inspectProvenance: () => ({ version: 1, assets: [] }),
     execute: async (command, input) => {
       state.calls.push(command);
       if (command === "create_shape") {
@@ -112,11 +115,18 @@ describe("semantic command contracts", () => {
       expect(command.inputSchema.additionalProperties).toBe(false);
       expect(command.outputSchema.type).toBe("object");
       expect(command.outputSchema.additionalProperties).toBe(false);
-      expect(["read_only", "reversible_mutation", "sensitive_or_destructive"]).toContain(
-        command.risk
-      );
+      expect([
+        "read_only",
+        "reversible_mutation",
+        "sensitive_or_destructive",
+        "side_effect"
+      ]).toContain(command.risk);
       expect(["none", "explicit"]).toContain(command.confirmation);
     }
+    expect(
+      SEMANTIC_COMMANDS.find((command) => command.name === "inspect_provenance")?.outputSchema
+        .properties?.truncated
+    ).toEqual({ type: "boolean" });
   });
 });
 
@@ -142,6 +152,9 @@ describe("semantic runtime", () => {
     expect(
       (await readyRuntime.execute("inspect_object", { objectId: "missing" })).error?.code
     ).toBe("STALE_OBJECT_ID");
+    expect((await readyRuntime.execute("inspect_scene", { maxObjects: 3.5 })).error?.code).toBe(
+      "INVALID_INPUT"
+    );
     expect(
       (await readyRuntime.execute("delete_objects", { objectIds: ["missing"], confirmed: false }))
         .error?.code
@@ -290,9 +303,17 @@ describe("semantic runtime", () => {
       toObjectId: "object-2",
       extra: true
     });
+    const bothConnectorForms = await runtime.execute("create_connector", {
+      kind: "arrow",
+      fromObjectId: "object-1",
+      toObjectId: "object-2",
+      from: { x: 10, y: 20 },
+      to: { x: 30, y: 40 }
+    });
 
     expect(missingKind).toMatchObject({ ok: false, error: { code: "INVALID_INPUT" } });
     expect(extraProperty).toMatchObject({ ok: false, error: { code: "INVALID_INPUT" } });
+    expect(bothConnectorForms).toMatchObject({ ok: false, error: { code: "INVALID_INPUT" } });
     expect(adapter.calls).toEqual([]);
   });
 

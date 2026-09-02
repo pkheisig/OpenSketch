@@ -73,6 +73,7 @@ function validateSchema(value: unknown, schema: JsonSchema, path = "input"): str
       return `${path} is too long.`;
   }
   if (typeof value === "number") {
+    if (schema.integer && !Number.isInteger(value)) return `${path} must be an integer.`;
     if (schema.minimum !== undefined && value < schema.minimum)
       return `${path} is below the allowed minimum.`;
     if (schema.maximum !== undefined && value > schema.maximum)
@@ -107,8 +108,8 @@ function validateSchema(value: unknown, schema: JsonSchema, path = "input"): str
     }
   }
   if (schema.oneOf) {
-    const matches = schema.oneOf.some((candidate) => !validateSchema(value, candidate, path));
-    if (!matches) return `${path} does not match any supported schema.`;
+    const matches = schema.oneOf.filter((candidate) => !validateSchema(value, candidate, path));
+    if (matches.length !== 1) return `${path} does not match exactly one supported schema.`;
   }
   return undefined;
 }
@@ -251,6 +252,26 @@ export function createSemanticRuntime(adapter: SemanticEditorAdapter): SemanticR
       if (!object)
         return failure("STALE_OBJECT_ID", `Scene object "${input.objectId}" does not exist.`);
       return success({ object } as T);
+    }
+    if (name === "search_assets") {
+      return success(
+        (await adapter.searchAssets({
+          query: typeof input.query === "string" ? input.query : "",
+          category: typeof input.category === "string" ? input.category : undefined,
+          limit: typeof input.limit === "number" ? input.limit : 25
+        })) as T
+      );
+    }
+    if (name === "inspect_asset") {
+      return success(
+        (await adapter.inspectAsset({
+          familyId: String(input.familyId),
+          variantId: typeof input.variantId === "string" ? input.variantId : undefined
+        })) as T
+      );
+    }
+    if (name === "inspect_provenance") {
+      return success(adapter.inspectProvenance() as T);
     }
     if (definition.confirmation === "explicit" && input.confirmed !== true) {
       return failure("CONFIRMATION_REQUIRED", `${name} requires confirmed: true.`);

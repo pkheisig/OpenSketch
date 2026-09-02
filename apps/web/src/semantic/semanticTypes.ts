@@ -1,6 +1,7 @@
 export const SEMANTIC_RUNTIME_VERSION = "opensketch.semantic.v1" as const;
 
-export type SemanticRisk = "read_only" | "reversible_mutation" | "sensitive_or_destructive";
+export type SemanticRisk =
+  "read_only" | "reversible_mutation" | "sensitive_or_destructive" | "side_effect";
 
 export type SemanticConfirmation = "none" | "explicit";
 
@@ -17,6 +18,7 @@ export interface JsonSchema {
   maxLength?: number;
   minimum?: number;
   maximum?: number;
+  integer?: boolean;
   properties?: Record<string, JsonSchema>;
   items?: JsonSchema;
   oneOf?: readonly JsonSchema[];
@@ -131,6 +133,9 @@ export interface SemanticEditorAdapter {
   getSelectionObjectIds(): string[];
   inspectScene(options: { maxObjects: number; maxDepth: number }): SemanticSceneSnapshot;
   inspectObject(objectId: string): SemanticObjectDescriptor | undefined;
+  searchAssets(options: { query: string; category?: string; limit: number }): Promise<unknown>;
+  inspectAsset(options: { familyId: string; variantId?: string }): Promise<unknown>;
+  inspectProvenance(): unknown;
   execute(command: string, input: Record<string, unknown>): Promise<SemanticAdapterResult>;
   runTransaction<T>(operation: () => Promise<T>): Promise<T>;
 }

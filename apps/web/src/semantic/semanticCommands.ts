@@ -72,6 +72,8 @@ export const MUTATION_COMMAND_NAMES = [
   "create_text",
   "create_shape",
   "create_connector",
+  "insert_asset",
+  "replace_asset_variant",
   "move_objects",
   "rotate_objects",
   "scale_objects",
@@ -91,6 +93,11 @@ const number = (minimum?: number, maximum?: number): JsonSchema => ({
   type: "number",
   ...(minimum === undefined ? {} : { minimum }),
   ...(maximum === undefined ? {} : { maximum })
+});
+
+const integer = (minimum?: number, maximum?: number): JsonSchema => ({
+  ...number(minimum, maximum),
+  integer: true
 });
 
 const point = (): JsonSchema => ({
@@ -158,6 +165,11 @@ const propertiesSchema: JsonSchema = {
   additionalProperties: false
 };
 
+const assetFamilyId = (): JsonSchema => ({ type: "string", minLength: 1, maxLength: 200 });
+const assetVariantId = (): JsonSchema => ({ type: "string", minLength: 1, maxLength: 200 });
+const assetLimit = (): JsonSchema => integer(1, 100);
+const exportFormat = { type: "string", enum: ["svg", "pdf", "png", "credits"] } as const;
+
 const definitions: SemanticCommandDefinition[] = [
   {
     name: "inspect_scene",
@@ -174,8 +186,8 @@ const definitions: SemanticCommandDefinition[] = [
     inputSchema: {
       type: "object",
       properties: {
-        maxObjects: number(1, 500),
-        maxDepth: number(0, 12)
+        maxObjects: integer(1, 500),
+        maxDepth: integer(0, 12)
       },
       additionalProperties: false
     },
@@ -219,6 +231,68 @@ const definitions: SemanticCommandDefinition[] = [
     outputSchema: output({
       objectIds: objectIds(0),
       objects: { type: "array", maxItems: 200 }
+    })
+  },
+  {
+    name: "search_assets",
+    title: "Search scientific assets",
+    description:
+      "Search the bundled OpenSketch scientific asset manifest by trusted title, keywords, category, or provenance metadata.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "read_only",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        query: { type: "string", maxLength: 200 },
+        category: { type: "string", maxLength: 100 },
+        limit: assetLimit()
+      },
+      required: ["query"],
+      additionalProperties: false
+    },
+    outputSchema: output({ results: { type: "array", maxItems: 100 }, total: number(0, 100000) })
+  },
+  {
+    name: "inspect_asset",
+    title: "Inspect scientific asset",
+    description:
+      "Inspect one bundled asset family or exact variant without returning raw SVG source.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "read_only",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project"],
+    inputSchema: {
+      type: "object",
+      properties: { familyId: assetFamilyId(), variantId: assetVariantId() },
+      required: ["familyId"],
+      additionalProperties: false
+    },
+    outputSchema: output({ family: { type: "object" } })
+  },
+  {
+    name: "inspect_provenance",
+    title: "Inspect figure provenance",
+    description: "Return a bounded provenance summary for assets currently present in the figure.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "read_only",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project"],
+    inputSchema: emptyObject(),
+    outputSchema: output({
+      version: number(1, 1),
+      assets: { type: "array", maxItems: 200 },
+      truncated: { type: "boolean" }
     })
   },
   {
@@ -347,6 +421,55 @@ const definitions: SemanticCommandDefinition[] = [
       additionalProperties: false
     },
     outputSchema: changedOutput
+  },
+  {
+    name: "insert_asset",
+    title: "Insert scientific asset",
+    description:
+      "Insert an exact bundled asset family and variant through the normal editor pathway and return its stable scene object ID.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: false,
+    idempotent: false,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        familyId: assetFamilyId(),
+        variantId: assetVariantId(),
+        x: number(),
+        y: number()
+      },
+      required: ["familyId", "variantId"],
+      additionalProperties: false
+    },
+    outputSchema: output({
+      objectId: objectId(),
+      familyId: assetFamilyId(),
+      variantId: assetVariantId()
+    })
+  },
+  {
+    name: "replace_asset_variant",
+    title: "Replace asset variant",
+    description:
+      "Replace one exact asset scene object with a supported variant while preserving its stable object identity and placement.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: { objectId: objectId(), variantId: assetVariantId() },
+      required: ["objectId", "variantId"],
+      additionalProperties: false
+    },
+    outputSchema: output({ objectId: objectId(), variantId: assetVariantId() })
   },
   {
     name: "move_objects",
@@ -638,6 +761,33 @@ const definitions: SemanticCommandDefinition[] = [
     requires: ["project", "canvas"],
     inputSchema: emptyObject(),
     outputSchema: output({ applied: { type: "boolean" } })
+  },
+  {
+    name: "export_figure",
+    title: "Export figure",
+    description:
+      "Export the current figure through the existing sanitized SVG, PDF, PNG, or provenance-credit pathway.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "side_effect",
+    confirmation: "none",
+    retryable: false,
+    idempotent: false,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        format: exportFormat,
+        title: { type: "string", maxLength: 400 },
+        description: { type: "string", maxLength: 2_000 },
+        transparent: { type: "boolean" },
+        dpi: number(1, 2_400),
+        background: { type: "string", maxLength: 100 }
+      },
+      required: ["format"],
+      additionalProperties: false
+    },
+    outputSchema: output({ format: exportFormat, started: { type: "boolean" } })
   }
 ];
 

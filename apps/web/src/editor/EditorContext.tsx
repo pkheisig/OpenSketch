@@ -165,6 +165,7 @@ import { DEFAULT_TEXT_LINE_HEIGHT } from "@/editor/text";
 import { createSemanticEditorAdapter } from "@/semantic/semanticEditorAdapter";
 import { installSemanticIntrospection } from "@/semantic/semanticIntrospection";
 import { createSemanticRuntime, type SemanticRuntime } from "@/semantic/semanticRuntime";
+import { createWebMcpAdapter, type WebMcpAdapter } from "@/semantic/webmcp";
 
 FabricObject.customProperties = [
   "objectId",
@@ -525,7 +526,11 @@ export interface EditorContextValue {
   ) => void;
   placeCreationTool: (tool: CreationTool, point: Point, endPoint?: Point) => void;
   placeCreation: (point: Point, endPoint?: Point) => void;
-  addAsset: (family: AssetFamily, variant: AssetVariant, point?: Point) => Promise<void>;
+  addAsset: (
+    family: AssetFamily,
+    variant: AssetVariant,
+    point?: Point
+  ) => Promise<string | undefined>;
   addTemplate: (template: AssetTemplate, point?: Point) => Promise<void>;
   setAssetVariant: (variantId: string) => Promise<void>;
   addImportedMedia: (media: ImportedMediaRecord, point?: Point) => Promise<void>;
@@ -1146,7 +1151,7 @@ export function EditorProvider({
   const savedRevision = useRef(0);
   const lastSaveError = useRef<unknown>(undefined);
   const [saveState, setSaveState] = useState<ProjectSaveState>({ phase: "saved" });
-  const assetInsertQueue = useRef<Promise<void>>(Promise.resolve());
+  const assetInsertQueue = useRef<Promise<unknown>>(Promise.resolve());
   const importQueue = useRef<Promise<void>>(Promise.resolve());
   const pendingEditorWork = useRef(0);
   const pendingEditorWorkPromises = useRef(new Set<Promise<void>>());
@@ -2412,10 +2417,14 @@ export function EditorProvider({
 
   const semanticCanvasRef = useRef<Canvas | null>(canvas);
   semanticCanvasRef.current = canvas;
+  const semanticAddObjectRef = useRef(addObject);
+  semanticAddObjectRef.current = addObject;
   const semanticProjectIdRef = useRef(project.id);
   semanticProjectIdRef.current = project.id;
   const semanticCommitRef = useRef(commit);
   semanticCommitRef.current = commit;
+  const semanticSetSelectionRef = useRef(setSelection);
+  semanticSetSelectionRef.current = setSelection;
   const semanticSerializeRef = useRef(serialize);
   semanticSerializeRef.current = serialize;
   const semanticRestoreRef = useRef(restoreSemanticSnapshot);
@@ -2434,6 +2443,16 @@ export function EditorProvider({
   semanticUndoRef.current = undo;
   const semanticRedoRef = useRef(redo);
   semanticRedoRef.current = redo;
+  const semanticExportSvgRef = useRef<EditorContextValue["exportSvg"]>(() => undefined);
+  const semanticExportCreditsRef = useRef<EditorContextValue["exportCredits"]>(() => undefined);
+  const semanticExportPdfRef = useRef<EditorContextValue["exportPdf"]>(async () => undefined);
+  const semanticExportPngRef = useRef<EditorContextValue["exportPng"]>(async () => undefined);
+  const semanticInsertAssetRef = useRef<
+    (family: AssetFamily, variant: AssetVariant, point?: Point) => Promise<string | undefined>
+  >(async () => undefined);
+  const semanticReplaceAssetVariantRef = useRef<
+    (objectId: string, variantId: string) => Promise<boolean>
+  >(async () => false);
   const semanticRuntimeRef = useRef<SemanticRuntime | null>(null);
   if (!semanticRuntimeRef.current) {
     semanticRuntimeRef.current = createSemanticRuntime(
@@ -2442,7 +2461,7 @@ export function EditorProvider({
         getProjectId: () => semanticProjectIdRef.current,
         isCanvasReady: () => canvasReadyRef.current,
         getCanvasSettings: () => latestCanvasSettings.current,
-        setSelection,
+        setSelection: (objects) => semanticSetSelectionRef.current(objects),
         commit: (label) => semanticCommitRef.current(label),
         serialize: () => semanticSerializeRef.current(),
         restore: (snapshot) => semanticRestoreRef.current(snapshot),
@@ -2454,13 +2473,49 @@ export function EditorProvider({
         applyColorPreset: (objectId, presetId) =>
           semanticApplyColorPresetRef.current(objectId, presetId),
         undo: () => semanticUndoRef.current(),
-        redo: () => semanticRedoRef.current()
+        redo: () => semanticRedoRef.current(),
+        insertAsset: (...args) => semanticInsertAssetRef.current(...args),
+        replaceAssetVariant: (...args) => semanticReplaceAssetVariantRef.current(...args),
+        exportSvg: (...args) => semanticExportSvgRef.current(...args),
+        exportCredits: (...args) => semanticExportCreditsRef.current(...args),
+        exportPdf: (...args) => semanticExportPdfRef.current(...args),
+        exportPng: (...args) => semanticExportPngRef.current(...args)
       })
     );
   }
   const semanticRuntime = semanticRuntimeRef.current;
 
   useEffect(() => installSemanticIntrospection(semanticRuntime), [semanticRuntime]);
+
+  const semanticWebMcpRef = useRef<WebMcpAdapter | null>(null);
+  if (!semanticWebMcpRef.current) {
+    semanticWebMcpRef.current = createWebMcpAdapter({ runtime: semanticRuntime });
+  }
+  useEffect(() => {
+    const adapter = semanticWebMcpRef.current;
+    if (!adapter) return undefined;
+    let disposed = false;
+    let retryTimer: ReturnType<typeof setTimeout> | undefined;
+    const sync = async () => {
+      const result = await adapter.sync();
+      if (!result.supported) {
+        if (!disposed && retryAttempts < 4) {
+          const delay = Math.min(250 * 2 ** retryAttempts, 2000);
+          retryAttempts += 1;
+          retryTimer = setTimeout(() => void sync(), delay);
+        }
+      } else {
+        retryAttempts = 0;
+      }
+    };
+    let retryAttempts = 0;
+    void sync();
+    return () => {
+      disposed = true;
+      if (retryTimer) clearTimeout(retryTimer);
+      adapter.dispose();
+    };
+  }, [canvasReady, project.id]);
 
   const setCreationDefaults = useCallback(
     (defaults: CreationDefaults | ((current: CreationDefaults) => CreationDefaults)) => {
@@ -2738,60 +2793,90 @@ export function EditorProvider({
     [creationTool, placeCreationTool]
   );
 
-  const addAsset = useCallback(
-    (family: AssetFamily, variant: AssetVariant, point?: Point) => {
+  const insertBundledAsset = useCallback(
+    (family: AssetFamily, variant: AssetVariant, point: Point | undefined, select: boolean) => {
       const operation = trackPendingEditorWork(
         assetInsertQueue.current.then(async () => {
-          if (!canvas) return;
+          if (!semanticCanvasRef.current) return undefined;
           const group = await createBundledAssetGroup(family, variant);
+          if (!semanticCanvasRef.current) return undefined;
           const scale = assetInsertionScale(family.title, group.width || 1, group.height || 1);
           group.scale(scale);
-          addObject(group, family.title, "nih-asset", point);
+          const object = semanticAddObjectRef.current(
+            group,
+            family.title,
+            "nih-asset",
+            point,
+            select
+          );
+          return object?.objectId;
         })
       );
       assetInsertQueue.current = operation.catch(() => undefined);
       return operation;
     },
-    [addObject, canvas, trackPendingEditorWork]
+    [trackPendingEditorWork]
   );
+
+  const addAsset = useCallback(
+    (family: AssetFamily, variant: AssetVariant, point?: Point) =>
+      insertBundledAsset(family, variant, point, true),
+    [insertBundledAsset]
+  );
+
+  const insertSemanticAsset = useCallback(
+    (family: AssetFamily, variant: AssetVariant, point?: Point) =>
+      insertBundledAsset(family, variant, point, false),
+    [insertBundledAsset]
+  );
+  semanticInsertAssetRef.current = insertSemanticAsset;
 
   const addTemplate = useCallback(
     (template: AssetTemplate, point?: Point) => {
       const operation = trackPendingEditorWork(
         assetInsertQueue.current.then(async () => {
-          if (!canvas) return;
+          if (!semanticCanvasRef.current) return;
           const [object] = (await util.enlivenObjects([
             structuredClone(template.object)
           ])) as FabricObject[];
           if (!object) return;
           assignFreshCloneIds(object);
-          configureCanvasAssets([object]);
-          addObject(object, template.name, "group", point);
+          semanticConfigureCanvasAssetsRef.current([object]);
+          semanticAddObjectRef.current(object, template.name, "group", point);
         })
       );
       assetInsertQueue.current = operation.catch(() => undefined);
       return operation;
     },
-    [addObject, canvas, trackPendingEditorWork]
+    [trackPendingEditorWork]
   );
 
-  const setAssetVariant = useCallback(
-    (variantId: string) => {
+  const replaceAssetVariant = useCallback(
+    (objectId: string, variantId: string, selectReplacement = false) => {
       const operation = trackPendingEditorWork(
         assetInsertQueue.current.then(async () => {
-          if (!canvas) return;
-          const current = canvas.getActiveObject();
-          if (!(current instanceof Group) || !current.familyId || current.assetId === variantId)
-            return;
+          if (!semanticCanvasRef.current) return false;
+          const initial = sceneObjectIndex(semanticCanvasRef.current).get(objectId);
+          if (!(initial instanceof Group) || !initial.familyId || initial.assetId === variantId)
+            return false;
           const { assetManifest } = await loadAssetManifest();
+          const currentCanvas = semanticCanvasRef.current;
+          if (!currentCanvas) return false;
+          const current = sceneObjectIndex(currentCanvas).get(objectId);
+          if (!(current instanceof Group) || !current.familyId || current.assetId === variantId)
+            return false;
           const family = assetManifest.families.find(
             (candidate) => candidate.familyId === current.familyId
           );
           const variant = family?.variants.find((candidate) => candidate.id === variantId);
-          if (!family || !variant) return;
+          if (!family || !variant) return false;
 
           const replacement = await createBundledAssetGroup(family, variant);
-          if (!canvas.getObjects().includes(current)) return;
+          if (
+            semanticCanvasRef.current !== currentCanvas ||
+            !currentCanvas.getObjects().includes(current)
+          )
+            return false;
           const center = current.getCenterPoint();
           const renderedMaxSide = Math.max(current.getScaledWidth(), current.getScaledHeight());
           const replacementMaxSide = Math.max(replacement.width || 1, replacement.height || 1);
@@ -2814,20 +2899,37 @@ export function EditorProvider({
           replacement.setCoords();
           assignSceneIdentities(replacement);
 
-          const index = canvas.getObjects().indexOf(current);
-          canvas.remove(current);
-          canvas.insertAt(index, replacement);
-          canvas.setActiveObject(replacement);
-          setSelection([replacement]);
-          if (replacement.objectId) refreshConnectors(replacement.objectId);
-          canvas.requestRenderAll();
-          commit("Change asset variant");
+          const activeIds = currentCanvas
+            .getActiveObjects()
+            .map((object) => object.objectId)
+            .filter((id): id is string => Boolean(id));
+          const index = currentCanvas.getObjects().indexOf(current);
+          currentCanvas.remove(current);
+          currentCanvas.insertAt(index, replacement);
+          if (selectReplacement || activeIds.includes(objectId)) {
+            currentCanvas.setActiveObject(replacement);
+            semanticSetSelectionRef.current([replacement]);
+          }
+          if (replacement.objectId) semanticRefreshConnectorsRef.current(replacement.objectId);
+          currentCanvas.requestRenderAll();
+          semanticCommitRef.current("Change asset variant");
+          return true;
         })
       );
       assetInsertQueue.current = operation.catch(() => undefined);
       return operation;
     },
-    [canvas, commit, refreshConnectors, trackPendingEditorWork]
+    [trackPendingEditorWork]
+  );
+  semanticReplaceAssetVariantRef.current = replaceAssetVariant;
+
+  const setAssetVariant = useCallback(
+    (variantId: string) => {
+      const current = canvas?.getActiveObject();
+      if (!current?.objectId) return Promise.resolve();
+      return replaceAssetVariant(current.objectId, variantId, true).then(() => undefined);
+    },
+    [canvas, replaceAssetVariant]
   );
 
   const placeImportedMedia = useCallback(
@@ -3832,6 +3934,11 @@ export function EditorProvider({
     },
     [canvas, canvasSettings]
   );
+
+  semanticExportSvgRef.current = exportSvg;
+  semanticExportCreditsRef.current = exportCredits;
+  semanticExportPdfRef.current = exportPdf;
+  semanticExportPngRef.current = exportPng;
 
   useEffect(() => {
     const onPaste = (event: ClipboardEvent) => {
