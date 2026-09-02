@@ -1630,7 +1630,7 @@ definitions.push(
         sourceObjectId: objectId(),
         targetObjectId: objectId(),
         semanticType: { type: "string", maxLength: 120 },
-        role: semanticRole
+        role: { type: "string", enum: ["particle-field", "decorative"] }
       },
       required: ["count", "distribution", "seed", "bounds"],
       additionalProperties: false

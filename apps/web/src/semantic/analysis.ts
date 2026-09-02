@@ -92,6 +92,10 @@ function relationAllowsOverlap(relations: SemanticRelation[], a: string, b: stri
   );
 }
 
+function isEffectivelyVisible(path: readonly { visible?: boolean }[]): boolean {
+  return path.every((object) => object.visible !== false);
+}
+
 export function analyzeComposition(
   canvas: Canvas,
   canvasSize: { width: number; height: number },
@@ -102,17 +106,22 @@ export function analyzeComposition(
   const categories = options.categories ? new Set(options.categories) : undefined;
   const maxFindings = Math.max(1, Math.min(256, Math.floor(options.maxFindings ?? 128)));
   const padding = options.padding ?? 24;
+  const clearance = options.clearance ?? 12;
   const allEntries = sceneObjectEntries(canvas).filter(({ object }) => object.objectId);
   const entries = allEntries.filter(({ object }) => !isGroup(object));
+  const visibility = new Map(
+    allEntries.map(({ object, path }) => [object.objectId!, isEffectivelyVisible(path)])
+  );
   const relations = relationsForCanvas(canvas);
   const index = new Map(allEntries.map(({ object }) => [object.objectId!, object]));
   const findings: CompositionFinding[] = [];
   const add = (...args: Parameters<typeof finding>) => {
     if (!categories || categories.has(args[0])) findings.push(finding(...args));
   };
-  entries.forEach(({ object }) => {
+  entries.forEach(({ object, path }) => {
     const id = object.objectId!;
-    const geometry = inspectSemanticGeometry(object, options.clearance ?? 12);
+    const visible = isEffectivelyVisible(path);
+    const geometry = inspectSemanticGeometry(object, clearance);
     const bounds = geometry.visualBounds;
     if (
       !Number.isFinite(bounds.left + bounds.top + bounds.width + bounds.height) ||
@@ -156,7 +165,7 @@ export function analyzeComposition(
         `Stage "${id}" has no explicit stage index.`,
         [id]
       );
-    if ((object instanceof IText || object instanceof Textbox) && object.visible !== false) {
+    if ((object instanceof IText || object instanceof Textbox) && visible) {
       const lines = object.textLines.length;
       if (!Number.isFinite(object.width) || !Number.isFinite(object.height) || object.fontSize < 6)
         add(
@@ -234,13 +243,18 @@ export function analyzeComposition(
   for (let left = 0; left < entries.length; left += 1) {
     const a = entries[left].object;
     const aId = a.objectId!;
-    if (a.visible === false || a.connector) continue;
+    if (!visibility.get(aId) || a.connector) continue;
     for (let right = left + 1; right < entries.length; right += 1) {
       const b = entries[right].object;
       const bId = b.objectId!;
-      if (b.visible === false || b.connector || relationAllowsOverlap(relations, aId, bId))
+      if (!visibility.get(bId) || b.connector || relationAllowsOverlap(relations, aId, bId))
         continue;
-      if (overlap(inspectSemanticGeometry(a).layoutBounds, inspectSemanticGeometry(b).layoutBounds))
+      if (
+        overlap(
+          inspectSemanticGeometry(a, clearance).layoutBounds,
+          inspectSemanticGeometry(b, clearance).layoutBounds
+        )
+      )
         add(
           "geometry",
           "warning",
@@ -272,8 +286,8 @@ export function analyzeComposition(
     const source = index.get(relation.sourceObjectId);
     const target = index.get(relation.targetObjectId);
     if (
-      source?.visible === false ||
-      target?.visible === false ||
+      visibility.get(relation.sourceObjectId) === false ||
+      visibility.get(relation.targetObjectId) === false ||
       source?.opacity === 0 ||
       target?.opacity === 0
     )
@@ -326,7 +340,8 @@ export function analyzeComposition(
     metrics: {
       objects: entries.length,
       relations: relations.length,
-      visibleObjects: entries.filter(({ object }) => object.visible !== false).length
+      visibleObjects: entries.filter(({ object }) => visibility.get(object.objectId!) === true)
+        .length
     },
     truncated,
     skipped: [],

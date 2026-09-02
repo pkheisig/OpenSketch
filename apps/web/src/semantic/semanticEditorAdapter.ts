@@ -425,6 +425,7 @@ const RESTORABLE_GROUP_PROPERTIES = [
   "recognizedGroups",
   "semanticMetadata",
   "semanticRelations",
+  "particleFieldSpec",
   "semanticConnector",
   "defaultElementStyle"
 ] as const;
@@ -520,6 +521,10 @@ function boundedRelationId(prefix: string, ...ids: string[]): string {
   if (raw.length <= 200) return raw;
   const suffix = ids.map((id) => id.slice(0, 88)).join("-");
   return `${prefix}-${suffix}`.slice(0, 200);
+}
+
+function isEffectivelyVisible(path: readonly { visible?: boolean }[]): boolean {
+  return path.every((object) => object.visible !== false);
 }
 
 function assetSummary(family: AssetFamily) {
@@ -1177,6 +1182,17 @@ export function createSemanticEditorAdapter(
         direction: "forward",
         allowedOverlap: plan.allowedOverlap
       });
+      const conflictingRelation = relationsForCanvas(canvas).find(
+        (existing) =>
+          existing.id === relation.id &&
+          (existing.sourceObjectId !== relation.sourceObjectId ||
+            existing.targetObjectId !== relation.targetObjectId)
+      );
+      if (conflictingRelation)
+        throw new SemanticAdapterError(
+          "DUPLICATE_RELATION_ID",
+          `Relation ID "${relation.id}" is already used by another relation.`
+        );
       const sourceMetadata = metadataOf(source) ?? { version: 1 as const };
       const relationIds = sourceMetadata.relationIds ?? [];
       if (!relationIds.includes(relation.id) && relationIds.length >= 32)
@@ -1219,11 +1235,42 @@ export function createSemanticEditorAdapter(
     }
     if (command === "create_particle_field") {
       const seed = input.seed as string;
+      const rawBounds = input.bounds as Record<string, unknown>;
+      const fieldBounds = {
+        left: finiteNumber(rawBounds.left, "bounds.left"),
+        top: finiteNumber(rawBounds.top, "bounds.top"),
+        width: finiteNumber(rawBounds.width, "bounds.width"),
+        height: finiteNumber(rawBounds.height, "bounds.height")
+      };
+      if (fieldBounds.width <= 0 || fieldBounds.height <= 0)
+        throw new SemanticAdapterError("INVALID_INPUT", "Particle bounds must be positive.");
+      const particleCount = finiteNumber(input.count, "count");
+      const distribution = input.distribution as ParticleDistribution;
+      const particleRole = typeof input.role === "string" ? input.role : "particle-field";
+      const requestedSemanticType =
+        typeof input.semanticType === "string" ? input.semanticType : undefined;
+      const particleSemanticType = requestedSemanticType ?? "particle";
+      const fieldSemanticType = requestedSemanticType ?? "particle-field";
+      const sourceObjectId =
+        typeof input.sourceObjectId === "string" ? input.sourceObjectId : undefined;
+      const targetObjectId =
+        typeof input.targetObjectId === "string" ? input.targetObjectId : undefined;
+      const particleFieldSpec = {
+        seed,
+        count: Math.floor(particleCount),
+        distribution,
+        bounds: fieldBounds,
+        ...(sourceObjectId ? { sourceObjectId } : {}),
+        ...(targetObjectId ? { targetObjectId } : {}),
+        semanticType: requestedSemanticType ?? null,
+        role: particleRole
+      };
       const existingField = sceneObjectEntries(canvas).find(
         ({ object }) =>
           isGroup(object) &&
           metadataOf(object)?.semanticRole === "particle-field" &&
-          metadataOf(object)?.semanticName === `particle-field:${seed}`
+          metadataOf(object)?.semanticName === `particle-field:${seed}` &&
+          JSON.stringify(object.particleFieldSpec) === JSON.stringify(particleFieldSpec)
       )?.object;
       if (isGroup(existingField)) {
         const particleIds = existingField
@@ -1235,27 +1282,16 @@ export function createSemanticEditorAdapter(
           changedObjectIds: []
         };
       }
-      const rawBounds = input.bounds as Record<string, unknown>;
-      const fieldBounds = {
-        left: finiteNumber(rawBounds.left, "bounds.left"),
-        top: finiteNumber(rawBounds.top, "bounds.top"),
-        width: finiteNumber(rawBounds.width, "bounds.width"),
-        height: finiteNumber(rawBounds.height, "bounds.height")
-      };
-      if (fieldBounds.width <= 0 || fieldBounds.height <= 0)
-        throw new SemanticAdapterError("INVALID_INPUT", "Particle bounds must be positive.");
-      const source =
-        typeof input.sourceObjectId === "string"
-          ? inspectSemanticGeometry(resolveObjects(canvas, [input.sourceObjectId])[0]).center
-          : undefined;
-      const target =
-        typeof input.targetObjectId === "string"
-          ? inspectSemanticGeometry(resolveObjects(canvas, [input.targetObjectId])[0]).center
-          : undefined;
+      const source = sourceObjectId
+        ? inspectSemanticGeometry(resolveObjects(canvas, [sourceObjectId])[0]).center
+        : undefined;
+      const target = targetObjectId
+        ? inspectSemanticGeometry(resolveObjects(canvas, [targetObjectId])[0]).center
+        : undefined;
       const plan = planParticleField(
         fieldBounds,
-        finiteNumber(input.count, "count"),
-        input.distribution as ParticleDistribution,
+        particleCount,
+        distribution,
         seed,
         source,
         target
@@ -1277,9 +1313,8 @@ export function createSemanticEditorAdapter(
         particle.OpenSketchType = "particle";
         particle.semanticMetadata = {
           version: 1,
-          semanticRole:
-            (input.role as string | undefined) === "decorative" ? "decorative" : "particle-field",
-          semanticType: typeof input.semanticType === "string" ? input.semanticType : "particle"
+          semanticRole: particleRole === "decorative" ? "decorative" : "particle-field",
+          semanticType: particleSemanticType
         };
         return particle;
       });
@@ -1290,10 +1325,10 @@ export function createSemanticEditorAdapter(
       field.semanticMetadata = {
         version: 1,
         semanticRole: "particle-field",
-        semanticType:
-          typeof input.semanticType === "string" ? input.semanticType : "particle-field",
+        semanticType: fieldSemanticType,
         semanticName: `particle-field:${seed}`
       };
+      field.particleFieldSpec = particleFieldSpec;
       const existingIds = new Set(
         sceneObjectEntries(canvas)
           .map(({ object }) => object.objectId)
@@ -1346,9 +1381,18 @@ export function createSemanticEditorAdapter(
         typeof input.placement === "string"
           ? ({ top: 0, right: 2, bottom: 3, left: 1 }[input.placement] ?? 0)
           : 0;
-      const sceneObjects = canvas
-        .getObjects()
-        .filter((object) => object !== target && object.visible !== false && !object.connector);
+      const targetPath = sceneObjectEntries(canvas).find(({ object }) => object === target)
+        ?.path ?? [target];
+      const sceneObjects = sceneObjectEntries(canvas)
+        .filter(
+          ({ object, path }) =>
+            !isGroup(object) &&
+            !object.connector &&
+            isEffectivelyVisible(path) &&
+            !path.includes(target) &&
+            !targetPath.includes(object)
+        )
+        .map(({ object }) => object);
       const chosen =
         candidates[(preferred + candidates.length) % candidates.length] ?? candidates[0];
       const orderedCandidates = [...candidates.slice(preferred), ...candidates.slice(0, preferred)];
@@ -1384,6 +1428,14 @@ export function createSemanticEditorAdapter(
       });
       const targetMetadata = metadataOf(target) ?? { version: 1 as const };
       const targetRelationIds = targetMetadata.relationIds ?? [];
+      const conflictingRelation = relationsForCanvas(canvas).find(
+        (existing) => existing.id === relation.id
+      );
+      if (conflictingRelation)
+        throw new SemanticAdapterError(
+          "DUPLICATE_RELATION_ID",
+          `Relation ID "${relation.id}" is already used by another relation.`
+        );
       if (!targetRelationIds.includes(relation.id) && targetRelationIds.length >= 32)
         throw new SemanticAdapterError(
           "SEMANTIC_LIMIT",
