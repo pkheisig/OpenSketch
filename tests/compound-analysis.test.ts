@@ -58,6 +58,30 @@ describe("semantic compound planning", () => {
       )
     ).toHaveLength(4);
   });
+
+  it("requires endpoints for directional particle distributions and converges", () => {
+    expect(() =>
+      planParticleField({ left: 0, top: 0, width: 200, height: 100 }, 4, "source-fan", "seed")
+    ).toThrow("source-fan distribution requires a source point");
+    expect(() =>
+      planParticleField(
+        { left: 0, top: 0, width: 200, height: 100 },
+        4,
+        "target-converging",
+        "seed"
+      )
+    ).toThrow("target-converging distribution requires a target point");
+    const target = { x: 180, y: 50 };
+    const plan = planParticleField(
+      { left: 0, top: 0, width: 200, height: 100 },
+      4,
+      "target-converging",
+      "seed",
+      undefined,
+      target
+    );
+    expect(plan.points.at(-1)).toEqual(target);
+  });
 });
 
 describe("semantic composition analysis", () => {

@@ -1006,7 +1006,8 @@ export function createSemanticEditorAdapter(
             if (typeof value === "string" && value.length > 0 && existingTexts[index])
               existingTexts[index].set("text", value);
           });
-          refreshTextMetrics(existingTexts);
+          refreshTextMetrics([existingLabelGroup]);
+          refreshParentGroups(existingLabelGroup);
           existingStage.setCoords();
           canvas.requestRenderAll();
           commitSemantic("Semantic update labeled group");
@@ -1090,6 +1091,14 @@ export function createSemanticEditorAdapter(
         ...(title ? [title] : []),
         ...(subtitle ? [subtitle] : [])
       ];
+      const renderedLabelWidth = Math.max(...labelChildren.map((object) => boundsOf(object).width));
+      const horizontalLabelX =
+        placement === "left"
+          ? bounds.left - 24 - renderedLabelWidth / 2
+          : placement === "right"
+            ? bounds.left + bounds.width + 24 + renderedLabelWidth / 2
+            : center.x;
+      labelChildren.forEach((object) => object.set("left", horizontalLabelX));
       labelChildren.forEach((object) => {
         object.objectId ??= crypto.randomUUID();
       });
@@ -1121,6 +1130,7 @@ export function createSemanticEditorAdapter(
       if (requestedLocation) moveAnchorTo(stageGroup, "center", requestedLocation);
       canvas.add(stageGroup);
       stageGroup.setCoords();
+      dependencies.refreshConnectors();
       canvas.requestRenderAll();
       commitSemantic("Semantic compose labeled group");
       return {
@@ -1167,6 +1177,13 @@ export function createSemanticEditorAdapter(
         direction: "forward",
         allowedOverlap: plan.allowedOverlap
       });
+      const sourceMetadata = metadataOf(source) ?? { version: 1 as const };
+      const relationIds = sourceMetadata.relationIds ?? [];
+      if (!relationIds.includes(relation.id) && relationIds.length >= 32)
+        throw new SemanticAdapterError(
+          "SEMANTIC_LIMIT",
+          `Object "${sourceObjectId}" cannot reference more than 32 relations.`
+        );
       moveAnchorTo(source, "center", plan.source);
       moveAnchorTo(target, "center", plan.target);
       const mediatorPosition = plan.mediator ?? {
@@ -1174,7 +1191,6 @@ export function createSemanticEditorAdapter(
         y: (plan.source.y + plan.target.y) / 2
       };
       if (mediatorObject) moveAnchorTo(mediatorObject, "center", mediatorPosition);
-      const sourceMetadata = metadataOf(source) ?? { version: 1 as const };
       source.semanticMetadata = {
         ...sourceMetadata,
         relationIds: [...new Set([...(sourceMetadata.relationIds ?? []), relation.id])]
@@ -1359,6 +1375,21 @@ export function createSemanticEditorAdapter(
           "NO_FEASIBLE_PLACEMENT",
           "No annotation candidate avoids existing visible geometry."
         );
+      annotation.objectId = crypto.randomUUID();
+      const relation = normalizeRelation({
+        id: boundedRelationId("label", targetObjectId, annotation.objectId),
+        kind: "labels",
+        sourceObjectId: targetObjectId,
+        targetObjectId: annotation.objectId
+      });
+      const targetMetadata = metadataOf(target) ?? { version: 1 as const };
+      const targetRelationIds = targetMetadata.relationIds ?? [];
+      if (!targetRelationIds.includes(relation.id) && targetRelationIds.length >= 32)
+        throw new SemanticAdapterError(
+          "SEMANTIC_LIMIT",
+          `Object "${targetObjectId}" cannot reference more than 32 relations.`
+        );
+      const existingObjects = new Set(sceneObjectEntries(canvas).map(({ object }) => object));
       const annotationId = addObject(
         canvas,
         annotation,
@@ -1373,34 +1404,35 @@ export function createSemanticEditorAdapter(
         semanticType: "annotation"
       };
       let leaderObjectId: string | undefined;
-      if (input.leader !== false) {
-        const leader = await createBoundConnector(
-          {
-            fromObjectId: targetObjectId,
-            toObjectId: annotationId,
-            arrowhead: "none",
-            routeType: "straight"
-          },
-          false
-        );
-        leaderObjectId = leader.objectId;
-        const [leaderObject] = resolveObjects(canvas, [leaderObjectId]);
-        leaderObject.semanticMetadata = {
-          version: 1,
-          semanticRole: "annotation-leader",
-          semanticType: "annotation-leader"
-        };
+      try {
+        if (input.leader !== false) {
+          const leader = await createBoundConnector(
+            {
+              fromObjectId: targetObjectId,
+              toObjectId: annotationId,
+              arrowhead: "none",
+              routeType: "straight"
+            },
+            false
+          );
+          leaderObjectId = leader.objectId;
+          const [leaderObject] = resolveObjects(canvas, [leaderObjectId]);
+          leaderObject.semanticMetadata = {
+            version: 1,
+            semanticRole: "annotation-leader",
+            semanticType: "annotation-leader"
+          };
+        }
+      } catch (error) {
+        for (const entry of sceneObjectEntries(canvas).reverse()) {
+          if (!existingObjects.has(entry.object)) removeSceneObject(entry);
+        }
+        throw error;
       }
-      const relation = normalizeRelation({
-        id: `label-${targetObjectId}-${annotationId}`,
-        kind: "labels",
-        sourceObjectId: targetObjectId,
-        targetObjectId: annotationId
-      });
       target.semanticRelations = [...(target.semanticRelations ?? []), relation];
       target.semanticMetadata = {
-        ...(metadataOf(target) ?? { version: 1 as const }),
-        relationIds: [...new Set([...(metadataOf(target)?.relationIds ?? []), relation.id])]
+        ...targetMetadata,
+        relationIds: [...new Set([...targetRelationIds, relation.id])]
       };
       canvas.requestRenderAll();
       commitSemantic("Semantic create annotation");
@@ -1493,13 +1525,16 @@ export function createSemanticEditorAdapter(
               .filter((object) => !roles || roles.has(metadataOf(object)?.semanticRole ?? ""));
       const skipped: string[] = [];
       const changed = new Set<string>();
-      const applyPreset = (object: FabricObject): void => {
+      const applyPreset = (
+        object: FabricObject,
+        fallbackPreset?: ReturnType<typeof stylePreset>
+      ): void => {
         if (object.familyId && input.includeAssets !== true) {
           if (object.objectId) skipped.push(object.objectId);
           return;
         }
         const role = presetId ?? metadataOf(object)?.semanticRole;
-        const preset = role ? stylePreset(role) : undefined;
+        const preset = (role ? stylePreset(role) : undefined) ?? fallbackPreset;
         if (!preset) {
           if (object.objectId) skipped.push(object.objectId);
           return;
@@ -1516,7 +1551,10 @@ export function createSemanticEditorAdapter(
         if (object.objectId) changed.add(object.objectId);
       };
       targets.forEach((object) => {
-        visitSceneObjects(object, applyPreset);
+        const inheritedPreset = presetId
+          ? stylePreset(presetId)
+          : stylePreset(metadataOf(object)?.semanticRole ?? "");
+        visitSceneObjects(object, (current) => applyPreset(current, inheritedPreset));
       });
       const changedObjectIds = [...changed];
       if (changedObjectIds.length > 0) {

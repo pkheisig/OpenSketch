@@ -164,6 +164,10 @@ export function planParticleField(
   source?: CompoundPoint,
   target?: CompoundPoint
 ): ParticleFieldPlan {
+  if (distribution === "source-fan" && !source)
+    throw new Error("source-fan distribution requires a source point.");
+  if (distribution === "target-converging" && !target)
+    throw new Error("target-converging distribution requires a target point.");
   const next = random(seed);
   const points: CompoundPoint[] = [];
   const safeCount = Math.max(0, Math.min(256, Math.floor(count)));
@@ -197,7 +201,7 @@ export function planParticleField(
       const spread = (next() - 0.5) * bounds.height * 0.7;
       x = clamp(start.x + fraction * (target.x - start.x), bounds.left, bounds.left + bounds.width);
       y = clamp(
-        start.y + fraction * (target.y - start.y) + spread * fraction,
+        start.y + fraction * (target.y - start.y) + spread * (1 - fraction),
         bounds.top,
         bounds.top + bounds.height
       );
