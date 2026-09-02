@@ -1205,8 +1205,14 @@ export function createSemanticEditorAdapter(
           if (restoredCanvas) {
             restoreSelection(restoredCanvas, selectionObjectIds, dependencies.setSelection);
           }
-        } catch {
-          // Preserve the original batch failure if rollback itself cannot finish.
+        } catch (rollbackError) {
+          const originalMessage = error instanceof Error ? error.message : String(error);
+          const rollbackMessage =
+            rollbackError instanceof Error ? rollbackError.message : String(rollbackError);
+          throw new SemanticAdapterError(
+            "ROLLBACK_FAILED",
+            `Semantic batch failed (${originalMessage}) and rollback failed: ${rollbackMessage}`
+          );
         }
         throw error;
       } finally {

@@ -234,4 +234,19 @@ describe("semantic editor adapter", () => {
     expect(adapter.commit).not.toHaveBeenCalled();
     expect(canvas.getObjects()).toHaveLength(0);
   });
+
+  it("surfaces a rollback failure instead of claiming the batch was restored", async () => {
+    const canvas = makeCanvas();
+    const adapter = makeAdapter(canvas);
+    adapter.restore.mockRejectedValue(new Error("restore failed"));
+
+    await expect(
+      adapter.runTransaction(async () => {
+        throw new Error("operation failed");
+      })
+    ).rejects.toMatchObject({
+      code: "ROLLBACK_FAILED",
+      message: expect.stringContaining("restore failed")
+    });
+  });
 });

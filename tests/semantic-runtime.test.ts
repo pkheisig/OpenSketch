@@ -176,6 +176,40 @@ describe("semantic runtime", () => {
     expect(adapter.transactions).toBe(0);
   });
 
+  it("uses the batch confirmation for nested deletion", async () => {
+    const adapter = fakeAdapter();
+    const runtime = createSemanticRuntime(adapter);
+    const result = await runtime.execute("batch", {
+      confirmed: true,
+      operations: [
+        { command: "create_shape", input: { kind: "rectangle" }, as: "shape" },
+        { command: "delete_objects", input: { objectIds: ["$shape"] } }
+      ]
+    });
+
+    expect(result.ok).toBe(true);
+    expect(adapter.objectIds).toEqual([]);
+    expect(adapter.calls).toEqual(["create_shape", "delete_objects"]);
+  });
+
+  it("reports rollback failures separately from the operation failure", async () => {
+    const adapter = fakeAdapter();
+    adapter.runTransaction = async () => {
+      throw Object.assign(new Error("restore failed"), { code: "ROLLBACK_FAILED" });
+    };
+    const runtime = createSemanticRuntime(adapter);
+
+    const result = await runtime.execute("batch", {
+      confirmed: true,
+      operations: [{ command: "create_shape", input: { kind: "rectangle" } }]
+    });
+
+    expect(result).toMatchObject({
+      ok: false,
+      error: { code: "ROLLBACK_FAILED", message: "restore failed" }
+    });
+  });
+
   it("validates each batch input against its declared command", async () => {
     const adapter = fakeAdapter();
     const runtime = createSemanticRuntime(adapter);

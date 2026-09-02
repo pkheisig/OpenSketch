@@ -460,7 +460,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: true,
+    cancellable: false,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -663,7 +663,7 @@ definitions.push({
   confirmation: "explicit",
   retryable: false,
   idempotent: false,
-  cancellable: true,
+  cancellable: false,
   requires: ["project", "canvas"],
   inputSchema: {
     type: "object",

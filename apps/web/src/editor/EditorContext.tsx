@@ -2405,41 +2405,55 @@ export function EditorProvider({
     [canvas, trackPendingEditorWork]
   );
 
-  const semanticRuntime = useMemo(
-    () =>
-      createSemanticRuntime(
-        createSemanticEditorAdapter({
-          getCanvas: () => canvas,
-          getProjectId: () => project.id,
-          isCanvasReady: () => canvasReadyRef.current,
-          getCanvasSettings: () => latestCanvasSettings.current,
-          setSelection,
-          commit,
-          serialize,
-          restore: restoreSemanticSnapshot,
-          creationDefaults: () => creationDefaults,
-          prepareElementStyle,
-          configureCanvasAssets,
-          refreshConnectors,
-          applyColorPreset: applySemanticColorPreset,
-          undo,
-          redo
-        })
-      ),
-    [
-      canvas,
-      applySemanticColorPreset,
-      commit,
-      creationDefaults,
-      prepareElementStyle,
-      project.id,
-      redo,
-      refreshConnectors,
-      restoreSemanticSnapshot,
-      serialize,
-      undo
-    ]
-  );
+  const semanticCanvasRef = useRef<Canvas | null>(canvas);
+  semanticCanvasRef.current = canvas;
+  const semanticProjectIdRef = useRef(project.id);
+  semanticProjectIdRef.current = project.id;
+  const semanticCommitRef = useRef(commit);
+  semanticCommitRef.current = commit;
+  const semanticSerializeRef = useRef(serialize);
+  semanticSerializeRef.current = serialize;
+  const semanticRestoreRef = useRef(restoreSemanticSnapshot);
+  semanticRestoreRef.current = restoreSemanticSnapshot;
+  const semanticCreationDefaultsRef = useRef(creationDefaults);
+  semanticCreationDefaultsRef.current = creationDefaults;
+  const semanticPrepareElementStyleRef = useRef(prepareElementStyle);
+  semanticPrepareElementStyleRef.current = prepareElementStyle;
+  const semanticConfigureCanvasAssetsRef = useRef(configureCanvasAssets);
+  semanticConfigureCanvasAssetsRef.current = configureCanvasAssets;
+  const semanticRefreshConnectorsRef = useRef(refreshConnectors);
+  semanticRefreshConnectorsRef.current = refreshConnectors;
+  const semanticApplyColorPresetRef = useRef(applySemanticColorPreset);
+  semanticApplyColorPresetRef.current = applySemanticColorPreset;
+  const semanticUndoRef = useRef(undo);
+  semanticUndoRef.current = undo;
+  const semanticRedoRef = useRef(redo);
+  semanticRedoRef.current = redo;
+  const semanticRuntimeRef = useRef<SemanticRuntime | null>(null);
+  if (!semanticRuntimeRef.current) {
+    semanticRuntimeRef.current = createSemanticRuntime(
+      createSemanticEditorAdapter({
+        getCanvas: () => semanticCanvasRef.current,
+        getProjectId: () => semanticProjectIdRef.current,
+        isCanvasReady: () => canvasReadyRef.current,
+        getCanvasSettings: () => latestCanvasSettings.current,
+        setSelection,
+        commit: (label) => semanticCommitRef.current(label),
+        serialize: () => semanticSerializeRef.current(),
+        restore: (snapshot) => semanticRestoreRef.current(snapshot),
+        creationDefaults: () => semanticCreationDefaultsRef.current,
+        prepareElementStyle: (object) => semanticPrepareElementStyleRef.current(object),
+        configureCanvasAssets: (objects) => semanticConfigureCanvasAssetsRef.current(objects),
+        refreshConnectors: (changedObjectId) =>
+          semanticRefreshConnectorsRef.current(changedObjectId),
+        applyColorPreset: (objectId, presetId) =>
+          semanticApplyColorPresetRef.current(objectId, presetId),
+        undo: () => semanticUndoRef.current(),
+        redo: () => semanticRedoRef.current()
+      })
+    );
+  }
+  const semanticRuntime = semanticRuntimeRef.current;
 
   useEffect(() => installSemanticIntrospection(semanticRuntime), [semanticRuntime]);
 

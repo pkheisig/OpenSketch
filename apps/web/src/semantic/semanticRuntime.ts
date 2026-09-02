@@ -309,15 +309,19 @@ export function createSemanticRuntime(adapter: SemanticEditorAdapter): SemanticR
             );
             throw new SemanticInputError("BATCH_ABORTED", batchFailure.error.message);
           }
+          const commandInput =
+            command === "delete_objects" && !Object.hasOwn(resolvedInput, "confirmed")
+              ? { ...resolvedInput, confirmed: true }
+              : resolvedInput;
           const commandDefinition = definitionFor(command);
           const commandInputError = commandDefinition
-            ? validateSchema(resolvedInput, commandDefinition.inputSchema)
+            ? validateSchema(commandInput, commandDefinition.inputSchema)
             : undefined;
           if (commandInputError) {
             batchFailure = failure("INVALID_INPUT", commandInputError);
             throw new SemanticInputError("BATCH_ABORTED", commandInputError);
           }
-          const result = await executeInternal(command, resolvedInput, true);
+          const result = await executeInternal(command, commandInput, true);
           completed.push({
             command,
             as: typeof rawOperation.as === "string" ? rawOperation.as : undefined,
@@ -342,6 +346,13 @@ export function createSemanticRuntime(adapter: SemanticEditorAdapter): SemanticR
         }
       });
     } catch (error) {
+      if (
+        error &&
+        typeof error === "object" &&
+        (error as { code?: unknown }).code === "ROLLBACK_FAILED"
+      ) {
+        return asFailure(error);
+      }
       if (batchFailure) return batchFailure;
       return asFailure(error);
     }
