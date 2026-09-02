@@ -180,7 +180,11 @@ export function TopToolbar({
         <div className="toolbar-center">
           <button
             className="icon-button"
-            onClick={editor.undo}
+            onClick={() => {
+              void editor
+                .undo()
+                .catch((reason) => console.error("Could not undo editor change.", reason));
+            }}
             disabled={!editor.historyState.canUndo}
             aria-label="Undo"
           >
@@ -188,7 +192,11 @@ export function TopToolbar({
           </button>
           <button
             className="icon-button"
-            onClick={editor.redo}
+            onClick={() => {
+              void editor
+                .redo()
+                .catch((reason) => console.error("Could not redo editor change.", reason));
+            }}
             disabled={!editor.historyState.canRedo}
             aria-label="Redo"
           >
