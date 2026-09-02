@@ -169,15 +169,6 @@ export function analyzeComposition(
         true,
         "repair_layout"
       );
-    const metadata = metadataOf(object);
-    if (metadata?.semanticRole === "stage" && metadata.stageIndex === undefined)
-      add(
-        "scientific",
-        profile === "cycle" ? "error" : "warning",
-        "stage_index_missing",
-        `Stage "${id}" has no explicit stage index.`,
-        [id]
-      );
     if ((object instanceof IText || object instanceof Textbox) && visible) {
       const lines = object.textLines.length;
       if (!Number.isFinite(object.width) || !Number.isFinite(object.height) || object.fontSize < 6)
@@ -208,51 +199,6 @@ export function analyzeComposition(
           "fit_text"
         );
     }
-    if (object.connector) {
-      const endpoints = [object.connector.fromObjectId, object.connector.toObjectId];
-      if (endpoints.some((endpoint) => !index.has(endpoint)))
-        add(
-          "connectors",
-          "error",
-          "stale_binding",
-          `Connector "${id}" references a missing endpoint.`,
-          [id],
-          [],
-          {},
-          true,
-          "repair_connectors"
-        );
-      if (
-        metadata?.semanticRole === "main-flow-connector" &&
-        endpoints.some((endpoint) => {
-          const target = index.get(endpoint);
-          return Boolean(target && metadataOf(target)?.semanticRole === "stage-label");
-        })
-      )
-        add(
-          "connectors",
-          "error",
-          "label_scope",
-          `Logical connector "${id}" targets a stage label instead of content.`,
-          [id],
-          [],
-          {},
-          true,
-          "repair_connectors"
-        );
-    }
-    if (object.freeConnectorGeometry && metadata?.semanticRole === "main-flow-connector")
-      add(
-        "connectors",
-        "error",
-        "free_logical_arc",
-        `Logical connector "${id}" is not bound to semantic endpoints.`,
-        [id],
-        [],
-        {},
-        true,
-        "create_bound_connector"
-      );
     const styledRole = [...path]
       .reverse()
       .map((ancestor) => metadataOf(ancestor)?.semanticRole)
@@ -278,45 +224,109 @@ export function analyzeComposition(
         );
     }
   });
-  const MAX_OVERLAP_PAIRS = 100_000;
-  let overlapPairs = 0;
-  let overlapBudgetExceeded = false;
-  for (let left = 0; left < entries.length; left += 1) {
-    const leftEntry = entries[left];
-    const a = leftEntry.object;
-    const aId = a.objectId!;
-    if (!visibility.get(aId) || a.connector) continue;
-    for (let right = left + 1; right < entries.length; right += 1) {
-      const rightEntry = entries[right];
-      const b = rightEntry.object;
-      const bId = b.objectId!;
-      if (
-        !visibility.get(bId) ||
-        b.connector ||
-        sharesParticleField(leftEntry, rightEntry) ||
-        relationAllowsOverlap(relations, aId, bId)
-      )
-        continue;
-      overlapPairs += 1;
-      if (overlapPairs > MAX_OVERLAP_PAIRS) {
-        overlapBudgetExceeded = true;
-        break;
+  allEntries
+    .filter(({ object }) => object.connector || object.freeConnectorGeometry)
+    .forEach(({ object }) => {
+      const id = object.objectId!;
+      const metadata = metadataOf(object);
+      if (object.connector) {
+        const endpoints = [object.connector.fromObjectId, object.connector.toObjectId];
+        if (endpoints.some((endpoint) => !index.has(endpoint)))
+          add(
+            "connectors",
+            "error",
+            "stale_binding",
+            `Connector "${id}" references a missing endpoint.`,
+            [id],
+            [],
+            {},
+            true,
+            "repair_connectors"
+          );
+        if (
+          metadata?.semanticRole === "main-flow-connector" &&
+          endpoints.some((endpoint) => {
+            const target = index.get(endpoint);
+            return Boolean(target && metadataOf(target)?.semanticRole === "stage-label");
+          })
+        )
+          add(
+            "connectors",
+            "error",
+            "label_scope",
+            `Logical connector "${id}" targets a stage label instead of content.`,
+            [id],
+            [],
+            {},
+            true,
+            "repair_connectors"
+          );
       }
-      if (overlap(layoutBounds.get(aId)!, layoutBounds.get(bId)!))
+      if (object.freeConnectorGeometry && metadata?.semanticRole === "main-flow-connector")
         add(
-          "geometry",
-          "warning",
-          "unexpected_overlap",
-          `Objects "${aId}" and "${bId}" overlap without an allowed relation.`,
-          [aId, bId],
+          "connectors",
+          "error",
+          "free_logical_arc",
+          `Logical connector "${id}" is not bound to semantic endpoints.`,
+          [id],
           [],
           {},
           true,
-          "repair_layout"
+          "create_bound_connector"
         );
+    });
+  allEntries
+    .filter(({ object }) => metadataOf(object)?.semanticRole === "stage")
+    .forEach(({ object }) => {
+      if (metadataOf(object)?.stageIndex === undefined)
+        add(
+          "scientific",
+          profile === "cycle" ? "error" : "warning",
+          "stage_index_missing",
+          `Stage "${object.objectId!}" has no explicit stage index.`,
+          [object.objectId!]
+        );
+    });
+  const MAX_OVERLAP_PAIRS = 100_000;
+  let overlapPairs = 0;
+  let overlapBudgetExceeded = false;
+  if (!categories || categories.has("geometry"))
+    for (let left = 0; left < entries.length; left += 1) {
+      const leftEntry = entries[left];
+      const a = leftEntry.object;
+      const aId = a.objectId!;
+      if (!visibility.get(aId) || a.connector) continue;
+      for (let right = left + 1; right < entries.length; right += 1) {
+        const rightEntry = entries[right];
+        const b = rightEntry.object;
+        const bId = b.objectId!;
+        if (
+          !visibility.get(bId) ||
+          b.connector ||
+          sharesParticleField(leftEntry, rightEntry) ||
+          relationAllowsOverlap(relations, aId, bId)
+        )
+          continue;
+        overlapPairs += 1;
+        if (overlapPairs > MAX_OVERLAP_PAIRS) {
+          overlapBudgetExceeded = true;
+          break;
+        }
+        if (overlap(layoutBounds.get(aId)!, layoutBounds.get(bId)!))
+          add(
+            "geometry",
+            "warning",
+            "unexpected_overlap",
+            `Objects "${aId}" and "${bId}" overlap without an allowed relation.`,
+            [aId, bId],
+            [],
+            {},
+            true,
+            "repair_layout"
+          );
+      }
+      if (overlapBudgetExceeded) break;
     }
-    if (overlapBudgetExceeded) break;
-  }
   if (overlapBudgetExceeded) skipped.push("overlap-pair-budget");
   const allIds = new Set(allEntries.map(({ object }) => object.objectId!));
   relations.forEach((relation) => {

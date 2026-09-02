@@ -1588,6 +1588,7 @@ export function createSemanticEditorAdapter(
       }
       object.setCoords();
       refreshParentGroups(object);
+      dependencies.refreshConnectors();
       canvas.requestRenderAll();
       commitSemantic("Semantic fit text");
       return {
