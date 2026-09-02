@@ -157,9 +157,7 @@ export function analyzeComposition(
         [id]
       );
     if ((object instanceof IText || object instanceof Textbox) && object.visible !== false) {
-      const lines =
-        (object as unknown as { _textLines?: string[][] })._textLines?.length ??
-        object.text.split("\n").length;
+      const lines = object.textLines.length;
       if (!Number.isFinite(object.width) || !Number.isFinite(object.height) || object.fontSize < 6)
         add(
           "text",

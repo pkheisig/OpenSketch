@@ -1420,9 +1420,7 @@ export function createSemanticEditorAdapter(
         object.set("fontSize", size);
         if (object instanceof Textbox) object.set("width", Math.min(originalWidth, maxWidth));
         refreshTextMetrics([object]);
-        const lines =
-          (object as unknown as { _textLines?: string[][] })._textLines?.length ??
-          object.text.split("\n").length;
+        const lines = object.textLines.length;
         if (
           (object.width ?? 0) <= maxWidth + 0.01 &&
           (object.height ?? 0) <= maxHeight + 0.01 &&
@@ -1442,9 +1440,7 @@ export function createSemanticEditorAdapter(
             fontSize: originalFontSize,
             width: object.width ?? 0,
             height: object.height ?? 0,
-            lines:
-              (object as unknown as { _textLines?: string[][] })._textLines?.length ??
-              object.text.split("\n").length
+            lines: object.textLines.length
           },
           changedObjectIds: []
         };
@@ -1460,9 +1456,7 @@ export function createSemanticEditorAdapter(
           fontSize: object.fontSize,
           width: object.width ?? 0,
           height: object.height ?? 0,
-          lines:
-            (object as unknown as { _textLines?: string[][] })._textLines?.length ??
-            object.text.split("\n").length
+          lines: object.textLines.length
         },
         changedObjectIds: [objectId]
       };
