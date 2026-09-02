@@ -80,7 +80,8 @@ the browser bundle and normal production build.
 
 ## Hosting and offline model
 
-Vite emits `dist/` with `base: "/OpenSketch/"`. GitHub Actions validates pull
+Vite emits `dist/` with `base: normalizePublicBase(VITE_PUBLIC_BASE)`, defaulting
+to `"/OpenSketch/"`. GitHub Actions validates pull
 requests without publishing. Pushes to the canonical release branch (`dev`,
 declared in `.github/repository-policy.json`) build the site, run browser
 tests, and deploy only that directory through the GitHub Pages artifact

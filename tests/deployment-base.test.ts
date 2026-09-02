@@ -20,7 +20,10 @@ describe("deployment base", () => {
     "//example.test/",
     "/OpenSketch/?x=1",
     "/OpenSketch/#app",
-    "/OpenSketch\\app"
+    "/OpenSketch\\app",
+    "/Open Sketch/",
+    "/OpenSketch/../",
+    "/Open%2FSketch/"
   ])("rejects malformed public base %j", (value) => {
     expect(() => normalizePublicBase(value)).toThrow();
   });
@@ -38,5 +41,6 @@ describe("deployment base", () => {
     expect(pages.test("https://example.test/assets/inter.woff2")).toBe(false);
     expect(root.test("https://example.test/assets/inter.woff2")).toBe(true);
     expect(root.test("https://example.test/OpenSketch/assets/inter.woff2")).toBe(false);
+    expect(root.test("https://example.test/assets/inter.woff2?version=1")).toBe(true);
   });
 });

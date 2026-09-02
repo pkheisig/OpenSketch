@@ -1,7 +1,7 @@
 export const DEFAULT_PUBLIC_BASE = "/OpenSketch/";
 
 const EXTERNAL_SCHEME = /^[a-z][a-z\d+.-]*:/i;
-const URL_CHARACTERS = new Set(["?", "#", "\\"]);
+const URL_CHARACTERS = new Set(["?", "#", "\\", "%"]);
 
 function hasControlOrUrlCharacter(value: string): boolean {
   return [...value].some((character) => {
@@ -12,13 +12,18 @@ function hasControlOrUrlCharacter(value: string): boolean {
 
 /** Normalize a deployment base to one safe, slash-terminated URL path. */
 export function normalizePublicBase(value = DEFAULT_PUBLIC_BASE): string {
-  const raw = value.trim();
+  const raw = value;
   if (!raw) throw new Error("The public deployment base must not be empty.");
   if (EXTERNAL_SCHEME.test(raw) || (raw.startsWith("//") && !raw.startsWith("///"))) {
     throw new Error("The public deployment base must be a local path, not an external URL.");
   }
   const path = raw.replace(/^\/+|\/+$/g, "");
-  if (hasControlOrUrlCharacter(raw) || path.includes("//")) {
+  if (
+    hasControlOrUrlCharacter(raw) ||
+    /\s/.test(raw) ||
+    path.includes("//") ||
+    path.split("/").some((segment) => segment === "." || segment === "..")
+  ) {
     throw new Error("The public deployment base contains an invalid URL character.");
   }
 
@@ -35,5 +40,6 @@ export function escapeRegExp(value: string): string {
 
 export function publicAssetPattern(publicBase: string, suffix: string): RegExp {
   const origin = "(?:[a-z][a-z\\d+.-]*:\\/\\/[^/]+)?";
-  return new RegExp(`^${origin}${escapeRegExp(publicBase)}assets/${suffix}`);
+  const querySafeSuffix = suffix.endsWith("$") ? `${suffix.slice(0, -1)}(?:\\?.*)?$` : suffix;
+  return new RegExp(`^${origin}${escapeRegExp(publicBase)}assets/${querySafeSuffix}`);
 }
