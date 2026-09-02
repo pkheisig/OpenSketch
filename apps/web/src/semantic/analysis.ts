@@ -210,7 +210,8 @@ export function analyzeComposition(
       .map((ancestor) => metadataOf(ancestor)?.semanticRole)
       .find((role) => Boolean(role && stylePreset(role)));
     const expectedStyle = styledRole ? stylePreset(styledRole) : undefined;
-    if (expectedStyle && !object.familyId) {
+    const protectedAsset = path.some((ancestor) => Boolean(ancestor.familyId));
+    if (expectedStyle && !object.familyId && !protectedAsset) {
       const expectedFill =
         object instanceof IText || object instanceof Textbox
           ? (expectedStyle.textFill ?? SEMANTIC_TEXT_COLOR)

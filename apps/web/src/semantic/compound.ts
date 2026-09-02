@@ -108,6 +108,10 @@ function center(bounds: Bounds): CompoundPoint {
   return { x: bounds.left + bounds.width / 2, y: bounds.top + bounds.height / 2 };
 }
 
+function extentAlong(bounds: Bounds, direction: CompoundPoint): number {
+  return (Math.abs(direction.x) * bounds.width) / 2 + (Math.abs(direction.y) * bounds.height) / 2;
+}
+
 export function planInteraction(
   sourceBounds: Bounds,
   targetBounds: Bounds,
@@ -140,9 +144,8 @@ export function planInteraction(
     }
     case "binding": {
       const direction = { x: dx / length, y: dy / length };
-      const extent = (bounds: Bounds): number =>
-        (Math.abs(direction.x) * bounds.width) / 2 + (Math.abs(direction.y) * bounds.height) / 2;
-      const separation = extent(sourceBounds) + extent(targetBounds);
+      const separation =
+        extentAlong(sourceBounds, direction) + extentAlong(targetBounds, direction);
       return {
         source: {
           x: midpoint.x - (direction.x * separation) / 2,
@@ -190,15 +193,28 @@ export function planInteraction(
     }
     case "migration":
       return { source, target, relationKind: "flow_to", allowedOverlap: false, warnings: [] };
-    case "cross-boundary":
+    case "cross-boundary": {
+      const direction = { x: dx / length, y: dy / length };
+      const overlap = Math.max(1, offset);
+      const separation = Math.max(
+        0,
+        extentAlong(sourceBounds, direction) + extentAlong(targetBounds, direction) - overlap
+      );
       return {
-        source: { x: source.x + dx * 0.35, y: source.y + dy * 0.35 },
-        target: { x: target.x - dx * 0.35, y: target.y - dy * 0.35 },
+        source: {
+          x: midpoint.x - (direction.x * separation) / 2,
+          y: midpoint.y - (direction.y * separation) / 2
+        },
+        target: {
+          x: midpoint.x + (direction.x * separation) / 2,
+          y: midpoint.y + (direction.y * separation) / 2
+        },
         mediator: midpoint,
         relationKind: "crosses",
         allowedOverlap: true,
         warnings: []
       };
+    }
     case "progression":
       return { source, target, relationKind: "flow_to", allowedOverlap: false, warnings: [] };
   }

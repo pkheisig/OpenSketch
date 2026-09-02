@@ -59,6 +59,15 @@ describe("semantic compound planning", () => {
     expect(plan.target.x - plan.source.x).toBe(40);
   });
 
+  it("places cross-boundary participants with bounds-derived overlap", () => {
+    const plan = planInteraction(
+      { left: 0, top: 0, width: 40, height: 40 },
+      { left: 220, top: 0, width: 40, height: 40 },
+      "cross-boundary"
+    );
+    expect(plan.target.x - plan.source.x).toBe(8);
+  });
+
   it("provides bounded annotation candidates", () => {
     expect(
       annotationCandidates(

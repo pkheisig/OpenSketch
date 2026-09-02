@@ -1592,7 +1592,8 @@ definitions.push(
       relation: semanticRelationSchema,
       source: point(),
       target: point(),
-      mediator: point()
+      mediator: point(),
+      warnings: { type: "array", maxItems: 16, items: { type: "string", maxLength: 320 } }
     })
   },
   {
@@ -1819,6 +1820,10 @@ definitions.push(
       version: { type: "string" },
       profile: { type: "string" },
       findings: { type: "array", maxItems: 256 },
+      counts: { type: "object" },
+      metrics: { type: "object" },
+      truncated: { type: "boolean" },
+      skipped: { type: "array", maxItems: 32 },
       pass: { type: "boolean" }
     })
   }
