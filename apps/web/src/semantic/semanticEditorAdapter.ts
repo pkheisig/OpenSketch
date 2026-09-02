@@ -1007,22 +1007,59 @@ export function createSemanticEditorAdapter(
               .filter((object): object is IText => object instanceof IText)
           : [];
         if (existingStage && existingLabelGroup && existingTexts.length > 0) {
+          const requestedIds = objectIds(input);
+          if (
+            requestedIds.some(
+              (id) => !isSceneDescendant(resolveObjects(canvas, [id])[0], existingStage)
+            )
+          )
+            throw new SemanticAdapterError(
+              "INVALID_SELECTION",
+              "Existing labeled-group updates must target descendants of that stage."
+            );
+          if (input.placement !== undefined)
+            throw new SemanticAdapterError(
+              "UNSUPPORTED_UPDATE",
+              "Changing placement on an existing labeled group is not supported."
+            );
           [input.label, input.title, input.subtitle].forEach((value, index) => {
             if (typeof value === "string" && value.length > 0 && existingTexts[index])
               existingTexts[index].set("text", value);
           });
+          if (input.stageIndex !== undefined) {
+            const stageObjects = [
+              existingStage,
+              existingLabelGroup,
+              ...(isGroup(existingStage) ? existingStage.getObjects() : [])
+            ];
+            stageObjects.forEach((object) => {
+              const metadata = metadataOf(object);
+              if (metadata)
+                object.semanticMetadata = { ...metadata, stageIndex: input.stageIndex as number };
+            });
+          }
           refreshTextMetrics([existingLabelGroup]);
           refreshParentGroups(existingLabelGroup);
+          const requestedLocation =
+            input.x === undefined && input.y === undefined
+              ? undefined
+              : locationFromInput(canvas, dependencies.getCanvasSettings(), input);
+          if (requestedLocation) moveAnchorTo(existingStage, "center", requestedLocation);
           existingStage.setCoords();
+          dependencies.refreshConnectors();
           canvas.requestRenderAll();
           commitSemantic("Semantic update labeled group");
           return {
             data: {
               objectId: existingStage.objectId,
               labelObjectId: existingLabelGroup.objectId,
-              objectIds: [existingStage.objectId, existingLabelGroup.objectId]
+              objectIds: [existingStage.objectId, existingLabelGroup.objectId, ...requestedIds]
             },
-            changedObjectIds: [existingStage.objectId!, existingLabelGroup.objectId!]
+            changedObjectIds: [
+              existingStage.objectId!,
+              existingLabelGroup.objectId!,
+              ...requestedIds
+            ]
           };
         }
       }
@@ -1600,6 +1637,10 @@ export function createSemanticEditorAdapter(
             : {})
         });
         object.setCoords();
+        if (object instanceof IText || object instanceof Textbox) {
+          refreshTextMetrics([object]);
+          refreshParentGroups(object);
+        }
         if (object.objectId) changed.add(object.objectId);
       };
       targets.forEach((object) => {

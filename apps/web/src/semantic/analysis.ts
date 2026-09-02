@@ -1,4 +1,4 @@
-import { IText, Textbox, type Canvas } from "fabric";
+import { IText, Textbox, type Canvas, type FabricObject } from "fabric";
 import {
   inspectSemanticGeometry,
   isGroup,
@@ -6,6 +6,7 @@ import {
   relationsForCanvas,
   type SemanticRelation
 } from "./composition";
+import { stylePreset } from "./compound";
 import { sceneObjectEntries } from "@/editor/sceneTree";
 import type { Bounds } from "@/editor/geometry";
 
@@ -96,6 +97,15 @@ function isEffectivelyVisible(path: readonly { visible?: boolean }[]): boolean {
   return path.every((object) => object.visible !== false);
 }
 
+function sharesParticleField(
+  left: { path: readonly FabricObject[] },
+  right: { path: readonly FabricObject[] }
+): boolean {
+  return left.path.some(
+    (object) => metadataOf(object)?.semanticRole === "particle-field" && right.path.includes(object)
+  );
+}
+
 export function analyzeComposition(
   canvas: Canvas,
   canvasSize: { width: number; height: number },
@@ -114,7 +124,9 @@ export function analyzeComposition(
   );
   const relations = relationsForCanvas(canvas);
   const index = new Map(allEntries.map(({ object }) => [object.objectId!, object]));
+  const layoutBounds = new Map<string, Bounds>();
   const findings: CompositionFinding[] = [];
+  const skipped: string[] = [];
   const add = (...args: Parameters<typeof finding>) => {
     if (!categories || categories.has(args[0])) findings.push(finding(...args));
   };
@@ -123,6 +135,7 @@ export function analyzeComposition(
     const visible = isEffectivelyVisible(path);
     const geometry = inspectSemanticGeometry(object, clearance);
     const bounds = geometry.visualBounds;
+    layoutBounds.set(id, geometry.layoutBounds);
     if (
       !Number.isFinite(bounds.left + bounds.top + bounds.width + bounds.height) ||
       bounds.width <= 0 ||
@@ -239,22 +252,56 @@ export function analyzeComposition(
         true,
         "create_bound_connector"
       );
+    const styledRole = [...path]
+      .reverse()
+      .map((ancestor) => metadataOf(ancestor)?.semanticRole)
+      .find((role) => Boolean(role && stylePreset(role)));
+    const expectedStyle = styledRole ? stylePreset(styledRole) : undefined;
+    if (expectedStyle && !object.familyId) {
+      const mismatches = [
+        object.fill !== expectedStyle.fill ? "fill" : undefined,
+        object.stroke !== expectedStyle.stroke ? "stroke" : undefined,
+        object.strokeWidth !== expectedStyle.strokeWidth ? "strokeWidth" : undefined
+      ].filter((value): value is string => Boolean(value));
+      if (mismatches.length > 0)
+        add(
+          "style",
+          "warning",
+          "style_mismatch",
+          `Object "${id}" does not match the ${styledRole} semantic style preset.`,
+          [id],
+          [],
+          { fields: mismatches.join(","), role: styledRole ?? "unknown" },
+          true,
+          "normalize_styles"
+        );
+    }
   });
+  const MAX_OVERLAP_PAIRS = 100_000;
+  let overlapPairs = 0;
+  let overlapBudgetExceeded = false;
   for (let left = 0; left < entries.length; left += 1) {
-    const a = entries[left].object;
+    const leftEntry = entries[left];
+    const a = leftEntry.object;
     const aId = a.objectId!;
     if (!visibility.get(aId) || a.connector) continue;
     for (let right = left + 1; right < entries.length; right += 1) {
-      const b = entries[right].object;
+      const rightEntry = entries[right];
+      const b = rightEntry.object;
       const bId = b.objectId!;
-      if (!visibility.get(bId) || b.connector || relationAllowsOverlap(relations, aId, bId))
-        continue;
       if (
-        overlap(
-          inspectSemanticGeometry(a, clearance).layoutBounds,
-          inspectSemanticGeometry(b, clearance).layoutBounds
-        )
+        !visibility.get(bId) ||
+        b.connector ||
+        sharesParticleField(leftEntry, rightEntry) ||
+        relationAllowsOverlap(relations, aId, bId)
       )
+        continue;
+      overlapPairs += 1;
+      if (overlapPairs > MAX_OVERLAP_PAIRS) {
+        overlapBudgetExceeded = true;
+        break;
+      }
+      if (overlap(layoutBounds.get(aId)!, layoutBounds.get(bId)!))
         add(
           "geometry",
           "warning",
@@ -267,7 +314,9 @@ export function analyzeComposition(
           "repair_layout"
         );
     }
+    if (overlapBudgetExceeded) break;
   }
+  if (overlapBudgetExceeded) skipped.push("overlap-pair-budget");
   const allIds = new Set(entries.map(({ object }) => object.objectId!));
   relations.forEach((relation) => {
     if (
@@ -330,7 +379,7 @@ export function analyzeComposition(
   findings.forEach((item) => {
     counts[item.severity] += 1;
   });
-  const truncated = findings.length > maxFindings;
+  const truncated = findings.length > maxFindings || overlapBudgetExceeded;
   return {
     version: ANALYSIS_VERSION,
     profile,
@@ -344,7 +393,7 @@ export function analyzeComposition(
         .length
     },
     truncated,
-    skipped: [],
+    skipped,
     pass: counts.error === 0
   };
 }
