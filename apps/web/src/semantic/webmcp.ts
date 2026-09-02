@@ -123,11 +123,11 @@ export function createWebMcpAdapter(options: {
               signal: controller.signal
             })
           );
+          registered += 1;
           if (controller.signal.aborted || currentGeneration !== generation) {
-            skipped += 1;
+            skipped += definitions.length - registered - skipped;
             break;
           }
-          registered += 1;
         } catch {
           skipped += 1;
         }

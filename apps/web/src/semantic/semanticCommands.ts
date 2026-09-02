@@ -289,7 +289,11 @@ const definitions: SemanticCommandDefinition[] = [
     cancellable: false,
     requires: ["project"],
     inputSchema: emptyObject(),
-    outputSchema: output({ version: number(1, 1), assets: { type: "array", maxItems: 200 } })
+    outputSchema: output({
+      version: number(1, 1),
+      assets: { type: "array", maxItems: 200 },
+      truncated: { type: "boolean" }
+    })
   },
   {
     name: "set_selection",

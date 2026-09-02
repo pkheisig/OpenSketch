@@ -21,7 +21,11 @@ function makeCanvas(objects: FabricObject[] = [], activeObjects: FabricObject[] 
   } as unknown as Canvas;
 }
 
-function makeAdapter(canvas: Canvas, setSelection = vi.fn()) {
+function makeAdapter(
+  canvas: Canvas,
+  setSelection = vi.fn(),
+  replaceAssetVariant = vi.fn(async () => true)
+) {
   const commit = vi.fn();
   const restore = vi.fn(async () => undefined);
   const adapter = createSemanticEditorAdapter({
@@ -48,7 +52,7 @@ function makeAdapter(canvas: Canvas, setSelection = vi.fn()) {
     undo: vi.fn(async () => false),
     redo: vi.fn(async () => false),
     insertAsset: vi.fn(async () => "asset-object"),
-    replaceAssetVariant: vi.fn(async () => true),
+    replaceAssetVariant,
     exportSvg: vi.fn(),
     exportCredits: vi.fn(),
     exportPdf: vi.fn(async () => undefined),
@@ -198,6 +202,63 @@ describe("semantic editor adapter", () => {
     expect(snapshot.selectionObjectIds).toHaveLength(200);
     expect(snapshot.truncated).toBe(true);
     expect(snapshot.warnings).toContain("Selection output capped at 200 objects.");
+  });
+
+  it("discovers and inspects bounded scientific assets", async () => {
+    const adapter = makeAdapter(makeCanvas());
+    const search = (await adapter.searchAssets({ query: "", limit: 1 })) as {
+      results: Array<{ familyId: string; variants: Array<{ id: string }> }>;
+      total: number;
+    };
+
+    expect(search.results).toHaveLength(1);
+    expect(search.total).toBeGreaterThanOrEqual(1);
+    const family = search.results[0];
+    const inspected = (await adapter.inspectAsset({
+      familyId: family.familyId,
+      variantId: family.variants[0].id
+    })) as { family: { familyId: string; selectedVariantId: string } };
+
+    expect(inspected.family).toMatchObject({
+      familyId: family.familyId,
+      selectedVariantId: family.variants[0].id
+    });
+    expect(adapter.inspectProvenance()).toEqual({ version: 1, assets: [] });
+  });
+
+  it("inserts assets and reports a same-variant replacement as a no-op", async () => {
+    const canvas = makeCanvas();
+    const adapter = makeAdapter(
+      canvas,
+      vi.fn(),
+      vi.fn(async () => false)
+    );
+    const search = (await adapter.searchAssets({ query: "", limit: 1 })) as {
+      results: Array<{ familyId: string; variants: Array<{ id: string }> }>;
+    };
+    const family = search.results[0];
+    const variantId = family.variants[0].id;
+
+    const inserted = await adapter.execute("insert_asset", {
+      familyId: family.familyId,
+      variantId
+    });
+    expect(inserted).toMatchObject({
+      data: { objectId: "asset-object", familyId: family.familyId, variantId },
+      changedObjectIds: ["asset-object"]
+    });
+
+    const asset = new Group([]);
+    asset.objectId = "existing-asset";
+    asset.familyId = family.familyId;
+    asset.assetId = variantId;
+    canvas.add(asset);
+    await expect(
+      adapter.execute("replace_asset_variant", {
+        objectId: "existing-asset",
+        variantId
+      })
+    ).resolves.toMatchObject({ data: { objectId: "existing-asset" }, changedObjectIds: [] });
   });
 
   it("creates bound connectors from stable endpoint identities without recentering geometry", async () => {

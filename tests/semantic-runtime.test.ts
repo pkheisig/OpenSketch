@@ -123,6 +123,10 @@ describe("semantic command contracts", () => {
       ]).toContain(command.risk);
       expect(["none", "explicit"]).toContain(command.confirmation);
     }
+    expect(
+      SEMANTIC_COMMANDS.find((command) => command.name === "inspect_provenance")?.outputSchema
+        .properties?.truncated
+    ).toEqual({ type: "boolean" });
   });
 });
 

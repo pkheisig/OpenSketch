@@ -2417,10 +2417,14 @@ export function EditorProvider({
 
   const semanticCanvasRef = useRef<Canvas | null>(canvas);
   semanticCanvasRef.current = canvas;
+  const semanticAddObjectRef = useRef(addObject);
+  semanticAddObjectRef.current = addObject;
   const semanticProjectIdRef = useRef(project.id);
   semanticProjectIdRef.current = project.id;
   const semanticCommitRef = useRef(commit);
   semanticCommitRef.current = commit;
+  const semanticSetSelectionRef = useRef(setSelection);
+  semanticSetSelectionRef.current = setSelection;
   const semanticSerializeRef = useRef(serialize);
   semanticSerializeRef.current = serialize;
   const semanticRestoreRef = useRef(restoreSemanticSnapshot);
@@ -2457,7 +2461,7 @@ export function EditorProvider({
         getProjectId: () => semanticProjectIdRef.current,
         isCanvasReady: () => canvasReadyRef.current,
         getCanvasSettings: () => latestCanvasSettings.current,
-        setSelection,
+        setSelection: (objects) => semanticSetSelectionRef.current(objects),
         commit: (label) => semanticCommitRef.current(label),
         serialize: () => semanticSerializeRef.current(),
         restore: (snapshot) => semanticRestoreRef.current(snapshot),
@@ -2494,17 +2498,24 @@ export function EditorProvider({
     let retryTimer: ReturnType<typeof setTimeout> | undefined;
     const sync = async () => {
       const result = await adapter.sync();
-      if (!disposed && !result.supported) {
-        retryTimer = setTimeout(() => void sync(), 250);
+      if (!result.supported) {
+        if (!disposed && retryAttempts < 4) {
+          const delay = Math.min(250 * 2 ** retryAttempts, 2000);
+          retryAttempts += 1;
+          retryTimer = setTimeout(() => void sync(), delay);
+        }
+      } else {
+        retryAttempts = 0;
       }
     };
+    let retryAttempts = 0;
     void sync();
     return () => {
       disposed = true;
       if (retryTimer) clearTimeout(retryTimer);
       adapter.dispose();
     };
-  }, [canvasReady, project.id, semanticRuntime]);
+  }, [canvasReady, project.id]);
 
   const setCreationDefaults = useCallback(
     (defaults: CreationDefaults | ((current: CreationDefaults) => CreationDefaults)) => {
@@ -2786,18 +2797,25 @@ export function EditorProvider({
     (family: AssetFamily, variant: AssetVariant, point: Point | undefined, select: boolean) => {
       const operation = trackPendingEditorWork(
         assetInsertQueue.current.then(async () => {
-          if (!canvas) return undefined;
+          if (!semanticCanvasRef.current) return undefined;
           const group = await createBundledAssetGroup(family, variant);
+          if (!semanticCanvasRef.current) return undefined;
           const scale = assetInsertionScale(family.title, group.width || 1, group.height || 1);
           group.scale(scale);
-          const object = addObject(group, family.title, "nih-asset", point, select);
+          const object = semanticAddObjectRef.current(
+            group,
+            family.title,
+            "nih-asset",
+            point,
+            select
+          );
           return object?.objectId;
         })
       );
       assetInsertQueue.current = operation.catch(() => undefined);
       return operation;
     },
-    [addObject, canvas, trackPendingEditorWork]
+    [trackPendingEditorWork]
   );
 
   const addAsset = useCallback(
@@ -2817,31 +2835,36 @@ export function EditorProvider({
     (template: AssetTemplate, point?: Point) => {
       const operation = trackPendingEditorWork(
         assetInsertQueue.current.then(async () => {
-          if (!canvas) return;
+          if (!semanticCanvasRef.current) return;
           const [object] = (await util.enlivenObjects([
             structuredClone(template.object)
           ])) as FabricObject[];
           if (!object) return;
           assignFreshCloneIds(object);
-          configureCanvasAssets([object]);
-          addObject(object, template.name, "group", point);
+          semanticConfigureCanvasAssetsRef.current([object]);
+          semanticAddObjectRef.current(object, template.name, "group", point);
         })
       );
       assetInsertQueue.current = operation.catch(() => undefined);
       return operation;
     },
-    [addObject, canvas, trackPendingEditorWork]
+    [trackPendingEditorWork]
   );
 
   const replaceAssetVariant = useCallback(
     (objectId: string, variantId: string, selectReplacement = false) => {
       const operation = trackPendingEditorWork(
         assetInsertQueue.current.then(async () => {
-          if (!canvas) return false;
-          const current = sceneObjectIndex(canvas).get(objectId);
-          if (!(current instanceof Group) || !current.familyId || current.assetId === variantId)
+          if (!semanticCanvasRef.current) return false;
+          const initial = sceneObjectIndex(semanticCanvasRef.current).get(objectId);
+          if (!(initial instanceof Group) || !initial.familyId || initial.assetId === variantId)
             return false;
           const { assetManifest } = await loadAssetManifest();
+          const currentCanvas = semanticCanvasRef.current;
+          if (!currentCanvas) return false;
+          const current = sceneObjectIndex(currentCanvas).get(objectId);
+          if (!(current instanceof Group) || !current.familyId || current.assetId === variantId)
+            return false;
           const family = assetManifest.families.find(
             (candidate) => candidate.familyId === current.familyId
           );
@@ -2849,7 +2872,11 @@ export function EditorProvider({
           if (!family || !variant) return false;
 
           const replacement = await createBundledAssetGroup(family, variant);
-          if (!canvas.getObjects().includes(current)) return false;
+          if (
+            semanticCanvasRef.current !== currentCanvas ||
+            !currentCanvas.getObjects().includes(current)
+          )
+            return false;
           const center = current.getCenterPoint();
           const renderedMaxSide = Math.max(current.getScaledWidth(), current.getScaledHeight());
           const replacementMaxSide = Math.max(replacement.width || 1, replacement.height || 1);
@@ -2872,27 +2899,27 @@ export function EditorProvider({
           replacement.setCoords();
           assignSceneIdentities(replacement);
 
-          const activeIds = canvas
+          const activeIds = currentCanvas
             .getActiveObjects()
             .map((object) => object.objectId)
             .filter((id): id is string => Boolean(id));
-          const index = canvas.getObjects().indexOf(current);
-          canvas.remove(current);
-          canvas.insertAt(index, replacement);
+          const index = currentCanvas.getObjects().indexOf(current);
+          currentCanvas.remove(current);
+          currentCanvas.insertAt(index, replacement);
           if (selectReplacement || activeIds.includes(objectId)) {
-            canvas.setActiveObject(replacement);
-            setSelection([replacement]);
+            currentCanvas.setActiveObject(replacement);
+            semanticSetSelectionRef.current([replacement]);
           }
-          if (replacement.objectId) refreshConnectors(replacement.objectId);
-          canvas.requestRenderAll();
-          commit("Change asset variant");
+          if (replacement.objectId) semanticRefreshConnectorsRef.current(replacement.objectId);
+          currentCanvas.requestRenderAll();
+          semanticCommitRef.current("Change asset variant");
           return true;
         })
       );
       assetInsertQueue.current = operation.catch(() => undefined);
       return operation;
     },
-    [canvas, commit, refreshConnectors, trackPendingEditorWork]
+    [trackPendingEditorWork]
   );
   semanticReplaceAssetVariantRef.current = replaceAssetVariant;
 

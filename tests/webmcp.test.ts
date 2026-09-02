@@ -94,6 +94,44 @@ describe("WebMCP adapter", () => {
     expect(signals.at(-1)?.aborted).toBe(true);
   });
 
+  it("accounts for a tool registered just before a generation abort", async () => {
+    let releaseFirst: (() => void) | undefined;
+    let enteredFirst: (() => void) | undefined;
+    const firstEntered = new Promise<void>((resolve) => {
+      enteredFirst = resolve;
+    });
+    const firstRelease = new Promise<void>((resolve) => {
+      releaseFirst = resolve;
+    });
+    let count = 0;
+    const registerTool = vi.fn(async () => {
+      count += 1;
+      if (count === 1) {
+        enteredFirst?.();
+        await firstRelease;
+      }
+    });
+    const adapter = createWebMcpAdapter({
+      runtime: runtime(),
+      documentLike: { modelContext: { registerTool } }
+    });
+
+    const firstSync = adapter.sync();
+    await firstEntered;
+    const secondSync = adapter.sync();
+    releaseFirst?.();
+
+    await expect(firstSync).resolves.toEqual({
+      supported: true,
+      registered: 1,
+      skipped: SEMANTIC_COMMANDS.length - 1
+    });
+    await expect(secondSync).resolves.toMatchObject({
+      supported: true,
+      registered: SEMANTIC_COMMANDS.length
+    });
+  });
+
   it("only detects a real registerTool implementation", () => {
     expect(detectModelContext({ modelContext: { registerTool: true } })).toBeNull();
     expect(detectModelContext({ modelContext: { registerTool: vi.fn() } })).not.toBeNull();
