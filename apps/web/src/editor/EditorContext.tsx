@@ -12,21 +12,16 @@ import {
 import {
   ActiveSelection,
   Canvas,
-  Circle,
   FabricImage,
   FabricObject,
   Gradient,
   Group,
   IText,
-  Line,
   Path,
   Point as FabricPoint,
-  Polygon,
-  Rect,
   StaticCanvas,
   Text,
   Textbox,
-  Triangle,
   cache,
   util
 } from "fabric";
@@ -103,6 +98,7 @@ import {
 } from "@/editor/selection";
 import { CURSOR_GRAB, CURSOR_GRABBING } from "@/editor/cursors";
 import { assetInsertionScale } from "@/editor/assetInsertion";
+import { createShapeObject } from "@/editor/creationObjects";
 import { copySvgBlendModes, loadEditableSvg } from "@/editor/svg";
 import { refreshTextMetrics } from "@/editor/textMetrics";
 import { zoomedCanvasDimensions } from "@/editor/zoom";
@@ -166,6 +162,9 @@ import {
 import { EditorSnapshotProvider } from "@/editor/editorSnapshotProvider";
 import { createSnapshotStore, type SnapshotStore } from "@/editor/editorStore";
 import { DEFAULT_TEXT_LINE_HEIGHT } from "@/editor/text";
+import { createSemanticEditorAdapter } from "@/semantic/semanticEditorAdapter";
+import { installSemanticIntrospection } from "@/semantic/semanticIntrospection";
+import { createSemanticRuntime, type SemanticRuntime } from "@/semantic/semanticRuntime";
 
 FabricObject.customProperties = [
   "objectId",
@@ -560,6 +559,8 @@ export interface EditorContextValue {
   exportPdf: (title?: string, description?: string) => Promise<void>;
   exportPng: (transparent: boolean, dpi: number, background?: string) => Promise<void>;
   commit: (label?: string) => void;
+  /** Transport-neutral semantic editor surface used by WebMCP and tests. */
+  semanticRuntime: SemanticRuntime;
 }
 
 const EditorContext = createContext<EditorContextValue | null>(null);
@@ -1038,21 +1039,6 @@ function applyPresetColors(
   walk(object);
   object.assetColorPreset = presetId;
   object.dirty = true;
-}
-
-function createArrowPath(doubleHeaded = false, curved = false): FabricObject {
-  const data = curved
-    ? "M 0 60 Q 90 -20 180 60 M 165 45 L 180 60 L 160 66"
-    : doubleHeaded
-      ? "M 0 40 L 180 40 M 15 25 L 0 40 L 15 55 M 165 25 L 180 40 L 165 55"
-      : "M 0 40 L 180 40 M 165 25 L 180 40 L 165 55";
-  return new Path(data, {
-    fill: "",
-    stroke: "#25494b",
-    strokeWidth: 5,
-    strokeLineCap: "round",
-    strokeLineJoin: "round"
-  });
 }
 
 function withLogicalViewport<T>(canvas: Canvas, settings: CanvasSettings, operation: () => T): T {
@@ -2316,6 +2302,28 @@ export function EditorProvider({
     [beginPendingEditorWork, canvas, persist, refreshConnectors, serialize, updateHistoryState]
   );
 
+  const restoreSemanticSnapshot = useCallback(
+    async (snapshot: string) => {
+      if (!canvas) throw new Error("The OpenSketch canvas is not ready.");
+      const complete = beginPendingEditorWork();
+      restoring.current = true;
+      try {
+        await canvas.loadFromJSON(snapshot);
+        assignSceneIdentities(canvas.getObjects());
+        configureCanvasAssets(canvas.getObjects());
+        assertUniqueSceneObjectIds(canvas);
+        refreshConnectors();
+        canvas.discardActiveObject();
+        setSelection([]);
+        canvas.requestRenderAll();
+      } finally {
+        restoring.current = false;
+        complete();
+      }
+    },
+    [beginPendingEditorWork, canvas, refreshConnectors]
+  );
+
   const undo = useCallback(() => {
     if (historyIndex.current > 0) void restoreAt(historyIndex.current - 1);
   }, [restoreAt]);
@@ -2349,20 +2357,86 @@ export function EditorProvider({
   }, []);
 
   const addObject = useCallback(
-    (object: FabricObject, name: string, type: string, point?: Point) => {
-      if (!canvas) return;
+    (object: FabricObject, name: string, type: string, point?: Point, select = true) => {
+      if (!canvas) return null;
       assignIdentity(object, name, type);
       assignSceneIdentities(object);
       prepareElementStyle(object);
       centerObject(object, point);
       canvas.add(object);
-      canvas.setActiveObject(object);
+      if (select) canvas.setActiveObject(object);
       canvas.requestRenderAll();
-      setSelection([object]);
+      if (select) setSelection([object]);
       commit(`Add ${name}`);
+      return object;
     },
     [canvas, centerObject, commit, prepareElementStyle]
   );
+
+  const applySemanticColorPreset = useCallback(
+    (objectId: string, presetId: string): Promise<void> => {
+      if (!canvas) return Promise.reject(new Error("The OpenSketch canvas is not ready."));
+      const object = sceneObjectIndex(canvas).get(objectId);
+      if (!object) return Promise.reject(new Error(`Scene object "${objectId}" does not exist.`));
+      if (!(object instanceof Group) || !object.familyId) {
+        return Promise.reject(new Error(`Scene object "${objectId}" is not a colorable asset.`));
+      }
+      const preset = ASSET_COLOR_PRESETS.find((item) => item.id === presetId);
+      if (!preset)
+        return Promise.reject(new Error(`Asset color preset "${presetId}" does not exist.`));
+      const operation = loadAssetManifest().then(({ assetManifest }) => {
+        const family = assetManifest.families.find((item) => item.familyId === object.familyId);
+        const profile = family ? colorProfileForFamily(family) : undefined;
+        if (!profile || sceneObjectIndex(canvas).get(objectId) !== object) {
+          throw new Error(`Asset color preset target "${objectId}" is no longer available.`);
+        }
+        const mapping = presetColorMap(originalPaints(object), profile, preset);
+        restoreOriginalColors(object);
+        applyPresetColors(object, mapping, preset.id);
+        canvas.requestRenderAll();
+      });
+      return trackPendingEditorWork(operation);
+    },
+    [canvas, trackPendingEditorWork]
+  );
+
+  const semanticRuntime = useMemo(
+    () =>
+      createSemanticRuntime(
+        createSemanticEditorAdapter({
+          getCanvas: () => canvas,
+          getProjectId: () => project.id,
+          isCanvasReady: () => canvasReadyRef.current,
+          getCanvasSettings: () => latestCanvasSettings.current,
+          setSelection,
+          commit,
+          serialize,
+          restore: restoreSemanticSnapshot,
+          creationDefaults: () => creationDefaults,
+          prepareElementStyle,
+          configureCanvasAssets,
+          refreshConnectors,
+          applyColorPreset: applySemanticColorPreset,
+          undo,
+          redo
+        })
+      ),
+    [
+      canvas,
+      applySemanticColorPreset,
+      commit,
+      creationDefaults,
+      prepareElementStyle,
+      project.id,
+      redo,
+      refreshConnectors,
+      restoreSemanticSnapshot,
+      serialize,
+      undo
+    ]
+  );
+
+  useEffect(() => installSemanticIntrospection(semanticRuntime), [semanticRuntime]);
 
   const setCreationDefaults = useCallback(
     (defaults: CreationDefaults | ((current: CreationDefaults) => CreationDefaults)) => {
@@ -2489,8 +2563,14 @@ export function EditorProvider({
   );
 
   const addShape = useCallback(
-    (kind: ShapeKind, point?: Point, connectorPreset?: ConnectorCreationPreset) => {
+    (
+      kind: ShapeKind,
+      point?: Point,
+      connectorPreset?: ConnectorCreationPreset,
+      options: { select?: boolean; allowAttached?: boolean } = {}
+    ) => {
       if (
+        options.allowAttached !== false &&
         kind !== "curved-line" &&
         ["line", "arrow", "double-arrow", "curved-arrow"].includes(kind) &&
         addAttachedConnector(
@@ -2498,154 +2578,14 @@ export function EditorProvider({
           connectorPreset
         )
       ) {
-        return;
+        return null;
       }
-      const common = { ...creationDefaults.shape };
-      let object: FabricObject;
-      if (kind === "rectangle" || kind === "rounded-rectangle") {
-        object = new Rect({
-          ...common,
-          width: 280,
-          height: 170,
-          rx: kind === "rounded-rectangle" ? 28 : 0,
-          ry: kind === "rounded-rectangle" ? 28 : 0
-        });
-      } else if (kind === "circle") {
-        object = new Circle({ ...common, radius: 95 });
-      } else if (kind === "ellipse") {
-        object = new Circle({ ...common, radius: 100, scaleX: 1.5, scaleY: 0.85 });
-      } else if (kind === "pill") {
-        object = new Rect({ ...common, width: 280, height: 120, rx: 60, ry: 60 });
-      } else if (kind === "donut") {
-        object = new Path("M 100 0 A 100 100 0 1 1 99.9 0 M 100 42 A 58 58 0 1 0 100.1 42 Z", {
-          ...common,
-          fillRule: "evenodd"
-        });
-      } else if (kind === "triangle") {
-        object = new Triangle({ ...common, width: 210, height: 190 });
-      } else if (kind === "right-triangle") {
-        object = new Polygon(
-          [
-            { x: 0, y: 0 },
-            { x: 0, y: 190 },
-            { x: 220, y: 190 }
-          ],
-          common
-        );
-      } else if (kind === "pentagon") {
-        object = new Polygon(
-          [
-            { x: 100, y: 0 },
-            { x: 195, y: 69 },
-            { x: 159, y: 181 },
-            { x: 41, y: 181 },
-            { x: 5, y: 69 }
-          ],
-          common
-        );
-      } else if (kind === "polygon") {
-        object = new Polygon(
-          [
-            { x: 50, y: 0 },
-            { x: 150, y: 0 },
-            { x: 200, y: 86 },
-            { x: 150, y: 172 },
-            { x: 50, y: 172 },
-            { x: 0, y: 86 }
-          ],
-          common
-        );
-      } else if (kind === "octagon") {
-        object = new Polygon(
-          [
-            { x: 60, y: 0 },
-            { x: 160, y: 0 },
-            { x: 220, y: 60 },
-            { x: 220, y: 160 },
-            { x: 160, y: 220 },
-            { x: 60, y: 220 },
-            { x: 0, y: 160 },
-            { x: 0, y: 60 }
-          ],
-          common
-        );
-      } else if (kind === "diamond") {
-        object = new Polygon(
-          [
-            { x: 110, y: 0 },
-            { x: 220, y: 90 },
-            { x: 110, y: 180 },
-            { x: 0, y: 90 }
-          ],
-          common
-        );
-      } else if (kind === "trapezoid") {
-        object = new Polygon(
-          [
-            { x: 50, y: 0 },
-            { x: 190, y: 0 },
-            { x: 240, y: 170 },
-            { x: 0, y: 170 }
-          ],
-          common
-        );
-      } else if (kind === "parallelogram") {
-        object = new Polygon(
-          [
-            { x: 50, y: 0 },
-            { x: 250, y: 0 },
-            { x: 200, y: 170 },
-            { x: 0, y: 170 }
-          ],
-          common
-        );
-      } else if (kind === "line") {
-        object = new Line([0, 0, 220, 0], {
-          stroke: creationDefaults.line.color,
-          strokeWidth: creationDefaults.line.width,
-          strokeLineCap: "round"
-        });
-      } else if (kind === "bracket") {
-        object = new Path("M 32 0 H 0 V 180 H 32 M 168 0 H 200 V 180 H 168", {
-          fill: "",
-          stroke: creationDefaults.shape.stroke,
-          strokeWidth: creationDefaults.shape.strokeWidth,
-          strokeLineCap: "round",
-          strokeLineJoin: "round"
-        });
-      } else if (kind === "callout") {
-        object = new Polygon(
-          [
-            { x: 0, y: 0 },
-            { x: 260, y: 0 },
-            { x: 260, y: 150 },
-            { x: 90, y: 150 },
-            { x: 48, y: 200 },
-            { x: 58, y: 150 },
-            { x: 0, y: 150 }
-          ],
-          { ...common, strokeLineJoin: "round" }
-        );
-      } else if (kind === "membrane") {
-        const lipids: FabricObject[] = [];
-        for (let index = 0; index < 9; index += 1) {
-          const x = index * 30;
-          lipids.push(
-            new Circle({ left: x, top: 0, radius: 8, fill: "#69bdb4", stroke: "#25494b" }),
-            new Line([x + 8, 16, x + 8, 42], { stroke: "#25494b", strokeWidth: 3 }),
-            new Circle({ left: x, top: 58, radius: 8, fill: "#69bdb4", stroke: "#25494b" }),
-            new Line([x + 8, 32, x + 8, 58], { stroke: "#25494b", strokeWidth: 3 })
-          );
-        }
-        object = new Group(lipids);
-      } else {
-        object = createArrowPath(kind === "double-arrow", kind === "curved-arrow");
-      }
-      addObject(
-        object,
+      return addObject(
+        createShapeObject(kind, creationDefaults),
         kind === "polygon" ? "hexagon" : kind.replace("-", " "),
         kind.includes("arrow") ? "connector" : "shape",
-        point
+        point,
+        options.select !== false
       );
     },
     [addAttachedConnector, addObject, creationDefaults]
@@ -4118,7 +4058,8 @@ export function EditorProvider({
       exportCredits,
       exportPdf,
       exportPng,
-      commit
+      commit,
+      semanticRuntime
     }),
     [
       addAsset,
@@ -4182,7 +4123,8 @@ export function EditorProvider({
       undo,
       ungroupSelection,
       updateConnector,
-      zoom
+      zoom,
+      semanticRuntime
     ]
   );
   const store = editorStore.current;
