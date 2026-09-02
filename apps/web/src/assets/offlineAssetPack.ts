@@ -59,7 +59,8 @@ function cacheStorage(): CacheStorage | null {
 }
 
 function baseUrl(): string {
-  return typeof window === "undefined" ? "http://localhost/OpenSketch/" : window.location.href;
+  if (typeof window !== "undefined") return window.location.href;
+  return `http://localhost${import.meta.env.BASE_URL || "/OpenSketch/"}`;
 }
 
 function cacheableUrl(path: string): string | null {
