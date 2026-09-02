@@ -21,7 +21,6 @@ export const SHAPE_KINDS = [
   "trapezoid",
   "parallelogram",
   "line",
-  "curved-line",
   "arrow",
   "double-arrow",
   "curved-arrow",

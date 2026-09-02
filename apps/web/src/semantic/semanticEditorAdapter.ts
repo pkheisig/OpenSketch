@@ -227,6 +227,20 @@ function deltaInParentPlane(object: FabricObject, dx: number, dy: number): Seman
   return { x: local.x, y: local.y };
 }
 
+function editableAssetParent(object: FabricObject | undefined): Group | null {
+  for (let parent = object?.group; parent; parent = parent.group) {
+    if (
+      parent instanceof Group &&
+      (parent.OpenSketchType === "nih-asset" ||
+        parent.OpenSketchType === "import" ||
+        parent.OpenSketchType === "upload")
+    ) {
+      return parent;
+    }
+  }
+  return null;
+}
+
 const RESTORABLE_GROUP_PROPERTIES = [
   "name",
   "OpenSketchType",
@@ -811,6 +825,43 @@ export function createSemanticEditorAdapter(
     if (command === "delete_objects") {
       const ids = objectIds(input);
       const objects = resolveObjects(canvas, ids);
+      const nestedAssetObjects = objects.filter((object) => editableAssetParent(object));
+      if (nestedAssetObjects.length > 0) {
+        if (nestedAssetObjects.length !== objects.length) {
+          throw new SemanticAdapterError(
+            "INVALID_SELECTION",
+            "Asset-part deletion cannot be combined with other semantic targets."
+          );
+        }
+        const removedIds = new Set(
+          nestedAssetObjects
+            .map((object) => object.objectId)
+            .filter((objectId): objectId is string => Boolean(objectId))
+        );
+        const parents = new Set<Group>();
+        nestedAssetObjects.forEach((object) => {
+          const parent = object.group;
+          if (!(parent instanceof Group)) return;
+          parents.add(editableAssetParent(object) ?? parent);
+          parent.remove(object);
+          parent.triggerLayout();
+          parent.dirty = true;
+          parent.setCoords();
+        });
+        parents.forEach((parent) => {
+          if (parent.getObjects().length !== 0 || !parent.objectId) return;
+          removedIds.add(parent.objectId);
+          const entry = sceneObjectEntries(canvas).find(({ object }) => object === parent);
+          if (entry) removeSceneObject(entry);
+        });
+        sceneObjectEntries(canvas)
+          .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
+          .forEach(removeSceneObject);
+        dependencies.refreshConnectors();
+        canvas.requestRenderAll();
+        commitSemantic("Semantic delete");
+        return { data: { objectIds: [...removedIds] }, changedObjectIds: [...removedIds] };
+      }
       const roots = objects.filter(
         (object) =>
           !objects.some((candidate) => candidate !== object && isSceneDescendant(object, candidate))
@@ -820,12 +871,7 @@ export function createSemanticEditorAdapter(
         visitSceneObjects(root, (object) => object.objectId && removedIds.add(object.objectId))
       );
       sceneObjectEntries(canvas)
-        .filter(
-          ({ object }) =>
-            object.connector &&
-            (removedIds.has(object.connector.fromObjectId) ||
-              removedIds.has(object.connector.toObjectId))
-        )
+        .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
         .forEach(removeSceneObject);
       const entries = sceneObjectEntries(canvas);
       roots.forEach((root) => {
@@ -1045,16 +1091,21 @@ export function createSemanticEditorAdapter(
         const result = await operation();
         succeeded = true;
         return result;
-      } finally {
-        transactionDepth -= 1;
-        if (!succeeded) {
-          transactionDirty = false;
+      } catch (error) {
+        transactionDirty = false;
+        try {
           await dependencies.restore(snapshot);
           const restoredCanvas = dependencies.getCanvas();
           if (restoredCanvas) {
             restoreSelection(restoredCanvas, selectionObjectIds, dependencies.setSelection);
           }
-        } else if (transactionDepth === 0 && transactionDirty) {
+        } catch {
+          // Preserve the original batch failure if rollback itself cannot finish.
+        }
+        throw error;
+      } finally {
+        transactionDepth -= 1;
+        if (succeeded && transactionDepth === 0 && transactionDirty) {
           transactionDirty = false;
           dependencies.commit("Semantic batch");
         }

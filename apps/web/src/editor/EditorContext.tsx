@@ -2309,6 +2309,8 @@ export function EditorProvider({
       const complete = beginPendingEditorWork();
       restoring.current = true;
       try {
+        // Semantic rollback restores scene state only; history and persistence
+        // remain unchanged so the failed batch adds no history entry.
         await canvas.loadFromJSON(snapshot);
         assignSceneIdentities(canvas.getObjects());
         configureCanvasAssets(canvas.getObjects());

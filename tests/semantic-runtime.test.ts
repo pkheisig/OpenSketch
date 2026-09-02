@@ -167,4 +167,18 @@ describe("semantic runtime", () => {
     expect(result).toMatchObject({ ok: false, error: { code: "INVALID_INPUT" } });
     expect(adapter.calls).toEqual([]);
   });
+
+  it("resolves aliases only in identity fields", async () => {
+    const adapter = fakeAdapter();
+    const runtime = createSemanticRuntime(adapter);
+    const literal = await runtime.execute("batch", {
+      operations: [{ command: "create_text", input: { kind: "point", text: "$literal" } }]
+    });
+    const unknown = await runtime.execute("batch", {
+      operations: [{ command: "move_objects", input: { objectIds: ["$missing"], dx: 1, dy: 1 } }]
+    });
+
+    expect(literal.ok).toBe(true);
+    expect(unknown).toMatchObject({ ok: false, error: { code: "UNKNOWN_ALIAS" } });
+  });
 });

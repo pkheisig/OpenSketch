@@ -153,22 +153,25 @@ function definitionFor(name: string): SemanticCommandDefinition | undefined {
   return SEMANTIC_COMMANDS.find((definition) => definition.name === name);
 }
 
-function resolveAliases(value: unknown, aliases: Map<string, AliasValue>): unknown {
-  if (typeof value === "string" && value.startsWith("$")) {
+const ALIAS_ID_FIELDS = new Set(["objectId", "objectIds", "fromObjectId", "toObjectId"]);
+
+function resolveAliases(value: unknown, aliases: Map<string, AliasValue>, field?: string): unknown {
+  if (typeof value === "string" && field && ALIAS_ID_FIELDS.has(field) && value.startsWith("$")) {
     const alias = aliases.get(value.slice(1));
     if (!alias)
       throw new SemanticInputError("UNKNOWN_ALIAS", `Semantic alias "${value}" is not defined.`);
     return alias.value;
   }
   if (Array.isArray(value)) {
+    const itemField = field === "objectIds" ? "objectId" : undefined;
     return value.flatMap((item) => {
-      const resolved = resolveAliases(item, aliases);
+      const resolved = resolveAliases(item, aliases, itemField);
       return Array.isArray(resolved) ? resolved : [resolved];
     });
   }
   if (isRecord(value)) {
     return Object.fromEntries(
-      Object.entries(value).map(([key, child]) => [key, resolveAliases(child, aliases)])
+      Object.entries(value).map(([key, child]) => [key, resolveAliases(child, aliases, key)])
     );
   }
   return value;
