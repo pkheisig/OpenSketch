@@ -107,6 +107,21 @@ describe("semantic compound planning", () => {
       ).toBe(true);
     }
   });
+
+  it("gives uniform fields a deterministic grid instead of cloud sampling", () => {
+    const plan = planParticleField(
+      { left: 0, top: 0, width: 180, height: 120 },
+      4,
+      "uniform",
+      "seed-3"
+    );
+    expect(plan.points).toHaveLength(4);
+    expect(plan.points[0].x).toBeCloseTo(33.333, 2);
+    expect(plan.points[1].x).toBeCloseTo(90, 2);
+    expect(plan.points[2].x).toBeCloseTo(146.667, 2);
+    expect(plan.points[0].y).toBeCloseTo(32.5, 2);
+    expect(plan.points[3].y).toBeCloseTo(87.5, 2);
+  });
 });
 
 describe("semantic composition analysis", () => {

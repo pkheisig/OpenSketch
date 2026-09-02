@@ -232,6 +232,16 @@ export function planParticleField(
     if (distribution === "linear") {
       x = innerLeft + fraction * innerWidth;
       y = clamp(c.y + (next() - 0.5) * innerHeight * 0.18, innerTop, innerTop + innerHeight);
+    } else if (distribution === "uniform") {
+      const columns = Math.max(
+        1,
+        Math.ceil(Math.sqrt((safeCount * Math.max(bounds.width, 1)) / Math.max(bounds.height, 1)))
+      );
+      const rows = Math.max(1, Math.ceil(safeCount / columns));
+      const column = index % columns;
+      const row = Math.floor(index / columns);
+      x = innerLeft + ((column + 0.5) / columns) * innerWidth;
+      y = innerTop + ((row + 0.5) / rows) * innerHeight;
     } else if (distribution === "arc") {
       const angle = -Math.PI * 0.85 + fraction * Math.PI * 1.7;
       const radius = Math.min(bounds.width, bounds.height) * (0.35 + next() * 0.12);

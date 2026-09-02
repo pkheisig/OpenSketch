@@ -1639,7 +1639,12 @@ definitions.push(
       objectId: objectId(),
       particleIds: { type: "array", maxItems: 256, items: objectId() },
       seed: { type: "string" },
-      points: { type: "array", maxItems: 256 }
+      distribution: {
+        type: "string",
+        enum: ["cloud", "uniform", "linear", "arc", "gradient", "source-fan", "target-converging"]
+      },
+      points: { type: "array", maxItems: 256 },
+      reused: { type: "boolean" }
     })
   },
   {

@@ -1403,6 +1403,39 @@ export function createSemanticEditorAdapter(
         semanticName: `particle-field:${seed}`
       };
       field.particleFieldSpec = particleFieldSpec;
+      const fieldRelations = [
+        ...(sourceObjectId
+          ? [
+              normalizeRelation({
+                id: boundedRelationId("particle-field-emits", sourceObjectId, field.objectId!),
+                kind: "emits",
+                sourceObjectId,
+                targetObjectId: field.objectId!,
+                direction: "forward",
+                allowedOverlap: false
+              })
+            ]
+          : []),
+        ...(targetObjectId
+          ? [
+              normalizeRelation({
+                id: boundedRelationId("particle-field-target", field.objectId!, targetObjectId),
+                kind: "follows_gradient",
+                sourceObjectId: field.objectId!,
+                targetObjectId,
+                direction: "forward",
+                allowedOverlap: false
+              })
+            ]
+          : [])
+      ];
+      if (fieldRelations.length > 0) {
+        field.semanticRelations = fieldRelations;
+        field.semanticMetadata = {
+          ...field.semanticMetadata,
+          relationIds: fieldRelations.map((relation) => relation.id)
+        };
+      }
       const existingIds = new Set(
         sceneObjectEntries(canvas)
           .map(({ object }) => object.objectId)
@@ -1427,7 +1460,8 @@ export function createSemanticEditorAdapter(
           particleIds: particles.map((particle) => particle.objectId!),
           seed: plan.seed,
           distribution: plan.distribution,
-          points: plan.points
+          points: plan.points,
+          reused: false
         },
         changedObjectIds: [field.objectId, ...particles.map((particle) => particle.objectId!)]
       };
