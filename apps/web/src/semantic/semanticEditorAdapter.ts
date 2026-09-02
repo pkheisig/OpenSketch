@@ -17,7 +17,11 @@ import {
 } from "./semanticTypes";
 import { createShapeObject } from "@/editor/creationObjects";
 import { type CreationDefaults, type ShapeKind } from "@/editor/creation";
-import { createConnectorObject, createFreeConnectorObject } from "@/editor/connectors";
+import {
+  connectorsForRemovedIds,
+  createConnectorObject,
+  createFreeConnectorObject
+} from "@/editor/connectors";
 import { configureTextObject } from "@/editor/selection";
 import { assignFreshCloneIds } from "@/editor/cloneIdentity";
 import { anchorPoint } from "@/editor/geometry";
@@ -60,8 +64,8 @@ export interface SemanticEditorAdapterDependencies {
   configureCanvasAssets: (objects: FabricObject[]) => void;
   refreshConnectors: (changedObjectId?: string) => void;
   applyColorPreset: (objectId: string, presetId: string) => Promise<void>;
-  undo: () => void;
-  redo: () => void;
+  undo: () => Promise<void>;
+  redo: () => Promise<void>;
 }
 
 type SemanticPointInput = { x: number; y: number };
@@ -402,11 +406,13 @@ export function createSemanticEditorAdapter(
           toObjectId: input.toObjectId,
           toAnchor,
           startArrowhead: (input.startArrowhead ??
-            (kind === "line"
+            (kind === "line" || kind === "curved-line"
               ? "none"
               : defaults.startArrowhead)) as ConnectorBinding["startArrowhead"],
           endArrowhead: (input.endArrowhead ??
-            (kind === "line" ? "none" : defaults.endArrowhead)) as ConnectorBinding["endArrowhead"],
+            (kind === "line" || kind === "curved-line"
+              ? "none"
+              : defaults.endArrowhead)) as ConnectorBinding["endArrowhead"],
           lineStyle: (input.lineStyle ?? defaults.lineStyle) as ConnectorBinding["lineStyle"],
           routing: input.pathShape === "straight" ? "direct" : "orthogonal",
           ...(input.pathShape
@@ -565,7 +571,11 @@ export function createSemanticEditorAdapter(
         object.set(properties as Record<string, unknown>);
         configureTextObject(object);
         const propertyRecord = properties as Record<string, unknown>;
-        if (isGroup(object) && object.OpenSketchType === "connector" && propertyRecord.stroke) {
+        if (
+          isGroup(object) &&
+          (Boolean(object.connector) ||
+            CONNECTOR_KINDS.includes(object.OpenSketchType as (typeof CONNECTOR_KINDS)[number]))
+        ) {
           object.getObjects().forEach((part) => {
             if (typeof propertyRecord.stroke === "string") {
               part.set("stroke", propertyRecord.stroke);
@@ -796,6 +806,10 @@ export function createSemanticEditorAdapter(
       const parent = layerCollectionForObject(group, canvas);
       const index = parent.getObjects().indexOf(group);
       const removedId = group.objectId;
+      const removedIds = new Set(removedId ? [removedId] : []);
+      sceneObjectEntries(canvas)
+        .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
+        .forEach(removeSceneObject);
       const children = group.removeAll();
       rememberRecognizedGroup(children, {
         objectId: removedId!,
@@ -821,11 +835,11 @@ export function createSemanticEditorAdapter(
       };
     }
     if (command === "undo") {
-      dependencies.undo();
+      await dependencies.undo();
       return { data: { applied: true } };
     }
     if (command === "redo") {
-      dependencies.redo();
+      await dependencies.redo();
       return { data: { applied: true } };
     }
     throw new SemanticAdapterError(

@@ -45,8 +45,8 @@ function makeAdapter(canvas: Canvas, setSelection = vi.fn()) {
     configureCanvasAssets: vi.fn(),
     refreshConnectors: vi.fn(),
     applyColorPreset: vi.fn(async () => undefined),
-    undo: vi.fn(),
-    redo: vi.fn()
+    undo: vi.fn(async () => undefined),
+    redo: vi.fn(async () => undefined)
   });
   return Object.assign(adapter, { commit, restore });
 }

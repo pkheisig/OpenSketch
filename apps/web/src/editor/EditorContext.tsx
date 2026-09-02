@@ -548,8 +548,8 @@ export interface EditorContextValue {
   applyTextScript: (script: "normal" | "subscript" | "superscript") => void;
   resetColors: () => void;
   applyColorPreset: (presetId: string) => void;
-  undo: () => void;
-  redo: () => void;
+  undo: () => Promise<void>;
+  redo: () => Promise<void>;
   setZoom: (value: number) => void;
   previewZoom: (value: number) => void;
   fitCanvas: () => void;
@@ -2325,12 +2325,14 @@ export function EditorProvider({
   );
 
   const undo = useCallback(() => {
-    if (historyIndex.current > 0) void restoreAt(historyIndex.current - 1);
+    if (historyIndex.current > 0) return restoreAt(historyIndex.current - 1);
+    return Promise.resolve();
   }, [restoreAt]);
   const redo = useCallback(() => {
     if (historyIndex.current < history.current.length - 1) {
-      void restoreAt(historyIndex.current + 1);
+      return restoreAt(historyIndex.current + 1);
     }
+    return Promise.resolve();
   }, [restoreAt]);
 
   const centerObject = useCallback(
