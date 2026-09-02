@@ -39,6 +39,28 @@ export interface WebMcpAdapter {
   readonly dispose: () => void;
 }
 
+export const WEBMCP_COMMAND_LOG_EVENT = "opensketch:webmcp-command";
+
+export interface WebMcpCommandLogDetail {
+  readonly callId: string;
+  readonly name: string;
+  readonly input: unknown;
+  readonly phase: "started" | "finished";
+  readonly timestamp: number;
+  readonly durationMs?: number;
+  readonly ok?: boolean;
+  readonly errorCode?: string;
+}
+
+let commandLogSequence = 0;
+
+function emitCommandLog(detail: WebMcpCommandLogDetail): void {
+  if (typeof window === "undefined" || typeof CustomEvent === "undefined") return;
+  window.dispatchEvent(
+    new CustomEvent<WebMcpCommandLogDetail>(WEBMCP_COMMAND_LOG_EVENT, { detail })
+  );
+}
+
 function isModelContext(value: unknown): value is WebMcpModelContext {
   return (
     Boolean(value) &&
@@ -72,16 +94,52 @@ function toolFor(definition: SemanticCommandDefinition, runtime: SemanticRuntime
       openWorldHint: false
     },
     execute: async (input) => {
-      if (!isRecord(input)) {
-        return {
+      const callId = `${Date.now().toString(36)}-${(commandLogSequence += 1).toString(36)}`;
+      const startedAt = performance.now();
+      emitCommandLog({
+        callId,
+        name: definition.name,
+        input,
+        phase: "started",
+        timestamp: Date.now()
+      });
+      let result: SemanticCommandResult;
+      try {
+        if (!isRecord(input)) {
+          result = {
+            ok: false,
+            runtimeVersion: runtime.version,
+            error: { code: "INVALID_INPUT", message: "input must be an object." },
+            changedObjectIds: [],
+            warnings: []
+          };
+        } else {
+          result = await runtime.execute(definition.name, input);
+        }
+      } catch (error) {
+        emitCommandLog({
+          callId,
+          name: definition.name,
+          input,
+          phase: "finished",
+          timestamp: Date.now(),
+          durationMs: Math.max(0, performance.now() - startedAt),
           ok: false,
-          runtimeVersion: runtime.version,
-          error: { code: "INVALID_INPUT", message: "input must be an object." },
-          changedObjectIds: [],
-          warnings: []
-        };
+          errorCode: error instanceof Error ? error.name : "EXECUTION_FAILED"
+        });
+        throw error;
       }
-      return runtime.execute(definition.name, input);
+      emitCommandLog({
+        callId,
+        name: definition.name,
+        input,
+        phase: "finished",
+        timestamp: Date.now(),
+        durationMs: Math.max(0, performance.now() - startedAt),
+        ok: result.ok,
+        ...(!result.ok ? { errorCode: result.error.code } : {})
+      });
+      return result;
     }
   };
 }

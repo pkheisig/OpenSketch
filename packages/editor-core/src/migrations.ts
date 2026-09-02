@@ -618,7 +618,8 @@ function validateGradient(value: JsonRecord, path: string, context: ValidationCo
       "offsetX",
       "offsetY",
       "gradientUnits",
-      "gradientTransform"
+      "gradientTransform",
+      "id"
     ])
   );
   if (value.type !== "linear" && value.type !== "radial") fail(`${path}.type`, "is invalid");
@@ -653,6 +654,13 @@ function validateGradient(value: JsonRecord, path: string, context: ValidationCo
     transform.forEach((item, index) =>
       assertFiniteNumber(item, `${path}.gradientTransform[${index}]`)
     );
+  }
+  if (value.id !== undefined) {
+    if (typeof value.id === "number") {
+      assertFiniteNumber(value.id, `${path}.id`, { min: 0 });
+    } else {
+      assertString(value.id, `${path}.id`, { maxLength: 512, nonEmpty: true });
+    }
   }
   void context;
 }

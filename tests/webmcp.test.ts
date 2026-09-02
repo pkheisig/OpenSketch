@@ -3,6 +3,8 @@ import { SEMANTIC_COMMANDS } from "../apps/web/src/semantic/semanticCommands";
 import {
   createWebMcpAdapter,
   detectModelContext,
+  WEBMCP_COMMAND_LOG_EVENT,
+  type WebMcpCommandLogDetail,
   type WebMcpTool
 } from "../apps/web/src/semantic/webmcp";
 import type { SemanticRuntime } from "../apps/web/src/semantic/semanticRuntime";
@@ -70,6 +72,31 @@ describe("WebMCP adapter", () => {
       ok: false,
       error: { code: "INVALID_INPUT" }
     });
+  });
+
+  it("emits a start and finish event for each WebMCP tool call", async () => {
+    const tools: WebMcpTool[] = [];
+    const events: WebMcpCommandLogDetail[] = [];
+    const onCommand = (event: Event) => {
+      events.push((event as CustomEvent<WebMcpCommandLogDetail>).detail);
+    };
+    window.addEventListener(WEBMCP_COMMAND_LOG_EVENT, onCommand);
+    const adapter = createWebMcpAdapter({
+      runtime: runtime(),
+      documentLike: { modelContext: { registerTool: (tool: WebMcpTool) => tools.push(tool) } }
+    });
+
+    try {
+      await adapter.sync();
+      await tools.find((tool) => tool.name === "inspect_scene")!.execute({ maxObjects: 3 });
+    } finally {
+      window.removeEventListener(WEBMCP_COMMAND_LOG_EVENT, onCommand);
+    }
+
+    expect(events).toHaveLength(2);
+    expect(events.map(({ phase }) => phase)).toEqual(["started", "finished"]);
+    expect(events[1]).toMatchObject({ name: "inspect_scene", ok: true });
+    expect(events[1].callId).toBe(events[0].callId);
   });
 
   it("continues after a registration failure and aborts the prior generation", async () => {

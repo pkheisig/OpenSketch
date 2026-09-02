@@ -4,14 +4,16 @@ import {
   type AssetFamily,
   type AssetVariant,
   type CanvasSettings,
-  type ConnectorBinding
+  type ConnectorBinding,
+  PORTABLE_PROJECT_LIMITS
 } from "@workspace/editor-core";
 import {
   CONNECTOR_KINDS,
   SHAPE_KINDS,
   TEXT_KINDS,
   ALIGN_AXES,
-  ARRANGE_ACTIONS
+  ARRANGE_ACTIONS,
+  OBJECT_ANCHORS
 } from "./semanticCommands";
 import {
   type SemanticAdapterResult,
@@ -63,6 +65,9 @@ export interface SemanticEditorAdapterDependencies {
   getProjectId: () => string;
   isCanvasReady: () => boolean;
   getCanvasSettings: () => CanvasSettings;
+  setCanvasSettings: (settings: Partial<CanvasSettings>) => void;
+  setProjectName: (name: string) => void;
+  setProjectDescription: (description: string) => void;
   setSelection: (objects: FabricObject[]) => void;
   commit: (label?: string) => void;
   serialize: () => string;
@@ -214,6 +219,9 @@ function describeObject(
     selectable: object.selectable !== false,
     style: styleOf(object)
   };
+  if (object instanceof IText || object instanceof Textbox) {
+    descriptor.text = boundedText(object.text, 4_000) ?? "";
+  }
   if (object.familyId || object.assetId || object.provenance) {
     descriptor.asset = {
       ...(object.familyId ? { familyId: object.familyId } : {}),
@@ -288,6 +296,56 @@ function deltaInParentPlane(object: FabricObject, dx: number, dy: number): Seman
   if (!isGroup(parent)) return { x: dx, y: dy };
   const local = util.sendVectorToPlane(new Point(dx, dy), undefined, parent.calcTransformMatrix());
   return { x: local.x, y: local.y };
+}
+
+function setAbsoluteRotation(object: FabricObject, angle: unknown): void {
+  if (angle === undefined) return;
+  object.set("angle", finiteNumber(angle, "angle"));
+  object.setCoords();
+  refreshParentGroups(object);
+}
+
+function moveAnchorTo(
+  object: FabricObject,
+  objectAnchor: ConnectorBinding["fromAnchor"],
+  destination: SemanticPointInput
+): void {
+  const current = anchorPoint(object.getBoundingRect(), objectAnchor);
+  const delta = deltaInParentPlane(object, destination.x - current.x, destination.y - current.y);
+  object.set({ left: (object.left ?? 0) + delta.x, top: (object.top ?? 0) + delta.y });
+  object.setCoords();
+  refreshParentGroups(object);
+}
+
+function semanticAnchor(value: unknown, field: string): ConnectorBinding["fromAnchor"] {
+  if (!OBJECT_ANCHORS.includes(value as (typeof OBJECT_ANCHORS)[number])) {
+    throw new SemanticAdapterError("INVALID_INPUT", `${field} must be a supported object anchor.`);
+  }
+  return value as ConnectorBinding["fromAnchor"];
+}
+
+function optionalOffset(value: unknown): SemanticPointInput {
+  return value === undefined ? { x: 0, y: 0 } : point(value, "offset");
+}
+
+function assertIndependentPlacementObjects(objects: FabricObject[]): void {
+  if (new Set(objects).size !== objects.length) {
+    throw new SemanticAdapterError("INVALID_INPUT", "Placement objects must be distinct.");
+  }
+  for (const object of objects) {
+    if (
+      objects.some(
+        (candidate) =>
+          candidate !== object &&
+          (isSceneDescendant(object, candidate) || isSceneDescendant(candidate, object))
+      )
+    ) {
+      throw new SemanticAdapterError(
+        "INVALID_SELECTION",
+        "Placement objects cannot contain one another."
+      );
+    }
+  }
 }
 
 function editableAssetParent(object: FabricObject | undefined): Group | null {
@@ -575,6 +633,49 @@ export function createSemanticEditorAdapter(
     input: Record<string, unknown>
   ): Promise<SemanticAdapterResult> => {
     const canvas = canvasOrThrow();
+    if (command === "set_project_metadata") {
+      const name = typeof input.name === "string" ? input.name.trim() : undefined;
+      const description =
+        typeof input.description === "string" ? input.description.trim() : undefined;
+      if (name === undefined && description === undefined) {
+        throw new SemanticAdapterError(
+          "INVALID_INPUT",
+          "set_project_metadata requires a name or description."
+        );
+      }
+      if (name !== undefined) dependencies.setProjectName(name);
+      if (description !== undefined) dependencies.setProjectDescription(description);
+      return {
+        data: {
+          ...(name !== undefined ? { name } : {}),
+          ...(description !== undefined ? { description } : {})
+        },
+        changedObjectIds: []
+      };
+    }
+    if (command === "resize_canvas") {
+      const width = finiteNumber(input.width, "width");
+      const height = finiteNumber(input.height, "height");
+      if (
+        width <= 0 ||
+        height <= 0 ||
+        width > PORTABLE_PROJECT_LIMITS.maxCanvasDimension ||
+        height > PORTABLE_PROJECT_LIMITS.maxCanvasDimension
+      ) {
+        throw new SemanticAdapterError(
+          "INVALID_INPUT",
+          `Canvas dimensions must be between 1 and ${PORTABLE_PROJECT_LIMITS.maxCanvasDimension}.`
+        );
+      }
+      if (width * height > PORTABLE_PROJECT_LIMITS.maxCanvasArea) {
+        throw new SemanticAdapterError(
+          "INVALID_INPUT",
+          `Canvas area must not exceed ${PORTABLE_PROJECT_LIMITS.maxCanvasArea}.`
+        );
+      }
+      dependencies.setCanvasSettings({ width, height });
+      return { data: { width, height }, changedObjectIds: [] };
+    }
     if (command === "set_selection") {
       const ids = objectIds(input);
       const objects = resolveObjects(canvas, ids);
@@ -831,6 +932,56 @@ export function createSemanticEditorAdapter(
       commitSemantic("Semantic move");
       return { data: { objectIds: ids }, changedObjectIds: ids };
     }
+    if (command === "attach_object") {
+      const objectId = input.objectId as string;
+      const targetObjectId = input.targetObjectId as string;
+      const [object, target] = resolveObjects(canvas, [objectId, targetObjectId]);
+      assertIndependentPlacementObjects([object, target]);
+      const objectAnchor = semanticAnchor(input.objectAnchor, "objectAnchor");
+      const targetAnchor = semanticAnchor(input.targetAnchor, "targetAnchor");
+      const offset = optionalOffset(input.offset);
+      setAbsoluteRotation(object, input.angle);
+      const targetPoint = anchorPoint(target.getBoundingRect(), targetAnchor);
+      const destination = { x: targetPoint.x + offset.x, y: targetPoint.y + offset.y };
+      moveAnchorTo(object, objectAnchor, destination);
+      dependencies.refreshConnectors();
+      canvas.requestRenderAll();
+      commitSemantic("Semantic attach");
+      return {
+        data: { objectId, targetObjectId, position: destination },
+        changedObjectIds: [objectId]
+      };
+    }
+    if (command === "place_object_between") {
+      const objectId = input.objectId as string;
+      const fromObjectId = input.fromObjectId as string;
+      const toObjectId = input.toObjectId as string;
+      const [object, fromObject, toObject] = resolveObjects(canvas, [
+        objectId,
+        fromObjectId,
+        toObjectId
+      ]);
+      assertIndependentPlacementObjects([object, fromObject, toObject]);
+      const objectAnchor = semanticAnchor(input.objectAnchor, "objectAnchor");
+      const fromAnchor = semanticAnchor(input.fromAnchor, "fromAnchor");
+      const toAnchor = semanticAnchor(input.toAnchor, "toAnchor");
+      const offset = optionalOffset(input.offset);
+      setAbsoluteRotation(object, input.angle);
+      const fromPoint = anchorPoint(fromObject.getBoundingRect(), fromAnchor);
+      const toPoint = anchorPoint(toObject.getBoundingRect(), toAnchor);
+      const destination = {
+        x: (fromPoint.x + toPoint.x) / 2 + offset.x,
+        y: (fromPoint.y + toPoint.y) / 2 + offset.y
+      };
+      moveAnchorTo(object, objectAnchor, destination);
+      dependencies.refreshConnectors();
+      canvas.requestRenderAll();
+      commitSemantic("Semantic bridge");
+      return {
+        data: { objectId, fromObjectId, toObjectId, position: destination },
+        changedObjectIds: [objectId]
+      };
+    }
     if (command === "rotate_objects") {
       const ids = objectIds(input);
       const degrees = finiteNumber(input.degrees, "degrees");
@@ -1050,6 +1201,59 @@ export function createSemanticEditorAdapter(
       canvas.requestRenderAll();
       commitSemantic("Semantic distribute");
       return { data: { objectIds: ids }, changedObjectIds: ids };
+    }
+    if (command === "rebind_connector") {
+      const connectorId = input.connectorId as string;
+      const [connector] = resolveObjects(canvas, [connectorId]);
+      if (!connector.connector) {
+        throw new SemanticAdapterError(
+          "INVALID_SELECTION",
+          `Scene object "${connectorId}" is not a bound connector.`
+        );
+      }
+      if (
+        input.fromObjectId === undefined &&
+        input.fromAnchor === undefined &&
+        input.toObjectId === undefined &&
+        input.toAnchor === undefined
+      ) {
+        throw new SemanticAdapterError(
+          "INVALID_INPUT",
+          "At least one connector endpoint field is required."
+        );
+      }
+      const fromObjectId =
+        typeof input.fromObjectId === "string"
+          ? input.fromObjectId
+          : connector.connector.fromObjectId;
+      const toObjectId =
+        typeof input.toObjectId === "string" ? input.toObjectId : connector.connector.toObjectId;
+      const [fromObject, toObject] = resolveObjects(canvas, [fromObjectId, toObjectId]);
+      if (fromObject === toObject) {
+        throw new SemanticAdapterError("INVALID_INPUT", "Connector endpoints must differ.");
+      }
+      const fromAnchor =
+        input.fromAnchor === undefined
+          ? connector.connector.fromAnchor
+          : semanticAnchor(input.fromAnchor, "fromAnchor");
+      const toAnchor =
+        input.toAnchor === undefined
+          ? connector.connector.toAnchor
+          : semanticAnchor(input.toAnchor, "toAnchor");
+      connector.connector = {
+        ...connector.connector,
+        fromObjectId,
+        fromAnchor,
+        toObjectId,
+        toAnchor
+      };
+      dependencies.refreshConnectors(fromObjectId);
+      canvas.requestRenderAll();
+      commitSemantic("Semantic rebind connector");
+      return {
+        data: { connectorId, fromObjectId, toObjectId },
+        changedObjectIds: [connectorId, fromObjectId, toObjectId]
+      };
     }
     if (command === "duplicate_objects") {
       const ids = objectIds(input);

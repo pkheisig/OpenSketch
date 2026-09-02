@@ -47,6 +47,8 @@ registry.
 | `search_assets`          | Search the bundled scientific asset manifest                     | Read-only                                    |
 | `inspect_asset`          | Inspect one asset family or variant without raw SVG              | Read-only                                    |
 | `inspect_provenance`     | Inspect bounded asset provenance for the figure                  | Read-only                                    |
+| `resize_canvas`          | Set the logical canvas width and height                          | Reversible and retryable                     |
+| `set_project_metadata`   | Set the figure name or description                               | Reversible and retryable                     |
 | `set_selection`          | Set the canvas selection by stable object IDs                    | Reversible and retryable                     |
 | `create_text`            | Create point or box text through the editor pathway              | Reversible                                   |
 | `create_shape`           | Create a supported OpenSketch shape                              | Reversible                                   |
@@ -54,6 +56,8 @@ registry.
 | `insert_asset`           | Insert an exact bundled asset family and variant                 | Reversible                                   |
 | `replace_asset_variant`  | Replace an asset variant while preserving identity and placement | Reversible and retryable                     |
 | `move_objects`           | Translate exact scene objects                                    | Reversible and retryable                     |
+| `attach_object`          | Attach one object anchor to another with offset/rotation         | Reversible and retryable                     |
+| `place_object_between`   | Place an object between exact anchors on two objects             | Reversible and retryable                     |
 | `rotate_objects`         | Rotate exact scene objects                                       | Reversible and retryable                     |
 | `scale_objects`          | Scale exact scene objects                                        | Reversible and retryable                     |
 | `flip_objects`           | Flip exact scene objects on one axis                             | Reversible and retryable                     |
@@ -62,6 +66,7 @@ registry.
 | `arrange_objects`        | Move objects within their layer collection                       | Reversible and retryable                     |
 | `align_objects`          | Align objects to the requested union-bound axis                  | Reversible and retryable                     |
 | `distribute_objects`     | Distribute three or more objects on one axis                     | Reversible and retryable                     |
+| `rebind_connector`       | Retarget a bound connector to exact objects and anchors          | Reversible and retryable                     |
 | `duplicate_objects`      | Clone objects with fresh identities                              | Reversible                                   |
 | `delete_objects`         | Delete exact objects and bound connectors                        | Sensitive/destructive; explicit confirmation |
 | `group_objects`          | Group exact sibling objects                                      | Reversible                                   |
@@ -133,6 +138,11 @@ production build guard, and the Chromium browser workflow in
 `tests/e2e/webmcp.spec.ts`. The browser test supplies a small model-context
 recorder, exercises asset search/insertion, editing, grouping, history,
 provenance, stale-ID handling, manual editing, and a local credits download.
+
+For an auditable demo recording, add `?webmcpDemo=1` to the editor URL. This
+shows a compact live panel that records every WebMCP tool call, its bounded
+input summary, completion state, and duration. The panel is intentionally
+opt-in and does not alter the canvas or exported figure.
 
 ## Deployment variants
 

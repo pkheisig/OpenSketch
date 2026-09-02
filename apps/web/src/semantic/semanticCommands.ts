@@ -1,4 +1,5 @@
 import type { ShapeKind, TextKind } from "@/editor/creation";
+import { PORTABLE_PROJECT_LIMITS } from "@workspace/editor-core";
 import {
   SEMANTIC_RUNTIME_VERSION,
   type JsonSchema,
@@ -39,6 +40,7 @@ export const CONNECTOR_KINDS = [
 ] as const;
 export const ALIGN_AXES = ["left", "center", "right", "top", "middle", "bottom"] as const;
 export const ARRANGE_ACTIONS = ["front", "forward", "backward", "back"] as const;
+export const OBJECT_ANCHORS = ["top", "right", "bottom", "left", "center"] as const;
 export const PROPERTY_KEYS = [
   "left",
   "top",
@@ -75,6 +77,8 @@ export const MUTATION_COMMAND_NAMES = [
   "insert_asset",
   "replace_asset_variant",
   "move_objects",
+  "attach_object",
+  "place_object_between",
   "rotate_objects",
   "scale_objects",
   "flip_objects",
@@ -83,6 +87,7 @@ export const MUTATION_COMMAND_NAMES = [
   "arrange_objects",
   "align_objects",
   "distribute_objects",
+  "rebind_connector",
   "duplicate_objects",
   "delete_objects",
   "group_objects",
@@ -169,6 +174,7 @@ const assetFamilyId = (): JsonSchema => ({ type: "string", minLength: 1, maxLeng
 const assetVariantId = (): JsonSchema => ({ type: "string", minLength: 1, maxLength: 200 });
 const assetLimit = (): JsonSchema => integer(1, 100);
 const exportFormat = { type: "string", enum: ["svg", "pdf", "png", "credits"] } as const;
+const objectAnchor = { type: "string", enum: OBJECT_ANCHORS } as const;
 
 const definitions: SemanticCommandDefinition[] = [
   {
@@ -293,6 +299,53 @@ const definitions: SemanticCommandDefinition[] = [
       version: number(1, 1),
       assets: { type: "array", maxItems: 200 },
       truncated: { type: "boolean" }
+    })
+  },
+  {
+    name: "resize_canvas",
+    title: "Resize canvas",
+    description:
+      "Set the logical canvas width and height through the existing editor canvas-settings pathway.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        width: number(1, PORTABLE_PROJECT_LIMITS.maxCanvasDimension),
+        height: number(1, PORTABLE_PROJECT_LIMITS.maxCanvasDimension)
+      },
+      required: ["width", "height"],
+      additionalProperties: false
+    },
+    outputSchema: output({ width: number(1), height: number(1) })
+  },
+  {
+    name: "set_project_metadata",
+    title: "Set project metadata",
+    description: "Set the current figure name or description through the editor persistence path.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        name: { type: "string", minLength: 1, maxLength: 256 },
+        description: { type: "string", maxLength: 16_384 }
+      },
+      additionalProperties: false
+    },
+    outputSchema: output({
+      name: { type: "string", minLength: 1, maxLength: 256 },
+      description: { type: "string", maxLength: 16_384 }
     })
   },
   {
@@ -495,6 +548,74 @@ const definitions: SemanticCommandDefinition[] = [
     outputSchema: changedOutput
   },
   {
+    name: "attach_object",
+    title: "Attach object",
+    description:
+      "Place one exact object's anchor on another object's anchor with an optional canvas offset and absolute rotation.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        objectId: objectId(),
+        targetObjectId: objectId(),
+        objectAnchor,
+        targetAnchor: objectAnchor,
+        offset: point(),
+        angle: number(-3600, 3600)
+      },
+      required: ["objectId", "targetObjectId", "objectAnchor", "targetAnchor"],
+      additionalProperties: false
+    },
+    outputSchema: output({ objectId: objectId(), targetObjectId: objectId(), position: point() })
+  },
+  {
+    name: "place_object_between",
+    title: "Place object between objects",
+    description:
+      "Place one exact object's anchor at the midpoint between named anchors on two other objects, with an optional canvas offset and absolute rotation.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        objectId: objectId(),
+        fromObjectId: objectId(),
+        toObjectId: objectId(),
+        objectAnchor,
+        fromAnchor: objectAnchor,
+        toAnchor: objectAnchor,
+        offset: point(),
+        angle: number(-3600, 3600)
+      },
+      required: [
+        "objectId",
+        "fromObjectId",
+        "toObjectId",
+        "objectAnchor",
+        "fromAnchor",
+        "toAnchor"
+      ],
+      additionalProperties: false
+    },
+    outputSchema: output({
+      objectId: objectId(),
+      fromObjectId: objectId(),
+      toObjectId: objectId(),
+      position: point()
+    })
+  },
+  {
     name: "rotate_objects",
     title: "Rotate objects",
     description: "Rotate exact scene objects by a bounded number of degrees.",
@@ -655,6 +776,36 @@ const definitions: SemanticCommandDefinition[] = [
       additionalProperties: false
     },
     outputSchema: changedOutput
+  },
+  {
+    name: "rebind_connector",
+    title: "Rebind connector",
+    description:
+      "Retarget an existing bound connector to exact objects and edge-center anchors while preserving its identity and appearance.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        connectorId: objectId(),
+        fromObjectId: objectId(),
+        fromAnchor: objectAnchor,
+        toObjectId: objectId(),
+        toAnchor: objectAnchor
+      },
+      required: ["connectorId"],
+      additionalProperties: false
+    },
+    outputSchema: output({
+      connectorId: objectId(),
+      fromObjectId: objectId(),
+      toObjectId: objectId()
+    })
   },
   {
     name: "duplicate_objects",
