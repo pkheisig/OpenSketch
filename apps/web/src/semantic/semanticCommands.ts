@@ -657,7 +657,8 @@ const batchOperationSchema: JsonSchema = {
 definitions.push({
   name: "batch",
   title: "Run semantic batch",
-  description: "Run a bounded list of registered typed mutations as one atomic history step.",
+  description:
+    "Run a bounded list of registered typed mutations as one atomic history step; one explicit batch confirmation authorizes all operations, including deletes.",
   version: SEMANTIC_RUNTIME_VERSION,
   risk: "sensitive_or_destructive",
   confirmation: "explicit",

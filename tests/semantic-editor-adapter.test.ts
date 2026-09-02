@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import { DEFAULT_CREATION_DEFAULTS } from "../apps/web/src/editor/creation";
 import { createSemanticEditorAdapter } from "../apps/web/src/semantic/semanticEditorAdapter";
 
-function makeCanvas(objects: FabricObject[] = []): Canvas {
+function makeCanvas(objects: FabricObject[] = [], activeObjects: FabricObject[] = []): Canvas {
   return {
     getObjects: () => objects,
     add: (...added: FabricObject[]) => {
@@ -11,7 +11,7 @@ function makeCanvas(objects: FabricObject[] = []): Canvas {
       return added.at(-1);
     },
     requestRenderAll: vi.fn(),
-    getActiveObjects: () => [],
+    getActiveObjects: () => activeObjects,
     discardActiveObject: vi.fn(),
     sendObjectToBack: (object: FabricObject) => {
       const index = objects.indexOf(object);
@@ -177,6 +177,21 @@ describe("semantic editor adapter", () => {
     expect(geometry?.from).toEqual({ x: 100, y: 120 });
     expect(geometry?.to.x).toBeCloseTo(300, 10);
     expect(geometry?.to.y).toBeCloseTo(220, 10);
+  });
+
+  it("bounds the selection in scene snapshots", () => {
+    const activeObjects = Array.from({ length: 201 }, (_, index) => {
+      const object = new Rect({ width: 10, height: 10 });
+      object.objectId = `selected-${index}`;
+      return object;
+    });
+    const adapter = makeAdapter(makeCanvas([], activeObjects));
+
+    const snapshot = adapter.inspectScene({ maxObjects: 500, maxDepth: 12 });
+
+    expect(snapshot.selectionObjectIds).toHaveLength(200);
+    expect(snapshot.truncated).toBe(true);
+    expect(snapshot.warnings).toContain("Selection output capped at 200 objects.");
   });
 
   it("creates bound connectors from stable endpoint identities without recentering geometry", async () => {

@@ -105,6 +105,7 @@ describe("semantic command contracts", () => {
     expect(SEMANTIC_COMMANDS.every((command) => command.version === SEMANTIC_RUNTIME_VERSION)).toBe(
       true
     );
+    expect(SEMANTIC_COMMANDS.every((command) => command.cancellable === false)).toBe(true);
     expect(() => JSON.stringify(SEMANTIC_COMMANDS)).not.toThrow();
     for (const command of SEMANTIC_COMMANDS) {
       expect(command.inputSchema.type).toBe("object");
@@ -272,6 +273,26 @@ describe("semantic runtime", () => {
     });
 
     expect(result).toMatchObject({ ok: false, error: { code: "INVALID_INPUT" } });
+    expect(adapter.calls).toEqual([]);
+  });
+
+  it("enforces connector discriminators and strict properties", async () => {
+    const adapter = fakeAdapter();
+    const runtime = createSemanticRuntime(adapter);
+
+    const missingKind = await runtime.execute("create_connector", {
+      fromObjectId: "object-1",
+      toObjectId: "object-2"
+    });
+    const extraProperty = await runtime.execute("create_connector", {
+      kind: "arrow",
+      fromObjectId: "object-1",
+      toObjectId: "object-2",
+      extra: true
+    });
+
+    expect(missingKind).toMatchObject({ ok: false, error: { code: "INVALID_INPUT" } });
+    expect(extraProperty).toMatchObject({ ok: false, error: { code: "INVALID_INPUT" } });
     expect(adapter.calls).toEqual([]);
   });
 

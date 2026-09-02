@@ -60,11 +60,6 @@ function schemaTypeMatches(type: string, value: unknown): boolean {
 }
 
 function validateSchema(value: unknown, schema: JsonSchema, path = "input"): string | undefined {
-  if (schema.oneOf) {
-    const matches = schema.oneOf.some((candidate) => !validateSchema(value, candidate, path));
-    if (!matches) return `${path} does not match any supported schema.`;
-    return undefined;
-  }
   if (schema.type && !schemaTypeMatches(schema.type, value)) {
     return `${path} must be a ${schema.type}.`;
   }
@@ -110,6 +105,10 @@ function validateSchema(value: unknown, schema: JsonSchema, path = "input"): str
         if (error) return error;
       }
     }
+  }
+  if (schema.oneOf) {
+    const matches = schema.oneOf.some((candidate) => !validateSchema(value, candidate, path));
+    if (!matches) return `${path} does not match any supported schema.`;
   }
   return undefined;
 }

@@ -2276,29 +2276,40 @@ export function EditorProvider({
     setEditingGroupPath
   ]);
 
-  const restoreAt = useCallback(
-    async (index: number) => {
-      if (!canvas || !history.current[index]) return false;
-      const complete = beginPendingEditorWork();
-      restoring.current = true;
-      try {
-        await canvas.loadFromJSON(history.current[index]);
-        assignSceneIdentities(canvas.getObjects());
-        configureCanvasAssets(canvas.getObjects());
-        assertUniqueSceneObjectIds(canvas);
-        refreshConnectors();
-        canvas.requestRenderAll();
-        historyIndex.current = index;
-        const repairedSnapshot = serialize();
-        history.current[index] = repairedSnapshot;
-        setSelection([]);
-        updateHistoryState();
-        persist(repairedSnapshot);
-        return true;
-      } finally {
-        restoring.current = false;
-        complete();
-      }
+  const historyRestoreTail = useRef<Promise<void>>(Promise.resolve());
+  const restoreHistory = useCallback(
+    (offset: -1 | 1) => {
+      const scheduled = historyRestoreTail.current.then(async () => {
+        const index = historyIndex.current + offset;
+        if (!canvas || !history.current[index] || index < 0 || index >= history.current.length) {
+          return false;
+        }
+        const complete = beginPendingEditorWork();
+        restoring.current = true;
+        try {
+          await canvas.loadFromJSON(history.current[index]);
+          assignSceneIdentities(canvas.getObjects());
+          configureCanvasAssets(canvas.getObjects());
+          assertUniqueSceneObjectIds(canvas);
+          refreshConnectors();
+          canvas.requestRenderAll();
+          historyIndex.current = index;
+          const repairedSnapshot = serialize();
+          history.current[index] = repairedSnapshot;
+          setSelection([]);
+          updateHistoryState();
+          persist(repairedSnapshot);
+          return true;
+        } finally {
+          restoring.current = false;
+          complete();
+        }
+      });
+      historyRestoreTail.current = scheduled.then(
+        () => undefined,
+        () => undefined
+      );
+      return scheduled;
     },
     [beginPendingEditorWork, canvas, persist, refreshConnectors, serialize, updateHistoryState]
   );
@@ -2328,15 +2339,9 @@ export function EditorProvider({
   );
 
   const undo = useCallback(() => {
-    if (historyIndex.current > 0) return restoreAt(historyIndex.current - 1);
-    return Promise.resolve(false);
-  }, [restoreAt]);
-  const redo = useCallback(() => {
-    if (historyIndex.current < history.current.length - 1) {
-      return restoreAt(historyIndex.current + 1);
-    }
-    return Promise.resolve(false);
-  }, [restoreAt]);
+    return restoreHistory(-1);
+  }, [restoreHistory]);
+  const redo = useCallback(() => restoreHistory(1), [restoreHistory]);
 
   const centerObject = useCallback(
     (object: FabricObject, point?: Point) => {
