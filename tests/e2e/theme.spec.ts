@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("@smoke applies and persists the OpenGate light and dark themes", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await expect(page.locator(".home-shell")).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   await expect(page.getByRole("button", { name: "Use dark theme" })).toBeVisible();

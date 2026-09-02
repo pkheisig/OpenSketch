@@ -63,6 +63,7 @@ additional contributor license and patent grants in
 - [Contributor guide](CONTRIBUTING.md)
 - [Architecture](docs/architecture.md)
 - [Asset and licensing pipeline](docs/asset-pipeline.md)
+- [Deployment variants](docs/deployment.md)
 - [Security policy](SECURITY.md)
 - [Citation metadata](CITATION.cff)
 

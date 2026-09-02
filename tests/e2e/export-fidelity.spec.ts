@@ -31,7 +31,7 @@ async function ensureEditorOpen(page: Page) {
 test("preserves editable color, gradients, clipping, fonts, and raster dimensions", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Imports", exact: true }).click();
   await page.locator('input[type="file"][accept*="image/svg+xml"]').setInputFiles(fixturePath);

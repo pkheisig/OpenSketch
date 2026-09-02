@@ -89,7 +89,7 @@ async function pasteEmbeddedPng(page: import("@playwright/test").Page) {
 test("@smoke stores imported media permanently and pastes SVG, PNG, and JPEG from the clipboard", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await expect(page.locator(".upper-canvas")).toBeVisible();
 
@@ -149,7 +149,7 @@ test("@smoke stores imported media permanently and pastes SVG, PNG, and JPEG fro
 test("accepts image paste while a text input is focused and SVG files dropped from the desktop", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await expect(page.locator(".upper-canvas")).toBeVisible();
 
