@@ -10,7 +10,7 @@ describe("deployment base", () => {
   it("keeps the GitHub Pages base as the default and normalizes path slashes", () => {
     expect(normalizePublicBase()).toBe(DEFAULT_PUBLIC_BASE);
     expect(normalizePublicBase("OpenSketch")).toBe("/OpenSketch/");
-    expect(normalizePublicBase("///OpenSketch///")).toBe("/OpenSketch/");
+    expect(normalizePublicBase("/OpenSketch///")).toBe("/OpenSketch/");
     expect(normalizePublicBase("/")).toBe("/");
   });
 
@@ -18,6 +18,7 @@ describe("deployment base", () => {
     "",
     "https://example.test/",
     "//example.test/",
+    "///example.test/",
     "/OpenSketch/?x=1",
     "/OpenSketch/#app",
     "/OpenSketch\\app",

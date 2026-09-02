@@ -39,8 +39,11 @@ async function inspectBuild(publicBase, directory) {
     throw new Error(`${publicBase} manifest does not use the normalized base.`);
   }
   assertIncludes(serviceWorker, `${publicBase}index.html`, `${publicBase} service worker`);
-  if (publicBase === "/" && serviceWorker.includes("/OpenSketch/")) {
-    throw new Error("Root service worker contains a stale /OpenSketch/ path.");
+  if (
+    publicBase === "/" &&
+    [index, manifest, serviceWorker].some((contents) => contents.includes("/OpenSketch/"))
+  ) {
+    throw new Error("Root deployment artifacts contain a stale /OpenSketch/ path.");
   }
   await cp(join(repositoryRoot, "dist"), directory, { recursive: true });
 }

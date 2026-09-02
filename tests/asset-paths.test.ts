@@ -12,5 +12,9 @@ describe("GitHub Pages asset paths", () => {
     expect(resolveBundledAssetPath("/assets/icon.webp", "/OpenSketch")).toBe(
       "/OpenSketch/assets/icon.webp"
     );
+    expect(resolveBundledAssetPath("/assets/nih-bioart/cell.svg", "/")).toBe(
+      "/assets/nih-bioart/cell.svg"
+    );
+    expect(resolveBundledAssetPath("/assets/icon.webp", "/")).toBe("/assets/icon.webp");
   });
 });

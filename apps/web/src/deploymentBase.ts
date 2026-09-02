@@ -14,7 +14,7 @@ function hasControlOrUrlCharacter(value: string): boolean {
 export function normalizePublicBase(value = DEFAULT_PUBLIC_BASE): string {
   const raw = value;
   if (!raw) throw new Error("The public deployment base must not be empty.");
-  if (EXTERNAL_SCHEME.test(raw) || (raw.startsWith("//") && !raw.startsWith("///"))) {
+  if (EXTERNAL_SCHEME.test(raw) || (raw.startsWith("//") && !/^\/+$/u.test(raw))) {
     throw new Error("The public deployment base must be a local path, not an external URL.");
   }
   const path = raw.replace(/^\/+|\/+$/g, "");
