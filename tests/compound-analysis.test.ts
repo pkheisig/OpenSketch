@@ -82,6 +82,22 @@ describe("semantic compound planning", () => {
     );
     expect(plan.points.at(-1)).toEqual(target);
   });
+
+  it("insets rendered linear and gradient particles from field bounds", () => {
+    const bounds = { left: 10, top: 20, width: 180, height: 120 };
+    for (const distribution of ["linear", "gradient"] as const) {
+      const plan = planParticleField(bounds, 8, distribution, "seed-2");
+      expect(
+        plan.points.every(
+          (point) =>
+            point.x >= bounds.left + 5 &&
+            point.x <= bounds.left + bounds.width - 5 &&
+            point.y >= bounds.top + 5 &&
+            point.y <= bounds.top + bounds.height - 5
+        )
+      ).toBe(true);
+    }
+  });
 });
 
 describe("semantic composition analysis", () => {

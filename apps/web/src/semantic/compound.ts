@@ -198,21 +198,26 @@ export function planParticleField(
   const points: CompoundPoint[] = [];
   const safeCount = Math.max(0, Math.min(256, Math.floor(count)));
   const c = center(bounds);
+  const particleRadius = Math.min(5, Math.min(bounds.width, bounds.height) / 2);
+  const innerLeft = bounds.left + particleRadius;
+  const innerTop = bounds.top + particleRadius;
+  const innerWidth = Math.max(0, bounds.width - particleRadius * 2);
+  const innerHeight = Math.max(0, bounds.height - particleRadius * 2);
   for (let index = 0; index < safeCount; index += 1) {
     const fraction = safeCount <= 1 ? 0.5 : index / (safeCount - 1);
     let x = bounds.left + next() * bounds.width;
     let y = bounds.top + next() * bounds.height;
     if (distribution === "linear") {
-      x = bounds.left + fraction * bounds.width;
-      y = c.y + (next() - 0.5) * bounds.height * 0.18;
+      x = innerLeft + fraction * innerWidth;
+      y = clamp(c.y + (next() - 0.5) * innerHeight * 0.18, innerTop, innerTop + innerHeight);
     } else if (distribution === "arc") {
       const angle = -Math.PI * 0.85 + fraction * Math.PI * 1.7;
       const radius = Math.min(bounds.width, bounds.height) * (0.35 + next() * 0.12);
       x = c.x + Math.cos(angle) * radius;
       y = c.y + Math.sin(angle) * radius;
     } else if (distribution === "gradient") {
-      x = bounds.left + Math.pow(fraction, 0.65) * bounds.width;
-      y = bounds.top + next() * bounds.height;
+      x = innerLeft + Math.pow(fraction, 0.65) * innerWidth;
+      y = innerTop + next() * innerHeight;
     } else if (distribution === "source-fan" && source) {
       const end = target ?? { x: bounds.left + bounds.width, y: c.y };
       const spread = (next() - 0.5) * bounds.height * 0.7;

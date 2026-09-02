@@ -1733,7 +1733,10 @@ definitions.push(
     outputSchema: output({
       objectIds: objectIds(0),
       changed: integer(0, 256),
-      skipped: { type: "array", maxItems: 256, items: objectId() }
+      skipped: { type: "array", maxItems: 256, items: objectId() },
+      truncated: { type: "boolean" },
+      totalChanged: integer(0),
+      totalSkipped: integer(0)
     })
   },
   {

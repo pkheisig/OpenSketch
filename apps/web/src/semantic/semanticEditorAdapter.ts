@@ -1714,15 +1714,27 @@ export function createSemanticEditorAdapter(
           : stylePreset(metadataOf(object)?.semanticRole ?? "");
         visitStyleObjects(object, inheritedPreset);
       });
-      const changedObjectIds = [...changed];
-      if (changedObjectIds.length > 0) {
+      const allChangedObjectIds = [...changed];
+      const changedObjectIds = allChangedObjectIds.slice(0, 200);
+      const boundedSkipped = skipped.slice(0, 256);
+      const truncated =
+        changedObjectIds.length !== allChangedObjectIds.length ||
+        boundedSkipped.length !== skipped.length;
+      if (allChangedObjectIds.length > 0) {
         dependencies.refreshConnectors();
         canvas.requestRenderAll();
         commitSemantic("Semantic normalize styles");
       }
       return {
-        data: { objectIds: changedObjectIds, changed: changedObjectIds.length, skipped },
-        changedObjectIds: changedObjectIds
+        data: {
+          objectIds: changedObjectIds,
+          changed: Math.min(allChangedObjectIds.length, 256),
+          skipped: boundedSkipped,
+          truncated,
+          totalChanged: allChangedObjectIds.length,
+          totalSkipped: skipped.length
+        },
+        changedObjectIds
       };
     }
     if (command === "analyze_composition") {

@@ -97,8 +97,8 @@ function relationAllowsOverlap(
   );
 }
 
-function isEffectivelyVisible(path: readonly { visible?: boolean }[]): boolean {
-  return path.every((object) => object.visible !== false);
+function isEffectivelyVisible(path: readonly { visible?: boolean; opacity?: number }[]): boolean {
+  return path.every((object) => object.visible !== false && (object.opacity ?? 1) > 0);
 }
 
 function sharesParticleField(
