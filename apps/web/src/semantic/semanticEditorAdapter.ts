@@ -524,8 +524,8 @@ function boundedRelationId(prefix: string, ...ids: string[]): string {
   return `${prefix}-${suffix}`.slice(0, 200);
 }
 
-function isEffectivelyVisible(path: readonly { visible?: boolean }[]): boolean {
-  return path.every((object) => object.visible !== false);
+function isEffectivelyVisible(path: readonly { visible?: boolean; opacity?: number }[]): boolean {
+  return path.every((object) => object.visible !== false && (object.opacity ?? 1) > 0);
 }
 
 function assetSummary(family: AssetFamily) {
@@ -1011,6 +1011,16 @@ export function createSemanticEditorAdapter(
           existingTexts.find((object) => metadataOf(object)?.semanticRole === role);
         const labelText = textForRole("stage-label") ?? existingTexts[0];
         if (existingStage && existingLabelGroup && labelText) {
+          const contentGroup = isGroup(existingStage)
+            ? existingStage
+                .getObjects()
+                .find(
+                  (object) =>
+                    isGroup(object) && metadataOf(object)?.semanticRole === "stage-content"
+                )
+            : undefined;
+          const contentBoundsBefore = contentGroup ? boundsOf(contentGroup) : undefined;
+          const labelBoundsBefore = boundsOf(existingLabelGroup);
           const requestedIds = objectIds(input);
           if (
             requestedIds.some(
@@ -1057,6 +1067,30 @@ export function createSemanticEditorAdapter(
           }
           refreshTextMetrics([existingLabelGroup]);
           refreshParentGroups(existingLabelGroup);
+          if (contentBoundsBefore) {
+            const labelBounds = boundsOf(existingLabelGroup);
+            const contentCenter = {
+              x: contentBoundsBefore.left + contentBoundsBefore.width / 2,
+              y: contentBoundsBefore.top + contentBoundsBefore.height / 2
+            };
+            const contentRight = contentBoundsBefore.left + contentBoundsBefore.width;
+            const contentBottom = contentBoundsBefore.top + contentBoundsBefore.height;
+            const desiredCenter =
+              labelBoundsBefore.left + labelBoundsBefore.width <= contentBoundsBefore.left
+                ? {
+                    x: contentBoundsBefore.left - 24 - labelBounds.width / 2,
+                    y: contentCenter.y
+                  }
+                : labelBoundsBefore.left >= contentRight
+                  ? { x: contentRight + 24 + labelBounds.width / 2, y: contentCenter.y }
+                  : labelBoundsBefore.top + labelBoundsBefore.height <= contentBoundsBefore.top
+                    ? {
+                        x: contentCenter.x,
+                        y: contentBoundsBefore.top - 24 - labelBounds.height / 2
+                      }
+                    : { x: contentCenter.x, y: contentBottom + 24 + labelBounds.height / 2 };
+            moveAnchorTo(existingLabelGroup, "center", desiredCenter);
+          }
           const requestedLocation =
             input.x === undefined && input.y === undefined
               ? undefined
@@ -1735,12 +1769,17 @@ export function createSemanticEditorAdapter(
         root: FabricObject,
         fallbackPreset?: ReturnType<typeof stylePreset>
       ): void => {
-        const walk = (object: FabricObject): void => {
+        const walk = (
+          object: FabricObject,
+          inheritedPreset?: ReturnType<typeof stylePreset>
+        ): void => {
           const protectedAsset = object.familyId && input.includeAssets !== true;
-          applyPreset(object, fallbackPreset);
-          if (isGroup(object) && !protectedAsset) object.getObjects().forEach(walk);
+          applyPreset(object, inheritedPreset);
+          const nextPreset = stylePreset(metadataOf(object)?.semanticRole ?? "") ?? inheritedPreset;
+          if (isGroup(object) && !protectedAsset)
+            object.getObjects().forEach((child) => walk(child, nextPreset));
         };
-        walk(root);
+        walk(root, fallbackPreset);
       };
       targets.forEach((object) => {
         const inheritedPreset = presetId

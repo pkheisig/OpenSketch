@@ -269,20 +269,20 @@ export function planParticleField(
     } else if (distribution === "source-fan" && source) {
       const end = target ?? { x: bounds.left + bounds.width, y: c.y };
       const spread = (next() - 0.5) * bounds.height * 0.7;
-      x = clamp(source.x + fraction * (end.x - source.x), bounds.left, bounds.left + bounds.width);
+      x = clamp(source.x + fraction * (end.x - source.x), innerLeft, innerLeft + innerWidth);
       y = clamp(
         source.y + fraction * (end.y - source.y) + spread * (1 - fraction),
-        bounds.top,
-        bounds.top + bounds.height
+        innerTop,
+        innerTop + innerHeight
       );
     } else if (distribution === "target-converging" && target) {
       const start = source ?? { x: bounds.left, y: c.y };
       const spread = (next() - 0.5) * bounds.height * 0.7;
-      x = clamp(start.x + fraction * (target.x - start.x), bounds.left, bounds.left + bounds.width);
+      x = clamp(start.x + fraction * (target.x - start.x), innerLeft, innerLeft + innerWidth);
       y = clamp(
         start.y + fraction * (target.y - start.y) + spread * (1 - fraction),
-        bounds.top,
-        bounds.top + bounds.height
+        innerTop,
+        innerTop + innerHeight
       );
     }
     points.push({
