@@ -1556,20 +1556,27 @@ export function createSemanticEditorAdapter(
       const maxWidth = finiteNumber(input.maxWidth, "maxWidth");
       const maxHeight = finiteNumber(input.maxHeight, "maxHeight");
       const maxLines = typeof input.maxLines === "number" ? input.maxLines : 64;
+      const widthCandidates =
+        object instanceof Textbox
+          ? [...new Set([Math.min(originalWidth, maxWidth), maxWidth])]
+          : [undefined];
       let fitted = false;
       for (let size = Math.floor(maxFontSize); size >= Math.ceil(minFontSize); size -= 1) {
-        object.set("fontSize", size);
-        if (object instanceof Textbox) object.set("width", Math.min(originalWidth, maxWidth));
-        refreshTextMetrics([object]);
-        const lines = object.textLines.length;
-        if (
-          (object.width ?? 0) <= maxWidth + 0.01 &&
-          (object.height ?? 0) <= maxHeight + 0.01 &&
-          lines <= maxLines
-        ) {
-          fitted = true;
-          break;
+        for (const width of widthCandidates) {
+          object.set("fontSize", size);
+          if (width !== undefined) object.set("width", width);
+          refreshTextMetrics([object]);
+          const lines = object.textLines.length;
+          if (
+            (object.width ?? 0) <= maxWidth + 0.01 &&
+            (object.height ?? 0) <= maxHeight + 0.01 &&
+            lines <= maxLines
+          ) {
+            fitted = true;
+            break;
+          }
         }
+        if (fitted) break;
       }
       if (!fitted) {
         object.set({ fontSize: originalFontSize, width: originalWidth });

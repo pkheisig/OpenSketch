@@ -84,12 +84,16 @@ function finding(
   };
 }
 
-function relationAllowsOverlap(relations: SemanticRelation[], a: string, b: string): boolean {
+function relationAllowsOverlap(
+  relations: SemanticRelation[],
+  leftIds: readonly string[],
+  rightIds: readonly string[]
+): boolean {
   return relations.some(
     (relation) =>
       relation.allowedOverlap === true &&
-      ((relation.sourceObjectId === a && relation.targetObjectId === b) ||
-        (relation.sourceObjectId === b && relation.targetObjectId === a))
+      ((leftIds.includes(relation.sourceObjectId) && rightIds.includes(relation.targetObjectId)) ||
+        (leftIds.includes(relation.targetObjectId) && rightIds.includes(relation.sourceObjectId)))
   );
 }
 
@@ -304,7 +308,11 @@ export function analyzeComposition(
           !visibility.get(bId) ||
           b.connector ||
           sharesParticleField(leftEntry, rightEntry) ||
-          relationAllowsOverlap(relations, aId, bId)
+          relationAllowsOverlap(
+            relations,
+            [aId, ...leftEntry.path.map((object) => object.objectId!).filter(Boolean)],
+            [bId, ...rightEntry.path.map((object) => object.objectId!).filter(Boolean)]
+          )
         )
           continue;
         overlapPairs += 1;

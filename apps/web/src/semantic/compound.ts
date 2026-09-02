@@ -111,8 +111,22 @@ export function planInteraction(
   const normal = { x: -dy / length, y: dx / length };
   const midpoint = { x: (source.x + target.x) / 2, y: (source.y + target.y) / 2 };
   switch (mode) {
-    case "contact":
-      return { source, target, relationKind: "contacts", allowedOverlap: true, warnings: [] };
+    case "contact": {
+      const horizontal = Math.abs(dx) >= Math.abs(dy);
+      const sign = (horizontal ? dx : dy) < 0 ? -1 : 1;
+      const separation = horizontal
+        ? (sourceBounds.width + targetBounds.width) / 2
+        : (sourceBounds.height + targetBounds.height) / 2;
+      return {
+        source,
+        target: horizontal
+          ? { x: source.x + sign * separation, y: source.y }
+          : { x: source.x, y: source.y + sign * separation },
+        relationKind: "contacts",
+        allowedOverlap: true,
+        warnings: []
+      };
+    }
     case "binding":
       return {
         source: { x: source.x + dx * 0.18, y: source.y + dy * 0.18 },
