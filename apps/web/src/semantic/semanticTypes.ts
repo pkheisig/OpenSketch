@@ -69,6 +69,7 @@ export interface SemanticObjectDescriptor {
   objectId: string;
   type: string;
   name?: string;
+  text?: string;
   parentObjectId?: string;
   depth: number;
   pathObjectIds: string[];

@@ -1,5 +1,179 @@
 /* Editor shell and chrome ownership. */
 
+.webmcp-command-log {
+  position: fixed;
+  z-index: 420;
+  right: 18px;
+  bottom: 66px;
+  width: min(340px, calc(100vw - 36px));
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, #25d89a 46%, var(--shell-border));
+  border-radius: 10px;
+  color: #edfdf7;
+  background: color-mix(in srgb, #10251f 95%, transparent);
+  box-shadow: 0 14px 38px rgb(3 17 13 / 28%);
+  backdrop-filter: blur(18px);
+}
+
+.webmcp-command-log.collapsed {
+  width: 278px;
+}
+
+.webmcp-command-log header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  gap: 7px;
+  min-height: 36px;
+  padding: 0 8px 0 10px;
+  border-bottom: 1px solid rgb(115 232 190 / 17%);
+  background: rgb(28 65 53 / 82%);
+}
+
+.webmcp-command-log.collapsed header {
+  border-bottom: 0;
+}
+
+.webmcp-command-log header strong {
+  overflow: hidden;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.015em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.webmcp-command-log header button {
+  display: inline-grid;
+  width: 25px;
+  height: 25px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 5px;
+  color: #b8d9cd;
+  background: transparent;
+}
+
+.webmcp-command-log header button:hover {
+  color: white;
+  background: rgb(255 255 255 / 9%);
+}
+
+.webmcp-command-log-live {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: #55e9af;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+}
+
+.webmcp-command-log-live svg {
+  animation: webmcp-pulse 1.6s ease-in-out infinite;
+}
+
+.webmcp-command-log-count {
+  display: inline-grid;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  place-items: center;
+  border-radius: 10px;
+  color: #b8d9cd;
+  background: rgb(255 255 255 / 8%);
+  font:
+    700 9px/1 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+}
+
+.webmcp-command-log-list {
+  max-height: 210px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: rgb(123 213 181 / 35%) transparent;
+}
+
+.webmcp-command-log-entry {
+  display: grid;
+  grid-template-columns: 14px minmax(96px, auto) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  min-height: 29px;
+  padding: 4px 9px;
+  border-bottom: 1px solid rgb(255 255 255 / 5%);
+  font:
+    500 9px/1.25 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+}
+
+.webmcp-command-log-entry:last-child {
+  border-bottom: 0;
+}
+
+.webmcp-command-log-status {
+  display: inline-grid;
+  place-items: center;
+}
+
+.webmcp-command-log-status.pending {
+  color: #f9c86b;
+}
+.webmcp-command-log-status.ok {
+  color: #55e9af;
+}
+.webmcp-command-log-status.error {
+  color: #ff8d8d;
+}
+
+.webmcp-command-log-command {
+  overflow: hidden;
+  color: #f3fff9;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.webmcp-command-log-input {
+  overflow: hidden;
+  color: #9fc6b8;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.webmcp-command-log-duration {
+  color: #729f8f;
+  font-size: 8px;
+  white-space: nowrap;
+}
+
+.webmcp-command-log-empty {
+  margin: 0;
+  padding: 20px 12px;
+  color: #88ad9f;
+  font:
+    500 10px/1.4 ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    monospace;
+  text-align: center;
+}
+
+@keyframes webmcp-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
 .toolbar-center {
   display: flex;
   align-items: center;

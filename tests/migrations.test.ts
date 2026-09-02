@@ -322,6 +322,16 @@ describe("project migrations", () => {
               type: "Rect",
               fill: {
                 type: "linear",
+                id: 0,
+                coords: { x1: 0, y1: 0, x2: 10, y2: 0 },
+                colorStops: [
+                  { offset: 0, color: "#000000" },
+                  { offset: 1, color: "#ffffff" }
+                ]
+              },
+              originalGradientFill: {
+                type: "linear",
+                id: "nih-antibody-gradient",
                 coords: { x1: 0, y1: 0, x2: 10, y2: 0 },
                 colorStops: [
                   { offset: 0, color: "#000000" },

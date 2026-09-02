@@ -14,7 +14,7 @@ test("registers a safe figure workflow through the browser model context", async
     (window as typeof window & { __webmcpTools?: unknown[] }).__webmcpTools = tools;
   });
 
-  await page.goto("./");
+  await page.goto("./?webmcpDemo=1");
   await page.getByRole("button", { name: "New figure" }).click();
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
 
@@ -27,7 +27,14 @@ test("registers a safe figure workflow through the browser model context", async
         ).map((tool) => tool.name)
       )
     )
-    .toEqual(expect.arrayContaining(["search_assets", "inspect_provenance", "insert_asset"]));
+    .toEqual(
+      expect.arrayContaining([
+        "resize_canvas",
+        "search_assets",
+        "inspect_provenance",
+        "insert_asset"
+      ])
+    );
 
   const initialWorkflow = await page.evaluate(async () => {
     const tools =
@@ -53,9 +60,13 @@ test("registers a safe figure workflow through the browser model context", async
       }
     ).__OPENSKETCH_SEMANTIC;
     const capabilities = introspection?.getCapabilities() ?? null;
+    const resize = (await call("resize_canvas", { width: 1200, height: 700 })) as {
+      ok: boolean;
+      data: { width: number; height: number };
+    };
     const initialScene = (await call("inspect_scene", { maxObjects: 50, maxDepth: 8 })) as {
       ok: boolean;
-      data: { canvasReady: boolean };
+      data: { canvasReady: boolean; canvas: { width: number; height: number } };
     };
     const search = (await call("search_assets", { query: "", limit: 2 })) as {
       data: { results: Array<{ familyId: string }> };
@@ -112,6 +123,7 @@ test("registers a safe figure workflow through the browser model context", async
     const ungroup = await call("ungroup_objects", { objectIds: [group.data.objectId] });
     return {
       capabilities,
+      resize,
       initialScene,
       insert,
       secondInsert,
@@ -130,6 +142,11 @@ test("registers a safe figure workflow through the browser model context", async
   expect(
     initialWorkflow.capabilities?.canvasReady ?? initialWorkflow.initialScene.data.canvasReady
   ).toBe(true);
+  expect(initialWorkflow.resize).toMatchObject({
+    ok: true,
+    data: { width: 1200, height: 700 }
+  });
+  expect(initialWorkflow.initialScene.data.canvas).toMatchObject({ width: 1200, height: 700 });
   expect(initialWorkflow.initialScene.ok).toBe(true);
   expect(initialWorkflow.insert.ok).toBe(true);
   expect(initialWorkflow.secondInsert.ok).toBe(true);
@@ -142,6 +159,8 @@ test("registers a safe figure workflow through the browser model context", async
   expect(initialWorkflow.group.ok).toBe(true);
   expect(initialWorkflow.groupedScene).toMatchObject({ ok: true });
   expect(initialWorkflow.ungroup).toMatchObject({ ok: true });
+  await expect(page.getByRole("complementary", { name: "WebMCP command log" })).toBeVisible();
+  await expect(page.getByText("resize_canvas", { exact: true })).toBeVisible();
 
   const textButton = page.getByRole("button", { name: "Text", exact: true });
   await expect(textButton).toBeVisible();
