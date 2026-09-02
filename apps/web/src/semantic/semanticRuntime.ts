@@ -207,6 +207,8 @@ function adapterResult<T = unknown>(result: SemanticAdapterResult): SemanticComm
 }
 
 export function createSemanticRuntime(adapter: SemanticEditorAdapter): SemanticRuntime {
+  let executionTail: Promise<void> = Promise.resolve();
+
   const executeInternal = async <T = unknown>(
     name: string,
     input: Record<string, unknown>,
@@ -376,7 +378,15 @@ export function createSemanticRuntime(adapter: SemanticEditorAdapter): SemanticR
         )
       };
     },
-    execute: <T = unknown>(name: string, input: Record<string, unknown> = {}) =>
-      executeInternal<T>(name, input).catch((error) => asFailure(error))
+    execute: <T = unknown>(name: string, input: Record<string, unknown> = {}) => {
+      const scheduled = executionTail
+        .then(() => executeInternal<T>(name, input))
+        .catch((error) => asFailure(error));
+      executionTail = scheduled.then(
+        () => undefined,
+        () => undefined
+      );
+      return scheduled;
+    }
   };
 }

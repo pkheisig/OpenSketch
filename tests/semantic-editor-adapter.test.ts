@@ -122,6 +122,19 @@ describe("semantic editor adapter", () => {
     expect(after.top - before.top).toBeCloseTo(12, 5);
   });
 
+  it("rejects ancestor and descendant targets in one transform command", async () => {
+    const child = new Rect({ width: 40, height: 20 });
+    child.objectId = "child";
+    const group = new Group([child]);
+    group.objectId = "group";
+    const canvas = makeCanvas([group]);
+    const adapter = makeAdapter(canvas);
+
+    await expect(
+      adapter.execute("move_objects", { objectIds: ["group", "child"], dx: 1, dy: 1 })
+    ).rejects.toMatchObject({ code: "INVALID_SELECTION" });
+  });
+
   it("uses the supplied axis when creation coordinates are partial", async () => {
     const canvas = makeCanvas();
     const adapter = makeAdapter(canvas);
@@ -148,6 +161,22 @@ describe("semantic editor adapter", () => {
     const objectId = (result.data as { objectId: string }).objectId;
 
     expect(adapter.inspectObject(objectId)?.connector?.pathShape).toBe("arc");
+  });
+
+  it("reports free connector endpoints in canvas coordinates", async () => {
+    const canvas = makeCanvas();
+    const adapter = makeAdapter(canvas);
+    const result = await adapter.execute("create_connector", {
+      kind: "line",
+      from: { x: 100, y: 120 },
+      to: { x: 300, y: 220 }
+    });
+    const objectId = (result.data as { objectId: string }).objectId;
+
+    const geometry = adapter.inspectObject(objectId)?.freeConnector;
+    expect(geometry?.from).toEqual({ x: 100, y: 120 });
+    expect(geometry?.to.x).toBeCloseTo(300, 10);
+    expect(geometry?.to.y).toBeCloseTo(220, 10);
   });
 
   it("creates bound connectors from stable endpoint identities without recentering geometry", async () => {

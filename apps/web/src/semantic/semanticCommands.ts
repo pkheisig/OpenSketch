@@ -342,6 +342,7 @@ const definitions: SemanticCommandDefinition[] = [
         opacity: number(0, 1),
         widthScale: number(0.1, 10)
       },
+      oneOf: [{ required: ["fromObjectId", "toObjectId"] }, { required: ["from", "to"] }],
       required: ["kind"],
       additionalProperties: false
     },

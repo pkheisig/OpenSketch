@@ -228,4 +228,56 @@ describe("semantic runtime", () => {
 
     expect(result).toMatchObject({ ok: false, error: { code: "INVALID_ALIAS_USE" } });
   });
+
+  it("rejects half-bound connector inputs before adapter execution", async () => {
+    const adapter = fakeAdapter();
+    const runtime = createSemanticRuntime(adapter);
+    const result = await runtime.execute("create_connector", {
+      kind: "arrow",
+      fromObjectId: "object-1"
+    });
+
+    expect(result).toMatchObject({ ok: false, error: { code: "INVALID_INPUT" } });
+    expect(adapter.calls).toEqual([]);
+  });
+
+  it("serializes concurrent public commands around an async batch", async () => {
+    const adapter = fakeAdapter();
+    const runtime = createSemanticRuntime(adapter);
+    const originalExecute = adapter.execute;
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    let markStarted!: () => void;
+    const started = new Promise<void>((resolve) => {
+      markStarted = resolve;
+    });
+    const entered: string[] = [];
+    adapter.execute = async (command, input) => {
+      entered.push(command);
+      if (command === "set_asset_color_preset") {
+        markStarted();
+        await gate;
+      }
+      return originalExecute(command, input);
+    };
+
+    const batch = runtime.execute("batch", {
+      confirmed: true,
+      operations: [
+        {
+          command: "set_asset_color_preset",
+          input: { objectId: "object-1", presetId: "teal" }
+        }
+      ]
+    });
+    await started;
+    const next = runtime.execute("create_shape", { kind: "rectangle" });
+    expect(entered).toEqual(["set_asset_color_preset"]);
+
+    release();
+    await Promise.all([batch, next]);
+    expect(entered).toEqual(["set_asset_color_preset", "create_shape"]);
+  });
 });

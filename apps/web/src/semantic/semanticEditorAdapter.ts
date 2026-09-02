@@ -100,6 +100,17 @@ function objectIds(input: Record<string, unknown>): string[] {
   return ids;
 }
 
+function assertNonOverlappingTargets(objects: FabricObject[]): void {
+  for (const object of objects) {
+    if (objects.some((candidate) => candidate !== object && isSceneDescendant(object, candidate))) {
+      throw new SemanticAdapterError(
+        "INVALID_SELECTION",
+        "Targets cannot include both an ancestor and its descendant."
+      );
+    }
+  }
+}
+
 function safeString(value: unknown): string | undefined {
   return typeof value === "string" && value.length > 0 ? value : undefined;
 }
@@ -110,6 +121,17 @@ function safeStyleString(value: unknown): string | undefined {
 
 function safeNumber(value: unknown): number | undefined {
   return typeof value === "number" && Number.isFinite(value) ? value : undefined;
+}
+
+function assertSemanticSceneIdentity(canvas: Canvas): void {
+  try {
+    assertUniqueSceneObjectIds(canvas);
+  } catch (error) {
+    throw new SemanticAdapterError(
+      "DUPLICATE_OBJECT_ID",
+      error instanceof Error ? error.message : String(error)
+    );
+  }
 }
 
 function boundsOf(object: FabricObject): SemanticBounds {
@@ -195,9 +217,18 @@ function describeObject(
     };
   }
   if (object.freeConnectorGeometry) {
+    const transform = object.calcTransformMatrix();
+    const from = util.transformPoint(
+      new Point(object.freeConnectorGeometry.from.x, object.freeConnectorGeometry.from.y),
+      transform
+    );
+    const to = util.transformPoint(
+      new Point(object.freeConnectorGeometry.to.x, object.freeConnectorGeometry.to.y),
+      transform
+    );
     descriptor.freeConnector = {
-      from: { ...object.freeConnectorGeometry.from },
-      to: { ...object.freeConnectorGeometry.to }
+      from: { x: from.x, y: from.y },
+      to: { x: to.x, y: to.y }
     };
   }
   if (children) descriptor.children = children;
@@ -321,7 +352,7 @@ function startArrowheadFor(
 ): ConnectorBinding["startArrowhead"] {
   if (explicit !== undefined) return explicit as ConnectorBinding["startArrowhead"];
   if (kind === "line" || kind === "curved-line") return "none";
-  if (kind === "double-arrow") return fallback || "triangle";
+  if (kind === "double-arrow") return fallback === "none" ? "triangle" : fallback || "triangle";
   return fallback;
 }
 
@@ -627,6 +658,7 @@ export function createSemanticEditorAdapter(
     if (command === "move_objects") {
       const ids = objectIds(input);
       const objects = resolveObjects(canvas, ids);
+      assertNonOverlappingTargets(objects);
       const dx = finiteNumber(input.dx, "dx");
       const dy = finiteNumber(input.dy, "dy");
       objects.forEach((object) => {
@@ -643,7 +675,9 @@ export function createSemanticEditorAdapter(
     if (command === "rotate_objects") {
       const ids = objectIds(input);
       const degrees = finiteNumber(input.degrees, "degrees");
-      resolveObjects(canvas, ids).forEach((object) => {
+      const objects = resolveObjects(canvas, ids);
+      assertNonOverlappingTargets(objects);
+      objects.forEach((object) => {
         object.set("angle", (object.angle ?? 0) + degrees);
         object.setCoords();
         refreshParentGroups(object);
@@ -660,7 +694,9 @@ export function createSemanticEditorAdapter(
       }
       const scaleX = input.scaleX === undefined ? undefined : finiteNumber(input.scaleX, "scaleX");
       const scaleY = input.scaleY === undefined ? undefined : finiteNumber(input.scaleY, "scaleY");
-      resolveObjects(canvas, ids).forEach((object) => {
+      const objects = resolveObjects(canvas, ids);
+      assertNonOverlappingTargets(objects);
+      objects.forEach((object) => {
         object.set({
           ...(scaleX === undefined ? {} : { scaleX: scaleX * (object.scaleX ?? 1) }),
           ...(scaleY === undefined ? {} : { scaleY: scaleY * (object.scaleY ?? 1) })
@@ -677,7 +713,9 @@ export function createSemanticEditorAdapter(
       const ids = objectIds(input);
       const axis = input.axis === "x" ? "flipX" : input.axis === "y" ? "flipY" : undefined;
       if (!axis) throw new SemanticAdapterError("INVALID_INPUT", "axis must be x or y.");
-      resolveObjects(canvas, ids).forEach((object) => {
+      const objects = resolveObjects(canvas, ids);
+      assertNonOverlappingTargets(objects);
+      objects.forEach((object) => {
         object.set(axis, !object[axis]);
         object.setCoords();
         refreshParentGroups(object);
@@ -694,6 +732,7 @@ export function createSemanticEditorAdapter(
         throw new SemanticAdapterError("INVALID_INPUT", "properties must be an object.");
       }
       const objects = resolveObjects(canvas, ids);
+      assertNonOverlappingTargets(objects);
       objects.forEach((object) => {
         object.set(properties as Record<string, unknown>);
         configureTextObject(object);
@@ -746,7 +785,9 @@ export function createSemanticEditorAdapter(
     if (command === "arrange_objects") {
       const ids = objectIds(input);
       const action = input.action as (typeof ARRANGE_ACTIONS)[number];
-      arrangeObjects(resolveObjects(canvas, ids), canvas, action);
+      const objects = resolveObjects(canvas, ids);
+      assertNonOverlappingTargets(objects);
+      arrangeObjects(objects, canvas, action);
       canvas.requestRenderAll();
       commitSemantic("Semantic arrange");
       return { data: { objectIds: ids }, changedObjectIds: ids };
@@ -754,6 +795,7 @@ export function createSemanticEditorAdapter(
     if (command === "align_objects") {
       const ids = objectIds(input);
       const objects = resolveObjects(canvas, ids);
+      assertNonOverlappingTargets(objects);
       if (objects.length < 2)
         throw new SemanticAdapterError("INVALID_SELECTION", "Align needs at least two objects.");
       const axis = input.axis as (typeof ALIGN_AXES)[number];
@@ -783,6 +825,7 @@ export function createSemanticEditorAdapter(
     if (command === "distribute_objects") {
       const ids = objectIds(input);
       const objects = resolveObjects(canvas, ids);
+      assertNonOverlappingTargets(objects);
       if (objects.length < 3)
         throw new SemanticAdapterError(
           "INVALID_SELECTION",
@@ -835,6 +878,7 @@ export function createSemanticEditorAdapter(
     if (command === "duplicate_objects") {
       const ids = objectIds(input);
       const objects = resolveObjects(canvas, ids);
+      assertNonOverlappingTargets(objects);
       const offset = input.offset === undefined ? { x: 28, y: 28 } : point(input.offset, "offset");
       const parents = objects.map((object) => layerCollectionForObject(object, canvas));
       if (!parents.every((parent) => parent === parents[0])) {
@@ -971,6 +1015,10 @@ export function createSemanticEditorAdapter(
     if (command === "ungroup_objects") {
       const ids = objectIds(input);
       const [group] = resolveObjects(canvas, ids);
+      const previousSelectionObjectIds = canvas
+        .getActiveObjects()
+        .map((object) => object.objectId)
+        .filter((objectId): objectId is string => Boolean(objectId));
       if (!isManualGroup(group))
         throw new SemanticAdapterError("INVALID_SELECTION", "The target is not a manual group.");
       const parent = layerCollectionForObject(group, canvas);
@@ -992,12 +1040,20 @@ export function createSemanticEditorAdapter(
         }
       }
       dependencies.configureCanvasAssets(children);
+      const childObjectIds = children.map((child) => child.objectId!).filter(Boolean);
+      restoreSelection(
+        canvas,
+        previousSelectionObjectIds.flatMap((objectId) =>
+          objectId === removedId ? childObjectIds : [objectId]
+        ),
+        dependencies.setSelection
+      );
       dependencies.refreshConnectors();
       canvas.requestRenderAll();
       commitSemantic("Semantic ungroup");
       return {
-        data: { objectIds: children.map((child) => child.objectId!).filter(Boolean) },
-        changedObjectIds: [removedId!, ...children.map((child) => child.objectId!).filter(Boolean)]
+        data: { objectIds: childObjectIds },
+        changedObjectIds: [removedId!, ...childObjectIds]
       };
     }
     if (command === "undo") {
@@ -1015,7 +1071,7 @@ export function createSemanticEditorAdapter(
   const inspectObject = (objectId: string): SemanticObjectDescriptor | undefined => {
     const canvas = dependencies.getCanvas();
     if (!canvas || !objectId) return undefined;
-    assertUniqueSceneObjectIds(canvas);
+    assertSemanticSceneIdentity(canvas);
     const entry = sceneObjectEntries(canvas).find(({ object }) => object.objectId === objectId);
     if (!entry) return undefined;
     const parentObjectId = entry.parent instanceof Group ? entry.parent.objectId : undefined;
@@ -1057,7 +1113,7 @@ export function createSemanticEditorAdapter(
         warnings: ["The canvas is not ready."]
       };
     }
-    assertUniqueSceneObjectIds(canvas);
+    assertSemanticSceneIdentity(canvas);
     const entries = sceneObjectEntries(canvas);
     const eligible = entries.filter(({ path }) => path.length - 1 <= maxDepth);
     const objects = eligible.slice(0, maxObjects).map(({ object, parent, path }) =>
