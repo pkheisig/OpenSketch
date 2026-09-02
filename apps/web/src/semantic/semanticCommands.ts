@@ -480,7 +480,7 @@ const definitions: SemanticCommandDefinition[] = [
     risk: "reversible_mutation",
     confirmation: "none",
     retryable: true,
-    idempotent: true,
+    idempotent: false,
     cancellable: false,
     requires: ["project", "canvas"],
     inputSchema: {
@@ -499,7 +499,7 @@ const definitions: SemanticCommandDefinition[] = [
     risk: "reversible_mutation",
     confirmation: "none",
     retryable: true,
-    idempotent: true,
+    idempotent: false,
     cancellable: false,
     requires: ["project", "canvas"],
     inputSchema: {
@@ -658,8 +658,8 @@ definitions.push({
   title: "Run semantic batch",
   description: "Run a bounded list of registered typed mutations as one atomic history step.",
   version: SEMANTIC_RUNTIME_VERSION,
-  risk: "reversible_mutation",
-  confirmation: "none",
+  risk: "sensitive_or_destructive",
+  confirmation: "explicit",
   retryable: false,
   idempotent: false,
   cancellable: true,
@@ -667,9 +667,10 @@ definitions.push({
   inputSchema: {
     type: "object",
     properties: {
-      operations: { type: "array", minItems: 1, maxItems: 32, items: batchOperationSchema }
+      operations: { type: "array", minItems: 1, maxItems: 32, items: batchOperationSchema },
+      confirmed: { type: "boolean" }
     },
-    required: ["operations"],
+    required: ["operations", "confirmed"],
     additionalProperties: false
   },
   outputSchema: output({ operations: { type: "array", maxItems: 32 }, objectIds: objectIds(0) })

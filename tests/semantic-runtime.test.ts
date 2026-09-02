@@ -151,6 +151,7 @@ describe("semantic runtime", () => {
     const adapter = fakeAdapter();
     const runtime = createSemanticRuntime(adapter);
     const result = await runtime.execute("batch", {
+      confirmed: true,
       operations: [
         { command: "create_shape", input: { kind: "rectangle" }, as: "shape" },
         { command: "move_objects", input: { objectIds: ["$shape"], dx: 12, dy: 8 } }
@@ -163,10 +164,23 @@ describe("semantic runtime", () => {
     expect(result.changedObjectIds).toEqual(["object-1"]);
   });
 
+  it("requires explicit confirmation for batches that can delete", async () => {
+    const adapter = fakeAdapter();
+    const runtime = createSemanticRuntime(adapter);
+    const result = await runtime.execute("batch", {
+      confirmed: false,
+      operations: [{ command: "create_shape", input: { kind: "rectangle" } }]
+    });
+
+    expect(result).toMatchObject({ ok: false, error: { code: "CONFIRMATION_REQUIRED" } });
+    expect(adapter.transactions).toBe(0);
+  });
+
   it("validates each batch input against its declared command", async () => {
     const adapter = fakeAdapter();
     const runtime = createSemanticRuntime(adapter);
     const result = await runtime.execute("batch", {
+      confirmed: true,
       operations: [{ command: "create_shape", input: { objectIds: ["missing"], dx: 12, dy: 8 } }]
     });
 
@@ -178,9 +192,11 @@ describe("semantic runtime", () => {
     const adapter = fakeAdapter();
     const runtime = createSemanticRuntime(adapter);
     const literal = await runtime.execute("batch", {
+      confirmed: true,
       operations: [{ command: "create_text", input: { kind: "point", text: "$literal" } }]
     });
     const unknown = await runtime.execute("batch", {
+      confirmed: true,
       operations: [{ command: "move_objects", input: { objectIds: ["$missing"], dx: 1, dy: 1 } }]
     });
 
@@ -192,6 +208,7 @@ describe("semantic runtime", () => {
     const adapter = fakeAdapter();
     const runtime = createSemanticRuntime(adapter);
     const result = await runtime.execute("batch", {
+      confirmed: true,
       operations: [
         {
           command: "duplicate_objects",

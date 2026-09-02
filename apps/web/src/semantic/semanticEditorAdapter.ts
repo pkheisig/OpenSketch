@@ -70,7 +70,7 @@ export interface SemanticEditorAdapterDependencies {
 
 type SemanticPointInput = { x: number; y: number };
 
-function isGroup(object: FabricObject): object is Group {
+function isGroup(object: FabricObject | undefined): object is Group {
   return object instanceof Group && !(object instanceof ActiveSelection);
 }
 
@@ -214,25 +214,29 @@ function unionBounds(objects: FabricObject[]): SemanticBounds {
 }
 
 function refreshParentGroups(object: FabricObject): void {
-  for (let parent = object.group; parent instanceof Group; parent = parent.group) {
-    const desiredTransform = object.calcTransformMatrix();
+  let child = object;
+  let parent = child.group;
+  while (isGroup(parent)) {
+    const desiredTransform = child.calcTransformMatrix();
     parent.triggerLayout();
     util.applyTransformToObject(
-      object,
+      child,
       util.multiplyTransformMatrices(
         util.invertTransform(parent.calcTransformMatrix()),
         desiredTransform
       )
     );
-    object.setCoords();
+    child.setCoords();
     parent.dirty = true;
     parent.setCoords();
+    child = parent;
+    parent = child.group;
   }
 }
 
 function deltaInParentPlane(object: FabricObject, dx: number, dy: number): SemanticPointInput {
   const parent = object.group;
-  if (!(parent instanceof Group) || parent instanceof ActiveSelection) return { x: dx, y: dy };
+  if (!isGroup(parent)) return { x: dx, y: dy };
   const local = util.sendVectorToPlane(new Point(dx, dy), undefined, parent.calcTransformMatrix());
   return { x: local.x, y: local.y };
 }
@@ -335,6 +339,27 @@ function restoreRecognizedGroup(
 
 function pointFromInput(input: Record<string, unknown>, key: string): SemanticPointInput {
   return point(input[key], key);
+}
+
+function locationFromInput(
+  canvas: Canvas,
+  settings: CanvasSettings,
+  input: Record<string, unknown>
+): SemanticPointInput | undefined {
+  if (input.x === undefined && input.y === undefined) return undefined;
+  const viewport = canvas.vptCoords;
+  const centerX = viewport ? (viewport.tl.x + viewport.br.x) / 2 : settings.width / 2;
+  const centerY = viewport ? (viewport.tl.y + viewport.br.y) / 2 : settings.height / 2;
+  return {
+    x: input.x === undefined ? centerX : finiteNumber(input.x, "x"),
+    y: input.y === undefined ? centerY : finiteNumber(input.y, "y")
+  };
+}
+
+function defaultConnectorPathShape(
+  kind: (typeof CONNECTOR_KINDS)[number]
+): ConnectorBinding["pathShape"] | undefined {
+  return kind === "curved-arrow" || kind === "curved-line" ? "arc" : undefined;
 }
 
 export function createSemanticEditorAdapter(
@@ -452,9 +477,7 @@ export function createSemanticEditorAdapter(
         object,
         kind === "box" ? "Text box" : "Text",
         "text",
-        input.x === undefined || input.y === undefined
-          ? undefined
-          : { x: finiteNumber(input.x, "x"), y: finiteNumber(input.y, "y") }
+        locationFromInput(canvas, dependencies.getCanvasSettings(), input)
       );
       return { data: { objectId }, changedObjectIds: [objectId] };
     }
@@ -466,9 +489,7 @@ export function createSemanticEditorAdapter(
         object,
         kind === "polygon" ? "hexagon" : kind.replace("-", " "),
         kind.includes("arrow") ? "connector" : "shape",
-        input.x === undefined || input.y === undefined
-          ? undefined
-          : { x: finiteNumber(input.x, "x"), y: finiteNumber(input.y, "y") }
+        locationFromInput(canvas, dependencies.getCanvasSettings(), input)
       );
       return { data: { objectId }, changedObjectIds: [objectId] };
     }
@@ -485,6 +506,9 @@ export function createSemanticEditorAdapter(
       const defaults = dependencies.creationDefaults().line;
       const fromAnchor = (input.fromAnchor ?? "center") as ConnectorBinding["fromAnchor"];
       const toAnchor = (input.toAnchor ?? "center") as ConnectorBinding["toAnchor"];
+      const pathShape =
+        (input.pathShape as ConnectorBinding["pathShape"] | undefined) ??
+        defaultConnectorPathShape(kind);
       let from: SemanticPointInput;
       let to: SemanticPointInput;
       let binding: ConnectorBinding;
@@ -516,10 +540,8 @@ export function createSemanticEditorAdapter(
               ? "none"
               : defaults.endArrowhead)) as ConnectorBinding["endArrowhead"],
           lineStyle: (input.lineStyle ?? defaults.lineStyle) as ConnectorBinding["lineStyle"],
-          routing: input.pathShape === "straight" ? "direct" : "orthogonal",
-          ...(input.pathShape
-            ? { pathShape: input.pathShape as ConnectorBinding["pathShape"] }
-            : {}),
+          routing: pathShape === "straight" ? "direct" : "orthogonal",
+          ...(pathShape ? { pathShape } : {}),
           curvature:
             typeof input.curvature === "number"
               ? input.curvature
@@ -581,7 +603,7 @@ export function createSemanticEditorAdapter(
             : defaults.endArrowhead)) as ConnectorBinding["endArrowhead"],
         lineStyle: (input.lineStyle ?? defaults.lineStyle) as ConnectorBinding["lineStyle"],
         routing: "direct",
-        ...(input.pathShape ? { pathShape: input.pathShape as ConnectorBinding["pathShape"] } : {}),
+        ...(pathShape ? { pathShape } : {}),
         curvature:
           typeof input.curvature === "number"
             ? input.curvature
@@ -837,6 +859,10 @@ export function createSemanticEditorAdapter(
     if (command === "delete_objects") {
       const ids = objectIds(input);
       const objects = resolveObjects(canvas, ids);
+      const previousSelectionObjectIds = canvas
+        .getActiveObjects()
+        .map((object) => object.objectId)
+        .filter((objectId): objectId is string => Boolean(objectId));
       const nestedAssetObjects = objects.filter((object) => editableAssetParent(object));
       if (nestedAssetObjects.length > 0) {
         if (nestedAssetObjects.length !== objects.length) {
@@ -869,6 +895,11 @@ export function createSemanticEditorAdapter(
         sceneObjectEntries(canvas)
           .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
           .forEach(removeSceneObject);
+        restoreSelection(
+          canvas,
+          previousSelectionObjectIds.filter((objectId) => !removedIds.has(objectId)),
+          dependencies.setSelection
+        );
         dependencies.refreshConnectors();
         canvas.requestRenderAll();
         commitSemantic("Semantic delete");
@@ -890,6 +921,11 @@ export function createSemanticEditorAdapter(
         const entry = entries.find((candidate) => candidate.object === root);
         if (entry) removeSceneObject(entry);
       });
+      restoreSelection(
+        canvas,
+        previousSelectionObjectIds.filter((objectId) => !removedIds.has(objectId)),
+        dependencies.setSelection
+      );
       canvas.requestRenderAll();
       commitSemantic("Semantic delete");
       return { data: { objectIds: [...removedIds] }, changedObjectIds: [...removedIds] };
@@ -1043,6 +1079,13 @@ export function createSemanticEditorAdapter(
       warnings.push(`Scene output capped at ${maxObjects} objects.`);
     if (entries.length !== eligible.length)
       warnings.push(`Scene output capped at depth ${maxDepth}.`);
+    const selectedObjectIds = canvas
+      .getActiveObjects()
+      .map((object) => object.objectId)
+      .filter((objectId): objectId is string => Boolean(objectId));
+    const selectionObjectIds = selectedObjectIds.slice(0, 200);
+    const selectionTruncated = selectedObjectIds.length > selectionObjectIds.length;
+    if (selectionTruncated) warnings.push("Selection output capped at 200 objects.");
     return {
       runtimeVersion: "opensketch.semantic.v1",
       projectId: dependencies.getProjectId(),
@@ -1055,14 +1098,9 @@ export function createSemanticEditorAdapter(
         background: settings.background,
         transparent: settings.transparent
       },
-      selectionObjectIds:
-        dependencies
-          .getCanvas()
-          ?.getActiveObjects()
-          .map((object) => object.objectId!)
-          .filter(Boolean) ?? [],
+      selectionObjectIds,
       objects,
-      truncated,
+      truncated: truncated || selectionTruncated,
       warnings
     };
   };

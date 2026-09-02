@@ -104,6 +104,52 @@ describe("semantic editor adapter", () => {
     expect(after.top - before.top).toBeCloseTo(12, 5);
   });
 
+  it("preserves world movement through multiple transformed parent groups", async () => {
+    const child = new Rect({ width: 40, height: 20 });
+    child.objectId = "child";
+    const inner = new Group([child], { scaleX: 1.4, angle: -15 });
+    inner.objectId = "inner";
+    const outer = new Group([inner], { scaleX: 1.8, scaleY: 1.2, angle: 25 });
+    outer.objectId = "outer";
+    const canvas = makeCanvas([outer]);
+    const adapter = makeAdapter(canvas);
+    const before = child.getBoundingRect();
+
+    await adapter.execute("move_objects", { objectIds: ["child"], dx: 25, dy: 12 });
+
+    const after = child.getBoundingRect();
+    expect(after.left - before.left).toBeCloseTo(25, 5);
+    expect(after.top - before.top).toBeCloseTo(12, 5);
+  });
+
+  it("uses the supplied axis when creation coordinates are partial", async () => {
+    const canvas = makeCanvas();
+    const adapter = makeAdapter(canvas);
+
+    const result = await adapter.execute("create_shape", { kind: "rectangle", x: 120 });
+    const objectId = (result.data as { objectId: string }).objectId;
+
+    expect(adapter.inspectObject(objectId)?.position).toEqual({ x: 120, y: 400 });
+  });
+
+  it("defaults semantic curved connectors to an arc path", async () => {
+    const from = new Rect({ left: 100, top: 100, width: 40, height: 20 });
+    const to = new Rect({ left: 320, top: 100, width: 40, height: 20 });
+    from.objectId = "from";
+    to.objectId = "to";
+    const canvas = makeCanvas([from, to]);
+    const adapter = makeAdapter(canvas);
+
+    const result = await adapter.execute("create_connector", {
+      kind: "curved-arrow",
+      fromObjectId: "from",
+      toObjectId: "to"
+    });
+    const objectId = (result.data as { objectId: string }).objectId;
+
+    expect(adapter.inspectObject(objectId)?.connector?.pathShape).toBe("arc");
+  });
+
   it("creates bound connectors from stable endpoint identities without recentering geometry", async () => {
     const from = new Rect({ left: 100, top: 100, width: 40, height: 20 });
     const to = new Rect({ left: 320, top: 100, width: 40, height: 20 });

@@ -232,11 +232,18 @@ export function createSemanticRuntime(adapter: SemanticEditorAdapter): SemanticR
       );
     }
     if (name === "inspect_selection") {
-      const objectIds = adapter.getSelectionObjectIds();
+      const selectedObjectIds = adapter.getSelectionObjectIds();
+      const objectIds = selectedObjectIds.slice(0, 200);
       const objects = objectIds
         .map((objectId) => adapter.inspectObject(objectId))
         .filter((object): object is NonNullable<typeof object> => Boolean(object));
-      return success({ objectIds, objects } as T);
+      return success(
+        { objectIds, objects } as T,
+        [],
+        selectedObjectIds.length > objectIds.length
+          ? ["Selection output capped at 200 objects."]
+          : []
+      );
     }
     if (name === "inspect_object") {
       const object = adapter.inspectObject(String(input.objectId));
@@ -244,12 +251,12 @@ export function createSemanticRuntime(adapter: SemanticEditorAdapter): SemanticR
         return failure("STALE_OBJECT_ID", `Scene object "${input.objectId}" does not exist.`);
       return success({ object } as T);
     }
+    if (definition.confirmation === "explicit" && input.confirmed !== true) {
+      return failure("CONFIRMATION_REQUIRED", `${name} requires confirmed: true.`);
+    }
     if (name === "batch") {
       if (inBatch) return failure("NESTED_BATCH", "Semantic batches cannot contain another batch.");
       return executeBatch(input);
-    }
-    if (name === "delete_objects" && input.confirmed !== true) {
-      return failure("CONFIRMATION_REQUIRED", "Delete requires confirmed: true.");
     }
     try {
       return adapterResult<T>(await adapter.execute(name as SemanticCommandName, input));
