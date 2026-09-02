@@ -71,10 +71,14 @@ export const PROPERTY_KEYS = [
 
 export const MUTATION_COMMAND_NAMES = [
   "set_selection",
+  "set_object_semantics",
   "create_text",
   "set_text_content",
   "create_shape",
   "create_connector",
+  "create_bound_connector",
+  "connect_sequence",
+  "repair_connectors",
   "create_circular_arc",
   "insert_asset",
   "replace_asset_variant",
@@ -92,6 +96,8 @@ export const MUTATION_COMMAND_NAMES = [
   "arrange_objects",
   "align_objects",
   "distribute_objects",
+  "apply_layout_plan",
+  "repair_layout",
   "rebind_connector",
   "duplicate_objects",
   "delete_objects",
@@ -179,6 +185,85 @@ const assetFamilyId = (): JsonSchema => ({ type: "string", minLength: 1, maxLeng
 const assetVariantId = (): JsonSchema => ({ type: "string", minLength: 1, maxLength: 200 });
 const assetLimit = (): JsonSchema => integer(1, 100);
 const exportFormat = { type: "string", enum: ["svg", "pdf", "png", "credits"] } as const;
+
+const semanticRole = {
+  type: "string",
+  enum: [
+    "hub",
+    "stage",
+    "stage-content",
+    "stage-label",
+    "stage-title",
+    "stage-subtitle",
+    "scientific-asset",
+    "interaction-participant",
+    "mediator",
+    "particle-field",
+    "annotation",
+    "intervention",
+    "main-flow-connector",
+    "annotation-leader",
+    "decorative"
+  ]
+} as const;
+const semanticRelationKind = {
+  type: "string",
+  enum: [
+    "flow_to",
+    "labels",
+    "contacts",
+    "binds",
+    "crosses",
+    "emits",
+    "follows_gradient",
+    "inhibited_by",
+    "intervention_targets"
+  ]
+} as const;
+const semanticMetadataSchema: JsonSchema = {
+  type: "object",
+  properties: {
+    version: integer(1, 1),
+    semanticRole,
+    semanticType: { type: "string", maxLength: 120 },
+    stageId: { type: "string", maxLength: 120 },
+    stageIndex: integer(0, 999),
+    tags: { type: "array", maxItems: 16, items: { type: "string", maxLength: 200 } },
+    relationIds: { type: "array", maxItems: 32, items: { type: "string", maxLength: 200 } },
+    preferredPortHint: {
+      type: "string",
+      enum: [
+        "incoming",
+        "outgoing",
+        "radial-in",
+        "radial-out",
+        "clockwise",
+        "counterclockwise",
+        "annotation",
+        "custom"
+      ]
+    },
+    pinned: { type: "boolean" },
+    allowedOverlapObjectIds: { type: "array", maxItems: 32, items: objectId() },
+    semanticName: { type: "string", maxLength: 160 }
+  },
+  required: ["version"],
+  additionalProperties: false
+};
+const semanticRelationSchema: JsonSchema = {
+  type: "object",
+  properties: {
+    id: objectId(),
+    kind: semanticRelationKind,
+    sourceObjectId: objectId(),
+    targetObjectId: objectId(),
+    mediatorObjectIds: { type: "array", maxItems: 8, items: objectId() },
+    direction: { type: "string", enum: ["forward", "reverse", "bidirectional"] },
+    allowedOverlap: { type: "boolean" }
+  },
+  required: ["id", "kind", "sourceObjectId", "targetObjectId"],
+  additionalProperties: false
+};
 const objectAnchor = { type: "string", enum: OBJECT_ANCHORS } as const;
 
 const definitions: SemanticCommandDefinition[] = [
@@ -1082,6 +1167,351 @@ const definitions: SemanticCommandDefinition[] = [
     outputSchema: output({ format: exportFormat, started: { type: "boolean" } })
   }
 ];
+
+definitions.push(
+  {
+    name: "find_objects",
+    title: "Find semantic objects",
+    description:
+      "Find bounded scene objects by semantic role, stage, tag, type, asset, text, ancestor, or relation.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "read_only",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        semanticRole,
+        semanticType: { type: "string", maxLength: 120 },
+        stageId: { type: "string", maxLength: 120 },
+        stageIndex: integer(0, 999),
+        tag: { type: "string", maxLength: 200 },
+        objectType: { type: "string", maxLength: 64 },
+        assetFamilyId: assetFamilyId(),
+        assetVariantId: assetVariantId(),
+        text: { type: "string", maxLength: 200 },
+        caseSensitive: { type: "boolean" },
+        ancestorObjectId: objectId(),
+        relationId: objectId(),
+        limit: integer(1, 100)
+      },
+      additionalProperties: false
+    },
+    outputSchema: output({ objects: { type: "array", maxItems: 100 }, total: integer(0, 100000) })
+  },
+  {
+    name: "inspect_geometry",
+    title: "Inspect semantic geometry",
+    description:
+      "Inspect bounded visual, layout, selection, hull, text-independent geometry, and stable ports for exact objects.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "read_only",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project"],
+    inputSchema: {
+      type: "object",
+      properties: { objectIds: objectIds(1), clearance: number(0, 1000) },
+      required: ["objectIds"],
+      additionalProperties: false
+    },
+    outputSchema: output({ objects: { type: "array", maxItems: 32 } })
+  },
+  {
+    name: "inspect_relations",
+    title: "Inspect semantic relations",
+    description: "Return a bounded relation graph for exact objects or the current figure.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "read_only",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        objectIds: objectIds(0),
+        stageId: { type: "string", maxLength: 120 },
+        limit: integer(1, 256)
+      },
+      additionalProperties: false
+    },
+    outputSchema: output({
+      relations: { type: "array", maxItems: 256 },
+      truncated: { type: "boolean" }
+    })
+  },
+  {
+    name: "list_object_ports",
+    title: "List object ports",
+    description: "List deterministic geometry-aware ports for exact scene objects.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "read_only",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        objectIds: objectIds(1),
+        kind: {
+          type: "string",
+          enum: [
+            "incoming",
+            "outgoing",
+            "radial-in",
+            "radial-out",
+            "clockwise",
+            "counterclockwise",
+            "annotation",
+            "custom"
+          ]
+        }
+      },
+      required: ["objectIds"],
+      additionalProperties: false
+    },
+    outputSchema: output({ objects: { type: "array", maxItems: 32 } })
+  },
+  {
+    name: "set_object_semantics",
+    title: "Set object semantics",
+    description:
+      "Apply only whitelisted semantic metadata and validated relation records to exact objects in one reversible publication.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        objectId: objectId(),
+        metadata: semanticMetadataSchema,
+        relations: { type: "array", maxItems: 32, items: semanticRelationSchema }
+      },
+      required: ["objectId", "metadata"],
+      additionalProperties: false
+    },
+    outputSchema: output({
+      objectId: objectId(),
+      metadata: semanticMetadataSchema,
+      relationIds: { type: "array", maxItems: 32, items: objectId() }
+    })
+  },
+  {
+    name: "create_bound_connector",
+    title: "Create bound connector",
+    description:
+      "Create a persistently bound connector between exact semantic objects using visual-hull ports and bounded route types.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        fromObjectId: objectId(),
+        toObjectId: objectId(),
+        fromPortId: objectId(),
+        toPortId: objectId(),
+        routeType: {
+          type: "string",
+          enum: ["straight", "orthogonal", "bezier", "outside", "circular-arc", "cycle-arc"]
+        },
+        direction: { type: "string", enum: ["clockwise", "counterclockwise"] },
+        center: point(),
+        radius: number(1, 100000),
+        axes: {
+          type: "object",
+          properties: { x: number(1, 100000), y: number(1, 100000) },
+          required: ["x", "y"],
+          additionalProperties: false
+        },
+        clearance: number(0, 1000),
+        arrowhead: {
+          type: "string",
+          enum: ["none", "triangle", "open", "circle", "open-circle", "bar", "neuron"]
+        }
+      },
+      required: ["fromObjectId", "toObjectId"],
+      additionalProperties: false
+    },
+    outputSchema: output({
+      objectId: objectId(),
+      fromObjectId: objectId(),
+      toObjectId: objectId(),
+      fromPortId: objectId(),
+      toPortId: objectId(),
+      routeType: { type: "string" }
+    })
+  },
+  {
+    name: "connect_sequence",
+    title: "Connect semantic sequence",
+    description:
+      "Create or update adjacent persistently bound connectors for an ordered open or closed semantic sequence.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        objectIds: objectIds(2),
+        closed: { type: "boolean" },
+        direction: { type: "string", enum: ["clockwise", "counterclockwise"] },
+        routeType: {
+          type: "string",
+          enum: ["straight", "orthogonal", "bezier", "outside", "circular-arc", "cycle-arc"]
+        },
+        center: point(),
+        radius: number(1, 100000),
+        axes: {
+          type: "object",
+          properties: { x: number(1, 100000), y: number(1, 100000) },
+          required: ["x", "y"],
+          additionalProperties: false
+        }
+      },
+      required: ["objectIds"],
+      additionalProperties: false
+    },
+    outputSchema: output({ connectorIds: objectIds(0), bindings: { type: "array", maxItems: 200 } })
+  },
+  {
+    name: "repair_connectors",
+    title: "Repair bound connectors",
+    description:
+      "Repair only explicitly targeted connector bindings, ports, endpoints, arrowhead clearance, or route context.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        connectorIds: objectIds(1),
+        fromObjectId: objectId(),
+        toObjectId: objectId(),
+        category: {
+          type: "string",
+          enum: ["binding", "port", "arrowhead", "route", "scope", "z-order"]
+        }
+      },
+      required: ["connectorIds", "category"],
+      additionalProperties: false
+    },
+    outputSchema: output({ connectorIds: objectIds(0), repaired: { type: "array", maxItems: 32 } })
+  },
+  {
+    name: "plan_layout",
+    title: "Plan semantic layout",
+    description:
+      "Create a deterministic, bounded, non-mutating layout plan with a scene-revision guard and constraint diagnostics.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "read_only",
+    confirmation: "none",
+    retryable: true,
+    idempotent: false,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        mode: { type: "string", enum: ["cycle", "flow", "path", "grid", "cluster", "free"] },
+        objectIds: objectIds(1),
+        center: point(),
+        radius: number(1, 100000),
+        axes: {
+          type: "object",
+          properties: { x: number(1, 100000), y: number(1, 100000) },
+          required: ["x", "y"],
+          additionalProperties: false
+        },
+        startAngle: number(-3600, 3600),
+        direction: { type: "string", enum: ["clockwise", "counterclockwise"] },
+        gap: number(0, 10000),
+        padding: number(0, 10000),
+        hubKeepOut: {
+          type: "object",
+          properties: { left: number(), top: number(), width: number(0), height: number(0) },
+          required: ["left", "top", "width", "height"],
+          additionalProperties: false
+        }
+      },
+      required: ["mode", "objectIds"],
+      additionalProperties: false
+    },
+    outputSchema: output({ plan: { type: "object" } })
+  },
+  {
+    name: "apply_layout_plan",
+    title: "Apply layout plan",
+    description:
+      "Apply one current retained layout plan atomically after verifying its exact scene revision and targets.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: { planId: objectId() },
+      required: ["planId"],
+      additionalProperties: false
+    },
+    outputSchema: output({ planId: objectId(), sceneRevision: objectId(), objectIds: objectIds(0) })
+  },
+  {
+    name: "repair_layout",
+    title: "Repair semantic layout",
+    description:
+      "Generate and apply a bounded minimal layout repair for explicitly targeted objects.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        objectIds: objectIds(1),
+        mode: { type: "string", enum: ["cycle", "flow", "path", "grid", "cluster", "free"] },
+        center: point(),
+        radius: number(1, 100000),
+        gap: number(0, 10000),
+        padding: number(0, 10000)
+      },
+      required: ["objectIds", "mode"],
+      additionalProperties: false
+    },
+    outputSchema: output({ planId: objectId(), objectIds: objectIds(0) })
+  }
+);
 
 const batchOperationSchema: JsonSchema = {
   type: "object",

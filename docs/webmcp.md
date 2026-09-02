@@ -79,6 +79,17 @@ registry.
 | `undo`                    | Undo the most recent editor history step                         | Reversible                                   |
 | `redo`                    | Redo the next editor history step                                | Reversible                                   |
 | `export_figure`           | Start the existing SVG, PDF, PNG, or credits download            | Local side effect                            |
+| `find_objects`            | Find bounded objects by semantic role, stage, asset, or relation | Read-only                                    |
+| `inspect_geometry`        | Inspect visual, layout, selection geometry, hulls, and ports     | Read-only                                    |
+| `inspect_relations`       | Inspect the bounded semantic relation graph                      | Read-only                                    |
+| `list_object_ports`       | List deterministic geometry-aware object ports                   | Read-only                                    |
+| `set_object_semantics`    | Set validated semantic metadata and relations                    | Reversible and retryable                     |
+| `create_bound_connector`  | Create a persistent visual-hull-bound connector                  | Reversible and retryable                     |
+| `connect_sequence`        | Connect an ordered open or closed semantic sequence              | Reversible and retryable                     |
+| `repair_connectors`       | Repair explicitly targeted connector defects                     | Reversible and retryable                     |
+| `plan_layout`             | Plan a bounded layout without mutating the scene                 | Read-only                                    |
+| `apply_layout_plan`       | Apply a current retained layout plan atomically                  | Reversible and retryable                     |
+| `repair_layout`           | Generate and apply a bounded layout repair                       | Reversible and retryable                     |
 | `batch`                   | Run up to 32 typed mutations as one atomic history step          | Sensitive/destructive; explicit confirmation |
 
 All current commands use semantic runtime version `opensketch.semantic.v1`.

@@ -159,9 +159,6 @@ test("registers a safe figure workflow through the browser model context", async
   expect(initialWorkflow.group.ok).toBe(true);
   expect(initialWorkflow.groupedScene).toMatchObject({ ok: true });
   expect(initialWorkflow.ungroup).toMatchObject({ ok: true });
-  await expect(page.getByRole("complementary", { name: "WebMCP command log" })).toBeVisible();
-  await expect(page.getByText("resize_canvas", { exact: true })).toBeVisible();
-
   const textButton = page.getByRole("button", { name: "Text", exact: true });
   await expect(textButton).toBeVisible();
   await textButton.click();

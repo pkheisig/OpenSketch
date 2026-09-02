@@ -195,7 +195,10 @@ FabricObject.customProperties = [
   "assetBrightness",
   "assetColorPreset",
   "recognizedGroups",
-  "defaultElementStyle"
+  "defaultElementStyle",
+  "semanticMetadata",
+  "semanticRelations",
+  "semanticConnector"
 ];
 
 const RESTORABLE_GROUP_PROPERTIES = [
@@ -222,7 +225,10 @@ const RESTORABLE_GROUP_PROPERTIES = [
   "assetBrightness",
   "assetColorPreset",
   "recognizedGroups",
-  "defaultElementStyle"
+  "defaultElementStyle",
+  "semanticMetadata",
+  "semanticRelations",
+  "semanticConnector"
 ] as const;
 
 const MAX_HISTORY = 120;

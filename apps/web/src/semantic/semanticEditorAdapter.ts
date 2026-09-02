@@ -33,7 +33,7 @@ import {
 } from "@/editor/connectors";
 import { configureTextObject } from "@/editor/selection";
 import { assignFreshCloneIds } from "@/editor/cloneIdentity";
-import { anchorPoint } from "@/editor/geometry";
+import { anchorPoint, type Bounds } from "@/editor/geometry";
 import { arrangeObjects, layerCollectionForObject, isManualGroup } from "@/editor/grouping";
 import {
   assertUniqueSceneObjectIds,
@@ -50,6 +50,19 @@ import {
 } from "@/editor/groupRecognition";
 import { assetManifest } from "@/assets/manifest";
 import { collectProvenanceManifest } from "@/export/provenance";
+import {
+  inspectSemanticGeometry,
+  metadataOf,
+  normalizeSemanticMetadata,
+  normalizeRelation,
+  planSemanticLayout,
+  relationsForCanvas,
+  sceneRevision,
+  setMetadata,
+  validateRelations,
+  type SemanticLayoutPlan,
+  type SemanticPort
+} from "./composition";
 
 export class SemanticAdapterError extends Error {
   code: string;
@@ -220,6 +233,8 @@ function describeObject(
     selectable: object.selectable !== false,
     style: styleOf(object)
   };
+  const metadata = metadataOf(object);
+  if (metadata) descriptor.semanticMetadata = { ...metadata };
   if (object instanceof IText || object instanceof Textbox) {
     descriptor.text = boundedText(object.text, 4_000) ?? "";
   }
@@ -387,6 +402,9 @@ const RESTORABLE_GROUP_PROPERTIES = [
   "assetBrightness",
   "assetColorPreset",
   "recognizedGroups",
+  "semanticMetadata",
+  "semanticRelations",
+  "semanticConnector",
   "defaultElementStyle"
 ] as const;
 
@@ -503,6 +521,7 @@ export function createSemanticEditorAdapter(
   dependencies: SemanticEditorAdapterDependencies
 ): SemanticEditorAdapter {
   const transactionDirtyStack: boolean[] = [];
+  const layoutPlans = new Map<string, SemanticLayoutPlan>();
 
   const commitSemantic = (label: string): void => {
     if (transactionDirtyStack.length > 0) {
@@ -629,6 +648,145 @@ export function createSemanticEditorAdapter(
     return object.objectId!;
   };
 
+  const portFor = (object: FabricObject, requested: unknown, outgoing: boolean): SemanticPort => {
+    const geometry = inspectSemanticGeometry(object);
+    const preferred = geometry.ports.find((port) => port.id === requested);
+    if (requested !== undefined && !preferred) {
+      throw new SemanticAdapterError(
+        "INVALID_PORT",
+        `Port "${String(requested)}" is not available on "${object.objectId}".`
+      );
+    }
+    return (
+      preferred ??
+      geometry.ports.find((port) => port.kind === (outgoing ? "outgoing" : "incoming")) ??
+      geometry.ports[0]!
+    );
+  };
+
+  const anchorForPort = (port: SemanticPort): ConnectorBinding["fromAnchor"] => {
+    if (Math.abs(port.normal.x) >= Math.abs(port.normal.y))
+      return port.normal.x >= 0 ? "right" : "left";
+    return port.normal.y >= 0 ? "bottom" : "top";
+  };
+
+  const createBoundConnector = async (
+    input: Record<string, unknown>,
+    commitAfter: boolean
+  ): Promise<{
+    objectId: string;
+    fromPortId: string;
+    toPortId: string;
+    routeType: string;
+    fromObjectId: string;
+    toObjectId: string;
+  }> => {
+    const canvas = canvasOrThrow();
+    const fromObjectId = input.fromObjectId;
+    const toObjectId = input.toObjectId;
+    if (typeof fromObjectId !== "string" || typeof toObjectId !== "string") {
+      throw new SemanticAdapterError(
+        "INVALID_INPUT",
+        "Both connector endpoint object IDs are required."
+      );
+    }
+    const [fromObject, toObject] = resolveObjects(canvas, [fromObjectId, toObjectId]);
+    if (fromObject === toObject)
+      throw new SemanticAdapterError("INVALID_INPUT", "Connector endpoints must differ.");
+    if (
+      metadataOf(fromObject)?.semanticRole === "stage-label" ||
+      metadataOf(toObject)?.semanticRole === "stage-label"
+    ) {
+      throw new SemanticAdapterError(
+        "INVALID_ENDPOINT_SCOPE",
+        "Logical connectors must target stage-content or scientific objects, not labels."
+      );
+    }
+    const fromPort = portFor(fromObject, input.fromPortId, true);
+    const toPort = portFor(toObject, input.toPortId, false);
+    const routeType = (input.routeType ?? "straight") as
+      "straight" | "orthogonal" | "bezier" | "outside" | "circular-arc" | "cycle-arc";
+    const pathShape: ConnectorBinding["pathShape"] =
+      routeType === "orthogonal" || routeType === "outside"
+        ? "elbow"
+        : routeType === "bezier"
+          ? "arc"
+          : routeType === "circular-arc" || routeType === "cycle-arc"
+            ? "circular"
+            : "straight";
+    const defaults = dependencies.creationDefaults().line;
+    const binding: ConnectorBinding = {
+      fromObjectId,
+      fromAnchor: anchorForPort(fromPort),
+      toObjectId,
+      toAnchor: anchorForPort(toPort),
+      startArrowhead: "none",
+      endArrowhead: (input.arrowhead ?? "triangle") as ConnectorBinding["endArrowhead"],
+      lineStyle: "solid",
+      routing: pathShape === "straight" ? "direct" : "orthogonal",
+      pathShape,
+      curvature: 0
+    };
+    const obstacles = canvas
+      .getObjects()
+      .filter(
+        (object) =>
+          object !== fromObject &&
+          object !== toObject &&
+          !object.connector &&
+          object.visible !== false
+      )
+      .map((object) => object.getBoundingRect());
+    const connector = createConnectorObject(
+      fromPort.position,
+      toPort.position,
+      binding,
+      { color: defaults.color, width: defaults.width, opacity: 1 },
+      obstacles
+    );
+    const objectId = addObject(
+      canvas,
+      connector,
+      "Bound connector",
+      "connector",
+      undefined,
+      false,
+      false
+    );
+    connector.semanticMetadata = {
+      version: 1,
+      semanticRole: "main-flow-connector",
+      semanticType: "bound-connector"
+    };
+    connector.semanticConnector = {
+      version: 1,
+      fromPortId: fromPort.id,
+      toPortId: toPort.id,
+      routeType,
+      clearance: typeof input.clearance === "number" ? input.clearance : 12,
+      routeContext: {
+        ...(input.center ? { center: point(input.center, "center") } : {}),
+        ...(input.radius ? { radius: finiteNumber(input.radius, "radius") } : {}),
+        ...(input.axes ? { axes: input.axes as { x: number; y: number } } : {}),
+        ...(input.direction
+          ? { direction: input.direction as "clockwise" | "counterclockwise" }
+          : {})
+      }
+    };
+    canvas.sendObjectToBack(connector);
+    dependencies.refreshConnectors(objectId);
+    canvas.requestRenderAll();
+    if (commitAfter) commitSemantic("Semantic bound connector");
+    return {
+      objectId,
+      fromPortId: fromPort.id,
+      toPortId: toPort.id,
+      routeType,
+      fromObjectId,
+      toObjectId
+    };
+  };
+
   const execute = async (
     command: string,
     input: Record<string, unknown>
@@ -676,6 +834,275 @@ export function createSemanticEditorAdapter(
       }
       dependencies.setCanvasSettings({ width, height });
       return { data: { width, height }, changedObjectIds: [] };
+    }
+    if (command === "find_objects") {
+      const entries = sceneObjectEntries(canvas);
+      const query = typeof input.text === "string" ? input.text : undefined;
+      const caseSensitive = input.caseSensitive === true;
+      const matches = entries.filter(({ object, path }) => {
+        const metadata = metadataOf(object);
+        const text = object instanceof IText || object instanceof Textbox ? object.text : "";
+        const haystack = caseSensitive ? text : text.toLocaleLowerCase();
+        const needle = query ? (caseSensitive ? query : query.toLocaleLowerCase()) : undefined;
+        return (
+          (input.semanticRole === undefined || metadata?.semanticRole === input.semanticRole) &&
+          (input.semanticType === undefined || metadata?.semanticType === input.semanticType) &&
+          (input.stageId === undefined || metadata?.stageId === input.stageId) &&
+          (input.stageIndex === undefined || metadata?.stageIndex === input.stageIndex) &&
+          (input.tag === undefined || metadata?.tags?.includes(input.tag as string)) &&
+          (input.objectType === undefined ||
+            (object.OpenSketchType ?? object.type) === input.objectType) &&
+          (input.assetFamilyId === undefined || object.familyId === input.assetFamilyId) &&
+          (input.assetVariantId === undefined || object.assetId === input.assetVariantId) &&
+          (!needle || haystack.includes(needle)) &&
+          (input.ancestorObjectId === undefined ||
+            path.some((item) => item.objectId === input.ancestorObjectId)) &&
+          (input.relationId === undefined ||
+            relationsForCanvas(canvas).some(
+              (relation) =>
+                relation.id === input.relationId &&
+                (relation.sourceObjectId === object.objectId ||
+                  relation.targetObjectId === object.objectId)
+            ))
+        );
+      });
+      const limit = typeof input.limit === "number" ? input.limit : 100;
+      return {
+        data: {
+          objects: matches
+            .slice(0, limit)
+            .map(({ object, parent, path }) =>
+              describeObject(object, parent instanceof Group ? parent.objectId : undefined, path)
+            ),
+          total: matches.length
+        },
+        changedObjectIds: []
+      };
+    }
+    if (command === "inspect_geometry") {
+      const ids = objectIds(input);
+      const clearance =
+        input.clearance === undefined ? 12 : finiteNumber(input.clearance, "clearance");
+      const objects = resolveObjects(canvas, ids).map((object) => ({
+        objectId: object.objectId!,
+        geometry: inspectSemanticGeometry(object, clearance)
+      }));
+      return { data: { objects }, changedObjectIds: [] };
+    }
+    if (command === "list_object_ports") {
+      const ids = objectIds(input);
+      const kind = input.kind as string | undefined;
+      const objects = resolveObjects(canvas, ids).map((object) => ({
+        objectId: object.objectId!,
+        ports: inspectSemanticGeometry(object).ports.filter((port) => !kind || port.kind === kind)
+      }));
+      return { data: { objects }, changedObjectIds: [] };
+    }
+    if (command === "inspect_relations") {
+      const ids = input.objectIds === undefined ? [] : objectIds(input);
+      const idSet = new Set(ids);
+      const stageId = typeof input.stageId === "string" ? input.stageId : undefined;
+      const relations = relationsForCanvas(canvas).filter((relation) => {
+        if (
+          idSet.size > 0 &&
+          !idSet.has(relation.sourceObjectId) &&
+          !idSet.has(relation.targetObjectId)
+        )
+          return false;
+        if (!stageId) return true;
+        const index = sceneObjectIndex(canvas);
+        return (
+          metadataOf(index.get(relation.sourceObjectId)!)?.stageId === stageId ||
+          metadataOf(index.get(relation.targetObjectId)!)?.stageId === stageId
+        );
+      });
+      const limit = typeof input.limit === "number" ? input.limit : 256;
+      return {
+        data: { relations: relations.slice(0, limit), truncated: relations.length > limit },
+        changedObjectIds: []
+      };
+    }
+    if (command === "set_object_semantics") {
+      const objectId = input.objectId as string;
+      const [object] = resolveObjects(canvas, [objectId]);
+      const metadata = normalizeSemanticMetadata(input.metadata);
+      const relations = Array.isArray(input.relations)
+        ? input.relations.map(normalizeRelation)
+        : (object.semanticRelations ?? []);
+      const allIds = new Set(
+        sceneObjectEntries(canvas)
+          .map(({ object: item }) => item.objectId)
+          .filter((id): id is string => Boolean(id))
+      );
+      validateRelations(relations, allIds);
+      setMetadata(object, metadata);
+      object.semanticRelations = relations;
+      object.semanticMetadata = {
+        ...metadata,
+        ...(relations.length ? { relationIds: relations.map((relation) => relation.id) } : {})
+      };
+      object.setCoords();
+      canvas.requestRenderAll();
+      commitSemantic("Semantic object semantics");
+      return {
+        data: {
+          objectId,
+          metadata: object.semanticMetadata,
+          relationIds: relations.map((relation) => relation.id)
+        },
+        changedObjectIds: [objectId]
+      };
+    }
+    if (command === "create_bound_connector") {
+      const result = await createBoundConnector(input, true);
+      return {
+        data: result,
+        changedObjectIds: [result.objectId, result.fromObjectId, result.toObjectId]
+      };
+    }
+    if (command === "connect_sequence") {
+      const ids = objectIds(input);
+      const closed = input.closed === true;
+      const pairs = ids
+        .slice(0, closed ? ids.length : ids.length - 1)
+        .map((id, index) => ({ fromObjectId: id, toObjectId: ids[(index + 1) % ids.length] }));
+      const results = [];
+      for (const pair of pairs)
+        results.push(await createBoundConnector({ ...input, ...pair }, false));
+      canvas.requestRenderAll();
+      commitSemantic("Semantic connect sequence");
+      return {
+        data: { connectorIds: results.map((result) => result.objectId), bindings: results },
+        changedObjectIds: [...ids, ...results.map((result) => result.objectId)]
+      };
+    }
+    if (command === "repair_connectors") {
+      const ids = objectIds({ objectIds: input.connectorIds });
+      const connectors = resolveObjects(canvas, ids);
+      const repaired: string[] = [];
+      for (const object of connectors) {
+        if (!object.connector)
+          throw new SemanticAdapterError(
+            "INVALID_CONNECTOR_TARGET",
+            `Object "${object.objectId}" is not a bound connector.`
+          );
+        if (input.category === "binding" || input.category === "scope") {
+          const fromObjectId = (input.fromObjectId ?? object.connector.fromObjectId) as string;
+          const toObjectId = (input.toObjectId ?? object.connector.toObjectId) as string;
+          const [fromObject, toObject] = resolveObjects(canvas, [fromObjectId, toObjectId]);
+          const fromPort = portFor(fromObject, object.semanticConnector?.fromPortId, true);
+          const toPort = portFor(toObject, object.semanticConnector?.toPortId, false);
+          object.connector = {
+            ...object.connector,
+            fromObjectId,
+            toObjectId,
+            fromAnchor: anchorForPort(fromPort),
+            toAnchor: anchorForPort(toPort)
+          };
+          object.semanticConnector = {
+            ...(object.semanticConnector ?? {
+              version: 1,
+              fromPortId: fromPort.id,
+              toPortId: toPort.id,
+              routeType: "straight",
+              clearance: 12
+            }),
+            fromPortId: fromPort.id,
+            toPortId: toPort.id
+          };
+        }
+        if (input.category === "z-order") canvas.sendObjectToBack(object);
+        repaired.push(object.objectId!);
+      }
+      dependencies.refreshConnectors();
+      canvas.requestRenderAll();
+      commitSemantic("Semantic repair connectors");
+      return { data: { connectorIds: repaired, repaired }, changedObjectIds: repaired };
+    }
+    if (command === "plan_layout") {
+      const ids = objectIds(input);
+      const settings = dependencies.getCanvasSettings();
+      const plan = planSemanticLayout(
+        resolveObjects(canvas, ids).map((object) => ({
+          object,
+          geometry: inspectSemanticGeometry(object),
+          metadata: metadataOf(object)
+        })),
+        {
+          mode: input.mode as "cycle" | "flow" | "path" | "grid" | "cluster" | "free",
+          objectIds: ids,
+          center: input.center ? point(input.center, "center") : undefined,
+          radius: input.radius === undefined ? undefined : finiteNumber(input.radius, "radius"),
+          axes: input.axes as { x: number; y: number } | undefined,
+          startAngle:
+            input.startAngle === undefined
+              ? undefined
+              : finiteNumber(input.startAngle, "startAngle"),
+          direction: input.direction as "clockwise" | "counterclockwise" | undefined,
+          gap: input.gap === undefined ? undefined : finiteNumber(input.gap, "gap"),
+          padding: input.padding === undefined ? undefined : finiteNumber(input.padding, "padding"),
+          hubKeepOut: input.hubKeepOut as Bounds | undefined,
+          canvas: { width: settings.width, height: settings.height }
+        },
+        sceneRevision(canvas)
+      );
+      layoutPlans.set(plan.id, plan);
+      return { data: { plan }, changedObjectIds: [] };
+    }
+    if (command === "apply_layout_plan") {
+      const planId = input.planId as string;
+      const plan = layoutPlans.get(planId);
+      if (!plan)
+        throw new SemanticAdapterError(
+          "STALE_LAYOUT_PLAN",
+          `Layout plan "${planId}" is unavailable.`
+        );
+      if (plan.status !== "feasible")
+        throw new SemanticAdapterError(
+          "INFEASIBLE_LAYOUT",
+          "Only feasible layout plans can be applied."
+        );
+      if (sceneRevision(canvas) !== plan.sourceRevision)
+        throw new SemanticAdapterError(
+          "STALE_LAYOUT_PLAN",
+          "The scene changed after this layout was planned."
+        );
+      const snapshot = dependencies.serialize();
+      try {
+        const changed = plan.positions.map(({ objectId, x, y }) => {
+          const [object] = resolveObjects(canvas, [objectId]);
+          const geometry = inspectSemanticGeometry(object);
+          const delta = deltaInParentPlane(object, x - geometry.center.x, y - geometry.center.y);
+          object.set({ left: (object.left ?? 0) + delta.x, top: (object.top ?? 0) + delta.y });
+          object.setCoords();
+          refreshParentGroups(object);
+          return objectId;
+        });
+        dependencies.refreshConnectors();
+        canvas.requestRenderAll();
+        commitSemantic("Semantic apply layout plan");
+        return {
+          data: { planId, sceneRevision: sceneRevision(canvas), objectIds: changed },
+          changedObjectIds: changed
+        };
+      } catch (error) {
+        await dependencies.restore(snapshot);
+        throw error;
+      }
+    }
+    if (command === "repair_layout") {
+      const planResult = await execute("plan_layout", input);
+      const plan = (planResult.data as { plan: SemanticLayoutPlan }).plan;
+      if (plan.status !== "feasible")
+        throw new SemanticAdapterError(
+          "INFEASIBLE_LAYOUT",
+          "No feasible repair layout is available."
+        );
+      const applied = await execute("apply_layout_plan", { planId: plan.id });
+      return {
+        data: { planId: plan.id, objectIds: (applied.data as { objectIds: string[] }).objectIds },
+        changedObjectIds: applied.changedObjectIds
+      };
     }
     if (command === "set_selection") {
       const ids = objectIds(input);
@@ -1714,7 +2141,8 @@ export function createSemanticEditorAdapter(
       selectionObjectIds,
       objects,
       truncated: truncated || selectionTruncated,
-      warnings
+      warnings,
+      sceneRevision: sceneRevision(canvas)
     };
   };
 

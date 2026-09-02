@@ -2,7 +2,6 @@ import { lazy, Suspense, useState } from "react";
 import type { ProjectRecord } from "@workspace/editor-core";
 import { EditorProvider } from "@/editor/EditorContext";
 import { CanvasWorkspace } from "@/components/CanvasWorkspace";
-import { WebMcpCommandLog } from "@/components/WebMcpCommandLog";
 
 const TopToolbar = lazy(() =>
   import("@/components/TopToolbar").then((module) => ({ default: module.TopToolbar }))
@@ -61,7 +60,6 @@ export function EditorStudio({
           </Suspense>
           <CanvasWorkspace />
         </div>
-        <WebMcpCommandLog />
       </main>
     </EditorProvider>
   );

@@ -2,6 +2,7 @@ import "fabric";
 import type { ConnectorBinding } from "@workspace/editor-core";
 import type { RecognizedGroup } from "@/editor/groupRecognition";
 import type { ElementStyleSnapshot } from "@/editor/elementStyles";
+import type { SemanticMetadata, SemanticRelation } from "@/semantic/composition";
 
 declare module "fabric" {
   interface FabricObject {
@@ -34,5 +35,20 @@ declare module "fabric" {
     assetColorPreset?: string;
     recognizedGroups?: RecognizedGroup[];
     defaultElementStyle?: ElementStyleSnapshot;
+    semanticMetadata?: SemanticMetadata;
+    semanticRelations?: SemanticRelation[];
+    semanticConnector?: {
+      version: 1;
+      fromPortId: string;
+      toPortId: string;
+      routeType: "straight" | "orthogonal" | "bezier" | "outside" | "circular-arc" | "cycle-arc";
+      clearance: number;
+      routeContext?: {
+        center?: { x: number; y: number };
+        radius?: number;
+        axes?: { x: number; y: number };
+        direction?: "clockwise" | "counterclockwise";
+      };
+    };
   }
 }
