@@ -224,9 +224,10 @@ export function analyzeComposition(
         );
       if (
         metadata?.semanticRole === "main-flow-connector" &&
-        endpoints.some(
-          (endpoint) => metadataOf(index.get(endpoint)!)?.semanticRole === "stage-label"
-        )
+        endpoints.some((endpoint) => {
+          const target = index.get(endpoint);
+          return Boolean(target && metadataOf(target)?.semanticRole === "stage-label");
+        })
       )
         add(
           "connectors",
@@ -317,7 +318,7 @@ export function analyzeComposition(
     if (overlapBudgetExceeded) break;
   }
   if (overlapBudgetExceeded) skipped.push("overlap-pair-budget");
-  const allIds = new Set(entries.map(({ object }) => object.objectId!));
+  const allIds = new Set(allEntries.map(({ object }) => object.objectId!));
   relations.forEach((relation) => {
     if (
       !allIds.has(relation.sourceObjectId) ||
