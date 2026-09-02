@@ -113,6 +113,27 @@ export function assignFreshCloneIds(objects: FabricObject | FabricObject[]): voi
       current.defaultElementStyle = structuredClone(current.defaultElementStyle);
       remapStyleSnapshotIds(current.defaultElementStyle, ids);
     }
+    if (current.semanticMetadata) {
+      current.semanticMetadata = structuredClone(current.semanticMetadata);
+      current.semanticMetadata.allowedOverlapObjectIds =
+        current.semanticMetadata.allowedOverlapObjectIds?.map(
+          (objectId) => ids.get(objectId) ?? objectId
+        );
+      current.semanticMetadata.relationIds = current.semanticMetadata.relationIds?.map(
+        (relationId) => `${relationId}:clone:${current.objectId}`
+      );
+    }
+    if (current.semanticRelations) {
+      current.semanticRelations = structuredClone(current.semanticRelations).map((relation) => ({
+        ...relation,
+        id: `${relation.id}:clone:${current.objectId}`,
+        sourceObjectId: ids.get(relation.sourceObjectId) ?? relation.sourceObjectId,
+        targetObjectId: ids.get(relation.targetObjectId) ?? relation.targetObjectId,
+        mediatorObjectIds: relation.mediatorObjectIds?.map(
+          (objectId) => ids.get(objectId) ?? objectId
+        )
+      }));
+    }
   };
   visitSceneObjects(roots, apply);
 }

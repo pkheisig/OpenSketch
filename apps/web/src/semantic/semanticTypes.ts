@@ -69,6 +69,7 @@ export interface SemanticObjectDescriptor {
   objectId: string;
   type: string;
   name?: string;
+  text?: string;
   parentObjectId?: string;
   depth: number;
   pathObjectIds: string[];
@@ -100,6 +101,22 @@ export interface SemanticObjectDescriptor {
     to: SemanticPoint;
   };
   children?: string[];
+  semanticMetadata?: Record<string, unknown>;
+  geometry?: {
+    visualBounds: SemanticBounds;
+    layoutBounds: SemanticBounds;
+    selectionBounds: SemanticBounds;
+    hull: SemanticPoint[];
+    center: SemanticPoint;
+    area: number;
+    ports: Array<{
+      id: string;
+      position: SemanticPoint;
+      normal: SemanticPoint;
+      kind: string;
+      scopeObjectId: string;
+    }>;
+  };
 }
 
 export interface SemanticSceneSnapshot {
@@ -118,6 +135,7 @@ export interface SemanticSceneSnapshot {
   objects: SemanticObjectDescriptor[];
   truncated: boolean;
   warnings: string[];
+  sceneRevision?: string;
 }
 
 export interface SemanticAdapterResult {

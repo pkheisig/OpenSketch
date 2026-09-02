@@ -322,6 +322,16 @@ describe("project migrations", () => {
               type: "Rect",
               fill: {
                 type: "linear",
+                id: 0,
+                coords: { x1: 0, y1: 0, x2: 10, y2: 0 },
+                colorStops: [
+                  { offset: 0, color: "#000000" },
+                  { offset: 1, color: "#ffffff" }
+                ]
+              },
+              originalGradientFill: {
+                type: "linear",
+                id: "nih-antibody-gradient",
                 coords: { x1: 0, y1: 0, x2: 10, y2: 0 },
                 colorStops: [
                   { offset: 0, color: "#000000" },
@@ -771,6 +781,41 @@ describe("project migrations", () => {
     });
 
     expect(migrated.objects).toEqual(expect.objectContaining({ version: "7.4.0" }));
+  });
+
+  it("repairs circular arcs saved before free-connector metadata was added", () => {
+    const migrated = migrateProjectForLoad({
+      ...project,
+      objects: {
+        version: "7.4.0",
+        objects: [
+          {
+            type: "Group",
+            name: "Circular arc",
+            OpenSketchType: "curved-arrow",
+            objects: [
+              {
+                type: "Path",
+                path: [
+                  ["M", 0, 0],
+                  ["A", 100, 100, 0, 0, 1, 100, 100]
+                ]
+              },
+              { type: "Triangle" }
+            ]
+          }
+        ]
+      }
+    });
+
+    expect(migrated.identityRepaired).toBe(true);
+    expect(migrated.identityWarnings).toContain(
+      "Repaired missing free-connector metadata for circular arc at scene.objects[0]."
+    );
+    expect(
+      (migrated.project.objects as { objects: Array<{ freeConnectorBinding?: unknown }> })
+        .objects[0].freeConnectorBinding
+    ).toEqual(expect.objectContaining({ pathShape: "circular", endArrowhead: "triangle" }));
   });
 
   it("returns an isolated candidate and drops non-portable top-level fields", () => {

@@ -17,6 +17,7 @@ import type { ProjectRecord } from "@workspace/editor-core";
 import { GLOBAL_CREDIT } from "@/assets/credit";
 import { MotionPresence } from "@/components/MotionPresence";
 import { useEditorFields } from "@/editor/editorHooks";
+import { PROJECT_NAME_CHANGE_EVENT } from "@/editor/EditorContext";
 import type { ProjectSaveState } from "@/editor/projectSaveState";
 import { ExportDialog } from "./dialogs";
 import { useModalDialog } from "./useModalDialog";
@@ -140,8 +141,16 @@ export function TopToolbar({
   const helpRef = useModalDialog(helpOpen, () => setHelpOpen(false));
   useEffect(() => {
     const onNavigationBlocked = () => setLeaving(false);
+    const onProjectNameChange = (event: Event) => {
+      const next = (event as CustomEvent<{ name?: unknown }>).detail?.name;
+      if (typeof next === "string") setTitle(next);
+    };
     window.addEventListener("opensketch:navigation-blocked", onNavigationBlocked);
-    return () => window.removeEventListener("opensketch:navigation-blocked", onNavigationBlocked);
+    window.addEventListener(PROJECT_NAME_CHANGE_EVENT, onProjectNameChange);
+    return () => {
+      window.removeEventListener("opensketch:navigation-blocked", onNavigationBlocked);
+      window.removeEventListener(PROJECT_NAME_CHANGE_EVENT, onProjectNameChange);
+    };
   }, []);
   return (
     <>

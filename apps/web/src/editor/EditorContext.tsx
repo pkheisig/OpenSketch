@@ -167,6 +167,8 @@ import { installSemanticIntrospection } from "@/semantic/semanticIntrospection";
 import { createSemanticRuntime, type SemanticRuntime } from "@/semantic/semanticRuntime";
 import { createWebMcpAdapter, type WebMcpAdapter } from "@/semantic/webmcp";
 
+export const PROJECT_NAME_CHANGE_EVENT = "opensketch:project-name-change";
+
 FabricObject.customProperties = [
   "objectId",
   "name",
@@ -193,7 +195,10 @@ FabricObject.customProperties = [
   "assetBrightness",
   "assetColorPreset",
   "recognizedGroups",
-  "defaultElementStyle"
+  "defaultElementStyle",
+  "semanticMetadata",
+  "semanticRelations",
+  "semanticConnector"
 ];
 
 const RESTORABLE_GROUP_PROPERTIES = [
@@ -220,7 +225,10 @@ const RESTORABLE_GROUP_PROPERTIES = [
   "assetBrightness",
   "assetColorPreset",
   "recognizedGroups",
-  "defaultElementStyle"
+  "defaultElementStyle",
+  "semanticMetadata",
+  "semanticRelations",
+  "semanticConnector"
 ] as const;
 
 const MAX_HISTORY = 120;
@@ -1587,6 +1595,8 @@ export function EditorProvider({
         assignSceneIdentities(instance.getObjects());
         configureCanvasAssets(instance.getObjects());
         assertUniqueSceneObjectIds(instance);
+        await waitForCanvasTextFonts(instance.getObjects()).catch(() => undefined);
+        refreshTextMetrics(instance.getObjects());
         instance.requestRenderAll();
         const initial = JSON.stringify(instance.toJSON());
         history.current = [initial];
@@ -2443,6 +2453,11 @@ export function EditorProvider({
   semanticUndoRef.current = undo;
   const semanticRedoRef = useRef(redo);
   semanticRedoRef.current = redo;
+  const semanticSetCanvasSettingsRef = useRef<(settings: Partial<CanvasSettings>) => void>(
+    () => undefined
+  );
+  const semanticSetProjectNameRef = useRef<(name: string) => void>(() => undefined);
+  const semanticSetProjectDescriptionRef = useRef<(description: string) => void>(() => undefined);
   const semanticExportSvgRef = useRef<EditorContextValue["exportSvg"]>(() => undefined);
   const semanticExportCreditsRef = useRef<EditorContextValue["exportCredits"]>(() => undefined);
   const semanticExportPdfRef = useRef<EditorContextValue["exportPdf"]>(async () => undefined);
@@ -2461,6 +2476,10 @@ export function EditorProvider({
         getProjectId: () => semanticProjectIdRef.current,
         isCanvasReady: () => canvasReadyRef.current,
         getCanvasSettings: () => latestCanvasSettings.current,
+        setCanvasSettings: (settings) => semanticSetCanvasSettingsRef.current(settings),
+        setProjectName: (name) => semanticSetProjectNameRef.current(name),
+        setProjectDescription: (description) =>
+          semanticSetProjectDescriptionRef.current(description),
         setSelection: (objects) => semanticSetSelectionRef.current(objects),
         commit: (label) => semanticCommitRef.current(label),
         serialize: () => semanticSerializeRef.current(),
@@ -3772,13 +3791,20 @@ export function EditorProvider({
     },
     [canvas, commit, zoom]
   );
+  semanticSetCanvasSettingsRef.current = setCanvasSettings;
 
   const setProjectName = useCallback(
     (name: string) => {
+      const nextName = name.trim() || "Untitled figure";
       latestProject.current = {
         ...latestProject.current,
-        name: name.trim() || "Untitled figure"
+        name: nextName
       };
+      window.dispatchEvent(
+        new CustomEvent<{ name: string }>(PROJECT_NAME_CHANGE_EVENT, {
+          detail: { name: nextName }
+        })
+      );
       saveRevision.current += 1;
       const pending = pendingTitlePersistence.current ?? {
         timer: 0,
@@ -3806,6 +3832,8 @@ export function EditorProvider({
     },
     [persist]
   );
+  semanticSetProjectNameRef.current = setProjectName;
+  semanticSetProjectDescriptionRef.current = setProjectDescription;
 
   const exportProject = useCallback(async () => {
     flushPendingTitle();

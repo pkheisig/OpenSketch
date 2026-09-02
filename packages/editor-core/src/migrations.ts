@@ -198,7 +198,10 @@ const SCENE_PROPERTIES = new Set([
   "assetBrightness",
   "assetColorPreset",
   "recognizedGroups",
-  "defaultElementStyle"
+  "defaultElementStyle",
+  "semanticMetadata",
+  "semanticRelations",
+  "semanticConnector"
 ]);
 
 const SCENE_NUMERIC_PROPERTIES = new Set([
@@ -372,6 +375,44 @@ const CONNECTOR_ARROWHEADS = new Set<ConnectorArrowhead>([
 ]);
 const CONNECTOR_LINE_STYLES = new Set<ConnectorLineStyle>(["solid", "dashed", "dotted"]);
 const CONNECTOR_LINE_CAPS = new Set<ConnectorLineCap>(["butt", "round"]);
+const SEMANTIC_ROLES = new Set([
+  "hub",
+  "stage",
+  "stage-content",
+  "stage-label",
+  "stage-title",
+  "stage-subtitle",
+  "scientific-asset",
+  "interaction-participant",
+  "mediator",
+  "particle-field",
+  "annotation",
+  "intervention",
+  "main-flow-connector",
+  "annotation-leader",
+  "decorative"
+]);
+const SEMANTIC_PORT_KINDS = new Set([
+  "incoming",
+  "outgoing",
+  "radial-in",
+  "radial-out",
+  "clockwise",
+  "counterclockwise",
+  "annotation",
+  "custom"
+]);
+const SEMANTIC_RELATION_KINDS = new Set([
+  "flow_to",
+  "labels",
+  "contacts",
+  "binds",
+  "crosses",
+  "emits",
+  "follows_gradient",
+  "inhibited_by",
+  "intervention_targets"
+]);
 const CONNECTOR_ROUTINGS = new Set<ConnectorRouting>(["direct", "orthogonal"]);
 const CONNECTOR_PATH_SHAPES = new Set<ConnectorPathShape>([
   "straight",
@@ -618,7 +659,8 @@ function validateGradient(value: JsonRecord, path: string, context: ValidationCo
       "offsetX",
       "offsetY",
       "gradientUnits",
-      "gradientTransform"
+      "gradientTransform",
+      "id"
     ])
   );
   if (value.type !== "linear" && value.type !== "radial") fail(`${path}.type`, "is invalid");
@@ -653,6 +695,13 @@ function validateGradient(value: JsonRecord, path: string, context: ValidationCo
     transform.forEach((item, index) =>
       assertFiniteNumber(item, `${path}.gradientTransform[${index}]`)
     );
+  }
+  if (value.id !== undefined) {
+    if (typeof value.id === "number") {
+      assertFiniteNumber(value.id, `${path}.id`, { min: 0 });
+    } else {
+      assertString(value.id, `${path}.id`, { maxLength: 512, nonEmpty: true });
+    }
   }
   void context;
 }
@@ -1024,6 +1073,9 @@ function validateCustomProperties(
     "assetBrightness",
     "assetColorPreset",
     "recognizedGroups",
+    "semanticMetadata",
+    "semanticRelations",
+    "semanticConnector",
     "defaultElementStyle"
   ]);
   assertKnownKeys(value, path, allowed);
@@ -1060,6 +1112,12 @@ function validateCustomProperties(
       validateRecognizedGroups(item, `${path}.${key}`, context);
     } else if (key === "defaultElementStyle") {
       validateStyleSnapshot(item, `${path}.${key}`, context);
+    } else if (key === "semanticMetadata") {
+      validateSemanticMetadata(item, `${path}.${key}`);
+    } else if (key === "semanticRelations") {
+      validateSemanticRelations(item, `${path}.${key}`);
+    } else if (key === "semanticConnector") {
+      validateSemanticConnector(item, `${path}.${key}`);
     }
   }
 }
@@ -1118,6 +1176,146 @@ function validateLayoutManager(value: unknown, path: string): void {
     !["fit-content", "fixed", "clip-path"].includes(value.strategy)
   ) {
     fail(`${path}.strategy`, "is unsupported");
+  }
+}
+
+function validateSemanticMetadata(value: unknown, path: string): void {
+  if (!isRecord(value)) fail(path, "is invalid");
+  assertKnownKeys(
+    value,
+    path,
+    new Set([
+      "version",
+      "semanticRole",
+      "semanticType",
+      "stageId",
+      "stageIndex",
+      "tags",
+      "relationIds",
+      "preferredPortHint",
+      "pinned",
+      "allowedOverlapObjectIds",
+      "semanticName"
+    ])
+  );
+  if (value.version !== 1) fail(`${path}.version`, "is unsupported");
+  if (
+    value.semanticRole !== undefined &&
+    (typeof value.semanticRole !== "string" || !SEMANTIC_ROLES.has(value.semanticRole))
+  )
+    fail(`${path}.semanticRole`, "is unsupported");
+  for (const key of ["semanticType", "stageId", "semanticName"] as const) {
+    if (value[key] !== undefined)
+      assertString(value[key], `${path}.${key}`, {
+        maxLength: key === "semanticName" ? 160 : 120,
+        nonEmpty: true
+      });
+  }
+  if (value.stageIndex !== undefined)
+    assertFiniteNumber(value.stageIndex, `${path}.stageIndex`, { min: 0, max: 999, integer: true });
+  for (const key of ["tags", "relationIds", "allowedOverlapObjectIds"] as const) {
+    if (value[key] === undefined) continue;
+    const maximum = key === "tags" ? 16 : 32;
+    assertArray(value[key], `${path}.${key}`, maximum);
+    (value[key] as unknown[]).forEach((item, index) =>
+      assertNonEmptyString(item, `${path}.${key}[${index}]`, 200)
+    );
+  }
+  if (
+    value.preferredPortHint !== undefined &&
+    (typeof value.preferredPortHint !== "string" ||
+      !SEMANTIC_PORT_KINDS.has(value.preferredPortHint))
+  )
+    fail(`${path}.preferredPortHint`, "is unsupported");
+  if (value.pinned !== undefined) assertBoolean(value.pinned, `${path}.pinned`);
+}
+
+function validateSemanticRelations(value: unknown, path: string): void {
+  assertArray(value, path, 32);
+  value.forEach((item, index) => {
+    const relationPath = `${path}[${index}]`;
+    if (!isRecord(item)) fail(relationPath, "is invalid");
+    assertKnownKeys(
+      item,
+      relationPath,
+      new Set([
+        "id",
+        "kind",
+        "sourceObjectId",
+        "targetObjectId",
+        "mediatorObjectIds",
+        "direction",
+        "allowedOverlap"
+      ])
+    );
+    assertNonEmptyString(item.id, `${relationPath}.id`, 200);
+    assertNonEmptyString(item.sourceObjectId, `${relationPath}.sourceObjectId`, 200);
+    assertNonEmptyString(item.targetObjectId, `${relationPath}.targetObjectId`, 200);
+    if (typeof item.kind !== "string" || !SEMANTIC_RELATION_KINDS.has(item.kind))
+      fail(`${relationPath}.kind`, "is unsupported");
+    if (item.mediatorObjectIds !== undefined) {
+      assertArray(item.mediatorObjectIds, `${relationPath}.mediatorObjectIds`, 8);
+      (item.mediatorObjectIds as unknown[]).forEach((id, mediatorIndex) =>
+        assertNonEmptyString(id, `${relationPath}.mediatorObjectIds[${mediatorIndex}]`, 200)
+      );
+    }
+    if (
+      item.direction !== undefined &&
+      !["forward", "reverse", "bidirectional"].includes(String(item.direction))
+    )
+      fail(`${relationPath}.direction`, "is unsupported");
+    if (item.allowedOverlap !== undefined)
+      assertBoolean(item.allowedOverlap, `${relationPath}.allowedOverlap`);
+  });
+}
+
+function validateSemanticConnector(value: unknown, path: string): void {
+  if (!isRecord(value)) fail(path, "is invalid");
+  assertKnownKeys(
+    value,
+    path,
+    new Set(["version", "fromPortId", "toPortId", "routeType", "clearance", "routeContext"])
+  );
+  if (value.version !== 1) fail(`${path}.version`, "is unsupported");
+  assertNonEmptyString(value.fromPortId, `${path}.fromPortId`, 200);
+  assertNonEmptyString(value.toPortId, `${path}.toPortId`, 200);
+  if (
+    !["straight", "orthogonal", "bezier", "outside", "circular-arc", "cycle-arc"].includes(
+      String(value.routeType)
+    )
+  )
+    fail(`${path}.routeType`, "is unsupported");
+  assertFiniteNumber(value.clearance, `${path}.clearance`, { min: 0, max: 1000 });
+  if (value.routeContext !== undefined) {
+    if (!isRecord(value.routeContext)) fail(`${path}.routeContext`, "is invalid");
+    assertKnownKeys(
+      value.routeContext,
+      `${path}.routeContext`,
+      new Set(["center", "radius", "axes", "direction"])
+    );
+    if (value.routeContext.center !== undefined)
+      validatePoint(value.routeContext.center, `${path}.routeContext.center`);
+    if (value.routeContext.radius !== undefined)
+      assertFiniteNumber(value.routeContext.radius, `${path}.routeContext.radius`, {
+        min: 0,
+        max: PORTABLE_PROJECT_LIMITS.maxCoordinate
+      });
+    if (value.routeContext.axes !== undefined) {
+      if (!isRecord(value.routeContext.axes)) fail(`${path}.routeContext.axes`, "is invalid");
+      assertFiniteNumber(value.routeContext.axes.x, `${path}.routeContext.axes.x`, {
+        min: 0,
+        max: PORTABLE_PROJECT_LIMITS.maxCoordinate
+      });
+      assertFiniteNumber(value.routeContext.axes.y, `${path}.routeContext.axes.y`, {
+        min: 0,
+        max: PORTABLE_PROJECT_LIMITS.maxCoordinate
+      });
+    }
+    if (
+      value.routeContext.direction !== undefined &&
+      !["clockwise", "counterclockwise"].includes(String(value.routeContext.direction))
+    )
+      fail(`${path}.routeContext.direction`, "is unsupported");
   }
 }
 
@@ -1488,6 +1686,32 @@ export function migrateProject(input: unknown): PortableProject {
   const canvas = validateCanvas(project.canvas);
   const context = createValidationContext();
   const scene = validateScene(project.objects, "scene", context);
+  const relationIds = new Set<string>();
+  const collectRelations = (value: unknown): void => {
+    if (!isRecord(value)) return;
+    if (Array.isArray(value.semanticRelations)) {
+      value.semanticRelations.forEach((relation) => {
+        if (!isRecord(relation)) return;
+        if (relationIds.has(String(relation.id)))
+          fail("scene.semanticRelations", "contains a duplicated relation id");
+        relationIds.add(String(relation.id));
+        if (
+          !context.objectIds.has(String(relation.sourceObjectId)) ||
+          !context.objectIds.has(String(relation.targetObjectId))
+        ) {
+          fail("scene.semanticRelations", "contains a relation with a missing endpoint");
+        }
+        if (
+          Array.isArray(relation.mediatorObjectIds) &&
+          relation.mediatorObjectIds.some((id) => !context.objectIds.has(String(id)))
+        ) {
+          fail("scene.semanticRelations", "contains a relation with a missing mediator");
+        }
+      });
+    }
+    if (Array.isArray(value.objects)) value.objects.forEach(collectRelations);
+  };
+  collectRelations(scene);
   const uploads = validateUploads(project.uploads, context);
   const usedAssetIds = validateAssetIds(project.usedAssetIds);
   let description: string | undefined;
@@ -1521,15 +1745,60 @@ export interface MigratedProjectForLoad {
   identityWarnings: string[];
 }
 
+function repairMissingCircularArcBindings(input: unknown): {
+  repaired: boolean;
+  warnings: string[];
+} {
+  if (!isRecord(input) || !isRecord(input.objects) || !Array.isArray(input.objects.objects)) {
+    return { repaired: false, warnings: [] };
+  }
+  let repaired = false;
+  const warnings: string[] = [];
+  const walk = (value: unknown, path: string): void => {
+    if (!isRecord(value)) return;
+    if (
+      value.type === "Group" &&
+      value.OpenSketchType === "curved-arrow" &&
+      value.name === "Circular arc" &&
+      value.freeConnectorBinding === undefined
+    ) {
+      value.freeConnectorBinding = {
+        fromObjectId: "",
+        fromAnchor: "center",
+        toObjectId: "",
+        toAnchor: "center",
+        startArrowhead: "none",
+        endArrowhead: "triangle",
+        lineStyle: "solid",
+        routing: "direct",
+        pathShape: "circular",
+        curvature: 1
+      };
+      repaired = true;
+      warnings.push(`Repaired missing free-connector metadata for circular arc at ${path}.`);
+    }
+    if (Array.isArray(value.objects)) {
+      value.objects.forEach((child, index) => walk(child, `${path}.objects[${index}]`));
+    }
+    if (isRecord(value.clipPath)) walk(value.clipPath, `${path}.clipPath`);
+    if (isRecord(value.path) && typeof value.path.type === "string") {
+      walk(value.path, `${path}.path`);
+    }
+  };
+  input.objects.objects.forEach((object, index) => walk(object, `scene.objects[${index}]`));
+  return { repaired, warnings };
+}
+
 /**
  * Repairs duplicate identities produced by older clone paths before applying
  * the strict portable-project validation gate.
  */
 export function migrateProjectForLoad(input: unknown): MigratedProjectForLoad {
   const repair = repairProjectIdentity(input);
+  const circularArcRepair = repairMissingCircularArcBindings(repair.project);
   return {
     project: migrateProject(repair.project),
-    identityRepaired: repair.repaired,
-    identityWarnings: repair.warnings
+    identityRepaired: repair.repaired || circularArcRepair.repaired,
+    identityWarnings: [...repair.warnings, ...circularArcRepair.warnings]
   };
 }
