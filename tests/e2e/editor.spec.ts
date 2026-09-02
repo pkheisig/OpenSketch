@@ -2,6 +2,9 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { decodePDFRawStream, PDFDocument, PDFRawStream } from "pdf-lib";
+import { normalizePublicBase } from "../../apps/web/src/deploymentBase";
+
+const publicBase = normalizePublicBase(process.env.VITE_PUBLIC_BASE);
 
 function decodeXml(value: string): string {
   return value.replace(/&(quot|apos|lt|gt|amp);/g, (_, entity: string) => {
@@ -1760,32 +1763,35 @@ test.describe("bundled NIH BioArt SVG compatibility", () => {
         "The browser-independent asset corpus only needs one pass."
       );
       test.setTimeout(60_000);
-      await page.goto("/");
-      const failures = await page.evaluate(async (items) => {
-        const { loadEditableSvg } = await import("/OpenSketch/src/editor/svg.ts");
-        const failed: Array<{ id: string; family: string; error: string }> = [];
-        for (let offset = 0; offset < items.length; offset += 24) {
-          const results = await Promise.all(
-            items.slice(offset, offset + 24).map(async (item) => {
-              try {
-                const response = await fetch(`/OpenSketch${item.assetPath}`);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const parsed = await loadEditableSvg(await response.text());
-                if (!parsed.objects.some(Boolean)) throw new Error("No editable objects");
-                return null;
-              } catch (reason) {
-                return { ...item, error: String(reason) };
-              }
-            })
-          );
-          failed.push(
-            ...results.filter((result): result is { id: string; family: string; error: string } =>
-              Boolean(result)
-            )
-          );
-        }
-        return failed;
-      }, variants);
+      await page.goto(publicBase);
+      const failures = await page.evaluate(
+        async ({ base, items }) => {
+          const { loadEditableSvg } = await import(`${base}src/editor/svg.ts`);
+          const failed: Array<{ id: string; family: string; error: string }> = [];
+          for (let offset = 0; offset < items.length; offset += 24) {
+            const results = await Promise.all(
+              items.slice(offset, offset + 24).map(async (item) => {
+                try {
+                  const response = await fetch(`${base}${item.assetPath.replace(/^\/+/, "")}`);
+                  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                  const parsed = await loadEditableSvg(await response.text());
+                  if (!parsed.objects.some(Boolean)) throw new Error("No editable objects");
+                  return null;
+                } catch (reason) {
+                  return { ...item, error: String(reason) };
+                }
+              })
+            );
+            failed.push(
+              ...results.filter((result): result is { id: string; family: string; error: string } =>
+                Boolean(result)
+              )
+            );
+          }
+          return failed;
+        },
+        { base: publicBase, items: variants }
+      );
 
       expect(failures).toEqual([]);
     });
