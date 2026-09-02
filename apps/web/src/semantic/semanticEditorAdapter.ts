@@ -1006,7 +1006,10 @@ export function createSemanticEditorAdapter(
               .getObjects()
               .filter((object): object is IText => object instanceof IText)
           : [];
-        if (existingStage && existingLabelGroup && existingTexts.length > 0) {
+        const textForRole = (role: string): IText | undefined =>
+          existingTexts.find((object) => metadataOf(object)?.semanticRole === role);
+        const labelText = textForRole("stage-label") ?? existingTexts[0];
+        if (existingStage && existingLabelGroup && labelText) {
           const requestedIds = objectIds(input);
           if (
             requestedIds.some(
@@ -1022,9 +1025,20 @@ export function createSemanticEditorAdapter(
               "UNSUPPORTED_UPDATE",
               "Changing placement on an existing labeled group is not supported."
             );
-          [input.label, input.title, input.subtitle].forEach((value, index) => {
-            if (typeof value === "string" && value.length > 0 && existingTexts[index])
-              existingTexts[index].set("text", value);
+          const updates: [string, unknown][] = [
+            ["stage-label", input.label],
+            ["stage-title", input.title],
+            ["stage-subtitle", input.subtitle]
+          ];
+          updates.forEach(([role, value]) => {
+            if (typeof value !== "string" || value.length === 0) return;
+            const text = role === "stage-label" ? labelText : textForRole(role);
+            if (!text)
+              throw new SemanticAdapterError(
+                "UNSUPPORTED_UPDATE",
+                `Existing labeled group has no ${role} text slot.`
+              );
+            text.set("text", value);
           });
           if (input.stageIndex !== undefined) {
             const stageObjects = [
@@ -1122,6 +1136,10 @@ export function createSemanticEditorAdapter(
       contentGroup.OpenSketchType = "group";
       const stageId =
         typeof input.stageId === "string" && input.stageId ? input.stageId : contentGroup.objectId;
+      labelObject.semanticMetadata = { version: 1, semanticRole: "stage-label", stageId };
+      if (title) title.semanticMetadata = { version: 1, semanticRole: "stage-title", stageId };
+      if (subtitle)
+        subtitle.semanticMetadata = { version: 1, semanticRole: "stage-subtitle", stageId };
       contentGroup.semanticMetadata = {
         version: 1,
         semanticRole: "stage-content",
@@ -1284,8 +1302,7 @@ export function createSemanticEditorAdapter(
       const particleCount = finiteNumber(input.count, "count");
       const distribution = input.distribution as ParticleDistribution;
       const particleRole = typeof input.role === "string" ? input.role : "particle-field";
-      const requestedSemanticType =
-        typeof input.semanticType === "string" ? input.semanticType : undefined;
+      const requestedSemanticType = boundedText(input.semanticType, 120);
       const particleSemanticType = requestedSemanticType ?? "particle";
       const fieldSemanticType = requestedSemanticType ?? "particle-field";
       const sourceObjectId =
@@ -1651,11 +1668,22 @@ export function createSemanticEditorAdapter(
         }
         if (object.objectId) changed.add(object.objectId);
       };
+      const visitStyleObjects = (
+        root: FabricObject,
+        fallbackPreset?: ReturnType<typeof stylePreset>
+      ): void => {
+        const walk = (object: FabricObject): void => {
+          const protectedAsset = object.familyId && input.includeAssets !== true;
+          applyPreset(object, fallbackPreset);
+          if (isGroup(object) && !protectedAsset) object.getObjects().forEach(walk);
+        };
+        walk(root);
+      };
       targets.forEach((object) => {
         const inheritedPreset = presetId
           ? stylePreset(presetId)
           : stylePreset(metadataOf(object)?.semanticRole ?? "");
-        visitSceneObjects(object, (current) => applyPreset(current, inheritedPreset));
+        visitStyleObjects(object, inheritedPreset);
       });
       const changedObjectIds = [...changed];
       if (changedObjectIds.length > 0) {

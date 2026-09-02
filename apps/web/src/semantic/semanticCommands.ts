@@ -1191,7 +1191,7 @@ definitions.push(
       type: "object",
       properties: {
         semanticRole,
-        semanticType: { type: "string", maxLength: 120 },
+        semanticType: { type: "string", minLength: 1, maxLength: 120 },
         stageId: { type: "string", maxLength: 120 },
         stageIndex: integer(0, 999),
         tag: { type: "string", maxLength: 200 },
