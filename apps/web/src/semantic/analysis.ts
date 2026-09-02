@@ -83,10 +83,6 @@ function finding(
   };
 }
 
-function leafEntries(canvas: Canvas) {
-  return sceneObjectEntries(canvas).filter(({ object }) => !isGroup(object));
-}
-
 function relationAllowsOverlap(relations: SemanticRelation[], a: string, b: string): boolean {
   return relations.some(
     (relation) =>
@@ -106,9 +102,10 @@ export function analyzeComposition(
   const categories = options.categories ? new Set(options.categories) : undefined;
   const maxFindings = Math.max(1, Math.min(256, Math.floor(options.maxFindings ?? 128)));
   const padding = options.padding ?? 24;
-  const entries = leafEntries(canvas).filter(({ object }) => object.objectId);
+  const allEntries = sceneObjectEntries(canvas).filter(({ object }) => object.objectId);
+  const entries = allEntries.filter(({ object }) => !isGroup(object));
   const relations = relationsForCanvas(canvas);
-  const index = new Map(entries.map(({ object }) => [object.objectId!, object]));
+  const index = new Map(allEntries.map(({ object }) => [object.objectId!, object]));
   const findings: CompositionFinding[] = [];
   const add = (...args: Parameters<typeof finding>) => {
     if (!categories || categories.has(args[0])) findings.push(finding(...args));
@@ -160,7 +157,9 @@ export function analyzeComposition(
         [id]
       );
     if ((object instanceof IText || object instanceof Textbox) && object.visible !== false) {
-      const lines = object.text.split("\n").length;
+      const lines =
+        (object as unknown as { _textLines?: string[][] })._textLines?.length ??
+        object.text.split("\n").length;
       if (!Number.isFinite(object.width) || !Number.isFinite(object.height) || object.fontSize < 6)
         add(
           "text",
@@ -290,7 +289,7 @@ export function analyzeComposition(
       );
   });
   if (profile === "cycle") {
-    const stages = entries
+    const stages = allEntries
       .map(({ object }) => metadataOf(object)?.stageIndex)
       .filter((value): value is number => value !== undefined)
       .sort((a, b) => a - b);

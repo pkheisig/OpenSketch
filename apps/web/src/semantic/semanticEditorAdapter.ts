@@ -995,11 +995,9 @@ export function createSemanticEditorAdapter(
               .filter((object): object is IText => object instanceof IText)
           : [];
         if (existingStage && existingLabelGroup && existingTexts.length > 0) {
-          const values = [input.label, input.title, input.subtitle].filter(
-            (value): value is string => typeof value === "string" && value.length > 0
-          );
-          values.forEach((value, index) => {
-            if (existingTexts[index]) existingTexts[index].set("text", value);
+          [input.label, input.title, input.subtitle].forEach((value, index) => {
+            if (typeof value === "string" && value.length > 0 && existingTexts[index])
+              existingTexts[index].set("text", value);
           });
           refreshTextMetrics(existingTexts);
           existingStage.setCoords();
@@ -1134,7 +1132,16 @@ export function createSemanticEditorAdapter(
       const [source, target] = resolveObjects(canvas, [sourceObjectId, targetObjectId]);
       if (source === target)
         throw new SemanticAdapterError("INVALID_INPUT", "Interaction endpoints must differ.");
-      assertIndependentPlacementObjects([source, target]);
+      const mediatorObjectId =
+        typeof input.mediatorObjectId === "string" ? input.mediatorObjectId : undefined;
+      const mediatorObject = mediatorObjectId
+        ? resolveObjects(canvas, [mediatorObjectId])[0]
+        : undefined;
+      assertIndependentPlacementObjects([
+        source,
+        target,
+        ...(mediatorObject ? [mediatorObject] : [])
+      ]);
       const plan = planInteraction(
         inspectSemanticGeometry(source).visualBounds,
         inspectSemanticGeometry(target).visualBounds,
@@ -1143,10 +1150,11 @@ export function createSemanticEditorAdapter(
       );
       moveAnchorTo(source, "center", plan.source);
       moveAnchorTo(target, "center", plan.target);
-      const mediatorObjectId =
-        typeof input.mediatorObjectId === "string" ? input.mediatorObjectId : undefined;
-      if (mediatorObjectId && plan.mediator)
-        moveAnchorTo(resolveObjects(canvas, [mediatorObjectId])[0], "center", plan.mediator);
+      const mediatorPosition = plan.mediator ?? {
+        x: (plan.source.x + plan.target.x) / 2,
+        y: (plan.source.y + plan.target.y) / 2
+      };
+      if (mediatorObject) moveAnchorTo(mediatorObject, "center", mediatorPosition);
       const relation = normalizeRelation({
         id:
           typeof input.relationId === "string"
@@ -1176,7 +1184,7 @@ export function createSemanticEditorAdapter(
           relation,
           source: plan.source,
           target: plan.target,
-          ...(plan.mediator ? { mediator: plan.mediator } : {}),
+          ...(mediatorObject ? { mediator: mediatorPosition } : {}),
           warnings: plan.warnings
         },
         changedObjectIds: [
@@ -1307,8 +1315,9 @@ export function createSemanticEditorAdapter(
         .filter((object) => object !== target && object.visible !== false && !object.connector);
       const chosen =
         candidates[(preferred + candidates.length) % candidates.length] ?? candidates[0];
+      const orderedCandidates = [...candidates.slice(preferred), ...candidates.slice(0, preferred)];
       const position =
-        candidates.find(
+        orderedCandidates.find(
           (candidate) =>
             !sceneObjects.some((object) => {
               const candidateBounds = {
@@ -1411,7 +1420,9 @@ export function createSemanticEditorAdapter(
         object.set("fontSize", size);
         if (object instanceof Textbox) object.set("width", Math.min(originalWidth, maxWidth));
         refreshTextMetrics([object]);
-        const lines = object.text.split("\n").length;
+        const lines =
+          (object as unknown as { _textLines?: string[][] })._textLines?.length ??
+          object.text.split("\n").length;
         if (
           (object.width ?? 0) <= maxWidth + 0.01 &&
           (object.height ?? 0) <= maxHeight + 0.01 &&
@@ -1431,7 +1442,9 @@ export function createSemanticEditorAdapter(
             fontSize: originalFontSize,
             width: object.width ?? 0,
             height: object.height ?? 0,
-            lines: object.text.split("\n").length
+            lines:
+              (object as unknown as { _textLines?: string[][] })._textLines?.length ??
+              object.text.split("\n").length
           },
           changedObjectIds: []
         };
@@ -1447,7 +1460,9 @@ export function createSemanticEditorAdapter(
           fontSize: object.fontSize,
           width: object.width ?? 0,
           height: object.height ?? 0,
-          lines: object.text.split("\n").length
+          lines:
+            (object as unknown as { _textLines?: string[][] })._textLines?.length ??
+            object.text.split("\n").length
         },
         changedObjectIds: [objectId]
       };
