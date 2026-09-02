@@ -82,6 +82,12 @@ function fakeAdapter(ready = true): SemanticEditorAdapter & {
         state.objectIds = state.objectIds.filter((id) => !ids.includes(id));
         return { data: { objectIds: ids }, changedObjectIds: ids };
       }
+      if (command === "duplicate_objects") {
+        return {
+          data: { objectIds: ["copy-1", "copy-2"] },
+          changedObjectIds: ["copy-1", "copy-2"]
+        };
+      }
       return { data: {}, changedObjectIds: [] };
     },
     runTransaction: async (operation) => {
@@ -180,5 +186,29 @@ describe("semantic runtime", () => {
 
     expect(literal.ok).toBe(true);
     expect(unknown).toMatchObject({ ok: false, error: { code: "UNKNOWN_ALIAS" } });
+  });
+
+  it("rejects a collection alias in a single identity field", async () => {
+    const adapter = fakeAdapter();
+    const runtime = createSemanticRuntime(adapter);
+    const result = await runtime.execute("batch", {
+      operations: [
+        {
+          command: "duplicate_objects",
+          input: { objectIds: ["object-1"], offset: { x: 1, y: 1 } },
+          as: "copies"
+        },
+        {
+          command: "create_connector",
+          input: {
+            kind: "arrow",
+            fromObjectId: "$copies",
+            toObjectId: "object-1"
+          }
+        }
+      ]
+    });
+
+    expect(result).toMatchObject({ ok: false, error: { code: "INVALID_ALIAS_USE" } });
   });
 });

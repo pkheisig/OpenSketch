@@ -215,6 +215,16 @@ function unionBounds(objects: FabricObject[]): SemanticBounds {
 
 function refreshParentGroups(object: FabricObject): void {
   for (let parent = object.group; parent instanceof Group; parent = parent.group) {
+    const desiredTransform = object.calcTransformMatrix();
+    parent.triggerLayout();
+    util.applyTransformToObject(
+      object,
+      util.multiplyTransformMatrices(
+        util.invertTransform(parent.calcTransformMatrix()),
+        desiredTransform
+      )
+    );
+    object.setCoords();
     parent.dirty = true;
     parent.setCoords();
   }
@@ -645,7 +655,12 @@ export function createSemanticEditorAdapter(
       const ids = objectIds(input);
       const axis = input.axis === "x" ? "flipX" : input.axis === "y" ? "flipY" : undefined;
       if (!axis) throw new SemanticAdapterError("INVALID_INPUT", "axis must be x or y.");
-      resolveObjects(canvas, ids).forEach((object) => object.set(axis, !object[axis]));
+      resolveObjects(canvas, ids).forEach((object) => {
+        object.set(axis, !object[axis]);
+        object.setCoords();
+        refreshParentGroups(object);
+      });
+      dependencies.refreshConnectors();
       canvas.requestRenderAll();
       commitSemantic("Semantic flip");
       return { data: { objectIds: ids }, changedObjectIds: ids };
@@ -723,24 +738,20 @@ export function createSemanticEditorAdapter(
       const bounds = unionBounds(objects);
       objects.forEach((object) => {
         const current = boundsOf(object);
-        if (axis === "left") object.left = (object.left ?? 0) + bounds.left - current.left;
+        let dx = 0;
+        let dy = 0;
+        if (axis === "left") dx = bounds.left - current.left;
         if (axis === "center")
-          object.left =
-            (object.left ?? 0) +
-            bounds.left +
-            bounds.width / 2 -
-            (current.left + current.width / 2);
-        if (axis === "right")
-          object.left =
-            (object.left ?? 0) + bounds.left + bounds.width - (current.left + current.width);
-        if (axis === "top") object.top = (object.top ?? 0) + bounds.top - current.top;
+          dx = bounds.left + bounds.width / 2 - (current.left + current.width / 2);
+        if (axis === "right") dx = bounds.left + bounds.width - (current.left + current.width);
+        if (axis === "top") dy = bounds.top - current.top;
         if (axis === "middle")
-          object.top =
-            (object.top ?? 0) + bounds.top + bounds.height / 2 - (current.top + current.height / 2);
-        if (axis === "bottom")
-          object.top =
-            (object.top ?? 0) + bounds.top + bounds.height - (current.top + current.height);
+          dy = bounds.top + bounds.height / 2 - (current.top + current.height / 2);
+        if (axis === "bottom") dy = bounds.top + bounds.height - (current.top + current.height);
+        const delta = deltaInParentPlane(object, dx, dy);
+        object.set({ left: (object.left ?? 0) + delta.x, top: (object.top ?? 0) + delta.y });
         object.setCoords();
+        refreshParentGroups(object);
       });
       dependencies.refreshConnectors();
       canvas.requestRenderAll();
@@ -784,13 +795,14 @@ export function createSemanticEditorAdapter(
       ordered.slice(1, -1).forEach((object, index) => {
         const current = bounds[index + 1];
         const currentPosition = axis === "horizontal" ? current.left : current.top;
-        object.set(
-          axis === "horizontal" ? "left" : "top",
-          (axis === "horizontal" ? (object.left ?? 0) : (object.top ?? 0)) +
-            cursor -
-            currentPosition
+        const delta = deltaInParentPlane(
+          object,
+          axis === "horizontal" ? cursor - currentPosition : 0,
+          axis === "vertical" ? cursor - currentPosition : 0
         );
+        object.set({ left: (object.left ?? 0) + delta.x, top: (object.top ?? 0) + delta.y });
         object.setCoords();
+        refreshParentGroups(object);
         cursor += (axis === "horizontal" ? current.width : current.height) + gap;
       });
       dependencies.refreshConnectors();

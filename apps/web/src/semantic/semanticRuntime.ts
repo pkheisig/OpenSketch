@@ -160,6 +160,12 @@ function resolveAliases(value: unknown, aliases: Map<string, AliasValue>, field?
     const alias = aliases.get(value.slice(1));
     if (!alias)
       throw new SemanticInputError("UNKNOWN_ALIAS", `Semantic alias "${value}" is not defined.`);
+    if (Array.isArray(alias.value) && field !== "objectIds") {
+      throw new SemanticInputError(
+        "INVALID_ALIAS_USE",
+        `Semantic alias "${value}" contains multiple object IDs and cannot be used for ${field}.`
+      );
+    }
     return alias.value;
   }
   if (Array.isArray(value)) {
