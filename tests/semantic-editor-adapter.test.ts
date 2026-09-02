@@ -46,7 +46,13 @@ function makeAdapter(canvas: Canvas, setSelection = vi.fn()) {
     refreshConnectors: vi.fn(),
     applyColorPreset: vi.fn(async () => undefined),
     undo: vi.fn(async () => false),
-    redo: vi.fn(async () => false)
+    redo: vi.fn(async () => false),
+    insertAsset: vi.fn(async () => "asset-object"),
+    replaceAssetVariant: vi.fn(async () => true),
+    exportSvg: vi.fn(),
+    exportCredits: vi.fn(),
+    exportPdf: vi.fn(async () => undefined),
+    exportPng: vi.fn(async () => undefined)
   });
   return Object.assign(adapter, { commit, restore });
 }

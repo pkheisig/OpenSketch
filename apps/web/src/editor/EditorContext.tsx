@@ -165,6 +165,7 @@ import { DEFAULT_TEXT_LINE_HEIGHT } from "@/editor/text";
 import { createSemanticEditorAdapter } from "@/semantic/semanticEditorAdapter";
 import { installSemanticIntrospection } from "@/semantic/semanticIntrospection";
 import { createSemanticRuntime, type SemanticRuntime } from "@/semantic/semanticRuntime";
+import { createWebMcpAdapter, type WebMcpAdapter } from "@/semantic/webmcp";
 
 FabricObject.customProperties = [
   "objectId",
@@ -525,7 +526,11 @@ export interface EditorContextValue {
   ) => void;
   placeCreationTool: (tool: CreationTool, point: Point, endPoint?: Point) => void;
   placeCreation: (point: Point, endPoint?: Point) => void;
-  addAsset: (family: AssetFamily, variant: AssetVariant, point?: Point) => Promise<void>;
+  addAsset: (
+    family: AssetFamily,
+    variant: AssetVariant,
+    point?: Point
+  ) => Promise<string | undefined>;
   addTemplate: (template: AssetTemplate, point?: Point) => Promise<void>;
   setAssetVariant: (variantId: string) => Promise<void>;
   addImportedMedia: (media: ImportedMediaRecord, point?: Point) => Promise<void>;
@@ -1146,7 +1151,7 @@ export function EditorProvider({
   const savedRevision = useRef(0);
   const lastSaveError = useRef<unknown>(undefined);
   const [saveState, setSaveState] = useState<ProjectSaveState>({ phase: "saved" });
-  const assetInsertQueue = useRef<Promise<void>>(Promise.resolve());
+  const assetInsertQueue = useRef<Promise<unknown>>(Promise.resolve());
   const importQueue = useRef<Promise<void>>(Promise.resolve());
   const pendingEditorWork = useRef(0);
   const pendingEditorWorkPromises = useRef(new Set<Promise<void>>());
@@ -2434,6 +2439,16 @@ export function EditorProvider({
   semanticUndoRef.current = undo;
   const semanticRedoRef = useRef(redo);
   semanticRedoRef.current = redo;
+  const semanticExportSvgRef = useRef<EditorContextValue["exportSvg"]>(() => undefined);
+  const semanticExportCreditsRef = useRef<EditorContextValue["exportCredits"]>(() => undefined);
+  const semanticExportPdfRef = useRef<EditorContextValue["exportPdf"]>(async () => undefined);
+  const semanticExportPngRef = useRef<EditorContextValue["exportPng"]>(async () => undefined);
+  const semanticInsertAssetRef = useRef<
+    (family: AssetFamily, variant: AssetVariant, point?: Point) => Promise<string | undefined>
+  >(async () => undefined);
+  const semanticReplaceAssetVariantRef = useRef<
+    (objectId: string, variantId: string) => Promise<boolean>
+  >(async () => false);
   const semanticRuntimeRef = useRef<SemanticRuntime | null>(null);
   if (!semanticRuntimeRef.current) {
     semanticRuntimeRef.current = createSemanticRuntime(
@@ -2454,13 +2469,42 @@ export function EditorProvider({
         applyColorPreset: (objectId, presetId) =>
           semanticApplyColorPresetRef.current(objectId, presetId),
         undo: () => semanticUndoRef.current(),
-        redo: () => semanticRedoRef.current()
+        redo: () => semanticRedoRef.current(),
+        insertAsset: (...args) => semanticInsertAssetRef.current(...args),
+        replaceAssetVariant: (...args) => semanticReplaceAssetVariantRef.current(...args),
+        exportSvg: (...args) => semanticExportSvgRef.current(...args),
+        exportCredits: (...args) => semanticExportCreditsRef.current(...args),
+        exportPdf: (...args) => semanticExportPdfRef.current(...args),
+        exportPng: (...args) => semanticExportPngRef.current(...args)
       })
     );
   }
   const semanticRuntime = semanticRuntimeRef.current;
 
   useEffect(() => installSemanticIntrospection(semanticRuntime), [semanticRuntime]);
+
+  const semanticWebMcpRef = useRef<WebMcpAdapter | null>(null);
+  if (!semanticWebMcpRef.current) {
+    semanticWebMcpRef.current = createWebMcpAdapter({ runtime: semanticRuntime });
+  }
+  useEffect(() => {
+    const adapter = semanticWebMcpRef.current;
+    if (!adapter) return undefined;
+    let disposed = false;
+    let retryTimer: ReturnType<typeof setTimeout> | undefined;
+    const sync = async () => {
+      const result = await adapter.sync();
+      if (!disposed && !result.supported) {
+        retryTimer = setTimeout(() => void sync(), 250);
+      }
+    };
+    void sync();
+    return () => {
+      disposed = true;
+      if (retryTimer) clearTimeout(retryTimer);
+      adapter.dispose();
+    };
+  }, [canvasReady, project.id, semanticRuntime]);
 
   const setCreationDefaults = useCallback(
     (defaults: CreationDefaults | ((current: CreationDefaults) => CreationDefaults)) => {
@@ -2738,15 +2782,16 @@ export function EditorProvider({
     [creationTool, placeCreationTool]
   );
 
-  const addAsset = useCallback(
-    (family: AssetFamily, variant: AssetVariant, point?: Point) => {
+  const insertBundledAsset = useCallback(
+    (family: AssetFamily, variant: AssetVariant, point: Point | undefined, select: boolean) => {
       const operation = trackPendingEditorWork(
         assetInsertQueue.current.then(async () => {
-          if (!canvas) return;
+          if (!canvas) return undefined;
           const group = await createBundledAssetGroup(family, variant);
           const scale = assetInsertionScale(family.title, group.width || 1, group.height || 1);
           group.scale(scale);
-          addObject(group, family.title, "nih-asset", point);
+          const object = addObject(group, family.title, "nih-asset", point, select);
+          return object?.objectId;
         })
       );
       assetInsertQueue.current = operation.catch(() => undefined);
@@ -2754,6 +2799,19 @@ export function EditorProvider({
     },
     [addObject, canvas, trackPendingEditorWork]
   );
+
+  const addAsset = useCallback(
+    (family: AssetFamily, variant: AssetVariant, point?: Point) =>
+      insertBundledAsset(family, variant, point, true),
+    [insertBundledAsset]
+  );
+
+  const insertSemanticAsset = useCallback(
+    (family: AssetFamily, variant: AssetVariant, point?: Point) =>
+      insertBundledAsset(family, variant, point, false),
+    [insertBundledAsset]
+  );
+  semanticInsertAssetRef.current = insertSemanticAsset;
 
   const addTemplate = useCallback(
     (template: AssetTemplate, point?: Point) => {
@@ -2775,23 +2833,23 @@ export function EditorProvider({
     [addObject, canvas, trackPendingEditorWork]
   );
 
-  const setAssetVariant = useCallback(
-    (variantId: string) => {
+  const replaceAssetVariant = useCallback(
+    (objectId: string, variantId: string, selectReplacement = false) => {
       const operation = trackPendingEditorWork(
         assetInsertQueue.current.then(async () => {
-          if (!canvas) return;
-          const current = canvas.getActiveObject();
+          if (!canvas) return false;
+          const current = sceneObjectIndex(canvas).get(objectId);
           if (!(current instanceof Group) || !current.familyId || current.assetId === variantId)
-            return;
+            return false;
           const { assetManifest } = await loadAssetManifest();
           const family = assetManifest.families.find(
             (candidate) => candidate.familyId === current.familyId
           );
           const variant = family?.variants.find((candidate) => candidate.id === variantId);
-          if (!family || !variant) return;
+          if (!family || !variant) return false;
 
           const replacement = await createBundledAssetGroup(family, variant);
-          if (!canvas.getObjects().includes(current)) return;
+          if (!canvas.getObjects().includes(current)) return false;
           const center = current.getCenterPoint();
           const renderedMaxSide = Math.max(current.getScaledWidth(), current.getScaledHeight());
           const replacementMaxSide = Math.max(replacement.width || 1, replacement.height || 1);
@@ -2814,20 +2872,37 @@ export function EditorProvider({
           replacement.setCoords();
           assignSceneIdentities(replacement);
 
+          const activeIds = canvas
+            .getActiveObjects()
+            .map((object) => object.objectId)
+            .filter((id): id is string => Boolean(id));
           const index = canvas.getObjects().indexOf(current);
           canvas.remove(current);
           canvas.insertAt(index, replacement);
-          canvas.setActiveObject(replacement);
-          setSelection([replacement]);
+          if (selectReplacement || activeIds.includes(objectId)) {
+            canvas.setActiveObject(replacement);
+            setSelection([replacement]);
+          }
           if (replacement.objectId) refreshConnectors(replacement.objectId);
           canvas.requestRenderAll();
           commit("Change asset variant");
+          return true;
         })
       );
       assetInsertQueue.current = operation.catch(() => undefined);
       return operation;
     },
     [canvas, commit, refreshConnectors, trackPendingEditorWork]
+  );
+  semanticReplaceAssetVariantRef.current = replaceAssetVariant;
+
+  const setAssetVariant = useCallback(
+    (variantId: string) => {
+      const current = canvas?.getActiveObject();
+      if (!current?.objectId) return Promise.resolve();
+      return replaceAssetVariant(current.objectId, variantId, true).then(() => undefined);
+    },
+    [canvas, replaceAssetVariant]
   );
 
   const placeImportedMedia = useCallback(
@@ -3832,6 +3907,11 @@ export function EditorProvider({
     },
     [canvas, canvasSettings]
   );
+
+  semanticExportSvgRef.current = exportSvg;
+  semanticExportCreditsRef.current = exportCredits;
+  semanticExportPdfRef.current = exportPdf;
+  semanticExportPngRef.current = exportPng;
 
   useEffect(() => {
     const onPaste = (event: ClipboardEvent) => {

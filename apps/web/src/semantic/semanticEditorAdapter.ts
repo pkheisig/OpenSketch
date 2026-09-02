@@ -1,5 +1,11 @@
 import { ActiveSelection, Canvas, FabricObject, Group, IText, Point, Textbox, util } from "fabric";
-import type { CanvasSettings, ConnectorBinding } from "@workspace/editor-core";
+import {
+  filterAssetFamilies,
+  type AssetFamily,
+  type AssetVariant,
+  type CanvasSettings,
+  type ConnectorBinding
+} from "@workspace/editor-core";
 import {
   CONNECTOR_KINDS,
   SHAPE_KINDS,
@@ -39,6 +45,8 @@ import {
   findRecognizedGroup,
   rememberRecognizedGroup
 } from "@/editor/groupRecognition";
+import { assetManifest } from "@/assets/manifest";
+import { collectProvenanceManifest } from "@/export/provenance";
 
 export class SemanticAdapterError extends Error {
   code: string;
@@ -66,6 +74,16 @@ export interface SemanticEditorAdapterDependencies {
   applyColorPreset: (objectId: string, presetId: string) => Promise<void>;
   undo: () => Promise<boolean>;
   redo: () => Promise<boolean>;
+  insertAsset: (
+    family: AssetFamily,
+    variant: AssetVariant,
+    point?: SemanticPointInput
+  ) => Promise<string | undefined>;
+  replaceAssetVariant: (objectId: string, variantId: string) => Promise<boolean>;
+  exportSvg: (title?: string, description?: string) => void;
+  exportCredits: (title?: string, description?: string) => void;
+  exportPdf: (title?: string, description?: string) => Promise<void>;
+  exportPng: (transparent: boolean, dpi: number, background?: string) => Promise<void>;
 }
 
 type SemanticPointInput = { x: number; y: number };
@@ -393,6 +411,35 @@ function defaultConnectorPathShape(
   return kind === "curved-arrow" || kind === "curved-line" ? "arc" : undefined;
 }
 
+function boundedText(value: unknown, maximum = 320): string | undefined {
+  if (typeof value !== "string") return undefined;
+  const normalized = value.trim();
+  return normalized ? normalized.slice(0, maximum) : undefined;
+}
+
+function assetSummary(family: AssetFamily) {
+  return {
+    familyId: family.familyId,
+    title: boundedText(family.title, 200) ?? family.familyId,
+    description: boundedText(family.description),
+    category: boundedText(family.category, 100),
+    keywords: family.keywords.filter((keyword) => typeof keyword === "string").slice(0, 32),
+    author: boundedText(family.author, 200),
+    credit: boundedText(family.credit),
+    license: family.license,
+    licenseUrl: boundedText(family.licenseUrl, 500),
+    sourceName: boundedText(family.sourceName, 200),
+    sourcePage: boundedText(family.sourcePage ?? family.commonsPage ?? family.nihSourcePage, 500),
+    defaultVariantId: family.defaultVariantId,
+    variants: family.variants.slice(0, 64).map((variant) => ({
+      id: variant.id,
+      label: boundedText(variant.label, 200) ?? variant.id,
+      width: variant.width,
+      height: variant.height
+    }))
+  };
+}
+
 export function createSemanticEditorAdapter(
   dependencies: SemanticEditorAdapterDependencies
 ): SemanticEditorAdapter {
@@ -424,6 +471,69 @@ export function createSemanticEditorAdapter(
       return object;
     });
     return objects;
+  };
+
+  const searchAssets = async ({
+    query,
+    category,
+    limit
+  }: {
+    query: string;
+    category?: string;
+    limit: number;
+  }) => {
+    const matches = filterAssetFamilies(assetManifest.families, query, category ?? "All");
+    return {
+      results: matches.slice(0, limit).map(assetSummary),
+      total: matches.length
+    };
+  };
+
+  const inspectAsset = async ({
+    familyId,
+    variantId
+  }: {
+    familyId: string;
+    variantId?: string;
+  }) => {
+    const family = assetManifest.families.find((candidate) => candidate.familyId === familyId);
+    if (!family)
+      throw new SemanticAdapterError(
+        "STALE_ASSET_ID",
+        `Asset family "${familyId}" does not exist.`
+      );
+    if (variantId && !family.variants.some((variant) => variant.id === variantId)) {
+      throw new SemanticAdapterError(
+        "INVALID_ASSET_VARIANT",
+        `Asset variant "${variantId}" is not available in family "${familyId}".`
+      );
+    }
+    return {
+      family: {
+        ...assetSummary(family),
+        ...(variantId
+          ? { selectedVariantId: variantId }
+          : { selectedVariantId: family.defaultVariantId })
+      }
+    };
+  };
+
+  const inspectProvenance = () => {
+    const canvas = dependencies.getCanvas();
+    const manifest = canvas
+      ? collectProvenanceManifest(canvas.getObjects())
+      : { version: 1 as const, assets: [] };
+    return {
+      version: manifest.version,
+      assets: manifest.assets.slice(0, 200).map((record) =>
+        Object.fromEntries(
+          Object.entries(record)
+            .map(([key, value]) => [key, boundedText(value, 320)])
+            .filter((entry): entry is [string, string] => Boolean(entry[1]))
+        )
+      ),
+      ...(manifest.assets.length > 200 ? { truncated: true } : {})
+    };
   };
 
   const addObject = (
@@ -477,6 +587,56 @@ export function createSemanticEditorAdapter(
       dependencies.setSelection(objects);
       canvas.requestRenderAll();
       return { data: { objectIds: ids }, changedObjectIds: ids };
+    }
+    if (command === "insert_asset") {
+      const familyId = input.familyId as string;
+      const variantId = input.variantId as string;
+      const family = assetManifest.families.find((candidate) => candidate.familyId === familyId);
+      if (!family)
+        throw new SemanticAdapterError(
+          "STALE_ASSET_ID",
+          `Asset family "${familyId}" does not exist.`
+        );
+      const variant = family.variants.find((candidate) => candidate.id === variantId);
+      if (!variant) {
+        throw new SemanticAdapterError(
+          "INVALID_ASSET_VARIANT",
+          `Asset variant "${variantId}" is not available in family "${familyId}".`
+        );
+      }
+      const objectId = await dependencies.insertAsset(
+        family,
+        variant,
+        locationFromInput(canvas, dependencies.getCanvasSettings(), input)
+      );
+      if (!objectId)
+        throw new SemanticAdapterError("INSERT_FAILED", `Could not insert asset "${variantId}".`);
+      return { data: { objectId, familyId, variantId }, changedObjectIds: [objectId] };
+    }
+    if (command === "replace_asset_variant") {
+      const objectId = input.objectId as string;
+      const variantId = input.variantId as string;
+      const [object] = resolveObjects(canvas, [objectId]);
+      if (!(object instanceof Group) || !object.familyId) {
+        throw new SemanticAdapterError(
+          "INVALID_ASSET_TARGET",
+          `Scene object "${objectId}" is not a replaceable bundled asset.`
+        );
+      }
+      const family = assetManifest.families.find(
+        (candidate) => candidate.familyId === object.familyId
+      );
+      if (!family || !family.variants.some((variant) => variant.id === variantId)) {
+        throw new SemanticAdapterError(
+          "INVALID_ASSET_VARIANT",
+          `Asset variant "${variantId}" is not available for scene object "${objectId}".`
+        );
+      }
+      const replaced = await dependencies.replaceAssetVariant(objectId, variantId);
+      return {
+        data: { objectId, variantId },
+        changedObjectIds: replaced ? [objectId] : []
+      };
     }
     if (command === "create_text") {
       const kind = input.kind as (typeof TEXT_KINDS)[number];
@@ -781,6 +941,23 @@ export function createSemanticEditorAdapter(
       await dependencies.applyColorPreset(objectId, presetId);
       commitSemantic("Semantic color preset");
       return { data: { objectId, presetId }, changedObjectIds: [objectId] };
+    }
+    if (command === "export_figure") {
+      const format = input.format as "svg" | "pdf" | "png" | "credits";
+      const title = typeof input.title === "string" ? input.title : undefined;
+      const description = typeof input.description === "string" ? input.description : undefined;
+      if (format === "svg") dependencies.exportSvg(title, description);
+      else if (format === "credits") dependencies.exportCredits(title, description);
+      else if (format === "pdf") await dependencies.exportPdf(title, description);
+      else {
+        const settings = dependencies.getCanvasSettings();
+        await dependencies.exportPng(
+          input.transparent === true,
+          typeof input.dpi === "number" ? input.dpi : settings.dpi,
+          typeof input.background === "string" ? input.background : settings.background
+        );
+      }
+      return { data: { format, started: true } };
     }
     if (command === "arrange_objects") {
       const ids = objectIds(input);
@@ -1183,6 +1360,9 @@ export function createSemanticEditorAdapter(
         .filter(Boolean) ?? [],
     inspectScene,
     inspectObject,
+    searchAssets,
+    inspectAsset,
+    inspectProvenance,
     execute,
     runTransaction: async <T>(operation: () => Promise<T>): Promise<T> => {
       const canvas = canvasOrThrow();
