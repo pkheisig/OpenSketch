@@ -1030,6 +1030,7 @@ export function createSemanticEditorAdapter(
             ["stage-title", input.title],
             ["stage-subtitle", input.subtitle]
           ];
+          const resolvedUpdates: Array<readonly [IText, string]> = [];
           updates.forEach(([role, value]) => {
             if (typeof value !== "string" || value.length === 0) return;
             const text = role === "stage-label" ? labelText : textForRole(role);
@@ -1038,8 +1039,9 @@ export function createSemanticEditorAdapter(
                 "UNSUPPORTED_UPDATE",
                 `Existing labeled group has no ${role} text slot.`
               );
-            text.set("text", value);
+            resolvedUpdates.push([text, value]);
           });
+          resolvedUpdates.forEach(([text, value]) => text.set("text", value));
           if (input.stageIndex !== undefined) {
             const stageObjects = [
               existingStage,
@@ -1464,27 +1466,31 @@ export function createSemanticEditorAdapter(
             !targetPath.includes(object)
         )
         .map(({ object }) => object);
-      const chosen =
-        candidates[(preferred + candidates.length) % candidates.length] ?? candidates[0];
+      const settings = dependencies.getCanvasSettings();
       const orderedCandidates = [...candidates.slice(preferred), ...candidates.slice(0, preferred)];
-      const position =
-        orderedCandidates.find(
-          (candidate) =>
-            !sceneObjects.some((object) => {
-              const candidateBounds = {
-                left: candidate.position.x - boundsOf(annotation).width / 2,
-                top: candidate.position.y - boundsOf(annotation).height / 2,
-                width: boundsOf(annotation).width,
-                height: boundsOf(annotation).height
-              };
-              return (
-                candidateBounds.left < boundsOf(object).left + boundsOf(object).width &&
-                candidateBounds.left + candidateBounds.width > boundsOf(object).left &&
-                candidateBounds.top < boundsOf(object).top + boundsOf(object).height &&
-                candidateBounds.top + candidateBounds.height > boundsOf(object).top
-              );
-            })
-        ) ?? (sceneObjects.length === 0 ? chosen : undefined);
+      const position = orderedCandidates.find((candidate) => {
+        const candidateBounds = {
+          left: candidate.position.x - boundsOf(annotation).width / 2,
+          top: candidate.position.y - boundsOf(annotation).height / 2,
+          width: boundsOf(annotation).width,
+          height: boundsOf(annotation).height
+        };
+        const insideCanvas =
+          candidateBounds.left >= 0 &&
+          candidateBounds.top >= 0 &&
+          candidateBounds.left + candidateBounds.width <= settings.width &&
+          candidateBounds.top + candidateBounds.height <= settings.height;
+        return (
+          insideCanvas &&
+          !sceneObjects.some(
+            (object) =>
+              candidateBounds.left < boundsOf(object).left + boundsOf(object).width &&
+              candidateBounds.left + candidateBounds.width > boundsOf(object).left &&
+              candidateBounds.top < boundsOf(object).top + boundsOf(object).height &&
+              candidateBounds.top + candidateBounds.height > boundsOf(object).top
+          )
+        );
+      });
       if (!position)
         throw new SemanticAdapterError(
           "NO_FEASIBLE_PLACEMENT",

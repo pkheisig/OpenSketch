@@ -145,15 +145,27 @@ export function planInteraction(
         allowedOverlap: false,
         warnings: []
       };
-    case "engulfment":
+    case "engulfment": {
+      const direction = { x: dx / length, y: dy / length };
+      const inset = Math.max(
+        0,
+        Math.min(
+          sourceBounds.width - targetBounds.width,
+          sourceBounds.height - targetBounds.height
+        ) / 4
+      );
       return {
         source,
-        target: { x: target.x + normal.x * offset * 0.35, y: target.y + normal.y * offset * 0.35 },
+        target: {
+          x: source.x + direction.x * inset + normal.x * offset * 0.1,
+          y: source.y + direction.y * inset + normal.y * offset * 0.1
+        },
         mediator: target,
         relationKind: "contacts",
         allowedOverlap: true,
         warnings: ["Engulfment uses controlled target overlap; inspect the resulting hull."]
       };
+    }
     case "migration":
       return { source, target, relationKind: "flow_to", allowedOverlap: false, warnings: [] };
     case "cross-boundary":
