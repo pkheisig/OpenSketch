@@ -16,7 +16,7 @@
     "test:e2e": "playwright test",
     "test:e2e:smoke": "playwright test --project=chromium --grep @smoke",
     "test:e2e:cross-browser": "playwright test --project=firefox --project=webkit --grep @smoke",
-    "test:webmcp": "vitest run tests/semantic-runtime.test.ts tests/semantic-editor-adapter.test.ts tests/webmcp.test.ts && pnpm build && node scripts/check-webmcp-build.mjs && pnpm test:webmcp:e2e",
+    "test:webmcp": "vitest run tests/semantic-runtime.test.ts tests/semantic-editor-adapter.test.ts tests/webmcp.test.ts tests/webmcp-documentation.test.ts && pnpm build && node scripts/check-webmcp-build.mjs && pnpm test:webmcp:e2e",
     "test:webmcp:e2e": "playwright test tests/e2e/webmcp.spec.ts --project=chromium",
     "test:pwa": "playwright test --config playwright.pwa.config.ts",
     "format": "prettier --write .",

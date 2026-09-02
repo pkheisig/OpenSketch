@@ -47,7 +47,7 @@ registry.
 | `search_assets`          | Search the bundled scientific asset manifest                     | Read-only                                    |
 | `inspect_asset`          | Inspect one asset family or variant without raw SVG              | Read-only                                    |
 | `inspect_provenance`     | Inspect bounded asset provenance for the figure                  | Read-only                                    |
-| `set_selection`          | Set the canvas selection by stable object IDs                    | Reversible                                   |
+| `set_selection`          | Set the canvas selection by stable object IDs                    | Reversible and retryable                     |
 | `create_text`            | Create point or box text through the editor pathway              | Reversible                                   |
 | `create_shape`           | Create a supported OpenSketch shape                              | Reversible                                   |
 | `create_connector`       | Create a free or object-bound connector                          | Reversible                                   |
@@ -60,7 +60,7 @@ registry.
 | `set_object_properties`  | Apply typed, whitelisted object properties                       | Reversible and retryable                     |
 | `set_asset_color_preset` | Apply an existing asset color preset                             | Reversible and retryable                     |
 | `arrange_objects`        | Move objects within their layer collection                       | Reversible and retryable                     |
-| `align_objects`          | Align objects to the requested union-bound axis                  | Reversible                                   |
+| `align_objects`          | Align objects to the requested union-bound axis                  | Reversible and retryable                     |
 | `distribute_objects`     | Distribute three or more objects on one axis                     | Reversible and retryable                     |
 | `duplicate_objects`      | Clone objects with fresh identities                              | Reversible                                   |
 | `delete_objects`         | Delete exact objects and bound connectors                        | Sensitive/destructive; explicit confirmation |
@@ -128,18 +128,19 @@ Run the focused qualification from the repository root with:
 pnpm test:webmcp
 ```
 
-This runs semantic unit tests, the production build guard, and the Chromium
-browser workflow in `tests/e2e/webmcp.spec.ts`. The browser test supplies a
-small model-context recorder, exercises asset search/insertion, editing,
-grouping, history, provenance, stale-ID handling, manual editing, and a local
-credits download.
+This runs the semantic unit tests, the registry/catalogue drift guard, the
+production build guard, and the Chromium browser workflow in
+`tests/e2e/webmcp.spec.ts`. The browser test supplies a small model-context
+recorder, exercises asset search/insertion, editing, grouping, history,
+provenance, stale-ID handling, manual editing, and a local credits download.
 
 ## Deployment variants
 
-The default production build currently targets the GitHub Pages path
+The current `dev` production build targets the GitHub Pages path
 `/OpenSketch/`. WEB-6 (PAU-433, [PR #18](https://github.com/pkheisig/OpenSketch/pull/18))
 adds one normalized `VITE_PUBLIC_BASE` and the provider-native static-host
-configuration. On a head containing WEB-6, use:
+configuration. Those variant commands are not present on this guide's current
+base head; on a head containing WEB-6, use:
 
 ```sh
 pnpm build:pages  # /OpenSketch/; the default GitHub Pages deployment
@@ -147,10 +148,10 @@ pnpm build:root   # /; root-hosted static deployment
 pnpm test:deployment
 ```
 
-The root variant is intended for `netlify.toml`: it runs `pnpm build:root`,
-publishes `dist`, uses Node 22, and serves the SPA fallback from
-`/index.html`. The same normalized base drives Vite assets, PWA scope and
-`start_url`, Workbox navigation fallback, and runtime font/scientific-asset
+On a head containing WEB-6, the root variant uses `netlify.toml`: it runs
+`pnpm build:root`, publishes `dist`, uses Node 22, and serves the SPA fallback
+from `/index.html`. The same normalized base then drives Vite assets, PWA scope
+and `start_url`, Workbox navigation fallback, and runtime font/scientific-asset
 cache paths. No generated `dist` directory is committed, and the deployment
 does not depend on GitHub Actions artifacts.
 
