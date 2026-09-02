@@ -1,8 +1,10 @@
 import { defineConfig, devices } from "@playwright/test";
+import { normalizePublicBase } from "./apps/web/src/deploymentBase";
 
 const playwrightPort = process.env.PLAYWRIGHT_PORT ?? "5173";
+const publicBase = normalizePublicBase(process.env.VITE_PUBLIC_BASE);
 const playwrightBaseUrl =
-  process.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${playwrightPort}/OpenSketch/`;
+  process.env.PLAYWRIGHT_BASE_URL ?? `http://127.0.0.1:${playwrightPort}${publicBase}`;
 
 export default defineConfig({
   testDir: "./tests/e2e",

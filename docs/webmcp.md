@@ -136,11 +136,10 @@ provenance, stale-ID handling, manual editing, and a local credits download.
 
 ## Deployment variants
 
-The current `dev` production build targets the GitHub Pages path
-`/OpenSketch/`. WEB-6 (PAU-433, [PR #18](https://github.com/pkheisig/OpenSketch/pull/18))
-adds one normalized `VITE_PUBLIC_BASE` and the provider-native static-host
-configuration. Those variant commands are not present on this guide's current
-base head; on a head containing WEB-6, use:
+The production build supports the GitHub Pages path `/OpenSketch/` by default.
+WEB-6 (PAU-433, [PR #18](https://github.com/pkheisig/OpenSketch/pull/18)) adds
+one normalized `VITE_PUBLIC_BASE` and the provider-native static-host
+configuration. On the current `dev` head, use:
 
 ```sh
 pnpm build:pages  # /OpenSketch/; the default GitHub Pages deployment
@@ -148,7 +147,7 @@ pnpm build:root   # /; root-hosted static deployment
 pnpm test:deployment
 ```
 
-On a head containing WEB-6, the root variant uses `netlify.toml`: it runs
+The root variant uses `netlify.toml`: it runs
 `pnpm build:root`, publishes `dist`, uses Node 22, and serves the SPA fallback
 from `/index.html`. The same normalized base then drives Vite assets, PWA scope
 and `start_url`, Workbox navigation fallback, and runtime font/scientific-asset

@@ -2,6 +2,9 @@ import { expect, test, type Locator, type Page } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import { decodePDFRawStream, PDFDocument, PDFRawStream } from "pdf-lib";
+import { normalizePublicBase } from "../../apps/web/src/deploymentBase";
+
+const publicBase = normalizePublicBase(process.env.VITE_PUBLIC_BASE);
 
 function decodeXml(value: string): string {
   return value.replace(/&(quot|apos|lt|gt|amp);/g, (_, entity: string) => {
@@ -247,7 +250,7 @@ async function placeTool(page: Page, name: string | RegExp, xRatio = 0.5, yRatio
 test("@smoke never paints fallback asset sizing or uninitialized canvas geometry", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.evaluate(() => {
     const states: Array<{
       ready: string | null;
@@ -321,7 +324,7 @@ test("@smoke never paints fallback asset sizing or uninitialized canvas geometry
 test("@smoke keeps the canvas mounted during drag saves and restores the active project after reload", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle");
   await ensureLayersOpen(page);
@@ -387,7 +390,7 @@ test("@smoke keeps the canvas mounted during drag saves and restores the active 
 test("clears the text tool when another sidebar section or the page is clicked", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   const textTool = page.getByRole("button", { name: "Text", exact: true });
 
@@ -403,7 +406,7 @@ test("clears the text tool when another sidebar section or the page is clicked",
 });
 
 test("debounces focused title saves and keeps blank titles loadable", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   const title = page.getByLabel("Document title");
 
@@ -451,7 +454,7 @@ test("debounces focused title saves and keeps blank titles loadable", async ({ p
 });
 
 test("rotates an object by dragging its rotation handle", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle");
   await page.getByRole("button", { name: "Edit", exact: true }).click();
@@ -485,7 +488,7 @@ test("rotates an object by dragging its rotation handle", async ({ page }) => {
 });
 
 test("resizes through the enlarged invisible control hitbox with a UI cursor", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle");
   await page.getByRole("button", { name: "Edit", exact: true }).click();
@@ -529,7 +532,7 @@ test("resizes through the enlarged invisible control hitbox with a UI cursor", a
 });
 
 test("inserts editable standard top-view labware", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("24 well plate top view");
 
@@ -553,7 +556,7 @@ test("inserts editable standard top-view labware", async ({ page }) => {
 });
 
 test("previews and inserts the selected top-view plate color variant", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("24 well plate top view");
 
@@ -602,7 +605,7 @@ test("previews and inserts the selected top-view plate color variant", async ({ 
 test("drags the chosen top-view plate variant preview instead of the default plate", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("24 well plate top view");
 
@@ -645,7 +648,7 @@ test("drags the chosen top-view plate variant preview instead of the default pla
 });
 
 test("uses the complete SVG selector bounds as its canvas hitbox", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await expect(page.locator(".upper-canvas")).toBeVisible();
   await page.evaluate(() => {
@@ -683,7 +686,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
     const url = new URL(request.url());
     if (!["127.0.0.1", "localhost"].includes(url.hostname)) externalRequests.push(request.url());
   });
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await expect(page.getByLabel("OpenSketch figure artboard")).toBeVisible();
 
@@ -844,7 +847,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
 });
 
 test("keeps the canvas preset label synchronized with its dimensions", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("button", { name: "Canvas size", exact: true }).click();
 
@@ -876,7 +879,7 @@ test("keeps the canvas preset label synchronized with its dimensions", async ({ 
 });
 
 test("builds and persists a styled object-attached connector", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
@@ -944,7 +947,7 @@ test("builds and persists a styled object-attached connector", async ({ page }) 
 });
 
 test("changes line ends between blunt and curved in the edit menu", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Line", 0.35, 0.5);
   await page.keyboard.press("ControlOrMeta+A");
@@ -971,7 +974,7 @@ test("changes line ends between blunt and curved in the edit menu", async ({ pag
 });
 
 test("extends a free line from one endpoint without scaling both dimensions", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Line", 0.32, 0.5);
 
@@ -1052,7 +1055,7 @@ test("extends a free line from one endpoint without scaling both dimensions", as
 test("places text and shapes from active tools and persists line creation defaults", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   const shapeMenu = page.getByRole("menu", { name: "Shape tools" });
@@ -1226,7 +1229,7 @@ test("places text from the first Shapes tool without blanking the editor", async
   const pageErrors: string[] = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
 
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await expect(page.getByRole("tab", { name: "Text", exact: true })).toHaveCount(0);
   await expect(page.locator(".shape-grid")).toHaveCount(0);
@@ -1253,7 +1256,7 @@ test("places text from the first Shapes tool without blanking the editor", async
 });
 
 test("shows only controls supported by each editor object type", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   const inspector = page.locator(".inspector-embedded");
 
@@ -1332,7 +1335,7 @@ test("shows only controls supported by each editor object type", async ({ page }
 test("optionally creates Text on an empty-artboard double-click and persists the preference", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("button", { name: "Canvas size" }).click();
 
@@ -1357,7 +1360,7 @@ test("optionally creates Text on an empty-artboard double-click and persists the
 test("double-clicking an existing text item edits it instead of creating another", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const textTool = page
@@ -1380,7 +1383,7 @@ test("double-clicking an existing text item edits it instead of creating another
 });
 
 test("preserves clipboard object size across repeated pastes", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.45, 0.45);
@@ -1406,7 +1409,7 @@ test("copies canvas objects to the system clipboard as PNG and SVG", async ({
 }) => {
   test.skip(browserName !== "chromium", "Clipboard image reads are only exposed by Chromium.");
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.5, 0.5);
 
@@ -1465,7 +1468,7 @@ test("copies canvas objects to the system clipboard as PNG and SVG", async ({
 });
 
 test("inserts assets from the sidebar at the reduced default size", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
   await page.getByRole("button", { name: "Insert T Cell", exact: true }).first().click();
@@ -1526,7 +1529,7 @@ test("keeps family variant previews normalized and drags the selected variant", 
     });
   };
 
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Activated Neutrophil");
   await expect(page.locator(".asset-card")).toHaveCount(1);
@@ -1577,7 +1580,7 @@ test("keeps family variant previews normalized and drags the selected variant", 
 });
 
 test("previews bundled variants and inserts nested-clip-path assets", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Immune Cell");
   const immuneCell = page
@@ -1680,7 +1683,7 @@ test("previews bundled variants and inserts nested-clip-path assets", async ({ p
 test("promotes a canvas asset variant to the Assets default only when styling is saved", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Immune Cell");
   const assetCard = page
@@ -1760,32 +1763,35 @@ test.describe("bundled NIH BioArt SVG compatibility", () => {
         "The browser-independent asset corpus only needs one pass."
       );
       test.setTimeout(60_000);
-      await page.goto("/");
-      const failures = await page.evaluate(async (items) => {
-        const { loadEditableSvg } = await import("/OpenSketch/src/editor/svg.ts");
-        const failed: Array<{ id: string; family: string; error: string }> = [];
-        for (let offset = 0; offset < items.length; offset += 24) {
-          const results = await Promise.all(
-            items.slice(offset, offset + 24).map(async (item) => {
-              try {
-                const response = await fetch(`/OpenSketch${item.assetPath}`);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const parsed = await loadEditableSvg(await response.text());
-                if (!parsed.objects.some(Boolean)) throw new Error("No editable objects");
-                return null;
-              } catch (reason) {
-                return { ...item, error: String(reason) };
-              }
-            })
-          );
-          failed.push(
-            ...results.filter((result): result is { id: string; family: string; error: string } =>
-              Boolean(result)
-            )
-          );
-        }
-        return failed;
-      }, variants);
+      await page.goto(publicBase);
+      const failures = await page.evaluate(
+        async ({ base, items }) => {
+          const { loadEditableSvg } = await import(`${base}src/editor/svg.ts`);
+          const failed: Array<{ id: string; family: string; error: string }> = [];
+          for (let offset = 0; offset < items.length; offset += 24) {
+            const results = await Promise.all(
+              items.slice(offset, offset + 24).map(async (item) => {
+                try {
+                  const response = await fetch(`${base}${item.assetPath.replace(/^\/+/, "")}`);
+                  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                  const parsed = await loadEditableSvg(await response.text());
+                  if (!parsed.objects.some(Boolean)) throw new Error("No editable objects");
+                  return null;
+                } catch (reason) {
+                  return { ...item, error: String(reason) };
+                }
+              })
+            );
+            failed.push(
+              ...results.filter((result): result is { id: string; family: string; error: string } =>
+                Boolean(result)
+              )
+            );
+          }
+          return failed;
+        },
+        { base: publicBase, items: variants }
+      );
 
       expect(failures).toEqual([]);
     });
@@ -1795,7 +1801,7 @@ test.describe("bundled NIH BioArt SVG compatibility", () => {
 test("uses accessible in-app dropdowns with keyboard and outside-click behavior", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("button", { name: "Canvas size" }).click();
 
@@ -1855,7 +1861,7 @@ test("uses accessible in-app dropdowns with keyboard and outside-click behavior"
 });
 
 test("prevents PNG export above the browser raster budget", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("button", { name: "Canvas size", exact: true }).click();
   await selectUiOption(page, "Preset", "A4 portrait");
@@ -1875,7 +1881,7 @@ test("prevents PNG export above the browser raster budget", async ({ page }) => 
 });
 
 test("offers selection-aware canvas context actions", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
@@ -1941,7 +1947,7 @@ test("offers selection-aware canvas context actions", async ({ page }) => {
 });
 
 test("adds a selected asset to Favorites from its context menu", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
   await page.getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true }).click();
@@ -1962,7 +1968,7 @@ test("adds a selected asset to Favorites from its context menu", async ({ page }
 });
 
 test("saves and resets per-element styling for future sidebar shapes", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
 
@@ -2006,7 +2012,7 @@ test("saves and resets per-element styling for future sidebar shapes", async ({ 
 });
 
 test("resizes text by changing font size instead of stretching its glyphs", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   await placeTool(page, "Text", 0.5, 0.45);
@@ -2067,7 +2073,7 @@ test("resizes text by changing font size instead of stretching its glyphs", asyn
 });
 
 test("saved text styling overrides later new-text defaults", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const firstPoint = await artboardPoint(page, 0.32, 0.45);
@@ -2110,7 +2116,7 @@ test("saved text styling overrides later new-text defaults", async ({ page }) =>
 });
 
 test("ungroups exactly one level of a nested group hierarchy", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.3, 0.5);
@@ -2147,7 +2153,7 @@ test("ungroups exactly one level of a nested group hierarchy", async ({ page }) 
 });
 
 test("treats an imported SVG as one atomic canvas object", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Imports", exact: true }).click();
   await page
@@ -2168,7 +2174,7 @@ test("treats an imported SVG as one atomic canvas object", async ({ page }) => {
 });
 
 test("enters imported SVG vector editing and selects a nested part", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Imports", exact: true }).click();
   await page
@@ -2190,7 +2196,7 @@ test("enters imported SVG vector editing and selects a nested part", async ({ pa
 });
 
 test("double-clicks through overlapping objects and into grouped children", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.5, 0.5);
   await placeTool(page, "Circle", 0.5, 0.5);
@@ -2255,7 +2261,7 @@ test("double-clicks through overlapping objects and into grouped children", asyn
 });
 
 test("double-clicks into nested groups one hierarchy level at a time", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.4, 0.5);
   await placeTool(page, "Circle", 0.4, 0.5);
@@ -2311,7 +2317,7 @@ test("double-clicks into nested groups one hierarchy level at a time", async ({ 
 });
 
 test("double-clicking outside exits one group hierarchy level", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
   await placeTool(page, "Circle", 0.35, 0.5);
@@ -2338,7 +2344,7 @@ test("double-clicking outside exits one group hierarchy level", async ({ page })
 });
 
 test("edits a group with single-click and modifier multi-selection", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.3, 0.5);
   await placeTool(page, "Circle", 0.5, 0.5);
@@ -2378,7 +2384,7 @@ test("edits a group with single-click and modifier multi-selection", async ({ pa
 });
 
 test("keeps a group created inside group editing nested at one canvas layer", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.3, 0.5);
   await placeTool(page, "Circle", 0.5, 0.5);
@@ -2405,7 +2411,7 @@ test("keeps a group created inside group editing nested at one canvas layer", as
 });
 
 test("adds independent canvas objects to the selection with Ctrl-click", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
   await placeTool(page, "Circle", 0.65, 0.5);
@@ -2422,7 +2428,7 @@ test("adds independent canvas objects to the selection with Ctrl-click", async (
 });
 
 test("keeps the edit panel open while changing the selected object", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
   await placeTool(page, "Circle", 0.65, 0.5);
@@ -2446,7 +2452,7 @@ test("keeps the edit panel open while changing the selected object", async ({ pa
 });
 
 test("preserves nested group dimensions when duplicating by modifier-drag", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.4, 0.5);
   await placeTool(page, "Circle", 0.4, 0.5);
@@ -2510,7 +2516,7 @@ test("preserves nested group dimensions when duplicating by modifier-drag", asyn
 });
 
 test("shows every visible layer of a grouped stack in the project preview", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
 
@@ -2547,7 +2553,7 @@ test("shows every visible layer of a grouped stack in the project preview", asyn
 });
 
 test("moves objects exactly one layer through the canvas context menu", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.25, 0.5);
@@ -2578,7 +2584,7 @@ test("moves objects exactly one layer through the canvas context menu", async ({
 });
 
 test("keeps grouped layers nested and preserves their outer stack slot", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
 
@@ -2604,7 +2610,7 @@ test("keeps grouped layers nested and preserves their outer stack slot", async (
 test("keeps front and back actions at the outer canvas boundaries around groups", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
 
@@ -2633,7 +2639,7 @@ test("keeps front and back actions at the outer canvas boundaries around groups"
 test("renders project previews with Fabric and upgrades legacy raster thumbnails", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Dentritic");
   await page.waitForTimeout(250);
@@ -2714,7 +2720,7 @@ test("renders project previews with Fabric and upgrades legacy raster thumbnails
 });
 
 test("@smoke supports visible and native navigation for new figures", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   const landingBrand = page.locator(".home-header .brand");
   await expect(landingBrand.locator(".brand-mark")).toHaveAttribute("src", /favicon\.svg$/);
   await expect(landingBrand.locator("span")).toHaveText("OpenSketch");
@@ -2806,7 +2812,7 @@ test("@smoke supports visible and native navigation for new figures", async ({ p
 });
 
 test("@smoke exits the editor with Escape", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await expect(page.getByLabel("OpenSketch figure artboard")).toBeVisible();
 
@@ -2826,7 +2832,7 @@ test("archives projects and organizes newest-first project rows with folders", a
     await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
   };
 
-  await page.goto("/");
+  await page.goto("./");
   await createNamedProject("Alpha");
   await createNamedProject("Beta");
 
@@ -2904,7 +2910,7 @@ test("archives projects and organizes newest-first project rows with folders", a
 });
 
 test("previews canvas zoom without resizing its backing stores or the page", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   const workspace = page.locator(".workspace-scroll");
 
@@ -2966,7 +2972,7 @@ test("previews canvas zoom without resizing its backing stores or the page", asy
 });
 
 test("zooms around the cursor instead of the artboard center", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   const workspace = page.locator(".workspace-scroll");
   const stage = workspace.locator(".artboard-stage");
@@ -3000,7 +3006,7 @@ test("zooms around the cursor instead of the artboard center", async ({ page }) 
 });
 
 test("rerenders vector artwork at the current zoom resolution", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
   await page.getByRole("button", { name: "Insert T Cell", exact: true }).first().click();
@@ -3036,7 +3042,7 @@ test("rerenders vector artwork at the current zoom resolution", async ({ page })
 });
 
 test("keeps mirror controls out of the header and toggles grid and rulers", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const workspace = page.locator(".workspace-scroll");
@@ -3109,7 +3115,7 @@ test("keeps mirror controls out of the header and toggles grid and rulers", asyn
 });
 
 test("centers a new artboard and restores each project's zoom and pan", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const viewportGeometry = async () => {
@@ -3171,7 +3177,7 @@ test("centers a new artboard and restores each project's zoom and pan", async ({
 });
 
 test("shows alignment guides only while an object is moving", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
@@ -3204,7 +3210,7 @@ test("shows alignment guides only while an object is moving", async ({ page }) =
 });
 
 test("duplicates with modifier-drag and disables snapping while Alt is held", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
@@ -3262,7 +3268,7 @@ test("duplicates with modifier-drag and disables snapping while Alt is held", as
 });
 
 test("preserves an asset's rendered size when duplicating by modifier-drag", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
   await page.getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true }).click();
@@ -3305,7 +3311,7 @@ test("preserves an asset's rendered size when duplicating by modifier-drag", asy
 });
 
 test("documents large cross-platform shortcuts and accepts Ctrl commands", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("button", { name: "Help" }).click();
 
@@ -3350,7 +3356,7 @@ test("documents large cross-platform shortcuts and accepts Ctrl commands", async
 test.skip("selects across the artboard and previews collapsed sidebars without shifting the canvas", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
@@ -3563,7 +3569,7 @@ test.skip("selects across the artboard and previews collapsed sidebars without s
 });
 
 test("fills the asset sidebar with the merged scientific catalog", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const insertTabs = page.getByRole("tab");
@@ -3669,7 +3675,7 @@ test("fills the asset sidebar with the merged scientific catalog", async ({ page
 });
 
 test("reveals asset filters and filters catalog metadata", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const filterToggle = page.getByRole("button", { name: "Toggle asset filters" });
@@ -3731,7 +3737,7 @@ test("rapidly scrolls the complete symbols catalog without leaving blank thumbna
     }
   });
 
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   collectAssetRequests = true;
   await page.getByRole("button", { name: "Symbols & diagrams", exact: true }).click();
@@ -3807,7 +3813,7 @@ test("rapidly scrolls the complete symbols catalog without leaving blank thumbna
 test("uses title-free insert panels and supports the expanded offline font catalog", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   await expect(page.getByRole("heading", { name: "Illustration library" })).toHaveCount(0);
@@ -3860,7 +3866,7 @@ test("embeds every selectable editor font in PDF output", async ({ page }) => {
     "Georgia"
   ];
 
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
 
@@ -3942,7 +3948,7 @@ test("embeds every selectable editor font face in PDF resources", async ({ page 
     "Georgia"
   ];
 
-  await page.goto("/");
+  await page.goto("./");
   const rawPdf = await page.evaluate(async (families) => {
     const combinations = [
       { weight: 400, style: "normal" },
@@ -3982,7 +3988,7 @@ test("embeds every selectable editor font face in PDF resources", async ({ page 
 });
 
 test("writes an explicit PDF document author when supplied", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   const encodedPdf = await page.evaluate(async () => {
     const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
     const { svgToPdfBlob } = await import(moduleUrl);
@@ -4013,7 +4019,7 @@ test("writes an explicit PDF document author when supplied", async ({ page }) =>
 test("materializes imported PDF text styles and rejects unsafe glyph coverage", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   const result = await page.evaluate(async () => {
     const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
     const { svgToPdfBlob } = await import(moduleUrl);
@@ -4259,7 +4265,7 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
 });
 
 test("skips invisible PDF paint during glyph coverage", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   const result = await page.evaluate(async () => {
     const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
     const { svgToPdfBlob } = await import(moduleUrl);
@@ -4319,7 +4325,7 @@ test("fetches only the PDF font face used by an SVG text run", async ({ page }) 
       requests.push(request.url());
     }
   });
-  await page.goto("/");
+  await page.goto("./");
   await page.evaluate(async () => {
     const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
     const { svgToPdfBlob } = await import(moduleUrl);
@@ -4341,7 +4347,7 @@ test("fetches only the PDF font face used by an SVG text run", async ({ page }) 
 });
 
 test("resolves font styles for each rendered SVG use instance", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   const rawPdf = await page.evaluate(async () => {
     const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
     const { svgToPdfBlob } = await import(moduleUrl);
@@ -4369,7 +4375,7 @@ test("resolves font styles for each rendered SVG use instance", async ({ page })
 });
 
 test("preserves per-instance paint for shape and mixed SVG use targets", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   const encodedPdf = await page.evaluate(async () => {
     const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
     const { svgToPdfBlob } = await import(moduleUrl);
@@ -4412,7 +4418,7 @@ test("preserves per-instance paint for shape and mixed SVG use targets", async (
 });
 
 test("preserves ID-based computed styles for cloned SVG use targets", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   const encodedPdf = await page.evaluate(async () => {
     const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
     const { svgToPdfBlob } = await import(moduleUrl);
@@ -4455,7 +4461,7 @@ test("preserves ID-based computed styles for cloned SVG use targets", async ({ p
 });
 
 test("keeps visible SVG use targets from rendering twice", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   const encodedPdf = await page.evaluate(async () => {
     const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
     const { svgToPdfBlob } = await import(moduleUrl);
@@ -4489,7 +4495,7 @@ test("keeps visible SVG use targets from rendering twice", async ({ page }) => {
 });
 
 test("preserves nested SVG use font context and computed size", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   const encodedPdf = await page.evaluate(async () => {
     const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
     const { svgToPdfBlob } = await import(moduleUrl);
@@ -4527,7 +4533,7 @@ test("preserves nested SVG use font context and computed size", async ({ page })
 });
 
 test("preserves computed PDF text size from CSS shorthand", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   const encodedPdf = await page.evaluate(async () => {
     const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
     const { svgToPdfBlob } = await import(moduleUrl);
@@ -4566,7 +4572,7 @@ test("preserves stylesheet font cascade over inherited SVG presentation attribut
       requests.push(request.url());
     }
   });
-  await page.goto("/");
+  await page.goto("./");
   const encodedPdf = await page.evaluate(async () => {
     const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
     const { svgToPdfBlob } = await import(moduleUrl);
@@ -4610,7 +4616,7 @@ test("waits for the selected browser font before exporting PDF", async ({ page }
     await route.continue();
   });
 
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Text", 0.5, 0.5);
@@ -4635,7 +4641,7 @@ test("waits for the selected browser font before exporting PDF", async ({ page }
 });
 
 test("waits for imported Fabric text fonts before exporting PDF", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Imports", exact: true }).click();
 
@@ -4685,7 +4691,7 @@ test("waits for imported Fabric text fonts before exporting PDF", async ({ page 
 });
 
 test("preloads every text payload used by a PDF font face", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
 
@@ -4732,7 +4738,7 @@ test("preloads every text payload used by a PDF font face", async ({ page }) => 
 });
 
 test("shows favorites only in a dedicated asset category", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const favoritesCategory = page.getByRole("button", { name: "Favorites", exact: true });
@@ -4767,7 +4773,7 @@ test("shows favorites only in a dedicated asset category", async ({ page }) => {
 });
 
 test("preserves an asset search after inserting artwork and reopening Assets", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const search = page.getByPlaceholder("Search cells, proteins, equipment…");
@@ -4795,7 +4801,7 @@ test("preserves an asset search after inserting artwork and reopening Assets", a
 });
 
 test("preserves asset filters after closing and reopening Assets", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const filterToggle = page.getByRole("button", { name: "Toggle asset filters" });
@@ -4829,7 +4835,7 @@ test("shows a minimal no-match state and preserves native page-text copying", as
   if (browserName === "chromium") {
     await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   }
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const search = page.getByPlaceholder("Search cells, proteins, equipment…");
@@ -4852,7 +4858,7 @@ test("shows a minimal no-match state and preserves native page-text copying", as
 });
 
 test("orders the audited taxonomy from cell biology to macroscopic assets", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   await expect(page.locator(".category-strip button")).toHaveText([
@@ -4913,7 +4919,7 @@ test("renders and persists complex NIH illustrations without losing their colors
   page
 }) => {
   test.setTimeout(45_000);
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("dendritic");
   await page.getByRole("button", { name: "Toggle asset filters" }).click();
@@ -5007,7 +5013,7 @@ test("renders and persists complex NIH illustrations without losing their colors
 });
 
 test("treats a bundled biological SVG as one atomic canvas object", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
   await page.getByRole("button", { name: "Insert T Cell", exact: true }).first().click();
@@ -5035,7 +5041,7 @@ test("treats a bundled biological SVG as one atomic canvas object", async ({ pag
 test("shows no synthetic style or variant menu for a single-variant biological asset", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
   await page.getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true }).click();
@@ -5054,7 +5060,7 @@ test("shows no synthetic style or variant menu for a single-variant biological a
 test("saves and resets styling for future copies of the same biological asset", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
   await expect(page.locator(".asset-card")).toHaveCount(1);
@@ -5149,7 +5155,7 @@ test("saves and resets styling for future copies of the same biological asset", 
 });
 
 test("renders every styled eosinophil part in a stable sidebar preview", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Eosinophil");
   const eosinophilCard = page
@@ -5217,7 +5223,7 @@ test("renders every styled eosinophil part in a stable sidebar preview", async (
 });
 
 test("saves an inserted SVG before immediately leaving the editor", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("dendritic");
   const dendriticCell = page.locator(".asset-card").filter({ hasText: "Dendritic Cell" }).first();
@@ -5237,7 +5243,7 @@ test("saves an inserted SVG before immediately leaving the editor", async ({ pag
 });
 
 test("keeps the latest project edits recoverable when autosave fails", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
 
@@ -5350,7 +5356,7 @@ test("keeps the latest project edits recoverable when autosave fails", async ({ 
 test("restores the current history entry when legacy unsaved Forward traversal is blocked", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await expect(page.locator('[data-save-state="saved"]')).toBeVisible({ timeout: 30_000 });
 
@@ -5411,7 +5417,7 @@ test("restores the current history entry when legacy unsaved Forward traversal i
 });
 
 test("guards browser exit while an image import is still processing", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Imports", exact: true }).click();
 
@@ -5464,7 +5470,7 @@ test("guards browser exit while an image import is still processing", async ({ p
 });
 
 test("exports an atomic SVG asset with its vector parts intact", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("dendritic");
   const dendriticCell = page.locator(".asset-card").filter({ hasText: "Dendritic Cell" }).first();
@@ -5524,7 +5530,7 @@ test("keeps the canvas responsive with one hundred ordinary objects", async ({
     "The stress benchmark runs once; workflows run in all engines."
   );
   test.setTimeout(45_000);
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.25, 0.25);
   for (let index = 1; index < 100; index += 1) {

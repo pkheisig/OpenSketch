@@ -8,6 +8,8 @@
   "scripts": {
     "dev": "pnpm --filter @workspace/web dev",
     "build": "pnpm --filter @workspace/editor-core build && pnpm --filter @workspace/web build",
+    "build:pages": "VITE_PUBLIC_BASE=/OpenSketch/ pnpm build",
+    "build:root": "VITE_PUBLIC_BASE=/ pnpm build",
     "preview": "pnpm --filter @workspace/web preview",
     "lint": "eslint .",
     "typecheck": "pnpm -r typecheck && tsc --project scripts/tsconfig.json",
@@ -17,6 +19,7 @@
     "test:e2e:smoke": "playwright test --project=chromium --grep @smoke",
     "test:e2e:cross-browser": "playwright test --project=firefox --project=webkit --grep @smoke",
     "test:webmcp": "vitest run tests/semantic-runtime.test.ts tests/semantic-editor-adapter.test.ts tests/webmcp.test.ts tests/webmcp-documentation.test.ts && pnpm build && node scripts/check-webmcp-build.mjs && pnpm test:webmcp:e2e",
+    "test:deployment": "node scripts/check-deployment-build.mjs",
     "test:webmcp:e2e": "playwright test tests/e2e/webmcp.spec.ts --project=chromium",
     "test:pwa": "playwright test --config playwright.pwa.config.ts",
     "format": "prettier --write .",

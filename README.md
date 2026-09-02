@@ -64,6 +64,7 @@ additional contributor license and patent grants in
 - [Architecture](docs/architecture.md)
 - [WebMCP judge and architecture guide](docs/webmcp.md)
 - [Asset and licensing pipeline](docs/asset-pipeline.md)
+- [Deployment variants](docs/deployment.md)
 - [Security policy](SECURITY.md)
 - [Citation metadata](CITATION.cff)
 

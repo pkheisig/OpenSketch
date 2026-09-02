@@ -14,7 +14,7 @@ test("registers a safe figure workflow through the browser model context", async
     (window as typeof window & { __webmcpTools?: unknown[] }).__webmcpTools = tools;
   });
 
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
 
