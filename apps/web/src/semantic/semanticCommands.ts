@@ -1819,6 +1819,7 @@ definitions.push(
     outputSchema: output({
       version: { type: "string" },
       profile: { type: "string" },
+      sceneRevision: objectId(),
       findings: { type: "array", maxItems: 256 },
       counts: { type: "object" },
       metrics: { type: "object" },

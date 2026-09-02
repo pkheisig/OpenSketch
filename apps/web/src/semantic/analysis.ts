@@ -306,7 +306,12 @@ export function analyzeComposition(
       const leftEntry = entries[left];
       const a = leftEntry.object;
       const aId = a.objectId!;
-      if (!visibility.get(aId) || a.connector) continue;
+      if (
+        !visibility.get(aId) ||
+        a.connector ||
+        leftEntry.path.some((object) => Boolean(object.familyId))
+      )
+        continue;
       for (let right = left + 1; right < entries.length; right += 1) {
         const rightEntry = entries[right];
         const b = rightEntry.object;
@@ -314,6 +319,7 @@ export function analyzeComposition(
         if (
           !visibility.get(bId) ||
           b.connector ||
+          rightEntry.path.some((object) => Boolean(object.familyId)) ||
           sharesParticleField(leftEntry, rightEntry) ||
           relationAllowsOverlap(
             relations,

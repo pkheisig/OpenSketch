@@ -226,7 +226,8 @@ export function planParticleField(
   distribution: ParticleDistribution,
   seed: string,
   source?: CompoundPoint,
-  target?: CompoundPoint
+  target?: CompoundPoint,
+  particleInset = 5
 ): ParticleFieldPlan {
   if (distribution === "source-fan" && !source)
     throw new Error("source-fan distribution requires a source point.");
@@ -236,7 +237,10 @@ export function planParticleField(
   const points: CompoundPoint[] = [];
   const safeCount = Math.max(0, Math.min(256, Math.floor(count)));
   const c = center(bounds);
-  const particleRadius = Math.min(5, Math.min(bounds.width, bounds.height) / 2);
+  const particleRadius = Math.min(
+    Math.max(0, particleInset),
+    Math.min(bounds.width, bounds.height) / 2
+  );
   const innerLeft = bounds.left + particleRadius;
   const innerTop = bounds.top + particleRadius;
   const innerWidth = Math.max(0, bounds.width - particleRadius * 2);

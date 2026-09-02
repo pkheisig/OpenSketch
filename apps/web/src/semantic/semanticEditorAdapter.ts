@@ -1396,15 +1396,18 @@ export function createSemanticEditorAdapter(
       const target = targetObjectId
         ? inspectSemanticGeometry(resolveObjects(canvas, [targetObjectId])[0]).center
         : undefined;
+      const defaults = dependencies.creationDefaults();
+      const particleStrokeWidth = Math.max(1, defaults.shape.strokeWidth * 0.5);
+      const fieldObjectId = crypto.randomUUID();
       const plan = planParticleField(
         fieldBounds,
         particleCount,
         distribution,
         seed,
         source,
-        target
+        target,
+        4 + particleStrokeWidth / 2
       );
-      const defaults = dependencies.creationDefaults();
       const particles = plan.points.map((position, index) => {
         const particle = new Circle({
           radius: 4,
@@ -1416,7 +1419,7 @@ export function createSemanticEditorAdapter(
           stroke: defaults.shape.stroke,
           strokeWidth: Math.max(1, defaults.shape.strokeWidth * 0.5)
         });
-        particle.objectId = `${input.seed}-particle-${index}`;
+        particle.objectId = `${fieldObjectId}-particle-${index}`;
         particle.name = "Particle";
         particle.OpenSketchType = "particle";
         particle.semanticMetadata = {
@@ -1427,7 +1430,7 @@ export function createSemanticEditorAdapter(
         return particle;
       });
       const field = new Group(particles);
-      field.objectId = crypto.randomUUID();
+      field.objectId = fieldObjectId;
       field.name = "Particle field";
       field.OpenSketchType = "group";
       field.semanticMetadata = {
