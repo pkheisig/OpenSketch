@@ -53,8 +53,10 @@ downstream figure tool strips embedded metadata, use the Export dialog's
 readable credits download as a sidecar.
 
 OpenSketch itself is licensed under
-[AGPL-3.0-or-later](LICENSE). Artwork keeps its original license and is not
-relicensed as part of the software.
+[AGPL-3.0-only](LICENSE). Artwork keeps its original license and is not
+relicensed as part of the software. External contributions are subject to the
+additional contributor license and patent grants in
+[`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Project links
 
