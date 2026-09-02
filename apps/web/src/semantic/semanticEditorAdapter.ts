@@ -443,12 +443,11 @@ function assetSummary(family: AssetFamily) {
 export function createSemanticEditorAdapter(
   dependencies: SemanticEditorAdapterDependencies
 ): SemanticEditorAdapter {
-  let transactionDepth = 0;
-  let transactionDirty = false;
+  const transactionDirtyStack: boolean[] = [];
 
   const commitSemantic = (label: string): void => {
-    if (transactionDepth > 0) {
-      transactionDirty = true;
+    if (transactionDirtyStack.length > 0) {
+      transactionDirtyStack[transactionDirtyStack.length - 1] = true;
       return;
     }
     dependencies.commit(label);
@@ -1371,14 +1370,13 @@ export function createSemanticEditorAdapter(
         .getActiveObjects()
         .map((object) => object.objectId)
         .filter((objectId): objectId is string => Boolean(objectId));
-      transactionDepth += 1;
+      transactionDirtyStack.push(false);
       let succeeded = false;
       try {
         const result = await operation();
         succeeded = true;
         return result;
       } catch (error) {
-        transactionDirty = false;
         try {
           await dependencies.restore(snapshot);
           const restoredCanvas = dependencies.getCanvas();
@@ -1396,9 +1394,10 @@ export function createSemanticEditorAdapter(
         }
         throw error;
       } finally {
-        transactionDepth -= 1;
-        if (succeeded && transactionDepth === 0 && transactionDirty) {
-          transactionDirty = false;
+        const dirty = transactionDirtyStack.pop() ?? false;
+        if (succeeded && transactionDirtyStack.length > 0 && dirty) {
+          transactionDirtyStack[transactionDirtyStack.length - 1] = true;
+        } else if (succeeded && dirty) {
           dependencies.commit("Semantic batch");
         }
       }

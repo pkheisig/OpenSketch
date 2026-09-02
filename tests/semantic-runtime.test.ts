@@ -303,9 +303,17 @@ describe("semantic runtime", () => {
       toObjectId: "object-2",
       extra: true
     });
+    const bothConnectorForms = await runtime.execute("create_connector", {
+      kind: "arrow",
+      fromObjectId: "object-1",
+      toObjectId: "object-2",
+      from: { x: 10, y: 20 },
+      to: { x: 30, y: 40 }
+    });
 
     expect(missingKind).toMatchObject({ ok: false, error: { code: "INVALID_INPUT" } });
     expect(extraProperty).toMatchObject({ ok: false, error: { code: "INVALID_INPUT" } });
+    expect(bothConnectorForms).toMatchObject({ ok: false, error: { code: "INVALID_INPUT" } });
     expect(adapter.calls).toEqual([]);
   });
 

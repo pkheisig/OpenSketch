@@ -331,4 +331,20 @@ describe("semantic editor adapter", () => {
       message: expect.stringContaining("restore failed")
     });
   });
+
+  it("preserves outer transaction dirtiness after a nested failure", async () => {
+    const adapter = makeAdapter(makeCanvas());
+
+    await adapter.runTransaction(async () => {
+      await adapter.execute("create_shape", { kind: "rectangle" });
+      await expect(
+        adapter.runTransaction(async () => {
+          await adapter.execute("create_shape", { kind: "ellipse" });
+          throw new Error("nested failure");
+        })
+      ).rejects.toThrow("nested failure");
+    });
+
+    expect(adapter.commit).toHaveBeenCalledWith("Semantic batch");
+  });
 });

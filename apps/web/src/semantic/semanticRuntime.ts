@@ -108,8 +108,8 @@ function validateSchema(value: unknown, schema: JsonSchema, path = "input"): str
     }
   }
   if (schema.oneOf) {
-    const matches = schema.oneOf.some((candidate) => !validateSchema(value, candidate, path));
-    if (!matches) return `${path} does not match any supported schema.`;
+    const matches = schema.oneOf.filter((candidate) => !validateSchema(value, candidate, path));
+    if (matches.length !== 1) return `${path} does not match exactly one supported schema.`;
   }
   return undefined;
 }
