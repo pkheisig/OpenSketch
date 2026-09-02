@@ -8,5 +8,5 @@ authors:
     orcid: "https://orcid.org/0000-0002-8529-7944"
 repository-code: "https://github.com/pkheisig/OpenSketch"
 url: "https://pkheisig.github.io/OpenSketch/"
-license: AGPL-3.0-or-later
+license: AGPL-3.0-only
 version: 0.1.0
