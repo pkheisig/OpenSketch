@@ -1159,6 +1159,23 @@ export function createSemanticEditorAdapter(
             ? bounds.left + bounds.width + 24 + renderedLabelWidth / 2
             : center.x;
       labelChildren.forEach((object) => object.set("left", horizontalLabelX));
+      if (placement === "top" || placement === "outward" || placement === "bottom") {
+        const stack = [title, labelObject, subtitle].filter((object): object is IText =>
+          Boolean(object)
+        );
+        const stackGap = 8;
+        const stackHeight =
+          stack.reduce((total, object) => total + boundsOf(object).height, 0) +
+          stackGap * Math.max(0, stack.length - 1);
+        const stackTop =
+          placement === "bottom" ? bounds.top + bounds.height + 24 : bounds.top - 24 - stackHeight;
+        let cursor = stackTop;
+        stack.forEach((object) => {
+          const height = boundsOf(object).height;
+          object.set({ top: cursor + height / 2 });
+          cursor += height + stackGap;
+        });
+      }
       labelChildren.forEach((object) => {
         object.objectId ??= crypto.randomUUID();
       });
@@ -1573,12 +1590,18 @@ export function createSemanticEditorAdapter(
       const maxWidth = finiteNumber(input.maxWidth, "maxWidth");
       const maxHeight = finiteNumber(input.maxHeight, "maxHeight");
       const maxLines = typeof input.maxLines === "number" ? input.maxLines : 64;
+      const integerFontSizes = [];
+      for (let size = Math.floor(maxFontSize); size >= Math.ceil(minFontSize); size -= 1)
+        integerFontSizes.push(size);
+      const fontSizes = [...new Set([maxFontSize, minFontSize, ...integerFontSizes])]
+        .filter((size) => size >= minFontSize && size <= maxFontSize)
+        .sort((left, right) => right - left);
       const widthCandidates =
         object instanceof Textbox
           ? [...new Set([Math.min(originalWidth, maxWidth), maxWidth])]
           : [undefined];
       let fitted = false;
-      for (let size = Math.floor(maxFontSize); size >= Math.ceil(minFontSize); size -= 1) {
+      for (const size of fontSizes) {
         for (const width of widthCandidates) {
           object.set("fontSize", size);
           if (width !== undefined) object.set("width", width);

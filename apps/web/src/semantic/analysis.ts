@@ -122,7 +122,9 @@ export function analyzeComposition(
   const padding = options.padding ?? 24;
   const clearance = options.clearance ?? 12;
   const allEntries = sceneObjectEntries(canvas).filter(({ object }) => object.objectId);
-  const entries = allEntries.filter(({ object }) => !isGroup(object));
+  const entries = allEntries.filter(
+    ({ object, path }) => !isGroup(object) && !path.some((ancestor) => Boolean(ancestor.connector))
+  );
   const visibility = new Map(
     allEntries.map(({ object, path }) => [object.objectId!, isEffectivelyVisible(path)])
   );
