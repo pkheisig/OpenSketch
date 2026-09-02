@@ -1,4 +1,4 @@
-import { ActiveSelection, Canvas, FabricObject, Group, IText, Textbox } from "fabric";
+import { ActiveSelection, Canvas, FabricObject, Group, IText, Point, Textbox, util } from "fabric";
 import type { CanvasSettings, ConnectorBinding } from "@workspace/editor-core";
 import {
   CONNECTOR_KINDS,
@@ -64,8 +64,8 @@ export interface SemanticEditorAdapterDependencies {
   configureCanvasAssets: (objects: FabricObject[]) => void;
   refreshConnectors: (changedObjectId?: string) => void;
   applyColorPreset: (objectId: string, presetId: string) => Promise<void>;
-  undo: () => Promise<void>;
-  redo: () => Promise<void>;
+  undo: () => Promise<boolean>;
+  redo: () => Promise<boolean>;
 }
 
 type SemanticPointInput = { x: number; y: number };
@@ -104,6 +104,10 @@ function safeString(value: unknown): string | undefined {
   return typeof value === "string" && value.length > 0 ? value : undefined;
 }
 
+function safeStyleString(value: unknown): string | undefined {
+  return typeof value === "string" ? value : undefined;
+}
+
 function safeNumber(value: unknown): number | undefined {
   return typeof value === "number" && Number.isFinite(value) ? value : undefined;
 }
@@ -121,10 +125,10 @@ function boundsOf(object: FabricObject): SemanticBounds {
 function styleOf(object: FabricObject): SemanticStyleSummary {
   const style: SemanticStyleSummary = {};
   const record = object as unknown as Record<string, unknown>;
-  const fill = safeString(record.fill);
-  const stroke = safeString(record.stroke);
-  if (fill) style.fill = fill;
-  if (stroke) style.stroke = stroke;
+  const fill = safeStyleString(record.fill);
+  const stroke = safeStyleString(record.stroke);
+  if (fill !== undefined) style.fill = fill;
+  if (stroke !== undefined) style.stroke = stroke;
   for (const [key, value] of [
     ["opacity", record.opacity],
     ["strokeWidth", record.strokeWidth],
@@ -214,6 +218,83 @@ function refreshParentGroups(object: FabricObject): void {
     parent.dirty = true;
     parent.setCoords();
   }
+}
+
+function deltaInParentPlane(object: FabricObject, dx: number, dy: number): SemanticPointInput {
+  const parent = object.group;
+  if (!(parent instanceof Group) || parent instanceof ActiveSelection) return { x: dx, y: dy };
+  const local = util.sendVectorToPlane(new Point(dx, dy), undefined, parent.calcTransformMatrix());
+  return { x: local.x, y: local.y };
+}
+
+const RESTORABLE_GROUP_PROPERTIES = [
+  "name",
+  "OpenSketchType",
+  "assetId",
+  "familyId",
+  "provenance",
+  "originalPalette",
+  "originalFill",
+  "originalStroke",
+  "effectBaseFill",
+  "effectBaseStroke",
+  "originalGradientFill",
+  "originalGradientStroke",
+  "effectBaseGradientFill",
+  "effectBaseGradientStroke",
+  "connector",
+  "freeConnectorBinding",
+  "freeConnectorGeometry",
+  "assetTint",
+  "assetTintAmount",
+  "assetSaturation",
+  "assetBrightness",
+  "assetColorPreset",
+  "recognizedGroups",
+  "defaultElementStyle"
+] as const;
+
+function recognizedGroupRecord(group: Group, objects: FabricObject[]) {
+  const properties = Object.fromEntries(
+    RESTORABLE_GROUP_PROPERTIES.flatMap((property) => {
+      const value = group[property];
+      return value === undefined ? [] : [[property, value]];
+    })
+  );
+  return {
+    objectId: group.objectId!,
+    memberObjectIds: objects.map((object) => object.objectId!).filter(Boolean),
+    properties
+  };
+}
+
+function restoreSelection(
+  canvas: Canvas,
+  objectIds: string[],
+  setSelection: (objects: FabricObject[]) => void
+) {
+  const objects = objectIds
+    .map((objectId) => sceneObjectIndex(canvas).get(objectId))
+    .filter((object): object is FabricObject => Boolean(object));
+  canvas.discardActiveObject();
+  if (objects.length > 0) {
+    canvas.setActiveObject(
+      objects.length === 1 ? objects[0] : new ActiveSelection(objects, { canvas })
+    );
+  }
+  setSelection(objects);
+  canvas.requestRenderAll();
+}
+
+function startArrowheadFor(
+  kind: (typeof CONNECTOR_KINDS)[number],
+  explicit: unknown,
+  fallback: ConnectorBinding["startArrowhead"]
+): ConnectorBinding["startArrowhead"] {
+  if (explicit !== undefined) return explicit as ConnectorBinding["startArrowhead"];
+  if (kind === "line" || kind === "curved-line") return "none";
+  if (kind === "double-arrow") return fallback || "triangle";
+  return fallback;
 }
 
 function restoreRecognizedGroup(
@@ -405,10 +486,7 @@ export function createSemanticEditorAdapter(
           fromAnchor,
           toObjectId: input.toObjectId,
           toAnchor,
-          startArrowhead: (input.startArrowhead ??
-            (kind === "line" || kind === "curved-line"
-              ? "none"
-              : defaults.startArrowhead)) as ConnectorBinding["startArrowhead"],
+          startArrowhead: startArrowheadFor(kind, input.startArrowhead, defaults.startArrowhead),
           endArrowhead: (input.endArrowhead ??
             (kind === "line" || kind === "curved-line"
               ? "none"
@@ -472,10 +550,7 @@ export function createSemanticEditorAdapter(
         fromAnchor: "center",
         toObjectId: "",
         toAnchor: "center",
-        startArrowhead: (input.startArrowhead ??
-          (kind === "line" || kind === "curved-line"
-            ? "none"
-            : defaults.startArrowhead)) as ConnectorBinding["startArrowhead"],
+        startArrowhead: startArrowheadFor(kind, input.startArrowhead, defaults.startArrowhead),
         endArrowhead: (input.endArrowhead ??
           (kind === "line" || kind === "curved-line"
             ? "none"
@@ -509,7 +584,8 @@ export function createSemanticEditorAdapter(
       const dx = finiteNumber(input.dx, "dx");
       const dy = finiteNumber(input.dy, "dy");
       objects.forEach((object) => {
-        object.set({ left: (object.left ?? 0) + dx, top: (object.top ?? 0) + dy });
+        const delta = deltaInParentPlane(object, dx, dy);
+        object.set({ left: (object.left ?? 0) + delta.x, top: (object.top ?? 0) + delta.y });
         object.setCoords();
         refreshParentGroups(object);
       });
@@ -811,11 +887,7 @@ export function createSemanticEditorAdapter(
         .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
         .forEach(removeSceneObject);
       const children = group.removeAll();
-      rememberRecognizedGroup(children, {
-        objectId: removedId!,
-        memberObjectIds: children.map((child) => child.objectId!).filter(Boolean),
-        properties: {}
-      });
+      rememberRecognizedGroup(children, recognizedGroupRecord(group, children));
       if (index >= 0) {
         parent.remove(group);
         parent.insertAt(index, ...children);
@@ -835,12 +907,10 @@ export function createSemanticEditorAdapter(
       };
     }
     if (command === "undo") {
-      await dependencies.undo();
-      return { data: { applied: true } };
+      return { data: { applied: await dependencies.undo() } };
     }
     if (command === "redo") {
-      await dependencies.redo();
-      return { data: { applied: true } };
+      return { data: { applied: await dependencies.redo() } };
     }
     throw new SemanticAdapterError(
       "UNKNOWN_COMMAND",
@@ -963,8 +1033,12 @@ export function createSemanticEditorAdapter(
     inspectObject,
     execute,
     runTransaction: async <T>(operation: () => Promise<T>): Promise<T> => {
-      canvasOrThrow();
+      const canvas = canvasOrThrow();
       const snapshot = dependencies.serialize();
+      const selectionObjectIds = canvas
+        .getActiveObjects()
+        .map((object) => object.objectId)
+        .filter((objectId): objectId is string => Boolean(objectId));
       transactionDepth += 1;
       let succeeded = false;
       try {
@@ -976,6 +1050,10 @@ export function createSemanticEditorAdapter(
         if (!succeeded) {
           transactionDirty = false;
           await dependencies.restore(snapshot);
+          const restoredCanvas = dependencies.getCanvas();
+          if (restoredCanvas) {
+            restoreSelection(restoredCanvas, selectionObjectIds, dependencies.setSelection);
+          }
         } else if (transactionDepth === 0 && transactionDirty) {
           transactionDirty = false;
           dependencies.commit("Semantic batch");

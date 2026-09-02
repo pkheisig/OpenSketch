@@ -548,8 +548,8 @@ export interface EditorContextValue {
   applyTextScript: (script: "normal" | "subscript" | "superscript") => void;
   resetColors: () => void;
   applyColorPreset: (presetId: string) => void;
-  undo: () => Promise<void>;
-  redo: () => Promise<void>;
+  undo: () => Promise<boolean>;
+  redo: () => Promise<boolean>;
   setZoom: (value: number) => void;
   previewZoom: (value: number) => void;
   fitCanvas: () => void;
@@ -2278,7 +2278,7 @@ export function EditorProvider({
 
   const restoreAt = useCallback(
     async (index: number) => {
-      if (!canvas || !history.current[index]) return;
+      if (!canvas || !history.current[index]) return false;
       const complete = beginPendingEditorWork();
       restoring.current = true;
       try {
@@ -2294,6 +2294,7 @@ export function EditorProvider({
         setSelection([]);
         updateHistoryState();
         persist(repairedSnapshot);
+        return true;
       } finally {
         restoring.current = false;
         complete();
@@ -2326,13 +2327,13 @@ export function EditorProvider({
 
   const undo = useCallback(() => {
     if (historyIndex.current > 0) return restoreAt(historyIndex.current - 1);
-    return Promise.resolve();
+    return Promise.resolve(false);
   }, [restoreAt]);
   const redo = useCallback(() => {
     if (historyIndex.current < history.current.length - 1) {
       return restoreAt(historyIndex.current + 1);
     }
-    return Promise.resolve();
+    return Promise.resolve(false);
   }, [restoreAt]);
 
   const centerObject = useCallback(
@@ -3865,8 +3866,11 @@ export function EditorProvider({
       }
       if (modifier && event.key.toLowerCase() === "z") {
         event.preventDefault();
-        if (event.shiftKey) redo();
-        else undo();
+        if (event.shiftKey) {
+          void redo().catch((reason) => console.error("Could not redo editor change.", reason));
+        } else {
+          void undo().catch((reason) => console.error("Could not undo editor change.", reason));
+        }
       } else if (modifier && event.key.toLowerCase() === "d") {
         event.preventDefault();
         void duplicateSelection();

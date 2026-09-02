@@ -291,6 +291,14 @@ export function createSemanticRuntime(adapter: SemanticEditorAdapter): SemanticR
             );
             throw new SemanticInputError("BATCH_ABORTED", batchFailure.error.message);
           }
+          const commandDefinition = definitionFor(command);
+          const commandInputError = commandDefinition
+            ? validateSchema(resolvedInput, commandDefinition.inputSchema)
+            : undefined;
+          if (commandInputError) {
+            batchFailure = failure("INVALID_INPUT", commandInputError);
+            throw new SemanticInputError("BATCH_ABORTED", commandInputError);
+          }
           const result = await executeInternal(command, resolvedInput, true);
           completed.push({
             command,

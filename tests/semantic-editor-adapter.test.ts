@@ -45,8 +45,8 @@ function makeAdapter(canvas: Canvas, setSelection = vi.fn()) {
     configureCanvasAssets: vi.fn(),
     refreshConnectors: vi.fn(),
     applyColorPreset: vi.fn(async () => undefined),
-    undo: vi.fn(async () => undefined),
-    redo: vi.fn(async () => undefined)
+    undo: vi.fn(async () => false),
+    redo: vi.fn(async () => false)
   });
   return Object.assign(adapter, { commit, restore });
 }
@@ -88,6 +88,22 @@ describe("semantic editor adapter", () => {
     expect(setSelection).not.toHaveBeenCalled();
   });
 
+  it("converts canvas-space movement for transformed nested targets", async () => {
+    const child = new Rect({ width: 40, height: 20 });
+    child.objectId = "child";
+    const group = new Group([child], { scaleX: 2, scaleY: 2, angle: 20 });
+    group.objectId = "group";
+    const canvas = makeCanvas([group]);
+    const adapter = makeAdapter(canvas);
+    const before = child.getBoundingRect();
+
+    await adapter.execute("move_objects", { objectIds: ["child"], dx: 25, dy: 12 });
+
+    const after = child.getBoundingRect();
+    expect(after.left - before.left).toBeCloseTo(25, 5);
+    expect(after.top - before.top).toBeCloseTo(12, 5);
+  });
+
   it("creates bound connectors from stable endpoint identities without recentering geometry", async () => {
     const from = new Rect({ left: 100, top: 100, width: 40, height: 20 });
     const to = new Rect({ left: 320, top: 100, width: 40, height: 20 });
@@ -126,7 +142,12 @@ describe("semantic editor adapter", () => {
   });
 
   it("restores the pre-transaction snapshot after a failed mutation sequence", async () => {
-    const adapter = makeAdapter(makeCanvas());
+    const objects: FabricObject[] = [];
+    const canvas = makeCanvas(objects);
+    const adapter = makeAdapter(canvas);
+    adapter.restore.mockImplementation(async () => {
+      objects.splice(0);
+    });
 
     await expect(
       adapter.runTransaction(async () => {
@@ -136,5 +157,6 @@ describe("semantic editor adapter", () => {
     ).rejects.toThrow("cancelled");
     expect(adapter.restore).toHaveBeenCalledWith("{}");
     expect(adapter.commit).not.toHaveBeenCalled();
+    expect(canvas.getObjects()).toHaveLength(0);
   });
 });

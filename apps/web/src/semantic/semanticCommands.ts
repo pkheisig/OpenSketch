@@ -85,9 +85,7 @@ export const MUTATION_COMMAND_NAMES = [
   "duplicate_objects",
   "delete_objects",
   "group_objects",
-  "ungroup_objects",
-  "undo",
-  "redo"
+  "ungroup_objects"
 ] as const;
 
 const number = (minimum?: number, maximum?: number): JsonSchema => ({
@@ -647,15 +645,9 @@ const batchOperationSchema: JsonSchema = {
   type: "object",
   properties: {
     command: { type: "string", enum: MUTATION_COMMAND_NAMES },
-    input: {
-      oneOf: definitions
-        .filter((definition) =>
-          MUTATION_COMMAND_NAMES.includes(
-            definition.name as (typeof MUTATION_COMMAND_NAMES)[number]
-          )
-        )
-        .map((definition) => definition.inputSchema)
-    },
+    // The command is the discriminator. Runtime validation applies that
+    // command's schema after resolving aliases.
+    input: { type: "object" },
     as: { type: "string", minLength: 1, maxLength: 32 }
   },
   required: ["command", "input"],

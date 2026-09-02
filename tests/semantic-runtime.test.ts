@@ -156,4 +156,15 @@ describe("semantic runtime", () => {
     expect(adapter.calls).toEqual(["create_shape", "move_objects"]);
     expect(result.changedObjectIds).toEqual(["object-1"]);
   });
+
+  it("validates each batch input against its declared command", async () => {
+    const adapter = fakeAdapter();
+    const runtime = createSemanticRuntime(adapter);
+    const result = await runtime.execute("batch", {
+      operations: [{ command: "create_shape", input: { objectIds: ["missing"], dx: 12, dy: 8 } }]
+    });
+
+    expect(result).toMatchObject({ ok: false, error: { code: "INVALID_INPUT" } });
+    expect(adapter.calls).toEqual([]);
+  });
 });
