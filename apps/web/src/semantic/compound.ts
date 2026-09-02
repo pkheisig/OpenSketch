@@ -47,7 +47,10 @@ export interface StylePreset {
   strokeWidth: number;
   fontSize: number;
   fontWeight: number;
+  textFill?: string;
 }
+
+export const SEMANTIC_TEXT_COLOR = "#183133";
 
 export const SEMANTIC_STYLE_PRESETS: Record<string, StylePreset> = {
   hub: { fill: "#d8f0ed", stroke: "#25494b", strokeWidth: 4, fontSize: 28, fontWeight: 700 },
@@ -57,7 +60,8 @@ export const SEMANTIC_STYLE_PRESETS: Record<string, StylePreset> = {
     stroke: "#25494b",
     strokeWidth: 0,
     fontSize: 22,
-    fontWeight: 700
+    fontWeight: 700,
+    textFill: SEMANTIC_TEXT_COLOR
   },
   "scientific-asset": {
     fill: "#ffffff",
@@ -67,7 +71,14 @@ export const SEMANTIC_STYLE_PRESETS: Record<string, StylePreset> = {
     fontWeight: 600
   },
   mediator: { fill: "#fff3d6", stroke: "#aa7418", strokeWidth: 2, fontSize: 18, fontWeight: 600 },
-  annotation: { fill: "#ffffff", stroke: "#25494b", strokeWidth: 0, fontSize: 18, fontWeight: 400 },
+  annotation: {
+    fill: "#ffffff",
+    stroke: "#25494b",
+    strokeWidth: 0,
+    fontSize: 18,
+    fontWeight: 400,
+    textFill: SEMANTIC_TEXT_COLOR
+  },
   decorative: { fill: "#ffffff", stroke: "#8ba7a6", strokeWidth: 2, fontSize: 18, fontWeight: 400 }
 };
 
@@ -127,15 +138,26 @@ export function planInteraction(
         warnings: []
       };
     }
-    case "binding":
+    case "binding": {
+      const direction = { x: dx / length, y: dy / length };
+      const extent = (bounds: Bounds): number =>
+        (Math.abs(direction.x) * bounds.width) / 2 + (Math.abs(direction.y) * bounds.height) / 2;
+      const separation = extent(sourceBounds) + extent(targetBounds);
       return {
-        source: { x: source.x + dx * 0.18, y: source.y + dy * 0.18 },
-        target: { x: target.x - dx * 0.18, y: target.y - dy * 0.18 },
+        source: {
+          x: midpoint.x - (direction.x * separation) / 2,
+          y: midpoint.y - (direction.y * separation) / 2
+        },
+        target: {
+          x: midpoint.x + (direction.x * separation) / 2,
+          y: midpoint.y + (direction.y * separation) / 2
+        },
         mediator: midpoint,
         relationKind: "binds",
         allowedOverlap: true,
         warnings: []
       };
+    }
     case "secretion":
       return {
         source: { x: source.x + dx * 0.2, y: source.y + dy * 0.2 },

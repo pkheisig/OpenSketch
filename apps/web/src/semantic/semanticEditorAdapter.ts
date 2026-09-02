@@ -77,6 +77,7 @@ import {
   annotationCandidates,
   planInteraction,
   planParticleField,
+  SEMANTIC_TEXT_COLOR,
   stylePreset,
   type InteractionMode,
   type LabelPlacement,
@@ -1682,13 +1683,12 @@ export function createSemanticEditorAdapter(
           if (object.objectId) skipped.push(object.objectId);
           return;
         }
+        const isText = object instanceof IText || object instanceof Textbox;
         object.set({
-          fill: preset.fill,
+          fill: isText ? (preset.textFill ?? SEMANTIC_TEXT_COLOR) : preset.fill,
           stroke: preset.stroke,
           strokeWidth: preset.strokeWidth,
-          ...(object instanceof IText || object instanceof Textbox
-            ? { fontSize: preset.fontSize, fontWeight: preset.fontWeight }
-            : {})
+          ...(isText ? { fontSize: preset.fontSize, fontWeight: preset.fontWeight } : {})
         });
         object.setCoords();
         if (object instanceof IText || object instanceof Textbox) {

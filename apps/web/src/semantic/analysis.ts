@@ -6,7 +6,7 @@ import {
   relationsForCanvas,
   type SemanticRelation
 } from "./composition";
-import { stylePreset } from "./compound";
+import { SEMANTIC_TEXT_COLOR, stylePreset } from "./compound";
 import { sceneObjectEntries } from "@/editor/sceneTree";
 import type { Bounds } from "@/editor/geometry";
 
@@ -211,8 +211,12 @@ export function analyzeComposition(
       .find((role) => Boolean(role && stylePreset(role)));
     const expectedStyle = styledRole ? stylePreset(styledRole) : undefined;
     if (expectedStyle && !object.familyId) {
+      const expectedFill =
+        object instanceof IText || object instanceof Textbox
+          ? (expectedStyle.textFill ?? SEMANTIC_TEXT_COLOR)
+          : expectedStyle.fill;
       const mismatches = [
-        object.fill !== expectedStyle.fill ? "fill" : undefined,
+        object.fill !== expectedFill ? "fill" : undefined,
         object.stroke !== expectedStyle.stroke ? "stroke" : undefined,
         object.strokeWidth !== expectedStyle.strokeWidth ? "strokeWidth" : undefined
       ].filter((value): value is string => Boolean(value));

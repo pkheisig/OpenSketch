@@ -50,6 +50,15 @@ describe("semantic compound planning", () => {
     expect(plan.mediator).toEqual({ x: 70, y: 20 });
   });
 
+  it("places binding participants at their bounds-derived contact range", () => {
+    const plan = planInteraction(
+      { left: 0, top: 0, width: 40, height: 40 },
+      { left: 200, top: 0, width: 40, height: 40 },
+      "binding"
+    );
+    expect(plan.target.x - plan.source.x).toBe(40);
+  });
+
   it("provides bounded annotation candidates", () => {
     expect(
       annotationCandidates(

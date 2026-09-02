@@ -1637,7 +1637,7 @@ definitions.push(
     },
     outputSchema: output({
       objectId: objectId(),
-      particleIds: objectIds(0),
+      particleIds: { type: "array", maxItems: 256, items: objectId() },
       seed: { type: "string" },
       points: { type: "array", maxItems: 256 }
     })
