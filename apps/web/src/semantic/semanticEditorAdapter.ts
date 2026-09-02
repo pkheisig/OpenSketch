@@ -27,6 +27,7 @@ import { createShapeObject } from "@/editor/creationObjects";
 import { type CreationDefaults, type ShapeKind } from "@/editor/creation";
 import {
   connectorsForRemovedIds,
+  createCircularArcObject,
   createConnectorObject,
   createFreeConnectorObject
 } from "@/editor/connectors";
@@ -772,6 +773,27 @@ export function createSemanticEditorAdapter(
       );
       return { data: { objectId }, changedObjectIds: [objectId] };
     }
+    if (command === "set_text_content") {
+      const objectId = input.objectId as string;
+      const [object] = resolveObjects(canvas, [objectId]);
+      if (!(object instanceof IText) && !(object instanceof Textbox)) {
+        throw new SemanticAdapterError(
+          "INVALID_SELECTION",
+          `Scene object "${objectId}" is not editable text.`
+        );
+      }
+      if (typeof input.text !== "string") {
+        throw new SemanticAdapterError("INVALID_INPUT", "text is required.");
+      }
+      const text = input.text;
+      object.set("text", text);
+      configureTextObject(object);
+      object.setCoords();
+      refreshParentGroups(object);
+      canvas.requestRenderAll();
+      commitSemantic("Semantic text content");
+      return { data: { objectId, text }, changedObjectIds: [objectId] };
+    }
     if (command === "create_shape") {
       const kind = input.kind as (typeof SHAPE_KINDS)[number];
       const object = createShapeObject(kind as ShapeKind, dependencies.creationDefaults());
@@ -915,6 +937,53 @@ export function createSemanticEditorAdapter(
       const objectId = addObject(canvas, connector, connector.name, kind, undefined, true, false);
       return { data: { objectId }, changedObjectIds: [objectId] };
     }
+    if (command === "create_circular_arc") {
+      const center = point(input.center, "center");
+      const radius = finiteNumber(input.radius, "radius");
+      const startAngle = finiteNumber(input.startAngle, "startAngle");
+      const endAngle = finiteNumber(input.endAngle, "endAngle");
+      const clockwise = input.direction !== "counterclockwise";
+      const sweep = clockwise
+        ? (((endAngle - startAngle) % 360) + 360) % 360
+        : (((startAngle - endAngle) % 360) + 360) % 360;
+      if (radius <= 0 || sweep < 0.01) {
+        throw new SemanticAdapterError(
+          "INVALID_INPUT",
+          "Circular arc radius and angular sweep must be positive."
+        );
+      }
+      const defaults = dependencies.creationDefaults().line;
+      const arc = createCircularArcObject(
+        {
+          center,
+          radius,
+          startAngle,
+          endAngle,
+          clockwise,
+          startArrowhead: (input.startArrowhead ?? "none") as ConnectorBinding["startArrowhead"],
+          endArrowhead: (input.endArrowhead ?? "triangle") as ConnectorBinding["endArrowhead"],
+          lineStyle: (input.lineStyle ?? "solid") as ConnectorBinding["lineStyle"]
+        },
+        {
+          color: defaults.color,
+          width: defaults.width * (typeof input.widthScale === "number" ? input.widthScale : 1),
+          opacity: typeof input.opacity === "number" ? input.opacity : 1
+        }
+      );
+      const objectId = addObject(
+        canvas,
+        arc,
+        "Circular arc",
+        "curved-arrow",
+        undefined,
+        false,
+        false
+      );
+      canvas.sendObjectToBack(arc);
+      canvas.requestRenderAll();
+      commitSemantic("Semantic add circular arc");
+      return { data: { objectId }, changedObjectIds: [objectId] };
+    }
     if (command === "move_objects") {
       const ids = objectIds(input);
       const objects = resolveObjects(canvas, ids);
@@ -930,6 +999,114 @@ export function createSemanticEditorAdapter(
       dependencies.refreshConnectors();
       canvas.requestRenderAll();
       commitSemantic("Semantic move");
+      return { data: { objectIds: ids }, changedObjectIds: ids };
+    }
+    if (command === "snap_object") {
+      const objectId = input.objectId as string;
+      const targetObjectId = input.targetObjectId as string;
+      const [object, target] = resolveObjects(canvas, [objectId, targetObjectId]);
+      assertIndependentPlacementObjects([object, target]);
+      const side = input.side as "top" | "right" | "bottom" | "left";
+      if (!["top", "right", "bottom", "left"].includes(side)) {
+        throw new SemanticAdapterError(
+          "INVALID_INPUT",
+          "side must be top, right, bottom, or left."
+        );
+      }
+      const gap = finiteNumber(input.gap, "gap");
+      const offset = input.offset === undefined ? 0 : finiteNumber(input.offset, "offset");
+      if (gap < 0) throw new SemanticAdapterError("INVALID_INPUT", "gap must not be negative.");
+      setAbsoluteRotation(object, input.angle);
+      const targetAnchor = anchorPoint(target.getBoundingRect(), side);
+      const objectAnchor =
+        side === "top" ? "bottom" : side === "right" ? "left" : side === "bottom" ? "top" : "right";
+      const destination = {
+        x: targetAnchor.x + (side === "left" ? -gap : side === "right" ? gap : offset),
+        y: targetAnchor.y + (side === "top" ? -gap : side === "bottom" ? gap : offset)
+      };
+      moveAnchorTo(object, objectAnchor, destination);
+      dependencies.refreshConnectors();
+      canvas.requestRenderAll();
+      commitSemantic("Semantic snap");
+      return {
+        data: { objectId, targetObjectId, position: destination },
+        changedObjectIds: [objectId]
+      };
+    }
+    if (command === "layout_objects_radially") {
+      const ids = objectIds(input);
+      const objects = resolveObjects(canvas, ids);
+      assertNonOverlappingTargets(objects);
+      const center = point(input.center, "center");
+      const radius = finiteNumber(input.radius, "radius");
+      const startAngle = finiteNumber(input.startAngle, "startAngle");
+      const direction = input.direction === "counterclockwise" ? -1 : 1;
+      if (radius <= 0) {
+        throw new SemanticAdapterError("INVALID_INPUT", "radius must be positive.");
+      }
+      objects.forEach((object, index) => {
+        const angle = ((startAngle + (direction * (360 * index)) / objects.length) * Math.PI) / 180;
+        moveAnchorTo(object, "center", {
+          x: center.x + Math.cos(angle) * radius,
+          y: center.y + Math.sin(angle) * radius
+        });
+      });
+      dependencies.refreshConnectors();
+      canvas.requestRenderAll();
+      commitSemantic("Semantic radial layout");
+      return { data: { objectIds: ids }, changedObjectIds: ids };
+    }
+    if (command === "layout_objects_linear") {
+      const ids = objectIds(input);
+      const objects = resolveObjects(canvas, ids);
+      assertNonOverlappingTargets(objects);
+      const center = point(input.center, "center");
+      const gap = finiteNumber(input.gap, "gap");
+      const axis =
+        input.axis === "vertical"
+          ? "vertical"
+          : input.axis === "horizontal"
+            ? "horizontal"
+            : undefined;
+      const alignment = input.alignment ?? "center";
+      if (!axis) {
+        throw new SemanticAdapterError("INVALID_INPUT", "axis must be horizontal or vertical.");
+      }
+      if (!["start", "center", "end"].includes(alignment as string)) {
+        throw new SemanticAdapterError("INVALID_INPUT", "alignment must be start, center, or end.");
+      }
+      if (gap < 0) throw new SemanticAdapterError("INVALID_INPUT", "gap must not be negative.");
+      const bounds = objects.map(boundsOf);
+      const lengths = bounds.map((item) => (axis === "horizontal" ? item.width : item.height));
+      const crossLengths = bounds.map((item) => (axis === "horizontal" ? item.height : item.width));
+      const totalLength =
+        lengths.reduce((sum, value) => sum + value, 0) + gap * (objects.length - 1);
+      const maxCross = Math.max(...crossLengths);
+      let cursor = (axis === "horizontal" ? center.x : center.y) - totalLength / 2;
+      objects.forEach((object, index) => {
+        const length = lengths[index];
+        const cross = crossLengths[index];
+        const mainCenter = cursor + length / 2;
+        const crossCenter =
+          alignment === "start"
+            ? (axis === "horizontal" ? center.y : center.x) - maxCross / 2 + cross / 2
+            : alignment === "end"
+              ? (axis === "horizontal" ? center.y : center.x) + maxCross / 2 - cross / 2
+              : axis === "horizontal"
+                ? center.y
+                : center.x;
+        moveAnchorTo(
+          object,
+          "center",
+          axis === "horizontal"
+            ? { x: mainCenter, y: crossCenter }
+            : { x: crossCenter, y: mainCenter }
+        );
+        cursor += length + gap;
+      });
+      dependencies.refreshConnectors();
+      canvas.requestRenderAll();
+      commitSemantic("Semantic linear layout");
       return { data: { objectIds: ids }, changedObjectIds: ids };
     }
     if (command === "attach_object") {

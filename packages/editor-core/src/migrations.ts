@@ -1529,15 +1529,60 @@ export interface MigratedProjectForLoad {
   identityWarnings: string[];
 }
 
+function repairMissingCircularArcBindings(input: unknown): {
+  repaired: boolean;
+  warnings: string[];
+} {
+  if (!isRecord(input) || !isRecord(input.objects) || !Array.isArray(input.objects.objects)) {
+    return { repaired: false, warnings: [] };
+  }
+  let repaired = false;
+  const warnings: string[] = [];
+  const walk = (value: unknown, path: string): void => {
+    if (!isRecord(value)) return;
+    if (
+      value.type === "Group" &&
+      value.OpenSketchType === "curved-arrow" &&
+      value.name === "Circular arc" &&
+      value.freeConnectorBinding === undefined
+    ) {
+      value.freeConnectorBinding = {
+        fromObjectId: "",
+        fromAnchor: "center",
+        toObjectId: "",
+        toAnchor: "center",
+        startArrowhead: "none",
+        endArrowhead: "triangle",
+        lineStyle: "solid",
+        routing: "direct",
+        pathShape: "circular",
+        curvature: 1
+      };
+      repaired = true;
+      warnings.push(`Repaired missing free-connector metadata for circular arc at ${path}.`);
+    }
+    if (Array.isArray(value.objects)) {
+      value.objects.forEach((child, index) => walk(child, `${path}.objects[${index}]`));
+    }
+    if (isRecord(value.clipPath)) walk(value.clipPath, `${path}.clipPath`);
+    if (isRecord(value.path) && typeof value.path.type === "string") {
+      walk(value.path, `${path}.path`);
+    }
+  };
+  input.objects.objects.forEach((object, index) => walk(object, `scene.objects[${index}]`));
+  return { repaired, warnings };
+}
+
 /**
  * Repairs duplicate identities produced by older clone paths before applying
  * the strict portable-project validation gate.
  */
 export function migrateProjectForLoad(input: unknown): MigratedProjectForLoad {
   const repair = repairProjectIdentity(input);
+  const circularArcRepair = repairMissingCircularArcBindings(repair.project);
   return {
     project: migrateProject(repair.project),
-    identityRepaired: repair.repaired,
-    identityWarnings: repair.warnings
+    identityRepaired: repair.repaired || circularArcRepair.repaired,
+    identityWarnings: [...repair.warnings, ...circularArcRepair.warnings]
   };
 }

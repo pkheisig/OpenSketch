@@ -72,11 +72,16 @@ export const PROPERTY_KEYS = [
 export const MUTATION_COMMAND_NAMES = [
   "set_selection",
   "create_text",
+  "set_text_content",
   "create_shape",
   "create_connector",
+  "create_circular_arc",
   "insert_asset",
   "replace_asset_variant",
   "move_objects",
+  "snap_object",
+  "layout_objects_radially",
+  "layout_objects_linear",
   "attach_object",
   "place_object_between",
   "rotate_objects",
@@ -394,6 +399,26 @@ const definitions: SemanticCommandDefinition[] = [
     outputSchema: changedOutput
   },
   {
+    name: "set_text_content",
+    title: "Set text content",
+    description:
+      "Replace the text content of one exact text object while preserving its identity and style.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: { objectId: objectId(), text: { type: "string", maxLength: 4_000 } },
+      required: ["objectId", "text"],
+      additionalProperties: false
+    },
+    outputSchema: output({ objectId: objectId(), text: { type: "string" } })
+  },
+  {
     name: "create_shape",
     title: "Create shape",
     description: "Create one existing OpenSketch shape kind without DOM or raw Fabric access.",
@@ -476,6 +501,43 @@ const definitions: SemanticCommandDefinition[] = [
     outputSchema: changedOutput
   },
   {
+    name: "create_circular_arc",
+    title: "Create circular arc",
+    description:
+      "Create one exact center-and-radius circular arc with consistent styling and optional arrowheads.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: false,
+    idempotent: false,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        center: point(),
+        radius: number(1, 100_000),
+        startAngle: number(-3_600, 3_600),
+        endAngle: number(-3_600, 3_600),
+        direction: { type: "string", enum: ["clockwise", "counterclockwise"] },
+        startArrowhead: {
+          type: "string",
+          enum: ["none", "triangle", "open", "circle", "open-circle", "bar", "neuron"]
+        },
+        endArrowhead: {
+          type: "string",
+          enum: ["none", "triangle", "open", "circle", "open-circle", "bar", "neuron"]
+        },
+        lineStyle: { type: "string", enum: ["solid", "dashed", "dotted"] },
+        opacity: number(0, 1),
+        widthScale: number(0.1, 10)
+      },
+      required: ["center", "radius", "startAngle", "endAngle"],
+      additionalProperties: false
+    },
+    outputSchema: changedOutput
+  },
+  {
     name: "insert_asset",
     title: "Insert scientific asset",
     description:
@@ -543,6 +605,85 @@ const definitions: SemanticCommandDefinition[] = [
         dy: number(-100000, 100000)
       },
       required: ["objectIds", "dx", "dy"],
+      additionalProperties: false
+    },
+    outputSchema: changedOutput
+  },
+  {
+    name: "snap_object",
+    title: "Snap object with gap",
+    description:
+      "Snap one exact object outside a named side of another object with an exact gap and cross-axis offset.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        objectId: objectId(),
+        targetObjectId: objectId(),
+        side: { type: "string", enum: ["top", "right", "bottom", "left"] },
+        gap: number(0, 100_000),
+        offset: number(-100_000, 100_000),
+        angle: number(-3_600, 3_600)
+      },
+      required: ["objectId", "targetObjectId", "side", "gap"],
+      additionalProperties: false
+    },
+    outputSchema: output({ objectId: objectId(), targetObjectId: objectId(), position: point() })
+  },
+  {
+    name: "layout_objects_radially",
+    title: "Layout objects radially",
+    description:
+      "Distribute ordered exact objects evenly around one circle while keeping each object upright.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        objectIds: objectIds(2),
+        center: point(),
+        radius: number(1, 100_000),
+        startAngle: number(-3_600, 3_600),
+        direction: { type: "string", enum: ["clockwise", "counterclockwise"] }
+      },
+      required: ["objectIds", "center", "radius", "startAngle"],
+      additionalProperties: false
+    },
+    outputSchema: changedOutput
+  },
+  {
+    name: "layout_objects_linear",
+    title: "Layout objects with exact gaps",
+    description:
+      "Lay out ordered exact objects in a centered row or column with an exact gap and cross-axis alignment.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        objectIds: objectIds(2),
+        center: point(),
+        axis: { type: "string", enum: ["horizontal", "vertical"] },
+        gap: number(0, 100_000),
+        alignment: { type: "string", enum: ["start", "center", "end"] }
+      },
+      required: ["objectIds", "center", "axis", "gap"],
       additionalProperties: false
     },
     outputSchema: changedOutput

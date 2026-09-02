@@ -39,42 +39,47 @@ schemas. The table is checked against `SEMANTIC_COMMANDS` by
 `tests/webmcp-documentation.test.ts`; add or remove a row when changing the
 registry.
 
-| Command                  | Purpose                                                          | Risk and confirmation                        |
-| ------------------------ | ---------------------------------------------------------------- | -------------------------------------------- |
-| `inspect_scene`          | Bounded canvas and hierarchy snapshot                            | Read-only                                    |
-| `inspect_object`         | Inspect one stable scene object ID                               | Read-only                                    |
-| `inspect_selection`      | Inspect the current human selection                              | Read-only                                    |
-| `search_assets`          | Search the bundled scientific asset manifest                     | Read-only                                    |
-| `inspect_asset`          | Inspect one asset family or variant without raw SVG              | Read-only                                    |
-| `inspect_provenance`     | Inspect bounded asset provenance for the figure                  | Read-only                                    |
-| `resize_canvas`          | Set the logical canvas width and height                          | Reversible and retryable                     |
-| `set_project_metadata`   | Set the figure name or description                               | Reversible and retryable                     |
-| `set_selection`          | Set the canvas selection by stable object IDs                    | Reversible and retryable                     |
-| `create_text`            | Create point or box text through the editor pathway              | Reversible                                   |
-| `create_shape`           | Create a supported OpenSketch shape                              | Reversible                                   |
-| `create_connector`       | Create a free or object-bound connector                          | Reversible                                   |
-| `insert_asset`           | Insert an exact bundled asset family and variant                 | Reversible                                   |
-| `replace_asset_variant`  | Replace an asset variant while preserving identity and placement | Reversible and retryable                     |
-| `move_objects`           | Translate exact scene objects                                    | Reversible and retryable                     |
-| `attach_object`          | Attach one object anchor to another with offset/rotation         | Reversible and retryable                     |
-| `place_object_between`   | Place an object between exact anchors on two objects             | Reversible and retryable                     |
-| `rotate_objects`         | Rotate exact scene objects                                       | Reversible and retryable                     |
-| `scale_objects`          | Scale exact scene objects                                        | Reversible and retryable                     |
-| `flip_objects`           | Flip exact scene objects on one axis                             | Reversible and retryable                     |
-| `set_object_properties`  | Apply typed, whitelisted object properties                       | Reversible and retryable                     |
-| `set_asset_color_preset` | Apply an existing asset color preset                             | Reversible and retryable                     |
-| `arrange_objects`        | Move objects within their layer collection                       | Reversible and retryable                     |
-| `align_objects`          | Align objects to the requested union-bound axis                  | Reversible and retryable                     |
-| `distribute_objects`     | Distribute three or more objects on one axis                     | Reversible and retryable                     |
-| `rebind_connector`       | Retarget a bound connector to exact objects and anchors          | Reversible and retryable                     |
-| `duplicate_objects`      | Clone objects with fresh identities                              | Reversible                                   |
-| `delete_objects`         | Delete exact objects and bound connectors                        | Sensitive/destructive; explicit confirmation |
-| `group_objects`          | Group exact sibling objects                                      | Reversible                                   |
-| `ungroup_objects`        | Ungroup one existing manual group                                | Reversible                                   |
-| `undo`                   | Undo the most recent editor history step                         | Reversible                                   |
-| `redo`                   | Redo the next editor history step                                | Reversible                                   |
-| `export_figure`          | Start the existing SVG, PDF, PNG, or credits download            | Local side effect                            |
-| `batch`                  | Run up to 32 typed mutations as one atomic history step          | Sensitive/destructive; explicit confirmation |
+| Command                   | Purpose                                                          | Risk and confirmation                        |
+| ------------------------- | ---------------------------------------------------------------- | -------------------------------------------- |
+| `inspect_scene`           | Bounded canvas and hierarchy snapshot                            | Read-only                                    |
+| `inspect_object`          | Inspect one stable scene object ID                               | Read-only                                    |
+| `inspect_selection`       | Inspect the current human selection                              | Read-only                                    |
+| `search_assets`           | Search the bundled scientific asset manifest                     | Read-only                                    |
+| `inspect_asset`           | Inspect one asset family or variant without raw SVG              | Read-only                                    |
+| `inspect_provenance`      | Inspect bounded asset provenance for the figure                  | Read-only                                    |
+| `resize_canvas`           | Set the logical canvas width and height                          | Reversible and retryable                     |
+| `set_project_metadata`    | Set the figure name or description                               | Reversible and retryable                     |
+| `set_selection`           | Set the canvas selection by stable object IDs                    | Reversible and retryable                     |
+| `create_text`             | Create point or box text through the editor pathway              | Reversible                                   |
+| `set_text_content`        | Replace exact text content while preserving identity and style   | Reversible and retryable                     |
+| `create_shape`            | Create a supported OpenSketch shape                              | Reversible                                   |
+| `create_connector`        | Create a free or object-bound connector                          | Reversible                                   |
+| `create_circular_arc`     | Create a true center-and-radius circular arc                     | Reversible                                   |
+| `insert_asset`            | Insert an exact bundled asset family and variant                 | Reversible                                   |
+| `replace_asset_variant`   | Replace an asset variant while preserving identity and placement | Reversible and retryable                     |
+| `move_objects`            | Translate exact scene objects                                    | Reversible and retryable                     |
+| `snap_object`             | Snap outside another object with an exact gap                    | Reversible and retryable                     |
+| `layout_objects_radially` | Distribute ordered objects evenly around one circle              | Reversible and retryable                     |
+| `layout_objects_linear`   | Lay out a row or column with exact gaps and alignment            | Reversible and retryable                     |
+| `attach_object`           | Attach one object anchor to another with offset/rotation         | Reversible and retryable                     |
+| `place_object_between`    | Place an object between exact anchors on two objects             | Reversible and retryable                     |
+| `rotate_objects`          | Rotate exact scene objects                                       | Reversible and retryable                     |
+| `scale_objects`           | Scale exact scene objects                                        | Reversible and retryable                     |
+| `flip_objects`            | Flip exact scene objects on one axis                             | Reversible and retryable                     |
+| `set_object_properties`   | Apply typed, whitelisted object properties                       | Reversible and retryable                     |
+| `set_asset_color_preset`  | Apply an existing asset color preset                             | Reversible and retryable                     |
+| `arrange_objects`         | Move objects within their layer collection                       | Reversible and retryable                     |
+| `align_objects`           | Align objects to the requested union-bound axis                  | Reversible and retryable                     |
+| `distribute_objects`      | Distribute three or more objects on one axis                     | Reversible and retryable                     |
+| `rebind_connector`        | Retarget a bound connector to exact objects and anchors          | Reversible and retryable                     |
+| `duplicate_objects`       | Clone objects with fresh identities                              | Reversible                                   |
+| `delete_objects`          | Delete exact objects and bound connectors                        | Sensitive/destructive; explicit confirmation |
+| `group_objects`           | Group exact sibling objects                                      | Reversible                                   |
+| `ungroup_objects`         | Ungroup one existing manual group                                | Reversible                                   |
+| `undo`                    | Undo the most recent editor history step                         | Reversible                                   |
+| `redo`                    | Redo the next editor history step                                | Reversible                                   |
+| `export_figure`           | Start the existing SVG, PDF, PNG, or credits download            | Local side effect                            |
+| `batch`                   | Run up to 32 typed mutations as one atomic history step          | Sensitive/destructive; explicit confirmation |
 
 All current commands use semantic runtime version `opensketch.semantic.v1`.
 Command outputs contain a bounded result, changed object IDs, warnings, and

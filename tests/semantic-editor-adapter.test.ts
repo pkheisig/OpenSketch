@@ -1,4 +1,10 @@
-import { Group, Rect, type Canvas, type FabricObject } from "../apps/web/node_modules/fabric";
+import {
+  Group,
+  IText,
+  Rect,
+  type Canvas,
+  type FabricObject
+} from "../apps/web/node_modules/fabric";
 import { describe, expect, it, vi } from "vitest";
 import { DEFAULT_CREATION_DEFAULTS } from "../apps/web/src/editor/creation";
 import { createSemanticEditorAdapter } from "../apps/web/src/semantic/semanticEditorAdapter";
@@ -163,6 +169,19 @@ describe("semantic editor adapter", () => {
     expect(adapter.inspectObject(objectId)?.text).toBe("Tumor antigen uptake");
   });
 
+  it("replaces exact text content while preserving the text object identity", async () => {
+    const text = new IText("Old label");
+    text.objectId = "label";
+    const adapter = makeAdapter(makeCanvas([text]));
+
+    await adapter.execute("set_text_content", {
+      objectId: "label",
+      text: "Release of cancer-cell antigens"
+    });
+
+    expect(adapter.inspectObject("label")?.text).toBe("Release of cancer-cell antigens");
+  });
+
   it("converts canvas-space movement for transformed nested targets", async () => {
     const child = new Rect({ width: 40, height: 20 });
     child.objectId = "child";
@@ -262,6 +281,82 @@ describe("semantic editor adapter", () => {
     expect(bridgeBounds.top + bridgeBounds.height / 2).toBeCloseTo(88, 5);
   });
 
+  it("snaps an object outside a target side with an exact gap", async () => {
+    const label = new Rect({ left: 0, top: 0, width: 40, height: 20 });
+    const target = new Rect({ left: 200, top: 100, width: 100, height: 80 });
+    label.objectId = "label";
+    target.objectId = "target";
+    const adapter = makeAdapter(makeCanvas([label, target]));
+
+    await adapter.execute("snap_object", {
+      objectId: "label",
+      targetObjectId: "target",
+      side: "bottom",
+      gap: 24,
+      offset: 12
+    });
+
+    const labelBounds = label.getBoundingRect();
+    const targetBounds = target.getBoundingRect();
+    expect(labelBounds.top).toBeCloseTo(targetBounds.top + targetBounds.height + 24, 5);
+    expect(labelBounds.left + labelBounds.width / 2).toBeCloseTo(
+      targetBounds.left + targetBounds.width / 2 + 12,
+      5
+    );
+  });
+
+  it("distributes ordered objects evenly around one circle", async () => {
+    const objects = ["a", "b", "c", "d"].map((objectId) => {
+      const object = new Rect({ width: 20, height: 20 });
+      object.objectId = objectId;
+      return object;
+    });
+    const adapter = makeAdapter(makeCanvas(objects));
+
+    await adapter.execute("layout_objects_radially", {
+      objectIds: objects.map((object) => object.objectId),
+      center: { x: 300, y: 300 },
+      radius: 100,
+      startAngle: -90,
+      direction: "clockwise"
+    });
+
+    const centers = objects.map((object) => {
+      const bounds = object.getBoundingRect();
+      return { x: bounds.left + bounds.width / 2, y: bounds.top + bounds.height / 2 };
+    });
+    expect(centers[0]).toMatchObject({ x: 300, y: 200 });
+    expect(centers[1]).toMatchObject({ x: 400, y: 300 });
+    expect(centers[2]).toMatchObject({ x: 300, y: 400 });
+    expect(centers[3]).toMatchObject({ x: 200, y: 300 });
+  });
+
+  it("lays out ordered objects with exact linear gaps", async () => {
+    const objects = [20, 30, 40].map((width, index) => {
+      const object = new Rect({ width, height: 20 + index * 10 });
+      object.objectId = `object-${index}`;
+      return object;
+    });
+    const adapter = makeAdapter(makeCanvas(objects));
+
+    await adapter.execute("layout_objects_linear", {
+      objectIds: objects.map((object) => object.objectId),
+      center: { x: 300, y: 200 },
+      axis: "horizontal",
+      gap: 16,
+      alignment: "center"
+    });
+
+    const bounds = objects.map((object) => object.getBoundingRect());
+    expect(bounds[1].left - (bounds[0].left + bounds[0].width)).toBeCloseTo(16, 5);
+    expect(bounds[2].left - (bounds[1].left + bounds[1].width)).toBeCloseTo(16, 5);
+    expect(bounds.map((item) => item.top + item.height / 2)).toEqual([
+      expect.closeTo(200, 5),
+      expect.closeTo(200, 5),
+      expect.closeTo(200, 5)
+    ]);
+  });
+
   it("uses the supplied axis when creation coordinates are partial", async () => {
     const canvas = makeCanvas();
     const adapter = makeAdapter(canvas);
@@ -288,6 +383,40 @@ describe("semantic editor adapter", () => {
     const objectId = (result.data as { objectId: string }).objectId;
 
     expect(adapter.inspectObject(objectId)?.connector?.pathShape).toBe("arc");
+  });
+
+  it("creates a true circular arc object from center, radius, and angles", async () => {
+    const canvas = makeCanvas();
+    const adapter = makeAdapter(canvas);
+
+    const result = await adapter.execute("create_circular_arc", {
+      center: { x: 300, y: 300 },
+      radius: 120,
+      startAngle: -80,
+      endAngle: -20,
+      direction: "clockwise",
+      endArrowhead: "triangle",
+      widthScale: 1.5
+    });
+    const objectId = (result.data as { objectId: string }).objectId;
+    const descriptor = adapter.inspectObject(objectId);
+
+    expect(descriptor).toMatchObject({ type: "curved-arrow", name: "Circular arc" });
+    expect(descriptor?.bounds.width).toBeGreaterThan(0);
+    expect(descriptor?.bounds.height).toBeGreaterThan(0);
+    expect(descriptor?.freeConnector).toMatchObject({
+      from: expect.objectContaining({ x: expect.any(Number), y: expect.any(Number) }),
+      to: expect.objectContaining({ x: expect.any(Number), y: expect.any(Number) })
+    });
+    expect(
+      canvas.getObjects().find((object) => object.objectId === objectId)?.freeConnectorBinding
+    ).toMatchObject({
+      fromObjectId: "",
+      toObjectId: "",
+      pathShape: "circular",
+      startArrowhead: "none",
+      endArrowhead: "triangle"
+    });
   });
 
   it("reports free connector endpoints in canvas coordinates", async () => {
