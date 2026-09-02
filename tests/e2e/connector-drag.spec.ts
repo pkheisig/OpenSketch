@@ -22,7 +22,7 @@ async function pointerDrag(
 }
 
 test("pointer-drags connector and shape presets directly onto the canvas", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   await page.getByRole("button", { name: "Lines", exact: true }).click();

@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("@smoke keeps artboard rulers stable beneath the floating editor chrome", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await expect(page.locator(".canvas-workspace")).toBeVisible();
   await expect(page.locator(".floating-tool-rail")).toBeVisible();

@@ -26,7 +26,7 @@ async function expectFlyoutTopAligned(menu: Locator, family: string) {
 test("@smoke uses floating BioRender-style tools, flyouts, and left-side properties", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   await expect(page.locator(".floating-tool-rail")).toBeVisible();
@@ -351,7 +351,7 @@ test("expands all creation defaults initially and restores each disclosure state
   page
 }) => {
   await page.setViewportSize({ width: 1200, height: 1000 });
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("button", { name: "Defaults", exact: true }).click();
 
@@ -428,7 +428,7 @@ test("expands all creation defaults initially and restores each disclosure state
 
 test("shows variant grids with viewport margins and invisible scrollbars", async ({ page }) => {
   await page.setViewportSize({ width: 1200, height: 760 });
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Male Child");
   await expect(page.getByRole("combobox", { name: "Male Child variant" })).toBeVisible();
@@ -463,7 +463,7 @@ test("shows variant grids with viewport margins and invisible scrollbars", async
 
 test("hides scrollbar chrome globally without disabling scrolling", async ({ page }) => {
   await page.setViewportSize({ width: 1200, height: 700 });
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("button", { name: "All", exact: true }).click();
 
@@ -482,7 +482,7 @@ test("hides scrollbar chrome globally without disabling scrolling", async ({ pag
 });
 
 test("uses one focus ring and consistent neutral asset-control surfaces", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const search = page.getByPlaceholder("Search cells, proteins, equipment…");
@@ -522,7 +522,7 @@ test("uses one focus ring and consistent neutral asset-control surfaces", async 
 });
 
 test("creates every distinct shape variant exposed by the shape pop-out", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   const families = [
     {
@@ -572,7 +572,7 @@ test("creates every connector path and endpoint family with valid canvas geometr
 }) => {
   const pageErrors: string[] = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const tools = [

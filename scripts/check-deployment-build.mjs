@@ -1,6 +1,6 @@
 /* global console, process */
 
-import { cp, mkdtemp, readFile, rm } from "node:fs/promises";
+import { cp, mkdtemp, readdir, readFile, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { spawn } from "node:child_process";
@@ -44,6 +44,20 @@ async function inspectBuild(publicBase, directory) {
     [index, manifest, serviceWorker].some((contents) => contents.includes("/OpenSketch/"))
   ) {
     throw new Error("Root deployment artifacts contain a stale /OpenSketch/ path.");
+  }
+  if (publicBase === "/") {
+    const assetFiles = await readdir(join(repositoryRoot, "dist/assets"));
+    const staleAssets = await Promise.all(
+      assetFiles
+        .filter((file) => /\.(?:js|css)$/u.test(file))
+        .map(async (file) => {
+          const contents = await readFile(join(repositoryRoot, "dist/assets", file), "utf8");
+          return contents.includes("/OpenSketch/") ? file : null;
+        })
+    );
+    if (staleAssets.some(Boolean)) {
+      throw new Error("Root JavaScript or CSS contains a stale /OpenSketch/ path.");
+    }
   }
   await cp(join(repositoryRoot, "dist"), directory, { recursive: true });
 }
