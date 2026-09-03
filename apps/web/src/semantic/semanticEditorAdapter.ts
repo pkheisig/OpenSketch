@@ -1144,15 +1144,12 @@ export function createSemanticEditorAdapter(
           dependencies.refreshConnectors();
           canvas.requestRenderAll();
           commitSemantic("Semantic update labeled group");
+          const descendantIds: string[] = [];
+          visitSceneObjects(existingStage, (object) => {
+            if (object.objectId) descendantIds.push(object.objectId);
+          });
           const updatedObjectIds = [
-            existingStage.objectId!,
-            existingLabelGroup.objectId!,
-            ...(isGroup(existingStage)
-              ? existingStage
-                  .getObjects()
-                  .map((object) => object.objectId)
-                  .filter((id): id is string => Boolean(id))
-              : []),
+            ...descendantIds,
             ...requestedIds
           ]
             .filter((id, index, ids) => ids.indexOf(id) === index)

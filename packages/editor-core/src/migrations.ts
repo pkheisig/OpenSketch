@@ -201,6 +201,7 @@ const SCENE_PROPERTIES = new Set([
   "defaultElementStyle",
   "semanticMetadata",
   "semanticRelations",
+  "particleFieldSpec",
   "semanticConnector"
 ]);
 
@@ -1075,6 +1076,7 @@ function validateCustomProperties(
     "recognizedGroups",
     "semanticMetadata",
     "semanticRelations",
+    "particleFieldSpec",
     "semanticConnector",
     "defaultElementStyle"
   ]);
@@ -1116,6 +1118,8 @@ function validateCustomProperties(
       validateSemanticMetadata(item, `${path}.${key}`);
     } else if (key === "semanticRelations") {
       validateSemanticRelations(item, `${path}.${key}`);
+    } else if (key === "particleFieldSpec") {
+      validateParticleFieldSpec(item, `${path}.${key}`);
     } else if (key === "semanticConnector") {
       validateSemanticConnector(item, `${path}.${key}`);
     }
@@ -1228,6 +1232,51 @@ function validateSemanticMetadata(value: unknown, path: string): void {
   )
     fail(`${path}.preferredPortHint`, "is unsupported");
   if (value.pinned !== undefined) assertBoolean(value.pinned, `${path}.pinned`);
+}
+
+function validateParticleFieldSpec(value: unknown, path: string): void {
+  if (!isRecord(value)) fail(path, "is invalid");
+  assertKnownKeys(
+    value,
+    path,
+    new Set([
+      "seed",
+      "count",
+      "distribution",
+      "bounds",
+      "sourceObjectId",
+      "targetObjectId",
+      "semanticType",
+      "role"
+    ])
+  );
+  assertNonEmptyString(value.seed, `${path}.seed`, 200);
+  assertFiniteNumber(value.count, `${path}.count`, { min: 0, max: 256, integer: true });
+  if (
+    typeof value.distribution !== "string" ||
+    ![
+      "cloud",
+      "uniform",
+      "linear",
+      "arc",
+      "gradient",
+      "source-fan",
+      "target-converging"
+    ].includes(value.distribution)
+  )
+    fail(`${path}.distribution`, "is unsupported");
+  if (!isRecord(value.bounds)) fail(`${path}.bounds`, "is invalid");
+  const bounds = value.bounds;
+  assertKnownKeys(bounds, `${path}.bounds`, new Set(["left", "top", "width", "height"]));
+  ["left", "top", "width", "height"].forEach((key) =>
+    assertFiniteNumber(bounds[key], `${path}.bounds.${key}`, { min: 0 })
+  );
+  for (const key of ["sourceObjectId", "targetObjectId"] as const) {
+    if (value[key] !== undefined) assertNonEmptyString(value[key], `${path}.${key}`, 200);
+  }
+  if (value.semanticType !== undefined && value.semanticType !== null)
+    assertNonEmptyString(value.semanticType, `${path}.semanticType`, 120);
+  assertNonEmptyString(value.role, `${path}.role`, 120);
 }
 
 function validateSemanticRelations(value: unknown, path: string): void {
