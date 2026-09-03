@@ -1239,6 +1239,14 @@ export function createSemanticEditorAdapter(
         stageId,
         ...(input.stageIndex === undefined ? {} : { stageIndex: input.stageIndex as number })
       };
+      visitSceneObjects(contentGroup, (object) => {
+        const metadata = metadataOf(object) ?? { version: 1 as const };
+        object.semanticMetadata = {
+          ...metadata,
+          stageId,
+          ...(input.stageIndex === undefined ? {} : { stageIndex: input.stageIndex as number })
+        };
+      });
       const labelChildren = [
         labelObject,
         ...(title ? [title] : []),

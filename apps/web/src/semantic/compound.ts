@@ -134,7 +134,9 @@ export function planInteraction(
   const target = center(targetBounds);
   const dx = target.x - source.x;
   const dy = target.y - source.y;
-  const length = Math.max(1, Math.hypot(dx, dy));
+  const distance = Math.hypot(dx, dy);
+  const length = Math.max(1, distance);
+  const direction = distance > 0 ? { x: dx / length, y: dy / length } : { x: 1, y: 0 };
   const normal = { x: -dy / length, y: dx / length };
   const midpoint = { x: (source.x + target.x) / 2, y: (source.y + target.y) / 2 };
   switch (mode) {
@@ -155,7 +157,6 @@ export function planInteraction(
       };
     }
     case "binding": {
-      const direction = { x: dx / length, y: dy / length };
       const separation = boundaryIntersectionDistance(sourceBounds, targetBounds, direction);
       return {
         source: {
@@ -182,7 +183,6 @@ export function planInteraction(
         warnings: []
       };
     case "engulfment": {
-      const direction = { x: dx / length, y: dy / length };
       const inset = Math.max(
         0,
         Math.min(
@@ -213,7 +213,6 @@ export function planInteraction(
     case "migration":
       return { source, target, relationKind: "flow_to", allowedOverlap: false, warnings: [] };
     case "cross-boundary": {
-      const direction = { x: dx / length, y: dy / length };
       const overlap = Math.max(1, offset);
       const separation = Math.max(
         0,
