@@ -295,7 +295,7 @@ export function planParticleField(
       const spread = (next() - 0.5) * bounds.height * 0.7;
       x = clamp(source.x + fraction * (end.x - source.x), innerLeft, innerLeft + innerWidth);
       y = clamp(
-        source.y + fraction * (end.y - source.y) + spread * (1 - fraction),
+        source.y + fraction * (end.y - source.y) + spread * fraction,
         innerTop,
         innerTop + innerHeight
       );

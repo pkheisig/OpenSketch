@@ -909,7 +909,8 @@ export function createSemanticEditorAdapter(
               (relation) =>
                 relation.id === input.relationId &&
                 (relation.sourceObjectId === object.objectId ||
-                  relation.targetObjectId === object.objectId)
+                  relation.targetObjectId === object.objectId ||
+                  relation.mediatorObjectIds?.some((id) => id === object.objectId) === true)
             ))
         );
       });
@@ -953,7 +954,8 @@ export function createSemanticEditorAdapter(
         if (
           idSet.size > 0 &&
           !idSet.has(relation.sourceObjectId) &&
-          !idSet.has(relation.targetObjectId)
+          !idSet.has(relation.targetObjectId) &&
+          !(relation.mediatorObjectIds ?? []).some((id) => idSet.has(id))
         )
           return false;
         if (!stageId) return true;

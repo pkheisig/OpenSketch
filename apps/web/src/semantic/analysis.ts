@@ -201,10 +201,11 @@ export function analyzeComposition(
         "repair_layout"
       );
     if (
-      bounds.left < padding ||
-      bounds.top < padding ||
-      bounds.left + bounds.width > canvasSize.width - padding ||
-      bounds.top + bounds.height > canvasSize.height - padding
+      visible &&
+      (bounds.left < padding ||
+        bounds.top < padding ||
+        bounds.left + bounds.width > canvasSize.width - padding ||
+        bounds.top + bounds.height > canvasSize.height - padding)
     )
       add(
         "geometry",
