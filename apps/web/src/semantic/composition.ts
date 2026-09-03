@@ -432,6 +432,7 @@ export function sceneRevision(canvas: Canvas): string {
     objects.map((object) => ({
       id: object.objectId,
       type: object.OpenSketchType ?? object.type,
+      familyId: object.familyId,
       left: object.left,
       top: object.top,
       width: object.width,
@@ -443,10 +444,20 @@ export function sceneRevision(canvas: Canvas): string {
       flipY: object.flipY,
       opacity: object.opacity,
       visible: object.visible,
+      fill: object.fill,
+      stroke: object.stroke,
+      strokeWidth: object.strokeWidth,
+      fontFamily: "fontFamily" in object ? object.fontFamily : undefined,
+      fontStyle: "fontStyle" in object ? object.fontStyle : undefined,
+      fontSize: "fontSize" in object ? object.fontSize : undefined,
+      fontWeight: "fontWeight" in object ? object.fontWeight : undefined,
+      lineHeight: "lineHeight" in object ? object.lineHeight : undefined,
+      charSpacing: "charSpacing" in object ? object.charSpacing : undefined,
       text: "text" in object ? (object as unknown as { text?: string }).text : undefined,
       semanticMetadata: object.semanticMetadata,
       semanticRelations: object.semanticRelations,
       connector: object.connector,
+      freeConnectorGeometry: object.freeConnectorGeometry,
       children: isGroup(object) ? describe(object.getObjects()) : undefined
     }));
   return `scene-${hash(stable({ width: canvas.getWidth?.() ?? canvas.width ?? 0, height: canvas.getHeight?.() ?? canvas.height ?? 0, objects: describe(canvas.getObjects()), relations: relationsForCanvas(canvas) }))}`;

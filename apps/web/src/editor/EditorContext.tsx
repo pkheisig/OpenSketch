@@ -198,6 +198,7 @@ FabricObject.customProperties = [
   "defaultElementStyle",
   "semanticMetadata",
   "semanticRelations",
+  "particleFieldSpec",
   "semanticConnector"
 ];
 
@@ -228,6 +229,7 @@ const RESTORABLE_GROUP_PROPERTIES = [
   "defaultElementStyle",
   "semanticMetadata",
   "semanticRelations",
+  "particleFieldSpec",
   "semanticConnector"
 ] as const;
 

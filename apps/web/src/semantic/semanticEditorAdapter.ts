@@ -1,4 +1,14 @@
-import { ActiveSelection, Canvas, FabricObject, Group, IText, Point, Textbox, util } from "fabric";
+import {
+  ActiveSelection,
+  Canvas,
+  Circle,
+  FabricObject,
+  Group,
+  IText,
+  Point,
+  Textbox,
+  util
+} from "fabric";
 import {
   filterAssetFamilies,
   type AssetFamily,
@@ -63,6 +73,18 @@ import {
   type SemanticLayoutPlan,
   type SemanticPort
 } from "./composition";
+import {
+  annotationCandidates,
+  planInteraction,
+  planParticleField,
+  SEMANTIC_TEXT_COLOR,
+  stylePreset,
+  type InteractionMode,
+  type LabelPlacement,
+  type ParticleDistribution
+} from "./compound";
+import { analyzeComposition, validateFigure } from "./analysis";
+import { refreshTextMetrics } from "@/editor/textMetrics";
 
 export class SemanticAdapterError extends Error {
   code: string;
@@ -404,6 +426,7 @@ const RESTORABLE_GROUP_PROPERTIES = [
   "recognizedGroups",
   "semanticMetadata",
   "semanticRelations",
+  "particleFieldSpec",
   "semanticConnector",
   "defaultElementStyle"
 ] as const;
@@ -492,6 +515,28 @@ function boundedText(value: unknown, maximum = 320): string | undefined {
   if (typeof value !== "string") return undefined;
   const normalized = value.trim();
   return normalized ? normalized.slice(0, maximum) : undefined;
+}
+
+function hashText(value: string): string {
+  let result = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    result ^= value.charCodeAt(index);
+    result = Math.imul(result, 16777619);
+  }
+  return (result >>> 0).toString(16).padStart(8, "0");
+}
+
+function boundedRelationId(prefix: string, ...ids: string[]): string {
+  const raw = `${prefix}-${ids.join("-")}`;
+  if (raw.length <= 200) return raw;
+  const digest = hashText(raw);
+  const prefixBudget = 200 - digest.length - 1;
+  const suffix = ids.map((id) => id.slice(0, 32)).join("-");
+  return `${`${prefix}-${suffix}`.slice(0, prefixBudget)}-${digest}`;
+}
+
+function isEffectivelyVisible(path: readonly { visible?: boolean; opacity?: number }[]): boolean {
+  return path.every((object) => object.visible !== false && (object.opacity ?? 1) > 0);
 }
 
 function assetSummary(family: AssetFamily) {
@@ -672,7 +717,8 @@ export function createSemanticEditorAdapter(
 
   const createBoundConnector = async (
     input: Record<string, unknown>,
-    commitAfter: boolean
+    commitAfter: boolean,
+    allowLabelEndpoints = false
   ): Promise<{
     objectId: string;
     fromPortId: string;
@@ -694,8 +740,9 @@ export function createSemanticEditorAdapter(
     if (fromObject === toObject)
       throw new SemanticAdapterError("INVALID_INPUT", "Connector endpoints must differ.");
     if (
-      metadataOf(fromObject)?.semanticRole === "stage-label" ||
-      metadataOf(toObject)?.semanticRole === "stage-label"
+      !allowLabelEndpoints &&
+      (metadataOf(fromObject)?.semanticRole === "stage-label" ||
+        metadataOf(toObject)?.semanticRole === "stage-label")
     ) {
       throw new SemanticAdapterError(
         "INVALID_ENDPOINT_SCOPE",
@@ -755,8 +802,8 @@ export function createSemanticEditorAdapter(
     );
     connector.semanticMetadata = {
       version: 1,
-      semanticRole: "main-flow-connector",
-      semanticType: "bound-connector"
+      semanticRole: allowLabelEndpoints ? "annotation-leader" : "main-flow-connector",
+      semanticType: allowLabelEndpoints ? "annotation-leader" : "bound-connector"
     };
     connector.semanticConnector = {
       version: 1,
@@ -862,7 +909,8 @@ export function createSemanticEditorAdapter(
               (relation) =>
                 relation.id === input.relationId &&
                 (relation.sourceObjectId === object.objectId ||
-                  relation.targetObjectId === object.objectId)
+                  relation.targetObjectId === object.objectId ||
+                  relation.mediatorObjectIds?.some((id) => id === object.objectId) === true)
             ))
         );
       });
@@ -902,18 +950,24 @@ export function createSemanticEditorAdapter(
       const ids = input.objectIds === undefined ? [] : objectIds(input);
       const idSet = new Set(ids);
       const stageId = typeof input.stageId === "string" ? input.stageId : undefined;
+      const stageObjectIndex = stageId ? sceneObjectIndex(canvas) : undefined;
+      const hasStage = (objectId: string): boolean => {
+        const object = stageObjectIndex?.get(objectId);
+        return object ? metadataOf(object)?.stageId === stageId : false;
+      };
       const relations = relationsForCanvas(canvas).filter((relation) => {
         if (
           idSet.size > 0 &&
           !idSet.has(relation.sourceObjectId) &&
-          !idSet.has(relation.targetObjectId)
+          !idSet.has(relation.targetObjectId) &&
+          !(relation.mediatorObjectIds ?? []).some((id) => idSet.has(id))
         )
           return false;
         if (!stageId) return true;
-        const index = sceneObjectIndex(canvas);
         return (
-          metadataOf(index.get(relation.sourceObjectId)!)?.stageId === stageId ||
-          metadataOf(index.get(relation.targetObjectId)!)?.stageId === stageId
+          hasStage(relation.sourceObjectId) ||
+          hasStage(relation.targetObjectId) ||
+          (relation.mediatorObjectIds ?? []).some((mediatorObjectId) => hasStage(mediatorObjectId))
         );
       });
       const limit = typeof input.limit === "number" ? input.limit : 256;
@@ -952,6 +1006,1233 @@ export function createSemanticEditorAdapter(
         },
         changedObjectIds: [objectId]
       };
+    }
+    if (command === "compose_labeled_group") {
+      const requestedStageId = typeof input.stageId === "string" ? input.stageId : undefined;
+      if (requestedStageId) {
+        const existingStage = sceneObjectEntries(canvas).find(
+          ({ object }) =>
+            metadataOf(object)?.semanticRole === "stage" &&
+            metadataOf(object)?.stageId === requestedStageId
+        )?.object;
+        const existingLabelGroup = isGroup(existingStage)
+          ? existingStage
+              .getObjects()
+              .find(
+                (object) => isGroup(object) && metadataOf(object)?.semanticRole === "stage-label"
+              )
+          : undefined;
+        const existingTexts = isGroup(existingLabelGroup)
+          ? existingLabelGroup
+              .getObjects()
+              .filter((object): object is IText => object instanceof IText)
+          : [];
+        const textForRole = (role: string): IText | undefined =>
+          existingTexts.find((object) => metadataOf(object)?.semanticRole === role);
+        const labelText = textForRole("stage-label") ?? existingTexts[0];
+        const existingContentGroup = isGroup(existingStage)
+          ? existingStage
+              .getObjects()
+              .find(
+                (object) =>
+                  isGroup(object) && metadataOf(object)?.semanticRole === "stage-content"
+              )
+          : undefined;
+        if (existingStage && (!existingContentGroup || !existingLabelGroup || !labelText))
+          throw new SemanticAdapterError(
+            "INCOMPLETE_STAGE",
+            `Existing stage "${requestedStageId}" is missing its required structure.`
+          );
+        if (existingStage && existingLabelGroup && labelText) {
+          const contentGroup = existingContentGroup;
+          const contentBoundsBefore = contentGroup ? boundsOf(contentGroup) : undefined;
+          const labelBoundsBefore = boundsOf(existingLabelGroup);
+          const requestedIds = objectIds(input);
+          if (
+            requestedIds.some(
+              (id) => !isSceneDescendant(resolveObjects(canvas, [id])[0], existingStage)
+            )
+          )
+            throw new SemanticAdapterError(
+              "INVALID_SELECTION",
+              "Existing labeled-group updates must target descendants of that stage."
+            );
+          if (input.placement !== undefined)
+            throw new SemanticAdapterError(
+              "UNSUPPORTED_UPDATE",
+              "Changing placement on an existing labeled group is not supported."
+            );
+          const updates: [string, unknown][] = [
+            ["stage-label", input.label],
+            ["stage-title", input.title],
+            ["stage-subtitle", input.subtitle]
+          ];
+          const resolvedUpdates: Array<readonly [IText, string]> = [];
+          updates.forEach(([role, value]) => {
+            if (typeof value !== "string") return;
+            const normalizedValue = boundedText(value, role === "stage-subtitle" ? 400 : 240);
+            if (role === "stage-label" && !normalizedValue)
+              throw new SemanticAdapterError("INVALID_INPUT", "label must not be empty.");
+            if (!normalizedValue) return;
+            const text = role === "stage-label" ? labelText : textForRole(role);
+            if (!text)
+              throw new SemanticAdapterError(
+                "UNSUPPORTED_UPDATE",
+                `Existing labeled group has no ${role} text slot.`
+              );
+            resolvedUpdates.push([text, normalizedValue]);
+          });
+          resolvedUpdates.forEach(([text, value]) => {
+            text.set("text", value);
+            if (text === labelText) existingStage.name = value;
+          });
+          refreshTextMetrics(resolvedUpdates.map(([text]) => text));
+          const stack = [
+            textForRole("stage-title"),
+            labelText,
+            textForRole("stage-subtitle")
+          ].filter((object): object is IText => Boolean(object));
+          const localTextHeight = (object: IText): number =>
+            Math.abs(object.height * (object.scaleY ?? 1));
+          const stackHeight =
+            stack.reduce((total, object) => total + localTextHeight(object), 0) +
+            8 * Math.max(0, stack.length - 1);
+          let stackTop = -stackHeight / 2;
+          stack.forEach((object) => {
+            const height = localTextHeight(object);
+            object.set({ left: 0, top: stackTop + height / 2 });
+            stackTop += height + 8;
+          });
+          if (input.stageIndex !== undefined) {
+            visitSceneObjects(existingStage, (object) => {
+              const metadata = metadataOf(object);
+              if (metadata)
+                object.semanticMetadata = { ...metadata, stageIndex: input.stageIndex as number };
+              else object.semanticMetadata = { version: 1, stageIndex: input.stageIndex as number };
+            });
+          }
+          refreshTextMetrics([existingLabelGroup]);
+          refreshParentGroups(existingLabelGroup);
+          if (contentBoundsBefore) {
+            const labelBounds = boundsOf(existingLabelGroup);
+            const contentCenter = {
+              x: contentBoundsBefore.left + contentBoundsBefore.width / 2,
+              y: contentBoundsBefore.top + contentBoundsBefore.height / 2
+            };
+            const contentRight = contentBoundsBefore.left + contentBoundsBefore.width;
+            const contentBottom = contentBoundsBefore.top + contentBoundsBefore.height;
+            const desiredCenter =
+              labelBoundsBefore.left + labelBoundsBefore.width <= contentBoundsBefore.left
+                ? {
+                    x: contentBoundsBefore.left - 24 - labelBounds.width / 2,
+                    y: contentCenter.y
+                  }
+                : labelBoundsBefore.left >= contentRight
+                  ? { x: contentRight + 24 + labelBounds.width / 2, y: contentCenter.y }
+                  : labelBoundsBefore.top + labelBoundsBefore.height <= contentBoundsBefore.top
+                    ? {
+                        x: contentCenter.x,
+                        y: contentBoundsBefore.top - 24 - labelBounds.height / 2
+                      }
+                    : { x: contentCenter.x, y: contentBottom + 24 + labelBounds.height / 2 };
+            moveAnchorTo(existingLabelGroup, "center", desiredCenter);
+          }
+          const requestedLocation =
+            input.x === undefined && input.y === undefined
+              ? undefined
+              : locationFromInput(canvas, dependencies.getCanvasSettings(), input);
+          if (requestedLocation) moveAnchorTo(existingStage, "center", requestedLocation);
+          existingStage.setCoords();
+          dependencies.refreshConnectors();
+          canvas.requestRenderAll();
+          commitSemantic("Semantic update labeled group");
+          const descendantIds: string[] = [];
+          visitSceneObjects(existingStage, (object) => {
+            if (object.objectId) descendantIds.push(object.objectId);
+          });
+          const updatedObjectIds = [
+            ...descendantIds,
+            ...requestedIds
+          ]
+            .filter((id, index, ids) => ids.indexOf(id) === index)
+            .slice(0, 200);
+          return {
+            data: {
+              objectId: existingStage.objectId,
+              contentObjectId: contentGroup?.objectId,
+              labelObjectId: existingLabelGroup.objectId,
+              objectIds: updatedObjectIds
+            },
+            changedObjectIds: updatedObjectIds
+          };
+        }
+      }
+      const ids = objectIds(input);
+      const contentObjects = resolveObjects(canvas, ids);
+      assertNonOverlappingTargets(contentObjects);
+      if (contentObjects.some((object) => object.group))
+        throw new SemanticAdapterError(
+          "INVALID_SELECTION",
+          "Labeled-group content must be top-level objects."
+        );
+      const label = boundedText(input.label, 240);
+      if (!label) throw new SemanticAdapterError("INVALID_INPUT", "label must not be empty.");
+      const insertionIndex = Math.min(
+        ...contentObjects.map((object) => canvas.getObjects().indexOf(object))
+      );
+      const bounds = unionBounds(contentObjects);
+      const requestedPlacement = (input.placement ?? "outward") as LabelPlacement;
+      const settings = dependencies.getCanvasSettings();
+      const center = { x: bounds.left + bounds.width / 2, y: bounds.top + bounds.height / 2 };
+      const canvasCenter = { x: settings.width / 2, y: settings.height / 2 };
+      const placement: LabelPlacement =
+        requestedPlacement === "outward"
+          ? Math.abs(center.x - canvasCenter.x) >= Math.abs(center.y - canvasCenter.y)
+            ? center.x < canvasCenter.x
+              ? "left"
+              : "right"
+            : center.y < canvasCenter.y
+              ? "top"
+              : "bottom"
+          : requestedPlacement;
+      const labelX =
+        placement === "left"
+          ? bounds.left - 24
+          : placement === "right"
+            ? bounds.left + bounds.width + 24
+            : center.x;
+      const labelY =
+        placement === "top"
+          ? bounds.top - 28
+          : placement === "bottom"
+            ? bounds.top + bounds.height + 28
+            : center.y;
+      const defaults = dependencies.creationDefaults();
+      const makeLabel = (text: string, size: number): IText => {
+        const object = new IText(text, {
+          fill: defaults.text.color,
+          fontFamily: defaults.text.fontFamily,
+          fontSize: size,
+          fontWeight: defaults.text.fontWeight,
+          left: labelX,
+          top: labelY,
+          originX: "center",
+          originY: "center"
+        });
+        configureTextObject(object);
+        return object;
+      };
+      const titleText = boundedText(input.title, 240);
+      const title = titleText
+        ? makeLabel(titleText, Math.max(18, defaults.text.fontSize))
+          : undefined;
+      const subtitleText = boundedText(input.subtitle, 400);
+      const subtitle = subtitleText
+        ? makeLabel(subtitleText, Math.max(14, defaults.text.fontSize - 4))
+          : undefined;
+      const labelObject = makeLabel(label, Math.max(16, defaults.text.fontSize));
+      if (title) title.set({ top: labelY - 28 });
+      if (subtitle) subtitle.set({ top: labelY + 28 });
+      canvas.remove(...contentObjects);
+      const contentGroup = new Group(contentObjects);
+      contentGroup.objectId = crypto.randomUUID();
+      contentGroup.name = "Stage content";
+      contentGroup.OpenSketchType = "group";
+      const stageId =
+        typeof input.stageId === "string" && input.stageId ? input.stageId : contentGroup.objectId;
+      labelObject.semanticMetadata = {
+        version: 1,
+        semanticRole: "stage-label",
+        stageId,
+        ...(input.stageIndex === undefined ? {} : { stageIndex: input.stageIndex as number })
+      };
+      if (title)
+        title.semanticMetadata = {
+          version: 1,
+          semanticRole: "stage-title",
+          stageId,
+          ...(input.stageIndex === undefined ? {} : { stageIndex: input.stageIndex as number })
+        };
+      if (subtitle)
+        subtitle.semanticMetadata = {
+          version: 1,
+          semanticRole: "stage-subtitle",
+          stageId,
+          ...(input.stageIndex === undefined ? {} : { stageIndex: input.stageIndex as number })
+        };
+      contentGroup.semanticMetadata = {
+        version: 1,
+        semanticRole: "stage-content",
+        stageId,
+        ...(input.stageIndex === undefined ? {} : { stageIndex: input.stageIndex as number })
+      };
+      visitSceneObjects(contentGroup, (object) => {
+        const metadata = metadataOf(object) ?? { version: 1 as const };
+        object.semanticMetadata = {
+          ...metadata,
+          stageId,
+          ...(input.stageIndex === undefined ? {} : { stageIndex: input.stageIndex as number })
+        };
+      });
+      const labelChildren = [
+        labelObject,
+        ...(title ? [title] : []),
+        ...(subtitle ? [subtitle] : [])
+      ];
+      const renderedLabelWidth = Math.max(...labelChildren.map((object) => boundsOf(object).width));
+      const horizontalLabelX =
+        placement === "left"
+          ? bounds.left - 24 - renderedLabelWidth / 2
+          : placement === "right"
+            ? bounds.left + bounds.width + 24 + renderedLabelWidth / 2
+            : center.x;
+      labelChildren.forEach((object) => object.set("left", horizontalLabelX));
+      if (
+        placement === "top" ||
+        placement === "bottom" ||
+        placement === "left" ||
+        placement === "right"
+      ) {
+        const stack = [title, labelObject, subtitle].filter((object): object is IText =>
+          Boolean(object)
+        );
+        const stackGap = 8;
+        const stackHeight =
+          stack.reduce((total, object) => total + boundsOf(object).height, 0) +
+          stackGap * Math.max(0, stack.length - 1);
+        const stackTop =
+          placement === "bottom"
+            ? bounds.top + bounds.height + 24
+            : placement === "top"
+              ? bounds.top - 24 - stackHeight
+              : center.y - stackHeight / 2;
+        let cursor = stackTop;
+        stack.forEach((object) => {
+          const height = boundsOf(object).height;
+          object.set({ top: cursor + height / 2 });
+          cursor += height + stackGap;
+        });
+      }
+      labelChildren.forEach((object) => {
+        object.objectId ??= crypto.randomUUID();
+      });
+      const labelGroup = new Group(labelChildren);
+      labelGroup.objectId = crypto.randomUUID();
+      labelGroup.name = "Stage label";
+      labelGroup.OpenSketchType = "group";
+      labelGroup.semanticMetadata = {
+        version: 1,
+        semanticRole: "stage-label",
+        stageId,
+        ...(input.stageIndex === undefined ? {} : { stageIndex: input.stageIndex as number })
+      };
+      const stageGroup = new Group([contentGroup, labelGroup]);
+      stageGroup.objectId = crypto.randomUUID();
+      stageGroup.name = label;
+      stageGroup.OpenSketchType = "group";
+      stageGroup.semanticMetadata = {
+        version: 1,
+        semanticRole: "stage",
+        stageId,
+        ...(input.stageIndex === undefined ? {} : { stageIndex: input.stageIndex as number })
+      };
+      dependencies.configureCanvasAssets([stageGroup]);
+      const requestedLocation =
+        input.x === undefined && input.y === undefined
+          ? undefined
+          : locationFromInput(canvas, settings, input);
+      if (requestedLocation) moveAnchorTo(stageGroup, "center", requestedLocation);
+      canvas.insertAt(Math.max(0, Math.min(insertionIndex, canvas.getObjects().length)), stageGroup);
+      stageGroup.setCoords();
+      dependencies.refreshConnectors();
+      canvas.requestRenderAll();
+      commitSemantic("Semantic compose labeled group");
+      const changedObjectIds: string[] = [];
+      visitSceneObjects(stageGroup, (object) => {
+        if (object.objectId) changedObjectIds.push(object.objectId);
+      });
+      return {
+        data: {
+          objectId: stageGroup.objectId,
+          contentObjectId: contentGroup.objectId,
+          labelObjectId: labelGroup.objectId,
+          objectIds: [stageGroup.objectId, contentGroup.objectId, labelGroup.objectId]
+        },
+        changedObjectIds
+      };
+    }
+    if (command === "compose_interaction") {
+      const sourceObjectId = input.sourceObjectId as string;
+      const targetObjectId = input.targetObjectId as string;
+      const [source, target] = resolveObjects(canvas, [sourceObjectId, targetObjectId]);
+      if (source === target)
+        throw new SemanticAdapterError("INVALID_INPUT", "Interaction endpoints must differ.");
+      const mediatorObjectId =
+        typeof input.mediatorObjectId === "string" ? input.mediatorObjectId : undefined;
+      const mediatorObject = mediatorObjectId
+        ? resolveObjects(canvas, [mediatorObjectId])[0]
+        : undefined;
+      assertIndependentPlacementObjects([
+        source,
+        target,
+        ...(mediatorObject ? [mediatorObject] : [])
+      ]);
+      const sourceBounds = inspectSemanticGeometry(source).visualBounds;
+      const targetBounds = inspectSemanticGeometry(target).visualBounds;
+      if (
+        input.mode === "engulfment" &&
+        (targetBounds.width > sourceBounds.width || targetBounds.height > sourceBounds.height)
+      )
+        throw new SemanticAdapterError(
+          "INVALID_INPUT",
+          "Engulfment target must fit within the source bounds."
+        );
+      const plan = planInteraction(
+        sourceBounds,
+        targetBounds,
+        input.mode as InteractionMode,
+        input.offset === undefined ? undefined : finiteNumber(input.offset, "offset")
+      );
+      const relation = normalizeRelation({
+        id:
+          typeof input.relationId === "string"
+            ? input.relationId
+            : boundedRelationId("interaction", sourceObjectId, targetObjectId),
+        kind: plan.relationKind,
+        sourceObjectId,
+        targetObjectId,
+        ...(mediatorObjectId ? { mediatorObjectIds: [mediatorObjectId] } : {}),
+        direction: "forward",
+        allowedOverlap: plan.allowedOverlap
+      });
+      const conflictingRelation = sceneObjectEntries(canvas)
+        .flatMap(({ object }) => object.semanticRelations ?? [])
+        .map((existing) => {
+          try {
+            return normalizeRelation(existing);
+          } catch {
+            return undefined;
+          }
+        })
+        .filter((existing): existing is typeof relation => Boolean(existing))
+        .find(
+          (existing) =>
+            existing.id === relation.id && JSON.stringify(existing) !== JSON.stringify(relation)
+        );
+      if (conflictingRelation)
+        throw new SemanticAdapterError(
+          "DUPLICATE_RELATION_ID",
+          `Relation ID "${relation.id}" is already used by another relation.`
+        );
+      const sourceMetadata = metadataOf(source) ?? { version: 1 as const };
+      const relationIds = sourceMetadata.relationIds ?? [];
+      if (!relationIds.includes(relation.id) && relationIds.length >= 32)
+        throw new SemanticAdapterError(
+          "SEMANTIC_LIMIT",
+          `Object "${sourceObjectId}" cannot reference more than 32 relations.`
+        );
+      moveAnchorTo(source, "center", plan.source);
+      moveAnchorTo(target, "center", plan.target);
+      const mediatorPosition = plan.mediator ?? {
+        x: (plan.source.x + plan.target.x) / 2,
+        y: (plan.source.y + plan.target.y) / 2
+      };
+      if (mediatorObject) moveAnchorTo(mediatorObject, "center", mediatorPosition);
+      source.semanticMetadata = {
+        ...sourceMetadata,
+        relationIds: [...new Set([...(sourceMetadata.relationIds ?? []), relation.id])]
+      };
+      source.semanticRelations = [
+        ...(source.semanticRelations ?? []).filter((item) => item.id !== relation.id),
+        relation
+      ];
+      dependencies.refreshConnectors();
+      canvas.requestRenderAll();
+      commitSemantic("Semantic compose interaction");
+      return {
+        data: {
+          relation,
+          source: plan.source,
+          target: plan.target,
+          ...(mediatorObject ? { mediator: mediatorPosition } : {}),
+          warnings: plan.warnings
+        },
+        changedObjectIds: [
+          sourceObjectId,
+          targetObjectId,
+          ...(mediatorObjectId ? [mediatorObjectId] : [])
+        ]
+      };
+    }
+    if (command === "create_particle_field") {
+      const seed = input.seed as string;
+      const rawBounds = input.bounds as Record<string, unknown>;
+      const fieldBounds = {
+        left: finiteNumber(rawBounds.left, "bounds.left"),
+        top: finiteNumber(rawBounds.top, "bounds.top"),
+        width: finiteNumber(rawBounds.width, "bounds.width"),
+        height: finiteNumber(rawBounds.height, "bounds.height")
+      };
+      if (fieldBounds.width <= 0 || fieldBounds.height <= 0)
+        throw new SemanticAdapterError("INVALID_INPUT", "Particle bounds must be positive.");
+      const particleCount = finiteNumber(input.count, "count");
+      const distribution = input.distribution as ParticleDistribution;
+      const particleRole = typeof input.role === "string" ? input.role : "particle-field";
+      const requestedSemanticType = boundedText(input.semanticType, 120);
+      const particleSemanticType = requestedSemanticType ?? "particle";
+      const fieldSemanticType = requestedSemanticType ?? "particle-field";
+      const sourceObjectId =
+        typeof input.sourceObjectId === "string" ? input.sourceObjectId : undefined;
+      const targetObjectId =
+        typeof input.targetObjectId === "string" ? input.targetObjectId : undefined;
+      if (distribution === "source-fan" && !sourceObjectId)
+        throw new SemanticAdapterError(
+          "INVALID_INPUT",
+          "source-fan distribution requires sourceObjectId."
+        );
+      if (distribution === "target-converging" && !targetObjectId)
+        throw new SemanticAdapterError(
+          "INVALID_INPUT",
+          "target-converging distribution requires targetObjectId."
+        );
+      const sourceObject = sourceObjectId ? resolveObjects(canvas, [sourceObjectId])[0] : undefined;
+      const targetObject = targetObjectId ? resolveObjects(canvas, [targetObjectId])[0] : undefined;
+      const source = sourceObject ? inspectSemanticGeometry(sourceObject).center : undefined;
+      const target = targetObject ? inspectSemanticGeometry(targetObject).center : undefined;
+      const defaults = dependencies.creationDefaults();
+      const particleStrokeWidth = Math.max(1, defaults.shape.strokeWidth * 0.5);
+      const particleInset = 4 + particleStrokeWidth / 2;
+      if (fieldBounds.width < particleInset * 2 || fieldBounds.height < particleInset * 2)
+        throw new SemanticAdapterError(
+          "INVALID_INPUT",
+          "Particle bounds must contain the rendered particle diameter."
+        );
+      const plan = planParticleField(
+        fieldBounds,
+        particleCount,
+        distribution,
+        seed,
+        source,
+        target,
+        particleInset
+      );
+      const expectedRelations = (fieldObjectId: string) => [
+        ...(sourceObjectId
+          ? [
+              normalizeRelation({
+                id: boundedRelationId("particle-field-emits", sourceObjectId, fieldObjectId),
+                kind: "emits",
+                sourceObjectId,
+                targetObjectId: fieldObjectId,
+                direction: "forward",
+                allowedOverlap: distribution === "source-fan"
+              })
+            ]
+          : []),
+        ...(targetObjectId
+          ? [
+              normalizeRelation({
+                id: boundedRelationId("particle-field-target", fieldObjectId, targetObjectId),
+                kind: "follows_gradient",
+                sourceObjectId: fieldObjectId,
+                targetObjectId,
+                direction: "forward",
+                allowedOverlap: distribution === "target-converging"
+              })
+            ]
+          : [])
+      ];
+      const createParticle = (
+        fieldObjectId: string,
+        position: { x: number; y: number },
+        index: number
+      ) => {
+        const particle = new Circle({
+          radius: 4,
+          left: position.x,
+          top: position.y,
+          originX: "center",
+          originY: "center",
+          fill: defaults.shape.fill,
+          stroke: defaults.shape.stroke,
+          strokeWidth: particleStrokeWidth
+        });
+        particle.objectId = `${fieldObjectId}-particle-${index}`;
+        particle.name = "Particle";
+        particle.OpenSketchType = "particle";
+        particle.semanticMetadata = {
+          version: 1,
+          semanticRole: particleRole === "decorative" ? "decorative" : "particle-field",
+          semanticType: particleSemanticType
+        };
+        return particle;
+      };
+      const particleFieldSpec = {
+        seed,
+        count: Math.floor(particleCount),
+        distribution,
+        bounds: fieldBounds,
+        ...(sourceObjectId ? { sourceObjectId } : {}),
+        ...(targetObjectId ? { targetObjectId } : {}),
+        semanticType: requestedSemanticType ?? null,
+        role: particleRole
+      };
+      const existingFieldEntry = sceneObjectEntries(canvas).find(
+        ({ object }) =>
+          isGroup(object) &&
+          metadataOf(object)?.semanticRole === "particle-field" &&
+          metadataOf(object)?.semanticName === `particle-field:${seed}` &&
+          JSON.stringify(object.particleFieldSpec) === JSON.stringify(particleFieldSpec)
+        );
+        const existingField = existingFieldEntry?.object;
+      if (isGroup(existingField)) {
+        const particles = existingField.getObjects();
+        const matchesPlan =
+          particles.length === plan.points.length &&
+          particles.every((particle, index) => {
+            const actual = inspectSemanticGeometry(particle).center;
+            const expected = plan.points[index];
+            const actualBounds = inspectSemanticGeometry(particle).visualBounds;
+            const expectedDiameter = particleInset * 2;
+            return (
+              Math.abs(actual.x - expected.x) <= 0.5 &&
+              Math.abs(actual.y - expected.y) <= 0.5 &&
+              Math.abs(actualBounds.width - expectedDiameter) <= 0.5 &&
+              Math.abs(actualBounds.height - expectedDiameter) <= 0.5 &&
+              particle.scaleX === 1 &&
+              particle.scaleY === 1 &&
+              particle.angle === 0
+            );
+          });
+        const relations = expectedRelations(existingField.objectId!);
+        const matchesRelations = relations.every((expected) =>
+          (existingField.semanticRelations ?? []).some((actual) => {
+            try {
+              return JSON.stringify(normalizeRelation(actual)) === JSON.stringify(expected);
+            } catch {
+              return false;
+            }
+          })
+        );
+        if (matchesPlan && matchesRelations) {
+          const particleIds = particles
+            .map((object) => object.objectId)
+            .filter((id): id is string => Boolean(id));
+          return {
+            data: {
+              objectId: existingField.objectId,
+              particleIds,
+              seed,
+              distribution: plan.distribution,
+              points: plan.points,
+              reused: true
+            },
+            changedObjectIds: []
+          };
+        }
+        if (matchesPlan) {
+          const restoredRelations = [
+            ...(existingField.semanticRelations ?? []).filter(
+              (actual) => !relations.some((expected) => expected.id === actual.id)
+            ),
+            ...relations
+          ];
+          if (restoredRelations.length > 32)
+            throw new SemanticAdapterError(
+              "SEMANTIC_LIMIT",
+              `Particle field "${existingField.objectId!}" cannot reference more than 32 relations.`
+            );
+          existingField.semanticRelations = restoredRelations;
+          const metadata = metadataOf(existingField) ?? { version: 1 as const };
+          existingField.semanticMetadata = {
+            ...metadata,
+            relationIds: restoredRelations.map((relation) => relation.id)
+          };
+          canvas.requestRenderAll();
+          commitSemantic("Semantic restore particle field relations");
+          return {
+            data: {
+              objectId: existingField.objectId,
+              particleIds: particles
+                .map((object) => object.objectId)
+                .filter((id): id is string => Boolean(id)),
+              seed,
+              distribution: plan.distribution,
+              points: plan.points,
+              reused: true
+            },
+            changedObjectIds: [existingField.objectId!]
+          };
+        }
+        const expectedParticleIds = new Set(
+          plan.points.map((_, index) => `${existingField.objectId!}-particle-${index}`)
+        );
+        const existingById = new Map(
+          particles
+            .filter((particle): particle is typeof particle & { objectId: string } =>
+              Boolean(particle.objectId)
+            )
+            .map((particle) => [particle.objectId, particle])
+        );
+        const removedParticleIds = particles
+          .map((particle) => particle.objectId)
+          .filter((id): id is string => {
+            if (!id) return false;
+            return !expectedParticleIds.has(id);
+          });
+        const removedIdSet = new Set(removedParticleIds);
+        const changedReferenceIds = new Set<string>();
+        sceneObjectEntries(canvas)
+          .filter(({ object }) => connectorsForRemovedIds([object], removedIdSet).length > 0)
+          .forEach((entry) => {
+            if (entry.object.objectId) changedReferenceIds.add(entry.object.objectId);
+            removeSceneObject(entry);
+          });
+        sceneObjectEntries(canvas).forEach(({ object }) => {
+          const relations = object.semanticRelations ?? [];
+          const retainedRelations = relations.filter(
+            (relation) =>
+              ![
+                relation.sourceObjectId,
+                relation.targetObjectId,
+                ...(relation.mediatorObjectIds ?? [])
+              ].some((id) => removedIdSet.has(id))
+          );
+          if (retainedRelations.length !== relations.length) {
+            if (object.objectId) changedReferenceIds.add(object.objectId);
+            object.semanticRelations = retainedRelations;
+            const objectMetadata = metadataOf(object);
+            if (objectMetadata)
+              object.semanticMetadata = {
+                ...objectMetadata,
+                relationIds: retainedRelations.map((relation) => relation.id)
+              };
+          }
+        });
+        existingField.set({ scaleX: 1, scaleY: 1, angle: 0 });
+        particles.forEach((particle) => existingField.remove(particle));
+        const repairedParticles = plan.points.map((position, index) => {
+          const objectId = `${existingField.objectId!}-particle-${index}`;
+          const particle =
+            existingById.get(objectId) ?? createParticle(existingField.objectId!, position, index);
+          particle.set({
+            radius: 4,
+            strokeWidth: particleStrokeWidth,
+            fill: defaults.shape.fill,
+            stroke: defaults.shape.stroke,
+            scaleX: 1,
+            scaleY: 1,
+            angle: 0
+          });
+          existingField.insertAt(index, particle);
+          moveAnchorTo(particle, "center", position);
+          return particle;
+        });
+        const repairedRelations = expectedRelations(existingField.objectId!);
+        const restoredRelations = [
+          ...(existingField.semanticRelations ?? []).filter(
+            (actual) => !repairedRelations.some((expected) => expected.id === actual.id)
+          ),
+          ...repairedRelations
+        ];
+        if (restoredRelations.length > 32)
+          throw new SemanticAdapterError(
+            "SEMANTIC_LIMIT",
+            `Particle field "${existingField.objectId!}" cannot reference more than 32 relations.`
+          );
+        existingField.semanticRelations = restoredRelations;
+        const metadata = metadataOf(existingField) ?? { version: 1 as const };
+        existingField.semanticMetadata = {
+          ...metadata,
+          relationIds: restoredRelations.map((relation) => relation.id)
+        };
+        existingField.setCoords();
+        dependencies.refreshConnectors();
+        canvas.requestRenderAll();
+        commitSemantic("Semantic repair particle field");
+        return {
+          data: {
+            objectId: existingField.objectId,
+            particleIds: repairedParticles.map((particle) => particle.objectId!),
+            seed,
+            distribution: plan.distribution,
+            points: plan.points,
+            reused: true
+          },
+          changedObjectIds: [
+            existingField.objectId!,
+            ...repairedParticles.map((particle) => particle.objectId!),
+            ...changedReferenceIds
+          ]
+        };
+      }
+      const fieldObjectId = crypto.randomUUID();
+      const particles = plan.points.map((position, index) => {
+        return createParticle(fieldObjectId, position, index);
+      });
+      const field = new Group(particles);
+      field.objectId = fieldObjectId;
+      field.name = "Particle field";
+      field.OpenSketchType = "group";
+      field.semanticMetadata = {
+        version: 1,
+        semanticRole: "particle-field",
+        semanticType: fieldSemanticType,
+        semanticName: `particle-field:${seed}`
+      };
+      field.particleFieldSpec = particleFieldSpec;
+      const fieldRelations = expectedRelations(field.objectId!);
+      if (fieldRelations.length > 0) {
+        field.semanticRelations = fieldRelations;
+        field.semanticMetadata = {
+          ...field.semanticMetadata,
+          relationIds: fieldRelations.map((relation) => relation.id)
+        };
+      }
+      const existingIds = new Set(
+        sceneObjectEntries(canvas)
+          .map(({ object }) => object.objectId)
+          .filter((id): id is string => Boolean(id))
+      );
+      const duplicateParticle = particles.find(
+        (particle) => particle.objectId !== undefined && existingIds.has(particle.objectId)
+      );
+      if (duplicateParticle)
+        throw new SemanticAdapterError(
+          "DUPLICATE_OBJECT_ID",
+          `Particle ID "${duplicateParticle.objectId}" already exists.`
+        );
+      dependencies.configureCanvasAssets([field]);
+      canvas.add(field);
+      field.setCoords();
+      canvas.requestRenderAll();
+      commitSemantic("Semantic create particle field");
+      return {
+        data: {
+          objectId: field.objectId,
+          particleIds: particles.map((particle) => particle.objectId!),
+          seed: plan.seed,
+          distribution: plan.distribution,
+          points: plan.points,
+          reused: false
+        },
+        changedObjectIds: [field.objectId, ...particles.map((particle) => particle.objectId!)]
+      };
+    }
+    if (command === "create_annotation") {
+      const targetObjectId = input.targetObjectId as string;
+      const [target] = resolveObjects(canvas, [targetObjectId]);
+      const defaults = dependencies.creationDefaults();
+      const annotationText = boundedText(input.text, 800);
+      if (!annotationText)
+        throw new SemanticAdapterError("INVALID_INPUT", "text must not be empty.");
+      const explicitFontSize = typeof input.fontSize === "number" ? input.fontSize : undefined;
+      const annotation = new Textbox(annotationText, {
+        width: 260,
+        fontFamily: defaults.text.fontFamily,
+        fontSize: explicitFontSize ?? defaults.text.fontSize,
+        fill: defaults.text.color,
+        originX: "center",
+        originY: "center"
+      });
+      configureTextObject(annotation);
+      dependencies.prepareElementStyle(annotation);
+      if (explicitFontSize !== undefined) annotation.set("fontSize", explicitFontSize);
+      refreshTextMetrics([annotation]);
+      const candidates = annotationCandidates(
+        inspectSemanticGeometry(target).visualBounds,
+        boundsOf(annotation),
+        typeof input.gap === "number" ? input.gap : 24
+      );
+      const preferred =
+        typeof input.placement === "string"
+          ? ({ top: 0, right: 2, bottom: 3, left: 1 }[input.placement] ?? 0)
+          : 0;
+      const targetPath = sceneObjectEntries(canvas).find(({ object }) => object === target)
+        ?.path ?? [target];
+      const sceneObjects = sceneObjectEntries(canvas)
+        .filter(
+          ({ object, path }) =>
+            !isGroup(object) &&
+            !object.connector &&
+            isEffectivelyVisible(path) &&
+            !path.includes(target) &&
+            !targetPath.includes(object)
+        )
+        .map(({ object }) => object);
+      const settings = dependencies.getCanvasSettings();
+      const orderedCandidates = [...candidates.slice(preferred), ...candidates.slice(0, preferred)];
+      const position = orderedCandidates.find((candidate) => {
+        const candidateBounds = {
+          left: candidate.position.x - boundsOf(annotation).width / 2,
+          top: candidate.position.y - boundsOf(annotation).height / 2,
+          width: boundsOf(annotation).width,
+          height: boundsOf(annotation).height
+        };
+        const insideCanvas =
+          candidateBounds.left >= 0 &&
+          candidateBounds.top >= 0 &&
+          candidateBounds.left + candidateBounds.width <= settings.width &&
+          candidateBounds.top + candidateBounds.height <= settings.height;
+        return (
+          insideCanvas &&
+          !sceneObjects.some(
+            (object) =>
+              candidateBounds.left < boundsOf(object).left + boundsOf(object).width &&
+              candidateBounds.left + candidateBounds.width > boundsOf(object).left &&
+              candidateBounds.top < boundsOf(object).top + boundsOf(object).height &&
+              candidateBounds.top + candidateBounds.height > boundsOf(object).top
+          )
+        );
+      });
+      if (!position)
+        throw new SemanticAdapterError(
+          "NO_FEASIBLE_PLACEMENT",
+          "No annotation candidate avoids existing visible geometry."
+        );
+      annotation.objectId = crypto.randomUUID();
+      const relation = normalizeRelation({
+        id: boundedRelationId("label", targetObjectId, annotation.objectId),
+        kind: "labels",
+        sourceObjectId: targetObjectId,
+        targetObjectId: annotation.objectId
+      });
+      const targetMetadata = metadataOf(target) ?? { version: 1 as const };
+      const targetRelationIds = targetMetadata.relationIds ?? [];
+      const conflictingRelation = relationsForCanvas(canvas).find(
+        (existing) => existing.id === relation.id
+      );
+      if (conflictingRelation)
+        throw new SemanticAdapterError(
+          "DUPLICATE_RELATION_ID",
+          `Relation ID "${relation.id}" is already used by another relation.`
+        );
+      if (!targetRelationIds.includes(relation.id) && targetRelationIds.length >= 32)
+        throw new SemanticAdapterError(
+          "SEMANTIC_LIMIT",
+          `Object "${targetObjectId}" cannot reference more than 32 relations.`
+        );
+      const existingObjects = new Set(sceneObjectEntries(canvas).map(({ object }) => object));
+      const annotationId = addObject(
+        canvas,
+        annotation,
+        "Annotation",
+        "text",
+        position.position,
+        false
+      );
+      if (explicitFontSize !== undefined) {
+        annotation.set("fontSize", explicitFontSize);
+        refreshTextMetrics([annotation]);
+      }
+      annotation.semanticMetadata = {
+        version: 1,
+        semanticRole: "annotation",
+        semanticType: "annotation"
+      };
+      let leaderObjectId: string | undefined;
+      try {
+        if (input.leader !== false) {
+          const leader = await createBoundConnector(
+            {
+              fromObjectId: targetObjectId,
+              toObjectId: annotationId,
+              arrowhead: "none",
+              routeType: "straight"
+            },
+            false,
+            true
+          );
+          leaderObjectId = leader.objectId;
+          const [leaderObject] = resolveObjects(canvas, [leaderObjectId]);
+          leaderObject.semanticMetadata = {
+            version: 1,
+            semanticRole: "annotation-leader",
+            semanticType: "annotation-leader"
+          };
+        }
+      } catch (error) {
+        for (const entry of sceneObjectEntries(canvas).reverse()) {
+          if (!existingObjects.has(entry.object)) removeSceneObject(entry);
+        }
+        throw error;
+      }
+      target.semanticRelations = [...(target.semanticRelations ?? []), relation];
+      target.semanticMetadata = {
+        ...targetMetadata,
+        relationIds: [...new Set([...targetRelationIds, relation.id])]
+      };
+      canvas.requestRenderAll();
+      commitSemantic("Semantic create annotation");
+      return {
+        data: {
+          objectId: annotationId,
+          ...(leaderObjectId ? { leaderObjectId } : {}),
+          targetObjectId,
+          position: position.position
+        },
+        changedObjectIds: [
+          annotationId,
+          targetObjectId,
+          ...(leaderObjectId ? [leaderObjectId] : [])
+        ]
+      };
+    }
+    if (command === "fit_text") {
+      const objectId = input.objectId as string;
+      const [object] = resolveObjects(canvas, [objectId]);
+      if (!(object instanceof IText) && !(object instanceof Textbox))
+        throw new SemanticAdapterError(
+          "INVALID_SELECTION",
+          `Scene object "${objectId}" is not editable text.`
+        );
+      const minFontSize = typeof input.minFontSize === "number" ? input.minFontSize : 6;
+      const maxFontSize = typeof input.maxFontSize === "number" ? input.maxFontSize : 96;
+      if (minFontSize > maxFontSize)
+        throw new SemanticAdapterError("INVALID_INPUT", "minFontSize must not exceed maxFontSize.");
+      const originalFontSize = object.fontSize;
+      const originalWidth = object.width;
+      const maxWidth = finiteNumber(input.maxWidth, "maxWidth");
+      const maxHeight = finiteNumber(input.maxHeight, "maxHeight");
+      const maxLines = typeof input.maxLines === "number" ? input.maxLines : 64;
+      const integerFontSizes = [];
+      for (let size = Math.floor(maxFontSize); size >= Math.ceil(minFontSize); size -= 1)
+        integerFontSizes.push(size);
+      const fontSizes = [...new Set([maxFontSize, minFontSize, ...integerFontSizes])]
+        .filter((size) => size >= minFontSize && size <= maxFontSize)
+        .sort((left, right) => right - left);
+      const widthCandidates =
+        object instanceof Textbox
+          ? (() => {
+              const worldScaleX = Math.max(
+                Math.abs(object.getObjectScaling().x),
+                0.000001
+              );
+              const maxLocalWidth = maxWidth / worldScaleX;
+              const candidates = new Set([Math.min(originalWidth, maxLocalWidth), maxLocalWidth]);
+              const minimumWidth = Math.min(1, maxLocalWidth);
+              for (let step = 1; step <= 32; step += 1) {
+                const fraction = step / 32;
+                candidates.add(minimumWidth + (maxLocalWidth - minimumWidth) * fraction);
+              }
+              return [...candidates];
+            })()
+          : [undefined];
+      let fitted = false;
+      for (const size of fontSizes) {
+        for (const width of widthCandidates) {
+          object.set("fontSize", size);
+          if (width !== undefined) object.set("width", width);
+          refreshTextMetrics([object]);
+          const lines = object.textLines.length;
+          const renderedBounds = object.getBoundingRect();
+          if (
+            renderedBounds.width <= maxWidth + 0.01 &&
+            renderedBounds.height <= maxHeight + 0.01 &&
+            lines <= maxLines
+          ) {
+            fitted = true;
+            break;
+          }
+        }
+        if (fitted) break;
+      }
+      if (!fitted) {
+        object.set({ fontSize: originalFontSize, width: originalWidth });
+        refreshTextMetrics([object]);
+        const renderedBounds = object.getBoundingRect();
+        return {
+          data: {
+            objectId,
+            fitted: false,
+            fontSize: originalFontSize,
+            width: renderedBounds.width,
+            height: renderedBounds.height,
+            lines: object.textLines.length
+          },
+          changedObjectIds: []
+        };
+      }
+      const renderedBounds = object.getBoundingRect();
+      if (originalFontSize === object.fontSize && originalWidth === object.width)
+        return {
+          data: {
+            objectId,
+            fitted: true,
+            fontSize: object.fontSize,
+            width: renderedBounds.width,
+            height: renderedBounds.height,
+            lines: object.textLines.length
+          },
+          changedObjectIds: []
+        };
+      object.setCoords();
+      refreshParentGroups(object);
+      dependencies.refreshConnectors();
+      canvas.requestRenderAll();
+      commitSemantic("Semantic fit text");
+      return {
+        data: {
+          objectId,
+          fitted: true,
+          fontSize: object.fontSize,
+          width: renderedBounds.width,
+          height: renderedBounds.height,
+          lines: object.textLines.length
+        },
+        changedObjectIds: [objectId]
+      };
+    }
+    if (command === "normalize_styles") {
+      const hasRequestedIds = input.objectIds !== undefined;
+      const requestedIds = hasRequestedIds ? objectIds(input) : [];
+      const roles = Array.isArray(input.roles) ? new Set(input.roles as string[]) : undefined;
+      const presetId = typeof input.presetId === "string" ? input.presetId : undefined;
+      if (presetId && !stylePreset(presetId))
+        throw new SemanticAdapterError("INVALID_INPUT", `Unknown style preset "${presetId}".`);
+      const sceneEntries = sceneObjectEntries(canvas);
+      const targets = hasRequestedIds
+        ? resolveObjects(canvas, requestedIds)
+        : sceneEntries
+            .map(({ object }) => object)
+            .filter((object) => !roles || roles.has(metadataOf(object)?.semanticRole ?? ""));
+      const protectedAssetObjectIds = new Set(
+        sceneObjectEntries(canvas)
+          .filter(({ path }) => path.some((object) => Boolean(object.familyId)))
+          .map(({ object }) => object.objectId)
+          .filter((id): id is string => Boolean(id))
+      );
+      const skipped: string[] = [];
+      const changed = new Set<string>();
+      const visitedObjects = new Set<FabricObject>();
+      const applyPreset = (
+        object: FabricObject,
+        fallbackPreset?: ReturnType<typeof stylePreset>
+      ): void => {
+        if (
+          input.includeAssets !== true &&
+          (Boolean(object.familyId) || protectedAssetObjectIds.has(object.objectId ?? ""))
+        ) {
+          if (object.objectId) skipped.push(object.objectId);
+          return;
+        }
+        const role = presetId ?? metadataOf(object)?.semanticRole;
+        const preset = (role ? stylePreset(role) : undefined) ?? fallbackPreset;
+        if (!preset) {
+          if (object.objectId) skipped.push(object.objectId);
+          return;
+        }
+        const isText = object instanceof IText || object instanceof Textbox;
+        const nextFill = isText ? (preset.textFill ?? SEMANTIC_TEXT_COLOR) : preset.fill;
+        const nextStroke = isText ? null : preset.stroke;
+        const nextStrokeWidth = isText ? 0 : preset.strokeWidth;
+        const nextFontSize = isText ? preset.fontSize : undefined;
+        const nextFontWeight = isText ? preset.fontWeight : undefined;
+        const styleChanged =
+          (typeof object.fill === "string" && object.fill !== nextFill) ||
+          (typeof object.stroke === "string" && object.stroke !== nextStroke) ||
+          object.strokeWidth !== nextStrokeWidth ||
+          (isText && (object.fontSize !== nextFontSize || object.fontWeight !== nextFontWeight));
+        if (!styleChanged) return;
+        object.set({
+          ...(typeof object.fill === "string" ? { fill: nextFill } : {}),
+          ...(typeof object.stroke === "string" ? { stroke: nextStroke } : {}),
+          strokeWidth: nextStrokeWidth,
+          ...(isText ? { fontSize: nextFontSize, fontWeight: nextFontWeight } : {})
+        });
+        object.setCoords();
+        if (object instanceof IText || object instanceof Textbox) {
+          refreshTextMetrics([object]);
+        }
+        refreshParentGroups(object);
+        if (object.objectId) changed.add(object.objectId);
+      };
+      const visitStyleObjects = (
+        root: FabricObject,
+        fallbackPreset?: ReturnType<typeof stylePreset>
+      ): void => {
+        const walk = (
+          object: FabricObject,
+          inheritedPreset?: ReturnType<typeof stylePreset>
+        ): void => {
+          if (visitedObjects.has(object)) return;
+          visitedObjects.add(object);
+          const protectedAsset = object.familyId && input.includeAssets !== true;
+          applyPreset(object, inheritedPreset);
+          const role = metadataOf(object)?.semanticRole;
+          const nextPreset =
+            role === "stage-content" ? undefined : stylePreset(role ?? "") ?? inheritedPreset;
+          if (isGroup(object) && !protectedAsset)
+            object.getObjects().forEach((child) => walk(child, nextPreset));
+        };
+        walk(root, fallbackPreset);
+      };
+      targets.forEach((object) => {
+        const entry = sceneEntries.find((candidate) => candidate.object === object);
+        const inheritedPreset = presetId
+          ? stylePreset(presetId)
+          : [...(entry?.path ?? [object])]
+              .reverse()
+              .map((candidate) => stylePreset(metadataOf(candidate)?.semanticRole ?? ""))
+              .find((preset): preset is NonNullable<ReturnType<typeof stylePreset>> =>
+                Boolean(preset)
+              );
+        visitStyleObjects(object, inheritedPreset);
+      });
+      const allChangedObjectIds = [...changed];
+      const changedObjectIds = allChangedObjectIds.slice(0, 200);
+      const boundedSkipped = skipped.slice(0, 256);
+      const truncated =
+        changedObjectIds.length !== allChangedObjectIds.length ||
+        boundedSkipped.length !== skipped.length;
+      if (allChangedObjectIds.length > 0) {
+        dependencies.refreshConnectors();
+        canvas.requestRenderAll();
+        commitSemantic("Semantic normalize styles");
+      }
+      return {
+        data: {
+          objectIds: changedObjectIds,
+          changed: Math.min(allChangedObjectIds.length, 256),
+          skipped: boundedSkipped,
+          truncated,
+          totalChanged: allChangedObjectIds.length,
+          totalSkipped: skipped.length
+        },
+        changedObjectIds
+      };
+    }
+    if (command === "analyze_composition") {
+      const settings = dependencies.getCanvasSettings();
+      const result = analyzeComposition(
+        canvas,
+        { width: settings.width, height: settings.height },
+        sceneRevision(canvas),
+        {
+          profile: input.profile as
+            "scientific-diagram" | "publication" | "presentation" | "cycle" | undefined,
+          categories: input.categories as never,
+          maxFindings: input.maxFindings as number | undefined,
+          clearance: input.clearance as number | undefined,
+          padding: input.padding as number | undefined
+        }
+      );
+      return { data: result, changedObjectIds: [] };
+    }
+    if (command === "validate_figure") {
+      const settings = dependencies.getCanvasSettings();
+      const result = validateFigure(
+        canvas,
+        { width: settings.width, height: settings.height },
+        sceneRevision(canvas),
+        input.profile as "scientific-diagram" | "publication" | "presentation" | "cycle",
+        {
+          maxFindings: input.maxFindings as number | undefined,
+          clearance: input.clearance as number | undefined,
+          padding: input.padding as number | undefined
+        }
+      );
+      return { data: result, changedObjectIds: [] };
     }
     if (command === "create_bound_connector") {
       const result = await createBoundConnector(input, true);
@@ -1891,6 +3172,30 @@ export function createSemanticEditorAdapter(
         .getActiveObjects()
         .map((object) => object.objectId)
         .filter((objectId): objectId is string => Boolean(objectId));
+      const removeDeletedRelations = (removedIds: ReadonlySet<string>): string[] => {
+        const changedRelationOwners = new Set<string>();
+        sceneObjectEntries(canvas).forEach(({ object }) => {
+          const relations = object.semanticRelations ?? [];
+          const retainedRelations = relations.filter(
+            (relation) =>
+              ![
+                relation.sourceObjectId,
+                relation.targetObjectId,
+                ...(relation.mediatorObjectIds ?? [])
+              ].some((objectId) => removedIds.has(objectId))
+          );
+          if (retainedRelations.length === relations.length) return;
+          object.semanticRelations = retainedRelations;
+          const metadata = metadataOf(object);
+          if (metadata)
+            object.semanticMetadata = {
+              ...metadata,
+              relationIds: retainedRelations.map((relation) => relation.id)
+            };
+          if (object.objectId) changedRelationOwners.add(object.objectId);
+        });
+        return [...changedRelationOwners];
+      };
       const nestedAssetObjects = objects.filter((object) => editableAssetParent(object));
       if (nestedAssetObjects.length > 0) {
         if (nestedAssetObjects.length !== objects.length) {
@@ -1923,6 +3228,7 @@ export function createSemanticEditorAdapter(
         sceneObjectEntries(canvas)
           .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
           .forEach(removeSceneObject);
+        const changedRelationOwners = removeDeletedRelations(removedIds);
         restoreSelection(
           canvas,
           previousSelectionObjectIds.filter((objectId) => !removedIds.has(objectId)),
@@ -1931,7 +3237,10 @@ export function createSemanticEditorAdapter(
         dependencies.refreshConnectors();
         canvas.requestRenderAll();
         commitSemantic("Semantic delete");
-        return { data: { objectIds: [...removedIds] }, changedObjectIds: [...removedIds] };
+        return {
+          data: { objectIds: [...removedIds] },
+          changedObjectIds: [...removedIds, ...changedRelationOwners]
+        };
       }
       const roots = objects.filter(
         (object) =>
@@ -1949,6 +3258,7 @@ export function createSemanticEditorAdapter(
         const entry = entries.find((candidate) => candidate.object === root);
         if (entry) removeSceneObject(entry);
       });
+      const changedRelationOwners = removeDeletedRelations(removedIds);
       restoreSelection(
         canvas,
         previousSelectionObjectIds.filter((objectId) => !removedIds.has(objectId)),
@@ -1956,7 +3266,10 @@ export function createSemanticEditorAdapter(
       );
       canvas.requestRenderAll();
       commitSemantic("Semantic delete");
-      return { data: { objectIds: [...removedIds] }, changedObjectIds: [...removedIds] };
+      return {
+        data: { objectIds: [...removedIds] },
+        changedObjectIds: [...removedIds, ...changedRelationOwners]
+      };
     }
     if (command === "group_objects") {
       const ids = objectIds(input);

@@ -255,3 +255,122 @@ test("registers a safe figure workflow through the browser model context", async
   expect(exportResult).toMatchObject({ ok: true, data: { format: "credits", started: true } });
   expect(download.suggestedFilename()).toMatch(/credits|provenance/i);
 });
+
+test("executes compound composition and analysis through registered WebMCP callbacks", async ({
+  page
+}) => {
+  await page.addInitScript(() => {
+    const tools: unknown[] = [];
+    Object.defineProperty(document, "modelContext", {
+      configurable: true,
+      value: {
+        registerTool(tool: unknown) {
+          tools.push(tool);
+        }
+      }
+    });
+    (window as typeof window & { __webmcpTools?: unknown[] }).__webmcpTools = tools;
+  });
+  await page.goto("./?webmcpDemo=1");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await expect
+    .poll(async () =>
+      page.evaluate(() =>
+        (
+          (window as typeof window & { __webmcpTools?: Array<{ name: string }> }).__webmcpTools ??
+          []
+        ).map((tool) => tool.name)
+      )
+    )
+    .toEqual(
+      expect.arrayContaining([
+        "compose_labeled_group",
+        "compose_interaction",
+        "create_particle_field",
+        "create_annotation",
+        "fit_text",
+        "normalize_styles",
+        "analyze_composition",
+        "validate_figure"
+      ])
+    );
+
+  const result = await page.evaluate(async () => {
+    const tools =
+      (
+        window as typeof window & {
+          __webmcpTools?: Array<{
+            name: string;
+            execute: (input: Record<string, unknown>) => Promise<unknown>;
+          }>;
+        }
+      ).__webmcpTools ?? [];
+    const call = (name: string, input: Record<string, unknown>) => {
+      const tool = tools.find((candidate) => candidate.name === name);
+      if (!tool) throw new Error(`Missing WebMCP tool: ${name}`);
+      return tool.execute(input);
+    };
+    const first = (await call("create_shape", { kind: "circle", x: 220, y: 220 })) as {
+      data: { objectId: string };
+    };
+    const second = (await call("create_shape", { kind: "circle", x: 520, y: 220 })) as {
+      data: { objectId: string };
+    };
+    const text = (await call("create_text", {
+      kind: "box",
+      text: "Bounded annotation text",
+      x: 520,
+      y: 500
+    })) as { data: { objectId: string } };
+    const labeled = await call("compose_labeled_group", {
+      objectIds: [first.data.objectId],
+      label: "Input",
+      placement: "top"
+    });
+    const interaction = await call("compose_interaction", {
+      sourceObjectId: second.data.objectId,
+      targetObjectId: text.data.objectId,
+      mode: "secretion"
+    });
+    const particles = await call("create_particle_field", {
+      count: 12,
+      distribution: "gradient",
+      seed: "e2e-seed",
+      bounds: { left: 640, top: 100, width: 240, height: 180 }
+    });
+    const annotation = await call("create_annotation", {
+      targetObjectId: second.data.objectId,
+      text: "Target",
+      placement: "top",
+      gap: 400,
+      leader: false
+    });
+    const fit = await call("fit_text", {
+      objectId: text.data.objectId,
+      maxWidth: 220,
+      maxHeight: 160,
+      minFontSize: 8,
+      maxFontSize: 60,
+      maxLines: 4
+    });
+    const styles = await call("normalize_styles", {
+      objectIds: [second.data.objectId],
+      presetId: "scientific-asset"
+    });
+    const analysis = await call("analyze_composition", { maxFindings: 32 });
+    const validation = await call("validate_figure", { profile: "publication", maxFindings: 32 });
+    return { labeled, interaction, particles, annotation, fit, styles, analysis, validation };
+  });
+  expect(result.labeled, JSON.stringify(result.labeled)).toMatchObject({ ok: true });
+  expect(result.interaction).toMatchObject({ ok: true, data: { relation: { kind: "emits" } } });
+  expect(result.particles).toMatchObject({
+    ok: true,
+    data: { seed: "e2e-seed", particleIds: expect.any(Array) }
+  });
+  expect(result.annotation, JSON.stringify(result.annotation)).toMatchObject({ ok: true });
+  expect(result.fit).toMatchObject({ ok: true, data: { objectId: expect.any(String) } });
+  expect(result.styles).toMatchObject({ ok: true });
+  expect(result.analysis).toMatchObject({ ok: true, data: { version: "opensketch.analysis.v1" } });
+  expect(result.validation).toMatchObject({ ok: true, data: { profile: "publication" } });
+});

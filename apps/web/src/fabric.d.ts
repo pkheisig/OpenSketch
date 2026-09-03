@@ -37,6 +37,7 @@ declare module "fabric" {
     defaultElementStyle?: ElementStyleSnapshot;
     semanticMetadata?: SemanticMetadata;
     semanticRelations?: SemanticRelation[];
+    particleFieldSpec?: Record<string, unknown>;
     semanticConnector?: {
       version: 1;
       fromPortId: string;

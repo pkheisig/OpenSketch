@@ -1,0 +1,536 @@
+import { IText, Textbox, type Canvas, type FabricObject } from "fabric";
+import {
+  inspectSemanticGeometry,
+  isGroup,
+  metadataOf,
+  normalizeRelation,
+  relationsForCanvas,
+  type SemanticRelation
+} from "./composition";
+import { SEMANTIC_TEXT_COLOR, stylePreset } from "./compound";
+import { sceneObjectEntries } from "@/editor/sceneTree";
+import type { Bounds } from "@/editor/geometry";
+
+export const ANALYSIS_VERSION = "opensketch.analysis.v1" as const;
+export type AnalysisProfile = "scientific-diagram" | "publication" | "presentation" | "cycle";
+export type FindingCategory =
+  "geometry" | "text" | "connectors" | "relations" | "scientific" | "style";
+export type FindingSeverity = "error" | "warning" | "info";
+
+export interface CompositionFinding {
+  id: string;
+  category: FindingCategory;
+  severity: FindingSeverity;
+  code: string;
+  message: string;
+  objectIds: string[];
+  relationIds: string[];
+  evidence: Record<string, number | string | boolean>;
+  repairable: boolean;
+  suggestedRepair?: string;
+}
+
+export interface AnalysisOptions {
+  profile?: AnalysisProfile;
+  categories?: FindingCategory[];
+  maxFindings?: number;
+  clearance?: number;
+  padding?: number;
+}
+
+export interface CompositionAnalysis {
+  version: typeof ANALYSIS_VERSION;
+  profile: AnalysisProfile;
+  sceneRevision: string;
+  findings: CompositionFinding[];
+  counts: Record<FindingSeverity, number>;
+  metrics: { objects: number; relations: number; visibleObjects: number };
+  truncated: boolean;
+  skipped: string[];
+  pass: boolean;
+}
+
+function overlap(a: Bounds, b: Bounds): boolean {
+  return (
+    a.left < b.left + b.width &&
+    a.left + a.width > b.left &&
+    a.top < b.top + b.height &&
+    a.top + a.height > b.top
+  );
+}
+
+function finding(
+  category: FindingCategory,
+  severity: FindingSeverity,
+  code: string,
+  message: string,
+  objectIds: string[] = [],
+  relationIds: string[] = [],
+  evidence: Record<string, number | string | boolean> = {},
+  repairable = false,
+  suggestedRepair?: string
+): CompositionFinding {
+  const id = `${severity}:${category}:${code}:${[...objectIds].sort().join(",")}:${[...relationIds].sort().join(",")}`;
+  return {
+    id,
+    category,
+    severity,
+    code,
+    message,
+    objectIds,
+    relationIds,
+    evidence,
+    repairable,
+    ...(suggestedRepair ? { suggestedRepair } : {})
+  };
+}
+
+function relationAllowsOverlap(
+  relations: SemanticRelation[],
+  leftIds: readonly string[],
+  rightIds: readonly string[]
+): boolean {
+  return relations.some((relation) => {
+    if (!relation.allowedOverlap) return false;
+    const participantIds = [
+      relation.sourceObjectId,
+      relation.targetObjectId,
+      ...(relation.mediatorObjectIds ?? [])
+    ];
+    return participantIds.some(
+      (leftId) =>
+        leftIds.includes(leftId) &&
+        participantIds.some((rightId) => rightIds.includes(rightId) && rightId !== leftId)
+    );
+  });
+}
+
+function isEffectivelyVisible(path: readonly { visible?: boolean; opacity?: number }[]): boolean {
+  return path.every((object) => object.visible !== false && (object.opacity ?? 1) > 0);
+}
+
+function hasVisibleInk(object: FabricObject, path: readonly FabricObject[]): boolean {
+  if (!isEffectivelyVisible(path)) return false;
+  if (!isGroup(object)) return true;
+  return object.getObjects().some((child) => hasVisibleInk(child, [...path, child]));
+}
+
+function sharesParticleField(
+  left: { path: readonly FabricObject[] },
+  right: { path: readonly FabricObject[] }
+): boolean {
+  return left.path.some(
+    (object) => metadataOf(object)?.semanticRole === "particle-field" && right.path.includes(object)
+  );
+}
+
+function sharesLabelGroup(
+  left: { path: readonly FabricObject[] },
+  right: { path: readonly FabricObject[] }
+): boolean {
+  return left.path.some(
+    (object) => metadataOf(object)?.semanticRole === "stage-label" && right.path.includes(object)
+  );
+}
+
+function metadataAllowsOverlap(
+  left: { path: readonly FabricObject[] },
+  right: { path: readonly FabricObject[] }
+): boolean {
+  const leftIds = new Set(left.path.map((object) => object.objectId).filter(Boolean));
+  const rightIds = new Set(right.path.map((object) => object.objectId).filter(Boolean));
+  return (
+    left.path.some((object) =>
+      metadataOf(object)?.allowedOverlapObjectIds?.some((id) => rightIds.has(id))
+    ) ||
+    right.path.some((object) =>
+      metadataOf(object)?.allowedOverlapObjectIds?.some((id) => leftIds.has(id))
+    )
+  );
+}
+
+export function analyzeComposition(
+  canvas: Canvas,
+  canvasSize: { width: number; height: number },
+  sceneRevision: string,
+  options: AnalysisOptions = {}
+): CompositionAnalysis {
+  const profile = options.profile ?? "scientific-diagram";
+  const categories = options.categories ? new Set(options.categories) : undefined;
+  const maxFindings = Math.max(1, Math.min(256, Math.floor(options.maxFindings ?? 128)));
+  const padding =
+    options.padding ?? (profile === "publication" ? 48 : profile === "presentation" ? 12 : 24);
+  const clearance = options.clearance ?? (profile === "publication" ? 16 : 12);
+  const allEntries = sceneObjectEntries(canvas).filter(({ object }) => object.objectId);
+  const entries = allEntries.filter(
+    ({ object, path }) =>
+      (!isGroup(object) || Boolean(object.familyId)) &&
+      !path.slice(0, -1).some((ancestor) => Boolean(ancestor.familyId)) &&
+      !path.some((ancestor) => Boolean(ancestor.connector || ancestor.freeConnectorGeometry))
+  );
+  const visibility = new Map(
+    allEntries.map(({ object, path }) => [object.objectId!, hasVisibleInk(object, path)])
+  );
+  const relations = relationsForCanvas(canvas);
+  const index = new Map(allEntries.map(({ object }) => [object.objectId!, object]));
+  const layoutBounds = new Map<string, Bounds>();
+  const findings: CompositionFinding[] = [];
+  const skipped: string[] = [];
+  const add = (...args: Parameters<typeof finding>) => {
+    if (!categories || categories.has(args[0])) findings.push(finding(...args));
+  };
+  allEntries.forEach(({ object }) => {
+    let malformedCount = 0;
+    const malformedRelationIds: string[] = [];
+    (object.semanticRelations ?? []).forEach((relation) => {
+      try {
+        normalizeRelation(relation);
+      } catch {
+        malformedCount += 1;
+        const id =
+          typeof (relation as { id?: unknown }).id === "string"
+            ? (relation as { id: string }).id
+            : undefined;
+        if (id) malformedRelationIds.push(id);
+      }
+    });
+    if (malformedCount > 0)
+      add(
+        "relations",
+        "error",
+        "invalid_relation",
+        `Object "${object.objectId!}" contains malformed semantic relation records.`,
+        [object.objectId!],
+        malformedRelationIds,
+        { count: malformedCount }
+      );
+  });
+  entries.forEach(({ object, path }) => {
+    const id = object.objectId!;
+    const visible = isEffectivelyVisible(path);
+    const geometry = inspectSemanticGeometry(object, clearance);
+    const bounds = geometry.visualBounds;
+    layoutBounds.set(id, geometry.layoutBounds);
+    if (
+      !Number.isFinite(bounds.left + bounds.top + bounds.width + bounds.height) ||
+      bounds.width <= 0 ||
+      bounds.height <= 0
+    )
+      add(
+        "geometry",
+        "error",
+        "invalid_bounds",
+        `Object "${id}" has non-finite or empty geometry.`,
+        [id],
+        [],
+        {},
+        true,
+        "repair_layout"
+      );
+    if (
+      visible &&
+      (bounds.left < padding ||
+        bounds.top < padding ||
+        bounds.left + bounds.width > canvasSize.width - padding ||
+        bounds.top + bounds.height > canvasSize.height - padding)
+    )
+      add(
+        "geometry",
+        "warning",
+        "out_of_bounds",
+        `Object "${id}" is outside the publication-safe canvas area.`,
+        [id],
+        [],
+        { padding },
+        true,
+        "repair_layout"
+      );
+    if ((object instanceof IText || object instanceof Textbox) && visible) {
+      const lines = object.textLines.length;
+      if (!Number.isFinite(object.width) || !Number.isFinite(object.height) || object.fontSize < 6)
+        add(
+          "text",
+          "error",
+          "invalid_text_metrics",
+          `Text object "${id}" has invalid font metrics.`,
+          [id],
+          [],
+          {},
+          true,
+          "fit_text"
+        );
+      if (
+        object instanceof Textbox &&
+        object.height > (object.lineHeight || 1) * (object.fontSize || 1) * lines * 1.8
+      )
+        add(
+          "text",
+          "warning",
+          "text_overflow",
+          `Text object "${id}" may overflow its bounded text box.`,
+          [id],
+          [],
+          { lines },
+          true,
+          "fit_text"
+        );
+    }
+    const styledRole = [...path]
+      .reverse()
+      .map((ancestor) => metadataOf(ancestor)?.semanticRole)
+      .find((role) => Boolean(role && stylePreset(role)));
+    const expectedStyle = styledRole ? stylePreset(styledRole) : undefined;
+    const protectedAsset = path.some((ancestor) => Boolean(ancestor.familyId));
+    if (expectedStyle && !object.familyId && !protectedAsset) {
+      const expectedFill =
+        object instanceof IText || object instanceof Textbox
+          ? (expectedStyle.textFill ?? SEMANTIC_TEXT_COLOR)
+          : expectedStyle.fill;
+      const mismatches = [
+        object.fill !== expectedFill ? "fill" : undefined,
+        ...(object instanceof IText || object instanceof Textbox
+          ? [
+              object.fontSize !== expectedStyle.fontSize ? "fontSize" : undefined,
+              object.fontWeight !== expectedStyle.fontWeight ? "fontWeight" : undefined
+            ]
+          : [
+              object.stroke !== expectedStyle.stroke ? "stroke" : undefined,
+              object.strokeWidth !== expectedStyle.strokeWidth ? "strokeWidth" : undefined
+            ])
+      ].filter((value): value is string => Boolean(value));
+      if (mismatches.length > 0)
+        add(
+          "style",
+          "warning",
+          "style_mismatch",
+          `Object "${id}" does not match the ${styledRole} semantic style preset.`,
+          [id],
+          [],
+          { fields: mismatches.join(","), role: styledRole ?? "unknown" },
+          true,
+          "normalize_styles"
+        );
+    }
+  });
+  allEntries
+    .filter(({ object }) => object.connector || object.freeConnectorGeometry)
+    .forEach(({ object }) => {
+      const id = object.objectId!;
+      const metadata = metadataOf(object);
+      if (object.connector) {
+        const endpoints = [object.connector.fromObjectId, object.connector.toObjectId];
+        if (endpoints.some((endpoint) => !index.has(endpoint)))
+          add(
+            "connectors",
+            "error",
+            "stale_binding",
+            `Connector "${id}" references a missing endpoint.`,
+            [id],
+            [],
+            {},
+            true,
+            "repair_connectors"
+          );
+        if (
+          metadata?.semanticRole === "main-flow-connector" &&
+          endpoints.some((endpoint) => {
+            const target = index.get(endpoint);
+            return Boolean(target && metadataOf(target)?.semanticRole === "stage-label");
+          })
+        )
+          add(
+            "connectors",
+            "error",
+            "label_scope",
+            `Logical connector "${id}" targets a stage label instead of content.`,
+            [id],
+            [],
+            {},
+            true,
+            "repair_connectors"
+          );
+      }
+      if (
+        object.freeConnectorGeometry &&
+        !object.connector &&
+        metadata?.semanticRole === "main-flow-connector"
+      )
+        add(
+          "connectors",
+          "error",
+          "free_logical_arc",
+          `Logical connector "${id}" is not bound to semantic endpoints.`,
+          [id],
+          [],
+          {},
+          true,
+          "create_bound_connector"
+        );
+    });
+  allEntries
+    .filter(({ object }) => metadataOf(object)?.semanticRole === "stage")
+    .forEach(({ object }) => {
+      if (metadataOf(object)?.stageIndex === undefined)
+        add(
+          "scientific",
+          profile === "cycle" ? "error" : "warning",
+          "stage_index_missing",
+          `Stage "${object.objectId!}" has no explicit stage index.`,
+          [object.objectId!]
+        );
+    });
+  const MAX_OVERLAP_PAIRS = 100_000;
+  let overlapPairs = 0;
+  let overlapBudgetExceeded = false;
+  if (!categories || categories.has("geometry"))
+    for (let left = 0; left < entries.length; left += 1) {
+      const leftEntry = entries[left];
+      const a = leftEntry.object;
+      const aId = a.objectId!;
+      if (!visibility.get(aId) || a.connector) continue;
+      for (let right = left + 1; right < entries.length; right += 1) {
+        const rightEntry = entries[right];
+        const b = rightEntry.object;
+        const bId = b.objectId!;
+        if (
+          !visibility.get(bId) ||
+          b.connector ||
+          sharesLabelGroup(leftEntry, rightEntry) ||
+          sharesParticleField(leftEntry, rightEntry) ||
+          metadataAllowsOverlap(leftEntry, rightEntry) ||
+          relationAllowsOverlap(
+            relations,
+            [aId, ...leftEntry.path.map((object) => object.objectId!).filter(Boolean)],
+            [bId, ...rightEntry.path.map((object) => object.objectId!).filter(Boolean)]
+          )
+        )
+          continue;
+        overlapPairs += 1;
+        if (overlapPairs > MAX_OVERLAP_PAIRS) {
+          overlapBudgetExceeded = true;
+          break;
+        }
+        if (overlap(layoutBounds.get(aId)!, layoutBounds.get(bId)!))
+          add(
+            "geometry",
+            "warning",
+            "unexpected_overlap",
+            `Objects "${aId}" and "${bId}" overlap without an allowed relation.`,
+            [aId, bId],
+            [],
+            {},
+            true,
+            "repair_layout"
+          );
+      }
+      if (overlapBudgetExceeded) break;
+    }
+  if (overlapBudgetExceeded) skipped.push("overlap-pair-budget");
+  const allIds = new Set(allEntries.map(({ object }) => object.objectId!));
+  const relationIds = new Set(relations.map((relation) => relation.id));
+  allEntries.forEach(({ object }) => {
+    const danglingRelationIds = (metadataOf(object)?.relationIds ?? []).filter(
+      (relationId) => !relationIds.has(relationId)
+    );
+    if (danglingRelationIds.length > 0)
+      add(
+        "relations",
+        "error",
+        "stale_relation",
+        `Object "${object.objectId!}" references missing relation metadata.`,
+        [object.objectId!],
+        danglingRelationIds
+      );
+  });
+  relations.forEach((relation) => {
+    if (
+      !allIds.has(relation.sourceObjectId) ||
+      !allIds.has(relation.targetObjectId) ||
+      relation.mediatorObjectIds?.some((id) => !allIds.has(id))
+    )
+      add(
+        "relations",
+        "error",
+        "stale_relation",
+        `Relation "${relation.id}" references a missing object.`,
+        [relation.sourceObjectId, relation.targetObjectId],
+        [relation.id]
+      );
+    const source = index.get(relation.sourceObjectId);
+    const target = index.get(relation.targetObjectId);
+    if (
+      visibility.get(relation.sourceObjectId) === false ||
+      visibility.get(relation.targetObjectId) === false ||
+      source?.opacity === 0 ||
+      target?.opacity === 0
+    )
+      add(
+        "relations",
+        "warning",
+        "hidden_relation_endpoint",
+        `Relation "${relation.id}" has a hidden endpoint.`,
+        [relation.sourceObjectId, relation.targetObjectId],
+        [relation.id]
+      );
+  });
+  if (profile === "cycle") {
+    const stages = allEntries
+      .filter(({ object }) => metadataOf(object)?.semanticRole === "stage")
+      .map(({ object }) => ({ object, stageIndex: metadataOf(object)?.stageIndex }))
+      .filter(
+        (entry): entry is { object: FabricObject; stageIndex: number } =>
+          entry.stageIndex !== undefined
+      )
+      .sort((a, b) => a.stageIndex - b.stageIndex);
+    stages.forEach(({ object, stageIndex }, index) => {
+      if (stageIndex !== index)
+        add(
+          "scientific",
+          "error",
+          "stage_index_gap",
+          "Cycle stage indices must be contiguous from zero.",
+          [object.objectId!],
+          [],
+          { expected: index, actual: stageIndex }
+        );
+    });
+  }
+  const severityOrder: Record<FindingSeverity, number> = { error: 0, warning: 1, info: 2 };
+  findings.sort(
+    (a, b) =>
+      severityOrder[a.severity] - severityOrder[b.severity] ||
+      a.category.localeCompare(b.category) ||
+      a.id.localeCompare(b.id)
+  );
+  const counts = { error: 0, warning: 0, info: 0 };
+  findings.forEach((item) => {
+    counts[item.severity] += 1;
+  });
+  const truncated = findings.length > maxFindings || overlapBudgetExceeded;
+  return {
+    version: ANALYSIS_VERSION,
+    profile,
+    sceneRevision,
+    findings: findings.slice(0, maxFindings),
+    counts,
+    metrics: {
+      objects: entries.length,
+      relations: relations.length,
+      visibleObjects: entries.filter(({ object }) => visibility.get(object.objectId!) === true)
+        .length
+    },
+    truncated,
+    skipped,
+    pass: counts.error === 0
+  };
+}
+
+export function validateFigure(
+  canvas: Canvas,
+  canvasSize: { width: number; height: number },
+  sceneRevision: string,
+  profile: AnalysisProfile = "publication",
+  options: Omit<AnalysisOptions, "profile"> = {}
+): CompositionAnalysis {
+  return analyzeComposition(canvas, canvasSize, sceneRevision, { ...options, profile });
+}

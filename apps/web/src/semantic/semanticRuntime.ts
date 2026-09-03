@@ -153,7 +153,16 @@ function definitionFor(name: string): SemanticCommandDefinition | undefined {
   return SEMANTIC_COMMANDS.find((definition) => definition.name === name);
 }
 
-const ALIAS_ID_FIELDS = new Set(["objectId", "objectIds", "fromObjectId", "toObjectId"]);
+const ALIAS_ID_FIELDS = new Set([
+  "objectId",
+  "objectIds",
+  "fromObjectId",
+  "toObjectId",
+  "sourceObjectId",
+  "targetObjectId",
+  "mediatorObjectId",
+  "stageId"
+]);
 
 function resolveAliases(value: unknown, aliases: Map<string, AliasValue>, field?: string): unknown {
   if (typeof value === "string" && field && ALIAS_ID_FIELDS.has(field) && value.startsWith("$")) {

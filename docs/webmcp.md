@@ -90,6 +90,14 @@ registry.
 | `plan_layout`             | Plan a bounded layout without mutating the scene                 | Read-only                                    |
 | `apply_layout_plan`       | Apply a current retained layout plan atomically                  | Reversible and retryable                     |
 | `repair_layout`           | Generate and apply a bounded layout repair                       | Reversible and retryable                     |
+| `compose_labeled_group`   | Compose stage content, labels, and optional title/subtitle       | Reversible and retryable                     |
+| `compose_interaction`     | Place interaction participants and publish a typed relation      | Reversible and retryable                     |
+| `create_particle_field`   | Create a seeded, bounded, editable particle field                | Reversible and retryable                     |
+| `create_annotation`       | Place a target-bound annotation and optional leader              | Reversible and retryable                     |
+| `fit_text`                | Fit text with bounded real font-metric measurement               | Reversible and retryable                     |
+| `normalize_styles`        | Apply canonical semantic role styles without asset recoloring    | Reversible and retryable                     |
+| `analyze_composition`     | Return bounded deterministic geometry/science findings           | Read-only                                    |
+| `validate_figure`         | Validate against a versioned publication profile                 | Read-only                                    |
 | `batch`                   | Run up to 32 typed mutations as one atomic history step          | Sensitive/destructive; explicit confirmation |
 
 All current commands use semantic runtime version `opensketch.semantic.v1`.
@@ -112,6 +120,20 @@ confirmation, and its confirmation covers every contained mutation, including
 deletes. Export commands create browser downloads; they do not upload project
 data. Asset search and inspection return catalog/provenance metadata rather
 than raw SVG source.
+
+Compound composition commands operate on semantic editor objects and preserve
+stable identities. `compose_labeled_group` keeps content and labels in separate
+semantic subgroups, while `compose_interaction`, particle fields, and
+annotations publish typed roles and relation records. `fit_text` uses the
+editor's Fabric text metrics and leaves the object unchanged when no bounded
+fit exists. `normalize_styles` never recolors bundled assets unless
+`includeAssets` is explicit.
+
+`analyze_composition` and `validate_figure` are strictly read-only. They cap
+findings, sort them deterministically, distinguish relation-allowed overlap
+from unexpected overlap, and report stale bindings, hidden endpoints, text
+metrics, stage-index gaps, and out-of-bounds geometry. Validation is
+supplementary to the normal editor and does not alter the product UI.
 
 When `document.modelContext` is absent or does not provide
 `registerTool(tool, options)`, no WebMCP tools are registered. The normal
