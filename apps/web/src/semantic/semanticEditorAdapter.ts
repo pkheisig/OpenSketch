@@ -1514,7 +1514,7 @@ export function createSemanticEditorAdapter(
                 sourceObjectId,
                 targetObjectId: field.objectId!,
                 direction: "forward",
-                allowedOverlap: false
+                allowedOverlap: distribution === "source-fan"
               })
             ]
           : []),
@@ -1526,7 +1526,7 @@ export function createSemanticEditorAdapter(
                 sourceObjectId: field.objectId!,
                 targetObjectId,
                 direction: "forward",
-                allowedOverlap: false
+                allowedOverlap: distribution === "target-converging"
               })
             ]
           : [])
@@ -1835,11 +1835,22 @@ export function createSemanticEditorAdapter(
           return;
         }
         const isText = object instanceof IText || object instanceof Textbox;
+        const nextFill = isText ? (preset.textFill ?? SEMANTIC_TEXT_COLOR) : preset.fill;
+        const nextStroke = isText ? null : preset.stroke;
+        const nextStrokeWidth = isText ? 0 : preset.strokeWidth;
+        const nextFontSize = isText ? preset.fontSize : undefined;
+        const nextFontWeight = isText ? preset.fontWeight : undefined;
+        const styleChanged =
+          object.fill !== nextFill ||
+          object.stroke !== nextStroke ||
+          object.strokeWidth !== nextStrokeWidth ||
+          (isText && (object.fontSize !== nextFontSize || object.fontWeight !== nextFontWeight));
+        if (!styleChanged) return;
         object.set({
-          fill: isText ? (preset.textFill ?? SEMANTIC_TEXT_COLOR) : preset.fill,
-          stroke: isText ? null : preset.stroke,
-          strokeWidth: isText ? 0 : preset.strokeWidth,
-          ...(isText ? { fontSize: preset.fontSize, fontWeight: preset.fontWeight } : {})
+          fill: nextFill,
+          stroke: nextStroke,
+          strokeWidth: nextStrokeWidth,
+          ...(isText ? { fontSize: nextFontSize, fontWeight: nextFontWeight } : {})
         });
         object.setCoords();
         if (object instanceof IText || object instanceof Textbox) {

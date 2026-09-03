@@ -138,6 +138,42 @@ describe("semantic editor adapter", () => {
     expect(target.left).toBe(260);
   });
 
+  it("authorizes intentional target-converging particle overlap", async () => {
+    const target = new Rect({ left: 96, top: 46, width: 8, height: 8 });
+    target.objectId = "target";
+    const canvas = makeCanvas([target]);
+    const adapter = makeAdapter(canvas);
+
+    const result = await adapter.execute("create_particle_field", {
+      bounds: { left: 0, top: 0, width: 200, height: 100 },
+      count: 4,
+      distribution: "target-converging",
+      seed: "converging-test",
+      targetObjectId: "target"
+    });
+    const fieldId = (result.data as { objectId: string }).objectId;
+    const field = canvas.getObjects().find((object) => object.objectId === fieldId);
+
+    expect(field?.semanticRelations?.[0]).toMatchObject({
+      targetObjectId: "target",
+      allowedOverlap: true
+    });
+  });
+
+  it("does not commit an idempotent style normalization", async () => {
+    const label = new IText("Stage", { fontSize: 14, fill: "#000000" });
+    label.objectId = "label";
+    label.semanticMetadata = { version: 1, semanticRole: "stage-label" };
+    const adapter = makeAdapter(makeCanvas([label]));
+
+    await adapter.execute("normalize_styles", { objectIds: ["label"] });
+    adapter.commit.mockClear();
+    const result = await adapter.execute("normalize_styles", { objectIds: ["label"] });
+
+    expect(result.changedObjectIds).toEqual([]);
+    expect(adapter.commit).not.toHaveBeenCalled();
+  });
+
   it("resolves nested identities and keeps targeted execution separate from selection", async () => {
     const child = new Rect({ width: 40, height: 20 });
     child.objectId = "child";

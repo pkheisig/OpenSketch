@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Rect } from "../apps/web/node_modules/fabric";
+import { Group, Rect, type FabricObject } from "../apps/web/node_modules/fabric";
 import { analyzeComposition, validateFigure } from "../apps/web/src/semantic/analysis";
 import {
   annotationCandidates,
@@ -7,7 +7,7 @@ import {
   planParticleField
 } from "../apps/web/src/semantic/compound";
 
-function canvasOf(objects: Rect[]) {
+function canvasOf(objects: FabricObject[]) {
   return { getObjects: () => objects } as never;
 }
 
@@ -103,6 +103,47 @@ describe("semantic compound planning", () => {
     );
 
     expect(result.findings.some((item) => item.code === "unexpected_overlap")).toBe(false);
+  });
+
+  it("treats a bundled asset as one overlap participant", () => {
+    const assetPart = new Rect({ left: 30, top: 30, width: 80, height: 80 });
+    const asset = new Group([assetPart]);
+    const external = new Rect({ left: 70, top: 70, width: 80, height: 80 });
+    asset.objectId = "asset";
+    asset.familyId = "family-1";
+    assetPart.objectId = "asset-part";
+    external.objectId = "external";
+
+    const result = analyzeComposition(
+      canvasOf([asset, external]),
+      { width: 400, height: 400 },
+      "scene-assets"
+    );
+
+    expect(result.findings.some((item) => item.code === "unexpected_overlap")).toBe(true);
+  });
+
+  it("keeps cycle index-gap findings individually addressable", () => {
+    const stages = [2, 3].map((stageIndex) => {
+      const stage = new Rect({ left: 100 + stageIndex * 100, top: 100, width: 60, height: 60 });
+      stage.objectId = `stage-${stageIndex}`;
+      stage.semanticMetadata = { version: 1, semanticRole: "stage", stageIndex };
+      return stage;
+    });
+
+    const result = analyzeComposition(
+      canvasOf(stages),
+      { width: 500, height: 400 },
+      "scene-cycle",
+      {
+        profile: "cycle"
+      }
+    );
+    const gaps = result.findings.filter((item) => item.code === "stage_index_gap");
+
+    expect(gaps).toHaveLength(2);
+    expect(new Set(gaps.map((item) => item.id)).size).toBe(2);
+    expect(gaps.map((item) => item.objectIds[0])).toEqual(["stage-2", "stage-3"]);
   });
 
   it("provides bounded annotation candidates", () => {

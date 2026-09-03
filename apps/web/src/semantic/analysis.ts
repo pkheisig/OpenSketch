@@ -139,7 +139,10 @@ export function analyzeComposition(
   const clearance = options.clearance ?? 12;
   const allEntries = sceneObjectEntries(canvas).filter(({ object }) => object.objectId);
   const entries = allEntries.filter(
-    ({ object, path }) => !isGroup(object) && !path.some((ancestor) => Boolean(ancestor.connector))
+    ({ object, path }) =>
+      (!isGroup(object) || Boolean(object.familyId)) &&
+      !path.slice(0, -1).some((ancestor) => Boolean(ancestor.familyId)) &&
+      !path.some((ancestor) => Boolean(ancestor.connector))
   );
   const visibility = new Map(
     allEntries.map(({ object, path }) => [object.objectId!, isEffectivelyVisible(path)])
@@ -329,12 +332,7 @@ export function analyzeComposition(
       const leftEntry = entries[left];
       const a = leftEntry.object;
       const aId = a.objectId!;
-      if (
-        !visibility.get(aId) ||
-        a.connector ||
-        leftEntry.path.some((object) => Boolean(object.familyId))
-      )
-        continue;
+      if (!visibility.get(aId) || a.connector) continue;
       for (let right = left + 1; right < entries.length; right += 1) {
         const rightEntry = entries[right];
         const b = rightEntry.object;
@@ -342,7 +340,6 @@ export function analyzeComposition(
         if (
           !visibility.get(bId) ||
           b.connector ||
-          rightEntry.path.some((object) => Boolean(object.familyId)) ||
           sharesLabelGroup(leftEntry, rightEntry) ||
           sharesParticleField(leftEntry, rightEntry) ||
           relationAllowsOverlap(
@@ -408,19 +405,22 @@ export function analyzeComposition(
   if (profile === "cycle") {
     const stages = allEntries
       .filter(({ object }) => metadataOf(object)?.semanticRole === "stage")
-      .map(({ object }) => metadataOf(object)?.stageIndex)
-      .filter((value): value is number => value !== undefined)
-      .sort((a, b) => a - b);
-    stages.forEach((value, index) => {
-      if (value !== index)
+      .map(({ object }) => ({ object, stageIndex: metadataOf(object)?.stageIndex }))
+      .filter(
+        (entry): entry is { object: FabricObject; stageIndex: number } =>
+          entry.stageIndex !== undefined
+      )
+      .sort((a, b) => a.stageIndex - b.stageIndex);
+    stages.forEach(({ object, stageIndex }, index) => {
+      if (stageIndex !== index)
         add(
           "scientific",
           "error",
           "stage_index_gap",
           "Cycle stage indices must be contiguous from zero.",
+          [object.objectId!],
           [],
-          [],
-          { expected: index, actual: value }
+          { expected: index, actual: stageIndex }
         );
     });
   }
