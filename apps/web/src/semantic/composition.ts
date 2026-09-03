@@ -343,7 +343,8 @@ export function validateRelations(
       sourceObjectId: normalized.sourceObjectId,
       targetObjectId: normalized.targetObjectId,
       mediatorObjectIds: normalized.mediatorObjectIds ?? [],
-      direction: normalized.direction ?? "forward"
+      direction: normalized.direction ?? "forward",
+      allowedOverlap: normalized.allowedOverlap ?? false
     });
     if (exactRelations.has(exact))
       throw new Error(`Relation "${normalized.id}" duplicates an existing relation.`);
@@ -454,15 +455,19 @@ function sampledPathPoints(object: FabricObject): Point[] {
       start = current;
       points.push(toCanvas(current));
       previousControl = undefined;
-    } else if ((command === "L" || command === "T") && values.length >= 2) {
+    } else if (command === "L" && values.length >= 2) {
       const next = endpoint(values[0], values[1]);
-      points.push(
-        ...sampleQuadratic(current, previousControl ?? current, next)
-          .slice(1)
-          .map(toCanvas)
-      );
+      points.push(toCanvas(next));
       current = next;
-      previousControl = command === "T" ? previousControl : undefined;
+      previousControl = undefined;
+    } else if (command === "T" && values.length >= 2) {
+      const control = previousControl
+        ? { x: current.x * 2 - previousControl.x, y: current.y * 2 - previousControl.y }
+        : current;
+      const next = endpoint(values[0], values[1]);
+      points.push(...sampleQuadratic(current, control, next).slice(1).map(toCanvas));
+      current = next;
+      previousControl = control;
     } else if (command === "H" && values.length >= 1) {
       const next = isRelative
         ? { x: current.x + values[0], y: current.y }
@@ -711,6 +716,8 @@ function portAt(
     const candidate = { x: start.x + edge.x * progress, y: start.y + edge.y * progress };
     if (Math.hypot(candidate.x - position.x, candidate.y - position.y) < 0.01) {
       normal = normalize({ x: edge.y, y: -edge.x });
+      if (normal.x * direction.x + normal.y * direction.y < 0)
+        normal = { x: -normal.x, y: -normal.y };
       break;
     }
   }
@@ -770,13 +777,21 @@ export function inspectSemanticGeometry(object: FabricObject, clearance = 12): S
             ? textObject.textLines.length
             : textObject.text.split("\n").length,
           ...(typeof textObject.fontSize === "number" ? { fontSize: textObject.fontSize } : {}),
-          fontReady:
-            typeof document === "undefined" ||
-            !document.fonts ||
-            typeof document.fonts.check !== "function" ||
-            document.fonts.check(
-              `${textObject.fontSize ?? 16}px ${String((textObject as { fontFamily?: string }).fontFamily ?? "sans-serif")}`
+          fontReady: (() => {
+            if (
+              typeof document === "undefined" ||
+              !document.fonts ||
+              typeof document.fonts.check !== "function"
             )
+              return true;
+            try {
+              return document.fonts.check(
+                `${textObject.fontSize ?? 16}px ${String((textObject as { fontFamily?: string }).fontFamily ?? "sans-serif")}`
+              );
+            } catch {
+              return false;
+            }
+          })()
         }
       : undefined;
   return {
@@ -1067,20 +1082,21 @@ function layoutMetrics(
     0
   );
   const minHubClearance = options.hubKeepOut
-    ? Math.min(
-        ...bounds.map((item) =>
-          Math.max(
-            0,
-            Math.min(
-              Math.abs(item.left - (options.hubKeepOut!.left + options.hubKeepOut!.width)),
-              Math.abs(options.hubKeepOut!.left - (item.left + item.width)),
-              Math.abs(item.top - (options.hubKeepOut!.top + options.hubKeepOut!.height)),
-              Math.abs(options.hubKeepOut!.top - (item.top + item.height))
+    ? bounds.length > 0
+      ? Math.min(
+          ...bounds.map((item) =>
+            Math.max(
+              0,
+              Math.min(
+                Math.abs(item.left - (options.hubKeepOut!.left + options.hubKeepOut!.width)),
+                Math.abs(options.hubKeepOut!.left - (item.left + item.width)),
+                Math.abs(item.top - (options.hubKeepOut!.top + options.hubKeepOut!.height)),
+                Math.abs(options.hubKeepOut!.top - (item.top + item.height))
+              )
             )
           )
-        ),
-        0
-      )
+        )
+      : 0
     : Number.POSITIVE_INFINITY;
   return {
     occupiedAreaRatio: occupiedArea / Math.max(1, options.canvas.width * options.canvas.height),

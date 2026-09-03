@@ -7,7 +7,7 @@ import {
   validateRelations,
   type SemanticGeometry
 } from "../apps/web/src/semantic/composition";
-import { Circle, Group, Rect } from "../apps/web/node_modules/fabric";
+import { Circle, Group, Path, Rect } from "../apps/web/node_modules/fabric";
 
 describe("semantic composition contracts", () => {
   it("accepts only bounded semantic metadata and rejects arbitrary keys", () => {
@@ -64,8 +64,16 @@ describe("semantic composition contracts", () => {
     expect(radial?.position.x).toBeCloseTo(geometry.center.x, 5);
     expect(radial?.position.y).toBeGreaterThan(geometry.center.y);
     expect(radial?.position).not.toEqual(geometry.center);
+    expect(radial?.normal.y).toBeGreaterThan(0);
     expect(geometry.geometrySource).toBe("vector");
     expect(geometry.evaluable).toBe(true);
+  });
+
+  it("keeps straight path segments straight after a curve", () => {
+    const path = new Path("M 0 0 Q 50 100 100 0 L 200 0");
+    path.objectId = "path";
+    const geometry = inspectSemanticGeometry(path);
+    expect(geometry.visualBounds.height).toBeCloseTo(50, 5);
   });
 
   it("fails closed for an object with no visible ink", () => {
@@ -132,5 +140,22 @@ describe("semantic composition contracts", () => {
     expect(plan.status).toBe("feasible");
     expect(plan.metrics.occupiedAreaRatio).toBeGreaterThan(0);
     expect(plan.metrics.expectedMainFlowPathLength).toBeGreaterThan(0);
+  });
+
+  it("reports measured hub clearance", () => {
+    const object = new Rect({ left: 100, top: 100, width: 40, height: 40 });
+    object.objectId = "stage";
+    const plan = planSemanticLayout(
+      [{ object, geometry: inspectSemanticGeometry(object) }],
+      {
+        mode: "flow",
+        objectIds: ["stage"],
+        center: { x: 400, y: 300 },
+        canvas: { width: 800, height: 600 },
+        hubKeepOut: { left: 50, top: 50, width: 40, height: 40 }
+      },
+      "scene-hub"
+    );
+    expect(plan.metrics.minHubClearance).toBeGreaterThan(0);
   });
 });

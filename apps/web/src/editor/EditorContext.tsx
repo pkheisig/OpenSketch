@@ -1338,7 +1338,14 @@ export function EditorProvider({
         const toPoint = binding
           ? perimeterPointForAnchor(inspectSemanticGeometry(toObject), binding.toAnchor)
           : null;
-        if (!fromPoint || !toPoint) continue;
+        if (!fromPoint || !toPoint) {
+          console.warn("Preserving bound connector because an endpoint has unevaluable geometry.", {
+            connectorId: connector.objectId,
+            fromObjectId: binding.fromObjectId,
+            toObjectId: binding.toObjectId
+          });
+          continue;
+        }
         const replacement = createConnectorObject(
           fromPoint,
           toPoint,
