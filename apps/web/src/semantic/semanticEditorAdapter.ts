@@ -1151,6 +1151,7 @@ export function createSemanticEditorAdapter(
           return {
             data: {
               objectId: existingStage.objectId,
+              contentObjectId: contentGroup?.objectId,
               labelObjectId: existingLabelGroup.objectId,
               objectIds: updatedObjectIds
             },
@@ -1674,6 +1675,7 @@ export function createSemanticEditorAdapter(
           moveAnchorTo(particle, "center", position);
           return particle;
         });
+        existingField.set({ scaleX: 1, scaleY: 1, angle: 0 });
         const repairedRelations = expectedRelations(existingField.objectId!);
         const restoredRelations = [
           ...(existingField.semanticRelations ?? []).filter(
@@ -1764,8 +1766,11 @@ export function createSemanticEditorAdapter(
       const targetObjectId = input.targetObjectId as string;
       const [target] = resolveObjects(canvas, [targetObjectId]);
       const defaults = dependencies.creationDefaults();
+      const annotationText = boundedText(input.text, 800);
+      if (!annotationText)
+        throw new SemanticAdapterError("INVALID_INPUT", "text must not be empty.");
       const explicitFontSize = typeof input.fontSize === "number" ? input.fontSize : undefined;
-      const annotation = new Textbox(input.text as string, {
+      const annotation = new Textbox(annotationText, {
         width: 260,
         fontFamily: defaults.text.fontFamily,
         fontSize: explicitFontSize ?? defaults.text.fontSize,
