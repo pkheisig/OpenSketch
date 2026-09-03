@@ -1438,7 +1438,7 @@ definitions.push(
     risk: "read_only",
     confirmation: "none",
     retryable: true,
-    idempotent: false,
+    idempotent: true,
     cancellable: false,
     requires: ["project", "canvas"],
     inputSchema: {
@@ -1454,10 +1454,21 @@ definitions.push(
           required: ["x", "y"],
           additionalProperties: false
         },
+        preferredAxes: {
+          type: "object",
+          description: "Soft cycle axes; the planner may expand them to satisfy hard constraints.",
+          properties: { x: number(1, 100000), y: number(1, 100000) },
+          required: ["x", "y"],
+          additionalProperties: false
+        },
+        fixedAxes: { type: "boolean", description: "Treat axes as a hard constraint." },
         startAngle: number(-3600, 3600),
         direction: { type: "string", enum: ["clockwise", "counterclockwise"] },
         gap: number(0, 10000),
         padding: number(0, 10000),
+        maxIterations: number(1, 64),
+        pinnedObjectIds: objectIds(0),
+        maxMovement: number(0, 100000),
         hubKeepOut: {
           type: "object",
           properties: { left: number(), top: number(), width: number(0), height: number(0) },

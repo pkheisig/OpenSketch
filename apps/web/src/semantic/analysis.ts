@@ -212,15 +212,17 @@ export function analyzeComposition(
     const bounds = geometry.visualBounds;
     layoutBounds.set(id, geometry.layoutBounds);
     if (
-      !Number.isFinite(bounds.left + bounds.top + bounds.width + bounds.height) ||
-      bounds.width <= 0 ||
-      bounds.height <= 0
+      visible &&
+      (!geometry.evaluable ||
+        !Number.isFinite(bounds.left + bounds.top + bounds.width + bounds.height) ||
+        bounds.width <= 0 ||
+        bounds.height <= 0)
     )
       add(
         "geometry",
         "error",
         "invalid_bounds",
-        `Object "${id}" has non-finite or empty geometry.`,
+        `Object "${id}" has non-finite, empty, or unevaluable visual geometry.`,
         [id],
         [],
         {},

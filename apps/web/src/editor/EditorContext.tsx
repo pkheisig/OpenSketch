@@ -163,6 +163,7 @@ import { EditorSnapshotProvider } from "@/editor/editorSnapshotProvider";
 import { createSnapshotStore, type SnapshotStore } from "@/editor/editorStore";
 import { DEFAULT_TEXT_LINE_HEIGHT } from "@/editor/text";
 import { createSemanticEditorAdapter } from "@/semantic/semanticEditorAdapter";
+import { inspectSemanticGeometry, perimeterPointForAnchor } from "@/semantic/composition";
 import { installSemanticIntrospection } from "@/semantic/semanticIntrospection";
 import { createSemanticRuntime, type SemanticRuntime } from "@/semantic/semanticRuntime";
 import { createWebMcpAdapter, type WebMcpAdapter } from "@/semantic/webmcp";
@@ -1330,10 +1331,24 @@ export function EditorProvider({
               object.objectId !== binding.fromObjectId &&
               object.objectId !== binding.toObjectId
           )
-          .map((object) => object.getBoundingRect());
+          .map((object) => inspectSemanticGeometry(object, 12).layoutBounds);
+        const fromPoint = binding
+          ? perimeterPointForAnchor(inspectSemanticGeometry(fromObject), binding.fromAnchor)
+          : null;
+        const toPoint = binding
+          ? perimeterPointForAnchor(inspectSemanticGeometry(toObject), binding.toAnchor)
+          : null;
+        if (!fromPoint || !toPoint) {
+          console.warn("Preserving bound connector because an endpoint has unevaluable geometry.", {
+            connectorId: connector.objectId,
+            fromObjectId: binding.fromObjectId,
+            toObjectId: binding.toObjectId
+          });
+          continue;
+        }
         const replacement = createConnectorObject(
-          anchorPoint(fromObject.getBoundingRect(), binding.fromAnchor),
-          anchorPoint(toObject.getBoundingRect(), binding.toAnchor),
+          fromPoint,
+          toPoint,
           binding,
           connectorAppearance(connector),
           obstacles
@@ -1343,6 +1358,15 @@ export function EditorProvider({
         replacement.OpenSketchType = connector.OpenSketchType;
         replacement.defaultElementStyle = connector.defaultElementStyle
           ? structuredClone(connector.defaultElementStyle)
+          : undefined;
+        replacement.semanticMetadata = connector.semanticMetadata
+          ? structuredClone(connector.semanticMetadata)
+          : undefined;
+        replacement.semanticRelations = connector.semanticRelations
+          ? structuredClone(connector.semanticRelations)
+          : undefined;
+        replacement.semanticConnector = connector.semanticConnector
+          ? structuredClone(connector.semanticConnector)
           : undefined;
         replacement.connectorHeadOffsetVersion = connector.connectorHeadOffsetVersion;
         replacement.visible = connector.visible;
