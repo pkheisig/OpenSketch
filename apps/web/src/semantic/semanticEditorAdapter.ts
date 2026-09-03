@@ -1583,8 +1583,8 @@ export function createSemanticEditorAdapter(
           metadataOf(object)?.semanticRole === "particle-field" &&
           metadataOf(object)?.semanticName === `particle-field:${seed}` &&
           JSON.stringify(object.particleFieldSpec) === JSON.stringify(particleFieldSpec)
-      );
-      const existingField = existingFieldEntry?.object;
+        );
+        const existingField = existingFieldEntry?.object;
       if (isGroup(existingField)) {
         const particles = existingField.getObjects();
         const matchesPlan =
@@ -1637,6 +1637,11 @@ export function createSemanticEditorAdapter(
             ),
             ...relations
           ];
+          if (restoredRelations.length > 32)
+            throw new SemanticAdapterError(
+              "SEMANTIC_LIMIT",
+              `Particle field "${existingField.objectId!}" cannot reference more than 32 relations.`
+            );
           existingField.semanticRelations = restoredRelations;
           const metadata = metadataOf(existingField) ?? { version: 1 as const };
           existingField.semanticMetadata = {
@@ -2151,7 +2156,9 @@ export function createSemanticEditorAdapter(
           }
           const protectedAsset = object.familyId && input.includeAssets !== true;
           applyPreset(object, inheritedPreset);
-          const nextPreset = stylePreset(metadataOf(object)?.semanticRole ?? "") ?? inheritedPreset;
+          const role = metadataOf(object)?.semanticRole;
+          const nextPreset =
+            role === "stage-content" ? undefined : stylePreset(role ?? "") ?? inheritedPreset;
           if (isGroup(object) && !protectedAsset)
             object.getObjects().forEach((child) => walk(child, nextPreset));
         };
