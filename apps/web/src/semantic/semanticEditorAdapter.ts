@@ -962,7 +962,10 @@ export function createSemanticEditorAdapter(
         const index = sceneObjectIndex(canvas);
         return (
           metadataOf(index.get(relation.sourceObjectId)!)?.stageId === stageId ||
-          metadataOf(index.get(relation.targetObjectId)!)?.stageId === stageId
+          metadataOf(index.get(relation.targetObjectId)!)?.stageId === stageId ||
+          (relation.mediatorObjectIds ?? []).some(
+            (mediatorObjectId) => metadataOf(index.get(mediatorObjectId)!)?.stageId === stageId
+          )
         );
       });
       const limit = typeof input.limit === "number" ? input.limit : 256;
