@@ -448,7 +448,7 @@ export function annotationCandidates(
     return {
       position: { x: target.x + direction.x * distance, y: target.y + direction.y * distance },
       leader,
-      score: index + Math.round(distance * 0.001 * 1_000) / 1_000
+      score: distance + index * 0.001
     };
   });
   return candidates;

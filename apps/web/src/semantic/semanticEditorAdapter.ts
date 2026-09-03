@@ -2085,7 +2085,10 @@ export function createSemanticEditorAdapter(
         )
         .map(({ object }) => object);
       const settings = dependencies.getCanvasSettings();
-      const orderedCandidates = [...candidates.slice(preferred), ...candidates.slice(0, preferred)];
+      const isAutoPlacement = input.placement === "auto";
+      const orderedCandidates = isAutoPlacement
+        ? candidates
+        : [...candidates.slice(preferred), ...candidates.slice(0, preferred)];
       const scoredCandidates = orderedCandidates.map((candidate, index) => {
         const candidateBounds = {
           left: candidate.position.x - boundsOf(annotation).width / 2,
@@ -2105,7 +2108,12 @@ export function createSemanticEditorAdapter(
             candidateBounds.top < boundsOf(object).top + boundsOf(object).height &&
             candidateBounds.top + candidateBounds.height > boundsOf(object).top
         ).length;
-        return { candidate, insideCanvas, collisions, score: index + candidate.score * 0.001 };
+        return {
+          candidate,
+          insideCanvas,
+          collisions,
+          score: isAutoPlacement ? candidate.score : index + candidate.score * 0.001
+        };
       });
       const position = scoredCandidates
         .filter(({ insideCanvas, collisions }) => insideCanvas && collisions === 0)
@@ -3447,14 +3455,25 @@ export function createSemanticEditorAdapter(
                 ...(relation.mediatorObjectIds ?? [])
               ].some((objectId) => removedIds.has(objectId))
           );
-          if (retainedRelations.length === relations.length) return;
-          object.semanticRelations = retainedRelations;
           const metadata = metadataOf(object);
-          if (metadata)
-            object.semanticMetadata = {
+          const constraint = metadata?.layoutConstraint;
+          const constraintReferencesRemovedObject =
+            constraint !== undefined &&
+            [constraint.contentObjectId, constraint.labelObjectId].some((objectId) =>
+              removedIds.has(objectId)
+            );
+          if (retainedRelations.length === relations.length && !constraintReferencesRemovedObject)
+            return;
+          if (retainedRelations.length !== relations.length)
+            object.semanticRelations = retainedRelations;
+          if (metadata) {
+            const nextMetadata = {
               ...metadata,
               relationIds: retainedRelations.map((relation) => relation.id)
             };
+            if (constraintReferencesRemovedObject) delete nextMetadata.layoutConstraint;
+            object.semanticMetadata = nextMetadata;
+          }
           if (object.objectId) changedRelationOwners.add(object.objectId);
         });
         return [...changedRelationOwners];

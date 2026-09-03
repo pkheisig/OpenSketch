@@ -279,12 +279,17 @@ export function normalizeSemanticMetadata(input: unknown): SemanticMetadata {
     const contentObjectId = boundedString(constraint.contentObjectId, 200);
     const labelObjectId = boundedString(constraint.labelObjectId, 200);
     const referenceCenter = constraint.referenceCenter;
+    const referenceCenterKeys =
+      referenceCenter && typeof referenceCenter === "object" && !Array.isArray(referenceCenter)
+        ? Object.keys(referenceCenter)
+        : [];
     if (
       !contentObjectId ||
       !labelObjectId ||
       !referenceCenter ||
       typeof referenceCenter !== "object" ||
       Array.isArray(referenceCenter) ||
+      referenceCenterKeys.some((key) => key !== "x" && key !== "y") ||
       !finite((referenceCenter as Record<string, unknown>).x) ||
       !finite((referenceCenter as Record<string, unknown>).y) ||
       !finite(constraint.gap) ||

@@ -1,4 +1,4 @@
-import { IText, Textbox, type Canvas, type FabricObject } from "fabric";
+import { IText, Path, Point, Textbox, util, type Canvas, type FabricObject } from "fabric";
 import {
   inspectSemanticGeometry,
   isGroup,
@@ -77,6 +77,40 @@ function boundsGap(a: Bounds, b: Bounds): number {
   const dx = Math.max(a.left - (b.left + b.width), b.left - (a.left + a.width), 0);
   const dy = Math.max(a.top - (b.top + b.height), b.top - (a.top + a.height), 0);
   return Math.hypot(dx, dy);
+}
+
+function boundsOverlapDepth(a: Bounds, b: Bounds): number {
+  const width = Math.min(a.left + a.width, b.left + b.width) - Math.max(a.left, b.left);
+  const height = Math.min(a.top + a.height, b.top + b.height) - Math.max(a.top, b.top);
+  return width > 0 && height > 0 ? Math.min(width, height) : 0;
+}
+
+function connectorCenterlineEndpoints(
+  object: FabricObject
+): [{ x: number; y: number }, { x: number; y: number }] | undefined {
+  if (!isGroup(object)) return undefined;
+  const centerline = object.getObjects().find((candidate) => candidate instanceof Path);
+  if (!(centerline instanceof Path)) return undefined;
+  const commands = centerline.path.filter(
+    (command) => command.length >= 3 && String(command[0]).toUpperCase() !== "Z"
+  );
+  const first = commands[0];
+  const last = commands.at(-1);
+  if (!first || !last) return undefined;
+  const offset = centerline.pathOffset ?? new Point(0, 0);
+  const localPoint = (command: (typeof centerline.path)[number], end: boolean) => {
+    const index = end ? command.length - 2 : 1;
+    const x = Number(command[index]);
+    const y = Number(command[index + 1]);
+    if (!Number.isFinite(x) || !Number.isFinite(y)) return undefined;
+    return util.transformPoint(
+      new Point(x - offset.x, y - offset.y),
+      centerline.calcTransformMatrix()
+    );
+  };
+  const from = localPoint(first, false);
+  const to = localPoint(last, true);
+  return from && to ? [from, to] : undefined;
 }
 
 function segmentsIntersect(
@@ -227,6 +261,7 @@ export function analyzeComposition(
   let observedMinTextPointSize: number | null = null;
   let observedMinStageGap: number | null = null;
   let maxEndpointGap = 0;
+  let maxArrowheadPenetration = 0;
   let maxAnnotationLeaderLength = 0;
   let outwardLabelViolationCount = 0;
   let failedRelationGeometryCount = 0;
@@ -648,7 +683,33 @@ export function analyzeComposition(
           { expected: expectedStart + index, actual: stageIndex }
         );
     });
-    const flowRelations = relations.filter((relation) => relation.kind === "flow_to");
+    const contentByStageId = new Map<string, FabricObject | undefined>();
+    stages.forEach(({ object }) => {
+      const metadata = metadataOf(object);
+      const constraint = metadata?.layoutConstraint;
+      contentByStageId.set(
+        object.objectId!,
+        constraint
+          ? index.get(constraint.contentObjectId)
+          : allEntries.find(
+              ({ object: candidate, path }) =>
+                metadataOf(candidate)?.semanticRole === "stage-content" &&
+                metadataOf(candidate)?.stageId === metadata?.stageId &&
+                path.includes(object)
+            )?.object
+      );
+    });
+    const stageContentIds = new Set(
+      [...contentByStageId.values()]
+        .map((object) => object?.objectId)
+        .filter((id): id is string => Boolean(id))
+    );
+    const flowRelations = relations.filter(
+      (relation) =>
+        relation.kind === "flow_to" &&
+        stageContentIds.has(relation.sourceObjectId) &&
+        stageContentIds.has(relation.targetObjectId)
+    );
     if (stages.length > 0 && flowRelations.length !== stages.length)
       add(
         "connectors",
@@ -662,16 +723,8 @@ export function analyzeComposition(
         "connect_sequence"
       );
     stages.forEach(({ object }) => {
-      const metadata = metadataOf(object);
-      const constraint = metadata?.layoutConstraint;
-      const content = constraint
-        ? index.get(constraint.contentObjectId)
-        : allEntries.find(
-            ({ object: candidate, path }) =>
-              metadataOf(candidate)?.semanticRole === "stage-content" &&
-              metadataOf(candidate)?.stageId === metadata?.stageId &&
-              path.includes(object)
-          )?.object;
+      const content = contentByStageId.get(object.objectId!);
+      const constraint = metadataOf(object)?.layoutConstraint;
       const incoming = flowRelations.filter(
         (relation) => relation.targetObjectId === content?.objectId
       );
@@ -730,6 +783,7 @@ export function analyzeComposition(
   mainConnectors.forEach(({ object: connector }) => {
     const binding = connector.connector;
     if (!binding) return;
+    if (!isGroup(connector)) return;
     const source = index.get(binding.fromObjectId);
     const target = index.get(binding.toObjectId);
     if (!source || !target) return;
@@ -737,20 +791,48 @@ export function analyzeComposition(
     const targetGeometry = inspectSemanticGeometry(target, clearance);
     const sourcePort = perimeterPointForAnchor(sourceGeometry, binding.fromAnchor);
     const targetPort = perimeterPointForAnchor(targetGeometry, binding.toAnchor);
-    if (sourcePort && targetPort) {
-      const endpointGap = Math.max(
-        0,
-        Math.min(
-          Math.hypot(
-            sourcePort.x - sourceGeometry.center.x,
-            sourcePort.y - sourceGeometry.center.y
-          ),
-          Math.hypot(targetPort.x - targetGeometry.center.x, targetPort.y - targetGeometry.center.y)
-        ) -
-          Math.min(sourceGeometry.visualBounds.width, targetGeometry.visualBounds.width) / 2
+    const actualEndpoints = connectorCenterlineEndpoints(connector);
+    if (sourcePort && targetPort && actualEndpoints)
+      maxEndpointGap = Math.max(
+        maxEndpointGap,
+        Math.max(
+          Math.hypot(actualEndpoints[0].x - sourcePort.x, actualEndpoints[0].y - sourcePort.y),
+          Math.hypot(actualEndpoints[1].x - targetPort.x, actualEndpoints[1].y - targetPort.y)
+        )
       );
-      maxEndpointGap = Math.max(maxEndpointGap, endpointGap);
-    }
+    const arrowheadKinds = [binding.startArrowhead, binding.endArrowhead];
+    let childIndex = 1;
+    arrowheadKinds.forEach((kind, index) => {
+      if (kind === "none") return;
+      const arrowhead = connector.getObjects()[childIndex];
+      childIndex += 1;
+      const endpointGeometry = index === 0 ? sourceGeometry : targetGeometry;
+      if (!arrowhead) return;
+      const boundsPenetration = boundsOverlapDepth(
+        inspectSemanticGeometry(arrowhead).visualBounds,
+        endpointGeometry.visualBounds
+      );
+      const intentionalExtent =
+        Math.max(
+          inspectSemanticGeometry(arrowhead).visualBounds.width,
+          inspectSemanticGeometry(arrowhead).visualBounds.height
+        ) / 2;
+      const penetration = Math.max(0, boundsPenetration - intentionalExtent);
+      maxArrowheadPenetration = Math.max(maxArrowheadPenetration, penetration);
+      const tolerance = Math.max(1, connector.strokeWidth ?? 2);
+      if (penetration > tolerance)
+        add(
+          "connectors",
+          hardGeometryProfile ? "error" : "warning",
+          "arrowhead_penetration",
+          `Connector "${connector.objectId!}" penetrates its endpoint artwork with an arrowhead.`,
+          [connector.objectId!, index === 0 ? binding.fromObjectId : binding.toObjectId],
+          [],
+          { penetration, tolerance },
+          true,
+          "repair_connectors"
+        );
+    });
     if (profile === "cycle" && !connector.semanticConnector?.routeContext)
       add(
         "connectors",
@@ -864,7 +946,7 @@ export function analyzeComposition(
       minTextPointSize: observedMinTextPointSize,
       minStageGap: observedMinStageGap,
       connectorCrossingCount: findings.filter((item) => item.code === "connector_crossing").length,
-      maxArrowheadPenetration: 0,
+      maxArrowheadPenetration,
       maxEndpointGap,
       maxAnnotationLeaderLength,
       occupiedAreaRatio:
