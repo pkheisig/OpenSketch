@@ -96,6 +96,7 @@ registry.
 | `create_annotation`       | Place a target-bound annotation and optional leader              | Reversible and retryable                     |
 | `fit_text`                | Fit text with bounded real font-metric measurement               | Reversible and retryable                     |
 | `normalize_styles`        | Apply canonical semantic role styles without asset recoloring    | Reversible and retryable                     |
+| `render_scene_preview`    | Report bounded read-only preview capability and scene revision   | Read-only                                    |
 | `analyze_composition`     | Return bounded deterministic geometry/science findings           | Read-only                                    |
 | `validate_figure`         | Validate against a versioned publication profile                 | Read-only                                    |
 | `batch`                   | Run up to 32 typed mutations as one atomic history step          | Sensitive/destructive; explicit confirmation |

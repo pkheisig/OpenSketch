@@ -26,6 +26,12 @@ export interface InteractionPlan {
   relationKind: "contacts" | "binds" | "emits" | "crosses" | "flow_to";
   allowedOverlap: boolean;
   warnings: string[];
+  metrics: {
+    centerDistance: number;
+    interfacePoint: CompoundPoint;
+    separation: number;
+    overlapDepth: number;
+  };
 }
 
 export interface ParticleFieldPlan {
@@ -108,20 +114,53 @@ function center(bounds: Bounds): CompoundPoint {
   return { x: bounds.left + bounds.width / 2, y: bounds.top + bounds.height / 2 };
 }
 
-function boundaryIntersectionDistance(
+function directionalExtent(bounds: Bounds, direction: CompoundPoint): number {
+  const length = Math.hypot(direction.x, direction.y) || 1;
+  const x = Math.abs(direction.x / length);
+  const y = Math.abs(direction.y / length);
+  return (bounds.width * x + bounds.height * y) / 2;
+}
+
+function contactPositions(
   sourceBounds: Bounds,
   targetBounds: Bounds,
-  direction: CompoundPoint
-): number {
-  const horizontal =
-    Math.abs(direction.x) > Number.EPSILON
-      ? (sourceBounds.width + targetBounds.width) / (2 * Math.abs(direction.x))
-      : Number.POSITIVE_INFINITY;
-  const vertical =
-    Math.abs(direction.y) > Number.EPSILON
-      ? (sourceBounds.height + targetBounds.height) / (2 * Math.abs(direction.y))
-      : Number.POSITIVE_INFINITY;
-  return Math.min(horizontal, vertical);
+  overlapDepth = 0
+): {
+  source: CompoundPoint;
+  target: CompoundPoint;
+  interfacePoint: CompoundPoint;
+  separation: number;
+} {
+  const sourceCenter = center(sourceBounds);
+  const targetCenter = center(targetBounds);
+  const dx = targetCenter.x - sourceCenter.x;
+  const dy = targetCenter.y - sourceCenter.y;
+  const distance = Math.hypot(dx, dy);
+  const direction = distance > 0 ? { x: dx / distance, y: dy / distance } : { x: 1, y: 0 };
+  const sourceExtent = directionalExtent(sourceBounds, direction);
+  const targetExtent = directionalExtent(targetBounds, direction);
+  const separation = Math.max(0, sourceExtent + targetExtent - Math.max(0, overlapDepth));
+  const midpoint = {
+    x: (sourceCenter.x + targetCenter.x) / 2,
+    y: (sourceCenter.y + targetCenter.y) / 2
+  };
+  const sourcePoint = {
+    x: midpoint.x - (direction.x * separation) / 2,
+    y: midpoint.y - (direction.y * separation) / 2
+  };
+  const targetPoint = {
+    x: midpoint.x + (direction.x * separation) / 2,
+    y: midpoint.y + (direction.y * separation) / 2
+  };
+  return {
+    source: sourcePoint,
+    target: targetPoint,
+    interfacePoint: {
+      x: midpoint.x,
+      y: midpoint.y
+    },
+    separation
+  };
 }
 
 export function planInteraction(
@@ -138,49 +177,56 @@ export function planInteraction(
   const direction = distance > 0 ? { x: dx / distance, y: dy / distance } : { x: 1, y: 0 };
   const normal = { x: -direction.y, y: direction.x };
   const midpoint = { x: (source.x + target.x) / 2, y: (source.y + target.y) / 2 };
+  const metrics = (planned: {
+    source: CompoundPoint;
+    target: CompoundPoint;
+    interfacePoint?: CompoundPoint;
+    separation?: number;
+    overlapDepth?: number;
+  }) => ({
+    centerDistance: distance,
+    interfacePoint: planned.interfacePoint ?? midpoint,
+    separation:
+      planned.separation ??
+      Math.hypot(planned.target.x - planned.source.x, planned.target.y - planned.source.y),
+    overlapDepth: planned.overlapDepth ?? 0
+  });
   switch (mode) {
     case "contact": {
-      const horizontal = Math.abs(dx) >= Math.abs(dy);
-      const sign = (horizontal ? dx : dy) < 0 ? -1 : 1;
-      const separation = horizontal
-        ? (sourceBounds.width + targetBounds.width) / 2
-        : (sourceBounds.height + targetBounds.height) / 2;
+      const planned = contactPositions(sourceBounds, targetBounds);
       return {
-        source,
-        target: horizontal
-          ? { x: source.x + sign * separation, y: source.y }
-          : { x: source.x, y: source.y + sign * separation },
+        source: planned.source,
+        target: planned.target,
         relationKind: "contacts",
         allowedOverlap: true,
-        warnings: []
+        warnings: [],
+        metrics: metrics(planned)
       };
     }
     case "binding": {
-      const separation = boundaryIntersectionDistance(sourceBounds, targetBounds, direction);
+      const planned = contactPositions(sourceBounds, targetBounds);
       return {
-        source: {
-          x: midpoint.x - (direction.x * separation) / 2,
-          y: midpoint.y - (direction.y * separation) / 2
-        },
-        target: {
-          x: midpoint.x + (direction.x * separation) / 2,
-          y: midpoint.y + (direction.y * separation) / 2
-        },
+        source: planned.source,
+        target: planned.target,
         mediator: midpoint,
         relationKind: "binds",
         allowedOverlap: true,
-        warnings: []
+        warnings: [],
+        metrics: metrics(planned)
       };
     }
-    case "secretion":
+    case "secretion": {
+      const planned = contactPositions(sourceBounds, targetBounds);
       return {
         source: { x: source.x + dx * 0.2, y: source.y + dy * 0.2 },
         target: { x: target.x + dx * 0.05, y: target.y + dy * 0.05 },
         mediator: { x: midpoint.x + normal.x * offset, y: midpoint.y + normal.y * offset },
         relationKind: "emits",
         allowedOverlap: false,
-        warnings: []
+        warnings: [],
+        metrics: metrics({ ...planned, interfacePoint: planned.source })
       };
+    }
     case "engulfment": {
       const inset = Math.max(
         0,
@@ -206,34 +252,73 @@ export function planInteraction(
         mediator: target,
         relationKind: "contacts",
         allowedOverlap: true,
-        warnings: ["Engulfment uses controlled target overlap; inspect the resulting hull."]
+        warnings: ["Engulfment uses controlled target overlap; inspect the resulting hull."],
+        metrics: metrics({
+          source,
+          target: {
+            x: source.x + clamp(requestedOffset.x, -maxOffset.x, maxOffset.x),
+            y: source.y + clamp(requestedOffset.y, -maxOffset.y, maxOffset.y)
+          },
+          interfacePoint: target,
+          overlapDepth: Math.min(sourceBounds.width, sourceBounds.height) / 2
+        })
       };
     }
-    case "migration":
-      return { source, target, relationKind: "flow_to", allowedOverlap: false, warnings: [] };
-    case "cross-boundary": {
-      const overlap = Math.max(1, offset);
-      const separation = Math.max(
-        0,
-        boundaryIntersectionDistance(sourceBounds, targetBounds, direction) - overlap
-      );
-      return {
+    case "migration": {
+      const planned = contactPositions(sourceBounds, targetBounds);
+      const spacing = Math.max(8, offset);
+      const migrated = {
         source: {
-          x: midpoint.x - (direction.x * separation) / 2,
-          y: midpoint.y - (direction.y * separation) / 2
+          x: planned.source.x - (direction.x * spacing) / 2,
+          y: planned.source.y - (direction.y * spacing) / 2
         },
         target: {
-          x: midpoint.x + (direction.x * separation) / 2,
-          y: midpoint.y + (direction.y * separation) / 2
-        },
+          x: planned.target.x + (direction.x * spacing) / 2,
+          y: planned.target.y + (direction.y * spacing) / 2
+        }
+      };
+      return {
+        ...migrated,
+        relationKind: "flow_to",
+        allowedOverlap: false,
+        warnings: [],
+        metrics: metrics({ ...migrated, separation: planned.separation + spacing })
+      };
+    }
+    case "cross-boundary": {
+      const overlap = Math.max(1, offset);
+      const planned = contactPositions(sourceBounds, targetBounds, overlap);
+      return {
+        source: planned.source,
+        target: planned.target,
         mediator: midpoint,
         relationKind: "crosses",
         allowedOverlap: true,
-        warnings: []
+        warnings: [],
+        metrics: metrics({ ...planned, overlapDepth: overlap })
       };
     }
-    case "progression":
-      return { source, target, relationKind: "flow_to", allowedOverlap: false, warnings: [] };
+    case "progression": {
+      const planned = contactPositions(sourceBounds, targetBounds);
+      const spacing = Math.max(8, offset);
+      const progressed = {
+        source: {
+          x: planned.source.x - (direction.x * spacing) / 2,
+          y: planned.source.y - (direction.y * spacing) / 2
+        },
+        target: {
+          x: planned.target.x + (direction.x * spacing) / 2,
+          y: planned.target.y + (direction.y * spacing) / 2
+        }
+      };
+      return {
+        ...progressed,
+        relationKind: "flow_to",
+        allowedOverlap: false,
+        warnings: [],
+        metrics: metrics({ ...progressed, separation: planned.separation + spacing })
+      };
+    }
   }
 }
 
@@ -345,13 +430,28 @@ export function annotationCandidates(
   gap = 24
 ): AnnotationCandidate[] {
   const target = center(targetBounds);
-  const candidates = [
-    { x: target.x, y: targetBounds.top - gap - annotationBounds.height / 2 },
-    { x: targetBounds.left - gap - annotationBounds.width / 2, y: target.y },
-    { x: targetBounds.left + targetBounds.width + gap + annotationBounds.width / 2, y: target.y },
-    { x: target.x, y: targetBounds.top + targetBounds.height + gap + annotationBounds.height / 2 }
-  ];
-  return candidates.map((position, index) => ({ position, leader: target, score: index }));
+  const angles = [-Math.PI / 2, Math.PI, 0, Math.PI / 2];
+  for (let index = 0; index < 12; index += 1) angles.push(-Math.PI + (index * Math.PI * 2) / 12);
+  const candidates = angles.map((angle, index) => {
+    const direction = { x: Math.cos(angle), y: Math.sin(angle) };
+    const targetExtent =
+      (Math.abs(direction.x) * targetBounds.width) / 2 +
+      (Math.abs(direction.y) * targetBounds.height) / 2;
+    const annotationExtent =
+      (Math.abs(direction.x) * annotationBounds.width) / 2 +
+      (Math.abs(direction.y) * annotationBounds.height) / 2;
+    const distance = targetExtent + annotationExtent + gap;
+    const leader = {
+      x: target.x + direction.x * targetExtent,
+      y: target.y + direction.y * targetExtent
+    };
+    return {
+      position: { x: target.x + direction.x * distance, y: target.y + direction.y * distance },
+      leader,
+      score: index + Math.round(distance * 0.001 * 1_000) / 1_000
+    };
+  });
+  return candidates;
 }
 
 export function stylePreset(role: string): StylePreset | undefined {

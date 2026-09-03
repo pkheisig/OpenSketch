@@ -54,6 +54,16 @@ export const SEMANTIC_PORT_KINDS = [
 ] as const;
 export type SemanticPortKind = (typeof SEMANTIC_PORT_KINDS)[number];
 
+export interface SemanticLayoutConstraint {
+  version: typeof SEMANTIC_COMPOSITION_VERSION;
+  kind: "label-placement";
+  placement: "outward" | "top" | "right" | "bottom" | "left";
+  contentObjectId: string;
+  labelObjectId: string;
+  referenceCenter: Point;
+  gap: number;
+}
+
 const MAX_TAGS = 16;
 const MAX_RELATION_IDS = 32;
 const MAX_RELATIONS = 256;
@@ -71,6 +81,7 @@ export interface SemanticMetadata {
   pinned?: boolean;
   allowedOverlapObjectIds?: string[];
   semanticName?: string;
+  layoutConstraint?: SemanticLayoutConstraint;
 }
 
 export interface SemanticRelation {
@@ -177,7 +188,8 @@ export function normalizeSemanticMetadata(input: unknown): SemanticMetadata {
     "preferredPortHint",
     "pinned",
     "allowedOverlapObjectIds",
-    "semanticName"
+    "semanticName",
+    "layoutConstraint"
   ]);
   const unknown = Object.keys(record).find((key) => !allowed.has(key));
   if (unknown) throw new Error(`semanticMetadata.${unknown} is not supported.`);
@@ -235,6 +247,63 @@ export function normalizeSemanticMetadata(input: unknown): SemanticMetadata {
     const value = boundedString(record.semanticName, MAX_NAME);
     if (!value) throw new Error("semanticMetadata.semanticName is invalid.");
     metadata.semanticName = value;
+  }
+  if (record.layoutConstraint !== undefined) {
+    if (
+      !record.layoutConstraint ||
+      typeof record.layoutConstraint !== "object" ||
+      Array.isArray(record.layoutConstraint)
+    )
+      throw new Error("semanticMetadata.layoutConstraint is invalid.");
+    const constraint = record.layoutConstraint as Record<string, unknown>;
+    const allowedConstraintKeys = new Set([
+      "version",
+      "kind",
+      "placement",
+      "contentObjectId",
+      "labelObjectId",
+      "referenceCenter",
+      "gap"
+    ]);
+    const unknownConstraint = Object.keys(constraint).find(
+      (key) => !allowedConstraintKeys.has(key)
+    );
+    if (unknownConstraint)
+      throw new Error(`semanticMetadata.layoutConstraint.${unknownConstraint} is not supported.`);
+    if (
+      constraint.version !== SEMANTIC_COMPOSITION_VERSION ||
+      constraint.kind !== "label-placement" ||
+      !["outward", "top", "right", "bottom", "left"].includes(constraint.placement as string)
+    )
+      throw new Error("semanticMetadata.layoutConstraint is invalid.");
+    const contentObjectId = boundedString(constraint.contentObjectId, 200);
+    const labelObjectId = boundedString(constraint.labelObjectId, 200);
+    const referenceCenter = constraint.referenceCenter;
+    if (
+      !contentObjectId ||
+      !labelObjectId ||
+      !referenceCenter ||
+      typeof referenceCenter !== "object" ||
+      Array.isArray(referenceCenter) ||
+      !finite((referenceCenter as Record<string, unknown>).x) ||
+      !finite((referenceCenter as Record<string, unknown>).y) ||
+      !finite(constraint.gap) ||
+      (constraint.gap as number) < 0 ||
+      (constraint.gap as number) > 10_000
+    )
+      throw new Error("semanticMetadata.layoutConstraint is invalid.");
+    metadata.layoutConstraint = {
+      version: SEMANTIC_COMPOSITION_VERSION,
+      kind: "label-placement",
+      placement: constraint.placement as SemanticLayoutConstraint["placement"],
+      contentObjectId,
+      labelObjectId,
+      referenceCenter: {
+        x: (referenceCenter as Record<string, number>).x,
+        y: (referenceCenter as Record<string, number>).y
+      },
+      gap: constraint.gap as number
+    };
   }
   return metadata;
 }
@@ -862,7 +931,7 @@ export function inspectSemanticGeometry(object: FabricObject, clearance = 12): S
               return true;
             try {
               return document.fonts.check(
-                `${textObject.fontSize ?? 16}px ${String((textObject as { fontFamily?: string }).fontFamily ?? "sans-serif")}`
+                `${textObject.fontSize ?? 16}px "${String((textObject as { fontFamily?: string }).fontFamily ?? "sans-serif")}"`
               );
             } catch {
               return false;
@@ -904,9 +973,7 @@ function hash(value: string, seed = 2166136261): string {
 }
 
 function hash128(value: string): string {
-  return [2166136261, 2246822519, 3266489917, 668265263]
-    .map((seed) => hash(value, seed))
-    .join("");
+  return [2166136261, 2246822519, 3266489917, 668265263].map((seed) => hash(value, seed)).join("");
 }
 
 export function sceneRevision(canvas: Canvas): string {

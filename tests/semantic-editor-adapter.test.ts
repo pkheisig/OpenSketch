@@ -16,6 +16,15 @@ function makeCanvas(objects: FabricObject[] = [], activeObjects: FabricObject[] 
       objects.push(...added);
       return added.at(-1);
     },
+    remove: (...removed: FabricObject[]) => {
+      removed.forEach((object) => {
+        const index = objects.indexOf(object);
+        if (index >= 0) objects.splice(index, 1);
+      });
+    },
+    insertAt: (index: number, ...added: FabricObject[]) => {
+      objects.splice(index, 0, ...added);
+    },
     requestRenderAll: vi.fn(),
     getActiveObjects: () => activeObjects,
     discardActiveObject: vi.fn(),
@@ -158,6 +167,53 @@ describe("semantic editor adapter", () => {
       targetObjectId: "target",
       allowedOverlap: true
     });
+  });
+
+  it("keeps outward labels attached to content after a stage move", async () => {
+    const content = new Rect({ left: 120, top: 300, width: 80, height: 60 });
+    content.objectId = "content";
+    const canvas = makeCanvas([content]);
+    const adapter = makeAdapter(canvas);
+    const result = await adapter.execute("compose_labeled_group", {
+      objectIds: ["content"],
+      label: "Antigen release",
+      stageId: "stage-1",
+      placement: "outward",
+      stageIndex: 1
+    });
+    const stageId = (result.data as { objectId: string }).objectId;
+    const labelId = (result.data as { labelObjectId: string }).labelObjectId;
+    const contentId = (result.data as { contentObjectId: string }).contentObjectId;
+    await adapter.execute("move_objects", { objectIds: [stageId], dx: 500, dy: 40 });
+    const contentBounds = adapter.inspectObject(contentId)?.bounds;
+    const labelBounds = adapter.inspectObject(labelId)?.bounds;
+    if (!contentBounds || !labelBounds) throw new Error("Missing composed stage objects.");
+    const contentCenter = {
+      x: contentBounds.left + contentBounds.width / 2,
+      y: contentBounds.top + contentBounds.height / 2
+    };
+    const labelCenter = {
+      x: labelBounds.left + labelBounds.width / 2,
+      y: labelBounds.top + labelBounds.height / 2
+    };
+    expect(labelCenter.x).toBeGreaterThan(contentCenter.x);
+  });
+
+  it("derives relation-driven particle bounds when bounds are omitted", async () => {
+    const source = new Rect({ left: 100, top: 100, width: 40, height: 40 });
+    const target = new Rect({ left: 300, top: 100, width: 40, height: 40 });
+    source.objectId = "source";
+    target.objectId = "target";
+    const canvas = makeCanvas([source, target]);
+    const adapter = makeAdapter(canvas);
+    const result = await adapter.execute("create_particle_field", {
+      count: 8,
+      distribution: "linear",
+      seed: "derived-field",
+      sourceObjectId: "source",
+      targetObjectId: "target"
+    });
+    expect((result.data as { points: Array<{ x: number; y: number }> }).points).toHaveLength(8);
   });
 
   it("does not commit an idempotent style normalization", async () => {

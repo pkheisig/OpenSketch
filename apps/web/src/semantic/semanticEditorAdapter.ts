@@ -66,10 +66,12 @@ import {
   normalizeSemanticMetadata,
   normalizeRelation,
   planSemanticLayout,
+  rayToPerimeter,
   relationsForCanvas,
   sceneRevision,
   setMetadata,
   validateRelations,
+  type SemanticLayoutConstraint,
   type SemanticLayoutPlan,
   type SemanticPort
 } from "./composition";
@@ -353,6 +355,129 @@ function moveAnchorTo(
   object.set({ left: (object.left ?? 0) + delta.x, top: (object.top ?? 0) + delta.y });
   object.setCoords();
   refreshParentGroups(object);
+}
+
+function layoutDirection(
+  placement: SemanticLayoutConstraint["placement"],
+  contentCenter: SemanticPointInput,
+  referenceCenter: SemanticPointInput
+): SemanticPointInput {
+  if (placement === "top") return { x: 0, y: -1 };
+  if (placement === "right") return { x: 1, y: 0 };
+  if (placement === "bottom") return { x: 0, y: 1 };
+  if (placement === "left") return { x: -1, y: 0 };
+  const dx = contentCenter.x - referenceCenter.x;
+  const dy = contentCenter.y - referenceCenter.y;
+  const length = Math.hypot(dx, dy);
+  return length > 0 ? { x: dx / length, y: dy / length } : { x: 0, y: -1 };
+}
+
+function extentAlong(bounds: SemanticBounds, direction: SemanticPointInput): number {
+  return (Math.abs(direction.x) * bounds.width) / 2 + (Math.abs(direction.y) * bounds.height) / 2;
+}
+
+function boundsAtCenter(center: SemanticPointInput, bounds: SemanticBounds): SemanticBounds {
+  return {
+    left: center.x - bounds.width / 2,
+    top: center.y - bounds.height / 2,
+    width: bounds.width,
+    height: bounds.height
+  };
+}
+
+function boundsOverlap(left: SemanticBounds, right: SemanticBounds): boolean {
+  return (
+    left.left < right.left + right.width &&
+    left.left + left.width > right.left &&
+    left.top < right.top + right.height &&
+    left.top + left.height > right.top
+  );
+}
+
+function reflowLabeledStage(
+  canvas: Canvas,
+  stage: FabricObject,
+  constraint: SemanticLayoutConstraint,
+  settings: CanvasSettings
+): string[] {
+  const index = sceneObjectIndex(canvas);
+  const content = index.get(constraint.contentObjectId);
+  const label = index.get(constraint.labelObjectId);
+  if (!content || !label || !isGroup(label)) return [];
+  const contentGeometry = inspectSemanticGeometry(content);
+  const labelGeometry = inspectSemanticGeometry(label);
+  if (!contentGeometry.evaluable || !labelGeometry.evaluable) return [];
+  const base = layoutDirection(
+    constraint.placement,
+    contentGeometry.center,
+    constraint.referenceCenter
+  );
+  const baseAngle = Math.atan2(base.y, base.x);
+  const angles =
+    constraint.placement === "outward"
+      ? [0, -15, 15, -30, 30, -45, 45].map((degrees) => baseAngle + (degrees * Math.PI) / 180)
+      : [baseAngle];
+  const obstacles = sceneObjectEntries(canvas)
+    .filter(({ object, path }) => object !== stage && !path.includes(stage) && !object.connector)
+    .filter(({ object }) => object.objectId && inspectSemanticGeometry(object).evaluable)
+    .map(({ object }) => inspectSemanticGeometry(object).visualBounds);
+  const candidates = angles.map((angle, index) => {
+    const direction = { x: Math.cos(angle), y: Math.sin(angle) };
+    const contentPoint = contentGeometry.hull.length
+      ? (rayToPerimeter(contentGeometry.hull, contentGeometry.center, direction) ??
+        contentGeometry.center)
+      : contentGeometry.center;
+    const distance = extentAlong(labelGeometry.visualBounds, direction) + constraint.gap;
+    const position = {
+      x: contentPoint.x + direction.x * distance,
+      y: contentPoint.y + direction.y * distance
+    };
+    const candidateBounds = boundsAtCenter(position, labelGeometry.visualBounds);
+    const outside =
+      candidateBounds.left < 0 ||
+      candidateBounds.top < 0 ||
+      candidateBounds.left + candidateBounds.width > settings.width ||
+      candidateBounds.top + candidateBounds.height > settings.height;
+    const collisions = obstacles.filter((obstacle) =>
+      boundsOverlap(candidateBounds, obstacle)
+    ).length;
+    return { position, score: index + collisions * 10_000 + (outside ? 100_000 : 0) };
+  });
+  const selected = candidates.sort((left, right) => left.score - right.score)[0];
+  if (!selected) return [];
+  const contentTransform = content.calcTransformMatrix();
+  moveAnchorTo(label, "center", selected.position);
+  const contentParent = content.group;
+  if (isGroup(contentParent)) {
+    util.applyTransformToObject(
+      content,
+      util.multiplyTransformMatrices(
+        util.invertTransform(contentParent.calcTransformMatrix()),
+        contentTransform
+      )
+    );
+    content.setCoords();
+    contentParent.dirty = true;
+    contentParent.setCoords();
+  }
+  label.setCoords();
+  return [label.objectId!, content.objectId!];
+}
+
+export function refreshSemanticLayoutConstraints(
+  canvas: Canvas,
+  settings: CanvasSettings
+): string[] {
+  const changed = new Set<string>();
+  sceneObjectEntries(canvas).forEach(({ object }) => {
+    const metadata = metadataOf(object);
+    if (metadata?.semanticRole !== "stage" || !metadata.layoutConstraint) return;
+    reflowLabeledStage(canvas, object, metadata.layoutConstraint, settings).forEach((id) =>
+      changed.add(id)
+    );
+  });
+  if (changed.size > 0) canvas.requestRenderAll();
+  return [...changed];
 }
 
 function semanticAnchor(value: unknown, field: string): ConnectorBinding["fromAnchor"] {
@@ -1069,8 +1194,7 @@ export function createSemanticEditorAdapter(
           ? existingStage
               .getObjects()
               .find(
-                (object) =>
-                  isGroup(object) && metadataOf(object)?.semanticRole === "stage-content"
+                (object) => isGroup(object) && metadataOf(object)?.semanticRole === "stage-content"
               )
           : undefined;
         if (existingStage && (!existingContentGroup || !existingLabelGroup || !labelText))
@@ -1091,11 +1215,6 @@ export function createSemanticEditorAdapter(
             throw new SemanticAdapterError(
               "INVALID_SELECTION",
               "Existing labeled-group updates must target descendants of that stage."
-            );
-          if (input.placement !== undefined)
-            throw new SemanticAdapterError(
-              "UNSUPPORTED_UPDATE",
-              "Changing placement on an existing labeled group is not supported."
             );
           const updates: [string, unknown][] = [
             ["stage-label", input.label],
@@ -1177,6 +1296,29 @@ export function createSemanticEditorAdapter(
               ? undefined
               : locationFromInput(canvas, dependencies.getCanvasSettings(), input);
           if (requestedLocation) moveAnchorTo(existingStage, "center", requestedLocation);
+          const existingMetadata = metadataOf(existingStage);
+          if (existingMetadata && contentGroup?.objectId && existingLabelGroup.objectId) {
+            const existingConstraint = existingMetadata.layoutConstraint;
+            existingStage.semanticMetadata = {
+              ...existingMetadata,
+              layoutConstraint: {
+                version: 1,
+                kind: "label-placement",
+                placement:
+                  (input.placement as LabelPlacement | undefined) ??
+                  existingConstraint?.placement ??
+                  "outward",
+                contentObjectId: contentGroup.objectId,
+                labelObjectId: existingLabelGroup.objectId,
+                referenceCenter: existingConstraint?.referenceCenter ?? {
+                  x: dependencies.getCanvasSettings().width / 2,
+                  y: dependencies.getCanvasSettings().height / 2
+                },
+                gap: existingConstraint?.gap ?? 24
+              }
+            };
+          }
+          refreshSemanticLayoutConstraints(canvas, dependencies.getCanvasSettings());
           existingStage.setCoords();
           dependencies.refreshConnectors();
           canvas.requestRenderAll();
@@ -1185,10 +1327,7 @@ export function createSemanticEditorAdapter(
           visitSceneObjects(existingStage, (object) => {
             if (object.objectId) descendantIds.push(object.objectId);
           });
-          const updatedObjectIds = [
-            ...descendantIds,
-            ...requestedIds
-          ]
+          const updatedObjectIds = [...descendantIds, ...requestedIds]
             .filter((id, index, ids) => ids.indexOf(id) === index)
             .slice(0, 200);
           return {
@@ -1260,11 +1399,11 @@ export function createSemanticEditorAdapter(
       const titleText = boundedText(input.title, 240);
       const title = titleText
         ? makeLabel(titleText, Math.max(18, defaults.text.fontSize))
-          : undefined;
+        : undefined;
       const subtitleText = boundedText(input.subtitle, 400);
       const subtitle = subtitleText
         ? makeLabel(subtitleText, Math.max(14, defaults.text.fontSize - 4))
-          : undefined;
+        : undefined;
       const labelObject = makeLabel(label, Math.max(16, defaults.text.fontSize));
       if (title) title.set({ top: labelY - 28 });
       if (subtitle) subtitle.set({ top: labelY + 28 });
@@ -1369,7 +1508,16 @@ export function createSemanticEditorAdapter(
         version: 1,
         semanticRole: "stage",
         stageId,
-        ...(input.stageIndex === undefined ? {} : { stageIndex: input.stageIndex as number })
+        ...(input.stageIndex === undefined ? {} : { stageIndex: input.stageIndex as number }),
+        layoutConstraint: {
+          version: 1,
+          kind: "label-placement",
+          placement: requestedPlacement,
+          contentObjectId: contentGroup.objectId,
+          labelObjectId: labelGroup.objectId,
+          referenceCenter: { x: settings.width / 2, y: settings.height / 2 },
+          gap: 24
+        }
       };
       dependencies.configureCanvasAssets([stageGroup]);
       const requestedLocation =
@@ -1377,8 +1525,12 @@ export function createSemanticEditorAdapter(
           ? undefined
           : locationFromInput(canvas, settings, input);
       if (requestedLocation) moveAnchorTo(stageGroup, "center", requestedLocation);
-      canvas.insertAt(Math.max(0, Math.min(insertionIndex, canvas.getObjects().length)), stageGroup);
+      canvas.insertAt(
+        Math.max(0, Math.min(insertionIndex, canvas.getObjects().length)),
+        stageGroup
+      );
       stageGroup.setCoords();
+      refreshSemanticLayoutConstraints(canvas, settings);
       dependencies.refreshConnectors();
       canvas.requestRenderAll();
       commitSemantic("Semantic compose labeled group");
@@ -1490,7 +1642,8 @@ export function createSemanticEditorAdapter(
           source: plan.source,
           target: plan.target,
           ...(mediatorObject ? { mediator: mediatorPosition } : {}),
-          warnings: plan.warnings
+          warnings: plan.warnings,
+          metrics: plan.metrics
         },
         changedObjectIds: [
           sourceObjectId,
@@ -1501,15 +1654,6 @@ export function createSemanticEditorAdapter(
     }
     if (command === "create_particle_field") {
       const seed = input.seed as string;
-      const rawBounds = input.bounds as Record<string, unknown>;
-      const fieldBounds = {
-        left: finiteNumber(rawBounds.left, "bounds.left"),
-        top: finiteNumber(rawBounds.top, "bounds.top"),
-        width: finiteNumber(rawBounds.width, "bounds.width"),
-        height: finiteNumber(rawBounds.height, "bounds.height")
-      };
-      if (fieldBounds.width <= 0 || fieldBounds.height <= 0)
-        throw new SemanticAdapterError("INVALID_INPUT", "Particle bounds must be positive.");
       const particleCount = finiteNumber(input.count, "count");
       const distribution = input.distribution as ParticleDistribution;
       const particleRole = typeof input.role === "string" ? input.role : "particle-field";
@@ -1534,6 +1678,36 @@ export function createSemanticEditorAdapter(
       const targetObject = targetObjectId ? resolveObjects(canvas, [targetObjectId])[0] : undefined;
       const source = sourceObject ? inspectSemanticGeometry(sourceObject).center : undefined;
       const target = targetObject ? inspectSemanticGeometry(targetObject).center : undefined;
+      const fieldBounds = input.bounds
+        ? (() => {
+            const rawBounds = input.bounds as Record<string, unknown>;
+            return {
+              left: finiteNumber(rawBounds.left, "bounds.left"),
+              top: finiteNumber(rawBounds.top, "bounds.top"),
+              width: finiteNumber(rawBounds.width, "bounds.width"),
+              height: finiteNumber(rawBounds.height, "bounds.height")
+            };
+          })()
+        : (() => {
+            const references = [sourceObject, targetObject].filter(
+              (object): object is FabricObject => Boolean(object)
+            );
+            if (references.length === 0)
+              throw new SemanticAdapterError(
+                "INVALID_INPUT",
+                "bounds or at least one semantic sourceObjectId/targetObjectId is required."
+              );
+            const base = unionBounds(references);
+            const margin = Math.max(48, Math.max(base.width, base.height) * 0.35);
+            return {
+              left: base.left - margin,
+              top: base.top - margin,
+              width: base.width + margin * 2,
+              height: base.height + margin * 2
+            };
+          })();
+      if (fieldBounds.width <= 0 || fieldBounds.height <= 0)
+        throw new SemanticAdapterError("INVALID_INPUT", "Particle bounds must be positive.");
       const defaults = dependencies.creationDefaults();
       const particleStrokeWidth = Math.max(1, defaults.shape.strokeWidth * 0.5);
       const particleInset = 4 + particleStrokeWidth / 2;
@@ -1618,8 +1792,8 @@ export function createSemanticEditorAdapter(
           metadataOf(object)?.semanticRole === "particle-field" &&
           metadataOf(object)?.semanticName === `particle-field:${seed}` &&
           JSON.stringify(object.particleFieldSpec) === JSON.stringify(particleFieldSpec)
-        );
-        const existingField = existingFieldEntry?.object;
+      );
+      const existingField = existingFieldEntry?.object;
       if (isGroup(existingField)) {
         const particles = existingField.getObjects();
         const matchesPlan =
@@ -1857,13 +2031,22 @@ export function createSemanticEditorAdapter(
     if (command === "create_annotation") {
       const targetObjectId = input.targetObjectId as string;
       const [target] = resolveObjects(canvas, [targetObjectId]);
+      const targetRelationId = typeof input.relationId === "string" ? input.relationId : undefined;
+      if (
+        targetRelationId &&
+        !relationsForCanvas(canvas).some((relation) => relation.id === targetRelationId)
+      )
+        throw new SemanticAdapterError(
+          "STALE_RELATION_ID",
+          `Relation "${targetRelationId}" does not exist.`
+        );
       const defaults = dependencies.creationDefaults();
       const annotationText = boundedText(input.text, 800);
       if (!annotationText)
         throw new SemanticAdapterError("INVALID_INPUT", "text must not be empty.");
       const explicitFontSize = typeof input.fontSize === "number" ? input.fontSize : undefined;
       const annotation = new Textbox(annotationText, {
-        width: 260,
+        width: typeof input.maxWidth === "number" ? finiteNumber(input.maxWidth, "maxWidth") : 260,
         fontFamily: defaults.text.fontFamily,
         fontSize: explicitFontSize ?? defaults.text.fontSize,
         fill: defaults.text.color,
@@ -1874,6 +2057,12 @@ export function createSemanticEditorAdapter(
       dependencies.prepareElementStyle(annotation);
       if (explicitFontSize !== undefined) annotation.set("fontSize", explicitFontSize);
       refreshTextMetrics([annotation]);
+      const maxLines = typeof input.maxLines === "number" ? Math.floor(input.maxLines) : 32;
+      if (annotation.textLines.length > maxLines)
+        throw new SemanticAdapterError(
+          "NO_FEASIBLE_PLACEMENT",
+          `Annotation text requires ${annotation.textLines.length} lines, exceeding maxLines ${maxLines}.`
+        );
       const candidates = annotationCandidates(
         inspectSemanticGeometry(target).visualBounds,
         boundsOf(annotation),
@@ -1897,7 +2086,7 @@ export function createSemanticEditorAdapter(
         .map(({ object }) => object);
       const settings = dependencies.getCanvasSettings();
       const orderedCandidates = [...candidates.slice(preferred), ...candidates.slice(0, preferred)];
-      const position = orderedCandidates.find((candidate) => {
+      const scoredCandidates = orderedCandidates.map((candidate, index) => {
         const candidateBounds = {
           left: candidate.position.x - boundsOf(annotation).width / 2,
           top: candidate.position.y - boundsOf(annotation).height / 2,
@@ -1909,17 +2098,18 @@ export function createSemanticEditorAdapter(
           candidateBounds.top >= 0 &&
           candidateBounds.left + candidateBounds.width <= settings.width &&
           candidateBounds.top + candidateBounds.height <= settings.height;
-        return (
-          insideCanvas &&
-          !sceneObjects.some(
-            (object) =>
-              candidateBounds.left < boundsOf(object).left + boundsOf(object).width &&
-              candidateBounds.left + candidateBounds.width > boundsOf(object).left &&
-              candidateBounds.top < boundsOf(object).top + boundsOf(object).height &&
-              candidateBounds.top + candidateBounds.height > boundsOf(object).top
-          )
-        );
+        const collisions = sceneObjects.filter(
+          (object) =>
+            candidateBounds.left < boundsOf(object).left + boundsOf(object).width &&
+            candidateBounds.left + candidateBounds.width > boundsOf(object).left &&
+            candidateBounds.top < boundsOf(object).top + boundsOf(object).height &&
+            candidateBounds.top + candidateBounds.height > boundsOf(object).top
+        ).length;
+        return { candidate, insideCanvas, collisions, score: index + candidate.score * 0.001 };
       });
+      const position = scoredCandidates
+        .filter(({ insideCanvas, collisions }) => insideCanvas && collisions === 0)
+        .sort((left, right) => left.score - right.score)[0]?.candidate;
       if (!position)
         throw new SemanticAdapterError(
           "NO_FEASIBLE_PLACEMENT",
@@ -1963,7 +2153,8 @@ export function createSemanticEditorAdapter(
       annotation.semanticMetadata = {
         version: 1,
         semanticRole: "annotation",
-        semanticType: "annotation"
+        semanticType: "annotation",
+        ...(targetRelationId ? { relationIds: [targetRelationId] } : {})
       };
       let leaderObjectId: string | undefined;
       try {
@@ -2039,10 +2230,7 @@ export function createSemanticEditorAdapter(
       const widthCandidates =
         object instanceof Textbox
           ? (() => {
-              const worldScaleX = Math.max(
-                Math.abs(object.getObjectScaling().x),
-                0.000001
-              );
+              const worldScaleX = Math.max(Math.abs(object.getObjectScaling().x), 0.000001);
               const maxLocalWidth = maxWidth / worldScaleX;
               const candidates = new Set([Math.min(originalWidth, maxLocalWidth), maxLocalWidth]);
               const minimumWidth = Math.min(1, maxLocalWidth);
@@ -2196,7 +2384,7 @@ export function createSemanticEditorAdapter(
           applyPreset(object, inheritedPreset);
           const role = metadataOf(object)?.semanticRole;
           const nextPreset =
-            role === "stage-content" ? undefined : stylePreset(role ?? "") ?? inheritedPreset;
+            role === "stage-content" ? undefined : (stylePreset(role ?? "") ?? inheritedPreset);
           if (isGroup(object) && !protectedAsset)
             object.getObjects().forEach((child) => walk(child, nextPreset));
         };
@@ -2235,6 +2423,25 @@ export function createSemanticEditorAdapter(
           totalSkipped: skipped.length
         },
         changedObjectIds
+      };
+    }
+    if (command === "render_scene_preview") {
+      const settings = dependencies.getCanvasSettings();
+      const maxWidth = Math.min(2048, Math.max(64, Math.floor(safeNumber(input.maxWidth) ?? 1024)));
+      const maxHeight = Math.min(
+        2048,
+        Math.max(64, Math.floor(safeNumber(input.maxHeight) ?? 1024))
+      );
+      return {
+        data: {
+          supported: false,
+          reason:
+            "This host does not expose an image-result transport; inspect the live canvas screenshot instead.",
+          sceneRevision: sceneRevision(canvas),
+          width: Math.min(maxWidth, Math.max(1, Math.round(settings.width))),
+          height: Math.min(maxHeight, Math.max(1, Math.round(settings.height)))
+        },
+        changedObjectIds: []
       };
     }
     if (command === "analyze_composition") {
@@ -2407,12 +2614,13 @@ export function createSemanticEditorAdapter(
           refreshParentGroups(object);
           return objectId;
         });
+        const labelIds = refreshSemanticLayoutConstraints(canvas, dependencies.getCanvasSettings());
         dependencies.refreshConnectors();
         canvas.requestRenderAll();
         commitSemantic("Semantic apply layout plan");
         return {
           data: { planId, sceneRevision: sceneRevision(canvas), objectIds: changed },
-          changedObjectIds: changed
+          changedObjectIds: [...new Set([...changed, ...labelIds])]
         };
       } catch (error) {
         await dependencies.restore(snapshot);
@@ -2752,10 +2960,17 @@ export function createSemanticEditorAdapter(
         object.setCoords();
         refreshParentGroups(object);
       });
+      const layoutChanged = refreshSemanticLayoutConstraints(
+        canvas,
+        dependencies.getCanvasSettings()
+      );
       dependencies.refreshConnectors();
       canvas.requestRenderAll();
       commitSemantic("Semantic move");
-      return { data: { objectIds: ids }, changedObjectIds: ids };
+      return {
+        data: { objectIds: ids },
+        changedObjectIds: [...new Set([...ids, ...layoutChanged])]
+      };
     }
     if (command === "snap_object") {
       const objectId = input.objectId as string;

@@ -1199,7 +1199,8 @@ function validateSemanticMetadata(value: unknown, path: string): void {
       "preferredPortHint",
       "pinned",
       "allowedOverlapObjectIds",
-      "semanticName"
+      "semanticName",
+      "layoutConstraint"
     ])
   );
   if (value.version !== 1) fail(`${path}.version`, "is unsupported");
@@ -1232,6 +1233,58 @@ function validateSemanticMetadata(value: unknown, path: string): void {
   )
     fail(`${path}.preferredPortHint`, "is unsupported");
   if (value.pinned !== undefined) assertBoolean(value.pinned, `${path}.pinned`);
+  if (value.layoutConstraint !== undefined) {
+    if (!isRecord(value.layoutConstraint)) fail(`${path}.layoutConstraint`, "is invalid");
+    assertKnownKeys(
+      value.layoutConstraint,
+      `${path}.layoutConstraint`,
+      new Set([
+        "version",
+        "kind",
+        "placement",
+        "contentObjectId",
+        "labelObjectId",
+        "referenceCenter",
+        "gap"
+      ])
+    );
+    if (value.layoutConstraint.version !== 1 || value.layoutConstraint.kind !== "label-placement")
+      fail(`${path}.layoutConstraint`, "is unsupported");
+    if (
+      typeof value.layoutConstraint.placement !== "string" ||
+      !["outward", "top", "right", "bottom", "left"].includes(value.layoutConstraint.placement)
+    )
+      fail(`${path}.layoutConstraint.placement`, "is unsupported");
+    assertNonEmptyString(
+      value.layoutConstraint.contentObjectId,
+      `${path}.layoutConstraint.contentObjectId`,
+      200
+    );
+    assertNonEmptyString(
+      value.layoutConstraint.labelObjectId,
+      `${path}.layoutConstraint.labelObjectId`,
+      200
+    );
+    if (!isRecord(value.layoutConstraint.referenceCenter))
+      fail(`${path}.layoutConstraint.referenceCenter`, "is invalid");
+    assertKnownKeys(
+      value.layoutConstraint.referenceCenter,
+      `${path}.layoutConstraint.referenceCenter`,
+      new Set(["x", "y"])
+    );
+    assertFiniteNumber(
+      value.layoutConstraint.referenceCenter.x,
+      `${path}.layoutConstraint.referenceCenter.x`
+    );
+    assertFiniteNumber(
+      value.layoutConstraint.referenceCenter.y,
+      `${path}.layoutConstraint.referenceCenter.y`
+    );
+    assertFiniteNumber(value.layoutConstraint.gap, `${path}.layoutConstraint.gap`, {
+      min: 0,
+      max: 10_000
+    });
+  }
 }
 
 function validateParticleFieldSpec(value: unknown, path: string): void {
@@ -1254,15 +1307,9 @@ function validateParticleFieldSpec(value: unknown, path: string): void {
   assertFiniteNumber(value.count, `${path}.count`, { min: 1, max: 256, integer: true });
   if (
     typeof value.distribution !== "string" ||
-    ![
-      "cloud",
-      "uniform",
-      "linear",
-      "arc",
-      "gradient",
-      "source-fan",
-      "target-converging"
-    ].includes(value.distribution)
+    !["cloud", "uniform", "linear", "arc", "gradient", "source-fan", "target-converging"].includes(
+      value.distribution
+    )
   )
     fail(`${path}.distribution`, "is unsupported");
   if (!isRecord(value.bounds)) fail(`${path}.bounds`, "is invalid");
