@@ -1976,15 +1976,14 @@ export function createSemanticEditorAdapter(
         .sort((left, right) => right - left);
       const widthCandidates =
         object instanceof Textbox
-          ? [
-              ...new Set([
-                Math.min(
-                  originalWidth,
-                  maxWidth / Math.max(Math.abs(object.scaleX ?? 1), 0.000001)
-                ),
-                maxWidth / Math.max(Math.abs(object.scaleX ?? 1), 0.000001)
-              ])
-            ]
+          ? (() => {
+              const worldScaleX = Math.max(
+                Math.abs(object.getObjectScaling().x),
+                0.000001
+              );
+              const maxLocalWidth = maxWidth / worldScaleX;
+              return [...new Set([Math.min(originalWidth, maxLocalWidth), maxLocalWidth])];
+            })()
           : [undefined];
       let fitted = false;
       for (const size of fontSizes) {
@@ -2111,8 +2110,8 @@ export function createSemanticEditorAdapter(
         object.setCoords();
         if (object instanceof IText || object instanceof Textbox) {
           refreshTextMetrics([object]);
-          refreshParentGroups(object);
         }
+        refreshParentGroups(object);
         if (object.objectId) changed.add(object.objectId);
       };
       const visitStyleObjects = (

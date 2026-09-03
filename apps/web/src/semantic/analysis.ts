@@ -165,7 +165,7 @@ export function analyzeComposition(
     ({ object, path }) =>
       (!isGroup(object) || Boolean(object.familyId)) &&
       !path.slice(0, -1).some((ancestor) => Boolean(ancestor.familyId)) &&
-      !path.some((ancestor) => Boolean(ancestor.connector))
+      !path.some((ancestor) => Boolean(ancestor.connector || ancestor.freeConnectorGeometry))
   );
   const visibility = new Map(
     allEntries.map(({ object, path }) => [object.objectId!, hasVisibleInk(object, path)])
@@ -396,6 +396,21 @@ export function analyzeComposition(
     }
   if (overlapBudgetExceeded) skipped.push("overlap-pair-budget");
   const allIds = new Set(allEntries.map(({ object }) => object.objectId!));
+  const relationIds = new Set(relations.map((relation) => relation.id));
+  allEntries.forEach(({ object }) => {
+    const danglingRelationIds = (metadataOf(object)?.relationIds ?? []).filter(
+      (relationId) => !relationIds.has(relationId)
+    );
+    if (danglingRelationIds.length > 0)
+      add(
+        "relations",
+        "error",
+        "stale_relation",
+        `Object "${object.objectId!}" references missing relation metadata.`,
+        [object.objectId!],
+        danglingRelationIds
+      );
+  });
   relations.forEach((relation) => {
     if (
       !allIds.has(relation.sourceObjectId) ||
