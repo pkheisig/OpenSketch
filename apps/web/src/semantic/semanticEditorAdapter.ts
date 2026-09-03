@@ -1028,6 +1028,11 @@ export function createSemanticEditorAdapter(
         const textForRole = (role: string): IText | undefined =>
           existingTexts.find((object) => metadataOf(object)?.semanticRole === role);
         const labelText = textForRole("stage-label") ?? existingTexts[0];
+        if (existingStage && (!existingLabelGroup || !labelText))
+          throw new SemanticAdapterError(
+            "INCOMPLETE_STAGE",
+            `Existing stage "${requestedStageId}" is missing its label structure.`
+          );
         if (existingStage && existingLabelGroup && labelText) {
           const contentGroup = isGroup(existingStage)
             ? existingStage
@@ -1985,7 +1990,18 @@ export function createSemanticEditorAdapter(
                 0.000001
               );
               const maxLocalWidth = maxWidth / worldScaleX;
-              return [...new Set([Math.min(originalWidth, maxLocalWidth), maxLocalWidth])];
+              const candidates = new Set([Math.min(originalWidth, maxLocalWidth), maxLocalWidth]);
+              const angle = Math.abs(((object.angle ?? 0) * Math.PI) / 180) % Math.PI;
+              if (Math.abs(Math.sin(angle)) > 0.000001) {
+                const minimumWidth = Math.min(1, maxLocalWidth);
+                for (let step = 1; step <= 32; step += 1) {
+                  const fraction = step / 32;
+                  candidates.add(
+                    minimumWidth + (maxLocalWidth - minimumWidth) * fraction
+                  );
+                }
+              }
+              return [...candidates];
             })()
           : [undefined];
       let fitted = false;

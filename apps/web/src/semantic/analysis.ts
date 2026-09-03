@@ -3,6 +3,7 @@ import {
   inspectSemanticGeometry,
   isGroup,
   metadataOf,
+  normalizeRelation,
   relationsForCanvas,
   type SemanticRelation
 } from "./composition";
@@ -178,6 +179,32 @@ export function analyzeComposition(
   const add = (...args: Parameters<typeof finding>) => {
     if (!categories || categories.has(args[0])) findings.push(finding(...args));
   };
+  allEntries.forEach(({ object }) => {
+    let malformedCount = 0;
+    const malformedRelationIds: string[] = [];
+    (object.semanticRelations ?? []).forEach((relation) => {
+      try {
+        normalizeRelation(relation);
+      } catch {
+        malformedCount += 1;
+        const id =
+          typeof (relation as { id?: unknown }).id === "string"
+            ? (relation as { id: string }).id
+            : undefined;
+        if (id) malformedRelationIds.push(id);
+      }
+    });
+    if (malformedCount > 0)
+      add(
+        "relations",
+        "error",
+        "invalid_relation",
+        `Object "${object.objectId!}" contains malformed semantic relation records.`,
+        [object.objectId!],
+        malformedRelationIds,
+        { count: malformedCount }
+      );
+  });
   entries.forEach(({ object, path }) => {
     const id = object.objectId!;
     const visible = isEffectivelyVisible(path);
