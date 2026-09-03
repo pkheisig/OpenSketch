@@ -1435,7 +1435,8 @@ function validateSceneObject(
             "curved-line",
             "arrow",
             "double-arrow",
-            "curved-arrow"
+            "curved-arrow",
+            "particle"
           ].includes(item)
         ) {
           fail(`${path}.${key}`, "is unsupported");
@@ -1520,6 +1521,8 @@ function validateSceneObject(
       validateRecognizedGroups(item, `${path}.${key}`, context);
     } else if (key === "defaultElementStyle") {
       validateStyleSnapshot(item, `${path}.${key}`, context);
+    } else if (key === "particleFieldSpec") {
+      validateParticleFieldSpec(item, `${path}.${key}`);
     }
   }
 
@@ -1542,6 +1545,9 @@ function validateSceneObject(
     value.OpenSketchType === "text" &&
     !["IText", "i-text", "Text", "Textbox"].includes(value.type)
   ) {
+    fail(`${path}.OpenSketchType`, "is invalid for this object type");
+  }
+  if (value.OpenSketchType === "particle" && value.type !== "Circle") {
     fail(`${path}.OpenSketchType`, "is invalid for this object type");
   }
   if (

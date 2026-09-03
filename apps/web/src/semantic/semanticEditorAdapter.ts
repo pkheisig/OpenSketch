@@ -1092,12 +1092,14 @@ export function createSemanticEditorAdapter(
             labelText,
             textForRole("stage-subtitle")
           ].filter((object): object is IText => Boolean(object));
+          const localTextHeight = (object: IText): number =>
+            Math.abs(object.height * (object.scaleY ?? 1));
           const stackHeight =
-            stack.reduce((total, object) => total + boundsOf(object).height, 0) +
+            stack.reduce((total, object) => total + localTextHeight(object), 0) +
             8 * Math.max(0, stack.length - 1);
           let stackTop = -stackHeight / 2;
           stack.forEach((object) => {
-            const height = boundsOf(object).height;
+            const height = localTextHeight(object);
             object.set({ left: 0, top: stackTop + height / 2 });
             stackTop += height + 8;
           });
