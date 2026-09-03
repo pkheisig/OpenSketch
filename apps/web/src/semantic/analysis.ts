@@ -235,7 +235,10 @@ export function analyzeComposition(
       const mismatches = [
         object.fill !== expectedFill ? "fill" : undefined,
         ...(object instanceof IText || object instanceof Textbox
-          ? []
+          ? [
+              object.fontSize !== expectedStyle.fontSize ? "fontSize" : undefined,
+              object.fontWeight !== expectedStyle.fontWeight ? "fontWeight" : undefined
+            ]
           : [
               object.stroke !== expectedStyle.stroke ? "stroke" : undefined,
               object.strokeWidth !== expectedStyle.strokeWidth ? "strokeWidth" : undefined

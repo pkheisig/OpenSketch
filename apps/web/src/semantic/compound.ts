@@ -190,11 +190,19 @@ export function planInteraction(
           sourceBounds.height - targetBounds.height
         ) / 4
       );
+      const requestedOffset = {
+        x: direction.x * inset + normal.x * offset * 0.1,
+        y: direction.y * inset + normal.y * offset * 0.1
+      };
+      const maxOffset = {
+        x: Math.max(0, (sourceBounds.width - targetBounds.width) / 2),
+        y: Math.max(0, (sourceBounds.height - targetBounds.height) / 2)
+      };
       return {
         source,
         target: {
-          x: source.x + direction.x * inset + normal.x * offset * 0.1,
-          y: source.y + direction.y * inset + normal.y * offset * 0.1
+          x: source.x + clamp(requestedOffset.x, -maxOffset.x, maxOffset.x),
+          y: source.y + clamp(requestedOffset.y, -maxOffset.y, maxOffset.y)
         },
         mediator: target,
         relationKind: "contacts",

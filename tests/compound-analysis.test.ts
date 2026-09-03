@@ -59,6 +59,16 @@ describe("semantic compound planning", () => {
     expect(plan.target.x - plan.source.x).toBe(40);
   });
 
+  it("keeps an engulfed target inside an equally sized source", () => {
+    const plan = planInteraction(
+      { left: 0, top: 0, width: 40, height: 40 },
+      { left: 200, top: 100, width: 40, height: 40 },
+      "engulfment"
+    );
+
+    expect(plan.target).toEqual(plan.source);
+  });
+
   it("places cross-boundary participants with bounds-derived overlap", () => {
     const plan = planInteraction(
       { left: 0, top: 0, width: 40, height: 40 },
