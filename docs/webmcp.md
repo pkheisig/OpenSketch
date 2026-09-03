@@ -177,6 +177,23 @@ production build guard, and the Chromium browser workflow in
 recorder, exercises asset search/insertion, editing, grouping, history,
 provenance, stale-ID handling, manual editing, and a local credits download.
 
+The full reference-composition qualification is also available as a focused
+Chromium entrypoint:
+
+```sh
+pnpm test:webmcp:composition
+```
+
+It installs a real `document.modelContext.registerTool` recorder before page
+load and uses only registered callbacks to search and inspect bundled assets,
+compose the seven ordered cancer-immunity-cycle stages, create typed particle
+fields and annotations, bind the closed main-flow connector cycle, and inspect
+the resulting semantic graph. The workflow includes a manual editor mutation,
+stale-ID and atomic-batch rollback checks, reload persistence, asset-variant
+replacement, and SVG/PDF/PNG/credits downloads. It is intentionally bounded to
+approximately 20–30 meaningful calls and does not use a test-only semantic
+adapter or alter product UI code.
+
 For an auditable demo recording, add `?webmcpDemo=1` to the editor URL. This
 shows a compact live panel that records every WebMCP tool call, its bounded
 input summary, completion state, and duration. The panel is intentionally

@@ -146,6 +146,24 @@ describe("semantic compound planning", () => {
     expect(gaps.map((item) => item.objectIds[0])).toEqual(["stage-2", "stage-3"]);
   });
 
+  it("accepts the one-based stage indices used by the reference workflow", () => {
+    const stages = [1, 2, 3].map((stageIndex) => {
+      const stage = new Rect({ left: 100 + stageIndex * 100, top: 100, width: 60, height: 60 });
+      stage.objectId = `one-based-stage-${stageIndex}`;
+      stage.semanticMetadata = { version: 1, semanticRole: "stage", stageIndex };
+      return stage;
+    });
+
+    const result = analyzeComposition(
+      canvasOf(stages),
+      { width: 600, height: 400 },
+      "scene-one-based-cycle",
+      { profile: "cycle" }
+    );
+
+    expect(result.findings.some((item) => item.code === "stage_index_gap")).toBe(false);
+  });
+
   it("provides bounded annotation candidates", () => {
     expect(
       annotationCandidates(
