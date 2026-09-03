@@ -141,8 +141,9 @@ export function analyzeComposition(
   const profile = options.profile ?? "scientific-diagram";
   const categories = options.categories ? new Set(options.categories) : undefined;
   const maxFindings = Math.max(1, Math.min(256, Math.floor(options.maxFindings ?? 128)));
-  const padding = options.padding ?? 24;
-  const clearance = options.clearance ?? 12;
+  const padding =
+    options.padding ?? (profile === "publication" ? 48 : profile === "presentation" ? 12 : 24);
+  const clearance = options.clearance ?? (profile === "publication" ? 16 : 12);
   const allEntries = sceneObjectEntries(canvas).filter(({ object }) => object.objectId);
   const entries = allEntries.filter(
     ({ object, path }) =>

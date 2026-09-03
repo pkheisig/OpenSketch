@@ -1358,12 +1358,20 @@ export function createSemanticEditorAdapter(
         direction: "forward",
         allowedOverlap: plan.allowedOverlap
       });
-      const conflictingRelation = relationsForCanvas(canvas).find(
-        (existing) =>
-          existing.id === relation.id &&
-          (existing.sourceObjectId !== relation.sourceObjectId ||
-            existing.targetObjectId !== relation.targetObjectId)
-      );
+      const conflictingRelation = sceneObjectEntries(canvas)
+        .flatMap(({ object }) => object.semanticRelations ?? [])
+        .map((existing) => {
+          try {
+            return normalizeRelation(existing);
+          } catch {
+            return undefined;
+          }
+        })
+        .filter((existing): existing is typeof relation => Boolean(existing))
+        .find(
+          (existing) =>
+            existing.id === relation.id && JSON.stringify(existing) !== JSON.stringify(relation)
+        );
       if (conflictingRelation)
         throw new SemanticAdapterError(
           "DUPLICATE_RELATION_ID",
@@ -1853,16 +1861,18 @@ export function createSemanticEditorAdapter(
       };
     }
     if (command === "normalize_styles") {
-      const requestedIds = input.objectIds === undefined ? [] : objectIds(input);
+      const hasRequestedIds = input.objectIds !== undefined;
+      const requestedIds = hasRequestedIds ? objectIds(input) : [];
       const roles = Array.isArray(input.roles) ? new Set(input.roles as string[]) : undefined;
       const presetId = typeof input.presetId === "string" ? input.presetId : undefined;
+      if (presetId && !stylePreset(presetId))
+        throw new SemanticAdapterError("INVALID_INPUT", `Unknown style preset "${presetId}".`);
       const sceneEntries = sceneObjectEntries(canvas);
-      const targets =
-        requestedIds.length > 0
-          ? resolveObjects(canvas, requestedIds)
-          : sceneEntries
-              .map(({ object }) => object)
-              .filter((object) => !roles || roles.has(metadataOf(object)?.semanticRole ?? ""));
+      const targets = hasRequestedIds
+        ? resolveObjects(canvas, requestedIds)
+        : sceneEntries
+            .map(({ object }) => object)
+            .filter((object) => !roles || roles.has(metadataOf(object)?.semanticRole ?? ""));
       const protectedAssetObjectIds = new Set(
         sceneObjectEntries(canvas)
           .filter(({ path }) => path.some((object) => Boolean(object.familyId)))

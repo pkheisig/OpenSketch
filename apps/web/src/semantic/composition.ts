@@ -432,6 +432,7 @@ export function sceneRevision(canvas: Canvas): string {
     objects.map((object) => ({
       id: object.objectId,
       type: object.OpenSketchType ?? object.type,
+      familyId: object.familyId,
       left: object.left,
       top: object.top,
       width: object.width,
@@ -455,6 +456,7 @@ export function sceneRevision(canvas: Canvas): string {
       semanticMetadata: object.semanticMetadata,
       semanticRelations: object.semanticRelations,
       connector: object.connector,
+      freeConnectorGeometry: object.freeConnectorGeometry,
       children: isGroup(object) ? describe(object.getObjects()) : undefined
     }));
   return `scene-${hash(stable({ width: canvas.getWidth?.() ?? canvas.width ?? 0, height: canvas.getHeight?.() ?? canvas.height ?? 0, objects: describe(canvas.getObjects()), relations: relationsForCanvas(canvas) }))}`;
