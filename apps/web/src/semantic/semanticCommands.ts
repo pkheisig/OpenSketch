@@ -251,7 +251,29 @@ const semanticMetadataSchema: JsonSchema = {
     },
     pinned: { type: "boolean" },
     allowedOverlapObjectIds: { type: "array", maxItems: 32, items: objectId() },
-    semanticName: { type: "string", maxLength: 160 }
+    semanticName: { type: "string", maxLength: 160 },
+    layoutConstraint: {
+      type: "object",
+      properties: {
+        version: integer(1, 1),
+        kind: { type: "string", enum: ["label-placement"] },
+        placement: { type: "string", enum: ["outward", "top", "right", "bottom", "left"] },
+        contentObjectId: objectId(),
+        labelObjectId: objectId(),
+        referenceCenter: point(),
+        gap: number(0, 10000)
+      },
+      required: [
+        "version",
+        "kind",
+        "placement",
+        "contentObjectId",
+        "labelObjectId",
+        "referenceCenter",
+        "gap"
+      ],
+      additionalProperties: false
+    }
   },
   required: ["version"],
   additionalProperties: false
@@ -1604,6 +1626,7 @@ definitions.push(
       source: point(),
       target: point(),
       mediator: point(),
+      metrics: { type: "object" },
       warnings: { type: "array", maxItems: 16, items: { type: "string", maxLength: 320 } }
     })
   },
@@ -1644,7 +1667,7 @@ definitions.push(
         semanticType: { type: "string", maxLength: 120 },
         role: { type: "string", enum: ["particle-field", "decorative"] }
       },
-      required: ["count", "distribution", "seed", "bounds"],
+      required: ["count", "distribution", "seed"],
       additionalProperties: false
     },
     outputSchema: output({
@@ -1676,10 +1699,13 @@ definitions.push(
       properties: {
         targetObjectId: objectId(),
         text: { type: "string", minLength: 1, maxLength: 800 },
-        placement: { type: "string", enum: ["top", "right", "bottom", "left"] },
+        placement: { type: "string", enum: ["auto", "top", "right", "bottom", "left"] },
         gap: number(0, 1000),
         fontSize: number(6, 200),
-        leader: { type: "boolean" }
+        leader: { type: "boolean" },
+        maxWidth: number(1, 100000),
+        maxLines: integer(1, 32),
+        relationId: objectId()
       },
       required: ["targetObjectId", "text"],
       additionalProperties: false
@@ -1754,6 +1780,35 @@ definitions.push(
       truncated: { type: "boolean" },
       totalChanged: integer(0),
       totalSkipped: integer(0)
+    })
+  },
+  {
+    name: "render_scene_preview",
+    title: "Render scene preview",
+    description:
+      "Return bounded capability information for a read-only scene preview; geometry validation remains authoritative when image transport is unavailable.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "read_only",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        maxWidth: integer(64, 2048),
+        maxHeight: integer(64, 2048),
+        background: { type: "string", enum: ["transparent", "canvas"] }
+      },
+      additionalProperties: false
+    },
+    outputSchema: output({
+      supported: { type: "boolean" },
+      reason: { type: "string", maxLength: 320 },
+      sceneRevision: objectId(),
+      width: integer(0),
+      height: integer(0)
     })
   },
   {

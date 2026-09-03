@@ -122,6 +122,17 @@ export function assignFreshCloneIds(objects: FabricObject | FabricObject[]): voi
       current.semanticMetadata.relationIds = current.semanticMetadata.relationIds?.map(
         (relationId) => `${relationId}:clone:${current.objectId}`
       );
+      if (current.semanticMetadata.layoutConstraint) {
+        current.semanticMetadata.layoutConstraint = {
+          ...current.semanticMetadata.layoutConstraint,
+          contentObjectId:
+            ids.get(current.semanticMetadata.layoutConstraint.contentObjectId) ??
+            current.semanticMetadata.layoutConstraint.contentObjectId,
+          labelObjectId:
+            ids.get(current.semanticMetadata.layoutConstraint.labelObjectId) ??
+            current.semanticMetadata.layoutConstraint.labelObjectId
+        };
+      }
     }
     if (current.semanticRelations) {
       current.semanticRelations = structuredClone(current.semanticRelations).map((relation) => ({

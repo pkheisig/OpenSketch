@@ -66,7 +66,8 @@ test("qualifies the cancer-immunity-cycle reference composition through real Web
         "compose_labeled_group",
         "connect_sequence",
         "create_annotation",
-        "export_figure"
+        "export_figure",
+        "render_scene_preview"
       ])
     );
 
@@ -440,7 +441,12 @@ test("qualifies the cancer-immunity-cycle reference composition through real Web
       hubKeepOut: { left: 940, top: 640, width: 320, height: 320 }
     });
     await mustCall("normalize_styles", {
-      roles: ["stage", "stage-label", "particle-field", "annotation"]
+      roles: ["hub", "stage", "stage-label", "particle-field", "annotation"]
+    });
+    const preview = await mustCall("render_scene_preview", {
+      maxWidth: 512,
+      maxHeight: 384,
+      background: "canvas"
     });
     const analysis = await mustCall("analyze_composition", {
       profile: "scientific-diagram",
@@ -467,6 +473,7 @@ test("qualifies the cancer-immunity-cycle reference composition through real Web
       stageCount: stages.length,
       connectorIds: (sequence.data?.connectorIds as string[] | undefined) ?? [],
       interventionId: objectId(intervention),
+      preview,
       analysis,
       validation,
       scene,
@@ -492,6 +499,11 @@ test("qualifies the cancer-immunity-cycle reference composition through real Web
 
   expect(composition.stageCount).toBe(7);
   expect(composition.connectorIds).toHaveLength(7);
+  expect(composition.preview.data).toMatchObject({
+    supported: false,
+    width: 512,
+    height: 384
+  });
   expect(composition.analysis.data?.counts).toMatchObject({ error: 0 });
   expect(composition.validation.data).toMatchObject({ profile: "cycle", pass: true });
   expect(composition.failedBatch).toMatchObject({ ok: false, error: { code: "STALE_OBJECT_ID" } });
@@ -600,6 +612,19 @@ test("qualifies the cancer-immunity-cycle reference composition through real Web
     return (await tool.execute({ objectIds: [objectId], confirmed: true })) as Result;
   }, manualText.objectId);
   expect(deleted).toMatchObject({ ok: true });
+  await expect
+    .poll(async () =>
+      page.evaluate(async (objectId) => {
+        const tools = (window as typeof window & { __webmcpTools?: Tool[] }).__webmcpTools ?? [];
+        const tool = tools.find((candidate) => candidate.name === "inspect_scene");
+        if (!tool) throw new Error("Missing WebMCP tool: inspect_scene");
+        const result = (await tool.execute({ maxObjects: 256, maxDepth: 12 })) as Result;
+        return ((result.data?.objects ?? []) as Descriptor[]).some(
+          (object) => object.objectId === objectId
+        );
+      }, manualText.objectId)
+    )
+    .toBe(false);
 
   await page.reload();
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");

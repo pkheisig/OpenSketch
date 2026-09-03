@@ -170,7 +170,7 @@ describe("semantic compound planning", () => {
         { left: 100, top: 100, width: 40, height: 40 },
         { left: 0, top: 0, width: 80, height: 20 }
       )
-    ).toHaveLength(4);
+    ).toHaveLength(16);
   });
 
   it("requires endpoints for directional particle distributions and converges", () => {
