@@ -482,16 +482,21 @@ export function analyzeComposition(
           entry.stageIndex !== undefined
       )
       .sort((a, b) => a.stageIndex - b.stageIndex);
+    const expectedStart =
+      stages.some(({ stageIndex }) => stageIndex === 1) &&
+      stages.every(({ stageIndex }) => stageIndex >= 1)
+        ? 1
+        : 0;
     stages.forEach(({ object, stageIndex }, index) => {
-      if (stageIndex !== index)
+      if (stageIndex !== expectedStart + index)
         add(
           "scientific",
           "error",
           "stage_index_gap",
-          "Cycle stage indices must be contiguous from zero.",
+          `Cycle stage indices must be contiguous from ${expectedStart}.`,
           [object.objectId!],
           [],
-          { expected: index, actual: stageIndex }
+          { expected: expectedStart + index, actual: stageIndex }
         );
     });
   }

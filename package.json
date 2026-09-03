@@ -21,6 +21,7 @@
     "test:webmcp": "vitest run tests/semantic-runtime.test.ts tests/semantic-editor-adapter.test.ts tests/composition.test.ts tests/compound-analysis.test.ts tests/webmcp.test.ts tests/webmcp-documentation.test.ts && pnpm build && node scripts/check-webmcp-build.mjs && pnpm test:webmcp:e2e",
     "test:deployment": "node scripts/check-deployment-build.mjs",
     "test:webmcp:e2e": "playwright test tests/e2e/webmcp.spec.ts --project=chromium",
+    "test:webmcp:composition": "playwright test tests/e2e/webmcp-composition.spec.ts --project=chromium",
     "test:pwa": "playwright test --config playwright.pwa.config.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
