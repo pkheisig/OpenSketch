@@ -1681,7 +1681,7 @@ export function createSemanticEditorAdapter(
             return !expectedParticleIds.has(id);
           });
         const removedIdSet = new Set(removedParticleIds);
-        const changedReferenceIds = new Set<string>(removedParticleIds);
+        const changedReferenceIds = new Set<string>();
         sceneObjectEntries(canvas)
           .filter(({ object }) => connectorsForRemovedIds([object], removedIdSet).length > 0)
           .forEach((entry) => {
@@ -1735,6 +1735,11 @@ export function createSemanticEditorAdapter(
           ),
           ...repairedRelations
         ];
+        if (restoredRelations.length > 32)
+          throw new SemanticAdapterError(
+            "SEMANTIC_LIMIT",
+            `Particle field "${existingField.objectId!}" cannot reference more than 32 relations.`
+          );
         existingField.semanticRelations = restoredRelations;
         const metadata = metadataOf(existingField) ?? { version: 1 as const };
         existingField.semanticMetadata = {
@@ -2099,7 +2104,7 @@ export function createSemanticEditorAdapter(
       );
       const skipped: string[] = [];
       const changed = new Set<string>();
-      const visitedObjectIds = new Set<string>();
+      const visitedObjects = new Set<FabricObject>();
       const applyPreset = (
         object: FabricObject,
         fallbackPreset?: ReturnType<typeof stylePreset>
@@ -2124,8 +2129,8 @@ export function createSemanticEditorAdapter(
         const nextFontSize = isText ? preset.fontSize : undefined;
         const nextFontWeight = isText ? preset.fontWeight : undefined;
         const styleChanged =
-          object.fill !== nextFill ||
-          object.stroke !== nextStroke ||
+          (typeof object.fill === "string" && object.fill !== nextFill) ||
+          (typeof object.stroke === "string" && object.stroke !== nextStroke) ||
           object.strokeWidth !== nextStrokeWidth ||
           (isText && (object.fontSize !== nextFontSize || object.fontWeight !== nextFontWeight));
         if (!styleChanged) return;
@@ -2150,10 +2155,8 @@ export function createSemanticEditorAdapter(
           object: FabricObject,
           inheritedPreset?: ReturnType<typeof stylePreset>
         ): void => {
-          if (object.objectId) {
-            if (visitedObjectIds.has(object.objectId)) return;
-            visitedObjectIds.add(object.objectId);
-          }
+          if (visitedObjects.has(object)) return;
+          visitedObjects.add(object);
           const protectedAsset = object.familyId && input.includeAssets !== true;
           applyPreset(object, inheritedPreset);
           const role = metadataOf(object)?.semanticRole;

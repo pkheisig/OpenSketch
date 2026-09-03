@@ -161,7 +161,7 @@ const ALIAS_ID_FIELDS = new Set([
   "sourceObjectId",
   "targetObjectId",
   "mediatorObjectId",
-  "relationId"
+  "stageId"
 ]);
 
 function resolveAliases(value: unknown, aliases: Map<string, AliasValue>, field?: string): unknown {

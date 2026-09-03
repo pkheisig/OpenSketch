@@ -1250,8 +1250,8 @@ function validateParticleFieldSpec(value: unknown, path: string): void {
       "role"
     ])
   );
-  assertNonEmptyString(value.seed, `${path}.seed`, 200);
-  assertFiniteNumber(value.count, `${path}.count`, { min: 0, max: 256, integer: true });
+  assertNonEmptyString(value.seed, `${path}.seed`, 120);
+  assertFiniteNumber(value.count, `${path}.count`, { min: 1, max: 256, integer: true });
   if (
     typeof value.distribution !== "string" ||
     ![
@@ -1270,8 +1270,8 @@ function validateParticleFieldSpec(value: unknown, path: string): void {
   assertKnownKeys(bounds, `${path}.bounds`, new Set(["left", "top", "width", "height"]));
   assertFiniteNumber(bounds.left, `${path}.bounds.left`);
   assertFiniteNumber(bounds.top, `${path}.bounds.top`);
-  assertFiniteNumber(bounds.width, `${path}.bounds.width`, { min: 0 });
-  assertFiniteNumber(bounds.height, `${path}.bounds.height`, { min: 0 });
+  assertFiniteNumber(bounds.width, `${path}.bounds.width`, { min: 1 });
+  assertFiniteNumber(bounds.height, `${path}.bounds.height`, { min: 1 });
   for (const key of ["sourceObjectId", "targetObjectId"] as const) {
     if (value[key] !== undefined) assertNonEmptyString(value[key], `${path}.${key}`, 200);
   }

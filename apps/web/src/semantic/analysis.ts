@@ -350,7 +350,11 @@ export function analyzeComposition(
             "repair_connectors"
           );
       }
-      if (object.freeConnectorGeometry && metadata?.semanticRole === "main-flow-connector")
+      if (
+        object.freeConnectorGeometry &&
+        !object.connector &&
+        metadata?.semanticRole === "main-flow-connector"
+      )
         add(
           "connectors",
           "error",

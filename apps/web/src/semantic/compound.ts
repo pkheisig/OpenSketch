@@ -355,5 +355,7 @@ export function annotationCandidates(
 }
 
 export function stylePreset(role: string): StylePreset | undefined {
-  return SEMANTIC_STYLE_PRESETS[role];
+  return Object.prototype.hasOwnProperty.call(SEMANTIC_STYLE_PRESETS, role)
+    ? SEMANTIC_STYLE_PRESETS[role]
+    : undefined;
 }
