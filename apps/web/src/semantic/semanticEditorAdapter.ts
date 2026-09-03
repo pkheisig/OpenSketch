@@ -517,11 +517,22 @@ function boundedText(value: unknown, maximum = 320): string | undefined {
   return normalized ? normalized.slice(0, maximum) : undefined;
 }
 
+function hashText(value: string): string {
+  let result = 2166136261;
+  for (let index = 0; index < value.length; index += 1) {
+    result ^= value.charCodeAt(index);
+    result = Math.imul(result, 16777619);
+  }
+  return (result >>> 0).toString(16).padStart(8, "0");
+}
+
 function boundedRelationId(prefix: string, ...ids: string[]): string {
   const raw = `${prefix}-${ids.join("-")}`;
   if (raw.length <= 200) return raw;
-  const suffix = ids.map((id) => id.slice(0, 88)).join("-");
-  return `${prefix}-${suffix}`.slice(0, 200);
+  const digest = hashText(raw);
+  const prefixBudget = 200 - digest.length - 1;
+  const suffix = ids.map((id) => id.slice(0, 32)).join("-");
+  return `${`${prefix}-${suffix}`.slice(0, prefixBudget)}-${digest}`;
 }
 
 function isEffectivelyVisible(path: readonly { visible?: boolean; opacity?: number }[]): boolean {
@@ -1145,9 +1156,20 @@ export function createSemanticEditorAdapter(
       const label = boundedText(input.label, 240);
       if (!label) throw new SemanticAdapterError("INVALID_INPUT", "label must not be empty.");
       const bounds = unionBounds(contentObjects);
-      const placement = (input.placement ?? "outward") as LabelPlacement;
+      const requestedPlacement = (input.placement ?? "outward") as LabelPlacement;
       const settings = dependencies.getCanvasSettings();
       const center = { x: bounds.left + bounds.width / 2, y: bounds.top + bounds.height / 2 };
+      const canvasCenter = { x: settings.width / 2, y: settings.height / 2 };
+      const placement: LabelPlacement =
+        requestedPlacement === "outward"
+          ? Math.abs(center.x - canvasCenter.x) >= Math.abs(center.y - canvasCenter.y)
+            ? center.x < canvasCenter.x
+              ? "left"
+              : "right"
+            : center.y < canvasCenter.y
+              ? "top"
+              : "bottom"
+          : requestedPlacement;
       const labelX =
         placement === "left"
           ? bounds.left - 24
@@ -1155,7 +1177,7 @@ export function createSemanticEditorAdapter(
             ? bounds.left + bounds.width + 24
             : center.x;
       const labelY =
-        placement === "top" || placement === "outward"
+        placement === "top"
           ? bounds.top - 28
           : placement === "bottom"
             ? bounds.top + bounds.height + 28
@@ -1218,7 +1240,6 @@ export function createSemanticEditorAdapter(
       labelChildren.forEach((object) => object.set("left", horizontalLabelX));
       if (
         placement === "top" ||
-        placement === "outward" ||
         placement === "bottom" ||
         placement === "left" ||
         placement === "right"
@@ -1233,7 +1254,7 @@ export function createSemanticEditorAdapter(
         const stackTop =
           placement === "bottom"
             ? bounds.top + bounds.height + 24
-            : placement === "top" || placement === "outward"
+            : placement === "top"
               ? bounds.top - 24 - stackHeight
               : center.y - stackHeight / 2;
         let cursor = stackTop;
@@ -1770,10 +1791,11 @@ export function createSemanticEditorAdapter(
       const requestedIds = input.objectIds === undefined ? [] : objectIds(input);
       const roles = Array.isArray(input.roles) ? new Set(input.roles as string[]) : undefined;
       const presetId = typeof input.presetId === "string" ? input.presetId : undefined;
+      const sceneEntries = sceneObjectEntries(canvas);
       const targets =
         requestedIds.length > 0
           ? resolveObjects(canvas, requestedIds)
-          : sceneObjectEntries(canvas)
+          : sceneEntries
               .map(({ object }) => object)
               .filter((object) => !roles || roles.has(metadataOf(object)?.semanticRole ?? ""));
       const protectedAssetObjectIds = new Set(
@@ -1837,9 +1859,15 @@ export function createSemanticEditorAdapter(
         walk(root, fallbackPreset);
       };
       targets.forEach((object) => {
+        const entry = sceneEntries.find((candidate) => candidate.object === object);
         const inheritedPreset = presetId
           ? stylePreset(presetId)
-          : stylePreset(metadataOf(object)?.semanticRole ?? "");
+          : [...(entry?.path ?? [object])]
+              .reverse()
+              .map((candidate) => stylePreset(metadataOf(candidate)?.semanticRole ?? ""))
+              .find((preset): preset is NonNullable<ReturnType<typeof stylePreset>> =>
+                Boolean(preset)
+              );
         visitStyleObjects(object, inheritedPreset);
       });
       const allChangedObjectIds = [...changed];
