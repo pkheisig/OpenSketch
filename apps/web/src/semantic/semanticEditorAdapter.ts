@@ -1345,6 +1345,10 @@ export function createSemanticEditorAdapter(
       dependencies.refreshConnectors();
       canvas.requestRenderAll();
       commitSemantic("Semantic compose labeled group");
+      const changedObjectIds: string[] = [];
+      visitSceneObjects(stageGroup, (object) => {
+        if (object.objectId) changedObjectIds.push(object.objectId);
+      });
       return {
         data: {
           objectId: stageGroup.objectId,
@@ -1352,7 +1356,7 @@ export function createSemanticEditorAdapter(
           labelObjectId: labelGroup.objectId,
           objectIds: [stageGroup.objectId, contentGroup.objectId, labelGroup.objectId]
         },
-        changedObjectIds: [stageGroup.objectId, contentGroup.objectId, labelGroup.objectId, ...ids]
+        changedObjectIds
       };
     }
     if (command === "compose_interaction") {
