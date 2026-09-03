@@ -1,0 +1,38 @@
+{
+  "projectId": "535ffc8c-1e17-426f-ad1f-215edad8b0f5",
+  "cycleConnectorIds": [
+    "426e77ae-f633-4d3d-92fb-08dacf0c5a88",
+    "cb423e3c-429c-40b3-9e62-0d9691ef44c0",
+    "7af52ce8-3d9f-4da8-8539-8b9fbeab4fc6",
+    "bd94d5d6-8e30-43da-ba26-59b475319072",
+    "61487386-fb25-4d86-adaf-fa743c2edf6b",
+    "06a164aa-2ca1-4a83-837a-63cd3328632c",
+    "1d7af8b6-896c-4b65-8ddb-5d2e3d34df55"
+  ],
+  "boundCycleConnectorCount": 7,
+  "semanticRelationCount": 39,
+  "profiles": {
+    "cycle": {
+      "pass": true,
+      "counts": { "error": 0, "warning": 0, "info": 0 },
+      "skipped": [],
+      "truncated": false
+    },
+    "scientific-diagram": {
+      "pass": true,
+      "counts": { "error": 0, "warning": 0, "info": 0 },
+      "skipped": [],
+      "truncated": false
+    },
+    "publication": {
+      "pass": true,
+      "counts": { "error": 0, "warning": 0, "info": 0 },
+      "skipped": [],
+      "truncated": false
+    }
+  },
+  "focusedTests": { "passed": 65, "failed": 0 },
+  "typecheck": "passed",
+  "productionBuild": "passed",
+  "reloadPersistenceCheck": "passed"
+}
