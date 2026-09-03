@@ -267,7 +267,8 @@ export function planParticleField(
   const innerWidth = Math.max(0, bounds.width - particleRadius * 2);
   const innerHeight = Math.max(0, bounds.height - particleRadius * 2);
   for (let index = 0; index < safeCount; index += 1) {
-    const fraction = safeCount <= 1 ? 0.5 : index / (safeCount - 1);
+    const fraction =
+      safeCount <= 1 ? (distribution === "target-converging" ? 1 : 0.5) : index / (safeCount - 1);
     let x = innerLeft + next() * innerWidth;
     let y = innerTop + next() * innerHeight;
     if (distribution === "linear") {

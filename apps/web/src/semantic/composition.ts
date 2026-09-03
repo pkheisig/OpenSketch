@@ -448,6 +448,7 @@ export function sceneRevision(canvas: Canvas): string {
       stroke: object.stroke,
       strokeWidth: object.strokeWidth,
       fontFamily: "fontFamily" in object ? object.fontFamily : undefined,
+      fontStyle: "fontStyle" in object ? object.fontStyle : undefined,
       fontSize: "fontSize" in object ? object.fontSize : undefined,
       fontWeight: "fontWeight" in object ? object.fontWeight : undefined,
       lineHeight: "lineHeight" in object ? object.lineHeight : undefined,

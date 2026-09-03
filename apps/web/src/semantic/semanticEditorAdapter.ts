@@ -1563,9 +1563,13 @@ export function createSemanticEditorAdapter(
           });
         const relations = expectedRelations(existingField.objectId!);
         const matchesRelations = relations.every((expected) =>
-          (existingField.semanticRelations ?? []).some(
-            (actual) => JSON.stringify(normalizeRelation(actual)) === JSON.stringify(expected)
-          )
+          (existingField.semanticRelations ?? []).some((actual) => {
+            try {
+              return JSON.stringify(normalizeRelation(actual)) === JSON.stringify(expected);
+            } catch {
+              return false;
+            }
+          })
         );
         if (matchesPlan && matchesRelations) {
           const particleIds = particles
@@ -1577,11 +1581,19 @@ export function createSemanticEditorAdapter(
           };
         }
         if (matchesPlan) {
-          existingField.semanticRelations = relations;
+          const restoredRelations = [
+            ...(existingField.semanticRelations ?? []).filter(
+              (actual) => !relations.some((expected) => expected.id === actual.id)
+            ),
+            ...relations
+          ];
+          existingField.semanticRelations = restoredRelations;
           const metadata = metadataOf(existingField) ?? { version: 1 as const };
           existingField.semanticMetadata = {
             ...metadata,
-            ...(relations.length ? { relationIds: relations.map((relation) => relation.id) } : {})
+            ...(restoredRelations.length
+              ? { relationIds: restoredRelations.map((relation) => relation.id) }
+              : {})
           };
           canvas.requestRenderAll();
           commitSemantic("Semantic restore particle field relations");
@@ -1619,12 +1631,19 @@ export function createSemanticEditorAdapter(
           moveAnchorTo(particle, "center", position);
           return particle;
         });
-        existingField.semanticRelations = expectedRelations(existingField.objectId!);
+        const repairedRelations = expectedRelations(existingField.objectId!);
+        const restoredRelations = [
+          ...(existingField.semanticRelations ?? []).filter(
+            (actual) => !repairedRelations.some((expected) => expected.id === actual.id)
+          ),
+          ...repairedRelations
+        ];
+        existingField.semanticRelations = restoredRelations;
         const metadata = metadataOf(existingField) ?? { version: 1 as const };
         existingField.semanticMetadata = {
           ...metadata,
-          ...(existingField.semanticRelations.length
-            ? { relationIds: existingField.semanticRelations.map((relation) => relation.id) }
+          ...(restoredRelations.length
+            ? { relationIds: restoredRelations.map((relation) => relation.id) }
             : {})
         };
         existingField.setCoords();
