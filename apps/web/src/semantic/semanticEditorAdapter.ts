@@ -1225,10 +1225,26 @@ export function createSemanticEditorAdapter(
       contentGroup.OpenSketchType = "group";
       const stageId =
         typeof input.stageId === "string" && input.stageId ? input.stageId : contentGroup.objectId;
-      labelObject.semanticMetadata = { version: 1, semanticRole: "stage-label", stageId };
-      if (title) title.semanticMetadata = { version: 1, semanticRole: "stage-title", stageId };
+      labelObject.semanticMetadata = {
+        version: 1,
+        semanticRole: "stage-label",
+        stageId,
+        ...(input.stageIndex === undefined ? {} : { stageIndex: input.stageIndex as number })
+      };
+      if (title)
+        title.semanticMetadata = {
+          version: 1,
+          semanticRole: "stage-title",
+          stageId,
+          ...(input.stageIndex === undefined ? {} : { stageIndex: input.stageIndex as number })
+        };
       if (subtitle)
-        subtitle.semanticMetadata = { version: 1, semanticRole: "stage-subtitle", stageId };
+        subtitle.semanticMetadata = {
+          version: 1,
+          semanticRole: "stage-subtitle",
+          stageId,
+          ...(input.stageIndex === undefined ? {} : { stageIndex: input.stageIndex as number })
+        };
       contentGroup.semanticMetadata = {
         version: 1,
         semanticRole: "stage-content",
@@ -1669,6 +1685,7 @@ export function createSemanticEditorAdapter(
               };
           }
         });
+        existingField.set({ scaleX: 1, scaleY: 1, angle: 0 });
         particles.forEach((particle) => existingField.remove(particle));
         const repairedParticles = plan.points.map((position, index) => {
           const objectId = `${existingField.objectId!}-particle-${index}`;
@@ -1679,7 +1696,6 @@ export function createSemanticEditorAdapter(
           moveAnchorTo(particle, "center", position);
           return particle;
         });
-        existingField.set({ scaleX: 1, scaleY: 1, angle: 0 });
         const repairedRelations = expectedRelations(existingField.objectId!);
         const restoredRelations = [
           ...(existingField.semanticRelations ?? []).filter(

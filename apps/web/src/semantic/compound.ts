@@ -135,8 +135,7 @@ export function planInteraction(
   const dx = target.x - source.x;
   const dy = target.y - source.y;
   const distance = Math.hypot(dx, dy);
-  const length = Math.max(1, distance);
-  const direction = distance > 0 ? { x: dx / length, y: dy / length } : { x: 1, y: 0 };
+  const direction = distance > 0 ? { x: dx / distance, y: dy / distance } : { x: 1, y: 0 };
   const normal = { x: -direction.y, y: direction.x };
   const midpoint = { x: (source.x + target.x) / 2, y: (source.y + target.y) / 2 };
   switch (mode) {
