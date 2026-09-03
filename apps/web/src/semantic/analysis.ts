@@ -89,12 +89,19 @@ function relationAllowsOverlap(
   leftIds: readonly string[],
   rightIds: readonly string[]
 ): boolean {
-  return relations.some(
-    (relation) =>
-      relation.allowedOverlap === true &&
-      ((leftIds.includes(relation.sourceObjectId) && rightIds.includes(relation.targetObjectId)) ||
-        (leftIds.includes(relation.targetObjectId) && rightIds.includes(relation.sourceObjectId)))
-  );
+  return relations.some((relation) => {
+    if (!relation.allowedOverlap) return false;
+    const participantIds = [
+      relation.sourceObjectId,
+      relation.targetObjectId,
+      ...(relation.mediatorObjectIds ?? [])
+    ];
+    return participantIds.some(
+      (leftId) =>
+        leftIds.includes(leftId) &&
+        participantIds.some((rightId) => rightIds.includes(rightId) && rightId !== leftId)
+    );
+  });
 }
 
 function isEffectivelyVisible(path: readonly { visible?: boolean; opacity?: number }[]): boolean {

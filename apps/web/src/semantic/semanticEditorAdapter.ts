@@ -1324,9 +1324,19 @@ export function createSemanticEditorAdapter(
         target,
         ...(mediatorObject ? [mediatorObject] : [])
       ]);
+      const sourceBounds = inspectSemanticGeometry(source).visualBounds;
+      const targetBounds = inspectSemanticGeometry(target).visualBounds;
+      if (
+        input.mode === "engulfment" &&
+        (targetBounds.width > sourceBounds.width || targetBounds.height > sourceBounds.height)
+      )
+        throw new SemanticAdapterError(
+          "INVALID_INPUT",
+          "Engulfment target must fit within the source bounds."
+        );
       const plan = planInteraction(
-        inspectSemanticGeometry(source).visualBounds,
-        inspectSemanticGeometry(target).visualBounds,
+        sourceBounds,
+        targetBounds,
         input.mode as InteractionMode,
         input.offset === undefined ? undefined : finiteNumber(input.offset, "offset")
       );

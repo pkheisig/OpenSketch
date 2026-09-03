@@ -120,6 +120,24 @@ describe("semantic editor adapter", () => {
     expect(adapter.setCanvasSettings).not.toHaveBeenCalled();
   });
 
+  it("rejects an engulfment target that cannot fit inside its source", async () => {
+    const source = new Rect({ left: 100, top: 100, width: 40, height: 40 });
+    const target = new Rect({ left: 260, top: 100, width: 80, height: 20 });
+    source.objectId = "source";
+    target.objectId = "target";
+    const adapter = makeAdapter(makeCanvas([source, target]));
+
+    await expect(
+      adapter.execute("compose_interaction", {
+        sourceObjectId: "source",
+        targetObjectId: "target",
+        mode: "engulfment"
+      })
+    ).rejects.toMatchObject({ code: "INVALID_INPUT" });
+    expect(source.left).toBe(100);
+    expect(target.left).toBe(260);
+  });
+
   it("resolves nested identities and keeps targeted execution separate from selection", async () => {
     const child = new Rect({ width: 40, height: 20 });
     child.objectId = "child";

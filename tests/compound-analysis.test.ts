@@ -68,6 +68,33 @@ describe("semantic compound planning", () => {
     expect(plan.target.x - plan.source.x).toBe(8);
   });
 
+  it("permits overlap between all participants in an allowed relation", () => {
+    const a = new Rect({ left: 30, top: 30, width: 80, height: 80 });
+    const b = new Rect({ left: 70, top: 70, width: 80, height: 80 });
+    const mediator = new Rect({ left: 50, top: 50, width: 80, height: 80 });
+    a.objectId = "a";
+    b.objectId = "b";
+    mediator.objectId = "mediator";
+    a.semanticRelations = [
+      {
+        id: "binding-1",
+        kind: "binds",
+        sourceObjectId: "a",
+        targetObjectId: "b",
+        mediatorObjectIds: ["mediator"],
+        allowedOverlap: true
+      }
+    ];
+
+    const result = analyzeComposition(
+      canvasOf([a, b, mediator]),
+      { width: 400, height: 400 },
+      "scene-binding"
+    );
+
+    expect(result.findings.some((item) => item.code === "unexpected_overlap")).toBe(false);
+  });
+
   it("provides bounded annotation candidates", () => {
     expect(
       annotationCandidates(
