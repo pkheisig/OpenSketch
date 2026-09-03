@@ -1056,14 +1056,18 @@ export function createSemanticEditorAdapter(
           ];
           const resolvedUpdates: Array<readonly [IText, string]> = [];
           updates.forEach(([role, value]) => {
-            if (typeof value !== "string" || value.length === 0) return;
+            if (typeof value !== "string") return;
+            const normalizedValue = boundedText(value, 240);
+            if (role === "stage-label" && !normalizedValue)
+              throw new SemanticAdapterError("INVALID_INPUT", "label must not be empty.");
+            if (!normalizedValue) return;
             const text = role === "stage-label" ? labelText : textForRole(role);
             if (!text)
               throw new SemanticAdapterError(
                 "UNSUPPORTED_UPDATE",
                 `Existing labeled group has no ${role} text slot.`
               );
-            resolvedUpdates.push([text, value]);
+            resolvedUpdates.push([text, normalizedValue]);
           });
           resolvedUpdates.forEach(([text, value]) => text.set("text", value));
           refreshTextMetrics(resolvedUpdates.map(([text]) => text));
@@ -1438,6 +1442,16 @@ export function createSemanticEditorAdapter(
         typeof input.sourceObjectId === "string" ? input.sourceObjectId : undefined;
       const targetObjectId =
         typeof input.targetObjectId === "string" ? input.targetObjectId : undefined;
+      if (distribution === "source-fan" && !sourceObjectId)
+        throw new SemanticAdapterError(
+          "INVALID_INPUT",
+          "source-fan distribution requires sourceObjectId."
+        );
+      if (distribution === "target-converging" && !targetObjectId)
+        throw new SemanticAdapterError(
+          "INVALID_INPUT",
+          "target-converging distribution requires targetObjectId."
+        );
       const sourceObject = sourceObjectId ? resolveObjects(canvas, [sourceObjectId])[0] : undefined;
       const targetObject = targetObjectId ? resolveObjects(canvas, [targetObjectId])[0] : undefined;
       const source = sourceObject ? inspectSemanticGeometry(sourceObject).center : undefined;
@@ -1535,7 +1549,17 @@ export function createSemanticEditorAdapter(
           particles.every((particle, index) => {
             const actual = inspectSemanticGeometry(particle).center;
             const expected = plan.points[index];
-            return Math.abs(actual.x - expected.x) <= 0.5 && Math.abs(actual.y - expected.y) <= 0.5;
+            const actualBounds = inspectSemanticGeometry(particle).visualBounds;
+            const expectedDiameter = particleInset * 2;
+            return (
+              Math.abs(actual.x - expected.x) <= 0.5 &&
+              Math.abs(actual.y - expected.y) <= 0.5 &&
+              Math.abs(actualBounds.width - expectedDiameter) <= 0.5 &&
+              Math.abs(actualBounds.height - expectedDiameter) <= 0.5 &&
+              particle.scaleX === 1 &&
+              particle.scaleY === 1 &&
+              particle.angle === 0
+            );
           });
         const relations = expectedRelations(existingField.objectId!);
         const matchesRelations = relations.every((expected) =>
