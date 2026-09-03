@@ -39,7 +39,6 @@ const SUPPORTED_SCENE_TYPES = new Set([
   "Text",
   "Textbox",
   "Triangle",
-  "particle",
   // Fabric 5/6 aliases found in older serialized projects.
   "i-text",
   "image"
