@@ -1603,6 +1603,7 @@ export function createSemanticEditorAdapter(
             : {})
         };
         existingField.setCoords();
+        dependencies.refreshConnectors();
         canvas.requestRenderAll();
         commitSemantic("Semantic repair particle field");
         return {
@@ -1852,7 +1853,15 @@ export function createSemanticEditorAdapter(
         .sort((left, right) => right - left);
       const widthCandidates =
         object instanceof Textbox
-          ? [...new Set([Math.min(originalWidth, maxWidth), maxWidth])]
+          ? [
+              ...new Set([
+                Math.min(
+                  originalWidth,
+                  maxWidth / Math.max(Math.abs(object.scaleX ?? 1), 0.000001)
+                ),
+                maxWidth / Math.max(Math.abs(object.scaleX ?? 1), 0.000001)
+              ])
+            ]
           : [undefined];
       let fitted = false;
       for (const size of fontSizes) {

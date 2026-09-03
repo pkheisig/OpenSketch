@@ -132,6 +132,22 @@ function sharesLabelGroup(
   );
 }
 
+function metadataAllowsOverlap(
+  left: { path: readonly FabricObject[] },
+  right: { path: readonly FabricObject[] }
+): boolean {
+  const leftIds = new Set(left.path.map((object) => object.objectId).filter(Boolean));
+  const rightIds = new Set(right.path.map((object) => object.objectId).filter(Boolean));
+  return (
+    left.path.some((object) =>
+      metadataOf(object)?.allowedOverlapObjectIds?.some((id) => rightIds.has(id))
+    ) ||
+    right.path.some((object) =>
+      metadataOf(object)?.allowedOverlapObjectIds?.some((id) => leftIds.has(id))
+    )
+  );
+}
+
 export function analyzeComposition(
   canvas: Canvas,
   canvasSize: { width: number; height: number },
@@ -349,6 +365,7 @@ export function analyzeComposition(
           b.connector ||
           sharesLabelGroup(leftEntry, rightEntry) ||
           sharesParticleField(leftEntry, rightEntry) ||
+          metadataAllowsOverlap(leftEntry, rightEntry) ||
           relationAllowsOverlap(
             relations,
             [aId, ...leftEntry.path.map((object) => object.objectId!).filter(Boolean)],
