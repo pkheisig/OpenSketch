@@ -240,6 +240,8 @@ export function planParticleField(
   target?: CompoundPoint,
   particleInset = 5
 ): ParticleFieldPlan {
+  if (bounds.width < particleInset * 2 || bounds.height < particleInset * 2)
+    throw new Error("Particle bounds must contain the rendered particle diameter.");
   if (distribution === "source-fan" && !source)
     throw new Error("source-fan distribution requires a source point.");
   if (distribution === "target-converging" && !target)

@@ -706,7 +706,8 @@ export function createSemanticEditorAdapter(
 
   const createBoundConnector = async (
     input: Record<string, unknown>,
-    commitAfter: boolean
+    commitAfter: boolean,
+    allowLabelEndpoints = false
   ): Promise<{
     objectId: string;
     fromPortId: string;
@@ -728,8 +729,9 @@ export function createSemanticEditorAdapter(
     if (fromObject === toObject)
       throw new SemanticAdapterError("INVALID_INPUT", "Connector endpoints must differ.");
     if (
-      metadataOf(fromObject)?.semanticRole === "stage-label" ||
-      metadataOf(toObject)?.semanticRole === "stage-label"
+      !allowLabelEndpoints &&
+      (metadataOf(fromObject)?.semanticRole === "stage-label" ||
+        metadataOf(toObject)?.semanticRole === "stage-label")
     ) {
       throw new SemanticAdapterError(
         "INVALID_ENDPOINT_SCOPE",
@@ -789,8 +791,8 @@ export function createSemanticEditorAdapter(
     );
     connector.semanticMetadata = {
       version: 1,
-      semanticRole: "main-flow-connector",
-      semanticType: "bound-connector"
+      semanticRole: allowLabelEndpoints ? "annotation-leader" : "main-flow-connector",
+      semanticType: allowLabelEndpoints ? "annotation-leader" : "bound-connector"
     };
     connector.semanticConnector = {
       version: 1,
@@ -1420,6 +1422,12 @@ export function createSemanticEditorAdapter(
       const target = targetObject ? inspectSemanticGeometry(targetObject).center : undefined;
       const defaults = dependencies.creationDefaults();
       const particleStrokeWidth = Math.max(1, defaults.shape.strokeWidth * 0.5);
+      const particleInset = 4 + particleStrokeWidth / 2;
+      if (fieldBounds.width < particleInset * 2 || fieldBounds.height < particleInset * 2)
+        throw new SemanticAdapterError(
+          "INVALID_INPUT",
+          "Particle bounds must contain the rendered particle diameter."
+        );
       const fieldObjectId = crypto.randomUUID();
       const plan = planParticleField(
         fieldBounds,
@@ -1428,7 +1436,7 @@ export function createSemanticEditorAdapter(
         seed,
         source,
         target,
-        4 + particleStrokeWidth / 2
+        particleInset
       );
       const particles = plan.points.map((position, index) => {
         const particle = new Circle({
@@ -1636,7 +1644,8 @@ export function createSemanticEditorAdapter(
               arrowhead: "none",
               routeType: "straight"
             },
-            false
+            false,
+            true
           );
           leaderObjectId = leader.objectId;
           const [leaderObject] = resolveObjects(canvas, [leaderObjectId]);
@@ -1707,9 +1716,10 @@ export function createSemanticEditorAdapter(
           if (width !== undefined) object.set("width", width);
           refreshTextMetrics([object]);
           const lines = object.textLines.length;
+          const renderedBounds = object.getBoundingRect();
           if (
-            (object.width ?? 0) <= maxWidth + 0.01 &&
-            (object.height ?? 0) <= maxHeight + 0.01 &&
+            renderedBounds.width <= maxWidth + 0.01 &&
+            renderedBounds.height <= maxHeight + 0.01 &&
             lines <= maxLines
           ) {
             fitted = true;
@@ -1721,13 +1731,14 @@ export function createSemanticEditorAdapter(
       if (!fitted) {
         object.set({ fontSize: originalFontSize, width: originalWidth });
         refreshTextMetrics([object]);
+        const renderedBounds = object.getBoundingRect();
         return {
           data: {
             objectId,
             fitted: false,
             fontSize: originalFontSize,
-            width: object.width ?? 0,
-            height: object.height ?? 0,
+            width: renderedBounds.width,
+            height: renderedBounds.height,
             lines: object.textLines.length
           },
           changedObjectIds: []
@@ -1735,6 +1746,7 @@ export function createSemanticEditorAdapter(
       }
       object.setCoords();
       refreshParentGroups(object);
+      const renderedBounds = object.getBoundingRect();
       dependencies.refreshConnectors();
       canvas.requestRenderAll();
       commitSemantic("Semantic fit text");
@@ -1743,8 +1755,8 @@ export function createSemanticEditorAdapter(
           objectId,
           fitted: true,
           fontSize: object.fontSize,
-          width: object.width ?? 0,
-          height: object.height ?? 0,
+          width: renderedBounds.width,
+          height: renderedBounds.height,
           lines: object.textLines.length
         },
         changedObjectIds: [objectId]
@@ -1768,6 +1780,7 @@ export function createSemanticEditorAdapter(
       );
       const skipped: string[] = [];
       const changed = new Set<string>();
+      const visitedObjectIds = new Set<string>();
       const applyPreset = (
         object: FabricObject,
         fallbackPreset?: ReturnType<typeof stylePreset>
@@ -1807,6 +1820,10 @@ export function createSemanticEditorAdapter(
           object: FabricObject,
           inheritedPreset?: ReturnType<typeof stylePreset>
         ): void => {
+          if (object.objectId) {
+            if (visitedObjectIds.has(object.objectId)) return;
+            visitedObjectIds.add(object.objectId);
+          }
           const protectedAsset = object.familyId && input.includeAssets !== true;
           applyPreset(object, inheritedPreset);
           const nextPreset = stylePreset(metadataOf(object)?.semanticRole ?? "") ?? inheritedPreset;
