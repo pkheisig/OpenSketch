@@ -39,6 +39,7 @@ const SUPPORTED_SCENE_TYPES = new Set([
   "Text",
   "Textbox",
   "Triangle",
+  "particle",
   // Fabric 5/6 aliases found in older serialized projects.
   "i-text",
   "image"
@@ -1268,9 +1269,10 @@ function validateParticleFieldSpec(value: unknown, path: string): void {
   if (!isRecord(value.bounds)) fail(`${path}.bounds`, "is invalid");
   const bounds = value.bounds;
   assertKnownKeys(bounds, `${path}.bounds`, new Set(["left", "top", "width", "height"]));
-  ["left", "top", "width", "height"].forEach((key) =>
-    assertFiniteNumber(bounds[key], `${path}.bounds.${key}`, { min: 0 })
-  );
+  assertFiniteNumber(bounds.left, `${path}.bounds.left`);
+  assertFiniteNumber(bounds.top, `${path}.bounds.top`);
+  assertFiniteNumber(bounds.width, `${path}.bounds.width`, { min: 0 });
+  assertFiniteNumber(bounds.height, `${path}.bounds.height`, { min: 0 });
   for (const key of ["sourceObjectId", "targetObjectId"] as const) {
     if (value[key] !== undefined) assertNonEmptyString(value[key], `${path}.${key}`, 200);
   }
