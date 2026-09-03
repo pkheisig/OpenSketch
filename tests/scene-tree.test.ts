@@ -2,6 +2,7 @@ import { Canvas, Group, Rect, util } from "../apps/web/node_modules/fabric";
 import { describe, expect, it } from "vitest";
 import {
   assertUniqueSceneObjectIds,
+  isSceneDescendant,
   sceneObjectEntries,
   sceneObjectIndex,
   sendSceneObjectToParentPlane
@@ -36,6 +37,15 @@ describe("recursive scene identity", () => {
     const canvas = { getObjects: () => [group] } as unknown as Canvas;
 
     expect(() => assertUniqueSceneObjectIds(canvas)).toThrow('"duplicate" is duplicated');
+  });
+
+  it("recognizes parent-only ancestry without recursing forever", () => {
+    const ancestor = new Group([]);
+    const object = new Rect({ width: 10 });
+    Object.defineProperty(object, "group", { value: undefined, configurable: true });
+    Object.defineProperty(object, "parent", { value: ancestor, configurable: true });
+
+    expect(isSceneDescendant(object, ancestor)).toBe(true);
   });
 
   it("keeps a replacement in the same world plane when its parent is transformed", () => {

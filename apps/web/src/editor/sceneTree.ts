@@ -69,10 +69,18 @@ export function assertUniqueSceneObjectIds(canvas: Canvas): void {
 export function isSceneDescendant(object: FabricObject, ancestor: FabricObject): boolean {
   if (object === ancestor) return true;
   const visited = new Set<FabricObject>();
-  for (let current = object.group; current; current = current.group) {
+  const stack: FabricObject[] = [];
+  if (object.group) stack.push(object.group);
+  const objectParent = (object as FabricObject & { parent?: FabricObject }).parent;
+  if (objectParent) stack.push(objectParent);
+  while (stack.length > 0) {
+    const current = stack.pop()!;
     if (current === ancestor) return true;
-    if (visited.has(current)) return false;
+    if (visited.has(current)) continue;
     visited.add(current);
+    if (current.group) stack.push(current.group);
+    const parent = (current as FabricObject & { parent?: FabricObject }).parent;
+    if (parent && parent !== current.group) stack.push(parent);
   }
   return false;
 }
