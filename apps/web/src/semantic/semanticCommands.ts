@@ -1405,6 +1405,10 @@ definitions.push(
         objectIds: objectIds(2),
         closed: { type: "boolean" },
         direction: { type: "string", enum: ["clockwise", "counterclockwise"] },
+        arrowhead: {
+          type: "string",
+          enum: ["none", "triangle", "open", "circle", "open-circle", "bar", "neuron"]
+        },
         routeType: {
           type: "string",
           enum: ["straight", "orthogonal", "bezier", "outside", "circular-arc", "cycle-arc"]
