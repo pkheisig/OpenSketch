@@ -2135,8 +2135,8 @@ export function createSemanticEditorAdapter(
           (isText && (object.fontSize !== nextFontSize || object.fontWeight !== nextFontWeight));
         if (!styleChanged) return;
         object.set({
-          fill: nextFill,
-          stroke: nextStroke,
+          ...(typeof object.fill === "string" ? { fill: nextFill } : {}),
+          ...(typeof object.stroke === "string" ? { stroke: nextStroke } : {}),
           strokeWidth: nextStrokeWidth,
           ...(isText ? { fontSize: nextFontSize, fontWeight: nextFontWeight } : {})
         });
