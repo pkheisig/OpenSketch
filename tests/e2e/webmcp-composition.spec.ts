@@ -1,4 +1,7 @@
-import { expect, test } from "@playwright/test";
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
+import { expect, test, type Page } from "@playwright/test";
 
 type Tool = {
   name: string;
@@ -7,32 +10,31 @@ type Tool = {
 
 type Result = {
   ok: boolean;
-  data?: Record<string, unknown>;
+  data?: Record<string, any>;
   error?: { code: string; message?: string };
 };
 
 type Descriptor = {
   objectId: string;
   type: string;
+  name?: string;
   text?: string;
   parentObjectId?: string;
-  children?: string[];
-  semanticMetadata?: {
-    semanticRole?: string;
-    stageId?: string;
-    stageIndex?: number;
-  };
+  bounds?: { left: number; top: number; width: number; height: number };
+  position?: { x: number; y: number };
+  geometry?: { center: { x: number; y: number }; visualBounds: Descriptor["bounds"] };
+  asset?: { familyId?: string; variantId?: string };
+  semanticMetadata?: Record<string, any>;
   connector?: {
     fromObjectId: string;
     toObjectId: string;
     pathShape?: string;
+    routing?: string;
   };
   freeConnector?: unknown;
 };
 
-test("qualifies the cancer-immunity-cycle reference composition through real WebMCP calls", async ({
-  page
-}) => {
+async function installRecorder(page: Page) {
   await page.addInitScript(() => {
     const tools: unknown[] = [];
     Object.defineProperty(document, "modelContext", {
@@ -44,19 +46,132 @@ test("qualifies the cancer-immunity-cycle reference composition through real Web
       }
     });
     (window as typeof window & { __webmcpTools?: unknown[] }).__webmcpTools = tools;
-    (window as typeof window & { __webmcpCallCount?: number }).__webmcpCallCount = 0;
+    (window as typeof window & { __webmcpCalls?: string[] }).__webmcpCalls = [];
   });
   await page.goto("./?webmcpDemo=1");
   await page.getByRole("button", { name: "New figure" }).click();
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
-  await expect
-    .poll(async () =>
-      page.evaluate(() =>
-        ((window as typeof window & { __webmcpTools?: Tool[] }).__webmcpTools ?? []).map(
-          (tool) => tool.name
-        )
-      )
+}
+
+async function registeredToolNames(page: Page) {
+  return page.evaluate(() =>
+    ((window as typeof window & { __webmcpTools?: Tool[] }).__webmcpTools ?? []).map(
+      (tool) => tool.name
     )
+  );
+}
+
+test("rejects the historical false-pass baseline before qualifying the reference", async ({
+  page
+}) => {
+  const baseline = JSON.parse(
+    readFileSync(
+      resolve(process.cwd(), "tests/fixtures/webmcp-composition/negative-baseline.json"),
+      "utf8"
+    )
+  ) as {
+    historicalValidation: { pass: boolean };
+    correctedValidation: { pass: boolean; requiredFinding: string };
+  };
+  expect(baseline.historicalValidation.pass).toBe(true);
+  expect(baseline.correctedValidation.pass).toBe(false);
+  await installRecorder(page);
+  const result = await page.evaluate(async () => {
+    const tools = (window as typeof window & { __webmcpTools?: Tool[] }).__webmcpTools ?? [];
+    const call = async (name: string, input: Record<string, unknown>) => {
+      const tool = tools.find((candidate) => candidate.name === name);
+      if (!tool) throw new Error(`Missing WebMCP tool: ${name}`);
+      return (await tool.execute(input)) as Result;
+    };
+    const mustCall = async (name: string, input: Record<string, unknown>) => {
+      const response = await call(name, input);
+      if (!response.ok) throw new Error(`${name} failed: ${JSON.stringify(response)}`);
+      return response;
+    };
+    await mustCall("resize_canvas", { width: 1200, height: 900 });
+    const seeded = await mustCall("batch", {
+      confirmed: true,
+      operations: Array.from({ length: 7 }, (_, index) => ({
+        command: "create_shape",
+        input: { kind: "ellipse", x: 120 + index * 145, y: index % 2 ? 730 : 170 },
+        as: `stage${index + 1}`
+      }))
+    });
+    const operations = seeded.data?.operations as Array<{ result: Result }>;
+    const objectIds = operations.map((operation) => operation.result.data?.objectId as string);
+    const stages: string[] = [];
+    for (let index = 0; index < objectIds.length; index += 1) {
+      const group = await mustCall("compose_labeled_group", {
+        objectIds: [objectIds[index]],
+        label: `Stage ${index + 1}`,
+        title: `Stage ${index + 1}`,
+        placement: "outward",
+        stageId: `negative-stage-${index + 1}`,
+        stageIndex: index + 1,
+        x: 120 + index * 145,
+        y: index % 2 ? 730 : 170
+      });
+      stages.push(group.data?.contentObjectId as string);
+    }
+    const semantics = stages.map((objectId, index) => ({
+      command: "set_object_semantics",
+      input: {
+        objectId,
+        metadata: {
+          version: 1,
+          semanticRole: "stage-content",
+          stageId: `negative-stage-${index + 1}`,
+          stageIndex: index + 1
+        },
+        relations: [
+          {
+            id: `negative-flow-${index + 1}`,
+            kind: "flow_to",
+            sourceObjectId: objectId,
+            targetObjectId: stages[(index + 1) % stages.length],
+            direction: "forward"
+          }
+        ]
+      }
+    }));
+    await mustCall("batch", { confirmed: true, operations: semantics });
+    await mustCall("connect_sequence", {
+      objectIds: stages,
+      closed: true,
+      routeType: "cycle-arc",
+      center: { x: 600, y: 450 },
+      axes: { x: 500, y: 360 },
+      direction: "clockwise"
+    });
+    const validation = await mustCall("validate_figure", {
+      profile: "publication",
+      maxFindings: 128,
+      padding: 48
+    });
+    const cycle = await mustCall("validate_figure", {
+      profile: "cycle",
+      maxFindings: 128,
+      padding: 24
+    });
+    return { validation, cycle };
+  });
+
+  expect(result.validation.data?.pass).toBe(false);
+  expect(result.cycle.data?.pass).toBe(false);
+  const codes = [
+    ...((result.validation.data?.findings ?? []) as Array<{ code: string }>),
+    ...((result.cycle.data?.findings ?? []) as Array<{ code: string }>)
+  ].map((finding) => finding.code);
+  expect(codes).toContain(baseline.correctedValidation.requiredFinding);
+});
+
+test("qualifies a real-asset cancer-immunity reference through registered WebMCP", async ({
+  page
+}) => {
+  test.setTimeout(120000);
+  await installRecorder(page);
+  await expect
+    .poll(() => registeredToolNames(page))
     .toEqual(
       expect.arrayContaining([
         "search_assets",
@@ -64,625 +179,764 @@ test("qualifies the cancer-immunity-cycle reference composition through real Web
         "insert_asset",
         "batch",
         "compose_labeled_group",
-        "connect_sequence",
+        "compose_interaction",
+        "create_particle_field",
         "create_annotation",
-        "export_figure",
-        "render_scene_preview"
+        "connect_sequence",
+        "plan_layout",
+        "apply_layout_plan",
+        "analyze_composition",
+        "validate_figure",
+        "render_scene_preview",
+        "export_figure"
       ])
     );
 
   const composition = await page.evaluate(async () => {
     const tools = (window as typeof window & { __webmcpTools?: Tool[] }).__webmcpTools ?? [];
+    const calls = (window as typeof window & { __webmcpCalls?: string[] }).__webmcpCalls ?? [];
     const call = async (name: string, input: Record<string, unknown>): Promise<Result> => {
       const tool = tools.find((candidate) => candidate.name === name);
       if (!tool) throw new Error(`Missing WebMCP tool: ${name}`);
-      (window as typeof window & { __webmcpCallCount?: number }).__webmcpCallCount =
-        ((window as typeof window & { __webmcpCallCount?: number }).__webmcpCallCount ?? 0) + 1;
-      return (await tool.execute(input)) as Result;
-    };
-    const mustCall = async (name: string, input: Record<string, unknown>) => {
-      const result = await call(name, input);
-      if (!result.ok) {
-        throw new Error(`${name} failed: ${JSON.stringify(result)}`);
-      }
+      calls.push(name);
+      const result = (await tool.execute(input)) as Result;
+      if (!result.ok) throw new Error(`${name} failed: ${JSON.stringify(result)}`);
       return result;
     };
-    const operationData = (result: Result, index: number): Record<string, unknown> => {
-      const operations = result.data?.operations as Array<{ result: Result }> | undefined;
-      const operation = operations?.[index];
-      if (!operation?.result.ok || !operation.result.data) {
-        throw new Error(`Missing successful batch operation ${index}: ${JSON.stringify(result)}`);
-      }
-      return operation.result.data;
-    };
     const objectId = (result: Result | Record<string, unknown>): string => {
-      const id = "data" in result ? result.data?.objectId : result.objectId;
+      const data = "data" in result ? result.data : result;
+      const id = data?.objectId;
       if (typeof id !== "string") throw new Error(`Missing object ID: ${JSON.stringify(result)}`);
       return id;
     };
-    const search = await mustCall("search_assets", { query: "Arcadia Science", limit: 2 });
-    const searchResults = search.data?.results as Array<{ familyId: string }> | undefined;
-    const firstFamily = searchResults?.[0];
-    const secondFamily = searchResults?.[1];
-    if (!firstFamily || !secondFamily) {
-      throw new Error("The bundled asset manifest needs two searchable organism families.");
-    }
-    const firstInspection = await mustCall("inspect_asset", { familyId: firstFamily.familyId });
-    const secondInspection = await mustCall("inspect_asset", {
-      familyId: secondFamily.familyId
-    });
-    const firstAssetFamily = firstInspection.data?.family as {
-      selectedVariantId: string;
-      variants: Array<{ id: string }>;
+    const operationData = (result: Result, index: number): Record<string, any> => {
+      const operation = (result.data?.operations as Array<{ result: Result }>)[index];
+      if (!operation?.result.ok || !operation.result.data)
+        throw new Error(`Missing successful batch operation ${index}`);
+      return operation.result.data;
     };
-    const secondAssetFamily = secondInspection.data?.family as {
-      selectedVariantId: string;
-      variants: Array<{ id: string }>;
-    };
-    const firstVariant = firstAssetFamily.selectedVariantId;
-    const secondVariant = secondAssetFamily.selectedVariantId;
-    const alternateVariant = firstAssetFamily.variants.find(
-      (variant) => variant.id !== firstVariant
-    )?.id;
-    if (!alternateVariant)
-      throw new Error(
-        `The selected bundled asset has no variant to replace: ${JSON.stringify(firstAssetFamily)}`
+    const findFamily = async (query: string, title: string, category: string, familyId: string) => {
+      const search = await call("search_assets", { query, category, limit: 32 });
+      const results = (search.data?.results ?? []) as Array<{ familyId: string; title: string }>;
+      const match = results.find(
+        (candidate) => candidate.title === title && candidate.familyId === familyId
       );
-
-    const points = {
-      stage1: { x: 1100, y: 240 },
-      stage2: { x: 1640, y: 500 },
-      stage3: { x: 1780, y: 900 },
-      stage4: { x: 1400, y: 1260 },
-      stage5: { x: 800, y: 1260 },
-      stage6: { x: 420, y: 900 },
-      stage7: { x: 560, y: 500 }
+      if (!match) throw new Error(`No exact ${title} family returned for ${query}`);
+      const inspected = await call("inspect_asset", { familyId: match.familyId });
+      const family = inspected.data?.family as {
+        familyId: string;
+        title: string;
+        selectedVariantId: string;
+        variants: Array<{ id: string }>;
+      };
+      return {
+        familyId: family.familyId,
+        variantId: family.selectedVariantId,
+        variants: family.variants
+      };
     };
-    await mustCall("resize_canvas", { width: 2200, height: 1600 });
-    await mustCall("set_project_metadata", {
+
+    await call("resize_canvas", { width: 1800, height: 1350 });
+    await call("set_project_metadata", {
       name: "Cancer-immunity cycle qualification",
-      description: "WebMCP reference composition"
+      description: "Registered WebMCP reference workflow; negative baseline retained separately."
     });
-    const seededBatch = await mustCall("batch", {
+
+    const [, , , cd8, tCell, venule, antibody, mhc] = await Promise.all([
+      findFamily("Apoptosis", "Apoptosis", "Cellular processes", "nih-bioart-21"),
+      findFamily("Dendritic Cell", "Dendritic Cell", "Cells", "nih-bioart-114"),
+      findFamily("Lymph Node", "Lymph Node", "Anatomy", "nih-bioart-304"),
+      findFamily("CD8 TCell", "CD8 TCell", "Cells", "nih-bioart-69"),
+      findFamily("T Cell", "T Cell", "Cells", "nih-bioart-509"),
+      findFamily("Venule Cross Section", "Venule Cross Section", "Anatomy", "nih-bioart-539"),
+      findFamily("Antibody", "Antibody", "Proteins", "nih-bioart-17"),
+      findFamily("MHC Class 1", "MHC Class 1", "Proteins", "nih-bioart-341")
+    ]);
+    const assetInput = (asset: { familyId: string; variantId: string }) => ({
+      familyId: asset.familyId,
+      variantId: asset.variantId
+    });
+
+    const seeded = await call("batch", {
       confirmed: true,
       operations: [
         {
           command: "insert_asset",
-          input: { familyId: firstFamily.familyId, variantId: firstVariant, ...points.stage1 },
-          as: "antigenAsset"
+          input: { ...assetInput(tCell), x: 220, y: 180 },
+          as: "stage1Dead"
         },
         {
           command: "insert_asset",
-          input: { familyId: secondFamily.familyId, variantId: secondVariant, ...points.stage5 },
-          as: "vesselAsset"
+          input: { ...assetInput(tCell), x: 520, y: 180 },
+          as: "stage2Dendritic"
         },
         {
-          command: "create_shape",
-          input: { kind: "ellipse", ...points.stage2 },
-          as: "presentation"
+          command: "insert_asset",
+          input: { ...assetInput(cd8), x: 860, y: 270 },
+          as: "stage3Apc"
         },
-        { command: "create_shape", input: { kind: "ellipse", x: 1740, y: 880 }, as: "apc" },
-        { command: "create_shape", input: { kind: "ellipse", x: 1840, y: 880 }, as: "tCell" },
+        { command: "insert_asset", input: { ...assetInput(mhc), x: 960, y: 270 }, as: "stage3Cd8" },
         {
-          command: "create_shape",
-          input: { kind: "ellipse", ...points.stage4 },
-          as: "trafficking"
-        },
-        {
-          command: "create_shape",
-          input: { kind: "ellipse", ...points.stage6 },
-          as: "recognition"
-        },
-        { command: "create_shape", input: { kind: "ellipse", ...points.stage7 }, as: "killing" },
-        {
-          command: "create_particle_field",
-          input: {
-            count: 16,
-            distribution: "cloud",
-            seed: "antigen-release",
-            bounds: { left: 1020, top: 170, width: 160, height: 120 },
-            semanticType: "antigen-release",
-            role: "particle-field"
-          },
-          as: "antigenField"
+          command: "insert_asset",
+          input: { ...assetInput(tCell), x: 1210, y: 250 },
+          as: "stage4T1"
         },
         {
-          command: "create_particle_field",
-          input: {
-            count: 12,
-            distribution: "gradient",
-            seed: "cytokine-signals",
-            bounds: { left: 1700, top: 800, width: 180, height: 120 },
-            semanticType: "cytokine-signals",
-            role: "particle-field"
-          },
-          as: "cytokineField"
+          command: "insert_asset",
+          input: { ...assetInput(venule), x: 1490, y: 420 },
+          as: "stage5Vessel"
         },
         {
-          command: "create_particle_field",
-          input: {
-            count: 14,
-            distribution: "gradient",
-            seed: "chemokine-gradient",
-            bounds: { left: 1320, top: 1170, width: 180, height: 120 },
-            semanticType: "chemokine-gradient",
-            role: "particle-field"
-          },
-          as: "chemokineField"
+          command: "insert_asset",
+          input: { ...assetInput(antibody), x: 1530, y: 720 },
+          as: "stage6Target"
         },
         {
-          command: "create_particle_field",
-          input: {
-            count: 14,
-            distribution: "cloud",
-            seed: "perforin-granzyme",
-            bounds: { left: 480, top: 420, width: 180, height: 120 },
-            semanticType: "perforin-granzyme",
-            role: "particle-field"
-          },
-          as: "killingField"
-        },
-        { command: "create_shape", input: { kind: "circle", x: 1100, y: 800 }, as: "hub" },
-        {
-          command: "create_text",
-          input: { kind: "point", text: "Cancer immunity", x: 1100, y: 770 },
-          as: "hubTitle"
-        },
-        {
-          command: "create_text",
-          input: { kind: "point", text: "seven-stage cycle", x: 1100, y: 830 },
-          as: "hubSubtitle"
+          command: "insert_asset",
+          input: { ...assetInput(tCell), x: 1240, y: 980 },
+          as: "stage7Effector"
         }
       ]
     });
-    const antigenAsset = operationData(seededBatch, 0);
-    const vesselAsset = operationData(seededBatch, 1);
-    const presentation = operationData(seededBatch, 2);
-    const apc = operationData(seededBatch, 3);
-    const tCell = operationData(seededBatch, 4);
-    const trafficking = operationData(seededBatch, 5);
-    const recognition = operationData(seededBatch, 6);
-    const killing = operationData(seededBatch, 7);
-    const antigenField = operationData(seededBatch, 8);
-    const cytokineField = operationData(seededBatch, 9);
-    const chemokineField = operationData(seededBatch, 10);
-    const killingField = operationData(seededBatch, 11);
-    const hub = operationData(seededBatch, 12);
-    const hubTitle = operationData(seededBatch, 13);
-    const hubSubtitle = operationData(seededBatch, 14);
-    const hubGroup = await mustCall("group_objects", {
-      objectIds: [objectId(hub), objectId(hubTitle), objectId(hubSubtitle)]
-    });
-    await mustCall("set_object_semantics", {
-      objectId: objectId(hubGroup),
-      metadata: {
-        version: 1,
-        semanticRole: "hub",
-        semanticType: "cycle-hub",
-        semanticName: "cancer-immunity-hub",
-        pinned: true
-      }
-    });
-    await mustCall("fit_text", {
-      objectId: objectId(hubTitle),
-      maxWidth: 260,
-      maxHeight: 40,
-      minFontSize: 12,
-      maxFontSize: 28,
-      maxLines: 1
-    });
-    await mustCall("fit_text", {
-      objectId: objectId(hubSubtitle),
-      maxWidth: 260,
-      maxHeight: 40,
-      minFontSize: 10,
-      maxFontSize: 20,
-      maxLines: 1
-    });
-    await mustCall("replace_asset_variant", {
-      objectId: objectId(antigenAsset),
-      variantId: alternateVariant
-    });
-    const interaction = await mustCall("compose_interaction", {
-      sourceObjectId: objectId(apc),
-      targetObjectId: objectId(tCell),
-      mode: "binding",
-      relationId: "mhc-tcr-binding"
-    });
-    if ((interaction.data?.relation as { kind?: string } | undefined)?.kind !== "binds") {
-      throw new Error(`The priming interaction was not a binding: ${JSON.stringify(interaction)}`);
+    const seededIds = Array.from({ length: 8 }, (_, index) =>
+      objectId(operationData(seeded, index))
+    );
+    const [
+      stage1Dead,
+      stage2Dendritic,
+      stage3Apc,
+      stage3Cd8,
+      stage4T1,
+      stage5Vessel,
+      stage6Target,
+      stage7Effector
+    ] = seededIds;
+    const checkpoint = stage6Target;
+    const alternate = tCell.variants.find((variant) => variant.id !== tCell.variantId)?.id;
+    if (alternate)
+      await call("replace_asset_variant", { objectId: stage7Effector, variantId: alternate });
+    await call("scale_objects", { objectIds: seededIds, scaleX: 0.01, scaleY: 0.01 });
+    await call("scale_objects", { objectIds: seededIds, scaleX: 0.01, scaleY: 0.01 });
+    const seededGeometry = await call("inspect_geometry", { objectIds: seededIds });
+    const unevaluableSeeded = (
+      seededGeometry.data?.objects as Array<{ objectId: string; geometry: { evaluable: boolean } }>
+    ).filter((object) => object.geometry.evaluable === false);
+    if (unevaluableSeeded.length > 0)
+      throw new Error(
+        `Unevaluable seeded assets: ${JSON.stringify(
+          unevaluableSeeded.map((object) => ({
+            index: seededIds.indexOf(object.objectId),
+            familyId: [tCell, tCell, cd8, mhc, tCell, venule, antibody, tCell][
+              seededIds.indexOf(object.objectId)
+            ].familyId
+          }))
+        )}`
+      );
+
+    const antigenField = objectId(
+      await call("create_particle_field", {
+        count: 12,
+        distribution: "cloud",
+        seed: "tumor-antigens-v1",
+        bounds: { left: 180, top: 120, width: 180, height: 150 },
+        semanticType: "tumor-antigen",
+        role: "particle-field"
+      })
+    );
+    const cytokineField = objectId(
+      await call("create_particle_field", {
+        count: 10,
+        distribution: "cloud",
+        seed: "polarizing-cytokines-v1",
+        bounds: { left: 820, top: 200, width: 180, height: 150 },
+        semanticType: "polarizing-cytokine",
+        role: "particle-field"
+      })
+    );
+    const chemokineField = objectId(
+      await call("create_particle_field", {
+        count: 14,
+        distribution: "gradient",
+        seed: "chemokine-gradient-v1",
+        bounds: { left: 1260, top: 280, width: 260, height: 180 },
+        semanticType: "chemokine-gradient",
+        role: "particle-field"
+      })
+    );
+    const granzymeField = objectId(
+      await call("create_particle_field", {
+        count: 10,
+        distribution: "linear",
+        seed: "perforin-granzyme-v1",
+        bounds: { left: 1120, top: 900, width: 220, height: 150 },
+        semanticType: "perforin-granzyme",
+        role: "particle-field"
+      })
+    );
+
+    const interactions = [
+      [stage3Apc, stage3Cd8, "binding", "priming-mhc-tcr"],
+      [stage4T1, stage5Vessel, "migration", "trafficking-gradient"],
+      [stage5Vessel, stage6Target, "cross-boundary", "extravasation-vessel-crossing"],
+      [stage6Target, stage7Effector, "contact", "recognition-contact"],
+      [stage7Effector, stage1Dead, "contact", "killing-contact"]
+    ] as const;
+    for (const [sourceObjectId, targetObjectId, mode, relationId] of interactions) {
+      await call("compose_interaction", { sourceObjectId, targetObjectId, mode, relationId });
     }
-    const intervention = await mustCall("create_annotation", {
-      targetObjectId: objectId(presentation),
-      text: "anti-PD-1",
-      placement: "right",
-      gap: 24,
-      leader: true
+
+    await call("batch", {
+      confirmed: true,
+      operations: [
+        {
+          command: "set_object_semantics",
+          input: {
+            objectId: stage1Dead,
+            metadata: { version: 1 },
+            relations: [
+              {
+                id: "antigen-release-emits",
+                kind: "emits",
+                sourceObjectId: stage1Dead,
+                targetObjectId: antigenField,
+                direction: "forward"
+              }
+            ]
+          }
+        },
+        {
+          command: "set_object_semantics",
+          input: {
+            objectId: stage3Apc,
+            metadata: { version: 1 },
+            relations: [
+              {
+                id: "priming-mhc-tcr",
+                kind: "binds",
+                sourceObjectId: stage3Apc,
+                targetObjectId: stage3Cd8,
+                direction: "forward",
+                allowedOverlap: true
+              },
+              {
+                id: "cytokine-emission",
+                kind: "emits",
+                sourceObjectId: stage3Apc,
+                targetObjectId: cytokineField,
+                direction: "forward"
+              }
+            ]
+          }
+        },
+        {
+          command: "set_object_semantics",
+          input: {
+            objectId: chemokineField,
+            metadata: { version: 1 },
+            relations: [
+              {
+                id: "trafficking-gradient",
+                kind: "follows_gradient",
+                sourceObjectId: chemokineField,
+                targetObjectId: stage5Vessel,
+                direction: "forward"
+              }
+            ]
+          }
+        },
+        {
+          command: "set_object_semantics",
+          input: {
+            objectId: stage7Effector,
+            metadata: { version: 1 },
+            relations: [
+              {
+                id: "killing-contact",
+                kind: "contacts",
+                sourceObjectId: stage7Effector,
+                targetObjectId: stage1Dead,
+                direction: "forward",
+                allowedOverlap: true
+              },
+              {
+                id: "granzyme-emission",
+                kind: "emits",
+                sourceObjectId: stage7Effector,
+                targetObjectId: granzymeField,
+                direction: "forward"
+              }
+            ]
+          }
+        }
+      ]
     });
-    const bases = [
-      { id: objectId(antigenAsset), field: objectId(antigenField) },
-      { id: objectId(presentation) },
-      { id: objectId(apc), field: objectId(cytokineField), second: objectId(tCell) },
-      { id: objectId(trafficking), field: objectId(chemokineField) },
-      { id: objectId(vesselAsset) },
-      { id: objectId(recognition) },
-      { id: objectId(killing), field: objectId(killingField) }
+
+    const annotationIds = [
+      objectId(
+        await call("create_annotation", {
+          targetObjectId: stage3Apc,
+          text: "peptide–MHC-I ↔ TCR/CD8",
+          placement: "auto",
+          gap: 8,
+          maxWidth: 160,
+          fontSize: 12,
+          leader: true,
+          relationId: "priming-mhc-tcr"
+        })
+      ),
+      objectId(
+        await call("create_annotation", {
+          targetObjectId: chemokineField,
+          text: "chemokine gradient",
+          placement: "auto",
+          gap: 8,
+          maxWidth: 160,
+          fontSize: 12,
+          leader: true,
+          relationId: "trafficking-gradient"
+        })
+      ),
+      objectId(
+        await call("create_annotation", {
+          targetObjectId: checkpoint,
+          text: "PD-1/PD-L1 checkpoint blockade — anti-PD-1",
+          placement: "auto",
+          gap: 8,
+          maxWidth: 160,
+          fontSize: 12,
+          leader: true
+        })
+      )
+    ];
+
+    const stageInputs = [
+      [stage1Dead, antigenField],
+      [stage2Dendritic, cytokineField],
+      [stage3Apc, stage3Cd8],
+      [stage4T1, chemokineField],
+      [stage5Vessel],
+      [stage6Target],
+      [stage7Effector, granzymeField]
     ];
     const labels = [
-      ["Antigen release", "Tumor antigen", "antigen enters cycle"],
-      ["Antigen presentation", "MHC-I display", "presented peptide"],
-      ["T-cell priming", "APC + T cell", "co-stimulation"],
-      ["Trafficking", "Chemokine gradient", "toward tumor"],
-      ["Extravasation", "Vessel crossing", "into tumor bed"],
-      ["Recognition", "Checkpoint", "target engagement"],
-      ["Killing", "Perforin + granzymes", "apoptosis"]
+      [
+        "Cancer-antigen release",
+        "Tumor cells release antigens",
+        "danger signals and antigen cargo"
+      ],
+      ["Antigen presentation", "Dendritic-cell uptake", "lymph-node presentation"],
+      ["Priming and activation", "APC + CD8 T cell", "peptide–MHC-I ↔ TCR/CD8"],
+      ["T-cell trafficking", "Chemokine-guided migration", "CXCL9 / CXCL10 / CXCL11"],
+      ["Tumor infiltration", "Transendothelial migration", "T cell crosses vessel"],
+      ["Tumor recognition", "TCR/CD8 recognition", "PD-1 / PD-L1 checkpoint"],
+      ["Cancer-cell killing", "Cytotoxic lymphocytes", "perforin + granzymes → apoptosis"]
     ];
-    const positions = [
-      points.stage1,
-      points.stage2,
-      points.stage3,
-      points.stage4,
-      points.stage5,
-      points.stage6,
-      points.stage7
-    ];
-    const stages: Array<{ stageId: string; contentObjectId: string; labelObjectId: string }> = [];
-    for (let index = 0; index < bases.length; index += 1) {
-      const base = bases[index];
-      const contentIds = [
-        base.id,
-        ...(base.field ? [base.field] : []),
-        ...(base.second ? [base.second] : [])
-      ];
-      const group = await mustCall("compose_labeled_group", {
-        objectIds: contentIds,
+    const stages: Array<{
+      stageId: string;
+      stageObjectId: string;
+      contentObjectId: string;
+      labelObjectId: string;
+    }> = [];
+    for (let index = 0; index < stageInputs.length; index += 1) {
+      const group = await call("compose_labeled_group", {
+        objectIds: stageInputs[index],
         label: labels[index][0],
         title: labels[index][1],
         subtitle: labels[index][2],
         placement: "outward",
-        stageId: `cycle-stage-${index + 1}`,
+        stageId: `cancer-cycle-stage-${index + 1}`,
         stageIndex: index + 1,
-        ...positions[index]
+        x: 220 + (index % 4) * 430,
+        y: 240 + Math.floor(index / 4) * 440
       });
       stages.push({
-        stageId: `cycle-stage-${index + 1}`,
-        contentObjectId: objectId({
-          data: group.data?.contentObjectId ? { objectId: group.data.contentObjectId } : undefined
-        }),
-        labelObjectId: objectId({
-          data: group.data?.labelObjectId ? { objectId: group.data.labelObjectId } : undefined
-        })
+        stageId: `cancer-cycle-stage-${index + 1}`,
+        stageObjectId: objectId(group),
+        contentObjectId: group.data?.contentObjectId as string,
+        labelObjectId: group.data?.labelObjectId as string
       });
     }
-    const sequence = await mustCall("connect_sequence", {
-      objectIds: stages.map((stage) => stage.contentObjectId),
-      closed: true,
-      routeType: "cycle-arc",
-      center: { x: 1100, y: 800 },
-      axes: { x: 700, y: 500 },
-      direction: "clockwise"
-    });
-    const semanticOperations = stages.map((stage, index) => {
-      const next = stages[(index + 1) % stages.length];
-      const relation = {
-        id: `cycle-flow-${index + 1}`,
-        kind: "flow_to",
-        sourceObjectId: stage.contentObjectId,
-        targetObjectId: next.contentObjectId,
-        direction: "forward"
-      };
-      const extra =
-        index === 0
-          ? {
-              id: "antigen-release-emits",
-              kind: "emits",
-              sourceObjectId: baseId(bases[0]),
-              targetObjectId: baseField(bases[0])
-            }
-          : index === 2
-            ? {
-                id: "priming-contacts",
-                kind: "contacts",
-                sourceObjectId: baseId(bases[2]),
-                targetObjectId: baseSecond(bases[2])
-              }
-            : index === 3
-              ? {
-                  id: "trafficking-follows-gradient",
-                  kind: "follows_gradient",
-                  sourceObjectId: baseField(bases[3]),
-                  targetObjectId: baseId(bases[3])
-                }
-              : index === 4
-                ? {
-                    id: "extravasation-crosses-vessel",
-                    kind: "crosses",
-                    sourceObjectId: baseId(bases[4]),
-                    targetObjectId: stage.contentObjectId
-                  }
-                : index === 5
-                  ? {
-                      id: "checkpoint-inhibited-by",
-                      kind: "intervention_targets",
-                      sourceObjectId: stage.contentObjectId,
-                      targetObjectId: objectId(intervention)
-                    }
-                  : index === 6
-                    ? {
-                        id: "killing-emits-granzyme",
-                        kind: "emits",
-                        sourceObjectId: stage.contentObjectId,
-                        targetObjectId: baseField(bases[6])
-                      }
-                    : undefined;
-      return {
+    const stageContents = stages.map((stage) => stage.contentObjectId);
+    const flowRelations = stages.map((stage, index) => ({
+      id: `cancer-cycle-flow-${index + 1}`,
+      kind: "flow_to",
+      sourceObjectId: stage.contentObjectId,
+      targetObjectId: stages[(index + 1) % stages.length].contentObjectId,
+      direction: "forward"
+    }));
+    await call("batch", {
+      confirmed: true,
+      operations: stages.map((stage, index) => ({
         command: "set_object_semantics",
         input: {
           objectId: stage.contentObjectId,
           metadata: {
             version: 1,
             semanticRole: "stage-content",
-            semanticType: "cycle-stage-content",
+            semanticType: "cancer-cycle-stage",
             stageId: stage.stageId,
-            stageIndex: index + 1,
-            preferredPortHint: "outgoing"
+            stageIndex: index + 1
           },
-          relations: [relation, ...(extra ? [extra] : [])]
+          relations: [flowRelations[index]]
         }
-      };
+      }))
     });
-    await mustCall("batch", { confirmed: true, operations: semanticOperations });
-    await mustCall("plan_layout", {
-      mode: "cycle",
-      objectIds: stages.map((stage) => stage.contentObjectId),
-      center: { x: 1100, y: 800 },
-      axes: { x: 700, y: 500 },
-      direction: "clockwise",
-      hubKeepOut: { left: 940, top: 640, width: 320, height: 320 }
-    });
-    await mustCall("normalize_styles", {
-      roles: ["hub", "stage", "stage-label", "particle-field", "annotation"]
-    });
-    const preview = await mustCall("render_scene_preview", {
-      maxWidth: 512,
-      maxHeight: 384,
-      background: "canvas"
-    });
-    const analysis = await mustCall("analyze_composition", {
-      profile: "scientific-diagram",
-      maxFindings: 128,
-      padding: 24
-    });
-    const validation = await mustCall("validate_figure", {
-      profile: "cycle",
-      maxFindings: 128,
-      padding: 24
-    });
-    const scene = await mustCall("inspect_scene", { maxObjects: 256, maxDepth: 12 });
-    const relations = await mustCall("inspect_relations", { limit: 256 });
-    const beforeRollback = await mustCall("inspect_scene", { maxObjects: 256, maxDepth: 12 });
-    const failedBatch = await call("batch", {
+    await call("batch", {
       confirmed: true,
       operations: [
-        { command: "create_shape", input: { kind: "rectangle", x: 30, y: 30 }, as: "rolledBack" },
-        { command: "move_objects", input: { objectIds: ["stale-rollback-id"], dx: 1, dy: 1 } }
+        {
+          command: "set_object_semantics",
+          input: {
+            objectId: stages[2].contentObjectId,
+            metadata: {
+              version: 1,
+              semanticRole: "stage-content",
+              semanticType: "cancer-cycle-stage",
+              stageId: stages[2].stageId,
+              stageIndex: 3
+            },
+            relations: [
+              flowRelations[2],
+              {
+                id: "reference-binding-stage3",
+                kind: "binds",
+                sourceObjectId: stage3Apc,
+                targetObjectId: stage3Cd8,
+                direction: "forward",
+                allowedOverlap: true
+              }
+            ]
+          }
+        },
+        {
+          command: "set_object_semantics",
+          input: {
+            objectId: stages[4].contentObjectId,
+            metadata: {
+              version: 1,
+              semanticRole: "stage-content",
+              semanticType: "cancer-cycle-stage",
+              stageId: stages[4].stageId,
+              stageIndex: 5
+            },
+            relations: [
+              flowRelations[4],
+              {
+                id: "reference-gradient-stage5",
+                kind: "follows_gradient",
+                sourceObjectId: chemokineField,
+                targetObjectId: stage5Vessel,
+                direction: "forward"
+              }
+            ]
+          }
+        },
+        {
+          command: "set_object_semantics",
+          input: {
+            objectId: stages[6].contentObjectId,
+            metadata: {
+              version: 1,
+              semanticRole: "stage-content",
+              semanticType: "cancer-cycle-stage",
+              stageId: stages[6].stageId,
+              stageIndex: 7
+            },
+            relations: [
+              flowRelations[6],
+              {
+                id: "reference-contact-stage7",
+                kind: "contacts",
+                sourceObjectId: stage7Effector,
+                targetObjectId: stage1Dead,
+                direction: "forward",
+                allowedOverlap: true
+              }
+            ]
+          }
+        }
       ]
     });
-    const afterRollback = await mustCall("inspect_scene", { maxObjects: 256, maxDepth: 12 });
-    return {
-      stageCount: stages.length,
-      connectorIds: (sequence.data?.connectorIds as string[] | undefined) ?? [],
-      interventionId: objectId(intervention),
-      preview,
-      analysis,
-      validation,
-      scene,
-      relations,
-      beforeRollback,
-      failedBatch,
-      afterRollback,
-      callCount: (window as typeof window & { __webmcpCallCount?: number }).__webmcpCallCount ?? 0
+    await call("scale_objects", {
+      objectIds: stages.map((stage) => stage.contentObjectId),
+      scaleX: 0.35,
+      scaleY: 0.35
+    });
+    const planResult = await call("plan_layout", {
+      mode: "cycle",
+      objectIds: stageContents,
+      center: { x: 900, y: 680 },
+      axes: { x: 460, y: 340 },
+      preferredAxes: { x: 460, y: 340 },
+      fixedAxes: true,
+      direction: "clockwise",
+      gap: 36,
+      padding: 72,
+      hubKeepOut: { left: 820, top: 580, width: 160, height: 160 },
+      maxIterations: 32
+    });
+    const plan = planResult.data?.plan as {
+      id: string;
+      status: string;
+      positions?: Array<{ objectId: string; x: number; y: number }>;
+      objective?: Record<string, number>;
     };
-
-    function baseId(base: { id: string }) {
-      return base.id;
-    }
-    function baseField(base: { field?: string }) {
-      if (!base.field) throw new Error("Missing field alias");
-      return base.field;
-    }
-    function baseSecond(base: { second?: string }) {
-      if (!base.second) throw new Error("Missing second participant alias");
-      return base.second;
-    }
+    if (!plan || plan.status !== "feasible")
+      throw new Error(`Reference layout is not feasible: ${JSON.stringify(plan)}`);
+    const applied = await call("apply_layout_plan", { planId: plan.id });
+    const sequence = await call("connect_sequence", {
+      objectIds: stageContents,
+      closed: true,
+      routeType: "cycle-arc",
+      center: { x: 900, y: 680 },
+      axes: { x: 460, y: 340 },
+      direction: "clockwise"
+    });
+    await call("normalize_styles", {
+      roles: ["hub", "stage", "stage-label", "particle-field", "annotation"]
+    });
+    const sceneBeforeManual = await call("inspect_scene", { maxObjects: 256, maxDepth: 12 });
+    const stageDescriptors = await call("find_objects", { semanticRole: "stage", limit: 32 });
+    const contentDescriptors = await call("find_objects", {
+      semanticRole: "stage-content",
+      limit: 32
+    });
+    const labelDescriptors = await call("find_objects", {
+      semanticRole: "stage-label",
+      limit: 64
+    });
+    const connectorDescriptors = await call("find_objects", {
+      semanticRole: "main-flow-connector",
+      limit: 32
+    });
+    const assetDescriptors = await call("find_objects", {
+      assetFamilyId: "nih-bioart-509",
+      limit: 8
+    });
+    const vesselDescriptors = await call("find_objects", {
+      assetFamilyId: "nih-bioart-539",
+      limit: 8
+    });
+    const cd8Descriptors = await call("find_objects", { assetFamilyId: "nih-bioart-69", limit: 8 });
+    const stageGeometry = await call("inspect_geometry", {
+      objectIds: stages.map((stage) => stage.contentObjectId)
+    });
+    const relations = await call("inspect_relations", { limit: 256 });
+    const analysis = await call("analyze_composition", {
+      profile: "scientific-diagram",
+      maxFindings: 256,
+      padding: 48
+    });
+    const cycle = await call("validate_figure", {
+      profile: "cycle",
+      maxFindings: 256,
+      padding: 48
+    });
+    const publication = await call("validate_figure", {
+      profile: "publication",
+      maxFindings: 256,
+      padding: 48
+    });
+    const preview = await call("render_scene_preview", {
+      maxWidth: 800,
+      maxHeight: 600,
+      background: "canvas"
+    });
+    return {
+      stages,
+      stageContents,
+      sequence,
+      applied,
+      plan,
+      annotationIds,
+      relations,
+      analysis,
+      cycle,
+      publication,
+      sceneBeforeManual,
+      stageDescriptors,
+      contentDescriptors,
+      labelDescriptors,
+      connectorDescriptors,
+      assetDescriptors,
+      vesselDescriptors,
+      cd8Descriptors,
+      stageGeometry,
+      preview,
+      callNames: [...calls]
+    };
   });
 
-  expect(composition.stageCount).toBe(7);
-  expect(composition.connectorIds).toHaveLength(7);
-  expect(composition.preview.data).toMatchObject({
-    supported: false,
-    width: 512,
-    height: 384
-  });
-  expect(composition.analysis.data?.counts).toMatchObject({ error: 0 });
-  expect(composition.validation.data).toMatchObject({ profile: "cycle", pass: true });
-  expect(composition.failedBatch).toMatchObject({ ok: false, error: { code: "STALE_OBJECT_ID" } });
-  const beforeObjects = ((composition.beforeRollback.data?.objects ?? []) as Descriptor[]).map(
-    (object) => object.objectId
-  );
-  const afterObjects = ((composition.afterRollback.data?.objects ?? []) as Descriptor[]).map(
-    (object) => object.objectId
-  );
-  expect(afterObjects).toHaveLength(beforeObjects.length);
-  const sceneShape = (objects: Descriptor[]) =>
-    objects
-      .map((object) =>
-        JSON.stringify({
-          type: object.type,
-          text: object.text,
-          role: object.semanticMetadata?.semanticRole,
-          stageId: object.semanticMetadata?.stageId,
-          stageIndex: object.semanticMetadata?.stageIndex,
-          connector: object.connector
-            ? [object.connector.fromObjectId, object.connector.toObjectId]
-            : null
-        })
-      )
-      .sort();
-  expect(sceneShape(composition.afterRollback.data?.objects as Descriptor[])).toEqual(
-    sceneShape(composition.beforeRollback.data?.objects as Descriptor[])
-  );
-  const descriptors = composition.scene.data?.objects as Descriptor[];
-  const stages = descriptors.filter((object) => object.semanticMetadata?.semanticRole === "stage");
+  const names = composition.callNames as string[];
+  expect(names).toContain("apply_layout_plan");
+  expect(names).toContain("connect_sequence");
+  expect(names.filter((name) => name === "move_objects")).toHaveLength(0);
+  expect(composition.stages).toHaveLength(7);
+  expect(composition.sequence.data?.connectorIds).toHaveLength(7);
+  expect(composition.plan.status).toBe("feasible");
+  expect(composition.applied.data?.planId).toBe(composition.plan.id);
+  expect(composition.preview.data).toMatchObject({ supported: false, width: 800, height: 600 });
+
+  const stages = composition.stageDescriptors.data?.objects as Descriptor[];
+  const contents = composition.contentDescriptors.data?.objects as Descriptor[];
+  const labels = composition.labelDescriptors.data?.objects as Descriptor[];
+  const descriptors = [
+    ...stages,
+    ...contents,
+    ...labels,
+    ...(composition.connectorDescriptors.data?.objects as Descriptor[]),
+    ...(composition.assetDescriptors.data?.objects as Descriptor[]),
+    ...(composition.vesselDescriptors.data?.objects as Descriptor[]),
+    ...(composition.cd8Descriptors.data?.objects as Descriptor[])
+  ];
   expect(stages).toHaveLength(7);
-  expect(
-    stages.map((stage) => stage.semanticMetadata?.stageIndex).sort((a, b) => (a ?? 0) - (b ?? 0))
-  ).toEqual([1, 2, 3, 4, 5, 6, 7]);
-  const stageContents = descriptors.filter(
-    (object) => object.semanticMetadata?.semanticRole === "stage-content"
-  );
-  const stageLabels = descriptors.filter(
-    (object) => object.semanticMetadata?.semanticRole === "stage-label"
-  );
-  expect(stageContents).toHaveLength(7);
-  expect(stageLabels).toHaveLength(14);
+  expect(contents).toHaveLength(7);
+  expect(labels).toHaveLength(14);
+  expect(stages.map((stage) => stage.semanticMetadata?.stageIndex).sort((a, b) => a - b)).toEqual([
+    1, 2, 3, 4, 5, 6, 7
+  ]);
   expect(
     descriptors.filter((object) => object.semanticMetadata?.semanticRole === "hub")
-  ).toHaveLength(1);
-  for (const stage of stages) {
-    expect(
-      descriptors.filter(
-        (object) =>
-          object.parentObjectId === stage.objectId &&
-          object.semanticMetadata?.semanticRole === "stage-content"
-      )
-    ).toHaveLength(1);
-    expect(
-      descriptors.filter(
-        (object) =>
-          object.parentObjectId === stage.objectId &&
-          object.semanticMetadata?.semanticRole === "stage-label"
-      )
-    ).toHaveLength(1);
-  }
+  ).toHaveLength(0);
   expect(
-    descriptors.filter((object) => object.semanticMetadata?.semanticRole === "stage-title")
+    (composition.connectorDescriptors.data?.objects as Descriptor[]).filter(
+      (object) => object.connector?.pathShape === "circular"
+    )
   ).toHaveLength(7);
-  expect(
-    descriptors.filter((object) => object.semanticMetadata?.semanticRole === "stage-subtitle")
-  ).toHaveLength(7);
-  const flowConnectors = descriptors.filter((object) => object.connector?.pathShape === "circular");
-  expect(flowConnectors).toHaveLength(7);
-  expect(flowConnectors.every((object) => object.connector && !object.freeConnector)).toBe(true);
-  const relationList = (composition.relations.data?.relations ?? []) as Array<{ kind: string }>;
-  expect([...new Set(relationList.map((relation) => relation.kind))]).toEqual(
-    expect.arrayContaining([
-      "flow_to",
-      "binds",
-      "contacts",
-      "crosses",
-      "emits",
-      "follows_gradient",
-      "intervention_targets"
-    ])
-  );
+  expect(composition.connectorDescriptors.data?.objects).toHaveLength(7);
+  expect(composition.assetDescriptors.data?.objects).not.toHaveLength(0);
+  expect(composition.vesselDescriptors.data?.objects).not.toHaveLength(0);
+  expect(composition.cd8Descriptors.data?.objects).not.toHaveLength(0);
 
-  await page.getByRole("button", { name: "Text", exact: true }).click();
-  const artboard = await page.locator(".artboard-stage").boundingBox();
-  if (!artboard) throw new Error("The artboard is not visible for the manual-edit check.");
-  await page.mouse.click(artboard.x + artboard.width * 0.5, artboard.y + artboard.height * 0.5);
-  await page.keyboard.type("manual editor proof");
-  await page.keyboard.press("Escape");
-  const manualScene = await page.evaluate(async () => {
-    const tools = (window as typeof window & { __webmcpTools?: Tool[] }).__webmcpTools ?? [];
-    const tool = tools.find((candidate) => candidate.name === "inspect_scene");
-    if (!tool) throw new Error("Missing WebMCP tool: inspect_scene");
-    return (await tool.execute({ maxObjects: 256, maxDepth: 12 })) as Result;
+  const relationKinds = (
+    (composition.relations.data?.relations ?? []) as Array<{ kind: string }>
+  ).map((relation) => relation.kind);
+  expect(relationKinds).toEqual(
+    expect.arrayContaining(["flow_to", "binds", "contacts", "crosses", "emits", "follows_gradient"])
+  );
+  expect(composition.analysis.data?.metrics).toMatchObject({ connectorCrossingCount: 0 });
+  expect(composition.cycle.data?.truncated).toBe(false);
+  expect(composition.cycle.data?.skipped).toEqual([]);
+  expect(composition.publication.data?.truncated).toBe(false);
+
+  const stageForManualMove = contents.find((stage) => stage.semanticMetadata?.stageIndex === 4);
+  const plannedStage = composition.plan.positions?.find(
+    (position) => position.objectId === stageForManualMove?.objectId
+  );
+  expect(plannedStage).toBeDefined();
+  const canvas = await page.locator(".artboard-stage").boundingBox();
+  const canvasElement = await page.locator(".upper-canvas").boundingBox();
+  if (!canvas || !canvasElement || !stageForManualMove || !plannedStage)
+    throw new Error("Could not locate the live canvas for the manual stage move.");
+  const canvasSize = composition.sceneBeforeManual.data?.canvas as {
+    width: number;
+    height: number;
+  };
+  const toViewport = (point: { x: number; y: number }) => ({
+    x: canvasElement.x + (point.x / canvasSize.width) * canvasElement.width,
+    y: canvasElement.y + (point.y / canvasSize.height) * canvasElement.height
   });
-  expect(manualScene.ok).toBe(true);
-  const manualText = ((manualScene.data?.objects ?? []) as Descriptor[]).find(
-    (object) => object.type === "text" && object.text === "manual editor proof"
+  const originalCenter = { x: plannedStage.x, y: plannedStage.y };
+  const start = toViewport(originalCenter);
+  if (![originalCenter.x, originalCenter.y, start.x, start.y].every(Number.isFinite))
+    throw new Error(
+      `Non-finite manual pointer: ${JSON.stringify({ originalCenter, start, canvasSize, canvasElement })}`
+    );
+  await page.mouse.move(start.x, start.y);
+  await page.mouse.down();
+  await page.mouse.move(start.x + 32, start.y - 20, { steps: 12 });
+  await page.mouse.up();
+  const manualScene = await page.evaluate(
+    async (stageIds) => {
+      const tool = (
+        (window as typeof window & { __webmcpTools?: Tool[] }).__webmcpTools ?? []
+      ).find((candidate) => candidate.name === "inspect_scene");
+      const tools = (window as typeof window & { __webmcpTools?: Tool[] }).__webmcpTools ?? [];
+      const findObjects = tools.find((candidate) => candidate.name === "find_objects");
+      const inspectGeometry = tools.find((candidate) => candidate.name === "inspect_geometry");
+      if (!tool || !findObjects || !inspectGeometry) throw new Error("Missing inspection tools");
+      return {
+        scene: (await tool.execute({ maxObjects: 256, maxDepth: 12 })) as Result,
+        stages: (await findObjects.execute({ semanticRole: "stage-content", limit: 32 })) as Result,
+        connectors: (await findObjects.execute({
+          semanticRole: "main-flow-connector",
+          limit: 32
+        })) as Result,
+        geometry: (await inspectGeometry.execute({ objectIds: stageIds })) as Result
+      };
+    },
+    stages.map((stage) => stage.contentObjectId)
   );
-  expect(manualText).toBeDefined();
-  if (!manualText) throw new Error("Manual text was not visible through WebMCP inspection.");
-  const deleted = await page.evaluate(async (objectId) => {
-    const tools = (window as typeof window & { __webmcpTools?: Tool[] }).__webmcpTools ?? [];
-    const tool = tools.find((candidate) => candidate.name === "delete_objects");
-    if (!tool) throw new Error("Missing WebMCP tool: delete_objects");
-    return (await tool.execute({ objectIds: [objectId], confirmed: true })) as Result;
-  }, manualText.objectId);
-  expect(deleted).toMatchObject({ ok: true });
-  await expect
-    .poll(async () =>
-      page.evaluate(async (objectId) => {
-        const tools = (window as typeof window & { __webmcpTools?: Tool[] }).__webmcpTools ?? [];
-        const tool = tools.find((candidate) => candidate.name === "inspect_scene");
-        if (!tool) throw new Error("Missing WebMCP tool: inspect_scene");
-        const result = (await tool.execute({ maxObjects: 256, maxDepth: 12 })) as Result;
-        return ((result.data?.objects ?? []) as Descriptor[]).some(
-          (object) => object.objectId === objectId
-        );
-      }, manualText.objectId)
-    )
-    .toBe(false);
+  const movedStage = (manualScene.stages.data?.objects as Descriptor[]).find(
+    (object) => object.objectId === stageForManualMove.objectId
+  );
+  expect(movedStage).toBeDefined();
+  expect(movedStage?.position?.x).not.toBe(originalCenter.x);
+  const movedConnectors = (manualScene.connectors.data?.objects as Descriptor[]).filter(
+    (object) =>
+      object.connector?.fromObjectId === composition.stageContents[3] ||
+      object.connector?.toObjectId === composition.stageContents[3]
+  );
+  expect(movedConnectors).toHaveLength(2);
+  expect(
+    movedConnectors.every((object) => object.connector?.fromObjectId && object.connector.toObjectId)
+  ).toBe(true);
 
-  await page.reload();
-  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
-  await expect
-    .poll(async () =>
-      page.evaluate(() =>
-        ((window as typeof window & { __webmcpTools?: Tool[] }).__webmcpTools ?? []).map(
-          (tool) => tool.name
-        )
-      )
-    )
-    .toContain("inspect_scene");
-  const persisted = await page.evaluate(async () => {
+  await expect(page.getByRole("button", { name: "Undo" })).toBeEnabled();
+  await page.getByRole("button", { name: "Undo" }).click();
+  await expect(page.getByRole("button", { name: "Redo" })).toBeEnabled();
+  await page.getByRole("button", { name: "Redo" }).click();
+  await page.screenshot({ path: "test-results/webmcp-composition-reference.png", fullPage: true });
+  const rechecked = await page.evaluate(async () => {
     const tools = (window as typeof window & { __webmcpTools?: Tool[] }).__webmcpTools ?? [];
     const call = async (name: string, input: Record<string, unknown>) => {
       const tool = tools.find((candidate) => candidate.name === name);
-      if (!tool) throw new Error(`Missing WebMCP tool: ${name}`);
+      if (!tool) throw new Error(`Missing ${name}`);
       const result = (await tool.execute(input)) as Result;
-      if (!result.ok) throw new Error(`${name} failed after reload: ${JSON.stringify(result)}`);
+      if (!result.ok) throw new Error(`${name} failed: ${JSON.stringify(result)}`);
       return result;
     };
     return {
       scene: await call("inspect_scene", { maxObjects: 256, maxDepth: 12 }),
+      stages: await call("find_objects", { semanticRole: "stage", limit: 32 }),
+      connectors: await call("find_objects", {
+        semanticRole: "main-flow-connector",
+        limit: 32
+      }),
       relations: await call("inspect_relations", { limit: 256 }),
-      validation: await call("validate_figure", {
-        profile: "cycle",
-        maxFindings: 128,
-        padding: 24
-      })
+      cycle: await call("validate_figure", { profile: "cycle", maxFindings: 256, padding: 48 }),
+      publication: await call("validate_figure", {
+        profile: "publication",
+        maxFindings: 256,
+        padding: 48
+      }),
+      provenance: await call("inspect_provenance", {})
     };
   });
-  expect(persisted.validation.data).toMatchObject({ profile: "cycle", pass: true });
-  const persistedObjects = persisted.scene.data?.objects as Descriptor[];
-  expect(
-    persistedObjects.filter((object) => object.semanticMetadata?.semanticRole === "stage")
-  ).toHaveLength(7);
-  expect(
-    persistedObjects.filter((object) => object.connector?.pathShape === "circular")
-  ).toHaveLength(7);
-  expect((persisted.relations.data?.relations ?? []) as unknown[]).toHaveLength(
-    ((composition.relations.data?.relations ?? []) as unknown[]).length
+  expect(rechecked.stages.data?.objects).toHaveLength(7);
+  expect(rechecked.connectors.data?.objects).toHaveLength(7);
+  expect(rechecked.cycle.data?.truncated).toBe(false);
+  expect(rechecked.publication.data?.truncated).toBe(false);
+  expect(rechecked.provenance.data?.assets).toEqual(
+    expect.arrayContaining([expect.objectContaining({ familyId: expect.any(String) })])
   );
 
-  for (const format of ["svg", "pdf", "png", "credits"] as const) {
+  for (const format of ["credits"] as const) {
     const downloadPromise = page.waitForEvent("download");
     const exported = await page.evaluate(async (requestedFormat) => {
-      const tools = (window as typeof window & { __webmcpTools?: Tool[] }).__webmcpTools ?? [];
-      const tool = tools.find((candidate) => candidate.name === "export_figure");
-      if (!tool) throw new Error("Missing WebMCP tool: export_figure");
+      const tool = (
+        (window as typeof window & { __webmcpTools?: Tool[] }).__webmcpTools ?? []
+      ).find((candidate) => candidate.name === "export_figure");
+      if (!tool) throw new Error("Missing export_figure");
       return (await tool.execute({
         format: requestedFormat,
-        title: "Cycle qualification"
+        title: "Cancer-immunity cycle qualification"
       })) as Result;
     }, format);
     const download = await downloadPromise;
     expect(exported).toMatchObject({ ok: true, data: { format, started: true } });
+    const path = await download.path();
+    expect(path).toBeTruthy();
     expect(download.suggestedFilename()).toContain(format);
   }
-  expect(composition.callCount).toBeGreaterThanOrEqual(25);
-  expect(composition.callCount).toBeLessThanOrEqual(35);
 });

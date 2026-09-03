@@ -68,14 +68,17 @@ export function assertUniqueSceneObjectIds(canvas: Canvas): void {
 
 export function isSceneDescendant(object: FabricObject, ancestor: FabricObject): boolean {
   if (object === ancestor) return true;
-  return object.isDescendantOf(ancestor);
+  const visited = new Set<FabricObject>();
+  for (let current = object.group; current; current = current.group) {
+    if (current === ancestor) return true;
+    if (visited.has(current)) return false;
+    visited.add(current);
+  }
+  return false;
 }
 
 /** Keep a replacement's world-space appearance when inserting it into a group. */
-export function sendSceneObjectToParentPlane(
-  object: FabricObject,
-  parent: SceneCollection
-): void {
+export function sendSceneObjectToParentPlane(object: FabricObject, parent: SceneCollection): void {
   if (parent instanceof Group) {
     util.sendObjectToPlane(object, undefined, parent.calcTransformMatrix());
   }

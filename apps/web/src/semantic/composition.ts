@@ -441,6 +441,24 @@ function boundsFromPoints(points: Point[]): Bounds {
   return { left, top, width: Math.max(0, right - left), height: Math.max(0, bottom - top) };
 }
 
+const MAX_GEOMETRY_POINTS = 8_192;
+
+function boundedGeometryPoints(points: Point[]): Point[] {
+  const finitePoints = points.filter(
+    (point) => Number.isFinite(point.x) && Number.isFinite(point.y)
+  );
+  if (finitePoints.length <= MAX_GEOMETRY_POINTS) return finitePoints;
+  const stride = Math.ceil(finitePoints.length / MAX_GEOMETRY_POINTS);
+  const sampled = finitePoints.filter((_, index) => index % stride === 0);
+  const extrema = [
+    finitePoints.reduce((best, point) => (point.x < best.x ? point : best)),
+    finitePoints.reduce((best, point) => (point.x > best.x ? point : best)),
+    finitePoints.reduce((best, point) => (point.y < best.y ? point : best)),
+    finitePoints.reduce((best, point) => (point.y > best.y ? point : best))
+  ];
+  return [...sampled, ...extrema];
+}
+
 function expand(bounds: Bounds, amount: number): Bounds {
   return {
     left: bounds.left - amount,
@@ -688,16 +706,21 @@ function sampledEllipsePoints(object: FabricObject): Point[] {
   });
 }
 
-function visibleInkPoints(object: FabricObject): {
+function visibleInkPoints(
+  object: FabricObject,
+  visited = new Set<FabricObject>()
+): {
   points: Point[];
   source: SemanticGeometry["geometrySource"];
   descendantObjectIds: string[];
 } {
+  if (visited.has(object)) return { points: [], source: "empty", descendantObjectIds: [] };
+  visited.add(object);
   if (object.visible === false || (typeof object.opacity === "number" && object.opacity <= 0))
     return { points: [], source: "empty", descendantObjectIds: [] };
   if (isGroup(object)) {
-    const children = object.getObjects().map(visibleInkPoints);
-    const childPoints = children.flatMap((child) => child.points);
+    const children = object.getObjects().map((child) => visibleInkPoints(child, visited));
+    const childPoints = boundedGeometryPoints(children.flatMap((child) => child.points));
     return {
       points: childPoints,
       source:
@@ -712,7 +735,7 @@ function visibleInkPoints(object: FabricObject): {
   const pathPoints = sampledPathPoints(object);
   if (pathPoints.length > 0)
     return {
-      points: pathPoints,
+      points: boundedGeometryPoints(pathPoints),
       source: "sampled-path",
       descendantObjectIds: object.objectId ? [object.objectId] : []
     };
