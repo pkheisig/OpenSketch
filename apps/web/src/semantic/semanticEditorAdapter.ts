@@ -1451,6 +1451,32 @@ export function createSemanticEditorAdapter(
         target,
         particleInset
       );
+      const expectedRelations = (fieldObjectId: string) => [
+        ...(sourceObjectId
+          ? [
+              normalizeRelation({
+                id: boundedRelationId("particle-field-emits", sourceObjectId, fieldObjectId),
+                kind: "emits",
+                sourceObjectId,
+                targetObjectId: fieldObjectId,
+                direction: "forward",
+                allowedOverlap: distribution === "source-fan"
+              })
+            ]
+          : []),
+        ...(targetObjectId
+          ? [
+              normalizeRelation({
+                id: boundedRelationId("particle-field-target", fieldObjectId, targetObjectId),
+                kind: "follows_gradient",
+                sourceObjectId: fieldObjectId,
+                targetObjectId,
+                direction: "forward",
+                allowedOverlap: distribution === "target-converging"
+              })
+            ]
+          : [])
+      ];
       const particleFieldSpec = {
         seed,
         count: Math.floor(particleCount),
@@ -1477,13 +1503,40 @@ export function createSemanticEditorAdapter(
             const expected = plan.points[index];
             return Math.abs(actual.x - expected.x) <= 0.5 && Math.abs(actual.y - expected.y) <= 0.5;
           });
-        if (matchesPlan) {
+        const relations = expectedRelations(existingField.objectId!);
+        const matchesRelations = relations.every((expected) =>
+          (existingField.semanticRelations ?? []).some(
+            (actual) => JSON.stringify(normalizeRelation(actual)) === JSON.stringify(expected)
+          )
+        );
+        if (matchesPlan && matchesRelations) {
           const particleIds = particles
             .map((object) => object.objectId)
             .filter((id): id is string => Boolean(id));
           return {
             data: { objectId: existingField.objectId, particleIds, seed, reused: true },
             changedObjectIds: []
+          };
+        }
+        if (matchesPlan) {
+          existingField.semanticRelations = relations;
+          const metadata = metadataOf(existingField) ?? { version: 1 as const };
+          existingField.semanticMetadata = {
+            ...metadata,
+            ...(relations.length ? { relationIds: relations.map((relation) => relation.id) } : {})
+          };
+          canvas.requestRenderAll();
+          commitSemantic("Semantic restore particle field relations");
+          return {
+            data: {
+              objectId: existingField.objectId,
+              particleIds: particles
+                .map((object) => object.objectId)
+                .filter((id): id is string => Boolean(id)),
+              seed,
+              reused: true
+            },
+            changedObjectIds: [existingField.objectId!]
           };
         }
       }
@@ -1520,32 +1573,7 @@ export function createSemanticEditorAdapter(
         semanticName: `particle-field:${seed}`
       };
       field.particleFieldSpec = particleFieldSpec;
-      const fieldRelations = [
-        ...(sourceObjectId
-          ? [
-              normalizeRelation({
-                id: boundedRelationId("particle-field-emits", sourceObjectId, field.objectId!),
-                kind: "emits",
-                sourceObjectId,
-                targetObjectId: field.objectId!,
-                direction: "forward",
-                allowedOverlap: distribution === "source-fan"
-              })
-            ]
-          : []),
-        ...(targetObjectId
-          ? [
-              normalizeRelation({
-                id: boundedRelationId("particle-field-target", field.objectId!, targetObjectId),
-                kind: "follows_gradient",
-                sourceObjectId: field.objectId!,
-                targetObjectId,
-                direction: "forward",
-                allowedOverlap: distribution === "target-converging"
-              })
-            ]
-          : [])
-      ];
+      const fieldRelations = expectedRelations(field.objectId!);
       if (fieldRelations.length > 0) {
         field.semanticRelations = fieldRelations;
         field.semanticMetadata = {

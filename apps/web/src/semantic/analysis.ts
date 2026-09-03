@@ -108,6 +108,12 @@ function isEffectivelyVisible(path: readonly { visible?: boolean; opacity?: numb
   return path.every((object) => object.visible !== false && (object.opacity ?? 1) > 0);
 }
 
+function hasVisibleInk(object: FabricObject, path: readonly FabricObject[]): boolean {
+  if (!isEffectivelyVisible(path)) return false;
+  if (!isGroup(object)) return true;
+  return object.getObjects().some((child) => hasVisibleInk(child, [...path, child]));
+}
+
 function sharesParticleField(
   left: { path: readonly FabricObject[] },
   right: { path: readonly FabricObject[] }
@@ -145,7 +151,7 @@ export function analyzeComposition(
       !path.some((ancestor) => Boolean(ancestor.connector))
   );
   const visibility = new Map(
-    allEntries.map(({ object, path }) => [object.objectId!, isEffectivelyVisible(path)])
+    allEntries.map(({ object, path }) => [object.objectId!, hasVisibleInk(object, path)])
   );
   const relations = relationsForCanvas(canvas);
   const index = new Map(allEntries.map(({ object }) => [object.objectId!, object]));
