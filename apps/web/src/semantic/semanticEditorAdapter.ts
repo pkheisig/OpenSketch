@@ -1089,15 +1089,11 @@ export function createSemanticEditorAdapter(
             stackTop += height + 8;
           });
           if (input.stageIndex !== undefined) {
-            const stageObjects = [
-              existingStage,
-              existingLabelGroup,
-              ...(isGroup(existingStage) ? existingStage.getObjects() : [])
-            ];
-            stageObjects.forEach((object) => {
+            visitSceneObjects(existingStage, (object) => {
               const metadata = metadataOf(object);
               if (metadata)
                 object.semanticMetadata = { ...metadata, stageIndex: input.stageIndex as number };
+              else object.semanticMetadata = { version: 1, stageIndex: input.stageIndex as number };
             });
           }
           refreshTextMetrics([existingLabelGroup]);
