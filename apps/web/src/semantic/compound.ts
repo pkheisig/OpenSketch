@@ -108,8 +108,20 @@ function center(bounds: Bounds): CompoundPoint {
   return { x: bounds.left + bounds.width / 2, y: bounds.top + bounds.height / 2 };
 }
 
-function extentAlong(bounds: Bounds, direction: CompoundPoint): number {
-  return (Math.abs(direction.x) * bounds.width) / 2 + (Math.abs(direction.y) * bounds.height) / 2;
+function boundaryIntersectionDistance(
+  sourceBounds: Bounds,
+  targetBounds: Bounds,
+  direction: CompoundPoint
+): number {
+  const horizontal =
+    Math.abs(direction.x) > Number.EPSILON
+      ? (sourceBounds.width + targetBounds.width) / (2 * Math.abs(direction.x))
+      : Number.POSITIVE_INFINITY;
+  const vertical =
+    Math.abs(direction.y) > Number.EPSILON
+      ? (sourceBounds.height + targetBounds.height) / (2 * Math.abs(direction.y))
+      : Number.POSITIVE_INFINITY;
+  return Math.min(horizontal, vertical);
 }
 
 export function planInteraction(
@@ -144,8 +156,7 @@ export function planInteraction(
     }
     case "binding": {
       const direction = { x: dx / length, y: dy / length };
-      const separation =
-        extentAlong(sourceBounds, direction) + extentAlong(targetBounds, direction);
+      const separation = boundaryIntersectionDistance(sourceBounds, targetBounds, direction);
       return {
         source: {
           x: midpoint.x - (direction.x * separation) / 2,
@@ -198,7 +209,7 @@ export function planInteraction(
       const overlap = Math.max(1, offset);
       const separation = Math.max(
         0,
-        extentAlong(sourceBounds, direction) + extentAlong(targetBounds, direction) - overlap
+        boundaryIntersectionDistance(sourceBounds, targetBounds, direction) - overlap
       );
       return {
         source: {
@@ -247,8 +258,8 @@ export function planParticleField(
   const innerHeight = Math.max(0, bounds.height - particleRadius * 2);
   for (let index = 0; index < safeCount; index += 1) {
     const fraction = safeCount <= 1 ? 0.5 : index / (safeCount - 1);
-    let x = bounds.left + next() * bounds.width;
-    let y = bounds.top + next() * bounds.height;
+    let x = innerLeft + next() * innerWidth;
+    let y = innerTop + next() * innerHeight;
     if (distribution === "linear") {
       x = innerLeft + fraction * innerWidth;
       y = clamp(c.y + (next() - 0.5) * innerHeight * 0.18, innerTop, innerTop + innerHeight);

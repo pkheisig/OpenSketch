@@ -1363,6 +1363,8 @@ export function createSemanticEditorAdapter(
         typeof input.sourceObjectId === "string" ? input.sourceObjectId : undefined;
       const targetObjectId =
         typeof input.targetObjectId === "string" ? input.targetObjectId : undefined;
+      const sourceObject = sourceObjectId ? resolveObjects(canvas, [sourceObjectId])[0] : undefined;
+      const targetObject = targetObjectId ? resolveObjects(canvas, [targetObjectId])[0] : undefined;
       const particleFieldSpec = {
         seed,
         count: Math.floor(particleCount),
@@ -1390,12 +1392,8 @@ export function createSemanticEditorAdapter(
           changedObjectIds: []
         };
       }
-      const source = sourceObjectId
-        ? inspectSemanticGeometry(resolveObjects(canvas, [sourceObjectId])[0]).center
-        : undefined;
-      const target = targetObjectId
-        ? inspectSemanticGeometry(resolveObjects(canvas, [targetObjectId])[0]).center
-        : undefined;
+      const source = sourceObject ? inspectSemanticGeometry(sourceObject).center : undefined;
+      const target = targetObject ? inspectSemanticGeometry(targetObject).center : undefined;
       const defaults = dependencies.creationDefaults();
       const particleStrokeWidth = Math.max(1, defaults.shape.strokeWidth * 0.5);
       const fieldObjectId = crypto.randomUUID();
@@ -1738,13 +1736,22 @@ export function createSemanticEditorAdapter(
           : sceneObjectEntries(canvas)
               .map(({ object }) => object)
               .filter((object) => !roles || roles.has(metadataOf(object)?.semanticRole ?? ""));
+      const protectedAssetObjectIds = new Set(
+        sceneObjectEntries(canvas)
+          .filter(({ path }) => path.some((object) => Boolean(object.familyId)))
+          .map(({ object }) => object.objectId)
+          .filter((id): id is string => Boolean(id))
+      );
       const skipped: string[] = [];
       const changed = new Set<string>();
       const applyPreset = (
         object: FabricObject,
         fallbackPreset?: ReturnType<typeof stylePreset>
       ): void => {
-        if (object.familyId && input.includeAssets !== true) {
+        if (
+          input.includeAssets !== true &&
+          (Boolean(object.familyId) || protectedAssetObjectIds.has(object.objectId ?? ""))
+        ) {
           if (object.objectId) skipped.push(object.objectId);
           return;
         }
