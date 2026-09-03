@@ -186,14 +186,21 @@ pnpm test:webmcp:composition
 ```
 
 It installs a real `document.modelContext.registerTool` recorder before page
-load and uses only registered callbacks to search and inspect bundled assets,
-compose the seven ordered cancer-immunity-cycle stages, create typed particle
-fields and annotations, bind the closed main-flow connector cycle, and inspect
-the resulting semantic graph. The workflow includes a manual editor mutation,
-stale-ID and atomic-batch rollback checks, reload persistence, asset-variant
-replacement, and SVG/PDF/PNG/credits downloads. It is intentionally bounded to
-approximately 20–30 meaningful calls and does not use a test-only semantic
-adapter or alter product UI code.
+load and uses only registered callbacks to search and inspect bundled NIH
+BioArt assets, compose seven ordered cancer-immunity-cycle stages, create typed
+particle fields and relation-bound annotations, apply a planner-generated
+cycle layout, bind the closed main-flow connector cycle, and inspect the
+resulting semantic graph. The workflow also performs a real canvas drag,
+verifies bound-connector refresh through undo/redo, captures a screenshot, and
+checks a provenance download. A deterministic fixture records the historical
+false-pass baseline and requires the corrected validator to reject it. The
+workflow uses telemetry rather than a hard WebMCP call budget and does not use
+a test-only semantic adapter or alter product UI code.
+
+The positive workflow uses compact valid NIH families for reliable local
+qualification. Large or malformed source SVGs are not silently repaired: the
+geometry inspector filters non-finite samples and reports an asset as
+unevaluable, which keeps layout qualification fail-closed.
 
 For an auditable demo recording, add `?webmcpDemo=1` to the editor URL. This
 shows a compact live panel that records every WebMCP tool call, its bounded
