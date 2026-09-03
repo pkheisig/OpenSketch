@@ -301,8 +301,8 @@ export function planParticleField(
       );
     }
     points.push({
-      x: clamp(x, bounds.left, bounds.left + bounds.width),
-      y: clamp(y, bounds.top, bounds.top + bounds.height)
+      x: clamp(x, innerLeft, innerLeft + innerWidth),
+      y: clamp(y, innerTop, innerTop + innerHeight)
     });
   }
   return {

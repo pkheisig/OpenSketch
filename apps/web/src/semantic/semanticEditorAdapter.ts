@@ -1053,6 +1053,20 @@ export function createSemanticEditorAdapter(
             resolvedUpdates.push([text, value]);
           });
           resolvedUpdates.forEach(([text, value]) => text.set("text", value));
+          const stack = [
+            textForRole("stage-title"),
+            labelText,
+            textForRole("stage-subtitle")
+          ].filter((object): object is IText => Boolean(object));
+          const stackHeight =
+            stack.reduce((total, object) => total + boundsOf(object).height, 0) +
+            8 * Math.max(0, stack.length - 1);
+          let stackTop = -stackHeight / 2;
+          stack.forEach((object) => {
+            const height = boundsOf(object).height;
+            object.set({ left: 0, top: stackTop + height / 2 });
+            stackTop += height + 8;
+          });
           if (input.stageIndex !== undefined) {
             const stageObjects = [
               existingStage,
@@ -1196,7 +1210,13 @@ export function createSemanticEditorAdapter(
             ? bounds.left + bounds.width + 24 + renderedLabelWidth / 2
             : center.x;
       labelChildren.forEach((object) => object.set("left", horizontalLabelX));
-      if (placement === "top" || placement === "outward" || placement === "bottom") {
+      if (
+        placement === "top" ||
+        placement === "outward" ||
+        placement === "bottom" ||
+        placement === "left" ||
+        placement === "right"
+      ) {
         const stack = [title, labelObject, subtitle].filter((object): object is IText =>
           Boolean(object)
         );
@@ -1205,7 +1225,11 @@ export function createSemanticEditorAdapter(
           stack.reduce((total, object) => total + boundsOf(object).height, 0) +
           stackGap * Math.max(0, stack.length - 1);
         const stackTop =
-          placement === "bottom" ? bounds.top + bounds.height + 24 : bounds.top - 24 - stackHeight;
+          placement === "bottom"
+            ? bounds.top + bounds.height + 24
+            : placement === "top" || placement === "outward"
+              ? bounds.top - 24 - stackHeight
+              : center.y - stackHeight / 2;
         let cursor = stackTop;
         stack.forEach((object) => {
           const height = boundsOf(object).height;

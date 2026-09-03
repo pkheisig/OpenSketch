@@ -110,6 +110,15 @@ function sharesParticleField(
   );
 }
 
+function sharesLabelGroup(
+  left: { path: readonly FabricObject[] },
+  right: { path: readonly FabricObject[] }
+): boolean {
+  return left.path.some(
+    (object) => metadataOf(object)?.semanticRole === "stage-label" && right.path.includes(object)
+  );
+}
+
 export function analyzeComposition(
   canvas: Canvas,
   canvasSize: { width: number; height: number },
@@ -320,6 +329,7 @@ export function analyzeComposition(
           !visibility.get(bId) ||
           b.connector ||
           rightEntry.path.some((object) => Boolean(object.familyId)) ||
+          sharesLabelGroup(leftEntry, rightEntry) ||
           sharesParticleField(leftEntry, rightEntry) ||
           relationAllowsOverlap(
             relations,
