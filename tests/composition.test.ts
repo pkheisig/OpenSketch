@@ -7,7 +7,7 @@ import {
   validateRelations,
   type SemanticGeometry
 } from "../apps/web/src/semantic/composition";
-import { Group, Rect } from "../apps/web/node_modules/fabric";
+import { Circle, Group, Rect } from "../apps/web/node_modules/fabric";
 
 describe("semantic composition contracts", () => {
   it("accepts only bounded semantic metadata and rejects arbitrary keys", () => {
@@ -49,6 +49,35 @@ describe("semantic composition contracts", () => {
     expect(geometry.ports.map((port) => port.id)).toContain("group:port:top");
   });
 
+  it("resolves curved-object ports on the sampled visible perimeter", () => {
+    const circle = new Circle({
+      left: 120,
+      top: 90,
+      radius: 30,
+      originX: "center",
+      originY: "center"
+    });
+    circle.objectId = "circle";
+    const geometry = inspectSemanticGeometry(circle);
+    const radial = geometry.ports.find((port) => port.id === "circle:port:radial-out");
+    expect(radial).toBeDefined();
+    expect(radial?.position.x).toBeCloseTo(geometry.center.x, 5);
+    expect(radial?.position.y).toBeGreaterThan(geometry.center.y);
+    expect(radial?.position).not.toEqual(geometry.center);
+    expect(geometry.geometrySource).toBe("vector");
+    expect(geometry.evaluable).toBe(true);
+  });
+
+  it("fails closed for an object with no visible ink", () => {
+    const hidden = new Rect({ left: 20, top: 20, width: 100, height: 100, opacity: 0 });
+    hidden.objectId = "hidden";
+    const geometry = inspectSemanticGeometry(hidden);
+    expect(geometry.evaluable).toBe(false);
+    expect(geometry.geometrySource).toBe("empty");
+    expect(geometry.ports).toEqual([]);
+    expect(geometry.visualBounds.width).toBe(0);
+  });
+
   it("returns an infeasible cycle rather than accepting overlaps", () => {
     const objects = ["a", "b", "c"].map((id) => ({
       object: { objectId: id } as never,
@@ -76,5 +105,32 @@ describe("semantic composition contracts", () => {
     );
     expect(plan.status).toBe("infeasible");
     expect(plan.sourceRevision).toBe("scene-1");
+  });
+
+  it("allocates unequal cycle spacing from visual extents and reports metrics", () => {
+    const objects = [
+      new Rect({ left: 100, top: 100, width: 30, height: 30 }),
+      new Rect({ left: 100, top: 100, width: 180, height: 40 }),
+      new Rect({ left: 100, top: 100, width: 40, height: 120 })
+    ].map((object, index) => {
+      object.objectId = `stage-${index}`;
+      return { object, geometry: inspectSemanticGeometry(object) };
+    });
+    const plan = planSemanticLayout(
+      objects,
+      {
+        mode: "cycle",
+        objectIds: objects.map(({ object }) => object.objectId!),
+        center: { x: 400, y: 300 },
+        preferredAxes: { x: 100, y: 100 },
+        canvas: { width: 800, height: 600 },
+        padding: 20,
+        gap: 24
+      },
+      "scene-unequal"
+    );
+    expect(plan.status).toBe("feasible");
+    expect(plan.metrics.occupiedAreaRatio).toBeGreaterThan(0);
+    expect(plan.metrics.expectedMainFlowPathLength).toBeGreaterThan(0);
   });
 });

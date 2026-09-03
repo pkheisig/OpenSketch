@@ -693,8 +693,19 @@ export function createSemanticEditorAdapter(
     return object.objectId!;
   };
 
-  const portFor = (object: FabricObject, requested: unknown, outgoing: boolean): SemanticPort => {
+  const portFor = (
+    object: FabricObject,
+    requested: unknown,
+    outgoing: boolean,
+    toward?: { x: number; y: number }
+  ): SemanticPort => {
     const geometry = inspectSemanticGeometry(object);
+    if (!geometry.evaluable || geometry.ports.length === 0) {
+      throw new SemanticAdapterError(
+        "UNEVALUABLE_GEOMETRY",
+        `Object "${object.objectId}" has no visible perimeter geometry for connector binding.`
+      );
+    }
     const preferred = geometry.ports.find((port) => port.id === requested);
     if (requested !== undefined && !preferred) {
       throw new SemanticAdapterError(
@@ -702,11 +713,25 @@ export function createSemanticEditorAdapter(
         `Port "${String(requested)}" is not available on "${object.objectId}".`
       );
     }
-    return (
-      preferred ??
-      geometry.ports.find((port) => port.kind === (outgoing ? "outgoing" : "incoming")) ??
-      geometry.ports[0]!
+    if (preferred) return preferred;
+    const candidates = geometry.ports.filter((port) =>
+      outgoing ? port.kind === "outgoing" : port.kind === "incoming"
     );
+    if (toward && candidates.length > 0) {
+      const desired = {
+        x: toward.x - geometry.center.x,
+        y: toward.y - geometry.center.y
+      };
+      const length = Math.max(1, Math.hypot(desired.x, desired.y));
+      return candidates.reduce((best, candidate) => {
+        const bestScore =
+          best.normal.x * (desired.x / length) + best.normal.y * (desired.y / length);
+        const candidateScore =
+          candidate.normal.x * (desired.x / length) + candidate.normal.y * (desired.y / length);
+        return candidateScore > bestScore ? candidate : best;
+      });
+    }
+    return candidates[0] ?? geometry.ports[0]!;
   };
 
   const anchorForPort = (port: SemanticPort): ConnectorBinding["fromAnchor"] => {
@@ -749,8 +774,18 @@ export function createSemanticEditorAdapter(
         "Logical connectors must target stage-content or scientific objects, not labels."
       );
     }
-    const fromPort = portFor(fromObject, input.fromPortId, true);
-    const toPort = portFor(toObject, input.toPortId, false);
+    const fromPort = portFor(
+      fromObject,
+      input.fromPortId,
+      true,
+      inspectSemanticGeometry(toObject).center
+    );
+    const toPort = portFor(
+      toObject,
+      input.toPortId,
+      false,
+      inspectSemanticGeometry(fromObject).center
+    );
     const routeType = (input.routeType ?? "straight") as
       "straight" | "orthogonal" | "bezier" | "outside" | "circular-arc" | "cycle-arc";
     const pathShape: ConnectorBinding["pathShape"] =
@@ -783,7 +818,7 @@ export function createSemanticEditorAdapter(
           !object.connector &&
           object.visible !== false
       )
-      .map((object) => object.getBoundingRect());
+      .map((object) => inspectSemanticGeometry(object, 12).layoutBounds);
     const connector = createConnectorObject(
       fromPort.position,
       toPort.position,
@@ -2315,6 +2350,8 @@ export function createSemanticEditorAdapter(
           center: input.center ? point(input.center, "center") : undefined,
           radius: input.radius === undefined ? undefined : finiteNumber(input.radius, "radius"),
           axes: input.axes as { x: number; y: number } | undefined,
+          preferredAxes: input.preferredAxes as { x: number; y: number } | undefined,
+          fixedAxes: input.fixedAxes === true,
           startAngle:
             input.startAngle === undefined
               ? undefined
@@ -2323,6 +2360,17 @@ export function createSemanticEditorAdapter(
           gap: input.gap === undefined ? undefined : finiteNumber(input.gap, "gap"),
           padding: input.padding === undefined ? undefined : finiteNumber(input.padding, "padding"),
           hubKeepOut: input.hubKeepOut as Bounds | undefined,
+          maxIterations:
+            input.maxIterations === undefined
+              ? undefined
+              : finiteNumber(input.maxIterations, "maxIterations"),
+          pinnedObjectIds: Array.isArray(input.pinnedObjectIds)
+            ? (input.pinnedObjectIds as string[])
+            : undefined,
+          maxMovement:
+            input.maxMovement === undefined
+              ? undefined
+              : finiteNumber(input.maxMovement, "maxMovement"),
           canvas: { width: settings.width, height: settings.height }
         },
         sceneRevision(canvas)
