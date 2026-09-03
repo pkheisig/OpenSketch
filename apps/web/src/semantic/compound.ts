@@ -273,9 +273,12 @@ export function planParticleField(
       x = innerLeft + fraction * innerWidth;
       y = clamp(c.y + (next() - 0.5) * innerHeight * 0.18, innerTop, innerTop + innerHeight);
     } else if (distribution === "uniform") {
-      const columns = Math.max(
-        1,
-        Math.ceil(Math.sqrt((safeCount * Math.max(bounds.width, 1)) / Math.max(bounds.height, 1)))
+      const columns = Math.min(
+        safeCount,
+        Math.max(
+          1,
+          Math.ceil(Math.sqrt((safeCount * Math.max(bounds.width, 1)) / Math.max(bounds.height, 1)))
+        )
       );
       const rows = Math.max(1, Math.ceil(safeCount / columns));
       const column = index % columns;

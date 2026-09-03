@@ -1693,7 +1693,15 @@ export function createSemanticEditorAdapter(
           const objectId = `${existingField.objectId!}-particle-${index}`;
           const particle =
             existingById.get(objectId) ?? createParticle(existingField.objectId!, position, index);
-          particle.set({ scaleX: 1, scaleY: 1, angle: 0 });
+          particle.set({
+            radius: 4,
+            strokeWidth: particleStrokeWidth,
+            fill: defaults.shape.fill,
+            stroke: defaults.shape.stroke,
+            scaleX: 1,
+            scaleY: 1,
+            angle: 0
+          });
           existingField.insertAt(index, particle);
           moveAnchorTo(particle, "center", position);
           return particle;
