@@ -3169,6 +3169,30 @@ export function createSemanticEditorAdapter(
         .getActiveObjects()
         .map((object) => object.objectId)
         .filter((objectId): objectId is string => Boolean(objectId));
+      const removeDeletedRelations = (removedIds: ReadonlySet<string>): string[] => {
+        const changedRelationOwners = new Set<string>();
+        sceneObjectEntries(canvas).forEach(({ object }) => {
+          const relations = object.semanticRelations ?? [];
+          const retainedRelations = relations.filter(
+            (relation) =>
+              ![
+                relation.sourceObjectId,
+                relation.targetObjectId,
+                ...(relation.mediatorObjectIds ?? [])
+              ].some((objectId) => removedIds.has(objectId))
+          );
+          if (retainedRelations.length === relations.length) return;
+          object.semanticRelations = retainedRelations;
+          const metadata = metadataOf(object);
+          if (metadata)
+            object.semanticMetadata = {
+              ...metadata,
+              relationIds: retainedRelations.map((relation) => relation.id)
+            };
+          if (object.objectId) changedRelationOwners.add(object.objectId);
+        });
+        return [...changedRelationOwners];
+      };
       const nestedAssetObjects = objects.filter((object) => editableAssetParent(object));
       if (nestedAssetObjects.length > 0) {
         if (nestedAssetObjects.length !== objects.length) {
@@ -3201,6 +3225,7 @@ export function createSemanticEditorAdapter(
         sceneObjectEntries(canvas)
           .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
           .forEach(removeSceneObject);
+        const changedRelationOwners = removeDeletedRelations(removedIds);
         restoreSelection(
           canvas,
           previousSelectionObjectIds.filter((objectId) => !removedIds.has(objectId)),
@@ -3209,7 +3234,10 @@ export function createSemanticEditorAdapter(
         dependencies.refreshConnectors();
         canvas.requestRenderAll();
         commitSemantic("Semantic delete");
-        return { data: { objectIds: [...removedIds] }, changedObjectIds: [...removedIds] };
+        return {
+          data: { objectIds: [...removedIds] },
+          changedObjectIds: [...removedIds, ...changedRelationOwners]
+        };
       }
       const roots = objects.filter(
         (object) =>
@@ -3227,6 +3255,7 @@ export function createSemanticEditorAdapter(
         const entry = entries.find((candidate) => candidate.object === root);
         if (entry) removeSceneObject(entry);
       });
+      const changedRelationOwners = removeDeletedRelations(removedIds);
       restoreSelection(
         canvas,
         previousSelectionObjectIds.filter((objectId) => !removedIds.has(objectId)),
@@ -3234,7 +3263,10 @@ export function createSemanticEditorAdapter(
       );
       canvas.requestRenderAll();
       commitSemantic("Semantic delete");
-      return { data: { objectIds: [...removedIds] }, changedObjectIds: [...removedIds] };
+      return {
+        data: { objectIds: [...removedIds] },
+        changedObjectIds: [...removedIds, ...changedRelationOwners]
+      };
     }
     if (command === "group_objects") {
       const ids = objectIds(input);
