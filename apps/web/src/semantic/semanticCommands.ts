@@ -1438,7 +1438,7 @@ definitions.push(
     risk: "read_only",
     confirmation: "none",
     retryable: true,
-    idempotent: false,
+    idempotent: true,
     cancellable: false,
     requires: ["project", "canvas"],
     inputSchema: {

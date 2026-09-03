@@ -134,7 +134,7 @@ export interface SemanticLayoutPlan {
     cycleArea: number;
     minInterObjectGap: number;
     maxInterObjectGap: number;
-    minHubClearance: number;
+    minHubClearance: number | null;
     movementDistance: number;
     expectedMainFlowPathLength: number;
   };
@@ -427,6 +427,68 @@ function sampleCubic(
   });
 }
 
+function sampleSvgArc(
+  start: Point,
+  radiusX: number,
+  radiusY: number,
+  rotation: number,
+  largeArc: boolean,
+  sweep: boolean,
+  end: Point
+): Point[] {
+  const rx = Math.abs(radiusX);
+  const ry = Math.abs(radiusY);
+  if (rx === 0 || ry === 0 || (start.x === end.x && start.y === end.y)) return [start, end];
+  const phi = (rotation * Math.PI) / 180;
+  const cosPhi = Math.cos(phi);
+  const sinPhi = Math.sin(phi);
+  const dx = (start.x - end.x) / 2;
+  const dy = (start.y - end.y) / 2;
+  const xPrime = cosPhi * dx + sinPhi * dy;
+  const yPrime = -sinPhi * dx + cosPhi * dy;
+  const radiusScale = (xPrime * xPrime) / (rx * rx) + (yPrime * yPrime) / (ry * ry);
+  const scaledRx = radiusScale > 1 ? rx * Math.sqrt(radiusScale) : rx;
+  const scaledRy = radiusScale > 1 ? ry * Math.sqrt(radiusScale) : ry;
+  const numerator = Math.max(
+    0,
+    (scaledRx * scaledRx * scaledRy * scaledRy -
+      scaledRx * scaledRx * yPrime * yPrime -
+      scaledRy * scaledRy * xPrime * xPrime) /
+      (scaledRx * scaledRx * yPrime * yPrime + scaledRy * scaledRy * xPrime * xPrime)
+  );
+  const sign = largeArc === sweep ? -1 : 1;
+  const coefficient = sign * Math.sqrt(numerator);
+  const centerPrime = {
+    x: (coefficient * scaledRx * yPrime) / scaledRy,
+    y: (-coefficient * scaledRy * xPrime) / scaledRx
+  };
+  const center = {
+    x: cosPhi * centerPrime.x - sinPhi * centerPrime.y + (start.x + end.x) / 2,
+    y: sinPhi * centerPrime.x + cosPhi * centerPrime.y + (start.y + end.y) / 2
+  };
+  const vectorAngle = (from: Point, to: Point) =>
+    Math.atan2(from.x * to.y - from.y * to.x, from.x * to.x + from.y * to.y);
+  const startVector = {
+    x: (xPrime - centerPrime.x) / scaledRx,
+    y: (yPrime - centerPrime.y) / scaledRy
+  };
+  const endVector = {
+    x: (-xPrime - centerPrime.x) / scaledRx,
+    y: (-yPrime - centerPrime.y) / scaledRy
+  };
+  let delta = vectorAngle(startVector, endVector);
+  if (!sweep && delta > 0) delta -= Math.PI * 2;
+  if (sweep && delta < 0) delta += Math.PI * 2;
+  const steps = Math.max(8, Math.ceil(Math.abs(delta) / (Math.PI / 12)));
+  return Array.from({ length: steps + 1 }, (_, index) => {
+    const angle = Math.atan2(startVector.y, startVector.x) + (delta * index) / steps;
+    return {
+      x: center.x + cosPhi * scaledRx * Math.cos(angle) - sinPhi * scaledRy * Math.sin(angle),
+      y: center.y + sinPhi * scaledRx * Math.cos(angle) + cosPhi * scaledRy * Math.sin(angle)
+    };
+  });
+}
+
 function sampledPathPoints(object: FabricObject): Point[] {
   const path = (object as FabricObject & { path?: unknown }).path;
   if (!Array.isArray(path)) return [];
@@ -509,11 +571,19 @@ function sampledPathPoints(object: FabricObject): Point[] {
       current = next;
       previousControl = secondControl;
     } else if (command === "A" && values.length >= 7) {
-      // Fabric normalizes arcs to this command. The endpoints are exact; the
-      // bounded interpolation keeps the geometry useful without exposing SVG internals.
       const next = endpoint(values[5], values[6]);
       points.push(
-        ...Array.from({ length: 9 }, (_, index) => toCanvas(lerp(current, next, (index + 1) / 9)))
+        ...sampleSvgArc(
+          current,
+          values[0],
+          values[1],
+          values[2],
+          values[3] !== 0,
+          values[4] !== 0,
+          next
+        )
+          .slice(1)
+          .map(toCanvas)
       );
       current = next;
       previousControl = undefined;
@@ -712,7 +782,13 @@ function portAt(
     const edge = { x: end.x - start.x, y: end.y - start.y };
     const length = Math.hypot(edge.x, edge.y);
     if (length === 0) continue;
-    const progress = Math.hypot(position.x - start.x, position.y - start.y) / length;
+    const progress = Math.max(
+      0,
+      Math.min(
+        1,
+        ((position.x - start.x) * edge.x + (position.y - start.y) * edge.y) / (length * length)
+      )
+    );
     const candidate = { x: start.x + edge.x * progress, y: start.y + edge.y * progress };
     if (Math.hypot(candidate.x - position.x, candidate.y - position.y) < 0.01) {
       normal = normalize({ x: edge.y, y: -edge.x });
@@ -818,13 +894,19 @@ function stable(value: unknown): string {
     .join(",")}}`;
 }
 
-function hash(value: string): string {
-  let result = 2166136261;
+function hash(value: string, seed = 2166136261): string {
+  let result = seed;
   for (let index = 0; index < value.length; index += 1) {
     result ^= value.charCodeAt(index);
     result = Math.imul(result, 16777619);
   }
   return (result >>> 0).toString(16).padStart(8, "0");
+}
+
+function hash128(value: string): string {
+  return [2166136261, 2246822519, 3266489917, 668265263]
+    .map((seed) => hash(value, seed))
+    .join("");
 }
 
 export function sceneRevision(canvas: Canvas): string {
@@ -1097,7 +1179,7 @@ function layoutMetrics(
           )
         )
       : 0
-    : Number.POSITIVE_INFINITY;
+    : null;
   return {
     occupiedAreaRatio: occupiedArea / Math.max(1, options.canvas.width * options.canvas.height),
     cycleArea:
@@ -1115,7 +1197,7 @@ function layoutMetrics(
 }
 
 function planIdentifier(revision: string, options: LayoutOptions): string {
-  return `layout-${hash(stable({ revision, options }))}`;
+  return `layout-${hash128(stable({ revision, options }))}`;
 }
 
 export function planSemanticLayout(
@@ -1137,6 +1219,32 @@ export function planSemanticLayout(
     options.objectIds
       .filter((id) => !byId.has(id))
       .forEach((id) => violations.push(`Object "${id}" is unavailable.`));
+  }
+  const unevaluable = ordered.filter((item) => item.geometry.evaluable === false);
+  if (unevaluable.length > 0) {
+    violations.push(
+      ...unevaluable.map(
+        (item) => `Object "${item.object.objectId}" has unevaluable visual geometry.`
+      )
+    );
+    return {
+      id: planIdentifier(revision, options),
+      version: SEMANTIC_COMPOSITION_VERSION,
+      mode: options.mode,
+      sourceRevision: revision,
+      status: "infeasible",
+      positions: [],
+      routeContext: undefined,
+      score: violations.length * 1_000,
+      penalties: { overlap: 0, boundary: 0, hub: 0, movement: 0 },
+      warnings,
+      violations,
+      unchanged: ordered.map((item) => ({
+        objectId: item.object.objectId!,
+        reason: "Unevaluable visual geometry"
+      })),
+      metrics: layoutMetrics([], [], options, { movement: 0 })
+    };
   }
   let routeContext: SemanticLayoutPlan["routeContext"];
   let cycleAxes: { x: number; y: number } | undefined;

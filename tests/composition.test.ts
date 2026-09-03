@@ -74,6 +74,10 @@ describe("semantic composition contracts", () => {
     path.objectId = "path";
     const geometry = inspectSemanticGeometry(path);
     expect(geometry.visualBounds.height).toBeCloseTo(50, 5);
+
+    const arc = new Path("M 0 0 A 50 50 0 0 1 100 0");
+    arc.objectId = "arc";
+    expect(inspectSemanticGeometry(arc).visualBounds.height).toBeGreaterThan(40);
   });
 
   it("fails closed for an object with no visible ink", () => {
@@ -138,8 +142,27 @@ describe("semantic composition contracts", () => {
       "scene-unequal"
     );
     expect(plan.status).toBe("feasible");
+    expect(plan.id.length).toBeGreaterThan(20);
     expect(plan.metrics.occupiedAreaRatio).toBeGreaterThan(0);
     expect(plan.metrics.expectedMainFlowPathLength).toBeGreaterThan(0);
+  });
+
+  it("refuses to plan around unevaluable geometry", () => {
+    const hidden = new Rect({ left: 20, top: 20, width: 100, height: 100, opacity: 0 });
+    hidden.objectId = "hidden-stage";
+    const plan = planSemanticLayout(
+      [{ object: hidden, geometry: inspectSemanticGeometry(hidden) }],
+      {
+        mode: "flow",
+        objectIds: ["hidden-stage"],
+        center: { x: 400, y: 300 },
+        canvas: { width: 800, height: 600 }
+      },
+      "scene-hidden"
+    );
+    expect(plan.status).toBe("infeasible");
+    expect(plan.positions).toEqual([]);
+    expect(plan.violations.join(" ")).toContain("unevaluable");
   });
 
   it("reports measured hub clearance", () => {
