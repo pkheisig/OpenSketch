@@ -1619,15 +1619,50 @@ export function createSemanticEditorAdapter(
             )
             .map((particle) => [particle.objectId, particle])
         );
-        particles
-          .filter((particle) => !particle.objectId || !expectedParticleIds.has(particle.objectId))
-          .forEach((particle) => existingField.remove(particle));
+        const removedParticleIds = particles
+          .map((particle) => particle.objectId)
+          .filter((id): id is string => {
+            if (!id) return false;
+            return !expectedParticleIds.has(id);
+          });
+        const removedIdSet = new Set(removedParticleIds);
+        const changedReferenceIds = new Set<string>(removedParticleIds);
+        sceneObjectEntries(canvas)
+          .filter(({ object }) => connectorsForRemovedIds([object], removedIdSet).length > 0)
+          .forEach((entry) => {
+            if (entry.object.objectId) changedReferenceIds.add(entry.object.objectId);
+            removeSceneObject(entry);
+          });
+        sceneObjectEntries(canvas).forEach(({ object }) => {
+          const relations = object.semanticRelations ?? [];
+          const retainedRelations = relations.filter(
+            (relation) =>
+              ![
+                relation.sourceObjectId,
+                relation.targetObjectId,
+                ...(relation.mediatorObjectIds ?? [])
+              ].some((id) => removedIdSet.has(id))
+          );
+          if (retainedRelations.length !== relations.length) {
+            if (object.objectId) changedReferenceIds.add(object.objectId);
+            object.semanticRelations = retainedRelations;
+            const objectMetadata = metadataOf(object);
+            if (objectMetadata)
+              object.semanticMetadata = {
+                ...objectMetadata,
+                ...(retainedRelations.length
+                  ? { relationIds: retainedRelations.map((relation) => relation.id) }
+                  : {})
+              };
+          }
+        });
+        particles.forEach((particle) => existingField.remove(particle));
         const repairedParticles = plan.points.map((position, index) => {
           const objectId = `${existingField.objectId!}-particle-${index}`;
           const particle =
             existingById.get(objectId) ?? createParticle(existingField.objectId!, position, index);
           particle.set({ scaleX: 1, scaleY: 1, angle: 0 });
-          if (!particle.group) existingField.add(particle);
+          existingField.insertAt(index, particle);
           moveAnchorTo(particle, "center", position);
           return particle;
         });
@@ -1659,7 +1694,8 @@ export function createSemanticEditorAdapter(
           },
           changedObjectIds: [
             existingField.objectId!,
-            ...repairedParticles.map((particle) => particle.objectId!)
+            ...repairedParticles.map((particle) => particle.objectId!),
+            ...changedReferenceIds
           ]
         };
       }
