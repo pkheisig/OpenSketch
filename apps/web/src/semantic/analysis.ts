@@ -227,8 +227,12 @@ export function analyzeComposition(
           : expectedStyle.fill;
       const mismatches = [
         object.fill !== expectedFill ? "fill" : undefined,
-        object.stroke !== expectedStyle.stroke ? "stroke" : undefined,
-        object.strokeWidth !== expectedStyle.strokeWidth ? "strokeWidth" : undefined
+        ...(object instanceof IText || object instanceof Textbox
+          ? []
+          : [
+              object.stroke !== expectedStyle.stroke ? "stroke" : undefined,
+              object.strokeWidth !== expectedStyle.strokeWidth ? "strokeWidth" : undefined
+            ])
       ].filter((value): value is string => Boolean(value));
       if (mismatches.length > 0)
         add(

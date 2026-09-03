@@ -1055,6 +1055,7 @@ export function createSemanticEditorAdapter(
             resolvedUpdates.push([text, value]);
           });
           resolvedUpdates.forEach(([text, value]) => text.set("text", value));
+          refreshTextMetrics(resolvedUpdates.map(([text]) => text));
           const stack = [
             textForRole("stage-title"),
             labelText,
@@ -1116,17 +1117,20 @@ export function createSemanticEditorAdapter(
           dependencies.refreshConnectors();
           canvas.requestRenderAll();
           commitSemantic("Semantic update labeled group");
+          const updatedObjectIds = [
+            existingStage.objectId!,
+            existingLabelGroup.objectId!,
+            ...requestedIds
+          ]
+            .filter((id, index, ids) => ids.indexOf(id) === index)
+            .slice(0, 200);
           return {
             data: {
               objectId: existingStage.objectId,
               labelObjectId: existingLabelGroup.objectId,
-              objectIds: [existingStage.objectId, existingLabelGroup.objectId, ...requestedIds]
+              objectIds: updatedObjectIds
             },
-            changedObjectIds: [
-              existingStage.objectId!,
-              existingLabelGroup.objectId!,
-              ...requestedIds
-            ]
+            changedObjectIds: updatedObjectIds
           };
         }
       }
@@ -1801,8 +1805,8 @@ export function createSemanticEditorAdapter(
         const isText = object instanceof IText || object instanceof Textbox;
         object.set({
           fill: isText ? (preset.textFill ?? SEMANTIC_TEXT_COLOR) : preset.fill,
-          stroke: preset.stroke,
-          strokeWidth: preset.strokeWidth,
+          stroke: isText ? null : preset.stroke,
+          strokeWidth: isText ? 0 : preset.strokeWidth,
           ...(isText ? { fontSize: preset.fontSize, fontWeight: preset.fontWeight } : {})
         });
         object.setCoords();
