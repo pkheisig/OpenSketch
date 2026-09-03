@@ -1069,7 +1069,10 @@ export function createSemanticEditorAdapter(
               );
             resolvedUpdates.push([text, normalizedValue]);
           });
-          resolvedUpdates.forEach(([text, value]) => text.set("text", value));
+          resolvedUpdates.forEach(([text, value]) => {
+            text.set("text", value);
+            if (text === labelText) existingStage.name = value;
+          });
           refreshTextMetrics(resolvedUpdates.map(([text]) => text));
           const stack = [
             textForRole("stage-title"),
@@ -1576,7 +1579,14 @@ export function createSemanticEditorAdapter(
             .map((object) => object.objectId)
             .filter((id): id is string => Boolean(id));
           return {
-            data: { objectId: existingField.objectId, particleIds, seed, reused: true },
+            data: {
+              objectId: existingField.objectId,
+              particleIds,
+              seed,
+              distribution: plan.distribution,
+              points: plan.points,
+              reused: true
+            },
             changedObjectIds: []
           };
         }
@@ -1591,9 +1601,7 @@ export function createSemanticEditorAdapter(
           const metadata = metadataOf(existingField) ?? { version: 1 as const };
           existingField.semanticMetadata = {
             ...metadata,
-            ...(restoredRelations.length
-              ? { relationIds: restoredRelations.map((relation) => relation.id) }
-              : {})
+            relationIds: restoredRelations.map((relation) => relation.id)
           };
           canvas.requestRenderAll();
           commitSemantic("Semantic restore particle field relations");
@@ -1604,6 +1612,8 @@ export function createSemanticEditorAdapter(
                 .map((object) => object.objectId)
                 .filter((id): id is string => Boolean(id)),
               seed,
+              distribution: plan.distribution,
+              points: plan.points,
               reused: true
             },
             changedObjectIds: [existingField.objectId!]
@@ -1650,9 +1660,7 @@ export function createSemanticEditorAdapter(
             if (objectMetadata)
               object.semanticMetadata = {
                 ...objectMetadata,
-                ...(retainedRelations.length
-                  ? { relationIds: retainedRelations.map((relation) => relation.id) }
-                  : {})
+                relationIds: retainedRelations.map((relation) => relation.id)
               };
           }
         });
@@ -1677,9 +1685,7 @@ export function createSemanticEditorAdapter(
         const metadata = metadataOf(existingField) ?? { version: 1 as const };
         existingField.semanticMetadata = {
           ...metadata,
-          ...(restoredRelations.length
-            ? { relationIds: restoredRelations.map((relation) => relation.id) }
-            : {})
+          relationIds: restoredRelations.map((relation) => relation.id)
         };
         existingField.setCoords();
         dependencies.refreshConnectors();
@@ -1690,6 +1696,8 @@ export function createSemanticEditorAdapter(
             objectId: existingField.objectId,
             particleIds: repairedParticles.map((particle) => particle.objectId!),
             seed,
+            distribution: plan.distribution,
+            points: plan.points,
             reused: true
           },
           changedObjectIds: [
