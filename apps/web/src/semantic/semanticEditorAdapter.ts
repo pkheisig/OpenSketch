@@ -1485,6 +1485,31 @@ export function createSemanticEditorAdapter(
             ]
           : [])
       ];
+      const createParticle = (
+        fieldObjectId: string,
+        position: { x: number; y: number },
+        index: number
+      ) => {
+        const particle = new Circle({
+          radius: 4,
+          left: position.x,
+          top: position.y,
+          originX: "center",
+          originY: "center",
+          fill: defaults.shape.fill,
+          stroke: defaults.shape.stroke,
+          strokeWidth: particleStrokeWidth
+        });
+        particle.objectId = `${fieldObjectId}-particle-${index}`;
+        particle.name = "Particle";
+        particle.OpenSketchType = "particle";
+        particle.semanticMetadata = {
+          version: 1,
+          semanticRole: particleRole === "decorative" ? "decorative" : "particle-field",
+          semanticType: particleSemanticType
+        };
+        return particle;
+      };
       const particleFieldSpec = {
         seed,
         count: Math.floor(particleCount),
@@ -1503,7 +1528,6 @@ export function createSemanticEditorAdapter(
           JSON.stringify(object.particleFieldSpec) === JSON.stringify(particleFieldSpec)
       );
       const existingField = existingFieldEntry?.object;
-      const replacedParticleFieldObjectIds: string[] = [];
       if (isGroup(existingField)) {
         const particles = existingField.getObjects();
         const matchesPlan =
@@ -1549,36 +1573,54 @@ export function createSemanticEditorAdapter(
             changedObjectIds: [existingField.objectId!]
           };
         }
-        const replacedObjectIds = [
-          existingField.objectId!,
-          ...particles
-            .map((particle) => particle.objectId)
-            .filter((id): id is string => Boolean(id))
-        ];
-        if (existingFieldEntry) removeSceneObject(existingFieldEntry);
-        replacedParticleFieldObjectIds.push(...replacedObjectIds);
+        const expectedParticleIds = new Set(
+          plan.points.map((_, index) => `${existingField.objectId!}-particle-${index}`)
+        );
+        const existingById = new Map(
+          particles
+            .filter((particle): particle is typeof particle & { objectId: string } =>
+              Boolean(particle.objectId)
+            )
+            .map((particle) => [particle.objectId, particle])
+        );
+        particles
+          .filter((particle) => !particle.objectId || !expectedParticleIds.has(particle.objectId))
+          .forEach((particle) => existingField.remove(particle));
+        const repairedParticles = plan.points.map((position, index) => {
+          const objectId = `${existingField.objectId!}-particle-${index}`;
+          const particle =
+            existingById.get(objectId) ?? createParticle(existingField.objectId!, position, index);
+          if (!particle.group) existingField.add(particle);
+          moveAnchorTo(particle, "center", position);
+          return particle;
+        });
+        existingField.semanticRelations = expectedRelations(existingField.objectId!);
+        const metadata = metadataOf(existingField) ?? { version: 1 as const };
+        existingField.semanticMetadata = {
+          ...metadata,
+          ...(existingField.semanticRelations.length
+            ? { relationIds: existingField.semanticRelations.map((relation) => relation.id) }
+            : {})
+        };
+        existingField.setCoords();
+        canvas.requestRenderAll();
+        commitSemantic("Semantic repair particle field");
+        return {
+          data: {
+            objectId: existingField.objectId,
+            particleIds: repairedParticles.map((particle) => particle.objectId!),
+            seed,
+            reused: true
+          },
+          changedObjectIds: [
+            existingField.objectId!,
+            ...repairedParticles.map((particle) => particle.objectId!)
+          ]
+        };
       }
       const fieldObjectId = crypto.randomUUID();
       const particles = plan.points.map((position, index) => {
-        const particle = new Circle({
-          radius: 4,
-          left: position.x,
-          top: position.y,
-          originX: "center",
-          originY: "center",
-          fill: defaults.shape.fill,
-          stroke: defaults.shape.stroke,
-          strokeWidth: Math.max(1, defaults.shape.strokeWidth * 0.5)
-        });
-        particle.objectId = `${fieldObjectId}-particle-${index}`;
-        particle.name = "Particle";
-        particle.OpenSketchType = "particle";
-        particle.semanticMetadata = {
-          version: 1,
-          semanticRole: particleRole === "decorative" ? "decorative" : "particle-field",
-          semanticType: particleSemanticType
-        };
-        return particle;
+        return createParticle(fieldObjectId, position, index);
       });
       const field = new Group(particles);
       field.objectId = fieldObjectId;
@@ -1626,11 +1668,7 @@ export function createSemanticEditorAdapter(
           points: plan.points,
           reused: false
         },
-        changedObjectIds: [
-          field.objectId,
-          ...particles.map((particle) => particle.objectId!),
-          ...replacedParticleFieldObjectIds
-        ]
+        changedObjectIds: [field.objectId, ...particles.map((particle) => particle.objectId!)]
       };
     }
     if (command === "create_annotation") {
