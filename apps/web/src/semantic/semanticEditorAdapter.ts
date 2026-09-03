@@ -950,6 +950,11 @@ export function createSemanticEditorAdapter(
       const ids = input.objectIds === undefined ? [] : objectIds(input);
       const idSet = new Set(ids);
       const stageId = typeof input.stageId === "string" ? input.stageId : undefined;
+      const stageObjectIndex = stageId ? sceneObjectIndex(canvas) : undefined;
+      const hasStage = (objectId: string): boolean => {
+        const object = stageObjectIndex?.get(objectId);
+        return object ? metadataOf(object)?.stageId === stageId : false;
+      };
       const relations = relationsForCanvas(canvas).filter((relation) => {
         if (
           idSet.size > 0 &&
@@ -959,13 +964,10 @@ export function createSemanticEditorAdapter(
         )
           return false;
         if (!stageId) return true;
-        const index = sceneObjectIndex(canvas);
         return (
-          metadataOf(index.get(relation.sourceObjectId)!)?.stageId === stageId ||
-          metadataOf(index.get(relation.targetObjectId)!)?.stageId === stageId ||
-          (relation.mediatorObjectIds ?? []).some(
-            (mediatorObjectId) => metadataOf(index.get(mediatorObjectId)!)?.stageId === stageId
-          )
+          hasStage(relation.sourceObjectId) ||
+          hasStage(relation.targetObjectId) ||
+          (relation.mediatorObjectIds ?? []).some((mediatorObjectId) => hasStage(mediatorObjectId))
         );
       });
       const limit = typeof input.limit === "number" ? input.limit : 256;
@@ -1175,6 +1177,9 @@ export function createSemanticEditorAdapter(
         );
       const label = boundedText(input.label, 240);
       if (!label) throw new SemanticAdapterError("INVALID_INPUT", "label must not be empty.");
+      const insertionIndex = Math.min(
+        ...contentObjects.map((object) => canvas.getObjects().indexOf(object))
+      );
       const bounds = unionBounds(contentObjects);
       const requestedPlacement = (input.placement ?? "outward") as LabelPlacement;
       const settings = dependencies.getCanvasSettings();
@@ -1337,7 +1342,7 @@ export function createSemanticEditorAdapter(
           ? undefined
           : locationFromInput(canvas, settings, input);
       if (requestedLocation) moveAnchorTo(stageGroup, "center", requestedLocation);
-      canvas.add(stageGroup);
+      canvas.insertAt(Math.max(0, Math.min(insertionIndex, canvas.getObjects().length)), stageGroup);
       stageGroup.setCoords();
       dependencies.refreshConnectors();
       canvas.requestRenderAll();
