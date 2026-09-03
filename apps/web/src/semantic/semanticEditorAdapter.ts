@@ -1057,7 +1057,7 @@ export function createSemanticEditorAdapter(
           const resolvedUpdates: Array<readonly [IText, string]> = [];
           updates.forEach(([role, value]) => {
             if (typeof value !== "string") return;
-            const normalizedValue = boundedText(value, 240);
+            const normalizedValue = boundedText(value, role === "stage-subtitle" ? 400 : 240);
             if (role === "stage-label" && !normalizedValue)
               throw new SemanticAdapterError("INVALID_INPUT", "label must not be empty.");
             if (!normalizedValue) return;
@@ -1614,6 +1614,7 @@ export function createSemanticEditorAdapter(
           const objectId = `${existingField.objectId!}-particle-${index}`;
           const particle =
             existingById.get(objectId) ?? createParticle(existingField.objectId!, position, index);
+          particle.set({ scaleX: 1, scaleY: 1, angle: 0 });
           if (!particle.group) existingField.add(particle);
           moveAnchorTo(particle, "center", position);
           return particle;
