@@ -147,7 +147,10 @@ export function buildConnectorGeometry(
     startTangent = archControl;
     endTangent = archControl;
   } else if (pathShape === "circular") {
-    const radius = length * 0.58;
+    const sweepFraction = Math.abs(curvature || 0.3);
+    const clampedSweep = Math.min(Math.max(sweepFraction, 0.01), 1.99);
+    const radius = length / (2 * Math.sin((clampedSweep * Math.PI) / 2));
+    const largeArc = clampedSweep > 1 ? 1 : 0;
     const sweep = curvature < 0 ? 0 : 1;
     const halfChord = length / 2;
     const centerOffset = Math.sqrt(Math.max(0, radius * radius - halfChord * halfChord));
@@ -162,7 +165,7 @@ export function buildConnectorGeometry(
         : { x: radiusVector.y, y: -radiusVector.x };
       return { x: pointValue.x + tangent.x, y: pointValue.y + tangent.y };
     };
-    pathData = `M ${pointText(from)} A ${radius} ${radius} 0 1 ${sweep} ${pointText(to)}`;
+    pathData = `M ${pointText(from)} A ${radius} ${radius} 0 ${largeArc} ${sweep} ${pointText(to)}`;
     startTangent = tangentAt(from);
     const endForward = tangentAt(to);
     endTangent = { x: to.x - (endForward.x - to.x), y: to.y - (endForward.y - to.y) };

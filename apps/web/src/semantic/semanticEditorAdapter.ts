@@ -772,7 +772,15 @@ export function createSemanticEditorAdapter(
       lineStyle: "solid",
       routing: pathShape === "straight" ? "direct" : "orthogonal",
       pathShape,
-      curvature: 0
+      curvature:
+        routeType === "cycle-arc"
+          ? (input.direction === "counterclockwise" ? -1 : 1) *
+            (2 /
+              Math.max(
+                2,
+                typeof input._cycleSegmentCount === "number" ? input._cycleSegmentCount : 12
+              ))
+          : 0
     };
     const obstacles = canvas
       .getObjects()
@@ -2247,9 +2255,55 @@ export function createSemanticEditorAdapter(
       const pairs = ids
         .slice(0, closed ? ids.length : ids.length - 1)
         .map((id, index) => ({ fromObjectId: id, toObjectId: ids[(index + 1) % ids.length] }));
+      const nearestFacingPort = (
+        object: FabricObject,
+        toward: { x: number; y: number }
+      ): SemanticPort => {
+        const geometry = inspectSemanticGeometry(object);
+        const candidates = geometry.ports.filter((port) =>
+          ["top", "right", "bottom", "left"].some((side) => port.id.endsWith(`:port:${side}`))
+        );
+        return (
+          candidates.sort(
+            (left, right) =>
+              right.normal.x * toward.x +
+              right.normal.y * toward.y -
+              (left.normal.x * toward.x + left.normal.y * toward.y)
+          )[0] ?? geometry.ports[0]!
+        );
+      };
       const results = [];
-      for (const pair of pairs)
-        results.push(await createBoundConnector({ ...input, ...pair }, false));
+      for (const pair of pairs) {
+        if (input.routeType !== "cycle-arc") {
+          results.push(await createBoundConnector({ ...input, ...pair }, false));
+          continue;
+        }
+        const [fromObject, toObject] = resolveObjects(canvas, [pair.fromObjectId, pair.toObjectId]);
+        const fromCenter = inspectSemanticGeometry(fromObject).center;
+        const toCenter = inspectSemanticGeometry(toObject).center;
+        const length = Math.hypot(toCenter.x - fromCenter.x, toCenter.y - fromCenter.y) || 1;
+        const towardTarget = {
+          x: (toCenter.x - fromCenter.x) / length,
+          y: (toCenter.y - fromCenter.y) / length
+        };
+        const fromPort = nearestFacingPort(fromObject, towardTarget);
+        const toPort = nearestFacingPort(toObject, {
+          x: -towardTarget.x,
+          y: -towardTarget.y
+        });
+        results.push(
+          await createBoundConnector(
+            {
+              ...input,
+              ...pair,
+              fromPortId: fromPort.id,
+              toPortId: toPort.id,
+              _cycleSegmentCount: pairs.length
+            },
+            false
+          )
+        );
+      }
       canvas.requestRenderAll();
       commitSemantic("Semantic connect sequence");
       return {

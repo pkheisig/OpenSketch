@@ -148,6 +148,14 @@ describe("free connector geometry", () => {
     expect(Math.abs(circular.startAngle - circular.endAngle)).toBeGreaterThan(0.5);
   });
 
+  it("uses the requested minor or major sweep for circular connectors", () => {
+    const from = { x: 0, y: 0 };
+    const to = { x: 240, y: 0 };
+
+    expect(buildConnectorGeometry(from, to, "circular", 2 / 7).pathData).toContain(" 0 0 1 ");
+    expect(buildConnectorGeometry(from, to, "circular", 1.4).pathData).toContain(" 0 1 1 ");
+  });
+
   it("matches the reference family sizes and builds every visible preset", () => {
     expect(
       Object.fromEntries(
