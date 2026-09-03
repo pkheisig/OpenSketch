@@ -1131,6 +1131,12 @@ export function createSemanticEditorAdapter(
           const updatedObjectIds = [
             existingStage.objectId!,
             existingLabelGroup.objectId!,
+            ...(isGroup(existingStage)
+              ? existingStage
+                  .getObjects()
+                  .map((object) => object.objectId)
+                  .filter((id): id is string => Boolean(id))
+              : []),
             ...requestedIds
           ]
             .filter((id, index, ids) => ids.indexOf(id) === index)
@@ -1426,6 +1432,25 @@ export function createSemanticEditorAdapter(
         typeof input.targetObjectId === "string" ? input.targetObjectId : undefined;
       const sourceObject = sourceObjectId ? resolveObjects(canvas, [sourceObjectId])[0] : undefined;
       const targetObject = targetObjectId ? resolveObjects(canvas, [targetObjectId])[0] : undefined;
+      const source = sourceObject ? inspectSemanticGeometry(sourceObject).center : undefined;
+      const target = targetObject ? inspectSemanticGeometry(targetObject).center : undefined;
+      const defaults = dependencies.creationDefaults();
+      const particleStrokeWidth = Math.max(1, defaults.shape.strokeWidth * 0.5);
+      const particleInset = 4 + particleStrokeWidth / 2;
+      if (fieldBounds.width < particleInset * 2 || fieldBounds.height < particleInset * 2)
+        throw new SemanticAdapterError(
+          "INVALID_INPUT",
+          "Particle bounds must contain the rendered particle diameter."
+        );
+      const plan = planParticleField(
+        fieldBounds,
+        particleCount,
+        distribution,
+        seed,
+        source,
+        target,
+        particleInset
+      );
       const particleFieldSpec = {
         seed,
         count: Math.floor(particleCount),
@@ -1444,35 +1469,25 @@ export function createSemanticEditorAdapter(
           JSON.stringify(object.particleFieldSpec) === JSON.stringify(particleFieldSpec)
       )?.object;
       if (isGroup(existingField)) {
-        const particleIds = existingField
-          .getObjects()
-          .map((object) => object.objectId)
-          .filter((id): id is string => Boolean(id));
-        return {
-          data: { objectId: existingField.objectId, particleIds, seed, reused: true },
-          changedObjectIds: []
-        };
+        const particles = existingField.getObjects();
+        const matchesPlan =
+          particles.length === plan.points.length &&
+          particles.every((particle, index) => {
+            const actual = inspectSemanticGeometry(particle).center;
+            const expected = plan.points[index];
+            return Math.abs(actual.x - expected.x) <= 0.5 && Math.abs(actual.y - expected.y) <= 0.5;
+          });
+        if (matchesPlan) {
+          const particleIds = particles
+            .map((object) => object.objectId)
+            .filter((id): id is string => Boolean(id));
+          return {
+            data: { objectId: existingField.objectId, particleIds, seed, reused: true },
+            changedObjectIds: []
+          };
+        }
       }
-      const source = sourceObject ? inspectSemanticGeometry(sourceObject).center : undefined;
-      const target = targetObject ? inspectSemanticGeometry(targetObject).center : undefined;
-      const defaults = dependencies.creationDefaults();
-      const particleStrokeWidth = Math.max(1, defaults.shape.strokeWidth * 0.5);
-      const particleInset = 4 + particleStrokeWidth / 2;
-      if (fieldBounds.width < particleInset * 2 || fieldBounds.height < particleInset * 2)
-        throw new SemanticAdapterError(
-          "INVALID_INPUT",
-          "Particle bounds must contain the rendered particle diameter."
-        );
       const fieldObjectId = crypto.randomUUID();
-      const plan = planParticleField(
-        fieldBounds,
-        particleCount,
-        distribution,
-        seed,
-        source,
-        target,
-        particleInset
-      );
       const particles = plan.points.map((position, index) => {
         const particle = new Circle({
           radius: 4,
@@ -1779,9 +1794,21 @@ export function createSemanticEditorAdapter(
           changedObjectIds: []
         };
       }
+      const renderedBounds = object.getBoundingRect();
+      if (originalFontSize === object.fontSize && originalWidth === object.width)
+        return {
+          data: {
+            objectId,
+            fitted: true,
+            fontSize: object.fontSize,
+            width: renderedBounds.width,
+            height: renderedBounds.height,
+            lines: object.textLines.length
+          },
+          changedObjectIds: []
+        };
       object.setCoords();
       refreshParentGroups(object);
-      const renderedBounds = object.getBoundingRect();
       dependencies.refreshConnectors();
       canvas.requestRenderAll();
       commitSemantic("Semantic fit text");
