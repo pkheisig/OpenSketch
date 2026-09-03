@@ -1495,13 +1495,15 @@ export function createSemanticEditorAdapter(
         semanticType: requestedSemanticType ?? null,
         role: particleRole
       };
-      const existingField = sceneObjectEntries(canvas).find(
+      const existingFieldEntry = sceneObjectEntries(canvas).find(
         ({ object }) =>
           isGroup(object) &&
           metadataOf(object)?.semanticRole === "particle-field" &&
           metadataOf(object)?.semanticName === `particle-field:${seed}` &&
           JSON.stringify(object.particleFieldSpec) === JSON.stringify(particleFieldSpec)
-      )?.object;
+      );
+      const existingField = existingFieldEntry?.object;
+      const replacedParticleFieldObjectIds: string[] = [];
       if (isGroup(existingField)) {
         const particles = existingField.getObjects();
         const matchesPlan =
@@ -1547,6 +1549,14 @@ export function createSemanticEditorAdapter(
             changedObjectIds: [existingField.objectId!]
           };
         }
+        const replacedObjectIds = [
+          existingField.objectId!,
+          ...particles
+            .map((particle) => particle.objectId)
+            .filter((id): id is string => Boolean(id))
+        ];
+        if (existingFieldEntry) removeSceneObject(existingFieldEntry);
+        replacedParticleFieldObjectIds.push(...replacedObjectIds);
       }
       const fieldObjectId = crypto.randomUUID();
       const particles = plan.points.map((position, index) => {
@@ -1616,22 +1626,29 @@ export function createSemanticEditorAdapter(
           points: plan.points,
           reused: false
         },
-        changedObjectIds: [field.objectId, ...particles.map((particle) => particle.objectId!)]
+        changedObjectIds: [
+          field.objectId,
+          ...particles.map((particle) => particle.objectId!),
+          ...replacedParticleFieldObjectIds
+        ]
       };
     }
     if (command === "create_annotation") {
       const targetObjectId = input.targetObjectId as string;
       const [target] = resolveObjects(canvas, [targetObjectId]);
       const defaults = dependencies.creationDefaults();
+      const explicitFontSize = typeof input.fontSize === "number" ? input.fontSize : undefined;
       const annotation = new Textbox(input.text as string, {
         width: 260,
         fontFamily: defaults.text.fontFamily,
-        fontSize: typeof input.fontSize === "number" ? input.fontSize : defaults.text.fontSize,
+        fontSize: explicitFontSize ?? defaults.text.fontSize,
         fill: defaults.text.color,
         originX: "center",
         originY: "center"
       });
       configureTextObject(annotation);
+      dependencies.prepareElementStyle(annotation);
+      if (explicitFontSize !== undefined) annotation.set("fontSize", explicitFontSize);
       refreshTextMetrics([annotation]);
       const candidates = annotationCandidates(
         inspectSemanticGeometry(target).visualBounds,
@@ -1715,6 +1732,10 @@ export function createSemanticEditorAdapter(
         position.position,
         false
       );
+      if (explicitFontSize !== undefined) {
+        annotation.set("fontSize", explicitFontSize);
+        refreshTextMetrics([annotation]);
+      }
       annotation.semanticMetadata = {
         version: 1,
         semanticRole: "annotation",
