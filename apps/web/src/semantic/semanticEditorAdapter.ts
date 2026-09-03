@@ -1030,20 +1030,21 @@ export function createSemanticEditorAdapter(
         const textForRole = (role: string): IText | undefined =>
           existingTexts.find((object) => metadataOf(object)?.semanticRole === role);
         const labelText = textForRole("stage-label") ?? existingTexts[0];
-        if (existingStage && (!existingLabelGroup || !labelText))
+        const existingContentGroup = isGroup(existingStage)
+          ? existingStage
+              .getObjects()
+              .find(
+                (object) =>
+                  isGroup(object) && metadataOf(object)?.semanticRole === "stage-content"
+              )
+          : undefined;
+        if (existingStage && (!existingContentGroup || !existingLabelGroup || !labelText))
           throw new SemanticAdapterError(
             "INCOMPLETE_STAGE",
-            `Existing stage "${requestedStageId}" is missing its label structure.`
+            `Existing stage "${requestedStageId}" is missing its required structure.`
           );
         if (existingStage && existingLabelGroup && labelText) {
-          const contentGroup = isGroup(existingStage)
-            ? existingStage
-                .getObjects()
-                .find(
-                  (object) =>
-                    isGroup(object) && metadataOf(object)?.semanticRole === "stage-content"
-                )
-            : undefined;
+          const contentGroup = existingContentGroup;
           const contentBoundsBefore = contentGroup ? boundsOf(contentGroup) : undefined;
           const labelBoundsBefore = boundsOf(existingLabelGroup);
           const requestedIds = objectIds(input);
@@ -1222,13 +1223,13 @@ export function createSemanticEditorAdapter(
         configureTextObject(object);
         return object;
       };
-      const title =
-        typeof input.title === "string" && input.title
-          ? makeLabel(input.title, Math.max(18, defaults.text.fontSize))
+      const titleText = boundedText(input.title, 240);
+      const title = titleText
+        ? makeLabel(titleText, Math.max(18, defaults.text.fontSize))
           : undefined;
-      const subtitle =
-        typeof input.subtitle === "string" && input.subtitle
-          ? makeLabel(input.subtitle, Math.max(14, defaults.text.fontSize - 4))
+      const subtitleText = boundedText(input.subtitle, 400);
+      const subtitle = subtitleText
+        ? makeLabel(subtitleText, Math.max(14, defaults.text.fontSize - 4))
           : undefined;
       const labelObject = makeLabel(label, Math.max(16, defaults.text.fontSize));
       if (title) title.set({ top: labelY - 28 });
@@ -1996,15 +1997,10 @@ export function createSemanticEditorAdapter(
               );
               const maxLocalWidth = maxWidth / worldScaleX;
               const candidates = new Set([Math.min(originalWidth, maxLocalWidth), maxLocalWidth]);
-              const angle = Math.abs(((object.angle ?? 0) * Math.PI) / 180) % Math.PI;
-              if (Math.abs(Math.sin(angle)) > 0.000001) {
-                const minimumWidth = Math.min(1, maxLocalWidth);
-                for (let step = 1; step <= 32; step += 1) {
-                  const fraction = step / 32;
-                  candidates.add(
-                    minimumWidth + (maxLocalWidth - minimumWidth) * fraction
-                  );
-                }
+              const minimumWidth = Math.min(1, maxLocalWidth);
+              for (let step = 1; step <= 32; step += 1) {
+                const fraction = step / 32;
+                candidates.add(minimumWidth + (maxLocalWidth - minimumWidth) * fraction);
               }
               return [...candidates];
             })()

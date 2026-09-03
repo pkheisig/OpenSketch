@@ -296,18 +296,32 @@ export function planParticleField(
     } else if (distribution === "source-fan" && source) {
       const end = target ?? { x: bounds.left + bounds.width, y: c.y };
       const spread = (next() - 0.5) * bounds.height * 0.7;
-      x = clamp(source.x + fraction * (end.x - source.x), innerLeft, innerLeft + innerWidth);
+      const length = Math.hypot(end.x - source.x, end.y - source.y) || 1;
+      const normal = { x: -(end.y - source.y) / length, y: (end.x - source.x) / length };
+      const offset = spread * fraction;
+      x = clamp(
+        source.x + fraction * (end.x - source.x) + normal.x * offset,
+        innerLeft,
+        innerLeft + innerWidth
+      );
       y = clamp(
-        source.y + fraction * (end.y - source.y) + spread * fraction,
+        source.y + fraction * (end.y - source.y) + normal.y * offset,
         innerTop,
         innerTop + innerHeight
       );
     } else if (distribution === "target-converging" && target) {
       const start = source ?? { x: bounds.left, y: c.y };
       const spread = (next() - 0.5) * bounds.height * 0.7;
-      x = clamp(start.x + fraction * (target.x - start.x), innerLeft, innerLeft + innerWidth);
+      const length = Math.hypot(target.x - start.x, target.y - start.y) || 1;
+      const normal = { x: -(target.y - start.y) / length, y: (target.x - start.x) / length };
+      const offset = spread * (1 - fraction);
+      x = clamp(
+        start.x + fraction * (target.x - start.x) + normal.x * offset,
+        innerLeft,
+        innerLeft + innerWidth
+      );
       y = clamp(
-        start.y + fraction * (target.y - start.y) + spread * (1 - fraction),
+        start.y + fraction * (target.y - start.y) + normal.y * offset,
         innerTop,
         innerTop + innerHeight
       );
