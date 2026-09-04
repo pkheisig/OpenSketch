@@ -6078,17 +6078,101 @@
     "endothelial-cell": {
       "name": "endothelial cell",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/endothelial-cell-bioart-transparent.png",
+      "svg": "svg/endothelial-cell-bioart-traced.svg",
+      "png_sha256": "821e01a634557e207d47dd7e19e18a0621975c866f0306b663f6ec47bb52bec1",
+      "svg_sha256": "ee3d08800ae0a1cae3c1aa588d5bc2e0f1876b62017255a4cc42abc4fb794dd0",
+      "original_sha256": "78180f6e79da171c4fb6d1a6ea33a12732b7b46944d04f142e30b028113f74ff",
+      "png_dimensions": [
+        2484,
+        2484
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        355,
+        862,
+        355,
+        851
+      ],
+      "svg_paths": 13728,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/endothelial-cell/prompt.json",
+      "qa": "qa/inventory/endothelial-cell",
+      "visual_review": "Inspected PNG/SVG on white and dark: complete flattened elongated endothelial cell, central oval nucleus, small purple rod-shaped WPBs with internal parallel lines distinct from pink mitochondria. Fine structures, smooth coral/violet shading and transparent exterior preserved. No vessel or adjacent tissue; intracellular sizes are schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/endothelial-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/endothelial-cell/inspection.webm"
+      }
     },
     "fibroblast": {
       "name": "fibroblast",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/fibroblast-bioart-transparent.png",
+      "svg": "svg/fibroblast-bioart-traced.svg",
+      "png_sha256": "6cf90c989b40eabad28ce7f36d6e7a3f931020cbdf535fe3bd48f1b51857b622",
+      "svg_sha256": "baec4c21037d9152e4dda44b19f56853bff8a909c811d5378a12bd8e0ddda2d4",
+      "original_sha256": "d1116c319f7513c283905003647fc06866ab3de6e781b324bddd43c7127764b4",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        324,
+        563
+      ],
+      "svg_paths": 15637,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/fibroblast/prompt.json",
+      "qa": "qa/inventory/fibroblast",
+      "visual_review": "Viewed PNG/SVG on white and dark: complete spindle-shaped fibroblast with both tapering processes intact, oval nucleus, abundant rough ER and compact Golgi. Matching colors, shading and organelles. Background retry produced actual alpha; no checkerboard or visible glow in final composite. No extracellular fibers or tissue.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fibroblast/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fibroblast/inspection.webm"
+      }
     },
     "adipocyte": {
       "name": "adipocyte",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/adipocyte-bioart-transparent.png",
+      "svg": "svg/adipocyte-bioart-traced.svg",
+      "png_sha256": "c6cb8b5c0e8a7cd34422bc5b7c9c3bde119bc09154adfa9411fa2bb9e090dc84",
+      "svg_sha256": "b2f214d6a8a4678bda7a8f8b2731488c4ebda46b2305862dfa2ab9731d5e19e0",
+      "original_sha256": "dfe30ac215d1ecd6b2ae14be9e45c00ac594db19844a5ad230dcdab8db9c6fdb",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        280,
+        298,
+        305
+      ],
+      "svg_paths": 11633,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/adipocyte/prompt.json",
+      "qa": "qa/inventory/adipocyte",
+      "visual_review": "Compared PNG/SVG on white and dark: one large golden lipid droplet, narrow cytoplasmic rim, flattened peripheral violet nucleus and small organelles. SVG retains soft droplet shading with minor vector color banding, acceptable at illustration scale. Complete round cell, clear transparent padding, no extra droplets or tissue.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adipocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adipocyte/inspection.webm"
+      }
     },
     "chondrocyte": {
       "name": "chondrocyte",
