@@ -1,8 +1,8 @@
 # Inventory production progress
 
-14 of 768 unique inventory names covered across 770 checklist entries.
+17 of 768 unique inventory names covered across 770 checklist entries.
 
-These cover 12 distinct PNG/SVG pairs and 2 explicit archetype aliases. Alias reasons are recorded in the ledger.
+These cover 15 distinct PNG/SVG pairs and 2 explicit archetype aliases. Alias reasons are recorded in the ledger.
 The inventory files currently contain 770 checklist rows; their prose count is stale. Two exact repeated names share a single asset. The existing ten approved pairs are preserved. Completion requires a saved PNG, editable SVG, file validation, and visual review.
 
 Production remains on the experimental branch. Each asset is generated as a transparent PNG, then traced and reviewed on light and dark backgrounds. Completed assets are pushed periodically. The full inventory is still in progress.
@@ -14,7 +14,10 @@ Production remains on the experimental branch. Each asset is generated as a tran
 | T lymphocyte | [PNG](png/t-lymphocyte-bioart-transparent.png) | [SVG](svg/t-lymphocyte-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/t-lymphocyte/comparison.png) |
 | activated T lymphocyte | [PNG](png/activated-t-lymphocyte-bioart-transparent.png) | [SVG](svg/activated-t-lymphocyte-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/activated-t-lymphocyte/comparison.png) |
 | regulatory T cell | [PNG](png/t-lymphocyte-bioart-transparent.png) | [SVG](svg/t-lymphocyte-bioart-traced.svg) | Reuses t-lymphocyte: [rationale](https://pmc.ncbi.nlm.nih.gov/articles/PMC9426617/) |
+| natural killer cell | [PNG](png/natural-killer-cell-bioart-transparent.png) | [SVG](svg/natural-killer-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/natural-killer-cell/comparison.png) |
 | B lymphocyte | [PNG](png/t-lymphocyte-bioart-transparent.png) | [SVG](svg/t-lymphocyte-bioart-traced.svg) | Reuses t-lymphocyte: [rationale](https://pubmed.ncbi.nlm.nih.gov/1079095/) |
+| plasma cell | [PNG](png/plasma-cell-bioart-transparent.png) | [SVG](svg/plasma-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/plasma-cell/comparison.png) |
+| monocyte | [PNG](png/monocyte-bioart-transparent.png) | [SVG](svg/monocyte-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/monocyte/comparison.png) |
 | macrophage | [PNG](png/macrophage-bioart-transparent.png) | [SVG](svg/macrophage-bioart-traced.svg) | Approved earlier batch |
 | dendritic cell | [PNG](png/dendritic-cell-bioart-transparent.png) | [SVG](svg/dendritic-cell-bioart-traced.svg) | Approved earlier batch |
 | neutrophil | [PNG](png/neutrophil-bioart-transparent.png) | [SVG](svg/neutrophil-bioart-traced.svg) | Approved earlier batch |

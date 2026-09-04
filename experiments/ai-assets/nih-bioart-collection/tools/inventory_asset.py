@@ -40,14 +40,17 @@ def status():
 def prepare(args):
     data=json.loads(PROGRESS.read_text()); asset=data["assets"][args.id]
     assert asset["status"]=="pending" or (args.resume and asset["status"]=="awaiting_visual_review"),asset["status"]
-    original=ROOT/"originals"/"inventory"/args.id/"generated.png"
+    assert args.version>=1
+    suffix="" if args.version==1 else f"-v{args.version}"
+    original=ROOT/"originals"/"inventory"/args.id/f"generated{suffix}.png"
     original.parent.mkdir(parents=True,exist_ok=True)
     source=Path(args.source)
     if original.exists(): assert digest(original)==digest(source),"Preserve prior original; select a new version explicitly"
     else: shutil.copyfile(source,original)
     record=json.loads(Path(args.prompt).read_text())
     record.update(id=args.id,name=asset["name"],generated_source=str(source),original=str(original.relative_to(ROOT)),original_sha256=digest(original))
-    save(original.parent/"prompt.json",record)
+    record_path=original.parent/f"prompt{suffix}.json"
+    save(record_path,record)
     with Image.open(original) as im:
         assert im.mode=="RGBA","No actual alpha channel; request transparent image edit"
         lo,hi=im.getchannel("A").getextrema()
@@ -87,7 +90,7 @@ def prepare(args):
         page.screenshot(path=str(qa/"comparison.png"))
         page.wait_for_timeout(900)
         video=page.video; context.close(); shutil.copyfile(video.path(),qa/"inspection.webm"); browser.close()
-    asset.update(status="awaiting_visual_review",png=str(png.relative_to(ROOT)),svg=str(svg.relative_to(ROOT)),png_sha256=digest(png),svg_sha256=digest(svg),original_sha256=digest(original),png_dimensions=[side,side],alpha_extrema=extrema,transparent_margins_px=margins,svg_paths=len(paths),embedded_rasters=0,prompt=str((original.parent/"prompt.json").relative_to(ROOT)),qa=str(qa.relative_to(ROOT)))
+    asset.update(status="awaiting_visual_review",png=str(png.relative_to(ROOT)),svg=str(svg.relative_to(ROOT)),png_sha256=digest(png),svg_sha256=digest(svg),original_sha256=digest(original),png_dimensions=[side,side],alpha_extrema=extrema,transparent_margins_px=margins,svg_paths=len(paths),embedded_rasters=0,prompt=str(record_path.relative_to(ROOT)),qa=str(qa.relative_to(ROOT)))
     save(PROGRESS,data)
     print(json.dumps({"id":args.id,"status":asset["status"],"svg_paths":len(paths),"preview":str(qa/"comparison.png")}))
 def accept(args):
@@ -105,7 +108,7 @@ def alias(args):
 parser=argparse.ArgumentParser()
 sub=parser.add_subparsers(dest="action",required=True)
 sub.add_parser("init");sub.add_parser("status")
-p=sub.add_parser("prepare");p.add_argument("id");p.add_argument("source");p.add_argument("prompt");p.add_argument("--resume",action="store_true")
+p=sub.add_parser("prepare");p.add_argument("id");p.add_argument("source");p.add_argument("prompt");p.add_argument("--resume",action="store_true");p.add_argument("--version",type=int,default=1)
 p=sub.add_parser("accept");p.add_argument("id");p.add_argument("--note",required=True)
 p=sub.add_parser("alias");p.add_argument("id");p.add_argument("target");p.add_argument("--reason",required=True);p.add_argument("--reference",required=True)
 args=parser.parse_args()

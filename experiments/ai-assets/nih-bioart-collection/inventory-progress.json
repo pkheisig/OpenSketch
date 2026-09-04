@@ -5475,7 +5475,35 @@
     "natural-killer-cell": {
       "name": "natural killer cell",
       "category": "1. Immune and blood cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/natural-killer-cell-bioart-transparent.png",
+      "svg": "svg/natural-killer-cell-bioart-traced.svg",
+      "png_sha256": "b8eb230119947ac1419d7bf07893dc3e20be21bb2cdab2848d0b82b83b1aa493",
+      "svg_sha256": "8893b7b16be26e38a98166d3ea1afaf4e6d795e9949cfe9359e5cb23bd34d386",
+      "original_sha256": "a635b291facc417917941314319bea59f93f6056c324a129ddb08b9ef5757f4a",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        338,
+        307,
+        251
+      ],
+      "svg_paths": 6727,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/natural-killer-cell/prompt.json",
+      "qa": "qa/inventory/natural-killer-cell",
+      "visual_review": "Compared PNG and path SVG on white/dark: eccentric indented nucleus, cytotoxic granules and complete cell preserved; palette consistent; slightly more textured than resting T cell. No background or extraneous objects.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/natural-killer-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/natural-killer-cell/inspection.webm"
+      }
     },
     "b-lymphocyte": {
       "name": "B lymphocyte",
@@ -5492,12 +5520,68 @@
     "plasma-cell": {
       "name": "plasma cell",
       "category": "1. Immune and blood cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/plasma-cell-bioart-transparent.png",
+      "svg": "svg/plasma-cell-bioart-traced.svg",
+      "png_sha256": "ffa9fcab7d23965a5b17fa51c5fa84d3539cde9a29af75b5a1785fa2153ebc04",
+      "svg_sha256": "493b1099af70d52fe7bb0542c4b6255447eb76b25446701b8d9632742b74273e",
+      "original_sha256": "f9cd00f406d9d40327471d554fc5ee20664cf91733155d26f201c78419f3ecf6",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        377,
+        563,
+        329,
+        563
+      ],
+      "svg_paths": 7059,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/plasma-cell/prompt.json",
+      "qa": "qa/inventory/plasma-cell",
+      "visual_review": "Inspected original and light/dark PNG/SVG panels. Oval plasma cell, eccentric clock-face nucleus, pale Golgi zone and abundant rough ER are retained. Matte outlined palette matches collection. Apparent glow in raw preview is not visible after alpha compositing; no opaque background.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/plasma-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/plasma-cell/inspection.webm"
+      }
     },
     "monocyte": {
       "name": "monocyte",
       "category": "1. Immune and blood cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/monocyte-bioart-transparent.png",
+      "svg": "svg/monocyte-bioart-traced.svg",
+      "png_sha256": "47246638a1b9e431a18ec119cef2ed9399331f0aaeeacdad7087e55b780b1a4d",
+      "svg_sha256": "437b77465024ea8fbd2768a444c0b9636dbb98b25a8c2887fc7d94d0cd6519fa",
+      "original_sha256": "512e7657b82df7cc6df0839b4544f5b4b7480b1fb8ada4416564c3eba1c71845",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        289,
+        300,
+        283,
+        297
+      ],
+      "svg_paths": 2642,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/monocyte/prompt.json",
+      "qa": "qa/inventory/monocyte",
+      "visual_review": "Reviewed PNG/SVG on light and dark: folded kidney nucleus, fine scattered granules, small vacuoles and compact blood-cell outline are retained. Purple, blue and pink palette consistent. No opaque background or clipped intrinsic components.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/monocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/monocyte/inspection.webm"
+      }
     },
     "macrophage": {
       "name": "macrophage",
