@@ -48,6 +48,8 @@ def prepare(args):
     if original.exists(): assert digest(original)==digest(source),"Preserve prior original; select a new version explicitly"
     else: shutil.copyfile(source,original)
     record=json.loads(Path(args.prompt).read_text())
+    if not record.get("svg_source"):
+        record["trace_settings"]={"color_step":8,"color_precision":8,"filter_speckle":2,"layer_difference":1,"mode":"spline",**record.get("trace_settings",{})}
     record.update(id=args.id,name=asset["name"],generated_source=str(source),original=str(original.relative_to(ROOT)),original_sha256=digest(original))
     record_path=original.parent/f"prompt{suffix}.json"
     save(record_path,record)
@@ -62,15 +64,23 @@ def prepare(args):
         browser=p.chromium.launch(headless=True)
         context=browser.new_context(viewport={"width":1400,"height":860},record_video_dir=tmp,record_video_size={"width":1400,"height":860})
         page=context.new_page()
-        prepared=page.evaluate(PREPARE,{"url":"data:image/png;base64,"+base64.b64encode(original.read_bytes()).decode()})
+        trace_settings=record.get("trace_settings",{})
+        color_step=trace_settings.get("color_step",8)
+        prepare_js=PREPARE
+        if color_step:
+            assert isinstance(color_step,int) and 1<=color_step<=64
+            prepare_js=PREPARE.replace("else d[i+3]=255;", "else { d[i+3]=255; for(let k=0;k<3;k++) d[i+k]=Math.min(255,Math.round(d[i+k]/"+str(color_step)+")*"+str(color_step)+"); }")
+        prepared=page.evaluate(prepare_js,{"url":"data:image/png;base64,"+base64.b64encode(original.read_bytes()).decode()})
         png.write_bytes(base64.b64decode(prepared["master"]))
         trace=Path(tmp)/"trace.png"; trace.write_bytes(base64.b64decode(prepared["trace"]))
         if record.get("svg_source"):
             shutil.copyfile(ROOT/record["svg_source"],svg)
         else:
             trace_settings=record.get("trace_settings",{})
-            vtracer.convert_image_to_svg_py(str(trace),str(svg),colormode="color",hierarchical="stacked",mode="spline",filter_speckle=trace_settings.get("filter_speckle",6),color_precision=trace_settings.get("color_precision",8),layer_difference=trace_settings.get("layer_difference",8),corner_threshold=60,length_threshold=4.0,max_iterations=10,splice_threshold=45,path_precision=2)
+            vtracer.convert_image_to_svg_py(str(trace),str(svg),colormode="color",hierarchical="stacked",mode=trace_settings.get("mode","spline"),filter_speckle=trace_settings.get("filter_speckle",2),color_precision=trace_settings.get("color_precision",8),layer_difference=trace_settings.get("layer_difference",1),corner_threshold=60,length_threshold=4.0,max_iterations=10,splice_threshold=45,path_precision=2)
         tree=ET.parse(svg); doc=tree.getroot(); side=prepared["side"]; doc.set("viewBox",f"0 0 {side} {side}")
+        for path in doc.findall(f"{{{SVG_NS}}}path"):
+            if not path.get("d","").strip(): doc.remove(path)
         paths=doc.findall(f"{{{SVG_NS}}}path")
         for i,path in enumerate(paths):
             if not path.get("id"): path.set("id",f"{args.id}-region-{i+1:04d}")

@@ -5781,17 +5781,101 @@
     "platelet": {
       "name": "platelet",
       "category": "1. Immune and blood cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/platelet-bioart-transparent.png",
+      "svg": "svg/platelet-bioart-traced.svg",
+      "png_sha256": "e1603fcdfa253ee08334b6d78059c91c109296c5e2bf575b48b9a993b5b7f379",
+      "svg_sha256": "c459537566b51b5b9cd811dee67168d917717a6656667659224090f41f822f2b",
+      "original_sha256": "99b61467fdb1c3138ca9afedb715a743175bf9d66e73090261d0e960284ef293",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        434,
+        585,
+        347,
+        579
+      ],
+      "svg_paths": 1976,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/platelet/prompt.json",
+      "qa": "qa/inventory/platelet",
+      "visual_review": "Inspected white and dark comparison: isolated anucleate discoid platelet, lavender peripheral zone, distinct magenta and purple granules, two small mitochondria and peripheral band. SVG preserves the PNG outlines, components and shading at display scale. Transparent exterior has no visible halo. Organelle sizes are schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/platelet/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/platelet/inspection.webm"
+      }
     },
     "megakaryocyte": {
       "name": "megakaryocyte",
       "category": "1. Immune and blood cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/megakaryocyte-bioart-transparent.png",
+      "svg": "svg/megakaryocyte-bioart-traced.svg",
+      "png_sha256": "dc2453bd0a9ae9271796b18afffefb57cca9daccad2ad87e61d7090a499b5f78",
+      "svg_sha256": "cd69bd1e331422cc2883dc241ec92e923d2c7ee0491d362467144e584c88dc1e",
+      "original_sha256": "ef9b69f2637de61f1d69d0e9573cb87bd6bb9e1584bdbd2d09736319c45cec31",
+      "png_dimensions": [
+        1780,
+        1780
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        254,
+        271,
+        254,
+        272
+      ],
+      "svg_paths": 3419,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/megakaryocyte/prompt.json",
+      "qa": "qa/inventory/megakaryocyte",
+      "visual_review": "Viewed both formats on white and dark: complete rounded cell outline, a single connected multilobulated nucleus, small granules, membrane channels and intrinsic organelles. SVG retains major shading boundaries and fine components with flatter nuclear shading than PNG, acceptable in the established illustration style. Generous alpha padding and no visible exterior halo.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/megakaryocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/megakaryocyte/inspection.webm"
+      }
     },
     "hematopoietic-stem-progenitor-cell": {
       "name": "hematopoietic stem/progenitor cell",
       "category": "1. Immune and blood cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/hematopoietic-stem-progenitor-cell-bioart-transparent.png",
+      "svg": "svg/hematopoietic-stem-progenitor-cell-bioart-traced.svg",
+      "png_sha256": "a4fbb596f7cde4941121fde984a437ec35d1d11f99e67ed8ba4e3dcd76096e69",
+      "svg_sha256": "00b557bc7175fdb51901b39aed30aee495bf6e00e6f0f86809b04883c4f19cc2",
+      "original_sha256": "e29ec1cc9e0a2a8f1a93be77961510f5eeb9bbe476494c616d1e542792cfc216",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        282,
+        299,
+        251
+      ],
+      "svg_paths": 12742,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/hematopoietic-stem-progenitor-cell/prompt.json",
+      "qa": "qa/inventory/hematopoietic-stem-progenitor-cell",
+      "visual_review": "Inspected PNG and SVG on light and dark backgrounds. Round immature cell with large round nucleus, visible nucleolus and narrow cytoplasmic rim. Initial tracing lost shading; explicit trace-input color quantization now preserves broad gradients, fine outlines and intrinsic organelles closely. Original PNG remains unchanged. Morphology is a generic HSPC archetype, not a diagnostic identifier.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hematopoietic-stem-progenitor-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hematopoietic-stem-progenitor-cell/inspection.webm"
+      }
     },
     "generic-epithelial-cell": {
       "name": "generic epithelial cell",
