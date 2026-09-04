@@ -5715,12 +5715,68 @@
     "mast-cell": {
       "name": "mast cell",
       "category": "1. Immune and blood cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/mast-cell-bioart-transparent.png",
+      "svg": "svg/mast-cell-bioart-traced.svg",
+      "png_sha256": "c065ae8d91898899d75b8a7594762442e8a2f22d3ae61bc674359f9e1919f213",
+      "svg_sha256": "3afee4cc7e44bbd4f203c7379340b25cc66cb3349787b2567d6141ea5d579068",
+      "original_sha256": "00fc503816128c06f5fffffc554a3bb9c791cd43d5cd4c6b688c77b55c4ea40e",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        375,
+        575,
+        455,
+        593
+      ],
+      "svg_paths": 3716,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/mast-cell/prompt.json",
+      "qa": "qa/inventory/mast-cell",
+      "visual_review": "Inspected original and light/dark PNG/SVG panels. Single round unlobed nucleus with numerous violet-magenta granules; intact oval cell, no released granules. Consistent outlined palette and matched vector trace; background alpha composites cleanly.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mast-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mast-cell/inspection.webm"
+      }
     },
     "erythrocyte": {
       "name": "erythrocyte",
       "category": "1. Immune and blood cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/erythrocyte-bioart-transparent.png",
+      "svg": "svg/erythrocyte-bioart-traced.svg",
+      "png_sha256": "588322ec3e13db4940e3dbc6dda8d40ba3bcbd667ca9a4c0ba7c95f38caa786c",
+      "svg_sha256": "35a6b35ef922a4ee7258d3288769f74377e603850d7cb27347704453cea706b1",
+      "original_sha256": "3a2510ab8317365a7a7e26733bded09eaf0f3638cc949fc10d428f1d9c064b3b",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        482,
+        649,
+        409,
+        617
+      ],
+      "svg_paths": 2,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/erythrocyte/prompt.json",
+      "qa": "qa/inventory/erythrocyte",
+      "visual_review": "Inspected PNG and SVG on white and dark backgrounds. Complete isolated coral-red anucleate disk, shallow central depression, crisp outline and transparent padding. Automatic trace flattened shading; reconstructed vector uses two editable contours and radial gradients, preserving recognizable depth with a slightly thinner silhouette.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/erythrocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/erythrocyte/inspection.webm"
+      }
     },
     "platelet": {
       "name": "platelet",

@@ -65,12 +65,17 @@ def prepare(args):
         prepared=page.evaluate(PREPARE,{"url":"data:image/png;base64,"+base64.b64encode(original.read_bytes()).decode()})
         png.write_bytes(base64.b64decode(prepared["master"]))
         trace=Path(tmp)/"trace.png"; trace.write_bytes(base64.b64decode(prepared["trace"]))
-        vtracer.convert_image_to_svg_py(str(trace),str(svg),colormode="color",hierarchical="stacked",mode="spline",filter_speckle=6,color_precision=8,layer_difference=8,corner_threshold=60,length_threshold=4.0,max_iterations=10,splice_threshold=45,path_precision=2)
+        if record.get("svg_source"):
+            shutil.copyfile(ROOT/record["svg_source"],svg)
+        else:
+            trace_settings=record.get("trace_settings",{})
+            vtracer.convert_image_to_svg_py(str(trace),str(svg),colormode="color",hierarchical="stacked",mode="spline",filter_speckle=trace_settings.get("filter_speckle",6),color_precision=trace_settings.get("color_precision",8),layer_difference=trace_settings.get("layer_difference",8),corner_threshold=60,length_threshold=4.0,max_iterations=10,splice_threshold=45,path_precision=2)
         tree=ET.parse(svg); doc=tree.getroot(); side=prepared["side"]; doc.set("viewBox",f"0 0 {side} {side}")
         paths=doc.findall(f"{{{SVG_NS}}}path")
-        for i,path in enumerate(paths): path.set("id",f"{args.id}-region-{i+1:04d}")
+        for i,path in enumerate(paths):
+            if not path.get("id"): path.set("id",f"{args.id}-region-{i+1:04d}")
         tree.write(svg,encoding="unicode",xml_declaration=True)
-        assert paths and {e.tag.split("}")[-1] for e in doc.iter()} <= {"svg","path"}
+        assert paths and {e.tag.split("}")[-1] for e in doc.iter()} <= {"svg","path","defs","radialGradient","linearGradient","stop"}
         assert not any("href" in k for e in doc.iter() for k in e.attrib)
         with Image.open(png) as im:
             alpha=im.getchannel("A"); box=alpha.getbbox()
