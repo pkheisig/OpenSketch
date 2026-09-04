@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a Schwann cell, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. Show one myelinating Schwann cell as one elongated cylindrical rolled pale turquoise myelin sheath with thin concentric membrane lamellae visible at the near end. Along one outer side is a narrow continuous pale turquoise cytoplasmic bulge containing exactly one elongated violet nucleus. This outer nucleated cytoplasm is part of the same cell and connects to the outermost wrapping. A single internode only, no multiple separated segments. Omit the axon itself so the central sheath lumen is an empty transparent opening; only the Schwann cell and its intrinsic myelin membrane are shown. Gently diagonal horizontal three-quarter view, both ends completely visible. Matte smooth filled forms, thin crisp dark teal outlines, restrained gradients and highlights, no photorealism or glossy plastic. Complete isolated asset centered with generous true transparent padding; no text, labels, arrows, borders, nerves, other cells, scenery, cast shadows, glow or checkerboard.",
+  "style_refinement": "Redraw Schwann cell image 1 in the clean matte NIH BioArt illustration style of epithelial cell image 2. Image 2 is style reference only. Preserve ONE elongated turquoise myelin segment with a single outer cytoplasmic bulge containing one elongated violet nucleus. Keep the concentric membrane layers at the near end and an empty central lumen. Remove the repeated large transverse exterior bands: the sheath side should be a smooth continuous cylinder with only subtle longitudinal seams. Smooth filled forms, thin crisp dark teal outlines and restrained gradients. Remove photorealistic grain, mottled nuclear texture, glossy shine and glow. Entire outline and both ends visible with generous transparent padding. No axon, other cells, labels, text, arrows, shadows or checkerboard.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent, including the central oval opening inside the concentric myelin rings at the near end. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-0f840a11-c587-4f87-831c-482c00dfac88.png",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "schwann-cell",
+  "name": "Schwann cell",
+  "original": "originals/inventory/schwann-cell/generated.png",
+  "original_sha256": "a2c15d26923445376e10b21175d1ac63296e0cab28decd44ce712888f81d3936"
+}

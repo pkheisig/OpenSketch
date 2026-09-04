@@ -6474,17 +6474,101 @@
     "oligodendrocyte": {
       "name": "oligodendrocyte",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/oligodendrocyte-bioart-transparent.png",
+      "svg": "svg/oligodendrocyte-bioart-traced.svg",
+      "png_sha256": "c1a1fcae7c96a4efc7ea19ac85d51c34dc85c090a540774aebf1c7a15084810e",
+      "svg_sha256": "0446b4863b6b4cb9e450242da45407a5ce40ebbf3c1e11e77164643fd909f324",
+      "original_sha256": "10de2e8eadde17c6e5120f52c014f303fbe2c583ed61609867ced5f52f9ccd93",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        332,
+        572,
+        359,
+        587
+      ],
+      "svg_paths": 7769,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/oligodendrocyte/prompt.json",
+      "qa": "qa/inventory/oligodendrocyte",
+      "visual_review": "Schematic single soma with four connected representative myelin segments. Concentric membrane layers, slender connections and transparent central openings preserved in PNG and SVG on light/dark backgrounds. Axons intentionally omitted; segment count and arrangement are schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/oligodendrocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/oligodendrocyte/inspection.webm"
+      }
     },
     "microglial-cell": {
       "name": "microglial cell",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/microglial-cell-bioart-transparent.png",
+      "svg": "svg/microglial-cell-bioart-traced.svg",
+      "png_sha256": "173a2d8dd33006115835e60cea361c4d3b66d6502ffcf348b707fca35904bfd5",
+      "svg_sha256": "20f09b62f31d98c3e9c5ef22db68b7ced275cdc761a20ecc4abab345c12ff9f7",
+      "original_sha256": "9f4e2e619453c25ee6609137171019c1f6db6955b2be10bbe9b044880cece6a8",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        356,
+        577,
+        347,
+        581
+      ],
+      "svg_paths": 5126,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/microglial-cell/prompt.json",
+      "qa": "qa/inventory/microglial-cell",
+      "visual_review": "Ramified single cell with compact soma, elongated nucleus and fine irregular connected processes. Branch topology and tips preserved in PNG and path SVG on white/dark backgrounds; SVG lines slightly stronger, no visible haze or checkerboard.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microglial-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microglial-cell/inspection.webm"
+      }
     },
     "schwann-cell": {
       "name": "Schwann cell",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/schwann-cell-bioart-transparent.png",
+      "svg": "svg/schwann-cell-bioart-traced.svg",
+      "png_sha256": "9f6984c5c6358c8beb5f0eb61c65c243f5684d677efd7740da3e0e7aa8a63035",
+      "svg_sha256": "769bb22c33e89aa6c9e9543e39e3c21d69ee07542da892b1ae71900b0e5782a4",
+      "original_sha256": "a2c15d26923445376e10b21175d1ac63296e0cab28decd44ce712888f81d3936",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        358,
+        608,
+        333,
+        643
+      ],
+      "svg_paths": 8738,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/schwann-cell/prompt.json",
+      "qa": "qa/inventory/schwann-cell",
+      "visual_review": "Single continuous myelin internode with outer nucleated cytoplasm and concentric lamellae. Central opening is transparent on white and dark backgrounds, complete sheath silhouette retained in PNG and path SVG. Axon omitted in this isolated cell schematic; mild SVG shading banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/schwann-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/schwann-cell/inspection.webm"
+      }
     },
     "hepatocyte": {
       "name": "hepatocyte",
