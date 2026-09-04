@@ -5880,17 +5880,101 @@
     "generic-epithelial-cell": {
       "name": "generic epithelial cell",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/generic-epithelial-cell-bioart-transparent.png",
+      "svg": "svg/generic-epithelial-cell-bioart-traced.svg",
+      "png_sha256": "90d28722f0c8cb17883a395f7962f284e98f01a27617ca6b07e9c59a05eb7a16",
+      "svg_sha256": "69c4488f14d6c26f5fd02d854331de0cdd55bd99f94e681d140106a5d2ee24ad",
+      "original_sha256": "81a052ba4138bb1a8e462af5f78a92033acb13434104442a9c00d5a0d0dab9c8",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        288,
+        305,
+        317,
+        313
+      ],
+      "svg_paths": 20606,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/generic-epithelial-cell/prompt.json",
+      "qa": "qa/inventory/generic-epithelial-cell",
+      "visual_review": "Viewed on white and dark backgrounds: complete soft cuboidal epithelial cell cutaway with central nucleus, nucleolus, ER, Golgi and mitochondria. PNG and SVG match closely in silhouette, coral/violet palette and shading. No external tissue, background or labels; transparent padding is clear. Cuboidal morphology is the chosen generic epithelial archetype.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-epithelial-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-epithelial-cell/inspection.webm"
+      }
     },
     "columnar-epithelial-cell": {
       "name": "columnar epithelial cell",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/columnar-epithelial-cell-bioart-transparent.png",
+      "svg": "svg/columnar-epithelial-cell-bioart-traced.svg",
+      "png_sha256": "5ca7b3ea59ea02de109ec3dc2d24dc534bde5d83def5b51f29bc40a09aab3365",
+      "svg_sha256": "19edaa6964e41e3d0eeb084e58682253fe66f0affd0b2c9b6c31e7c2c814efe8",
+      "original_sha256": "5d2c454a5f3824bde5a013f22c84d187466b8d5228a0038689ff2df417b3b144",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        582,
+        307,
+        655,
+        371
+      ],
+      "svg_paths": 12119,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/columnar-epithelial-cell/prompt.json",
+      "qa": "qa/inventory/columnar-epithelial-cell",
+      "visual_review": "Compared PNG and SVG on white and dark: tall isolated columnar cell, basal oval nucleus, supranuclear Golgi, recognizable ER and mitochondria, bare apical surface. Formats preserve coral/violet palette, silhouette and internal shading closely. Exterior is transparent with generous padding and no visible glow.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/columnar-epithelial-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/columnar-epithelial-cell/inspection.webm"
+      }
     },
     "ciliated-epithelial-cell": {
       "name": "ciliated epithelial cell",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/ciliated-epithelial-cell-bioart-transparent.png",
+      "svg": "svg/ciliated-epithelial-cell-bioart-traced.svg",
+      "png_sha256": "da5b75d1322fe214fde0b605c813f2e88025e618f6968ad2ae45fb70b754532d",
+      "svg_sha256": "892d56007a0c58dc48bba312a559a515e8c6421cb78109bdd9319a3645b3121c",
+      "original_sha256": "3c5478b4e7b4ac6873eb13074535b8074b327445530a7884498d9709f10cfa69",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        323,
+        577,
+        307
+      ],
+      "svg_paths": 18407,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/ciliated-epithelial-cell/prompt.json",
+      "qa": "qa/inventory/ciliated-epithelial-cell",
+      "visual_review": "Inspected PNG/SVG on white and dark. Complete apical cilia remain individually separated with visible basal attachments; oval basal nucleus and internal organelles retained. Matched coral/violet palette and shading, clear alpha exterior and padding. Cilia lengths reduced from the oversized first draft; fine structures remain schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ciliated-epithelial-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ciliated-epithelial-cell/inspection.webm"
+      }
     },
     "goblet-cell": {
       "name": "goblet cell",

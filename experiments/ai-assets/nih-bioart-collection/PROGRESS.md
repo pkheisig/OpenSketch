@@ -1,8 +1,8 @@
 # Inventory production progress
 
-25 of 768 unique inventory names covered across 770 checklist entries.
+28 of 768 unique inventory names covered across 770 checklist entries.
 
-These cover 23 distinct PNG/SVG pairs and 2 explicit archetype aliases. Alias reasons are recorded in the ledger.
+These cover 26 distinct PNG/SVG pairs and 2 explicit archetype aliases. Alias reasons are recorded in the ledger.
 The inventory files currently contain 770 checklist rows; their prose count is stale. Two exact repeated names share a single asset. The existing ten approved pairs are preserved. Completion requires a saved PNG, editable SVG, file validation, and visual review.
 
 Production remains on the experimental branch. Each asset is generated as a transparent PNG, then traced and reviewed on light and dark backgrounds. Completed assets are pushed periodically. The full inventory is still in progress.
@@ -29,6 +29,9 @@ Production remains on the experimental branch. Each asset is generated as a tran
 | platelet | [PNG](png/platelet-bioart-transparent.png) | [SVG](svg/platelet-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/platelet/comparison.png) |
 | megakaryocyte | [PNG](png/megakaryocyte-bioart-transparent.png) | [SVG](svg/megakaryocyte-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/megakaryocyte/comparison.png) |
 | hematopoietic stem/progenitor cell | [PNG](png/hematopoietic-stem-progenitor-cell-bioart-transparent.png) | [SVG](svg/hematopoietic-stem-progenitor-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hematopoietic-stem-progenitor-cell/comparison.png) |
+| generic epithelial cell | [PNG](png/generic-epithelial-cell-bioart-transparent.png) | [SVG](svg/generic-epithelial-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-epithelial-cell/comparison.png) |
+| columnar epithelial cell | [PNG](png/columnar-epithelial-cell-bioart-transparent.png) | [SVG](svg/columnar-epithelial-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/columnar-epithelial-cell/comparison.png) |
+| ciliated epithelial cell | [PNG](png/ciliated-epithelial-cell-bioart-transparent.png) | [SVG](svg/ciliated-epithelial-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ciliated-epithelial-cell/comparison.png) |
 | mitochondrion | [PNG](png/mitochondrion-bioart-transparent.png) | [SVG](svg/mitochondrion-bioart-traced.svg) | Approved earlier batch |
 | generic IgG antibody | [PNG](png/igg-antibody-bioart-transparent.png) | [SVG](svg/igg-antibody-bioart-traced.svg) | Approved earlier batch |
 | CD8 alpha-beta receptor | [PNG](png/cd8-receptor-bioart-transparent.png) | [SVG](svg/cd8-receptor-bioart-traced.svg) | Approved earlier batch |
