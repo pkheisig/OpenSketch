@@ -6,3 +6,116 @@
 @import "./inspector.css";
 @import "./canvas.css";
 @import "./dialogs.css";
+/* Opt-in audit surface for WebMCP demos and judge qualification. */
+.webmcp-command-log {
+  position: fixed;
+  z-index: 80;
+  right: 18px;
+  bottom: 66px;
+  width: min(390px, calc(100vw - 36px));
+  border: 1px solid rgba(123, 214, 176, 0.28);
+  border-radius: 10px;
+  overflow: hidden;
+  color: #e9fff5;
+  background: rgba(8, 55, 43, 0.96);
+  box-shadow: 0 16px 40px rgba(11, 32, 27, 0.28);
+  font-family: "Roboto Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  backdrop-filter: blur(14px);
+}
+
+.webmcp-command-log__header {
+  width: 100%;
+  height: 42px;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+  border: 0;
+  padding: 0 12px;
+  color: inherit;
+  background: rgba(7, 71, 53, 0.98);
+  font: 700 11px/1 "Roboto Mono", ui-monospace, monospace;
+  cursor: pointer;
+}
+
+.webmcp-command-log__header > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+}
+
+.webmcp-command-log__header i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4ce39d;
+  box-shadow: 0 0 0 4px rgba(76, 227, 157, 0.12);
+}
+
+.webmcp-command-log__count {
+  display: grid;
+  min-width: 25px;
+  height: 21px;
+  place-items: center;
+  border-radius: 999px;
+  color: #c9f4df;
+  background: rgba(255, 255, 255, 0.1);
+  font-size: 10px;
+}
+
+.webmcp-command-log__body {
+  max-height: 280px;
+  overflow: hidden;
+  padding: 5px 0;
+}
+
+.webmcp-command-log__waiting {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 15px;
+  color: #9bd9be;
+}
+
+.webmcp-command-log__waiting > span { color: #4ce39d; font-size: 9px; }
+.webmcp-command-log__waiting strong,
+.webmcp-command-log__waiting small { display: block; }
+.webmcp-command-log__waiting strong { color: #effff7; font-size: 10px; }
+.webmcp-command-log__waiting small { margin-top: 4px; font-size: 9px; }
+
+.webmcp-command-log__call {
+  display: grid;
+  grid-template-columns: 15px minmax(92px, auto) 1fr auto;
+  align-items: center;
+  gap: 7px;
+  min-height: 29px;
+  padding: 5px 12px;
+  border-top: 1px solid rgba(220, 255, 240, 0.07);
+  font-size: 9px;
+}
+
+.webmcp-command-log__call strong {
+  overflow: hidden;
+  color: #effff7;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.webmcp-command-log__call code {
+  overflow: hidden;
+  color: #9bc9b6;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.webmcp-command-log__call small { color: #7aa791; white-space: nowrap; }
+.webmcp-command-log__status { font-weight: 800; text-align: center; }
+.webmcp-command-log__status.is-running { color: #f4d56d; }
+.webmcp-command-log__status.is-ok { color: #54dfa0; }
+.webmcp-command-log__status.is-error { color: #ff9485; }
+.webmcp-command-log.is-collapsed { width: 290px; }
+
+@media (max-width: 720px) {
+  .webmcp-command-log { right: 10px; bottom: 58px; }
+}

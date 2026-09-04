@@ -207,6 +207,10 @@ shows a compact live panel that records every WebMCP tool call, its bounded
 input summary, completion state, and duration. The panel is intentionally
 opt-in and does not alter the canvas or exported figure.
 
+For a zero-setup judge link, add `&autoStart=1`. OpenSketch creates and opens a
+blank local figure before registering the same editor tools, so an agent can
+start composing immediately without a preliminary human click.
+
 ## Deployment variants
 
 The production build supports the GitHub Pages path `/OpenSketch/` by default.

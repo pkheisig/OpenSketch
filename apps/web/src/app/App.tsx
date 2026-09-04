@@ -21,6 +21,7 @@ import {
 } from "@/persistence/portable";
 import { isProjectThumbnailCurrent } from "@/persistence/thumbnailFormat";
 import { HomeScreen } from "@/components/HomeScreen";
+import { WebMcpCommandLog } from "@/components/WebMcpCommandLog";
 
 const EditorStudio = lazy(() =>
   import("@/components/EditorStudio").then((module) => ({ default: module.EditorStudio }))
@@ -61,6 +62,14 @@ function historyEntryIndex() {
   return typeof index === "number" && Number.isInteger(index) ? index : null;
 }
 
+function webMcpDemoEnabled(): boolean {
+  return new URLSearchParams(window.location.search).get("webmcpDemo") === "1";
+}
+
+function webMcpAutoStartEnabled(): boolean {
+  return new URLSearchParams(window.location.search).get("autoStart") === "1";
+}
+
 function identityRepairNotice(project: ProjectRecord, warnings: string[]): string {
   const duplicateCount = warnings.filter((warning) =>
     warning.startsWith("Repaired duplicate")
@@ -87,6 +96,9 @@ export function App() {
   const historySyncRevision = useRef(0);
   const historyIndex = useRef<number | null>(null);
   const historyNavigationGuard = useRef<(() => boolean) | null>(null);
+  const demoProjectStarted = useRef(false);
+  const showWebMcpLog = webMcpDemoEnabled();
+  const autoStartWebMcpDemo = showWebMcpLog && webMcpAutoStartEnabled();
 
   const toggleTheme = useCallback(() => {
     setTheme((current) => {
@@ -293,6 +305,18 @@ export function App() {
     historyIndex.current = nextHistoryIndex;
   }, []);
 
+  useEffect(() => {
+    if (loading || current || !autoStartWebMcpDemo || demoProjectStarted.current) return;
+    demoProjectStarted.current = true;
+    const project = createProject("Cancer-immunity cycle · WebMCP");
+    saveProject(project)
+      .then(() => {
+        openProject(project);
+        return refresh();
+      })
+      .catch((reason) => setError(String(reason)));
+  }, [autoStartWebMcpDemo, current, loading, openProject, refresh]);
+
   const returnToProjects = useCallback(() => {
     if (historyProjectId()) {
       window.history.back();
@@ -429,6 +453,7 @@ export function App() {
           }}
         />
       )}
+      {showWebMcpLog && current ? <WebMcpCommandLog /> : null}
       {error && (
         <div className="error-toast" role="alert">
           <AlertTriangle size={17} />

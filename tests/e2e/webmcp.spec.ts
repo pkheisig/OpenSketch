@@ -254,6 +254,10 @@ test("registers a safe figure workflow through the browser model context", async
   const download = await downloadPromise;
   expect(exportResult).toMatchObject({ ok: true, data: { format: "credits", started: true } });
   expect(download.suggestedFilename()).toMatch(/credits|provenance/i);
+  const commandLog = page.getByLabel("Live WebMCP command log");
+  await expect(commandLog).toBeVisible();
+  await expect(commandLog).toContainText("export_figure");
+  await expect(commandLog).toContainText("inspect_provenance");
 });
 
 test("executes compound composition and analysis through registered WebMCP callbacks", async ({
@@ -271,8 +275,7 @@ test("executes compound composition and analysis through registered WebMCP callb
     });
     (window as typeof window & { __webmcpTools?: unknown[] }).__webmcpTools = tools;
   });
-  await page.goto("./?webmcpDemo=1");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.goto("./?webmcpDemo=1&autoStart=1");
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
   await expect
     .poll(async () =>
