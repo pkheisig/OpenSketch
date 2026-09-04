@@ -34,7 +34,10 @@
   padding: 0 12px;
   color: inherit;
   background: rgba(7, 71, 53, 0.98);
-  font: 700 11px/1 "Roboto Mono", ui-monospace, monospace;
+  font:
+    700 11px/1 "Roboto Mono",
+    ui-monospace,
+    monospace;
   cursor: pointer;
 }
 
@@ -65,7 +68,7 @@
 }
 
 .webmcp-command-log__body {
-  max-height: 280px;
+  max-height: 160px;
   overflow: hidden;
   padding: 5px 0;
 }
@@ -78,11 +81,22 @@
   color: #9bd9be;
 }
 
-.webmcp-command-log__waiting > span { color: #4ce39d; font-size: 9px; }
+.webmcp-command-log__waiting > span {
+  color: #4ce39d;
+  font-size: 9px;
+}
 .webmcp-command-log__waiting strong,
-.webmcp-command-log__waiting small { display: block; }
-.webmcp-command-log__waiting strong { color: #effff7; font-size: 10px; }
-.webmcp-command-log__waiting small { margin-top: 4px; font-size: 9px; }
+.webmcp-command-log__waiting small {
+  display: block;
+}
+.webmcp-command-log__waiting strong {
+  color: #effff7;
+  font-size: 10px;
+}
+.webmcp-command-log__waiting small {
+  margin-top: 4px;
+  font-size: 9px;
+}
 
 .webmcp-command-log__call {
   display: grid;
@@ -109,13 +123,225 @@
   white-space: nowrap;
 }
 
-.webmcp-command-log__call small { color: #7aa791; white-space: nowrap; }
-.webmcp-command-log__status { font-weight: 800; text-align: center; }
-.webmcp-command-log__status.is-running { color: #f4d56d; }
-.webmcp-command-log__status.is-ok { color: #54dfa0; }
-.webmcp-command-log__status.is-error { color: #ff9485; }
-.webmcp-command-log.is-collapsed { width: 290px; }
+.webmcp-command-log__call small {
+  color: #7aa791;
+  white-space: nowrap;
+}
+.webmcp-command-log__status {
+  font-weight: 800;
+  text-align: center;
+}
+.webmcp-command-log__status.is-running {
+  color: #f4d56d;
+}
+.webmcp-command-log__status.is-ok {
+  color: #54dfa0;
+}
+.webmcp-command-log__status.is-error {
+  color: #ff9485;
+}
+.webmcp-command-log.is-collapsed {
+  width: 290px;
+}
+
+.webmcp-prompt-replay {
+  position: fixed;
+  z-index: 10010;
+  left: 50%;
+  top: 86px;
+  width: min(700px, calc(100vw - 220px));
+  transform: translateX(-50%);
+  overflow: hidden;
+  color: #193128;
+  border: 1px solid rgba(48, 92, 73, 0.22);
+  border-radius: 15px;
+  background: rgba(255, 253, 248, 0.98);
+  box-shadow: 0 20px 58px rgba(47, 42, 32, 0.2);
+  transition:
+    width 180ms ease,
+    left 180ms ease,
+    transform 180ms ease;
+}
+
+.webmcp-prompt-replay.is-collapsed {
+  left: 112px;
+  width: min(520px, calc(100vw - 580px));
+  transform: none;
+  border-radius: 10px;
+}
+
+.webmcp-prompt-replay__bar {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 13px;
+  display: grid;
+  grid-template-columns: auto auto auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  border: 0;
+  color: inherit;
+  background: rgba(244, 248, 245, 0.96);
+  text-align: left;
+  cursor: pointer;
+}
+
+.webmcp-prompt-replay__bar strong {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.webmcp-prompt-replay__bar > span:nth-of-type(2) {
+  overflow: hidden;
+  color: #567064;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.webmcp-prompt-replay__bar i {
+  color: #60766d;
+  font-style: normal;
+}
+
+.webmcp-prompt-replay__signal {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #29b776;
+  box-shadow: 0 0 0 4px rgba(41, 183, 118, 0.12);
+}
+
+.webmcp-prompt-replay.is-running .webmcp-prompt-replay__signal,
+.webmcp-prompt-replay.is-typing .webmcp-prompt-replay__signal {
+  animation: webmcp-pulse 1.3s ease-in-out infinite;
+}
+
+.webmcp-prompt-replay__body {
+  padding: 14px;
+  border-top: 1px solid rgba(48, 92, 73, 0.14);
+}
+
+.webmcp-prompt-replay__body label {
+  display: block;
+  margin: 0 0 7px;
+  color: #5e7168;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.webmcp-prompt-replay__body textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 88px;
+  resize: none;
+  padding: 12px 13px;
+  border: 1px solid #ccd8d1;
+  border-radius: 9px;
+  outline: none;
+  color: #1c2c25;
+  background: #fff;
+  font:
+    500 14px/1.45 "IBM Plex Sans",
+    sans-serif;
+}
+
+.webmcp-prompt-replay__body textarea:focus {
+  border-color: #3b9f75;
+  box-shadow: 0 0 0 3px rgba(59, 159, 117, 0.13);
+}
+
+.webmcp-prompt-replay__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.webmcp-prompt-replay__actions p {
+  flex: 1;
+  margin: 0;
+  color: #667970;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.webmcp-prompt-replay__actions button {
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 11px;
+  border: 1px solid #c8d3cd;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 750;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.webmcp-prompt-replay__copy {
+  color: #40584d;
+  background: #fff;
+}
+
+.webmcp-prompt-replay__start {
+  border-color: #176447 !important;
+  color: #fff !important;
+  background: #176447 !important;
+}
+
+.webmcp-prompt-replay__start:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.webmcp-prompt-replay__stop {
+  border-color: #a94b43 !important;
+  color: #fff;
+  background: #a94b43;
+}
+
+.webmcp-prompt-replay__proof {
+  display: flex;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.webmcp-prompt-replay__proof span {
+  padding: 3px 7px;
+  border-radius: 999px;
+  color: #3f6454;
+  background: #e9f3ed;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+@keyframes webmcp-pulse {
+  50% {
+    opacity: 0.45;
+    transform: scale(0.8);
+  }
+}
 
 @media (max-width: 720px) {
-  .webmcp-command-log { right: 10px; bottom: 58px; }
+  .webmcp-command-log {
+    right: 10px;
+    bottom: 58px;
+  }
+
+  .webmcp-prompt-replay,
+  .webmcp-prompt-replay.is-collapsed {
+    left: 12px;
+    right: 12px;
+    width: auto;
+    transform: none;
+  }
+
+  .webmcp-prompt-replay__actions p {
+    display: none;
+  }
 }

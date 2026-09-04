@@ -260,6 +260,77 @@ test("registers a safe figure workflow through the browser model context", async
   await expect(commandLog).toContainText("inspect_provenance");
 });
 
+test("replays the reference prompt as visible semantic commands on the live canvas", async ({
+  page
+}) => {
+  test.setTimeout(120000);
+  await page.addInitScript(() => {
+    const tools: unknown[] = [];
+    Object.defineProperty(document, "modelContext", {
+      configurable: true,
+      value: {
+        registerTool(tool: unknown) {
+          tools.push(tool);
+        }
+      }
+    });
+    (window as typeof window & { __webmcpTools?: unknown[] }).__webmcpTools = tools;
+  });
+
+  await page.goto(
+    "./?webmcpDemo=1&autoStart=1&promptReplay=1&focusCanvas=1&demoPace=0"
+  );
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  const promptReplay = page.getByLabel("WebMCP reference prompt replay");
+  await expect(promptReplay).toBeVisible();
+  await expect(promptReplay.getByLabel("Prompt shown in the demo")).toContainText(
+    "publication-ready cancer-immunity cycle"
+  );
+  await promptReplay.getByRole("button", { name: "Replay live build" }).click();
+  await expect(promptReplay).toHaveClass(/is-complete/, { timeout: 110000 });
+  await expect(promptReplay).toContainText("Build complete");
+
+  const commandLog = page.getByLabel("Live WebMCP command log");
+  await expect(commandLog).toContainText("validate_figure");
+  await expect(commandLog).toContainText("analyze_composition");
+  const result = await page.evaluate(async () => {
+    const tools =
+      (
+        window as typeof window & {
+          __webmcpTools?: Array<{
+            name: string;
+            execute: (input: Record<string, unknown>) => Promise<unknown>;
+          }>;
+        }
+      ).__webmcpTools ?? [];
+    const inspect = tools.find((tool) => tool.name === "inspect_scene");
+    const find = tools.find((tool) => tool.name === "find_objects");
+    if (!inspect || !find) throw new Error("Missing inspection tools");
+    return {
+      scene: await inspect.execute({ maxObjects: 160, maxDepth: 4 }),
+      stage8: await find.execute({ text: "8  Cytotoxic killing", caseSensitive: true, limit: 4 })
+    };
+  });
+  expect(result.scene).toMatchObject({
+    ok: true,
+    data: { canvas: { width: 1920, height: 1080 } }
+  });
+  expect(JSON.stringify(result.scene)).toContain("THE CANCER–IMMUNITY CYCLE");
+  expect(result.stage8).toMatchObject({ ok: true, data: { total: 1 } });
+
+  const countBeforeReplay = Number(
+    await page.locator(".webmcp-command-log__count").textContent()
+  );
+  await promptReplay.getByRole("button", { name: /Reference prompt/i }).click();
+  await promptReplay.getByRole("button", { name: "Replay live build" }).click();
+  await expect(promptReplay).toHaveClass(/is-complete/, { timeout: 110000 });
+  await expect
+    .poll(async () => Number(await page.locator(".webmcp-command-log__count").textContent()))
+    .toBeGreaterThan(countBeforeReplay + 100);
+  await expect(promptReplay).toContainText("Build complete");
+  await expect(page.getByRole("alert")).toHaveCount(0);
+});
+
 test("executes compound composition and analysis through registered WebMCP callbacks", async ({
   page
 }) => {

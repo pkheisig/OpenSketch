@@ -81,7 +81,10 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
 
-function toolFor(definition: SemanticCommandDefinition, runtime: SemanticRuntime): WebMcpTool {
+export function createWebMcpTool(
+  definition: SemanticCommandDefinition,
+  runtime: SemanticRuntime
+): WebMcpTool {
   return {
     name: definition.name,
     title: definition.title,
@@ -177,7 +180,7 @@ export function createWebMcpAdapter(options: {
         }
         try {
           await Promise.resolve(
-            modelContext.registerTool(toolFor(definition, options.runtime), {
+            modelContext.registerTool(createWebMcpTool(definition, options.runtime), {
               signal: controller.signal
             })
           );

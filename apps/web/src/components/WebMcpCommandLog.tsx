@@ -4,7 +4,7 @@ import {
   type WebMcpCommandLogDetail
 } from "@/semantic/webmcp";
 
-const MAX_VISIBLE_CALLS = 8;
+const MAX_VISIBLE_CALLS = 5;
 
 type LoggedCall = WebMcpCommandLogDetail & { inputSummary: string };
 

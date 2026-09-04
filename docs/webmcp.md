@@ -211,6 +211,13 @@ For a zero-setup judge link, add `&autoStart=1`. OpenSketch creates and opens a
 blank local figure before registering the same editor tools, so an agent can
 start composing immediately without a preliminary human click.
 
+Add `&promptReplay=1&focusCanvas=1` for a transparent reference-prompt panel.
+Judges can copy the prompt or replay its exact semantic command trace against
+the live, editable canvas; every replayed command uses the same executor as the
+browser-registered WebMCP tools and appears in the command log. Add
+`&autoReplay=1` for hands-free prompt typing and build playback, and optionally
+set `&demoPace=0.72` (0–1.5) to control presentation timing.
+
 ## Deployment variants
 
 The production build supports the GitHub Pages path `/OpenSketch/` by default.
