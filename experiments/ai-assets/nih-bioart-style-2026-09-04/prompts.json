@@ -1,0 +1,83 @@
+{
+  "method": "Built-in image_gen for raster generation and background extraction; original SVG attempts authored as editable vector paths; VTracer 0.6.15 for PNG-derived vector paths.",
+  "reference_use": "The user's higher-resolution photos are visual style references only.",
+  "history": [
+    {
+      "asset": "macrophage",
+      "stage": "prompt",
+      "prompt": "Create a single isolated scientific illustration of macrophage, matching the supplied NIH BioArt reference image\u2019s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows.\nUse the user's most recent sharper Photo 3 cell/organelle sheet as VISUAL STYLE REFERENCE ONLY, not an image to reproduce or a source of objects to copy. Create one new macrophage: irregular softly ruffled outline with short pseudopodia, a single eccentric kidney-shaped nucleus, lysosomes and cytoplasmic vesicles. Harmonious lilac/purple coloring. Restrain depth to professional biological illustration like that sheet; avoid photorealism. Genuine transparent PNG alpha background, not white and not a drawn checkerboard; complete object with at least 12% empty padding.",
+      "output_hint": "Generated images are saved to /Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9 as /Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-8fb67032-77f6-4fb1-9a83-1a488b66c153.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "asset": "macrophage",
+      "stage": "refinement-prompt",
+      "prompt": "Refine image 1 (macrophage) using image 2 ONLY as the NIH BioArt visual STYLE reference. Preserve the single macrophage and recognizable intrinsic organelles, but change rendering to the crisp illustrated style of the purple cell in the upper row of reference image 2: smooth matte lavender cytoplasm, thin dark plum outlines, restrained gradients and highlights, discrete clean organelles, rounded short membrane ruffles. Remove wet gelatinous textures, excessive microscopic detail and glistening speckle. Keep one eccentric kidney-shaped purple nucleus. Do not copy the reference cell. Keep the whole macrophage centered and smaller within canvas with at least 15% completely transparent empty padding on ALL sides; no background, checkerboard, text, labels, arrows, unrelated objects, detached specks or shadows. Output a transparent PNG original.",
+      "output_hint": "Generated images are saved to /Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9 as /Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-4ac79436-e49d-41f4-8b32-e59006320878.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "asset": "macrophage",
+      "stage": "alpha-prompt",
+      "prompt": "Remove the entire checkerboard background from this macrophage illustration and output a TRUE transparent-background PNG with an alpha channel. Background-extraction edit only: retain the illustration's matte lavender colors, dark outlines, organelles, nucleus, composition and existing padding. All checkerboard squares outside the cell must become fully transparent alpha=0. Preserve the opaque cell interior. No simulated transparency pattern, no white background, no added objects. Preserve the complete asset.",
+      "output_hint": "Generated images are saved to /Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9 as /Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-42bc13d7-f098-42db-9d9f-49cae5e58455.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "asset": "mitochondrion",
+      "stage": "prompt",
+      "prompt": "Create a single isolated scientific illustration of mitochondrion, matching the supplied NIH BioArt reference image\u2019s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows.\nUse the user's sharper cell/organelle reference sheet Photo 3 as STYLE ONLY. It has graphic contour lines, warm ochre/tan mitochondrial colors and restrained illustrative shading. Show one complete bean-shaped mitochondrion in a longitudinal cutaway revealing double membrane and inner-membrane cristae as organic folds continuous with inner boundary, not floating pipes. Clean biomedical illustration, not photorealistic, not wet glossy 3D. Actual transparent PNG background, no simulated checkerboard. Center the whole organelle within the middle 70% of a square canvas, with generous empty alpha padding on all sides.",
+      "output_hint": "Generated images are saved to /Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9 as /Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-15530834-b3a5-4057-a234-350e1ccd4303.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "asset": "mitochondrion",
+      "stage": "refinement-prompt",
+      "prompt": "Refine image 1 (mitochondrion) to match the drawing style of image 2 (NIH BioArt sheet) used ONLY for VISUAL STYLE. Keep one new complete mitochondrial cutaway with double membrane and continuous cristae. Make it a polished illustrated object with clear thin dark brown outlines, smooth warm tan/peach color forms, matte soft gradients and restrained highlights. Eliminate photoreal texture, glossy plastic shine and neon edges. The target is the illustrated mitochondrial style at middle left of image 2 with slightly more subtle depth and detail. Center whole asset inside central 70% of square canvas, leave generous completely empty padding. Actual PNG alpha transparency outside object, never paint a checkerboard or any background. No text, arrows, labels, frame, scenery, shadows or other objects.",
+      "output_hint": "Generated images are saved to /Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9 as /Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-329fac20-451d-4c29-a360-6fffe2bacb64.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "asset": "mitochondrion",
+      "stage": "alpha-prompt",
+      "prompt": "Background-extraction edit of the supplied mitochondrion illustration. Remove its white background completely. Output a genuine RGBA transparent PNG. Preserve matte peach/tan illustration, dark contours, all cristae and interior details. Keep object fully opaque and background alpha=0. Center the entire organelle on a larger square transparent canvas with 18% transparent padding on every side. No checkerboard pattern. No additions, no text, no shadow, no change to illustration style.",
+      "output_hint": "Generated images are saved to /Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9 as /Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-f14d4537-96d5-4c82-ab70-24058e9d2787.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "asset": "cd8-receptor",
+      "stage": "prompt",
+      "prompt": "Create a single isolated scientific illustration of CD8 receptor, matching the supplied NIH BioArt reference image\u2019s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows.\nUse the user's most recent sharper NIH sheets as style reference only, especially Photo 2 with proteins. Show a single CD8 alpha/beta heterodimer with exactly two paired IgV-like globular extracellular head domains, one per chain, each joined by a flexible slender stalk to one transmembrane segment and a short cytoplasmic tail. Do not depict an antibody, TCR complex, cell or membrane patch. Blue-teal alpha and purple beta with dark clean contour outlines, simple modeled surface folds and gentle gradients like a hand-drawn biomedical vector illustration; matte, no wet photorealistic textures. Isolated whole protein only, occupying central 65% of square canvas with generous genuinely transparent alpha padding.",
+      "output_hint": "Generated images are saved to /Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9 as /Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-142454f7-d6d9-4383-b78a-ee918a31dd68.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "asset": "cd8-receptor",
+      "stage": "refinement-prompt",
+      "prompt": "Refine image 1 (CD8 receptor) with image 2 used ONLY as a visual style guide. Preserve exactly two paired Ig-like head domains (one blue-teal alpha chain and one purple beta chain), two slender flexible stalks, one membrane-spanning helix and one short cytoplasmic tail per chain. Make surface depiction smoother, matte and less bumpy, outlines crisp, shading restrained and illustrative as in NIH BioArt reference image 2. Remove neon outlines and plastic highlights. Preserve complete isolated protein with generous padding, no cell membrane or other proteins, no text or labels. Actual transparent PNG alpha background. No checkerboard or white backdrop. This is an illustrative CD8 heterodimer, not a literal atomistic structure.",
+      "output_hint": "Generated images are saved to /Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9 as /Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-8352e72d-def2-4e8b-a2e9-444255412872.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    },
+    {
+      "asset": "cd8-receptor",
+      "stage": "alpha-prompt",
+      "prompt": "Remove all checkerboard background from the supplied CD8 protein illustration. Background-extraction edit ONLY. Output genuine RGBA transparent PNG with alpha=0 everywhere outside the two colored protein chains, including the space BETWEEN the stalks. Preserve the two matte turquoise/purple head domains, dark outlines, two flexible stalks, two membrane-spanning helices and tails exactly as drawn. No added components, labels, shadows or white background. Preserve the complete protein and center it in a square transparent canvas with at least 15% empty padding above and below.",
+      "output_hint": "Background-removal attempt returned an opaque PNG: originals/history/cd8-receptor-background-removal-failed-opaque.png (exec-680c62d5-d1d7-4097-92e4-1fc8789e0525.png). Rejected; retry recorded separately."
+    },
+    {
+      "asset": "cd8-receptor",
+      "stage": "alpha-retry-prompt",
+      "prompt": "Make the background transparent. Remove the checkerboard pattern entirely; it is an unwanted background, not part of the protein. Keep only the blue and purple CD8 receptor, including its two narrow tails, as one isolated cutout. Return a transparent PNG with an actual alpha channel. Do not draw transparency squares.",
+      "output_hint": "Generated images are saved to /Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9 as /Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-81088b50-ef42-4dd7-9f54-85e95229e46b.png by default.\nIf you need to use a generated image at another path, copy it and leave the original in place unless the user explicitly asks you to delete it.\nThe generated image is already displayed to the user. There is no need to render it in the final response as a Markdown image or file link."
+    }
+  ],
+  "style_references": [
+    {
+      "filename": "1-Photo-1.jpg",
+      "sha256": "fe66aad28af7848066aa4f1f16fde45b646d8dbbdc7db484682b2eafa6d90b91",
+      "role": "visual style only"
+    },
+    {
+      "filename": "2-Photo-2.jpg",
+      "sha256": "bfd9cbcc2dc6c6361112f0883b36f360fd91fd0c067a322470cbd6d085afb9df",
+      "role": "visual style only"
+    },
+    {
+      "filename": "3-Photo-3.jpg",
+      "sha256": "03079d19bb4018d926bdb2db3d48f4eaface0c23ed6707d9e402bc5defb2a968",
+      "role": "visual style only"
+    }
+  ]
+}
