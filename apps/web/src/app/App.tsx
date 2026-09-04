@@ -313,7 +313,7 @@ export function App() {
   useEffect(() => {
     if (loading || current || !autoStartWebMcpDemo || demoProjectStarted.current) return;
     demoProjectStarted.current = true;
-    const project = createProject("Cancer-immunity cycle · WebMCP");
+    const project = createProject();
     saveProject(project)
       .then(() => {
         openProject(project);

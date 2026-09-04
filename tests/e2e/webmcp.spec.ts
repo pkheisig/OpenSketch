@@ -281,6 +281,9 @@ test("replays the reference prompt as visible semantic commands on the live canv
     "./?webmcpDemo=1&autoStart=1&promptReplay=1&focusCanvas=1&demoPace=0"
   );
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await expect(page.getByRole("textbox", { name: "Document title" })).toHaveValue(
+    "Untitled figure"
+  );
   const promptReplay = page.getByLabel("WebMCP reference prompt replay");
   await expect(promptReplay).toBeVisible();
   await expect(promptReplay.getByLabel("Prompt shown in the demo")).toContainText(
