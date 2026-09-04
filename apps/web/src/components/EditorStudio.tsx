@@ -9,9 +9,9 @@ const TopToolbar = lazy(() =>
 const LeftSidebar = lazy(() =>
   import("@/components/LeftSidebar").then((module) => ({ default: module.LeftSidebar }))
 );
-const WebMcpPromptReplay = lazy(() =>
-  import("@/components/WebMcpPromptReplay").then((module) => ({
-    default: module.WebMcpPromptReplay
+const WebMcpPromptDisplay = lazy(() =>
+  import("@/components/WebMcpPromptDisplay").then((module) => ({
+    default: module.WebMcpPromptDisplay
   }))
 );
 
@@ -21,8 +21,7 @@ export function EditorStudio({
   onHome,
   onNavigationGuardChange,
   theme,
-  onToggleTheme,
-  showWebMcpPromptReplay = false
+  onToggleTheme
 }: {
   project: ProjectRecord;
   onProjectChange: (project: ProjectRecord) => Promise<void>;
@@ -30,7 +29,6 @@ export function EditorStudio({
   onNavigationGuardChange: (guard: (() => boolean) | null) => void;
   theme: "light" | "dark";
   onToggleTheme: () => void;
-  showWebMcpPromptReplay?: boolean;
 }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(
     () =>
@@ -70,11 +68,9 @@ export function EditorStudio({
           <CanvasWorkspace />
         </div>
       </main>
-      {showWebMcpPromptReplay ? (
-        <Suspense fallback={null}>
-          <WebMcpPromptReplay />
-        </Suspense>
-      ) : null}
+      <Suspense fallback={null}>
+        <WebMcpPromptDisplay />
+      </Suspense>
     </EditorProvider>
   );
 }

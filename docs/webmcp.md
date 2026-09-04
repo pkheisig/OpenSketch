@@ -44,6 +44,7 @@ registry.
 | `inspect_scene`           | Bounded canvas and hierarchy snapshot                            | Read-only                                    |
 | `inspect_object`          | Inspect one stable scene object ID                               | Read-only                                    |
 | `inspect_selection`       | Inspect the current human selection                              | Read-only                                    |
+| `display_prompt`          | Show the live agent prompt in a temporary read-only window       | Local side effect                            |
 | `search_assets`           | Search the bundled scientific asset manifest                     | Read-only                                    |
 | `inspect_asset`           | Inspect one asset family or variant without raw SVG              | Read-only                                    |
 | `inspect_provenance`      | Inspect bounded asset provenance for the figure                  | Read-only                                    |
@@ -211,12 +212,11 @@ For a zero-setup judge link, add `&autoStart=1`. OpenSketch creates and opens a
 blank local figure before registering the same editor tools, so an agent can
 start composing immediately without a preliminary human click.
 
-Add `&promptReplay=1&focusCanvas=1` for a transparent reference-prompt panel.
-Judges can copy the prompt or replay its exact semantic command trace against
-the live, editable canvas; every replayed command uses the same executor as the
-browser-registered WebMCP tools and appears in the command log. Add
-`&autoReplay=1` for hands-free prompt typing and build playback, and optionally
-set `&demoPace=0.72` (0–1.5) to control presentation timing.
+The `display_prompt` WebMCP tool mirrors the agent's actual prompt in a temporary,
+read-only window over the live editor. The prompt arrives as tool input; OpenSketch
+does not keep a stored prompt or command replay. The display call appears in the
+same command log as every other browser tool and can be closed without changing
+the figure.
 
 ## Deployment variants
 

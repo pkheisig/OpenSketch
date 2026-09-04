@@ -29,6 +29,7 @@ test("registers a safe figure workflow through the browser model context", async
     )
     .toEqual(
       expect.arrayContaining([
+        "display_prompt",
         "resize_canvas",
         "search_assets",
         "inspect_provenance",
@@ -260,10 +261,7 @@ test("registers a safe figure workflow through the browser model context", async
   await expect(commandLog).toContainText("inspect_provenance");
 });
 
-test("replays the reference prompt as visible semantic commands on the live canvas", async ({
-  page
-}) => {
-  test.setTimeout(120000);
+test("displays a live agent prompt without replaying a stored build", async ({ page }) => {
   await page.addInitScript(() => {
     const tools: unknown[] = [];
     Object.defineProperty(document, "modelContext", {
@@ -277,25 +275,11 @@ test("replays the reference prompt as visible semantic commands on the live canv
     (window as typeof window & { __webmcpTools?: unknown[] }).__webmcpTools = tools;
   });
 
-  await page.goto(
-    "./?webmcpDemo=1&autoStart=1&promptReplay=1&focusCanvas=1&demoPace=0"
-  );
+  await page.goto("./?webmcpDemo=1&autoStart=1&focusCanvas=1");
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
   await expect(page.getByRole("textbox", { name: "Document title" })).toHaveValue(
     "Untitled figure"
   );
-  const promptReplay = page.getByLabel("WebMCP reference prompt replay");
-  await expect(promptReplay).toBeVisible();
-  await expect(promptReplay.getByLabel("Prompt shown in the demo")).toContainText(
-    "publication-ready cancer-immunity cycle"
-  );
-  await promptReplay.getByRole("button", { name: "Replay live build" }).click();
-  await expect(promptReplay).toHaveClass(/is-complete/, { timeout: 110000 });
-  await expect(promptReplay).toContainText("Build complete");
-
-  const commandLog = page.getByLabel("Live WebMCP command log");
-  await expect(commandLog).toContainText("validate_figure");
-  await expect(commandLog).toContainText("analyze_composition");
   const result = await page.evaluate(async () => {
     const tools =
       (
@@ -306,32 +290,28 @@ test("replays the reference prompt as visible semantic commands on the live canv
           }>;
         }
       ).__webmcpTools ?? [];
-    const inspect = tools.find((tool) => tool.name === "inspect_scene");
-    const find = tools.find((tool) => tool.name === "find_objects");
-    if (!inspect || !find) throw new Error("Missing inspection tools");
-    return {
-      scene: await inspect.execute({ maxObjects: 160, maxDepth: 4 }),
-      stage8: await find.execute({ text: "8  Cytotoxic killing", caseSensitive: true, limit: 4 })
-    };
+    const display = tools.find((tool) => tool.name === "display_prompt");
+    if (!display) throw new Error("Missing display_prompt tool");
+    return display.execute({
+      title: "Cancer-immunity cycle request",
+      prompt:
+        "Using OpenSketch WebMCP, create a polished, publication-ready cancer-immunity cycle showing eight biologically accurate stages.",
+      context: "Supplied by the live ChatGPT agent. No command replay is stored."
+    });
   });
-  expect(result.scene).toMatchObject({
-    ok: true,
-    data: { canvas: { width: 1920, height: 1080 } }
-  });
-  expect(JSON.stringify(result.scene)).toContain("THE CANCER–IMMUNITY CYCLE");
-  expect(result.stage8).toMatchObject({ ok: true, data: { total: 1 } });
+  expect(result).toMatchObject({ ok: true, data: { displayed: true } });
 
-  const countBeforeReplay = Number(
-    await page.locator(".webmcp-command-log__count").textContent()
+  const promptDisplay = page.getByRole("dialog", { name: "WebMCP prompt display" });
+  await expect(promptDisplay).toBeVisible();
+  await expect(promptDisplay).toContainText("Cancer-immunity cycle request");
+  await expect(promptDisplay.getByRole("textbox", { name: "Prompt", exact: true })).toHaveValue(
+    /publication-ready cancer-immunity cycle/
   );
-  await promptReplay.getByRole("button", { name: /Reference prompt/i }).click();
-  await promptReplay.getByRole("button", { name: "Replay live build" }).click();
-  await expect(promptReplay).toHaveClass(/is-complete/, { timeout: 110000 });
-  await expect
-    .poll(async () => Number(await page.locator(".webmcp-command-log__count").textContent()))
-    .toBeGreaterThan(countBeforeReplay + 100);
-  await expect(promptReplay).toContainText("Build complete");
-  await expect(page.getByRole("alert")).toHaveCount(0);
+  await expect(promptDisplay).toContainText("No command replay is stored.");
+  await expect(page.getByRole("button", { name: "Replay live build" })).toHaveCount(0);
+  await expect(page.getByLabel("Live WebMCP command log")).toContainText("display_prompt");
+  await promptDisplay.getByRole("button", { name: "Close prompt display" }).click();
+  await expect(promptDisplay).toHaveCount(0);
 });
 
 test("executes compound composition and analysis through registered WebMCP callbacks", async ({

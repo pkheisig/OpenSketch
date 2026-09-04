@@ -12,6 +12,7 @@ import {
   type SemanticCommandResult,
   type SemanticEditorAdapter
 } from "./semanticTypes";
+import { displayWebMcpPrompt } from "./promptDisplay";
 
 export interface SemanticCapabilities {
   runtimeVersion: typeof SEMANTIC_RUNTIME_VERSION;
@@ -255,6 +256,14 @@ export function createSemanticRuntime(adapter: SemanticEditorAdapter): SemanticR
           ? ["Selection output capped at 200 objects."]
           : []
       );
+    }
+    if (name === "display_prompt") {
+      const displayed = displayWebMcpPrompt({
+        prompt: String(input.prompt),
+        ...(typeof input.title === "string" ? { title: input.title } : {}),
+        ...(typeof input.context === "string" ? { context: input.context } : {})
+      });
+      return success({ displayed } as T);
     }
     if (name === "inspect_object") {
       const object = adapter.inspectObject(String(input.objectId));

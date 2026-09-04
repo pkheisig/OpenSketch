@@ -358,6 +358,30 @@ const definitions: SemanticCommandDefinition[] = [
     })
   },
   {
+    name: "display_prompt",
+    title: "Display agent prompt",
+    description:
+      "Display the supplied live-session prompt in a temporary, read-only OpenSketch window without replaying or changing the figure.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "side_effect",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: false,
+    requires: ["project"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        prompt: { type: "string", minLength: 1, maxLength: 6000 },
+        title: { type: "string", maxLength: 120 },
+        context: { type: "string", maxLength: 320 }
+      },
+      required: ["prompt"],
+      additionalProperties: false
+    },
+    outputSchema: output({ displayed: { type: "boolean" } })
+  },
+  {
     name: "search_assets",
     title: "Search scientific assets",
     description:

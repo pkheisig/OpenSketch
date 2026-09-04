@@ -70,10 +70,6 @@ function webMcpAutoStartEnabled(): boolean {
   return new URLSearchParams(window.location.search).get("autoStart") === "1";
 }
 
-function webMcpPromptReplayEnabled(): boolean {
-  return new URLSearchParams(window.location.search).get("promptReplay") === "1";
-}
-
 function identityRepairNotice(project: ProjectRecord, warnings: string[]): string {
   const duplicateCount = warnings.filter((warning) =>
     warning.startsWith("Repaired duplicate")
@@ -103,7 +99,6 @@ export function App() {
   const demoProjectStarted = useRef(false);
   const showWebMcpLog = webMcpDemoEnabled();
   const autoStartWebMcpDemo = showWebMcpLog && webMcpAutoStartEnabled();
-  const showWebMcpPromptReplay = showWebMcpLog && webMcpPromptReplayEnabled();
 
   const toggleTheme = useCallback(() => {
     setTheme((current) => {
@@ -379,7 +374,6 @@ export function App() {
             onNavigationGuardChange={setHistoryNavigationGuard}
             theme={theme}
             onToggleTheme={toggleTheme}
-            showWebMcpPromptReplay={showWebMcpPromptReplay}
           />
         </Suspense>
       ) : (
