@@ -6177,17 +6177,101 @@
     "chondrocyte": {
       "name": "chondrocyte",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/chondrocyte-bioart-transparent.png",
+      "svg": "svg/chondrocyte-bioart-traced.svg",
+      "png_sha256": "a9fffc763497123045a2db122267718cab45e5c9f042009b346bafc67220eda1",
+      "svg_sha256": "63961a2c259c490192b2e03ebecb46f120c1306802435c052ce79ef1f856538c",
+      "original_sha256": "d1858a49ff94d6c49cf33c0245878c8618377e371b9e4ea0647737b2fe1fb9e1",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        283,
+        254,
+        307
+      ],
+      "svg_paths": 26378,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/chondrocyte/prompt.json",
+      "qa": "qa/inventory/chondrocyte",
+      "visual_review": "Inspected PNG and SVG against light/dark: one rounded cartilage-cell archetype with nucleus, abundant rough ER, Golgi and mitochondria. Fine organelle outlines and soft blue/violet shading closely retained. No matrix or lacuna; complete isolated cell with transparent padding. Unlabeled morphology alone is not a diagnostic identifier.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chondrocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chondrocyte/inspection.webm"
+      }
     },
     "osteoblast": {
       "name": "osteoblast",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/osteoblast-bioart-transparent.png",
+      "svg": "svg/osteoblast-bioart-traced.svg",
+      "png_sha256": "778bd02d6d1863f0a6fcd76040b9d994b427c5393f7a9eb6bb50edf87cb4ab01",
+      "svg_sha256": "d7ed8b517c8336b9095264fc739cbf00d0e0a8205e372e916702ac14c9c5e30c",
+      "original_sha256": "3063776a47a1e1baada24cc938a39944533a4630507f8661d3add86c3e0c4bf7",
+      "png_dimensions": [
+        1862,
+        1862
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        266,
+        340,
+        286,
+        340
+      ],
+      "svg_paths": 27804,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/osteoblast/prompt.json",
+      "qa": "qa/inventory/osteoblast",
+      "visual_review": "Compared PNG/SVG on white and dark: complete plump cuboidal osteoblast archetype with eccentric nucleus, abundant rough ER, Golgi and basal secretory vesicles. Corrected first-draft ruffled edge to smooth basal surface. Fine components and coral/violet shading retained; no extracellular bone, labels or visible background residue.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/osteoblast/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/osteoblast/inspection.webm"
+      }
     },
     "osteoclast": {
       "name": "osteoclast",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/osteoclast-bioart-transparent.png",
+      "svg": "svg/osteoclast-bioart-traced.svg",
+      "png_sha256": "405b08359755a6b08158e5a7dc57d5f594316b1eba5ce494b4d83125ce82e8d2",
+      "svg_sha256": "840d986cf6289c3ff6514f5cf856544d522241ada5ef53fab345f494deef0eda",
+      "original_sha256": "f6d56e4c3e9196031d6516b2f443431594fe4a3c90cdfb0de4fbeea587a8bb13",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        568,
+        312,
+        582
+      ],
+      "svg_paths": 20079,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/osteoclast/prompt.json",
+      "qa": "qa/inventory/osteoclast",
+      "visual_review": "Five separate nuclei and complete ruffled lower membrane remain recognizable. PNG and editable path SVG match on white and dark backgrounds with transparent padding; no external glow survives alpha compositing.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/osteoclast/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/osteoclast/inspection.webm"
+      }
     },
     "osteocyte": {
       "name": "osteocyte",

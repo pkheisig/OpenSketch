@@ -1,8 +1,8 @@
 # Inventory production progress
 
-34 of 768 unique inventory names covered across 770 checklist entries.
+37 of 768 unique inventory names covered across 770 checklist entries.
 
-These cover 32 distinct PNG/SVG pairs and 2 explicit archetype aliases. Alias reasons are recorded in the ledger.
+These cover 35 distinct PNG/SVG pairs and 2 explicit archetype aliases. Alias reasons are recorded in the ledger.
 The inventory files currently contain 770 checklist rows; their prose count is stale. Two exact repeated names share a single asset. The existing ten approved pairs are preserved. Completion requires a saved PNG, editable SVG, file validation, and visual review.
 
 Production remains on the experimental branch. Each asset is generated as a transparent PNG, then traced and reviewed on light and dark backgrounds. Completed assets are pushed periodically. The full inventory is still in progress.
@@ -38,6 +38,9 @@ Production remains on the experimental branch. Each asset is generated as a tran
 | endothelial cell | [PNG](png/endothelial-cell-bioart-transparent.png) | [SVG](svg/endothelial-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/endothelial-cell/comparison.png) |
 | fibroblast | [PNG](png/fibroblast-bioart-transparent.png) | [SVG](svg/fibroblast-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fibroblast/comparison.png) |
 | adipocyte | [PNG](png/adipocyte-bioart-transparent.png) | [SVG](svg/adipocyte-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adipocyte/comparison.png) |
+| chondrocyte | [PNG](png/chondrocyte-bioart-transparent.png) | [SVG](svg/chondrocyte-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chondrocyte/comparison.png) |
+| osteoblast | [PNG](png/osteoblast-bioart-transparent.png) | [SVG](svg/osteoblast-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/osteoblast/comparison.png) |
+| osteoclast | [PNG](png/osteoclast-bioart-transparent.png) | [SVG](svg/osteoclast-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/osteoclast/comparison.png) |
 | mitochondrion | [PNG](png/mitochondrion-bioart-transparent.png) | [SVG](svg/mitochondrion-bioart-traced.svg) | Approved earlier batch |
 | generic IgG antibody | [PNG](png/igg-antibody-bioart-transparent.png) | [SVG](svg/igg-antibody-bioart-traced.svg) | Approved earlier batch |
 | CD8 alpha-beta receptor | [PNG](png/cd8-receptor-bioart-transparent.png) | [SVG](svg/cd8-receptor-bioart-traced.svg) | Approved earlier batch |
