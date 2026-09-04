@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an osteocyte, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. One mature bone cell with a small flattened stellate teal-blue cell body, one central oval violet nucleus and modest cytoplasm with a few pink mitochondria. Numerous long very thin tapering dendritic cytoplasmic processes radiate in multiple directions, with sparse fine branching. All processes complete and contained within the image with generous transparent padding. The processes belong to this one cell, no other cells. Show only the osteocyte, no bone matrix, lacuna outline, canaliculi tubes, tissue or surrounding scenery. Matte smooth vector-like forms, thin dark teal outlines, restrained gradients, no photorealistic grain or glossy plastic. No text, labels, arrows, borders, unrelated objects, large cast shadows or checkerboard.",
+  "style_refinement": "Redraw osteocyte image 1 in the clean matte NIH BioArt scientific illustration style of epithelial cell image 2. Image 2 is style reference only. Keep the osteocyte's small stellate teal body, single oval violet nucleus, a few pink mitochondria and numerous thin branching dendritic processes radiating around it. Smooth filled forms, thin crisp dark teal outlines, restrained gradients and highlights. Remove grain, mottled nuclear texture, glossy plastic, glow and stray pixels. Every branch must remain connected to the single cell and fully visible. Complete isolated cell centered with generous transparent padding, no bone matrix, text, labels, arrows, shadows or checkerboard.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration, but zoom out slightly so every branch tip including the bottom tip is fully visible with generous empty padding on all sides.",
+  "background_extraction_retry": "Remove the background. Output a transparent PNG with an alpha channel.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-f348e754-b7da-4f4c-91bd-130bfdf32e5c.png",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "osteocyte",
+  "name": "osteocyte",
+  "original": "originals/inventory/osteocyte/generated.png",
+  "original_sha256": "3895c41a930f92ce7bd966ab1a43acde621adf6876a3a1782c382e36a19ef45b"
+}

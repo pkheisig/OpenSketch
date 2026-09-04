@@ -6276,17 +6276,101 @@
     "osteocyte": {
       "name": "osteocyte",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/osteocyte-bioart-transparent.png",
+      "svg": "svg/osteocyte-bioart-traced.svg",
+      "png_sha256": "5afd3c11b4867c6c25471cbda24d602250a2f5bf8772997008c9563d65caa18c",
+      "svg_sha256": "37031b9a7fe3b39a373b7efe89a37cab753280fe326dbf3c0ab5b590a79d8e98",
+      "original_sha256": "3895c41a930f92ce7bd966ab1a43acde621adf6876a3a1782c382e36a19ef45b",
+      "png_dimensions": [
+        1808,
+        1808
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        258,
+        295,
+        278,
+        295
+      ],
+      "svg_paths": 8293,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/osteocyte/prompt.json",
+      "qa": "qa/inventory/osteocyte",
+      "visual_review": "Thin branching processes remain connected and taper at visible tips. Single central nucleus and sparse organelles remain clear. PNG and path SVG retain the full silhouette on light and dark backgrounds with transparent padding; SVG has slightly stronger edge contrast.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/osteocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/osteocyte/inspection.webm"
+      }
     },
     "skeletal-muscle-fiber": {
       "name": "skeletal muscle fiber",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/skeletal-muscle-fiber-bioart-transparent.png",
+      "svg": "svg/skeletal-muscle-fiber-bioart-traced.svg",
+      "png_sha256": "1dc49aa7eba9be9db1a321138319d34c66a43e7fd309f5d8231f21ce56af08d5",
+      "svg_sha256": "093b9f70a11b8a93771f88fb1b96907c6866dfd390d5b62836405b71a06c0e22",
+      "original_sha256": "ba09fce078a1f58af2be033a382b9f1074957fcf66ead11a42b0c999036ea85a",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        357,
+        733,
+        338,
+        589
+      ],
+      "svg_paths": 7927,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/skeletal-muscle-fiber/prompt.json",
+      "qa": "qa/inventory/skeletal-muscle-fiber",
+      "visual_review": "Single unbranched fiber retains transverse striations, four peripheral nuclei and one enclosing outline. PNG and SVG preserve coral shading and complete ends on white and dark backgrounds; transparent padding verified.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/skeletal-muscle-fiber/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/skeletal-muscle-fiber/inspection.webm"
+      }
     },
     "cardiomyocyte": {
       "name": "cardiomyocyte",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cardiomyocyte-bioart-transparent.png",
+      "svg": "svg/cardiomyocyte-bioart-traced.svg",
+      "png_sha256": "fc8bdf7806dd69af6315352a6e278d170e830922a4e314805e314e1f02711382",
+      "svg_sha256": "da789e71901a2d1b2a056f3e19921ddadd98c326a011f368ba3393b57b237b97",
+      "original_sha256": "528c84b10aa5af610dadcdce714f6c0f710eea078abbb61f286c404762875012",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        320,
+        631,
+        339,
+        635
+      ],
+      "svg_paths": 14335,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cardiomyocyte/prompt.json",
+      "qa": "qa/inventory/cardiomyocyte",
+      "visual_review": "One branching cell with a single central nucleus, transverse striations, mitochondria and terminal contact faces. PNG and path SVG match on light and dark backgrounds with complete silhouette and transparent padding; organelle sizes are schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cardiomyocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cardiomyocyte/inspection.webm"
+      }
     },
     "smooth-muscle-cell": {
       "name": "smooth muscle cell",
