@@ -1,8 +1,8 @@
 # Inventory production progress
 
-40 of 768 unique inventory names covered across 770 checklist entries.
+43 of 768 unique inventory names covered across 770 checklist entries.
 
-These cover 38 distinct PNG/SVG pairs and 2 explicit archetype aliases. Alias reasons are recorded in the ledger.
+These cover 41 distinct PNG/SVG pairs and 2 explicit archetype aliases. Alias reasons are recorded in the ledger.
 The inventory files currently contain 770 checklist rows; their prose count is stale. Two exact repeated names share a single asset. The existing ten approved pairs are preserved. Completion requires a saved PNG, editable SVG, file validation, and visual review.
 
 Production remains on the experimental branch. Each asset is generated as a transparent PNG, then traced and reviewed on light and dark backgrounds. Completed assets are pushed periodically. The full inventory is still in progress.
@@ -44,6 +44,9 @@ Production remains on the experimental branch. Each asset is generated as a tran
 | osteocyte | [PNG](png/osteocyte-bioart-transparent.png) | [SVG](svg/osteocyte-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/osteocyte/comparison.png) |
 | skeletal muscle fiber | [PNG](png/skeletal-muscle-fiber-bioart-transparent.png) | [SVG](svg/skeletal-muscle-fiber-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/skeletal-muscle-fiber/comparison.png) |
 | cardiomyocyte | [PNG](png/cardiomyocyte-bioart-transparent.png) | [SVG](svg/cardiomyocyte-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cardiomyocyte/comparison.png) |
+| smooth muscle cell | [PNG](png/smooth-muscle-cell-bioart-transparent.png) | [SVG](svg/smooth-muscle-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/smooth-muscle-cell/comparison.png) |
+| neuron | [PNG](png/neuron-bioart-transparent.png) | [SVG](svg/neuron-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/neuron/comparison.png) |
+| astrocyte | [PNG](png/astrocyte-bioart-transparent.png) | [SVG](svg/astrocyte-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/astrocyte/comparison.png) |
 | mitochondrion | [PNG](png/mitochondrion-bioart-transparent.png) | [SVG](svg/mitochondrion-bioart-traced.svg) | Approved earlier batch |
 | generic IgG antibody | [PNG](png/igg-antibody-bioart-transparent.png) | [SVG](svg/igg-antibody-bioart-traced.svg) | Approved earlier batch |
 | CD8 alpha-beta receptor | [PNG](png/cd8-receptor-bioart-transparent.png) | [SVG](svg/cd8-receptor-bioart-traced.svg) | Approved earlier batch |

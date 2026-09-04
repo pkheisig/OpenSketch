@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a neuron, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. One multipolar neuron with a warm golden-orange cell body at left, one large round violet nucleus with nucleolus, several short branching dendrites around the soma, and exactly one much longer slender unmyelinated axon extending horizontally toward the right and ending in a small branching terminal arbor with rounded synaptic boutons. Show a few pink mitochondria and pale lavender Nissl substance inside the soma only. Every process connected to the single cell, complete branches and terminal tips visible. No myelin sheaths because those belong to other cells, no other cells, no synapse partner. Matte smooth filled forms, thin crisp dark ochre outlines, restrained gradients, no photorealism or glossy plastic. Complete asset centered with generous true transparent padding; no text, labels, arrows, borders, scenery, unrelated objects, cast shadows, glow or checkerboard.",
+  "style_refinement": "Redraw neuron image 1 in the clean matte NIH BioArt style of epithelial cell image 2. Image 2 is style reference only. Preserve one golden-orange multipolar cell body at left with a round violet nucleus, short branching dendrites, exactly one long slender axon extending right and ending in a small terminal arbor with rounded boutons. Simplify soma organelles to a few pink mitochondria and lavender Nissl stacks. Smooth filled forms with thin crisp dark ochre outlines and restrained gradients. Remove photorealistic grain, mottled nuclear texture, glossy plastic, glow and stray pixels. All processes connected and every tip fully visible. Generous transparent padding; no myelin, other cells, labels, text, arrows, shadows or checkerboard.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-dc33cc93-8cec-4a8d-b642-64529b014fd3.png",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "neuron",
+  "name": "neuron",
+  "original": "originals/inventory/neuron/generated.png",
+  "original_sha256": "ac6dfdeb05b9275c08bb830b896a05e7ca7027febf0b0b2edfd37c7cfa46f8a3"
+}

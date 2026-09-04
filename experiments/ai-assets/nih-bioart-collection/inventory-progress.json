@@ -6375,17 +6375,101 @@
     "smooth-muscle-cell": {
       "name": "smooth muscle cell",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/smooth-muscle-cell-bioart-transparent.png",
+      "svg": "svg/smooth-muscle-cell-bioart-traced.svg",
+      "png_sha256": "5254cf5328e6d97956f69dced816996329f723ad5c51928912207460e920a681",
+      "svg_sha256": "b11f49f7f2a7e034fe762def724a5bbb31731c71b6bc51f172443c993f4c19f5",
+      "original_sha256": "49ee7c40b77d10bfced20e06934f8c1167eff6e751a49b16efe5a69437777568",
+      "png_dimensions": [
+        3040,
+        3040
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        467,
+        1227,
+        467,
+        1158
+      ],
+      "svg_paths": 4104,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/smooth-muscle-cell/prompt.json",
+      "qa": "qa/inventory/smooth-muscle-cell",
+      "visual_review": "Complete fusiform outline and both tapering tips, central elongated nucleus and sparse oblique/longitudinal fibers remain recognizable without transverse striations. PNG and editable path SVG match on white and dark backgrounds with transparent padding; mild SVG contour banding at close zoom.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/smooth-muscle-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/smooth-muscle-cell/inspection.webm"
+      }
     },
     "neuron": {
       "name": "neuron",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/neuron-bioart-transparent.png",
+      "svg": "svg/neuron-bioart-traced.svg",
+      "png_sha256": "72e3db071ebc66bcda0d3d7cb8af5df2d593593b90b6d6dafb193de2c2f98b60",
+      "svg_sha256": "1167c112379f1b203e625d52aef89a6b1625eb8f20c461563c39b4cc226b2d02",
+      "original_sha256": "ac6dfdeb05b9275c08bb830b896a05e7ca7027febf0b0b2edfd37c7cfa46f8a3",
+      "png_dimensions": [
+        2484,
+        2484
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        368,
+        812,
+        371,
+        823
+      ],
+      "svg_paths": 7084,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/neuron/prompt.json",
+      "qa": "qa/inventory/neuron",
+      "visual_review": "Single multipolar soma with one continuous long axon and complete terminal boutons. Dendritic tips, nucleus and Nissl stacks remain recognizable. PNG and editable path SVG match on light/dark backgrounds with transparent padding; SVG has slightly stronger outline contrast.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/neuron/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/neuron/inspection.webm"
+      }
     },
     "astrocyte": {
       "name": "astrocyte",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/astrocyte-bioart-transparent.png",
+      "svg": "svg/astrocyte-bioart-traced.svg",
+      "png_sha256": "fe0b453d26bdd33dfb57b1f793d60b597e6b944d37a1cbd795029496af0783a0",
+      "svg_sha256": "d5487c7bfdb9e7752c65d8ec3e1b7fce2895837bcf5323e5ee8971fc3f94cd5d",
+      "original_sha256": "9969cc1e6cfb98d2f84da904fdab503dee65a3a6f5a4a4f076731066f8c583bd",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        262,
+        331,
+        280,
+        335
+      ],
+      "svg_paths": 11720,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/astrocyte/prompt.json",
+      "qa": "qa/inventory/astrocyte",
+      "visual_review": "Stellate single cell with central nucleus, branching processes and small flattened endfeet. Complete silhouette and connected fine branches preserved in PNG and editable path SVG on light/dark backgrounds; slight vector edge contrast increase, no visible background residue.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/astrocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/astrocyte/inspection.webm"
+      }
     },
     "oligodendrocyte": {
       "name": "oligodendrocyte",
