@@ -1,6 +1,6 @@
 # Experimental BioArt collection
 
-Ten preserved scientific assets: the three approved references plus seven PNG-first additions selected from [the asset inventory](../../../docs/ai-bioart-asset-inventory.md) at commit `136ff6073f84c5acea6410c3c0d21b0a941201fb`.
+The first ten approved scientific assets are preserved here. Production now continues through the complete [asset inventory](../../../docs/ai-bioart-asset-inventory.md) and its [supplement](../../../docs/ai-bioart-asset-inventory-additions.md). See [current progress and completed files](PROGRESS.md) for the growing collection.
 
 | Category | New assets |
 | --- | --- |
@@ -9,13 +9,16 @@ Ten preserved scientific assets: the three approved references plus seven PNG-fi
 | Lab equipment | Micropipette, microcentrifuge tube |
 | Animal | Laboratory mouse |
 
-- `png/`: ten transparent PNG masters with generous padding.
-- `svg/`: ten editable vector traces, containing paths rather than embedded bitmap images.
+- `png/`: transparent PNG masters with generous padding.
+- `svg/`: editable vector traces, containing paths rather than embedded bitmap images.
 - `originals/batch-02/`: unmodified generated outputs, including earlier candidates for provenance. Use the selected files in `png/` and `svg/`, not rejected candidates.
 - [batch-02.json](batch-02.json): exact generation/refinement prompts, source filenames, inventory selection and selected originals.
 - [qa/gallery.html](qa/gallery.html): standalone comparison with PNG/SVG and light/dark controls.
 - [qa/validation.json](qa/validation.json): dimensions, alpha ranges, vector path counts and SHA-256 hashes.
 - `tools/`: reproducible packaging, tracing and browser capture scripts.
+- `originals/inventory/`: selected originals and exact prompts for continuing inventory production.
+- `qa/inventory/`: individual PNG/SVG comparisons and recordings on light and dark backgrounds.
+- `inventory-progress.json`: all concrete inventory entries, original source locations, file hashes and review status. Awaiting-review assets are not counted as complete.
 
 The earlier macrophage, mitochondrion and CD8 receptor files are copied byte-for-byte from [the first experiment](../nih-bioart-style-2026-09-04/). That experiment remains intact.
 
