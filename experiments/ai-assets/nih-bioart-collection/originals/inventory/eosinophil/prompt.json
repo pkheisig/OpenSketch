@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create one isolated eosinophil as transparent-background PNG, a polished NIH BioArt scientific illustration matching the provided reference sheet and approved collection. Round cell cutaway with a distinctive two-lobed purple nucleus connected by a narrow chromatin bridge, abundant coarse salmon-pink and coral-orange oval granules in pale lavender cytoplasm. Some granules have a subtle darker crystalloid core. Clean smooth matte forms with crisp thin purple outlines, restrained pseudo-3D depth and soft gradients. Detailed hand-illustrated textbook appearance, no microscopic marbling or wet glossy surface. Complete centered cell with generous transparent padding. No text, labels, arrows, external particles, other cells, scenery, shadow, glow or checkerboard.",
+  "style_refinement": "Redraw eosinophil image 1 in the clean matte NIH BioArt illustration style of image 2 (style reference only). Keep its two purple nuclear lobes, joined only by a thin chromatin bridge, and abundant orange-coral oval cytoplasmic granules. Make the granules smaller and more evenly sized, with a few subtle dark cores. Smooth fills, fine crisp purple outlines and gentle shading; remove marbled texture, glossy wet highlights and tiny surface spikes. Keep a rounded slightly irregular intact membrane. Complete cell, genuine transparent background, no labels or other objects.",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-dec5f928-900e-413a-afda-f6137dc9daa5.png",
+  "id": "eosinophil",
+  "name": "eosinophil",
+  "original": "originals/inventory/eosinophil/generated.png",
+  "original_sha256": "26158ccec6848806c926cd88dcec4c4b50636751b6e42e32cbe218681431f8b2"
+}

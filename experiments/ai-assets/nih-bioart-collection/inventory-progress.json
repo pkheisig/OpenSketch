@@ -5606,7 +5606,35 @@
     "plasmacytoid-dendritic-cell": {
       "name": "plasmacytoid dendritic cell",
       "category": "1. Immune and blood cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/plasmacytoid-dendritic-cell-bioart-transparent.png",
+      "svg": "svg/plasmacytoid-dendritic-cell-bioart-traced.svg",
+      "png_sha256": "69bae39695ad67dd9d6a2e1b8d2d2c4587ccac535d060581d9469bb7d91e1410",
+      "svg_sha256": "045d8359424d2dfd3311670c4bfa3d1545b0177b20f8d986e9efb9daf742d934",
+      "original_sha256": "a9cde35f364901272f40534838c8bf09c5d602898102253e24096f3f9e9c554a",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        313,
+        333,
+        302,
+        336
+      ],
+      "svg_paths": 5516,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/plasmacytoid-dendritic-cell/prompt.json",
+      "qa": "qa/inventory/plasmacytoid-dendritic-cell",
+      "visual_review": "Inspected PNG and SVG comparisons on light/dark. Compact resting cell with eccentric lightly indented nucleus and developed ER, no long dendrites or clock-face chromatin. Palette and outlined forms consistent; trace simplifies subtle nuclear shading but retains recognizable structure and clean transparency.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/plasmacytoid-dendritic-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/plasmacytoid-dendritic-cell/inspection.webm"
+      }
     },
     "neutrophil": {
       "name": "neutrophil",
@@ -5621,12 +5649,68 @@
     "eosinophil": {
       "name": "eosinophil",
       "category": "1. Immune and blood cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/eosinophil-bioart-transparent.png",
+      "svg": "svg/eosinophil-bioart-traced.svg",
+      "png_sha256": "26850f432f4f998ce1963f980a55da4f9269d50466faac3161a0962b21b2904a",
+      "svg_sha256": "17c0cd36e548f0a8d5a502cc13e792f8a182c647a193181a8ea1b543aed71700",
+      "original_sha256": "26158ccec6848806c926cd88dcec4c4b50636751b6e42e32cbe218681431f8b2",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        266,
+        251,
+        251
+      ],
+      "svg_paths": 7056,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/eosinophil/prompt.json",
+      "qa": "qa/inventory/eosinophil",
+      "visual_review": "Inspected source and PNG/SVG white/dark comparison: two purple nuclear lobes with a narrow bridge, coarse orange-pink granules and intact round cell retained. No opaque backdrop or clipping. Fine trace keeps color, granular detail and pseudo-depth.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/eosinophil/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/eosinophil/inspection.webm"
+      }
     },
     "basophil": {
       "name": "basophil",
       "category": "1. Immune and blood cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/basophil-bioart-transparent.png",
+      "svg": "svg/basophil-bioart-traced.svg",
+      "png_sha256": "9824f04eca26b8fc4fb8b9f8ca7af73a4b9eca28013d4a9ec23fec7a4d9fc637",
+      "svg_sha256": "2203bed8beb444dd321a26a416550fe87d60d003fcc56157247739ae756d5738",
+      "original_sha256": "df1922675c529921a21500c60265094fd0f80877965f8e49b55219de17e5d314",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        298,
+        281,
+        307
+      ],
+      "svg_paths": 4030,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/basophil/prompt.json",
+      "qa": "qa/inventory/basophil",
+      "visual_review": "Inspected original and four-panel comparison. Bilobed S-shaped nucleus partly obscured by dense indigo/violet granules; complete cell silhouette. Smooth saturated outlined drawing, accurate trace including shading and granules, clean on white and dark.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/basophil/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/basophil/inspection.webm"
+      }
     },
     "mast-cell": {
       "name": "mast cell",

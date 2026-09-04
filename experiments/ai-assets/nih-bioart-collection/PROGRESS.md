@@ -1,8 +1,8 @@
 # Inventory production progress
 
-17 of 768 unique inventory names covered across 770 checklist entries.
+20 of 768 unique inventory names covered across 770 checklist entries.
 
-These cover 15 distinct PNG/SVG pairs and 2 explicit archetype aliases. Alias reasons are recorded in the ledger.
+These cover 18 distinct PNG/SVG pairs and 2 explicit archetype aliases. Alias reasons are recorded in the ledger.
 The inventory files currently contain 770 checklist rows; their prose count is stale. Two exact repeated names share a single asset. The existing ten approved pairs are preserved. Completion requires a saved PNG, editable SVG, file validation, and visual review.
 
 Production remains on the experimental branch. Each asset is generated as a transparent PNG, then traced and reviewed on light and dark backgrounds. Completed assets are pushed periodically. The full inventory is still in progress.
@@ -20,7 +20,10 @@ Production remains on the experimental branch. Each asset is generated as a tran
 | monocyte | [PNG](png/monocyte-bioart-transparent.png) | [SVG](svg/monocyte-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/monocyte/comparison.png) |
 | macrophage | [PNG](png/macrophage-bioart-transparent.png) | [SVG](svg/macrophage-bioart-traced.svg) | Approved earlier batch |
 | dendritic cell | [PNG](png/dendritic-cell-bioart-transparent.png) | [SVG](svg/dendritic-cell-bioart-traced.svg) | Approved earlier batch |
+| plasmacytoid dendritic cell | [PNG](png/plasmacytoid-dendritic-cell-bioart-transparent.png) | [SVG](svg/plasmacytoid-dendritic-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/plasmacytoid-dendritic-cell/comparison.png) |
 | neutrophil | [PNG](png/neutrophil-bioart-transparent.png) | [SVG](svg/neutrophil-bioart-traced.svg) | Approved earlier batch |
+| eosinophil | [PNG](png/eosinophil-bioart-transparent.png) | [SVG](svg/eosinophil-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/eosinophil/comparison.png) |
+| basophil | [PNG](png/basophil-bioart-transparent.png) | [SVG](svg/basophil-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/basophil/comparison.png) |
 | mitochondrion | [PNG](png/mitochondrion-bioart-transparent.png) | [SVG](svg/mitochondrion-bioart-traced.svg) | Approved earlier batch |
 | generic IgG antibody | [PNG](png/igg-antibody-bioart-transparent.png) | [SVG](svg/igg-antibody-bioart-traced.svg) | Approved earlier batch |
 | CD8 alpha-beta receptor | [PNG](png/cd8-receptor-bioart-transparent.png) | [SVG](svg/cd8-receptor-bioart-traced.svg) | Approved earlier batch |
