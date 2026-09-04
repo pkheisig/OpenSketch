@@ -5979,17 +5979,101 @@
     "goblet-cell": {
       "name": "goblet cell",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/goblet-cell-bioart-transparent.png",
+      "svg": "svg/goblet-cell-bioart-traced.svg",
+      "png_sha256": "843365d54e3cb6da4febbbe2c98f8f6d9a9a477d0a9085ae753a1e5df406a150",
+      "svg_sha256": "f7b95bc6a21764f79e53e6d7708a84e01d8272420f848f8a763cc4c3a2235058",
+      "original_sha256": "4bd736950c1ac000ffc8d82ec4b905c712c84070c1733f36b0d9d569eac48ecb",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        368,
+        661,
+        367
+      ],
+      "svg_paths": 13997,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/goblet-cell/prompt.json",
+      "qa": "qa/inventory/goblet-cell",
+      "visual_review": "PNG/SVG comparison on white and dark shows matching goblet silhouette, expanded apical cyan mucin granules, narrow basal region with violet nucleus, ER and Golgi. Smooth color gradients and individual granule outlines preserved. All components contained within cell, clear transparent exterior and padding, no labels or mucus plume.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/goblet-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/goblet-cell/inspection.webm"
+      }
     },
     "keratinocyte": {
       "name": "keratinocyte",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/keratinocyte-bioart-transparent.png",
+      "svg": "svg/keratinocyte-bioart-traced.svg",
+      "png_sha256": "477ee9ea234f0e37f562c4029e674dfdc396ceb6ee02343a1a1e491f98ff6aba",
+      "svg_sha256": "a52c3eda2a0a878a523e2aca91de64d690ebff87d390f752d586ecf89594e9f1",
+      "original_sha256": "f254447ee0e089d9e077f254480c92ec681345565057b0862ee3c21fdb52d309",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        338,
+        604,
+        324,
+        661
+      ],
+      "svg_paths": 18373,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/keratinocyte/prompt.json",
+      "qa": "qa/inventory/keratinocyte",
+      "visual_review": "Inspected PNG and SVG on white/dark: flattened polygonal nucleated keratinocyte, fine internal golden filament bundles ending at purple membrane-associated plaques, mitochondria and ER. SVG preserves fine bundles and broad shading at comparison scale. Clear transparent exterior and complete cell outline. Junctional pads are schematic intrinsic plaque components, without neighboring cells.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/keratinocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/keratinocyte/inspection.webm"
+      }
     },
     "melanocyte": {
       "name": "melanocyte",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/melanocyte-bioart-transparent.png",
+      "svg": "svg/melanocyte-bioart-traced.svg",
+      "png_sha256": "3ac4c3daa8e99e2a2fb981343ac5d7036dbd36989ce1ade00a7183cfb4d73ef2",
+      "svg_sha256": "61bdb9e0b101420bda81251cd92335d6b8b98d1f0fe6c1b8007b20987ba2bf42",
+      "original_sha256": "36e7ca962c9e9336c334c9b3796ec250159011555ec1013c0e5c4f08f01eff29",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        394,
+        572,
+        393,
+        610
+      ],
+      "svg_paths": 8031,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/melanocyte/prompt.json",
+      "qa": "qa/inventory/melanocyte",
+      "visual_review": "Compared PNG and SVG on white and dark: one dendritic melanocyte with all connected branches and terminal tips intact, central violet nucleus, brown melanosomes throughout cell body and processes. Thin outlines, gradients and small granules preserved. Transparent gaps between branches and generous padding; no external halo, text or adjacent cells.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/melanocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/melanocyte/inspection.webm"
+      }
     },
     "endothelial-cell": {
       "name": "endothelial cell",

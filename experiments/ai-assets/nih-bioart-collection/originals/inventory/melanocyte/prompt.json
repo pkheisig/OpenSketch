@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "A clean 2D vector-style biomedical illustration PNG of ONE melanocyte, in the visual style of the supplied NIH BioArt illustrations and the approved cell collection: smooth filled shapes, thin crisp dark-plum outlines, matte colors, restrained gradients and subtle highlights giving gentle pseudo-3D depth. Scientifically recognizable isolated melanocyte: a small warm peach-mauve cell body with a central oval violet nucleus and several long slender tapering dendritic processes spreading outward in different directions. Fine dark brown melanosomes are visible throughout the cytoplasm and along the processes, including their tips; a few small intrinsic organelles near the nucleus. All dendrites belong to this one cell and are complete with rounded tapering tips. No connected keratinocytes, epidermis or other tissue. Professional saturated muted peach, violet and brown palette. Avoid photorealistic textures and microscopic grain. Complete object centered with generous truly transparent padding, no text, labels, arrows, borders, scenery, unrelated objects, cast shadow, glow or checkerboard.",
+  "style_refinement": "Redraw melanocyte image 1 in the clean matte NIH BioArt illustration style of epithelial cell image 2. Image 2 is style reference only. Keep a single small peach-mauve cell body with central violet nucleus and its long tapering branching dendrites. Preserve dark brown melanosomes distributed through the cell and dendrites, simplifying them to small smooth oval granules with subtle highlights. Smooth filled shapes and thin crisp dark-plum outlines, restrained pseudo-3D shading. Remove photorealistic grain, glossy texture and all glow. Keep every branch connected to this one cell and every tip complete, with generous transparent padding. No adjacent cells, text, labels, scenery, shadows or checkerboard.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-25830ef0-2c2f-4b2f-84f5-00eb925ea8c7.png",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "melanocyte",
+  "name": "melanocyte",
+  "original": "originals/inventory/melanocyte/generated.png",
+  "original_sha256": "36e7ca962c9e9336c334c9b3796ec250159011555ec1013c0e5c4f08f01eff29"
+}
