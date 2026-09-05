@@ -7092,17 +7092,101 @@
     "senescent-cell": {
       "name": "senescent cell",
       "category": "3. Cell states and morphology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/senescent-cell-bioart-transparent.png",
+      "svg": "svg/senescent-cell-bioart-traced.svg",
+      "png_sha256": "bf5ecabcee5849d8921a2a2d552cbd44d3138492d75325a0805a11d1f8972cdc",
+      "svg_sha256": "c26912b20c61594abae11875ffa1e546982cb85e4e3afba28ebb037367287efc",
+      "original_sha256": "217d2c1af78b687c608ee866bf97e02d1dd4d1ccd39036efed2205860d21e1f1",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        571,
+        347,
+        563
+      ],
+      "svg_paths": 18651,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/senescent-cell/prompt.json",
+      "qa": "qa/inventory/senescent-cell",
+      "visual_review": "Representative spread senescent-fibroblast schematic with broad intact outline, enlarged irregular nucleus, lysosomal residual bodies and fine stress fibers. No background glow in white/dark composites. SVG preserves perimeter and organelles with mild banding; morphology is not a senescence assay.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/senescent-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/senescent-cell/inspection.webm"
+      }
     },
     "polarized-migrating-cell": {
       "name": "polarized migrating cell",
       "category": "3. Cell states and morphology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/polarized-migrating-cell-bioart-transparent.png",
+      "svg": "svg/polarized-migrating-cell-bioart-traced.svg",
+      "png_sha256": "5d091ceb7d1438ea2c19e31525a6b9c8586dfd6f30b56107279751ae05f5e8dd",
+      "svg_sha256": "12bbeb6027a0ab465a6c55ec4e51d9cff3b81500c68ec0a21bf4835df5498ff5",
+      "original_sha256": "87c5f96fcd1ec48339745ac9d4d3f5413938fc59eb2424fea66638b342533b12",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        362,
+        586,
+        331,
+        589
+      ],
+      "svg_paths": 12577,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/polarized-migrating-cell/prompt.json",
+      "qa": "qa/inventory/polarized-migrating-cell",
+      "visual_review": "Clear right leading fan and left trailing tail, branching actin network and complete filopodial tips. Transparent white/dark composites have no glow. SVG retains tail, fine actin strands and organelles with slightly stronger outlines; representative crawling-cell polarity only.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/polarized-migrating-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/polarized-migrating-cell/inspection.webm"
+      }
     },
     "adherent-spread-cell": {
       "name": "adherent spread cell",
       "category": "3. Cell states and morphology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/adherent-spread-cell-bioart-transparent.png",
+      "svg": "svg/adherent-spread-cell-bioart-traced.svg",
+      "png_sha256": "2088523cf4d38b8ce2b53d514abd3aeed26a724a4c4dd668b3032f961df6250a",
+      "svg_sha256": "893940b648ff86e6fb7506ff12c384a2dc5a0512dc70f98ff24a660e7c330aad",
+      "original_sha256": "f1b17ee99fe7aea2030104d46fc698f24afbbd669fa64e4f0267bcd36bad354d",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        372,
+        564,
+        329,
+        581
+      ],
+      "svg_paths": 19137,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/adherent-spread-cell/prompt.json",
+      "qa": "qa/inventory/adherent-spread-cell",
+      "visual_review": "Broad spread polygonal outline with five short extensions, one nucleus, peripheral adhesion plaques and stress-fiber bundles. All extensions complete, no background glow on light/dark composites. SVG retains thin fibers, organelles and contour with mild gradient banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adherent-spread-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adherent-spread-cell/inspection.webm"
+      }
     },
     "rounded-suspension-cell": {
       "name": "rounded suspension cell",

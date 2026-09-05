@@ -1,0 +1,24 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a senescent cell, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Represent a conventional cultured senescent human fibroblast: ONE enlarged broadly spread flattened irregular cell, pale teal cytoplasm, one enlarged gently lobulated violet nucleus with a small nucleolus, numerous small amber and mauve lysosomal residual bodies, several small orange mitochondria, modest blue ER and a few fine parallel actin stress fibers across the wide cytoplasm. Broad low extensions with rounded ends rather than a small spindle-shaped cell. Intact membrane, no apoptotic blebs, no rupture, no mitotic chromosomes. This is a representative morphology, not a universal senescence marker. No staining symbols, surrounding cells, substrate or secreted cytokine cloud. Thin crisp colored outlines, smooth matte filled forms, restrained subtle gradients. Complete object centered with generous transparent padding.",
+  "style_refinement": "Refine image 1 using image 2 ONLY as the illustration style reference. Preserve the single broad flattened senescent fibroblast, one enlarged gently lobulated violet nucleus and numerous amber/mauve lysosomal residual bodies. Make its broad irregular spread shape less star-like: shorten narrow projecting tips while keeping rounded broad extensions. Replace wet gloss, microscopic granular texture and background glow with smooth matte color fills, thin crisp colored outlines and restrained soft gradients matching image 2. Keep a few delicate stress fibers, modest blue ER and small orange mitochondria. Nucleus has one small nucleolus, no mitotic chromosomes. Whole outline complete with generous transparent padding, no substrate, extra cells, text, labels, symbols, arrows, border or cast shadow.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-672a9cb9-a52c-4f0f-b9a0-7d864e2d533e.png",
+  "archetype": "Representative cultured senescent human fibroblast, enlarged and spread with residual bodies; not a universal morphology or proof of senescence.",
+  "structure_references": [
+    "https://pubmed.ncbi.nlm.nih.gov/32533368/",
+    "https://pubmed.ncbi.nlm.nih.gov/12915210/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "senescent-cell",
+  "name": "senescent cell",
+  "original": "originals/inventory/senescent-cell/generated.png",
+  "original_sha256": "217d2c1af78b687c608ee866bf97e02d1dd4d1ccd39036efed2205860d21e1f1"
+}
