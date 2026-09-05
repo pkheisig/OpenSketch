@@ -7918,12 +7918,68 @@
     "ribosome": {
       "name": "ribosome",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/ribosome-bioart-transparent.png",
+      "svg": "svg/ribosome-bioart-traced.svg",
+      "png_sha256": "58517f25246d59656a68efbb98113984098fe722dbf302024548116a4e9754f4",
+      "svg_sha256": "9a6a60259020afed593b2b1e81d7f2f292194a0e3a64ecb795e5756fc3f1e37b",
+      "original_sha256": "825cd810c00fb45314dd59f3e162705e12bbdd0a4c9e06b06c2d423e3ca17fb6",
+      "png_dimensions": [
+        1962,
+        1962
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        303,
+        420,
+        283,
+        420
+      ],
+      "svg_paths": 17381,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/ribosome/prompt.json",
+      "qa": "qa/inventory/ribosome",
+      "visual_review": "Two connected differently colored subunits and asymmetric surface lobes remain clear. SVG closely retains rounded shading, contours and intersubunit boundary. Full silhouette preserved with transparent padding on light and dark backgrounds; molecular surface is explicitly schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ribosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ribosome/inspection.webm"
+      }
     },
     "proteasome": {
       "name": "proteasome",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/proteasome-bioart-transparent.png",
+      "svg": "svg/proteasome-bioart-traced.svg",
+      "png_sha256": "ded1859cc561e3af93c5a613da9a575864d0e63ab9ecde93843a67850bc3d4c6",
+      "svg_sha256": "a3bc77597b783ef52a047be736c76954397bcd8b046601a4af2ca50bf6ff1f49",
+      "original_sha256": "b605d631f0f6bba183973efe664e5932adf1f70ca73a543a609a1c179533de2c",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        642,
+        381,
+        629,
+        378
+      ],
+      "svg_paths": 13659,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/proteasome/prompt.json",
+      "qa": "qa/inventory/proteasome",
+      "visual_review": "Four alpha-beta-beta-alpha rows and seven top subunits remain distinct. SVG preserves coherent barrel, axial opening, smooth lobes and shading. Clean alpha on white and dark backgrounds; no glow in composited output.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/proteasome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/proteasome/inspection.webm"
+      }
     },
     "centrosome": {
       "name": "centrosome",
