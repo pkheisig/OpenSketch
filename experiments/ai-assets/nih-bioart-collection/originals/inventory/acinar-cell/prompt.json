@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an acinar cell, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. Show one pancreatic serous acinar cell in a clean cutaway, polarized pyramidal shape with broad rounded base at bottom and narrower flat apical face at top. One round violet nucleus in the basal third, abundant layered lavender rough endoplasmic reticulum around the nucleus and basal cytoplasm, compact coral supranuclear Golgi, and many round dense rose-magenta zymogen granules concentrated in the apical upper third. Several small pink mitochondria between ER stacks. Pale peach cytoplasm with smooth complete membrane. Only this single cell, no acinus cluster, lumen, duct, neighboring cells or released secretion. Matte smooth filled forms, thin crisp plum/coral outlines and restrained gradients, no photorealistic grain or glossy plastic. Complete asset centered with generous true transparent padding; no text, labels, arrows, borders, scenery, unrelated objects, cast shadows, glow or checkerboard.",
+  "style_refinement": "Redraw acinar cell image 1 in the clean matte NIH BioArt style of epithelial cell image 2. Image 2 is style reference only. Preserve one polarized pyramidal peach cell with broad rounded base and narrower apical top, one basal round violet nucleus, abundant basal lavender rough ER, compact supranuclear coral Golgi and dense magenta zymogen granules concentrated in the apical region. Make the apical face nearly flat with only a few very short microvilli. Smooth filled forms, thin crisp plum/coral outlines, restrained gradients. Remove grain, mottled nuclear texture, glossy plastic and glow. All organelles remain inside the single cell. Complete silhouette centered with generous transparent padding, no neighboring cells, lumen, secretion, labels, text, arrows, shadows or checkerboard.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-82fea921-9300-4a58-90fd-059dcc185e71.png",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "acinar-cell",
+  "name": "acinar cell",
+  "original": "originals/inventory/acinar-cell/generated.png",
+  "original_sha256": "dcf31d8b9753b9380d107c9479aebb1fe93886342344e37f2ba810a819fee3e9"
+}

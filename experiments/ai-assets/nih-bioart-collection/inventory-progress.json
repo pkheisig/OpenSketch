@@ -6573,17 +6573,101 @@
     "hepatocyte": {
       "name": "hepatocyte",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/hepatocyte-bioart-transparent.png",
+      "svg": "svg/hepatocyte-bioart-traced.svg",
+      "png_sha256": "24daa7e070ada54172945c6762973b07e2a6a3de16252cf8e2a123375e107d8f",
+      "svg_sha256": "cd5659eb8cb9d108f80fa30779976c74a1daab70df562cdfc6758b95e21ab956",
+      "original_sha256": "8cd0c7d245a0c0f72d0e72f09bf1bc15727e848d4af1040799d1f24f32eda27b",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        274,
+        251,
+        251
+      ],
+      "svg_paths": 27469,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/hepatocyte/prompt.json",
+      "qa": "qa/inventory/hepatocyte",
+      "visual_review": "Rounded polygonal single cell retains central nucleus, abundant mitochondria, ER, glycogen clusters and small lipid droplets. PNG and editable path SVG preserve internal detail and complete outline on light/dark backgrounds with transparent padding; colors and organelle sizes are schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hepatocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hepatocyte/inspection.webm"
+      }
     },
     "pancreatic-beta-cell": {
       "name": "pancreatic beta cell",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/pancreatic-beta-cell-bioart-transparent.png",
+      "svg": "svg/pancreatic-beta-cell-bioart-traced.svg",
+      "png_sha256": "fe991c3b810bbd48026c4069502536794c76c308662ac1ff47bf2871dc7e04e9",
+      "svg_sha256": "9b9ce1522d8289904509c12cdc357195e14238559392145c9298502e5f149a05",
+      "original_sha256": "214c382cf3fe9154cfed2fe5d97cedee06534c787843841db8ce51cb5d5f33dd",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        292,
+        297,
+        251
+      ],
+      "svg_paths": 22034,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/pancreatic-beta-cell/prompt.json",
+      "qa": "qa/inventory/pancreatic-beta-cell",
+      "visual_review": "Single endocrine-cell schematic with numerous dense-core granules, pale rims, ER, Golgi and mitochondria. PNG and path SVG preserve detail and complete outline on white/dark backgrounds with transparent padding. Final cores are rounded; granule rims and organelle scale are schematic ultrastructural conventions, not a live-cell microscopy claim.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pancreatic-beta-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pancreatic-beta-cell/inspection.webm"
+      }
     },
     "acinar-cell": {
       "name": "acinar cell",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/acinar-cell-bioart-transparent.png",
+      "svg": "svg/acinar-cell-bioart-traced.svg",
+      "png_sha256": "e128420db9df75829e296fcdef4732c3c9804f5061116afc5b0ef2d39773caea",
+      "svg_sha256": "857cc084e02fae796453d585f4b2f23e0e64f142c7ae0ef2457af9cf95f4cbd0",
+      "original_sha256": "dcf31d8b9753b9380d107c9479aebb1fe93886342344e37f2ba810a819fee3e9",
+      "png_dimensions": [
+        1955,
+        1955
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        414,
+        289,
+        416,
+        291
+      ],
+      "svg_paths": 28159,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/acinar-cell/prompt.json",
+      "qa": "qa/inventory/acinar-cell",
+      "visual_review": "Polarized single pyramidal cell with basal nucleus and rough ER, supranuclear Golgi and apical zymogen granules. PNG and editable path SVG preserve the organelle distribution, complete outline and short apical microvilli on light/dark backgrounds; transparent padding verified, granule sizes schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/acinar-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/acinar-cell/inspection.webm"
+      }
     },
     "podocyte": {
       "name": "podocyte",

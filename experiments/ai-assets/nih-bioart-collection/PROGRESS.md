@@ -1,8 +1,8 @@
 # Inventory production progress
 
-46 of 768 unique inventory names covered across 770 checklist entries.
+49 of 768 unique inventory names covered across 770 checklist entries.
 
-These cover 44 distinct PNG/SVG pairs and 2 explicit archetype aliases. Alias reasons are recorded in the ledger.
+These cover 47 distinct PNG/SVG pairs and 2 explicit archetype aliases. Alias reasons are recorded in the ledger.
 The inventory files currently contain 770 checklist rows; their prose count is stale. Two exact repeated names share a single asset. The existing ten approved pairs are preserved. Completion requires a saved PNG, editable SVG, file validation, and visual review.
 
 Production remains on the experimental branch. Each asset is generated as a transparent PNG, then traced and reviewed on light and dark backgrounds. Completed assets are pushed periodically. The full inventory is still in progress.
@@ -50,6 +50,9 @@ Production remains on the experimental branch. Each asset is generated as a tran
 | oligodendrocyte | [PNG](png/oligodendrocyte-bioart-transparent.png) | [SVG](svg/oligodendrocyte-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/oligodendrocyte/comparison.png) |
 | microglial cell | [PNG](png/microglial-cell-bioart-transparent.png) | [SVG](svg/microglial-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microglial-cell/comparison.png) |
 | Schwann cell | [PNG](png/schwann-cell-bioart-transparent.png) | [SVG](svg/schwann-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/schwann-cell/comparison.png) |
+| hepatocyte | [PNG](png/hepatocyte-bioart-transparent.png) | [SVG](svg/hepatocyte-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hepatocyte/comparison.png) |
+| pancreatic beta cell | [PNG](png/pancreatic-beta-cell-bioart-transparent.png) | [SVG](svg/pancreatic-beta-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pancreatic-beta-cell/comparison.png) |
+| acinar cell | [PNG](png/acinar-cell-bioart-transparent.png) | [SVG](svg/acinar-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/acinar-cell/comparison.png) |
 | mitochondrion | [PNG](png/mitochondrion-bioart-transparent.png) | [SVG](svg/mitochondrion-bioart-traced.svg) | Approved earlier batch |
 | generic IgG antibody | [PNG](png/igg-antibody-bioart-transparent.png) | [SVG](svg/igg-antibody-bioart-traced.svg) | Approved earlier batch |
 | CD8 alpha-beta receptor | [PNG](png/cd8-receptor-bioart-transparent.png) | [SVG](svg/cd8-receptor-bioart-traced.svg) | Approved earlier batch |
