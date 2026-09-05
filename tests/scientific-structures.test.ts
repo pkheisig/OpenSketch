@@ -1,3 +1,4 @@
+import { assertAssetCapacity } from "../apps/web/src/editor/assetCapacity";
 import { migrateProject, DEFAULT_CANVAS } from "../packages/editor-core/src";
 import { describe, expect, it } from "vitest";
 import { FabricObject, Group, Point, util } from "../apps/web/node_modules/fabric";
@@ -184,4 +185,12 @@ it("keeps the nucleus inside the cell and nucleolus inside the nucleus", () => {
     expect(b.left + b.width).toBeLessThan(a.left + a.width);
     expect(b.top + b.height).toBeLessThan(a.top + a.height);
   }
+});
+
+it("rejects a bundled insertion before exceeding the portable scene budget", () => {
+  const incoming = membrane();
+  expect(() => assertAssetCapacity([], incoming)).not.toThrow();
+  const existing = Array.from({ length: 10000 }, () => new FabricObject());
+  expect(() => assertAssetCapacity(existing, incoming)).toThrow(/editable-object limit/);
+  expect(existing).toHaveLength(10000);
 });

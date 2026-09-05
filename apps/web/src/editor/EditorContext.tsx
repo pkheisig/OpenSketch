@@ -1,3 +1,4 @@
+import { assertAssetCapacity } from "./assetCapacity";
 import { isScientificBrush, updateBrushObject, detachBrush } from "@/editor/scientific/objects";
 import { scientificPreset } from "@/editor/scientific/catalog";
 import {
@@ -2855,6 +2856,7 @@ export function EditorProvider({
           if (!semanticCanvasRef.current) return undefined;
           const group = await createBundledAssetGroup(family, variant);
           if (!semanticCanvasRef.current) return undefined;
+          assertAssetCapacity(semanticCanvasRef.current.getObjects(), group);
           const scale = assetInsertionScale(family.title, group.width || 1, group.height || 1);
           group.scale(scale);
           const object = semanticAddObjectRef.current(
