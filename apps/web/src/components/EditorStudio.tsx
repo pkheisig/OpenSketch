@@ -1,7 +1,9 @@
 import { lazy, Suspense, useState } from "react";
 import type { ProjectRecord } from "@workspace/editor-core";
+import type { ProjectSaveState } from "@/editor/projectSaveState";
 import { EditorProvider } from "@/editor/EditorContext";
 import { CanvasWorkspace } from "@/components/CanvasWorkspace";
+import { OpenSketchHostProvider, type OpenSketchHostServices } from "@/application/hostServices";
 import type { WebMcpRegistry } from "@/semantic/webmcp";
 
 const TopToolbar = lazy(() =>
@@ -16,6 +18,8 @@ export function EditorStudio({
   onProjectChange,
   onHome,
   onNavigationGuardChange,
+  onLifecycleStateChange,
+  services,
   webMcpRegistry,
   theme,
   onToggleTheme
@@ -24,47 +28,54 @@ export function EditorStudio({
   onProjectChange: (project: ProjectRecord) => Promise<void>;
   onHome: () => boolean | void;
   onNavigationGuardChange: (guard: (() => boolean) | null) => void;
+  onLifecycleStateChange: (state: { dirty?: boolean; busy?: boolean }) => void;
+  services: OpenSketchHostServices;
   webMcpRegistry: WebMcpRegistry;
   theme: "light" | "dark";
   onToggleTheme: () => void;
 }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(
-    () => localStorage.getItem("OpenSketch:left-sidebar-collapsed") === "true"
+    () => services.preferences.get("OpenSketch:left-sidebar-collapsed") === "true"
   );
   const toggleSidebar = () => {
     setSidebarCollapsed((current) => {
       const next = !current;
-      localStorage.setItem("OpenSketch:left-sidebar-collapsed", String(next));
+      services.preferences.set("OpenSketch:left-sidebar-collapsed", String(next));
       return next;
     });
   };
   return (
-    <EditorProvider
-      key={project.id}
-      project={project}
-      onProjectChange={onProjectChange}
-      onRequestExit={onHome}
-      onNavigationGuardChange={onNavigationGuardChange}
-      webMcpRegistry={webMcpRegistry}
-    >
-      <main className="editor-shell">
-        <Suspense fallback={<header className="top-toolbar" aria-hidden="true" />}>
-          <TopToolbar
-            project={project}
-            onHome={onHome}
-            theme={theme}
-            onToggleTheme={onToggleTheme}
-          />
-        </Suspense>
-        <div className={`editor-grid ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
-          <Suspense
-            fallback={<aside className="left-sidebar floating-sidebar" aria-hidden="true" />}
-          >
-            <LeftSidebar collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
+    <OpenSketchHostProvider services={services}>
+      <EditorProvider
+        key={project.id}
+        project={project}
+        onProjectChange={onProjectChange}
+        onRequestExit={onHome}
+        onNavigationGuardChange={onNavigationGuardChange}
+        webMcpRegistry={webMcpRegistry}
+        onSaveStateChange={(state: ProjectSaveState) =>
+          onLifecycleStateChange({ dirty: state.phase !== "saved", busy: state.phase === "saving" })
+        }
+      >
+        <main className="editor-shell">
+          <Suspense fallback={<header className="top-toolbar" aria-hidden="true" />}>
+            <TopToolbar
+              project={project}
+              onHome={onHome}
+              theme={theme}
+              onToggleTheme={onToggleTheme}
+            />
           </Suspense>
-          <CanvasWorkspace />
-        </div>
-      </main>
-    </EditorProvider>
+          <div className={`editor-grid ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>
+            <Suspense
+              fallback={<aside className="left-sidebar floating-sidebar" aria-hidden="true" />}
+            >
+              <LeftSidebar collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
+            </Suspense>
+            <CanvasWorkspace />
+          </div>
+        </main>
+      </EditorProvider>
+    </OpenSketchHostProvider>
   );
 }

@@ -1,4 +1,5 @@
 import { type FabricObject, util } from "fabric";
+import type { ClipboardService } from "@/application/hostServices";
 
 export type SelectionClipboardFormat = "png" | "svg";
 export const SELECTION_CLIPBOARD_MARKER_PREFIX = "OpenSketch selection:";
@@ -44,15 +45,16 @@ export async function selectionSvgSource(object: FabricObject): Promise<string> 
 export function writeSelectionToSystemClipboard(
   object: FabricObject,
   format: SelectionClipboardFormat,
-  marker: string
+  marker: string,
+  clipboard: ClipboardService
 ): Promise<void> {
-  if (!navigator.clipboard?.write || typeof ClipboardItem === "undefined") {
+  if (typeof ClipboardItem === "undefined") {
     return Promise.reject(new Error("The system clipboard is unavailable in this browser."));
   }
 
   const png = selectionPngBlob(object);
   if (format === "png") {
-    return navigator.clipboard.write([
+    return clipboard.write([
       new ClipboardItem({
         "image/png": png,
         "text/plain": Promise.resolve(new Blob([marker], { type: "text/plain" }))
@@ -71,5 +73,5 @@ export function writeSelectionToSystemClipboard(
   if (typeof ClipboardItem.supports !== "function" || ClipboardItem.supports("image/svg+xml")) {
     data["image/svg+xml"] = svg.then((source) => new Blob([source], { type: "image/svg+xml" }));
   }
-  return navigator.clipboard.write([new ClipboardItem(data)]);
+  return clipboard.write([new ClipboardItem(data)]);
 }

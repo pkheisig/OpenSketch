@@ -8,6 +8,7 @@ import {
 import { describe, expect, it, vi } from "vitest";
 import { DEFAULT_CREATION_DEFAULTS } from "../apps/web/src/editor/creation";
 import { createSemanticEditorAdapter } from "../apps/web/src/semantic/semanticEditorAdapter";
+import { assetManifest } from "../apps/web/src/assets/manifest";
 
 function makeCanvas(objects: FabricObject[] = [], activeObjects: FabricObject[] = []): Canvas {
   return {
@@ -48,6 +49,7 @@ function makeAdapter(
   const setProjectName = vi.fn();
   const setProjectDescription = vi.fn();
   const adapter = createSemanticEditorAdapter({
+    getAssetManifest: async () => assetManifest,
     getCanvas: () => canvas,
     getProjectId: () => "project-1",
     isCanvasReady: () => true,

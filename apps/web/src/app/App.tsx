@@ -1,26 +1,14 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { AlertTriangle, X } from "lucide-react";
 import type { ProjectFolderRecord, ProjectRecord } from "@workspace/editor-core";
-import {
-  createProjectFolder,
-  createProject,
-  db,
-  deleteProjectFolder,
-  duplicateProject,
-  listProjectFolders,
-  listProjects,
-  moveProjectToFolder,
-  saveProjectFolder,
-  saveProject,
-  saveProjectThumbnail
-} from "@/persistence/database";
-import {
-  downloadProject,
-  normalizeProjectForLoad,
-  readProjectFileWithWarnings
-} from "@/persistence/portable";
+import { normalizeProjectForLoad } from "@/persistence/portable";
 import { isProjectThumbnailCurrent } from "@/persistence/thumbnailFormat";
 import { HomeScreen } from "@/components/HomeScreen";
+import type {
+  OpenSketchApplicationContext,
+  OpenSketchHostServices,
+  OpenSketchLifecycleState
+} from "@/application/hostServices";
 import { createProjectLifecycleRuntime } from "@/semantic/projectLifecycle";
 import { SemanticExecutionAborted, type SemanticExecutionOptions } from "@/semantic/semanticTypes";
 import { createWebMcpRegistry, type WebMcpRegistry, type WebMcpRuntime } from "@/semantic/webmcp";
@@ -29,40 +17,7 @@ const EditorStudio = lazy(() =>
   import("@/components/EditorStudio").then((module) => ({ default: module.EditorStudio }))
 );
 
-const PROJECT_HISTORY_KEY = "OpenSketchProjectId";
-const PROJECT_HISTORY_INDEX_KEY = "OpenSketchHistoryIndex";
-const THEME_STORAGE_KEY = "OpenSketch-theme";
-
 type Theme = "light" | "dark";
-
-function readTheme(): Theme {
-  try {
-    return window.localStorage.getItem(THEME_STORAGE_KEY) === "dark" ? "dark" : "light";
-  } catch {
-    return "light";
-  }
-}
-
-function historyProjectId() {
-  const state = window.history.state as Record<string, unknown> | null;
-  return typeof state?.[PROJECT_HISTORY_KEY] === "string" ? state[PROJECT_HISTORY_KEY] : null;
-}
-
-function historyEntryIndex() {
-  const navigation = (
-    window as Window & {
-      navigation?: { currentEntry?: { index?: unknown } | null };
-    }
-  ).navigation;
-  const browserIndex = navigation?.currentEntry?.index;
-  if (typeof browserIndex === "number" && Number.isInteger(browserIndex)) {
-    return browserIndex;
-  }
-
-  const state = window.history.state as Record<string, unknown> | null;
-  const index = state?.[PROJECT_HISTORY_INDEX_KEY];
-  return typeof index === "number" && Number.isInteger(index) ? index : null;
-}
 
 function identityRepairNotice(project: ProjectRecord, warnings: string[]): string {
   const duplicateCount = warnings.filter((warning) =>
@@ -76,16 +31,22 @@ function projectLoadError(project: ProjectRecord, reason: unknown): string {
   return `Could not load “${project.name}”: ${detail.replace(/^Error:\s*/, "")}`;
 }
 
-export function App() {
-  const [theme, setTheme] = useState<Theme>(readTheme);
+export function App({
+  services,
+  initialContext,
+  onLifecycleStateChange
+}: {
+  services: OpenSketchHostServices;
+  initialContext?: OpenSketchApplicationContext;
+  onLifecycleStateChange?: (state: Partial<OpenSketchLifecycleState>) => void;
+}) {
+  const [theme, setTheme] = useState<Theme>(() => services.preferences.theme.get());
   const [projects, setProjects] = useState<ProjectRecord[]>([]);
   const [folders, setFolders] = useState<ProjectFolderRecord[]>([]);
   const [current, setCurrent] = useState<ProjectRecord | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [updateReady, setUpdateReady] = useState(
-    () => document.documentElement.dataset.updateReady === "true"
-  );
+  const [updateReady, setUpdateReady] = useState(() => services.pwa.isUpdateReady());
   const refreshRevision = useRef(0);
   const projectsRef = useRef<readonly ProjectRecord[]>([]);
   const foldersRef = useRef<readonly ProjectFolderRecord[]>([]);
@@ -101,37 +62,26 @@ export function App() {
   const toggleTheme = useCallback(() => {
     setTheme((current) => {
       const next = current === "light" ? "dark" : "light";
-      try {
-        window.localStorage.setItem(THEME_STORAGE_KEY, next);
-      } catch {
-        // Keep theme switching available for this session if storage is blocked.
-      }
+      services.preferences.theme.set(next);
       return next;
     });
-  }, []);
+  }, [services]);
 
   useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-    document.documentElement.style.colorScheme = theme;
-  }, [theme]);
+    services.preferences.theme.apply(theme);
+  }, [services, theme]);
 
   useEffect(() => {
-    const state =
-      window.history.state && typeof window.history.state === "object" ? window.history.state : {};
-    const index = historyEntryIndex() ?? 0;
-    if (historyEntryIndex() !== index) {
-      window.history.replaceState(
-        { ...state, [PROJECT_HISTORY_INDEX_KEY]: index },
-        "",
-        window.location.href
-      );
-    }
-    historyIndex.current = index;
-  }, []);
+    services.navigation.ensureEntryIndex();
+    historyIndex.current = services.navigation.entryIndex();
+  }, [services]);
 
   const refresh = useCallback(async () => {
     const revision = ++refreshRevision.current;
-    const [stored, storedFolders] = await Promise.all([listProjects(), listProjectFolders()]);
+    const [stored, storedFolders] = await Promise.all([
+      services.projects.list(),
+      services.projects.listFolders()
+    ]);
     const repairNotices: string[] = [];
     const invalidNotices: string[] = [];
     const normalized = stored.map((project) => {
@@ -139,7 +89,7 @@ export function App() {
         const loaded = normalizeProjectForLoad(project);
         if (loaded.identityRepaired) {
           repairNotices.push(identityRepairNotice(project, loaded.identityWarnings));
-          void saveProject(loaded.project).catch((reason) => setError(String(reason)));
+          void services.projects.save(loaded.project).catch((reason) => setError(String(reason)));
         }
         return loaded.project;
       } catch (reason) {
@@ -154,7 +104,7 @@ export function App() {
       setError([...repairNotices, ...invalidNotices].join(" "));
     }
 
-    const activeProjectId = historyProjectId();
+    const activeProjectId = services.navigation.currentProjectId();
     const stale = normalized.filter(
       (project) =>
         project.id !== activeProjectId &&
@@ -169,7 +119,11 @@ export function App() {
               if (project.thumbnail === stale[index]?.thumbnail || !project.thumbnail) {
                 return undefined;
               }
-              return saveProjectThumbnail(project.id, project.updatedAt, project.thumbnail);
+              return services.projects.saveThumbnail(
+                project.id,
+                project.updatedAt,
+                project.thumbnail
+              );
             })
           );
           if (revision !== refreshRevision.current) return;
@@ -188,12 +142,12 @@ export function App() {
         .catch((reason) => setError(String(reason)));
     }
     return normalized;
-  }, []);
+  }, [services]);
 
   useEffect(() => {
     refresh()
       .then((stored) => {
-        const projectId = historyProjectId();
+        const projectId = services.navigation.currentProjectId();
         if (!projectId) return;
         const project = stored.find((candidate) => candidate.id === projectId);
         if (project) {
@@ -206,36 +160,35 @@ export function App() {
       })
       .catch((reason) => setError(String(reason)))
       .finally(() => setLoading(false));
-  }, [refresh]);
+  }, [refresh, services]);
 
   useEffect(() => {
-    const markUpdateReady = () => setUpdateReady(true);
-    window.addEventListener("opensketch:update-ready", markUpdateReady);
-    return () => window.removeEventListener("opensketch:update-ready", markUpdateReady);
-  }, []);
+    if (services.pwa.isUpdateReady()) setUpdateReady(true);
+    return services.pwa.onUpdateReady(() => setUpdateReady(true));
+  }, [services]);
 
   useEffect(() => {
     if (loading || current || !updateReady) return;
-    window.dispatchEvent(new Event("opensketch:apply-update"));
-  }, [current, loading, updateReady]);
+    void services.pwa.applyUpdate();
+  }, [current, loading, services, updateReady]);
 
   useEffect(() => {
     const syncViewToHistory = () => {
       const revision = ++historySyncRevision.current;
-      const projectId = historyProjectId();
+      const projectId = services.navigation.currentProjectId();
       if (projectId !== current?.id && historyNavigationGuard.current?.()) {
-        window.dispatchEvent(new Event("opensketch:navigation-blocked"));
-        const destinationIndex = historyEntryIndex();
+        services.navigation.notifyNavigationBlocked?.();
+        const destinationIndex = services.navigation.entryIndex();
         const currentIndex = historyIndex.current;
         if (destinationIndex !== null && currentIndex !== null) {
           const correction = currentIndex - destinationIndex;
-          if (correction !== 0) window.history.go(correction);
+          if (correction !== 0) services.navigation.go(correction);
         } else {
-          window.history.forward();
+          services.navigation.forward();
         }
         return;
       }
-      const destinationIndex = historyEntryIndex();
+      const destinationIndex = services.navigation.entryIndex();
       if (destinationIndex !== null) historyIndex.current = destinationIndex;
       if (!projectId) {
         setCurrent(null);
@@ -243,7 +196,7 @@ export function App() {
         return;
       }
 
-      db.projects
+      services.projects
         .get(projectId)
         .then((project) => {
           if (revision !== historySyncRevision.current) return;
@@ -255,7 +208,9 @@ export function App() {
           try {
             const loaded = normalizeProjectForLoad(project);
             if (loaded.identityRepaired) {
-              void saveProject(loaded.project).catch((reason) => setError(String(reason)));
+              void services.projects
+                .save(loaded.project)
+                .catch((reason) => setError(String(reason)));
               setError(identityRepairNotice(project, loaded.identityWarnings));
             }
             setCurrent(loaded.project);
@@ -267,56 +222,47 @@ export function App() {
         .catch((reason) => setError(String(reason)));
     };
 
-    window.addEventListener("popstate", syncViewToHistory);
-    return () => window.removeEventListener("popstate", syncViewToHistory);
-  }, [current?.id, refresh]);
+    return services.navigation.subscribe(syncViewToHistory);
+  }, [current?.id, refresh, services]);
 
-  const openProject = useCallback((project: ProjectRecord): boolean => {
-    let loaded: ProjectRecord;
-    try {
-      const result = normalizeProjectForLoad(project);
-      loaded = result.project;
-      if (result.identityRepaired) {
-        void saveProject(loaded).catch((reason) => setError(String(reason)));
-        setError(identityRepairNotice(project, result.identityWarnings));
+  const openProject = useCallback(
+    (project: ProjectRecord): boolean => {
+      let loaded: ProjectRecord;
+      try {
+        const result = normalizeProjectForLoad(project);
+        loaded = result.project;
+        if (result.identityRepaired) {
+          void services.projects.save(loaded).catch((reason) => setError(String(reason)));
+          setError(identityRepairNotice(project, result.identityWarnings));
+        }
+      } catch (reason) {
+        setError(projectLoadError(project, reason));
+        return false;
       }
-    } catch (reason) {
-      setError(projectLoadError(project, reason));
-      return false;
-    }
-    historySyncRevision.current += 1;
-    setCurrent(loaded);
-    if (historyProjectId() === loaded.id) return true;
+      historySyncRevision.current += 1;
+      setCurrent(loaded);
+      if (services.navigation.currentProjectId() === loaded.id) return true;
 
-    const currentState =
-      window.history.state && typeof window.history.state === "object" ? window.history.state : {};
-    const nextHistoryIndex = (historyEntryIndex() ?? historyIndex.current ?? 0) + 1;
-    window.history.pushState(
-      {
-        ...currentState,
-        [PROJECT_HISTORY_KEY]: loaded.id,
-        [PROJECT_HISTORY_INDEX_KEY]: nextHistoryIndex
-      },
-      "",
-      window.location.href
-    );
-    historyIndex.current = nextHistoryIndex;
-    return true;
-  }, []);
+      services.navigation.pushProject(loaded.id);
+      historyIndex.current = services.navigation.entryIndex() ?? historyIndex.current;
+      return true;
+    },
+    [services]
+  );
 
   const returnToProjects = useCallback((): boolean => {
-    if (historyProjectId() && historyNavigationGuard.current?.()) {
-      window.dispatchEvent(new Event("opensketch:navigation-blocked"));
+    if (services.navigation.currentProjectId() && historyNavigationGuard.current?.()) {
+      services.navigation.notifyNavigationBlocked?.();
       return false;
     }
-    if (historyProjectId()) {
-      window.history.back();
+    if (services.navigation.currentProjectId()) {
+      services.navigation.back();
       return true;
     }
     setCurrent(null);
     void refresh();
     return true;
-  }, [refresh]);
+  }, [refresh, services]);
 
   const newProject = useCallback(
     async (
@@ -326,28 +272,28 @@ export function App() {
       let project: ProjectRecord | undefined;
       try {
         if (options.signal?.aborted) return null;
-        project = createProject(name);
-        await saveProject(project);
+        project = services.projects.create(name);
+        await services.projects.save(project);
         if (options.signal?.aborted) {
-          await db.projects.delete(project.id);
+          await services.projects.delete(project.id);
           return null;
         }
         if (!openProject(project)) {
-          await db.projects.delete(project.id);
+          await services.projects.delete(project.id);
           return null;
         }
         await refresh();
         return project;
       } catch (reason) {
         if (reason instanceof SemanticExecutionAborted || options.signal?.aborted) {
-          if (project) await db.projects.delete(project.id).catch(() => undefined);
+          if (project) await services.projects.delete(project.id).catch(() => undefined);
           return null;
         }
         setError(String(reason));
         return null;
       }
     },
-    [openProject, refresh]
+    [openProject, refresh, services]
   );
 
   if (!lifecycleRuntimeRef.current) {
@@ -376,13 +322,28 @@ export function App() {
     void newProject();
   };
 
-  const updateProject = useCallback(async (project: ProjectRecord) => {
-    await saveProject(project);
-  }, []);
+  const updateProject = useCallback(
+    async (project: ProjectRecord) => {
+      await services.projects.save(project);
+    },
+    [services]
+  );
 
-  const setHistoryNavigationGuard = useCallback((guard: (() => boolean) | null) => {
-    historyNavigationGuard.current = guard;
-  }, []);
+  const setHistoryNavigationGuard = useCallback(
+    (guard: (() => boolean) | null) => {
+      historyNavigationGuard.current = guard;
+      onLifecycleStateChange?.({ closeBlocked: Boolean(guard) });
+    },
+    [onLifecycleStateChange]
+  );
+
+  useEffect(() => {
+    onLifecycleStateChange?.({
+      activeProjectId: current?.id ?? initialContext?.activeProjectId ?? null,
+      busy: loading,
+      dirty: false
+    });
+  }, [current?.id, initialContext?.activeProjectId, loading, onLifecycleStateChange]);
 
   if (loading) {
     return (
@@ -411,6 +372,8 @@ export function App() {
             onProjectChange={updateProject}
             onHome={returnToProjects}
             onNavigationGuardChange={setHistoryNavigationGuard}
+            onLifecycleStateChange={(state) => onLifecycleStateChange?.(state)}
+            services={services}
             webMcpRegistry={webMcpRegistryRef.current!}
             theme={theme}
             onToggleTheme={toggleTheme}
@@ -424,67 +387,103 @@ export function App() {
           onToggleTheme={toggleTheme}
           onNew={onNewProject}
           onNewFolder={(name) => {
-            createProjectFolder(name)
+            services.projects
+              .createFolder(name)
               .then(refresh)
               .catch((reason) => setError(String(reason)));
           }}
           onOpen={openProject}
           onDuplicate={(project) => {
-            duplicateProject(project)
+            services.projects
+              .duplicate(project)
               .then(refresh)
               .catch((reason) => setError(String(reason)));
           }}
           onDelete={(project) => {
-            if (!window.confirm(`Delete “${project.name}”? This cannot be undone.`)) return;
-            db.projects
-              .delete(project.id)
-              .then(refresh)
+            void Promise.resolve(
+              services.dialogs.confirm(`Delete “${project.name}”? This cannot be undone.`)
+            )
+              .then((confirmed) => {
+                if (!confirmed) return;
+                return services.projects.delete(project.id).then(refresh);
+              })
               .catch((reason) => setError(String(reason)));
           }}
-          onExport={downloadProject}
+          onExport={(project) => void services.files.downloadProject(project)}
           onArchive={(project) => {
-            saveProject({ ...project, archivedAt: new Date().toISOString() })
+            services.projects
+              .save({ ...project, archivedAt: services.clock.now() })
               .then(refresh)
               .catch((reason) => setError(String(reason)));
           }}
           onRestore={(project) => {
             const restored = { ...project };
             delete restored.archivedAt;
-            saveProject(restored)
+            services.projects
+              .save(restored)
               .then(refresh)
               .catch((reason) => setError(String(reason)));
           }}
           onMoveProject={(project, folderId) => {
-            moveProjectToFolder(project, folderId)
+            services.projects
+              .moveToFolder(project, folderId)
               .then(refresh)
               .catch((reason) => setError(String(reason)));
           }}
           onRenameFolder={(folder) => {
-            const name = window.prompt("Rename folder", folder.name)?.trim();
-            if (!name || name === folder.name) return;
-            saveProjectFolder({ ...folder, name, updatedAt: new Date().toISOString() })
+            const name = services.dialogs.prompt("Rename folder", folder.name);
+            if (name instanceof Promise) {
+              void name.then((value) => {
+                if (!value || value.trim() === folder.name) return;
+                return services.projects
+                  .saveFolder({ ...folder, name: value.trim(), updatedAt: services.clock.now() })
+                  .then(refresh)
+                  .catch((reason) => setError(String(reason)));
+              });
+              return;
+            }
+            const trimmedName = name?.trim();
+            if (!trimmedName || trimmedName === folder.name) return;
+            services.projects
+              .saveFolder({ ...folder, name: trimmedName, updatedAt: services.clock.now() })
               .then(refresh)
               .catch((reason) => setError(String(reason)));
           }}
           onDeleteFolder={(folder) => {
-            if (!window.confirm(`Delete folder “${folder.name}”? Its projects will be kept.`)) {
-              return;
-            }
-            deleteProjectFolder(folder.id)
-              .then(refresh)
+            void Promise.resolve(
+              services.dialogs.confirm(`Delete folder “${folder.name}”? Its projects will be kept.`)
+            )
+              .then((confirmed) => {
+                if (!confirmed) return;
+                return services.projects.deleteFolder(folder.id).then(refresh);
+              })
               .catch((reason) => setError(String(reason)));
           }}
           onRename={(project) => {
-            const name = window.prompt("Rename project", project.name)?.trim();
-            if (!name || name === project.name) return;
-            saveProject({ ...project, name, updatedAt: new Date().toISOString() })
+            const name = services.dialogs.prompt("Rename project", project.name);
+            if (name instanceof Promise) {
+              void name.then((value) => {
+                const trimmedName = value?.trim();
+                if (!trimmedName || trimmedName === project.name) return;
+                return services.projects
+                  .save({ ...project, name: trimmedName, updatedAt: services.clock.now() })
+                  .then(refresh)
+                  .catch((reason) => setError(String(reason)));
+              });
+              return;
+            }
+            const trimmedName = name?.trim();
+            if (!trimmedName || trimmedName === project.name) return;
+            services.projects
+              .save({ ...project, name: trimmedName, updatedAt: services.clock.now() })
               .then(refresh)
               .catch((reason) => setError(String(reason)));
           }}
           onImport={(file) => {
-            readProjectFileWithWarnings(file)
+            services.files
+              .readProject(file)
               .then(async ({ project, identityRepaired, identityWarnings }) => {
-                await saveProject(project);
+                await services.projects.save(project);
                 if (identityRepaired) setError(identityRepairNotice(project, identityWarnings));
                 await refresh();
                 openProject(project);

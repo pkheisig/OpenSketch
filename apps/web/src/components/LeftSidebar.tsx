@@ -75,8 +75,6 @@ import { loadStringList, saveStringList } from "@/editor/stringListStorage";
 import {
   ASSET_TEMPLATES_CHANGED_EVENT,
   ASSET_TEMPLATES_ERROR_EVENT,
-  deleteAssetTemplate,
-  loadAssetTemplates,
   setTemplateDragPayload,
   type AssetTemplate
 } from "@/editor/assetTemplates";
@@ -91,10 +89,10 @@ import { OfflineAssetLibraryCard } from "@/components/OfflineAssetLibraryCard";
 import { InspectorContent, LayersPanel } from "@/components/Inspector";
 import { UiSelect } from "@/components/UiSelect";
 import {
-  IMPORT_LIBRARY_CHANGED_EVENT,
-  listImportedMedia,
+  useOpenSketchHostServices,
   type ImportedMediaLibraryRecord
-} from "@/persistence/database";
+} from "@/application/hostServices";
+import { IMPORT_LIBRARY_CHANGED_EVENT } from "@/persistence/database";
 
 type Tab = "assets" | "imports" | "edit";
 type Flyout = "lines" | "shapes" | "defaults" | null;
@@ -120,10 +118,12 @@ function userErrorMessage(reason: unknown): string {
   return reason instanceof Error ? reason.message : String(reason);
 }
 
-function loadCreationDefaultsDisclosures(): Record<CreationDefaultsSection, boolean> {
+function loadCreationDefaultsDisclosures(
+  getItem: (key: string) => string | null = (key) => localStorage.getItem(key)
+): Record<CreationDefaultsSection, boolean> {
   try {
     const stored = JSON.parse(
-      localStorage.getItem(CREATION_DEFAULTS_DISCLOSURE_STORAGE_KEY) ?? "null"
+      getItem(CREATION_DEFAULTS_DISCLOSURE_STORAGE_KEY) ?? "null"
     ) as Partial<Record<CreationDefaultsSection, unknown>> | null;
     return {
       text: typeof stored?.text === "boolean" ? stored.text : true,
@@ -319,6 +319,7 @@ function ShapePresetIcon({ glyph }: { glyph: string }) {
 }
 
 export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
+  const services = useOpenSketchHostServices();
   const [tab, setTab] = useState<Tab>("assets");
   const [flyout, setFlyout] = useState<Flyout>(null);
   const [lineFamily, setLineFamily] = useState<ConnectorFamily | null>(null);
@@ -436,16 +437,18 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   useEffect(() => {
     if (collapsed || tab !== "assets" || assetCatalog) return;
     let active = true;
-    void import("@/assets/manifest").then(({ assetManifest, ASSET_OFFLINE_PACK_VERSION }) => {
-      if (active) {
-        setAssetCatalog(assetManifest);
-        setAssetPackVersion(ASSET_OFFLINE_PACK_VERSION);
+    void Promise.all([services.assets.getManifest(), services.assets.getVersion()]).then(
+      ([assetManifest, version]) => {
+        if (active) {
+          setAssetCatalog(assetManifest);
+          setAssetPackVersion(version);
+        }
       }
-    });
+    );
     return () => {
       active = false;
     };
-  }, [assetCatalog, collapsed, tab]);
+  }, [assetCatalog, collapsed, services, tab]);
   useEffect(() => {
     const clearAssetDrag = () => {
       window.setTimeout(() => {
@@ -458,7 +461,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
       window.removeEventListener("dragend", clearAssetDrag);
       window.removeEventListener("drop", clearAssetDrag);
     };
-  }, []);
+  }, [services]);
   useEffect(() => {
     const closeOutsideSidebar = (event: PointerEvent) => {
       const target = event.target;
@@ -853,16 +856,25 @@ function AssetsPanel({
   onAssetDragStart: () => void;
   onAssetDragEnd: () => void;
 }) {
+  const services = useOpenSketchHostServices();
   const editor = useEditorFields(["addAsset", "addTemplate"]);
   const [debouncedQuery, setDebouncedQuery] = useState(query);
   const searchInputRef = useRef<HTMLInputElement>(null);
-  const [variants, setVariants] = useState(loadAssetVariantDefaults);
-  const [favorites, setFavorites] = useState<Set<string>>(loadAssetFavorites);
+  const [variants, setVariants] = useState(() =>
+    loadAssetVariantDefaults(services.preferences.storage)
+  );
+  const [favorites, setFavorites] = useState<Set<string>>(() =>
+    loadAssetFavorites(services.preferences.storage)
+  );
   const [templates, setTemplates] = useState<AssetTemplate[]>([]);
-  const [recent, setRecent] = useState<string[]>(() => loadStringList(RECENT_ASSETS_STORAGE_KEY));
+  const [recent, setRecent] = useState<string[]>(() =>
+    loadStringList(RECENT_ASSETS_STORAGE_KEY, services.preferences.storage)
+  );
   const [assetError, setAssetError] = useState("");
   const [assetListHeight, setAssetListHeight] = useState(0);
-  const [savedStyles, setSavedStyles] = useState<SavedElementStyles>(loadSavedElementStyles);
+  const [savedStyles, setSavedStyles] = useState<SavedElementStyles>(() =>
+    loadSavedElementStyles(services.preferences.storage)
+  );
   const assetListRef = useRef<HTMLDivElement>(null);
   const sourceOptions = useMemo(
     () =>
@@ -911,19 +923,21 @@ function AssetsPanel({
     searchInputRef.current?.select();
   }, [focusRequest]);
   useEffect(() => {
-    const updateSavedStyles = () => setSavedStyles(loadSavedElementStyles());
+    const updateSavedStyles = () =>
+      setSavedStyles(loadSavedElementStyles(services.preferences.storage));
     window.addEventListener(SAVED_ELEMENT_STYLES_CHANGED_EVENT, updateSavedStyles);
     return () => window.removeEventListener(SAVED_ELEMENT_STYLES_CHANGED_EVENT, updateSavedStyles);
-  }, []);
+  }, [services]);
   useEffect(() => {
-    const updateFavorites = () => setFavorites(loadAssetFavorites());
+    const updateFavorites = () => setFavorites(loadAssetFavorites(services.preferences.storage));
     window.addEventListener(ASSET_FAVORITES_CHANGED_EVENT, updateFavorites);
     return () => window.removeEventListener(ASSET_FAVORITES_CHANGED_EVENT, updateFavorites);
-  }, []);
+  }, [services]);
   useEffect(() => {
     let active = true;
     const updateTemplates = () => {
-      void loadAssetTemplates()
+      void services.templates
+        .list()
         .then((next) => {
           if (active) setTemplates(next);
         })
@@ -944,12 +958,13 @@ function AssetsPanel({
       window.removeEventListener(ASSET_TEMPLATES_CHANGED_EVENT, updateTemplates);
       window.removeEventListener(ASSET_TEMPLATES_ERROR_EVENT, updateTemplateError);
     };
-  }, []);
+  }, [services]);
   useEffect(() => {
-    const updateVariants = () => setVariants(loadAssetVariantDefaults());
+    const updateVariants = () =>
+      setVariants(loadAssetVariantDefaults(services.preferences.storage));
     window.addEventListener(ASSET_VARIANT_DEFAULTS_CHANGED_EVENT, updateVariants);
     return () => window.removeEventListener(ASSET_VARIANT_DEFAULTS_CHANGED_EVENT, updateVariants);
-  }, []);
+  }, [services]);
   useLayoutEffect(() => {
     const list = assetListRef.current;
     if (!list) return;
@@ -973,13 +988,13 @@ function AssetsPanel({
     if (next.has(familyId)) next.delete(familyId);
     else next.add(familyId);
     setFavorites(next);
-    saveAssetFavorites(next);
+    saveAssetFavorites(next, services.preferences.storage);
   };
 
   const insert = (family: AssetFamily, variant: AssetVariant) => {
     const next = [family.familyId, ...recent.filter((id) => id !== family.familyId)].slice(0, 8);
     setRecent(next);
-    saveStringList(RECENT_ASSETS_STORAGE_KEY, next);
+    saveStringList(RECENT_ASSETS_STORAGE_KEY, next, services.preferences.storage);
     setAssetError("");
     void editor
       .addAsset(family, variant)
@@ -1000,11 +1015,14 @@ function AssetsPanel({
             key={family.familyId}
             family={family}
             variant={variant}
+            preferredVariantId={variants[family.familyId]}
             savedStyle={savedStyles[`asset:${variant.id}`]}
             favorite={favorites.has(family.familyId)}
             onFavorite={() => toggleFavorite(family.familyId)}
             onInsert={() => insert(family, variant)}
-            onVariant={(variantId) => saveAssetVariantDefault(family.familyId, variantId)}
+            onVariant={(variantId) =>
+              saveAssetVariantDefault(family.familyId, variantId, services.preferences.storage)
+            }
             onAssetDragStart={onAssetDragStart}
             onAssetDragEnd={onAssetDragEnd}
           />
@@ -1161,9 +1179,9 @@ function AssetsPanel({
                   template={template}
                   onInsert={() => insertTemplate(template)}
                   onDelete={() => {
-                    void deleteAssetTemplate(template.id).catch((reason) =>
-                      setAssetError(userErrorMessage(reason))
-                    );
+                    void services.templates
+                      .delete(template.id)
+                      .catch((reason) => setAssetError(userErrorMessage(reason)));
                   }}
                   onAssetDragStart={onAssetDragStart}
                   onAssetDragEnd={onAssetDragEnd}
@@ -1279,6 +1297,7 @@ function TemplateCard({
 function AssetCard({
   family,
   variant,
+  preferredVariantId,
   savedStyle,
   favorite,
   onFavorite,
@@ -1289,6 +1308,7 @@ function AssetCard({
 }: {
   family: AssetFamily;
   variant: AssetVariant;
+  preferredVariantId?: string;
   savedStyle?: ElementStyleSnapshot;
   favorite: boolean;
   onFavorite: () => void;
@@ -1365,9 +1385,8 @@ function AssetCard({
     };
   }, [sourcePopoverOpen]);
   const onDragStart = (event: DragEvent) => {
-    const storedVariantId = loadAssetVariantDefaults()[family.familyId];
     const currentVariant =
-      family.variants.find((candidate) => candidate.id === storedVariantId) ?? variant;
+      family.variants.find((candidate) => candidate.id === preferredVariantId) ?? variant;
     setAssetDragPayload(event.dataTransfer, family.familyId, currentVariant.id);
     setAssetDragImage(
       event.dataTransfer,
@@ -1536,17 +1555,16 @@ function CreationDefaultsDisclosure({
 }
 
 function ShapesPanel() {
+  const services = useOpenSketchHostServices();
   const editor = useEditorFields(["creationDefaults", "setCreationDefaults"]);
-  const [openSections, setOpenSections] = useState(loadCreationDefaultsDisclosures);
+  const [openSections, setOpenSections] = useState(() =>
+    loadCreationDefaultsDisclosures((key) => services.preferences.get(key))
+  );
   const setSectionOpen = (section: CreationDefaultsSection, open: boolean) => {
     setOpenSections((current) => {
       if (current[section] === open) return current;
       const next = { ...current, [section]: open };
-      try {
-        localStorage.setItem(CREATION_DEFAULTS_DISCLOSURE_STORAGE_KEY, JSON.stringify(next));
-      } catch {
-        // Keep the disclosure state for this session when storage is unavailable.
-      }
+      services.preferences.set(CREATION_DEFAULTS_DISCLOSURE_STORAGE_KEY, JSON.stringify(next));
       return next;
     });
   };
@@ -1733,6 +1751,7 @@ function CreationArrowheadSelect({
 }
 
 function ImportsPanel() {
+  const services = useOpenSketchHostServices();
   const editor = useEditorFields(["addImportedMedia", "importMedia"]);
   const input = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
@@ -1740,7 +1759,7 @@ function ImportsPanel() {
   useEffect(() => {
     let active = true;
     const refresh = () => {
-      void listImportedMedia().then((records) => {
+      void services.importedMedia.list().then((records) => {
         if (active) setImports(records);
       });
     };
@@ -1750,7 +1769,7 @@ function ImportsPanel() {
       active = false;
       window.removeEventListener(IMPORT_LIBRARY_CHANGED_EVENT, refresh);
     };
-  }, []);
+  }, [services]);
   return (
     <div className="imports-panel">
       <button className="import-dropzone" onClick={() => input.current?.click()}>

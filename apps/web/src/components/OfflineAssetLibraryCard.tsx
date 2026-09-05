@@ -1,12 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import type { AssetManifest } from "@workspace/editor-core";
-import {
-  buildOfflineAssetPack,
-  getOfflineAssetPackStatus,
-  OFFLINE_ASSET_PACK_CHANGED_EVENT,
-  prepareOfflineAssetPack,
-  type OfflineAssetPackStatus
-} from "@/assets/offlineAssetPack";
+import { buildOfflineAssetPack, type OfflineAssetPackStatus } from "@/assets/offlineAssetPack";
+import { useOpenSketchHostServices } from "@/application/hostServices";
 
 function errorMessage(reason: unknown): string {
   return reason instanceof Error
@@ -21,6 +16,7 @@ export function OfflineAssetLibraryCard({
   assetManifest: AssetManifest;
   version: string;
 }) {
+  const services = useOpenSketchHostServices();
   const pack = useMemo(
     () => buildOfflineAssetPack(assetManifest, version),
     [assetManifest, version]
@@ -30,26 +26,27 @@ export function OfflineAssetLibraryCard({
   useEffect(() => {
     let active = true;
     const refresh = () => {
-      void getOfflineAssetPackStatus(pack).then((next) => {
+      const getStatus = services.assets.getOfflineStatus;
+      if (!getStatus) return;
+      void getStatus().then((next) => {
         if (active) setStatus(next);
       });
     };
-    const updateFromEvent = (event: Event) => {
-      if (!(event instanceof CustomEvent)) return;
-      const next = event.detail as OfflineAssetPackStatus | undefined;
-      if (next?.version === pack.version) {
+    const unsubscribe = services.assets.onOfflineStatusChange?.((next) => {
+      if (next.version === pack.version) {
         setStatus(next);
       }
-    };
+    });
     refresh();
-    window.addEventListener(OFFLINE_ASSET_PACK_CHANGED_EVENT, updateFromEvent);
     return () => {
       active = false;
-      window.removeEventListener(OFFLINE_ASSET_PACK_CHANGED_EVENT, updateFromEvent);
+      unsubscribe?.();
     };
-  }, [pack]);
+  }, [pack, services]);
 
   const startPreparation = () => {
+    const prepareOffline = services.assets.prepareOffline;
+    if (!prepareOffline) return;
     setStatus({
       state: "preparing",
       version: pack.version,
@@ -58,7 +55,7 @@ export function OfflineAssetLibraryCard({
       sourceCount: pack.sourceCount,
       previewCount: pack.previewCount
     });
-    void prepareOfflineAssetPack(pack)
+    void prepareOffline()
       .then(setStatus)
       .catch((reason) => {
         setStatus((current) => ({

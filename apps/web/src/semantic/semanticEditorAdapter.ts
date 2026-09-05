@@ -11,6 +11,7 @@ import {
 } from "fabric";
 import {
   filterAssetFamilies,
+  type AssetManifest,
   type AssetFamily,
   type AssetVariant,
   type CanvasSettings,
@@ -60,7 +61,6 @@ import {
   findRecognizedGroup,
   rememberRecognizedGroup
 } from "@/editor/groupRecognition";
-import { assetManifest } from "@/assets/manifest";
 import { collectProvenanceManifest } from "@/export/provenance";
 import {
   inspectSemanticGeometry,
@@ -101,6 +101,7 @@ export class SemanticAdapterError extends Error {
 }
 
 export interface SemanticEditorAdapterDependencies {
+  getAssetManifest: () => Promise<AssetManifest>;
   getCanvas: () => Canvas | null;
   getProjectId: () => string;
   isCanvasReady: () => boolean;
@@ -750,6 +751,7 @@ export function createSemanticEditorAdapter(
     category?: string;
     limit: number;
   }) => {
+    const assetManifest = await dependencies.getAssetManifest();
     const matches = filterAssetFamilies(assetManifest.families, query, category ?? "All");
     return {
       results: matches.slice(0, limit).map(assetSummary),
@@ -764,6 +766,7 @@ export function createSemanticEditorAdapter(
     familyId: string;
     variantId?: string;
   }) => {
+    const assetManifest = await dependencies.getAssetManifest();
     const family = assetManifest.families.find((candidate) => candidate.familyId === familyId);
     if (!family)
       throw new SemanticAdapterError(
@@ -1034,6 +1037,7 @@ export function createSemanticEditorAdapter(
       return { data: { requested: true }, changedObjectIds: [] };
     }
     const canvas = canvasOrThrow();
+    const assetManifest = await dependencies.getAssetManifest();
     if (command === "set_project_metadata") {
       const name = typeof input.name === "string" ? input.name.trim() : undefined;
       const description =

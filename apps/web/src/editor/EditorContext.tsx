@@ -51,7 +51,7 @@ import {
   warmPdfFontFaces
 } from "@/export/pdf";
 import { collectProvenanceManifest, formatProvenanceCredits } from "@/export/provenance";
-import { downloadBlob, downloadProject, safeFilename } from "@/persistence/portable";
+import { safeFilename } from "@/persistence/portable";
 import { createVectorThumbnail } from "@/persistence/projectThumbnail";
 import {
   hasUnsavedProjectRevision,
@@ -139,16 +139,16 @@ import {
   type SelectionClipboardFormat,
   writeSelectionToSystemClipboard
 } from "@/editor/selectionClipboard";
-import { saveAssetTemplate, type AssetTemplate } from "@/editor/assetTemplates";
+import type { AssetTemplate } from "@/editor/assetTemplates";
 import {
   clipboardContainsSelectionMarker,
   importedMediaFilesFromClipboard
 } from "@/editor/clipboardImport";
 import {
-  rememberProjectImports,
-  saveImportedMedia as saveImportedMediaToLibrary,
-  saveProjectThumbnail
-} from "@/persistence/database";
+  useOpenSketchHostServices,
+  type AssetService,
+  type FontService
+} from "@/application/hostServices";
 import {
   CREATION_DEFAULTS_STORAGE_KEY,
   DEFAULT_CREATION_DEFAULTS,
@@ -244,8 +244,6 @@ const SVG_CACHE_LIMIT = 64;
 const DRAG_DUPLICATE_OPACITY = 0.35;
 const TITLE_PERSISTENCE_DELAY_MS = 250;
 const svgStringCache = new Map<string, string>();
-let assetManifestPromise: Promise<typeof import("@/assets/manifest")> | undefined;
-let bundledVariantsPromise: Promise<Map<string, AssetVariant>> | undefined;
 
 function validateImportedMediaRecord(
   media: ImportedMediaRecord,
@@ -413,23 +411,17 @@ function projectMediaTotals(
   return { rasterPixels, dataUrlBytes };
 }
 
-function loadAssetManifest() {
-  if (!assetManifestPromise) assetManifestPromise = import("@/assets/manifest");
-  return assetManifestPromise;
-}
-
-function loadBundledVariants(): Promise<Map<string, AssetVariant>> {
-  if (!bundledVariantsPromise) {
-    bundledVariantsPromise = loadAssetManifest().then(
-      ({ assetManifest }) =>
+function loadBundledVariants(assets: AssetService): Promise<Map<string, AssetVariant>> {
+  return assets
+    .getManifest()
+    .then(
+      (assetManifest) =>
         new Map(
           assetManifest.families.flatMap((family) =>
             family.variants.map((variant) => [variant.id, variant] as const)
           )
         )
     );
-  }
-  return bundledVariantsPromise;
 }
 const COALESCABLE_HISTORY_LABELS = new Set([
   "Change properties",
@@ -449,23 +441,34 @@ function cacheSvg(assetId: string, source: string): void {
   }
 }
 
-async function bundledSvgSource(assetId: string, assetPath?: string): Promise<string | null> {
+async function bundledSvgSource(
+  assets: AssetService,
+  assetId: string,
+  assetPath?: string
+): Promise<string | null> {
   const cached = svgStringCache.get(assetId);
   if (cached) {
     cacheSvg(assetId, cached);
     return cached;
   }
-  const variant = assetPath ? { assetPath } : (await loadBundledVariants()).get(assetId);
+  const variant = assetPath ? { assetPath } : (await loadBundledVariants(assets)).get(assetId);
   if (!variant) return null;
-  const response = await fetch(variant.assetPath);
-  if (!response.ok) return null;
-  const source = await response.text();
+  let source: string;
+  try {
+    source = await assets.loadText(variant.assetPath);
+  } catch {
+    return null;
+  }
   cacheSvg(assetId, source);
   return source;
 }
 
-async function createBundledAssetGroup(family: AssetFamily, variant: AssetVariant): Promise<Group> {
-  const source = await bundledSvgSource(variant.id, variant.assetPath);
+async function createBundledAssetGroup(
+  assets: AssetService,
+  family: AssetFamily,
+  variant: AssetVariant
+): Promise<Group> {
+  const source = await bundledSvgSource(assets, variant.id, variant.assetPath);
   if (!source) throw new Error(`Could not load ${family.title}.`);
   const result = await loadEditableSvg(source);
   const objects = result.objects.filter((object): object is FabricObject => Boolean(object));
@@ -492,13 +495,16 @@ async function createBundledAssetGroup(family: AssetFamily, variant: AssetVarian
   return group;
 }
 
-async function restoreBundledSvgBlendModes(objects: FabricObject[]): Promise<void> {
+async function restoreBundledSvgBlendModes(
+  assets: AssetService,
+  objects: FabricObject[]
+): Promise<void> {
   await Promise.all(
     objects.map(async (object) => {
       if (!(object instanceof Group) || !object.assetId) return;
       const target = object.getObjects();
       if (target.some((child) => child.globalCompositeOperation !== "source-over")) return;
-      const source = await bundledSvgSource(object.assetId);
+      const source = await bundledSvgSource(assets, object.assetId);
       if (!source) return;
       const parsed = await loadEditableSvg(source);
       copySvgBlendModes(
@@ -851,15 +857,18 @@ function canvasTextFontFamilies(objects: FabricObject[]): string[] {
   return [...families];
 }
 
-function warmCanvasPdfFonts(canvas: Canvas): void {
+function warmCanvasPdfFonts(canvas: Canvas, fonts: FontService): void {
   if (typeof navigator !== "undefined" && navigator.onLine === false) return;
   const families = canvasTextFontFamilies(canvas.getObjects());
   if (families.length === 0) return;
-  void warmPdfFontFaces(families).catch(() => undefined);
+  void fonts
+    .ready()
+    .then(() => warmPdfFontFaces(families))
+    .catch(() => undefined);
 }
 
-async function waitForCanvasTextFonts(objects: FabricObject[]): Promise<void> {
-  if (typeof document === "undefined" || !("fonts" in document)) return;
+async function waitForCanvasTextFonts(objects: FabricObject[], fonts: FontService): Promise<void> {
+  if (!fonts.available()) return;
 
   const descriptors = new Map<string, { descriptor: string; texts: Set<string> }>();
   const addStyles = (object: Text, styles: TextFontStyle) => {
@@ -893,12 +902,11 @@ async function waitForCanvasTextFonts(objects: FabricObject[]): Promise<void> {
   };
   objects.forEach(visit);
 
-  const fontSet = document.fonts;
   await Promise.all(
     [...descriptors.values()].flatMap(({ descriptor, texts }) =>
       [...texts].map(async (text) => {
         try {
-          await fontSet.load(descriptor, text);
+          await fonts.load(descriptor, text);
         } catch (error) {
           const reason = error instanceof Error ? error.message : String(error);
           throw new Error(`Could not load editor font for PDF export (${descriptor}): ${reason}`);
@@ -1088,6 +1096,7 @@ export function EditorProvider({
   onProjectChange,
   onRequestExit,
   onNavigationGuardChange,
+  onSaveStateChange,
   webMcpRegistry,
   children
 }: {
@@ -1096,8 +1105,10 @@ export function EditorProvider({
   onRequestExit: () => boolean | void;
   webMcpRegistry?: WebMcpRegistry;
   onNavigationGuardChange: (guard: (() => boolean) | null) => void;
+  onSaveStateChange?: (state: ProjectSaveState) => void;
   children: ReactNode;
 }) {
+  const services = useOpenSketchHostServices();
   const editorStore = useRef<SnapshotStore<EditorContextValue> | null>(null);
   if (!editorStore.current) editorStore.current = createSnapshotStore<EditorContextValue>();
   const [canvas, setCanvas] = useState<Canvas | null>(null);
@@ -1113,7 +1124,7 @@ export function EditorProvider({
   const [creationDefaults, setCreationDefaultsState] = useState<CreationDefaults>(() => {
     try {
       return normalizeCreationDefaults(
-        JSON.parse(localStorage.getItem(CREATION_DEFAULTS_STORAGE_KEY) ?? "null")
+        JSON.parse(services.preferences.get(CREATION_DEFAULTS_STORAGE_KEY) ?? "null")
       );
     } catch {
       return DEFAULT_CREATION_DEFAULTS;
@@ -1121,37 +1132,27 @@ export function EditorProvider({
   });
   const [canvasSettings, setCanvasSettingsState] = useState(project.canvas);
   const [alignmentEnabled, setAlignmentEnabledState] = useState(() => {
-    try {
-      return localStorage.getItem("OpenSketch:alignment-enabled") !== "false";
-    } catch {
-      return true;
-    }
+    return services.preferences.get("OpenSketch:alignment-enabled") !== "false";
   });
   const alignmentEnabledRef = useRef(alignmentEnabled);
-  const setAlignmentEnabled = useCallback((enabled: boolean) => {
-    alignmentEnabledRef.current = enabled;
-    setAlignmentEnabledState(enabled);
-    try {
-      localStorage.setItem("OpenSketch:alignment-enabled", String(enabled));
-    } catch {
-      // Keep the session setting when storage is unavailable.
-    }
-  }, []);
+  const setAlignmentEnabled = useCallback(
+    (enabled: boolean) => {
+      alignmentEnabledRef.current = enabled;
+      setAlignmentEnabledState(enabled);
+      services.preferences.set("OpenSketch:alignment-enabled", String(enabled));
+    },
+    [services]
+  );
   const [autoEditEnabled, setAutoEditEnabledState] = useState(() => {
-    try {
-      return localStorage.getItem("OpenSketch:auto-edit-enabled") === "true";
-    } catch {
-      return false;
-    }
+    return services.preferences.get("OpenSketch:auto-edit-enabled") === "true";
   });
-  const setAutoEditEnabled = useCallback((enabled: boolean) => {
-    setAutoEditEnabledState(enabled);
-    try {
-      localStorage.setItem("OpenSketch:auto-edit-enabled", String(enabled));
-    } catch {
-      // Keep the session setting when storage is unavailable.
-    }
-  }, []);
+  const setAutoEditEnabled = useCallback(
+    (enabled: boolean) => {
+      setAutoEditEnabledState(enabled);
+      services.preferences.set("OpenSketch:auto-edit-enabled", String(enabled));
+    },
+    [services]
+  );
   const [projectDescription, setProjectDescriptionState] = useState(project.description ?? "");
   const [historyState, setHistoryState] = useState({ canUndo: false, canRedo: false });
   const history = useRef<string[]>([]);
@@ -1161,7 +1162,7 @@ export function EditorProvider({
   const clipboard = useRef<FabricObject[]>([]);
   const pendingClipboardCopy = useRef<Promise<void> | null>(null);
   const clipboardMarker = useRef<string | undefined>(undefined);
-  const savedElementStyles = useRef(loadSavedElementStyles());
+  const savedElementStyles = useRef(loadSavedElementStyles(services.preferences.storage));
   const pendingSnapshot = useRef<{ snapshot: string; revision: number } | undefined>(undefined);
   const saveQueue = useRef<Promise<void>>(Promise.resolve());
   const exitPending = useRef(false);
@@ -1169,6 +1170,9 @@ export function EditorProvider({
   const savedRevision = useRef(0);
   const lastSaveError = useRef<unknown>(undefined);
   const [saveState, setSaveState] = useState<ProjectSaveState>({ phase: "saved" });
+  useEffect(() => {
+    onSaveStateChange?.(saveState);
+  }, [onSaveStateChange, saveState]);
   const assetInsertQueue = useRef<Promise<unknown>>(Promise.resolve());
   const importQueue = useRef<Promise<void>>(Promise.resolve());
   const pendingEditorWork = useRef(0);
@@ -1295,11 +1299,11 @@ export function EditorProvider({
   }, []);
 
   useEffect(() => {
-    void rememberProjectImports(
+    void services.importedMedia.remember(
       initialProjectImports.current.imports,
       initialProjectImports.current.updatedAt
     );
-  }, []);
+  }, [services]);
 
   const refreshConnectors = useCallback(
     (changedObjectId?: string) => {
@@ -1455,7 +1459,11 @@ export function EditorProvider({
         latestCanvasSettings.current,
         projectRevision
       );
-      const next = await saveProjectThumbnail(latestProject.current.id, projectRevision, thumbnail);
+      const next = await services.projects.saveThumbnail(
+        latestProject.current.id,
+        projectRevision,
+        thumbnail
+      );
       if (next?.updatedAt === projectRevision && revision === saveRevision.current) {
         latestProject.current = next;
       }
@@ -1464,7 +1472,7 @@ export function EditorProvider({
       // after the actual project snapshot has already been saved.
       console.warn("Project preview could not be refreshed; project data is saved.", reason);
     }
-  }, [canvas]);
+  }, [canvas, services]);
 
   const enqueuePendingSave = useCallback(() => {
     const pending = pendingSnapshot.current;
@@ -1610,9 +1618,9 @@ export function EditorProvider({
       lastCommit.current = { label, at: now };
       updateHistoryState();
       persist(snapshot);
-      warmCanvasPdfFonts(canvas);
+      warmCanvasPdfFonts(canvas, services.fonts);
     },
-    [canvas, persist, serialize, updateHistoryState]
+    [canvas, persist, serialize, services.fonts, updateHistoryState]
   );
 
   const setCanvasElement = useCallback(
@@ -1633,11 +1641,11 @@ export function EditorProvider({
       canvasReadyRef.current = false;
       setCanvasReady(false);
       instance.loadFromJSON(project.objects).then(async () => {
-        await restoreBundledSvgBlendModes(instance.getObjects());
+        await restoreBundledSvgBlendModes(services.assets, instance.getObjects());
         assignSceneIdentities(instance.getObjects());
         configureCanvasAssets(instance.getObjects());
         assertUniqueSceneObjectIds(instance);
-        await waitForCanvasTextFonts(instance.getObjects()).catch(() => undefined);
+        await waitForCanvasTextFonts(instance.getObjects(), services.fonts).catch(() => undefined);
         refreshTextMetrics(instance.getObjects());
         instance.requestRenderAll();
         const initial = JSON.stringify(instance.toJSON());
@@ -1649,7 +1657,7 @@ export function EditorProvider({
       });
       setCanvas(instance);
     },
-    [project, updateHistoryState]
+    [project, services, updateHistoryState]
   );
 
   useEffect(() => {
@@ -1659,11 +1667,11 @@ export function EditorProvider({
 
   useEffect(() => {
     if (!canvas || !canvasReady) return;
-    const warm = () => warmCanvasPdfFonts(canvas);
+    const warm = () => warmCanvasPdfFonts(canvas, services.fonts);
     warm();
     window.addEventListener("online", warm);
     return () => window.removeEventListener("online", warm);
-  }, [canvas, canvasReady]);
+  }, [canvas, canvasReady, services.fonts]);
 
   const closeGroupEdit = useCallback(() => {
     const path = editingGroupPathRef.current;
@@ -2084,7 +2092,7 @@ export function EditorProvider({
           : undefined;
       if (duplicateSession) restoreDragDuplicateOpacity(duplicateSession);
       const completeTextWork =
-        !duplicateSession && changed instanceof IText && "fonts" in document
+        !duplicateSession && changed instanceof IText && services.fonts.available()
           ? beginPendingEditorWork()
           : undefined;
       const finish = () => {
@@ -2107,7 +2115,7 @@ export function EditorProvider({
         if (duplicateSession) duplicateSession.pendingWorkComplete = undefined;
       };
       const finishAfterFonts = () => {
-        if (!(changed instanceof IText) || !("fonts" in document)) {
+        if (!(changed instanceof IText) || !services.fonts.available()) {
           finish();
           return;
         }
@@ -2117,8 +2125,8 @@ export function EditorProvider({
           .split(",")[0]
           .trim()
           .replace(/^['"]|['"]$/g, "");
-        void document.fonts
-          .load(`${fontStyle} ${weight} ${changed.fontSize ?? 54}px "${family}"`)
+        void services.fonts
+          .load(`${fontStyle} ${weight} ${changed.fontSize ?? 54}px "${family}"`, changed.text)
           .then(finish, finish);
       };
       if (duplicateSession?.pendingAdd) {
@@ -2330,7 +2338,8 @@ export function EditorProvider({
     commit,
     enqueuePendingSave,
     refreshConnectors,
-    setEditingGroupPath
+    setEditingGroupPath,
+    services.fonts
   ]);
 
   const historyRestoreTail = useRef<Promise<void>>(Promise.resolve());
@@ -2454,7 +2463,7 @@ export function EditorProvider({
       const preset = ASSET_COLOR_PRESETS.find((item) => item.id === presetId);
       if (!preset)
         return Promise.reject(new Error(`Asset color preset "${presetId}" does not exist.`));
-      const operation = loadAssetManifest().then(({ assetManifest }) => {
+      const operation = services.assets.getManifest().then((assetManifest) => {
         throwIfSemanticExecutionAborted(options?.signal);
         const family = assetManifest.families.find((item) => item.familyId === object.familyId);
         const profile = family ? colorProfileForFamily(family) : undefined;
@@ -2468,7 +2477,7 @@ export function EditorProvider({
       });
       return trackPendingEditorWork(operation);
     },
-    [canvas, trackPendingEditorWork]
+    [canvas, services.assets, trackPendingEditorWork]
   );
 
   const semanticCanvasRef = useRef<Canvas | null>(canvas);
@@ -2536,6 +2545,7 @@ export function EditorProvider({
     semanticRuntimeRef.current = createSemanticRuntime(
       createSemanticEditorAdapter({
         getCanvas: () => semanticCanvasRef.current,
+        getAssetManifest: () => services.assets.getManifest(),
         getProjectId: () => semanticProjectIdRef.current,
         isCanvasReady: () => canvasReadyRef.current,
         getCanvasSettings: () => latestCanvasSettings.current,
@@ -2609,11 +2619,11 @@ export function EditorProvider({
         const normalized = normalizeCreationDefaults(
           typeof defaults === "function" ? defaults(current) : defaults
         );
-        localStorage.setItem(CREATION_DEFAULTS_STORAGE_KEY, JSON.stringify(normalized));
+        services.preferences.set(CREATION_DEFAULTS_STORAGE_KEY, JSON.stringify(normalized));
         return normalized;
       });
     },
-    []
+    [services]
   );
 
   const addText = useCallback(
@@ -2891,7 +2901,7 @@ export function EditorProvider({
         assetInsertQueue.current.then(async () => {
           if (options?.signal?.aborted) return undefined;
           if (!semanticCanvasRef.current) return undefined;
-          const group = await createBundledAssetGroup(family, variant);
+          const group = await createBundledAssetGroup(services.assets, family, variant);
           if (options?.signal?.aborted) return undefined;
           if (!semanticCanvasRef.current) return undefined;
           const scale = assetInsertionScale(family.title, group.width || 1, group.height || 1);
@@ -2909,7 +2919,7 @@ export function EditorProvider({
       assetInsertQueue.current = operation.catch(() => undefined);
       return operation;
     },
-    [trackPendingEditorWork]
+    [services.assets, trackPendingEditorWork]
   );
 
   const addAsset = useCallback(
@@ -2963,7 +2973,7 @@ export function EditorProvider({
           const initial = sceneObjectIndex(semanticCanvasRef.current).get(objectId);
           if (!(initial instanceof Group) || !initial.familyId || initial.assetId === variantId)
             return false;
-          const { assetManifest } = await loadAssetManifest();
+          const assetManifest = await services.assets.getManifest();
           if (options?.signal?.aborted) return false;
           const currentCanvas = semanticCanvasRef.current;
           if (!currentCanvas) return false;
@@ -2976,7 +2986,7 @@ export function EditorProvider({
           const variant = family?.variants.find((candidate) => candidate.id === variantId);
           if (!family || !variant) return false;
 
-          const replacement = await createBundledAssetGroup(family, variant);
+          const replacement = await createBundledAssetGroup(services.assets, family, variant);
           if (options?.signal?.aborted) return false;
           if (
             semanticCanvasRef.current !== currentCanvas ||
@@ -3025,7 +3035,7 @@ export function EditorProvider({
       assetInsertQueue.current = operation.catch(() => undefined);
       return operation;
     },
-    [trackPendingEditorWork]
+    [services.assets, trackPendingEditorWork]
   );
   semanticReplaceAssetVariantRef.current = (objectId, variantId, options) =>
     replaceAssetVariant(objectId, variantId, false, options);
@@ -3057,11 +3067,11 @@ export function EditorProvider({
         throw new Error("Adding this image would exceed the document's embedded data budget.");
       }
       if (!canvas) return media;
-      const stored = await saveImportedMediaToLibrary(media);
+      const stored = await services.importedMedia.save(media);
       let object: FabricObject;
       if (stored.mimeType === "image/svg+xml") {
         const source = sanitizeImportedSvg(
-          await (await fetch(stored.dataUrl)).text(),
+          await services.assets.loadText(stored.dataUrl),
           `import-${stored.id}`
         );
         const result = await loadEditableSvg(source);
@@ -3096,7 +3106,7 @@ export function EditorProvider({
       addObject(object, stored.name, "import", point);
       return stored;
     },
-    [addObject, canvas]
+    [addObject, canvas, services]
   );
 
   const addImportedMedia = useCallback(
@@ -3141,7 +3151,7 @@ export function EditorProvider({
             const limitMessage = rasterLimitMessage(rasterInspection);
             if (limitMessage) throw new Error(limitMessage);
           }
-          const importId = crypto.randomUUID();
+          const importId = services.clock.randomUUID();
           let dataUrl = await new Promise<string>((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => resolve(String(reader.result));
@@ -3164,7 +3174,7 @@ export function EditorProvider({
       importQueue.current = operation.then(() => undefined).catch(() => undefined);
       return operation;
     },
-    [placeImportedMedia, trackPendingEditorWork]
+    [placeImportedMedia, services, trackPendingEditorWork]
   );
 
   const selectParentAsset = useCallback(() => {
@@ -3254,7 +3264,9 @@ export function EditorProvider({
       typeof activeObject.name === "string" && activeObject.name.trim()
         ? activeObject.name.trim()
         : "Group";
-    const name = window.prompt("Save group as template", defaultName)?.trim();
+    const name = (
+      await Promise.resolve(services.dialogs.prompt("Save group as template", defaultName))
+    )?.trim();
     if (!name) return;
 
     const snapshotObject = await activeObject.clone();
@@ -3266,9 +3278,9 @@ export function EditorProvider({
     } catch (reason) {
       console.warn("Template preview could not be rendered; the template is still saved.", reason);
     }
-    const now = new Date().toISOString();
-    await saveAssetTemplate({
-      id: crypto.randomUUID(),
+    const now = services.clock.now();
+    await services.templates.save({
+      id: services.clock.randomUUID(),
       name,
       object: snapshotObject.toObject() as unknown as Record<string, unknown>,
       thumbnail,
@@ -3276,7 +3288,7 @@ export function EditorProvider({
       updatedAt: now,
       schemaVersion: 1
     });
-  }, [canvas]);
+  }, [canvas, services]);
 
   const duplicateSelection = useCallback(async () => {
     if (!canvas) return;
@@ -3330,13 +3342,16 @@ export function EditorProvider({
       const complete = cut ? beginPendingEditorWork() : undefined;
       let internalCopy: Promise<void> | undefined;
       try {
-        const marker = `${SELECTION_CLIPBOARD_MARKER_PREFIX}${crypto.randomUUID()}`;
+        const marker = `${SELECTION_CLIPBOARD_MARKER_PREFIX}${services.clock.randomUUID()}`;
         clipboardMarker.current = marker;
-        const systemWrite = writeSelectionToSystemClipboard(activeObject, format, marker).catch(
-          (error: unknown) => {
-            console.warn(`Could not copy the selection as ${format.toUpperCase()}.`, error);
-          }
-        );
+        const systemWrite = writeSelectionToSystemClipboard(
+          activeObject,
+          format,
+          marker,
+          services.clipboard
+        ).catch((error: unknown) => {
+          console.warn(`Could not copy the selection as ${format.toUpperCase()}.`, error);
+        });
         internalCopy = Promise.all(selectedObjects.map((object) => object.clone())).then(
           (clones) => {
             clipboard.current = clones;
@@ -3352,7 +3367,7 @@ export function EditorProvider({
         complete?.();
       }
     },
-    [beginPendingEditorWork, canvas, deleteSelection]
+    [beginPendingEditorWork, canvas, deleteSelection, services]
   );
 
   const pasteSelection = useCallback(async () => {
@@ -3609,11 +3624,11 @@ export function EditorProvider({
       ...savedElementStyles.current,
       [key]: captureElementStyle(target)
     };
-    persistSavedElementStyles(savedElementStyles.current);
+    persistSavedElementStyles(savedElementStyles.current, services.preferences.storage);
     if (target.OpenSketchType === "nih-asset" && target.familyId && target.assetId) {
-      saveAssetVariantDefault(target.familyId, target.assetId);
+      saveAssetVariantDefault(target.familyId, target.assetId, services.preferences.storage);
     }
-  }, [canvas]);
+  }, [canvas, services]);
 
   const resetSelectionStyle = useCallback(() => {
     if (!canvas) return;
@@ -3628,7 +3643,7 @@ export function EditorProvider({
         const remaining = { ...savedElementStyles.current };
         delete remaining[key];
         savedElementStyles.current = remaining;
-        persistSavedElementStyles(savedElementStyles.current);
+        persistSavedElementStyles(savedElementStyles.current, services.preferences.storage);
       }
       if (object.defaultElementStyle) {
         if (
@@ -3727,7 +3742,7 @@ export function EditorProvider({
     canvas.requestRenderAll();
     setSelection([...canvas.getActiveObjects()]);
     commit("Reset styling");
-  }, [canvas, commit, refreshConnectors]);
+  }, [canvas, commit, refreshConnectors, services]);
 
   const updateConnector = useCallback(
     (properties: Partial<ConnectorBinding>) => {
@@ -3776,8 +3791,9 @@ export function EditorProvider({
       const preset = ASSET_COLOR_PRESETS.find((item) => item.id === presetId);
       if (!preset) return;
       void trackPendingEditorWork(
-        loadAssetManifest()
-          .then(({ assetManifest }) => {
+        services.assets
+          .getManifest()
+          .then((assetManifest) => {
             const family = assetManifest.families.find((item) => item.familyId === object.familyId);
             const profile = family ? colorProfileForFamily(family) : undefined;
             if (
@@ -3798,7 +3814,7 @@ export function EditorProvider({
           .catch(() => undefined)
       );
     },
-    [canvas, commit, selection, trackPendingEditorWork]
+    [canvas, commit, selection, services.assets, trackPendingEditorWork]
   );
   const resetColors = useCallback(() => {
     if (!canvas) return;
@@ -3929,7 +3945,7 @@ export function EditorProvider({
     const snapshot =
       canvas && canvasReady ? serialize() : JSON.stringify(initialProjectObjects.current);
     const objects = JSON.parse(snapshot) as Record<string, unknown>;
-    downloadProject({
+    await services.files.downloadProject({
       ...latestProject.current,
       updatedAt: new Date().toISOString(),
       canvas: latestCanvasSettings.current,
@@ -3937,7 +3953,7 @@ export function EditorProvider({
       usedAssetIds: assetIdsFromSnapshot(objects),
       thumbnail: undefined
     });
-  }, [canvas, canvasReady, flushPendingTitle, serialize, waitForPendingEditorWork]);
+  }, [canvas, canvasReady, flushPendingTitle, serialize, services, waitForPendingEditorWork]);
 
   const buildSvg = useCallback(
     (title = latestProject.current.name, description = latestProject.current.description ?? "") => {
@@ -3976,9 +3992,13 @@ export function EditorProvider({
   const exportSvg = useCallback(
     (title = latestProject.current.name, description = latestProject.current.description ?? "") => {
       const svg = buildSvg(title, description);
-      downloadBlob(new Blob([svg], { type: "image/svg+xml" }), `${safeFilename(title)}.svg`);
+      void services.exports.deliver({
+        blob: new Blob([svg], { type: "image/svg+xml" }),
+        filename: `${safeFilename(title)}.svg`,
+        kind: "svg"
+      });
     },
-    [buildSvg]
+    [buildSvg, services]
   );
 
   const exportPdf = useCallback(
@@ -3989,7 +4009,7 @@ export function EditorProvider({
     ) => {
       if (!canvas) throw new Error("The figure canvas is not ready.");
       await waitForPendingEditorWork();
-      await waitForCanvasTextFonts(canvas.getObjects());
+      await waitForCanvasTextFonts(canvas.getObjects(), services.fonts);
       if (options?.signal?.aborted) return;
       const svg = buildSvg(title, description);
       const blob = await svgToPdfBlob(svg, canvasSettings.width, canvasSettings.height, {
@@ -3999,9 +4019,20 @@ export function EditorProvider({
         provenance: collectProvenanceManifest(canvas.getObjects())
       });
       if (options?.signal?.aborted) return;
-      downloadBlob(blob, `${safeFilename(title)}.pdf`);
+      await services.exports.deliver({
+        blob,
+        filename: `${safeFilename(title)}.pdf`,
+        kind: "pdf"
+      });
     },
-    [buildSvg, canvas, canvasSettings.height, canvasSettings.width, waitForPendingEditorWork]
+    [
+      buildSvg,
+      canvas,
+      canvasSettings.height,
+      canvasSettings.width,
+      services,
+      waitForPendingEditorWork
+    ]
   );
 
   const exportCredits = useCallback(
@@ -4013,12 +4044,13 @@ export function EditorProvider({
         description,
         GLOBAL_CREDIT
       );
-      downloadBlob(
-        new Blob([credits], { type: "text/plain;charset=utf-8" }),
-        `${safeFilename(title)}-credits.txt`
-      );
+      void services.exports.deliver({
+        blob: new Blob([credits], { type: "text/plain;charset=utf-8" }),
+        filename: `${safeFilename(title)}-credits.txt`,
+        kind: "credits"
+      });
     },
-    [canvas]
+    [canvas, services]
   );
 
   const exportPng = useCallback(
@@ -4051,14 +4083,17 @@ export function EditorProvider({
         canvas.backgroundColor = previous;
         canvas.requestRenderAll();
       }
-      const response = await fetch(dataUrl);
-      const blob = await setPngDpi(await response.blob(), dpi, {
+      const blob = await setPngDpi(await services.assets.loadBlob(dataUrl), dpi, {
         provenance: collectProvenanceManifest(canvas.getObjects())
       });
       if (options?.signal?.aborted) return;
-      downloadBlob(blob, `${safeFilename(latestProject.current.name)}-${dpi}dpi.png`);
+      await services.exports.deliver({
+        blob,
+        filename: `${safeFilename(latestProject.current.name)}-${dpi}dpi.png`,
+        kind: "png"
+      });
     },
-    [canvas, canvasSettings]
+    [canvas, canvasSettings, services]
   );
 
   semanticExportSvgRef.current = exportSvg;
