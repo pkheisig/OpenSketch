@@ -3300,8 +3300,10 @@ export function createSemanticEditorAdapter(
       const description = typeof input.description === "string" ? input.description : undefined;
       if (format === "svg") dependencies.exportSvg(title, description);
       else if (format === "credits") dependencies.exportCredits(title, description);
-      else if (format === "pdf") await dependencies.exportPdf(title, description, options);
-      else {
+      else if (format === "pdf") {
+        await dependencies.exportPdf(title, description, options);
+        throwIfSemanticExecutionAborted(options.signal);
+      } else {
         const settings = dependencies.getCanvasSettings();
         await dependencies.exportPng(
           input.transparent === true,
@@ -3309,6 +3311,7 @@ export function createSemanticEditorAdapter(
           typeof input.background === "string" ? input.background : settings.background,
           options
         );
+        throwIfSemanticExecutionAborted(options.signal);
       }
       return { data: { format, started: true } };
     }
