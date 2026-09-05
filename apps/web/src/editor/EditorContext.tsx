@@ -1,5 +1,10 @@
 import { assertAssetCapacity } from "./assetCapacity";
-import { isScientificBrush, updateBrushObject, detachBrush } from "@/editor/scientific/objects";
+import {
+  isScientificBrush,
+  updateBrushObject,
+  detachBrush,
+  createScientificObject
+} from "@/editor/scientific/objects";
 import { scientificPreset } from "@/editor/scientific/catalog";
 import {
   createContext,
@@ -421,7 +426,7 @@ function loadAssetManifest() {
 function loadBundledVariants(): Promise<Map<string, AssetVariant>> {
   if (!bundledVariantsPromise) {
     bundledVariantsPromise = loadAssetManifest().then(
-      ({ assetManifest }) =>
+      ({ bundledAssetManifest: assetManifest }) =>
         new Map(
           assetManifest.families.flatMap((family) =>
             family.variants.map((variant) => [variant.id, variant] as const)
@@ -2854,7 +2859,10 @@ export function EditorProvider({
       const operation = trackPendingEditorWork(
         assetInsertQueue.current.then(async () => {
           if (!semanticCanvasRef.current) return undefined;
-          const group = await createBundledAssetGroup(family, variant);
+          const preset = family.editableStructure ? scientificPreset(family.familyId) : undefined;
+          const group = preset
+            ? createScientificObject(preset.id, semanticCreationDefaultsRef.current)!
+            : await createBundledAssetGroup(family, variant);
           if (!semanticCanvasRef.current) return undefined;
           assertAssetCapacity(semanticCanvasRef.current.getObjects(), group);
           const scale = assetInsertionScale(family.title, group.width || 1, group.height || 1);
@@ -2862,7 +2870,7 @@ export function EditorProvider({
           const object = semanticAddObjectRef.current(
             group,
             family.title,
-            "nih-asset",
+            preset ? (preset.form === "parts" ? "group" : "scientific-brush") : "nih-asset",
             point,
             select
           );

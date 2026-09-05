@@ -2496,3 +2496,25 @@ html[data-theme] .ui-select-menu button svg {
   border-radius: 5px;
   background: var(--shell-card);
 }
+
+.opensketch-app .asset-card.asset-card-editable {
+  border: 2px solid #288578;
+}
+
+.opensketch-app .asset-card.asset-card-editable:hover {
+  border-color: #175f55;
+}
+
+.opensketch-app .asset-editable-badge {
+  position: absolute;
+  top: 91px;
+  left: 7px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: #176c60;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 16px;
+  pointer-events: none;
+}

@@ -160,3 +160,37 @@ test("generated artwork is searchable, inserts as editable vectors and reloads",
     page.getByRole("button", { name: "Insert T lymphocyte", exact: true })
   ).toBeVisible();
 });
+
+test("sidebar identifies editable structures and hides legacy sources", async ({
+  page
+}, testInfo) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "About", exact: true }).click();
+  await expect(page.getByRole("dialog")).not.toContainText(/NIH BioArt|SciDraw|BioIcons|Arcadia/);
+  await page.keyboard.press("Escape");
+  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await observeCanvas(page);
+  await page.getByRole("button", { name: "Toggle asset filters" }).click();
+  await page.getByRole("combobox", { name: "Filter by source" }).click();
+  await expect(page.getByRole("listbox")).not.toContainText(/NIH BioArt|SciDraw|BioIcons|Arcadia/);
+  await page.getByRole("option", { name: "OpenSketch structures", exact: true }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Lipid bilayer");
+  const card = page
+    .locator(".asset-card")
+    .filter({ has: page.getByRole("button", { name: "Insert Lipid bilayer", exact: true }) });
+  await expect(card.getByText("Editable", { exact: true })).toBeVisible();
+  await expect(card).toHaveCSS("border-top-color", "rgb(40, 133, 120)");
+  await expect(page.locator(".asset-card")).toHaveCount(1);
+  await page.waitForTimeout(400); // Let the sidebar transition settle for visual evidence.
+  await page.screenshot({ path: testInfo.outputPath("editable-sidebar.png"), fullPage: true });
+  await card.getByRole("button", { name: "Insert Lipid bilayer", exact: true }).click();
+  await expect.poll(async () => (await state(page)).spec.kind).toBe("membrane");
+  const current = await state(page);
+  expect(current.controls.brushPoint0).toBeDefined();
+  expect(current.controls.brushPoint1).toBeDefined();
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await expect(page.getByLabel("Structure spacing")).toBeVisible();
+  await page.waitForTimeout(400); // Capture the settled inspector.
+  await page.screenshot({ path: testInfo.outputPath("editable-inserted.png"), fullPage: true });
+});

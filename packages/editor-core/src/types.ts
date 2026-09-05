@@ -39,6 +39,8 @@ export type AssetLicense =
 export interface AssetFamily {
   familyId: string;
   bioartEntryId: number;
+  /** Explicit structure controls or movable semantic components, rather than traced color regions. */
+  editableStructure?: boolean;
   title: string;
   description: string;
   category: string;

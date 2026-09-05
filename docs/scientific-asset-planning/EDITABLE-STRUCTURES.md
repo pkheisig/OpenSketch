@@ -47,3 +47,11 @@ BioRender's public help documents describe repeated membrane, nucleic-acid, vess
 Unit coverage includes legacy shape preservation, new preset geometry, fixed endpoints during rotated/nested edits, cloning, strict project round-trips, malformed settings, palette retention, conversion and cell containment. The artwork tests check all 211 hashes, path budgets, palette limits, categories, thumbnails and alias deduplication. Browser coverage exercises real handle dragging, undo/redo, bending, recoloring, save/reload, SVG export, conversion, source filtering, insertion and alias search. Type checking and production build are run locally. Hosted GitHub Actions remain intentionally disabled.
 
 [Visual QA report with interaction recording and all artwork comparison sheets](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/scientific-structures-20260905/index.html). Final local validation: 477 unit tests, two Chromium end-to-end tests, typecheck and production build passed. All four protected baseline file hashes match.
+
+## Sidebar follow-up
+
+The Assets sidebar now exposes only OpenSketch generated artwork and OpenSketch structures (228 cards total). All 17 structural presets carry an **Editable** badge and a teal outline. Here “Editable” means path controls or movable semantic components; it distinguishes them from artwork composed of traced color regions. Clicking or dragging a structure card creates the procedural object, preserving its controls. Search includes the editable keyword.
+
+NIH BioArt, SciDraw, BioIcons, Arcadia and other prior collections are excluded from browsing, search, source filters, recent/favorite results and the offline pack UI. Their files and a separate internal lookup manifest remain for existing project references. The About dialog no longer advertises those sources. Stale source filters reset to All sources.
+
+Validation: 478 unit tests, three targeted Chromium flows, typecheck and production build pass. [Sidebar screenshots and recording](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/editable-sidebar-20260905/index.html).

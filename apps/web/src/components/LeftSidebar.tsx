@@ -897,6 +897,14 @@ function AssetsPanel({
       ),
     [assetManifest.families]
   );
+  useEffect(() => {
+    if (
+      sourceFilter !== ALL_ASSET_FILTER_VALUE &&
+      !assetManifest.families.some((family) => assetSourceFilterLabel(family) === sourceFilter)
+    ) {
+      onSourceFilterChange(ALL_ASSET_FILTER_VALUE);
+    }
+  }, [assetManifest.families, sourceFilter, onSourceFilterChange]);
   const families = useMemo(() => {
     if (category === "Templates") return [];
     const matches = filterAssetFamilies(
@@ -1208,7 +1216,7 @@ function AssetsPanel({
           ref={assetListRef}
           className="asset-list-shell"
           onKeyDown={navigateAssets}
-          aria-label="NIH BioArt illustration families"
+          aria-label="Scientific asset families"
         >
           {assetListHeight > 0 && (
             <List
@@ -1227,10 +1235,7 @@ function AssetsPanel({
         <div className="empty-library">
           <Sparkles size={25} />
           <h3>Asset library ready to sync</h3>
-          <p>
-            Run <code>pnpm assets:sync</code> during development to import the complete
-            public-domain NIH BioArt collection. The app never fetches it at runtime.
-          </p>
+          <p>No OpenSketch assets are available in this build.</p>
         </div>
       ) : (
         <div className="empty-library">
@@ -1402,7 +1407,7 @@ function AssetCard({
   };
   return (
     <article
-      className="asset-card"
+      className={`asset-card${family.editableStructure ? " asset-card-editable" : ""}`}
       draggable
       onDragStart={(event) => {
         onAssetDragStart();
@@ -1471,6 +1476,7 @@ function AssetCard({
         document.body
       )}
       <div className="asset-card-copy">
+        {family.editableStructure && <span className="asset-editable-badge">Editable</span>}
         <strong title={family.title}>{family.title}</strong>
         {family.variants.length > 1 ? (
           <AssetVariantPicker family={family} value={variant.id} onChange={onVariant} />
