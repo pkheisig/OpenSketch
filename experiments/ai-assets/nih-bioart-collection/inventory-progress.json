@@ -7984,17 +7984,101 @@
     "centrosome": {
       "name": "centrosome",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/centrosome-bioart-transparent.png",
+      "svg": "svg/centrosome-bioart-traced.svg",
+      "png_sha256": "fd2de9bc05f2990d8feeefb0de63a11a682a3f5f918c80a20387ca2cee0f83a2",
+      "svg_sha256": "241c10acfcc8d185737c80740dd0095b216ef3880bef6a95642b19c760f10c85",
+      "original_sha256": "0fea90174a832465fdc487f28b6efc5b857017137b41ca0edf94754d55e18833",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        404,
+        577,
+        345,
+        577
+      ],
+      "svg_paths": 15672,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/centrosome/prompt.json",
+      "qa": "qa/inventory/centrosome",
+      "visual_review": "Two perpendicular hollow triplet-bundle barrels and lavender pericentriolar material remain recognizable. Geometry scaffold preserved nine-group organization; tubule and matrix ultrastructure explicitly simplified. SVG retains thin rods, openings and shading with minor stronger outlines. Transparent external padding and internal gaps verified on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/centrosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/centrosome/inspection.webm"
+      }
     },
     "centriole-pair": {
       "name": "centriole pair",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/centriole-pair-bioart-transparent.png",
+      "svg": "svg/centriole-pair-bioart-traced.svg",
+      "png_sha256": "35d6caea02113467ccb8fea31e6a4614eefc17a88fef747db43fca4fa32df817",
+      "svg_sha256": "9dfd0734cb79ec37b279e10a84bd34235def75a24d7b385326487482712a8bb7",
+      "original_sha256": "e8c9dc9b841d4b34286a0ed5dcfc20994667e068bde1e50b15b68cc988bfefa3",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        412,
+        608,
+        357,
+        585
+      ],
+      "svg_paths": 10629,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/centriole-pair/prompt.json",
+      "qa": "qa/inventory/centriole-pair",
+      "visual_review": "Bare paired barrels retain centrosome-derived arrangement and colors with lavender matrix removed. SVG preserves slender triplet bundles, end openings and gradients. No external glow or white fill in transparent gaps on either background; structures and spacing remain schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/centriole-pair/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/centriole-pair/inspection.webm"
+      }
     },
     "mitotic-spindle": {
       "name": "mitotic spindle",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/mitotic-spindle-bioart-transparent.png",
+      "svg": "svg/mitotic-spindle-bioart-traced.svg",
+      "png_sha256": "0b3d6e3192a7a40f1e6532b0b9bb5d24dfc55f6f3412bee4bfad933dc237e5ee",
+      "svg_sha256": "c29b0fc3c22e986778f121655d366733835aa634d1b47687894bb611e8f326ed",
+      "original_sha256": "0f5dedc4b8e7f707463889017f8b70436b52e560641f4ef69f65585e6c2a7681",
+      "png_dimensions": [
+        2340,
+        2340
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        334,
+        769,
+        350,
+        725
+      ],
+      "svg_paths": 52,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/mitotic-spindle/prompt-v2.json",
+      "qa": "qa/inventory/mitotic-spindle",
+      "visual_review": "PNG retains isolated bipolar spindle with transparent inter-fiber spaces. Reconstructed SVG uses 52 editable paths with smooth Bezier fibers and gradient pole glyphs, avoiding jagged trace edges. Fiber trajectories, count and pole detail intentionally simplified while retaining bilateral organization and central antiparallel overlap. Both formats clear on light and dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mitotic-spindle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mitotic-spindle/inspection.webm"
+      }
     },
     "microtubule": {
       "name": "microtubule",
