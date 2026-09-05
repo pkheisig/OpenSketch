@@ -179,7 +179,7 @@ function ObjectInspector({ object }: { object: FabricObject }) {
   );
   return (
     <>
-      {!canGroup && (assetFamily || isScientificBrush(object)) && (
+      {!canGroup && (assetFamily || isScientificBrush(object) || object.svgComponent) && (
         <InspectorSection title="Color palette" open>
           <AssetColorPresets key={object.objectId} object={object} />
         </InspectorSection>
@@ -190,7 +190,11 @@ function ObjectInspector({ object }: { object: FabricObject }) {
         </InspectorSection>
       )}
       <InspectorSection title="Transform" open>
-        {isSvgPart && <p className="section-note">Position and size within the parent SVG.</p>}
+        {isSvgPart && (
+          <p className="section-note">
+            Edit this component as a whole. Its smaller details stay together.
+          </p>
+        )}
         <div className="field-row two">
           <NumberField
             label="X"
@@ -369,7 +373,7 @@ function ObjectInspector({ object }: { object: FabricObject }) {
           ) : null}
           {transparencyControl}
         </InspectorSection>
-      ) : isShape || isSvgPart ? (
+      ) : (isShape || isSvgPart) && !object.svgComponent ? (
         <InspectorSection title={isSvgPart ? "Part" : "Shape"} open>
           {typeof object.fill === "string" ? (
             <div className="inspector-color-row color-field">
@@ -448,6 +452,11 @@ function ObjectInspector({ object }: { object: FabricObject }) {
           {transparencyControl}
         </InspectorSection>
       ) : null}
+      {object.svgComponent && (
+        <InspectorSection title="Appearance" open>
+          {transparencyControl}
+        </InspectorSection>
+      )}
       {object.connector ? (
         <InspectorSection title="Arrow" open>
           <button

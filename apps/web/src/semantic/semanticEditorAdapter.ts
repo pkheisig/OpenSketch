@@ -533,6 +533,7 @@ const RESTORABLE_GROUP_PROPERTIES = [
   "provenance",
   "originalPalette",
   "assetColorRole",
+  "svgComponent",
   "originalFill",
   "originalStroke",
   "effectBaseFill",

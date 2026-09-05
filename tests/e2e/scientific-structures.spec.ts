@@ -569,3 +569,49 @@ test("continuous color sliders persist, preserve family choice and reset without
   await expect(page.getByRole("slider", { name: "Saturation", exact: true })).toHaveValue("0");
   await expect(brightness).toHaveValue("0");
 });
+
+test("infers solid SVG regions and rejects regrouping that changes visible stacking", async ({
+  page
+}) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await page.locator(".upper-canvas").waitFor();
+  const result = await page.evaluate(async () => {
+    const base = new URL(".", location.href).pathname;
+    const { loadEditableSvg } = await import(`${base}src/editor/svg.ts`);
+    const { prepareSvgComponents, hasSvgComponents } = await import(
+      `${base}src/editor/svgComponents.ts`
+    );
+    const url = performance
+      .getEntriesByType("resource")
+      .map((r) => r.name)
+      .find((url) => /\/fabric\.js\?/.test(url));
+    if (!url) throw new Error("Fabric module missing");
+    const { Group } = (await import(url)) as typeof import("../../apps/web/node_modules/fabric");
+    const check = async (
+      cover: string,
+      background = '<rect width="100" height="100" fill="white"/>'
+    ) => {
+      const parsed =
+        await loadEditableSvg(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+        ${background}
+        <circle cx="50" cy="50" r="20" fill="blue"/>
+        ${cover}<circle cx="50" cy="50" r="3" fill="red"/>
+      </svg>`);
+      const original = new Group(parsed.objects.filter(Boolean));
+      const prepared = await prepareSvgComponents(original);
+      return { preserved: prepared === original, components: hasSvgComponents(prepared) };
+    };
+    return {
+      accepted: await check(""),
+      vetoed: await check('<rect width="100" height="90" fill="green"/>'),
+      stranded: await check(
+        "",
+        '<path d="M0 0H100V100H0Z M30 30H70V70H30Z" fill="white" fill-rule="evenodd"/>'
+      )
+    };
+  });
+  expect(result.accepted).toEqual({ preserved: false, components: true });
+  expect(result.vetoed).toEqual({ preserved: true, components: false });
+  expect(result.stranded).toEqual({ preserved: true, components: false });
+});

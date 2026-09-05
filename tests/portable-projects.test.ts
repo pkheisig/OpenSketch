@@ -116,3 +116,14 @@ it("round-trips supported asset color roles and rejects unknown roles", () => {
   first.assetColorRole = "anything";
   expect(() => migrateProject(JSON.parse(serializeProject(project)))).toThrow(/assetColorRole/);
 });
+
+it("preserves SVG component boundaries independently of their display name", () => {
+  const project = structuredClone(fixture);
+  const first = (project.objects.objects as Record<string, unknown>[])[0];
+  first.svgComponent = "nucleus";
+  first.name = "Renamed part";
+  const restored = migrateProject(JSON.parse(serializeProject(project)));
+  expect((restored.objects.objects as Record<string, unknown>[])[0].svgComponent).toBe("nucleus");
+  first.svgComponent = { invalid: true };
+  expect(() => migrateProject(JSON.parse(serializeProject(project)))).toThrow(/svgComponent/);
+});

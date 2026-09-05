@@ -28,6 +28,7 @@ interface SvgHierarchyNode {
   kind: "svg-hierarchy";
   children: Array<SvgHierarchyNode | FabricObject>;
   groups: Map<string, SvgHierarchyNode>;
+  name?: string;
 }
 
 interface SvgFilterShadow {
@@ -261,7 +262,8 @@ function sourceGroupPath(element: Element): string[] {
 
 function groupSvgHierarchy(
   objects: Array<FabricObject | null>,
-  paths: WeakMap<FabricObject, string[]>
+  paths: WeakMap<FabricObject, string[]>,
+  names: Map<string, string>
 ): Array<FabricObject | null> {
   const root: SvgHierarchyNode = {
     kind: "svg-hierarchy",
@@ -277,7 +279,8 @@ function groupSvgHierarchy(
         child = {
           kind: "svg-hierarchy",
           children: [],
-          groups: new Map()
+          groups: new Map(),
+          name: names.get(id)
         };
         node.groups.set(id, child);
         node.children.push(child);
@@ -286,8 +289,15 @@ function groupSvgHierarchy(
     }
     node.children.push(object);
   });
-  const materialize = (child: SvgHierarchyNode | FabricObject): FabricObject =>
-    isSvgHierarchyNode(child) ? new Group(child.children.map(materialize)) : child;
+  const materialize = (child: SvgHierarchyNode | FabricObject): FabricObject => {
+    if (!isSvgHierarchyNode(child)) return child;
+    const group = new Group(child.children.map(materialize));
+    if (child.name) {
+      group.name = `Component: ${child.name}`;
+      group.svgComponent = child.name;
+    }
+    return group;
+  };
   return root.children.map(materialize);
 }
 
@@ -300,6 +310,14 @@ function svgLeafObjects(objects: FabricObject[]): FabricObject[] {
 export async function loadEditableSvg(source: string) {
   const compatibleSource = normalizeSvgForFabric(source);
   const annotatedSource = annotateSvgGroups(compatibleSource);
+  const names = new Map<string, string>();
+  new DOMParser()
+    .parseFromString(annotatedSource, "image/svg+xml")
+    .querySelectorAll("g[data-component]")
+    .forEach((group) => {
+      const name = group.getAttribute("data-component")?.trim();
+      if (name) names.set(group.getAttribute(SVG_GROUP_ATTRIBUTE)!, name.slice(0, 80));
+    });
   const rules = blendRules(annotatedSource);
   const filterShadows = svgFilterShadows(annotatedSource);
   const hierarchyPaths = new WeakMap<FabricObject, string[]>();
@@ -322,7 +340,8 @@ export async function loadEditableSvg(source: string) {
     // Empty SVG paths render nothing, but cannot form valid portable scene objects.
     objects: groupSvgHierarchy(
       parsed.objects.filter((object) => !(object instanceof Path && object.path.length === 0)),
-      hierarchyPaths
+      hierarchyPaths,
+      names
     )
   };
 }

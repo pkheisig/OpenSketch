@@ -6,6 +6,7 @@ import type { SemanticMetadata, SemanticRelation } from "@/semantic/composition"
 
 declare module "fabric" {
   interface FabricObject {
+    svgComponent?: string;
     assetColorRole?: import("@workspace/editor-core").AssetColorRole;
     scientificBrush?: import("@/editor/scientific/catalog").ScientificBrushSpec;
     objectId?: string;

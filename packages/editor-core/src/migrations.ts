@@ -200,6 +200,7 @@ const SCENE_PROPERTIES = new Set([
   "assetBrightness",
   "assetColorPreset",
   "assetColorRole",
+  "svgComponent",
   "recognizedGroups",
   "defaultElementStyle",
   "semanticMetadata",
@@ -323,6 +324,7 @@ const SCENE_STRING_PROPERTIES = new Set([
   "assetTint",
   "assetColorPreset",
   "assetColorRole",
+  "svgComponent",
   "type"
 ]);
 
@@ -1079,6 +1081,7 @@ function validateCustomProperties(
     "assetBrightness",
     "assetColorPreset",
     "assetColorRole",
+    "svgComponent",
     "recognizedGroups",
     "semanticMetadata",
     "semanticRelations",
@@ -1092,9 +1095,15 @@ function validateCustomProperties(
     if (key === "assetColorRole") {
       if (!isAssetColorRole(item)) fail(`${path}.assetColorRole`, "is invalid");
     } else if (
-      ["name", "OpenSketchType", "assetId", "familyId", "assetTint", "assetColorPreset"].includes(
-        key
-      )
+      [
+        "name",
+        "OpenSketchType",
+        "assetId",
+        "familyId",
+        "assetTint",
+        "assetColorPreset",
+        "svgComponent"
+      ].includes(key)
     ) {
       assertString(item, `${path}.${key}`, {
         maxLength: PORTABLE_PROJECT_LIMITS.maxObjectNameLength

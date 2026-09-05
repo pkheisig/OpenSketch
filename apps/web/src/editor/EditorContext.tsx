@@ -1,3 +1,4 @@
+import { hasSvgComponents, prepareSvgComponents } from "./svgComponents";
 import { assertAssetCapacity } from "./assetCapacity";
 import {
   isScientificBrush,
@@ -190,6 +191,7 @@ FabricObject.customProperties = [
   "provenance",
   "originalPalette",
   "assetColorRole",
+  "svgComponent",
   "originalFill",
   "originalStroke",
   "effectBaseFill",
@@ -224,6 +226,7 @@ const RESTORABLE_GROUP_PROPERTIES = [
   "provenance",
   "originalPalette",
   "assetColorRole",
+  "svgComponent",
   "originalFill",
   "originalStroke",
   "effectBaseFill",
@@ -478,7 +481,7 @@ async function createBundledAssetGroup(family: AssetFamily, variant: AssetVarian
   if (!source) throw new Error(`Could not load ${family.title}.`);
   const result = await loadEditableSvg(source);
   const objects = result.objects.filter((object): object is FabricObject => Boolean(object));
-  const group = groupSvgElements(objects, result.options);
+  const group = await prepareSvgComponents(groupSvgElements(objects, result.options));
   group.assetId = variant.id;
   group.familyId = family.familyId;
   const sourcePage = family.sourcePage ?? family.commonsPage ?? family.nihSourcePage ?? "";
@@ -676,7 +679,7 @@ function configureAtomicSvgAsset(object: FabricObject, editing = false): void {
     part.selectable = editing;
     part.evented = editing;
     part.perPixelTargetFind = false;
-    if (part instanceof Group) configureAtomicSvgAsset(part, editing);
+    if (part instanceof Group) configureAtomicSvgAsset(part, false);
   });
   object.setCoords();
 }
@@ -741,17 +744,7 @@ function svgEditHitObjectsAtLevel(
   objects: FabricObject[],
   point: FabricPoint
 ): FabricObject[] {
-  const directHits = hitObjectsAtLevel(canvas, objects, point);
-  const descendants: FabricObject[] = [];
-  directHits.forEach((object) => {
-    if (!(object instanceof Group) || object.OpenSketchType !== "svg-part") {
-      descendants.push(object);
-      return;
-    }
-    const nestedHits = svgEditHitObjectsAtLevel(canvas, object.getObjects(), point);
-    descendants.push(...(nestedHits.length > 0 ? nestedHits : [object]));
-  });
-  return descendants;
+  return hitObjectsAtLevel(canvas, objects, point);
 }
 
 function deepHitObjects(
@@ -1816,6 +1809,7 @@ export function EditorProvider({
     if (!exitedGroup) return;
     const parentPath = path.slice(0, -1);
     const svgAssetRoot = path[0];
+    if (isAtomicSvgAsset(exitedGroup)) configureAtomicSvgAsset(exitedGroup);
     setEditingGroupPath(parentPath);
     modifierDeepSelection.current = undefined;
     deepSelectionCycle.current = undefined;
@@ -1904,12 +1898,14 @@ export function EditorProvider({
         const directHits = isAtomicSvgAsset(editingGroupPathRef.current[0])
           ? svgEditHitObjectsAtLevel(canvas, currentEditingGroup.getObjects(), scenePoint)
           : hitObjectsAtLevel(canvas, currentEditingGroup.getObjects(), scenePoint);
-        const nestedGroup =
-          directHits.find(isManualGroup) ??
-          (isAtomicSvgAsset(editingGroupPathRef.current[0])
-            ? directHits.find((object) => object instanceof Group)
-            : undefined);
-        if (nestedGroup) {
+        const nestedGroup = isAtomicSvgAsset(currentEditingGroup)
+          ? undefined
+          : directHits.find(
+              (object) =>
+                isManualGroup(object) || (isAtomicSvgAsset(object) && hasSvgComponents(object))
+            );
+        if (nestedGroup instanceof Group) {
+          if (isAtomicSvgAsset(nestedGroup)) configureAtomicSvgAsset(nestedGroup, true);
           setEditingGroupPath([...editingGroupPathRef.current, nestedGroup]);
           canvas.discardActiveObject();
           setSelection([]);
@@ -1934,6 +1930,7 @@ export function EditorProvider({
       const topLevelHits = hitObjectsAtLevel(canvas, canvas.getObjects(), scenePoint);
       const asset = topLevelHits.find(isAtomicSvgAsset);
       if (asset) {
+        if (!hasSvgComponents(asset)) return;
         markSvgParts(asset);
         configureAtomicSvgAsset(asset, true);
         setEditingGroupPath([asset]);
@@ -3180,9 +3177,11 @@ export function EditorProvider({
           `import-${stored.id}`
         );
         const result = await loadEditableSvg(source);
-        object = groupSvgElements(
-          result.objects.filter((item): item is FabricObject => Boolean(item)),
-          result.options
+        object = await prepareSvgComponents(
+          groupSvgElements(
+            result.objects.filter((item): item is FabricObject => Boolean(item)),
+            result.options
+          )
         );
       } else {
         object = await FabricImage.fromURL(stored.dataUrl);
@@ -3286,8 +3285,9 @@ export function EditorProvider({
     if (!canvas) return;
     const parent = editableAssetParent(canvas.getActiveObject());
     if (!parent) return;
-    if (editingGroupPathRef.current[0] === parent) {
-      setEditingGroupPath([]);
+    const index = editingGroupPathRef.current.indexOf(parent);
+    if (index >= 0) {
+      setEditingGroupPath(editingGroupPathRef.current.slice(0, index));
       configureAtomicSvgAsset(parent);
     }
     canvas.setActiveObject(parent);
@@ -3926,7 +3926,11 @@ export function EditorProvider({
     (presetId: string) => {
       if (!canvas || selection.length !== 1) return;
       const object = selection[0];
-      if (!(object instanceof Group) || (!object.familyId && !isScientificBrush(object))) return;
+      if (
+        !(object instanceof Group) ||
+        (!object.familyId && !isScientificBrush(object) && !object.svgComponent)
+      )
+        return;
       const preset = ASSET_COLOR_PRESETS.find((item) => item.id === presetId);
       if (!preset) return;
       void trackPendingEditorWork(
@@ -3935,19 +3939,20 @@ export function EditorProvider({
             const family = assetManifest.families.find((item) => item.familyId === object.familyId);
             const profile = family
               ? colorProfileForFamily(family)
-              : isScientificBrush(object)
+              : isScientificBrush(object) || object.svgComponent
                 ? "cell"
                 : undefined;
             if (
               !profile ||
               !canvas ||
-              !canvas.getObjects().includes(object) ||
+              !(canvas.getObjects().includes(object) || editableAssetParent(object)) ||
               canvas.getActiveObjects().length !== 1 ||
               canvas.getActiveObjects()[0] !== object
             ) {
               return;
             }
             recolorAsset(object, profile, preset);
+            refreshParentGroups(object);
             canvas.requestRenderAll();
             setSelection([...canvas.getActiveObjects()]);
             commit("Apply color preset");
@@ -4315,7 +4320,9 @@ export function EditorProvider({
           event.preventDefault();
           const rootGroup = groupPath[0];
           setEditingGroupPath([]);
-          if (isAtomicSvgAsset(rootGroup)) configureAtomicSvgAsset(rootGroup);
+          groupPath.forEach((group) => {
+            if (isAtomicSvgAsset(group)) configureAtomicSvgAsset(group);
+          });
           modifierDeepSelection.current = undefined;
           deepSelectionCycle.current = undefined;
           canvas.discardActiveObject();
