@@ -7290,22 +7290,113 @@
     "multinucleated-syncytium": {
       "name": "multinucleated syncytium",
       "category": "3. Cell states and morphology",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "multinucleated-giant-cell",
+      "alias_reason": "Reuse the existing macrophage-derived giant-cell illustration as one representative multinucleated syncytium: multiple nuclei in one continuous shared cytoplasm formed by fusion. This illustrates a documented syncytial form and does not imply that all syncytia have macrophage morphology.",
+      "reference": "https://pmc.ncbi.nlm.nih.gov/articles/PMC1869534/",
+      "png": "png/multinucleated-giant-cell-bioart-transparent.png",
+      "svg": "svg/multinucleated-giant-cell-bioart-traced.svg",
+      "png_sha256": "79d63712d42c4b3072d362d53e8483e6b6f6b6b1aac73b90dded2358acecaf4c",
+      "svg_sha256": "96fd818ee05d23298c5e4e82682a145dd6252ac0ebd7a97d488387fed23dd441"
     },
     "cell-spheroid": {
       "name": "cell spheroid",
       "category": "3. Cell states and morphology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cell-spheroid-bioart-transparent.png",
+      "svg": "svg/cell-spheroid-bioart-traced.svg",
+      "png_sha256": "c26df19fbac7a1a8bccdd7e900b480e1fe30738aceeb8b6ec87716a2c2cd61a1",
+      "svg_sha256": "6f0e64c855de1050639b744429eabc939f5524ea1d6b9096a7c511a606d62314",
+      "original_sha256": "e306226eade33afc62060b1de2e9709eef1473d5efe7aa35dd4227e46306090a",
+      "png_dimensions": [
+        1801,
+        1801
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        346,
+        332,
+        331,
+        338
+      ],
+      "svg_paths": 15722,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cell-spheroid/prompt.json",
+      "qa": "qa/inventory/cell-spheroid",
+      "visual_review": "Compact three-dimensional cell aggregate with closely apposed surface profiles and peripheral occlusion. Complete spheroid, one nucleus per visible profile, no extra cells or lumen. Clean transparency on white/dark; SVG preserves surface-cell boundaries and rounded shading with mild banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-spheroid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-spheroid/inspection.webm"
+      }
     },
     "organoid": {
       "name": "organoid",
       "category": "3. Cell states and morphology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/organoid-bioart-transparent.png",
+      "svg": "svg/organoid-bioart-traced.svg",
+      "png_sha256": "8085adfeb726d6a329af049ec1b7be38815ce3ed8f042368e3afb1610b369f20",
+      "svg_sha256": "7d1e0377a2f318a631da29163695fe9284b368b67d01cf6edbf280a08334fccf",
+      "original_sha256": "d592bd43378de1914ebe8997af3d5aa1ce315291d38f385b2f322d5b163e2711",
+      "png_dimensions": [
+        1868,
+        1868
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        267,
+        344,
+        315,
+        345
+      ],
+      "svg_paths": 18826,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/organoid/prompt.json",
+      "qa": "qa/inventory/organoid",
+      "visual_review": "Reviewed PNG and rendered SVG on light and dark: complete three-bud intestinal organoid cutaway, continuous lumen, epithelial cell ring, clean transparent padding. SVG retains structure and palette with slight contour banding. Representative intestinal model, not all organoid types.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/organoid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/organoid/inspection.webm"
+      }
     },
     "nucleus": {
       "name": "nucleus",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/nucleus-bioart-transparent.png",
+      "svg": "svg/nucleus-bioart-traced.svg",
+      "png_sha256": "50fa18c6b8667ddd9080f877a83c951263c3586bacfa0bafd5a07a906b5f196b",
+      "svg_sha256": "c50f642c709519cef1c63cd5f89650c68fb6df4a002d0860dd10223f3e03fbaa",
+      "original_sha256": "19beb57bf6698c1e8069ed945ec2f57b86f9d221308e6b7f21f9ad1486257092",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        265,
+        282,
+        251
+      ],
+      "svg_paths": 22798,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/nucleus/prompt.json",
+      "qa": "qa/inventory/nucleus",
+      "visual_review": "Reviewed light/dark PNG and SVG: full interphase nucleus, intact pore-bearing shell and cutaway, nucleolus and chromatin preserved. Clean transparent margins; slight SVG gradient banding does not obscure structure. Pore count and chromatin pattern are schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nucleus/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nucleus/inspection.webm"
+      }
     },
     "nucleolus": {
       "name": "nucleolus",

@@ -1,8 +1,8 @@
 # Inventory production progress
 
-69 of 768 unique inventory names covered across 770 checklist entries.
+73 of 768 unique inventory names covered across 770 checklist entries.
 
-These cover 65 distinct PNG/SVG pairs and 4 explicit archetype aliases. Alias reasons are recorded in the ledger.
+These cover 68 distinct PNG/SVG pairs and 5 explicit archetype aliases. Alias reasons are recorded in the ledger.
 The inventory files currently contain 770 checklist rows; their prose count is stale. Two exact repeated names share a single asset. The existing ten approved pairs are preserved. Completion requires a saved PNG, editable SVG, file validation, and visual review.
 
 Production remains on the experimental branch. Each asset is generated as a transparent PNG, then traced and reviewed on light and dark backgrounds. Completed assets are pushed periodically. The full inventory is still in progress.
@@ -73,6 +73,10 @@ Production remains on the experimental branch. Each asset is generated as a tran
 | rounded suspension cell | [PNG](png/rounded-suspension-cell-bioart-transparent.png) | [SVG](svg/rounded-suspension-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rounded-suspension-cell/comparison.png) |
 | cell with membrane blebs | [PNG](png/cell-with-membrane-blebs-bioart-transparent.png) | [SVG](svg/cell-with-membrane-blebs-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-with-membrane-blebs/comparison.png) |
 | phagocytic cell engulfing a particle | [PNG](png/phagocytic-cell-engulfing-a-particle-bioart-transparent.png) | [SVG](svg/phagocytic-cell-engulfing-a-particle-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/phagocytic-cell-engulfing-a-particle/comparison.png) |
+| multinucleated syncytium | [PNG](png/multinucleated-giant-cell-bioart-transparent.png) | [SVG](svg/multinucleated-giant-cell-bioart-traced.svg) | Reuses multinucleated-giant-cell: [rationale](https://pmc.ncbi.nlm.nih.gov/articles/PMC1869534/) |
+| cell spheroid | [PNG](png/cell-spheroid-bioart-transparent.png) | [SVG](svg/cell-spheroid-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-spheroid/comparison.png) |
+| organoid | [PNG](png/organoid-bioart-transparent.png) | [SVG](svg/organoid-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/organoid/comparison.png) |
+| nucleus | [PNG](png/nucleus-bioart-transparent.png) | [SVG](svg/nucleus-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nucleus/comparison.png) |
 | mitochondrion | [PNG](png/mitochondrion-bioart-transparent.png) | [SVG](svg/mitochondrion-bioart-traced.svg) | Approved earlier batch |
 | generic IgG antibody | [PNG](png/igg-antibody-bioart-transparent.png) | [SVG](svg/igg-antibody-bioart-traced.svg) | Approved earlier batch |
 | CD8 alpha-beta receptor | [PNG](png/cd8-receptor-bioart-transparent.png) | [SVG](svg/cd8-receptor-bioart-traced.svg) | Approved earlier batch |
