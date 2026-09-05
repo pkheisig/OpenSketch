@@ -1,3 +1,4 @@
+import { AssetColorPresets } from "./AssetColorPresets";
 import { ScientificBrushInspector } from "./ScientificBrushInspector";
 import { isScientificBrush } from "@/editor/scientific/objects";
 import { useEffect, useState } from "react";
@@ -178,6 +179,11 @@ function ObjectInspector({ object }: { object: FabricObject }) {
   );
   return (
     <>
+      {!canGroup && (assetFamily || isScientificBrush(object)) && (
+        <InspectorSection title="Color palette" open>
+          <AssetColorPresets object={object} />
+        </InspectorSection>
+      )}
       {isScientificBrush(object) && (
         <InspectorSection title="Editable structure" open>
           <ScientificBrushInspector object={object} />

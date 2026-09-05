@@ -71,3 +71,11 @@ The Edit panel now offers a signed curvature slider and Straighten for open bila
 DNA retains its existing manual path editing; fixed SVGs and separate semantic components do not receive procedural curvature controls. Composite authors should use these editable structures with existing protein and cell assets rather than redraw a complete composite. Curvature is saved in the project and participates in the existing property-edit undo history.
 
 Validation: 483 unit tests, five Chromium interaction tests, typecheck and production build pass. Tests cover signed curvature, endpoint preservation, straightening, undo and reload. A recorded visual check also verifies closed-circle tightening. [Screenshots and recording](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/curvature-controls-20260905/index.html).
+
+## Asset color palettes
+
+Edit now exposes 48 presets: twelve color families with Light, Soft, Classic and Deep shades. Original colors restores the source palette. Presets recolor existing vector paints in memory; no SVG variants are generated. Existing preset IDs remain available.
+
+For traced artwork, the main hue family is estimated from the original paints, weighted by path bounding-box area. Related shades follow the chosen ramp while contrasting hues, neutral outlines, highlights and alpha values are retained. This is a color heuristic, not organelle recognition: structures sharing the main hue can change together. Procedural structures use their explicit body-fill role and preserve accent and outline colors. Subsequent curvature edits retain the selected colors.
+
+Validation covers palette uniqueness, contrasting colors, alpha preservation, exact original restoration, undo, project reload, and membrane curvature after recoloring. [Visual examples and recording](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/asset-palettes-20260905/index.html).

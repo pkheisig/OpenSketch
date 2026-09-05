@@ -280,3 +280,109 @@ test("curvature slider bends and straightens a membrane and vessel, with undo an
   for (let i = 0; i < 18; i++) await page.keyboard.press("ArrowLeft");
   expect((await state(page)).spec.arcSweep).toBe(-90);
 });
+
+test("organized asset palettes preserve details, restore originals and survive reload", async ({
+  page
+}, testInfo) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await observeCanvas(page);
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("generic epithelial cell");
+  await page.getByRole("button", { name: "Insert generic epithelial cell", exact: true }).click();
+  await expect
+    .poll(() =>
+      page.evaluate(() => (window as ProbeWindow).structureQaCanvas?.getActiveObject()?.assetId)
+    )
+    .toBe("opensketch-generated-generic-epithelial-cell");
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  const paints = () =>
+    page.evaluate(() => {
+      const o = (window as ProbeWindow).structureQaCanvas!.getActiveObject()!;
+      const walk = (p: typeof o): string[] =>
+        "getObjects" in p
+          ? (p as import("../../apps/web/node_modules/fabric").Group).getObjects().flatMap(walk)
+          : [String(p.fill), String(p.stroke)];
+      return walk(o);
+    });
+  const original = await paints();
+  await expect(page.locator(".asset-palette-row button")).toHaveCount(48);
+  await page.screenshot({ path: testInfo.outputPath("original.png") });
+  await page.getByRole("button", { name: "Red classic", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Red classic", exact: true })).toHaveAttribute(
+    "aria-pressed",
+    "true"
+  );
+  const red = await paints();
+  expect(red.some((p, i) => p !== original[i])).toBe(true);
+  expect(red.some((p, i) => p === original[i] && p !== "null")).toBe(true);
+  await page.waitForTimeout(700);
+  await page.screenshot({ path: testInfo.outputPath("red.png") });
+  await page.getByRole("button", { name: "Blue soft", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Blue soft", exact: true })).toHaveAttribute(
+    "aria-pressed",
+    "true"
+  );
+  expect(await paints()).not.toEqual(red);
+  await page.getByRole("button", { name: "Undo", exact: true }).click();
+  await page.locator(".upper-canvas").click({ position: { x: 480, y: 330 } });
+  await page.keyboard.press("ControlOrMeta+a");
+  await expect.poll(paints).toEqual(red);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await page.getByRole("button", { name: "Original colors", exact: true }).click();
+  expect(await paints()).toEqual(original);
+  await page.getByRole("button", { name: "Red classic", exact: true }).click();
+  await expect.poll(paints).toEqual(red);
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible({ timeout: 15000 });
+  await page.reload();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await observeCanvas(page);
+  await page.locator(".upper-canvas").click({ position: { x: 480, y: 330 } });
+  await page.keyboard.press("ControlOrMeta+a");
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Red classic", exact: true })).toHaveAttribute(
+    "aria-pressed",
+    "true"
+  );
+  expect(await paints()).toEqual(red);
+  await page.getByRole("button", { name: "Original colors", exact: true }).click();
+  expect(await paints()).toEqual(original);
+});
+
+test("membrane palette survives bending and restores original semantic colors", async ({
+  page
+}) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await observeCanvas(page);
+  await choose(page, "Lipid bilayer", 480, 330);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  const before = await state(page);
+  await page.getByRole("button", { name: "Blue deep", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Blue deep", exact: true })).toHaveAttribute(
+    "aria-pressed",
+    "true"
+  );
+  const themed = await state(page);
+  expect(themed.spec.fill).not.toBe(before.spec.fill);
+  expect(themed.spec.accent).toBe(before.spec.accent);
+  await page.getByRole("slider", { name: "Structure curvature", exact: true }).focus();
+  for (let i = 0; i < 18; i++) await page.keyboard.press("ArrowRight");
+  expect((await state(page)).spec.fill).toBe(themed.spec.fill);
+  const bent = await state(page);
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible({ timeout: 15000 });
+  await page.reload();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await observeCanvas(page);
+  await page.locator(".upper-canvas").click({ position: bent.controls.brushPoint1 });
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Blue deep", exact: true })).toHaveAttribute(
+    "aria-pressed",
+    "true"
+  );
+  await page.getByRole("button", { name: "Original colors", exact: true }).click();
+  const restored = await state(page);
+  expect(restored.spec.fill).toBe(before.spec.fill);
+  expect(restored.spec.arcSweep).toBe(90);
+});

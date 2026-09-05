@@ -975,6 +975,17 @@ function rememberOriginalColors(object: FabricObject): void {
 }
 
 function restoreOriginalColors(object: FabricObject): void {
+  if (isScientificBrush(object) && object.originalPalette?.["scientific:fill"]) {
+    const original = object.originalPalette;
+    updateBrushObject(object, {
+      ...object.scientificBrush,
+      fill: original["scientific:fill"],
+      accent: original["scientific:accent"],
+      stroke: original["scientific:stroke"]
+    });
+    object.assetColorPreset = undefined;
+    return;
+  }
   const walk = (current: FabricObject) => {
     if (current.originalFill !== undefined) {
       current.set("fill", current.originalFill);
@@ -1065,6 +1076,48 @@ function applyPresetColors(
   walk(object);
   object.assetColorPreset = presetId;
   object.dirty = true;
+}
+
+function recolorAsset(
+  object: Group,
+  profile: ReturnType<typeof colorProfileForFamily>,
+  preset: (typeof ASSET_COLOR_PRESETS)[number]
+) {
+  if (isScientificBrush(object)) {
+    const spec = object.scientificBrush;
+    object.originalPalette ??= {};
+    for (const role of ["fill", "accent", "stroke"] as const)
+      object.originalPalette["scientific:" + role] ??= spec[role];
+    const original = object.originalPalette;
+    // The procedural renderer knows the body and accent roles.
+    updateBrushObject(object, {
+      ...spec,
+      fill: preset.ramps[profile][3],
+      accent: original["scientific:accent"],
+      stroke: original["scientific:stroke"]
+    });
+    object.assetColorPreset = preset.id;
+    return;
+  }
+  const weights = new Map<string, number>();
+  const walk = (part: FabricObject) => {
+    if (part instanceof Group) {
+      part.getObjects().forEach(walk);
+      return;
+    }
+    if (part.originalFill) {
+      const key = normalizedPresetColor(part.originalFill);
+      weights.set(
+        key,
+        (weights.get(key) ?? 0) +
+          Math.max(1, part.width * part.height * Math.abs(part.scaleX * part.scaleY))
+      );
+    }
+  };
+  walk(object);
+  const mapping = presetColorMap(originalPaints(object), profile, preset, weights);
+  restoreOriginalColors(object);
+  applyPresetColors(object, mapping, preset.id);
 }
 
 function withLogicalViewport<T>(canvas: Canvas, settings: CanvasSettings, operation: () => T): T {
@@ -2447,13 +2500,15 @@ export function EditorProvider({
         return Promise.reject(new Error(`Asset color preset "${presetId}" does not exist.`));
       const operation = loadAssetManifest().then(({ assetManifest }) => {
         const family = assetManifest.families.find((item) => item.familyId === object.familyId);
-        const profile = family ? colorProfileForFamily(family) : undefined;
+        const profile = family
+          ? colorProfileForFamily(family)
+          : isScientificBrush(object)
+            ? "cell"
+            : undefined;
         if (!profile || sceneObjectIndex(canvas).get(objectId) !== object) {
           throw new Error(`Asset color preset target "${objectId}" is no longer available.`);
         }
-        const mapping = presetColorMap(originalPaints(object), profile, preset);
-        restoreOriginalColors(object);
-        applyPresetColors(object, mapping, preset.id);
+        recolorAsset(object, profile, preset);
         canvas.requestRenderAll();
       });
       return trackPendingEditorWork(operation);
@@ -2863,6 +2918,10 @@ export function EditorProvider({
           const group = preset
             ? createScientificObject(preset.id, semanticCreationDefaultsRef.current)!
             : await createBundledAssetGroup(family, variant);
+          if (preset) {
+            group.familyId = family.familyId;
+            rememberOriginalColors(group);
+          }
           if (!semanticCanvasRef.current) return undefined;
           assertAssetCapacity(semanticCanvasRef.current.getObjects(), group);
           const scale = assetInsertionScale(family.title, group.width || 1, group.height || 1);
@@ -3512,6 +3571,16 @@ export function EditorProvider({
       const objects = canvas.getActiveObjects();
       objects.forEach((object) => {
         if (isScientificBrush(object) && Object.hasOwn(properties, "scientificBrush")) {
+          const patch = properties.scientificBrush as FabricObject["scientificBrush"];
+          if (
+            patch &&
+            ["fill", "accent", "stroke"].some(
+              (key) =>
+                patch[key as "fill" | "accent" | "stroke"] !==
+                object.scientificBrush[key as "fill" | "accent" | "stroke"]
+            )
+          )
+            object.assetColorPreset = undefined;
           if (properties.scientificBrush === null) detachBrush(object);
           else
             updateBrushObject(
@@ -3740,25 +3809,28 @@ export function EditorProvider({
     (presetId: string) => {
       if (!canvas || selection.length !== 1) return;
       const object = selection[0];
-      if (!(object instanceof Group) || !object.familyId) return;
+      if (!(object instanceof Group) || (!object.familyId && !isScientificBrush(object))) return;
       const preset = ASSET_COLOR_PRESETS.find((item) => item.id === presetId);
       if (!preset) return;
       void trackPendingEditorWork(
         loadAssetManifest()
           .then(({ assetManifest }) => {
             const family = assetManifest.families.find((item) => item.familyId === object.familyId);
-            const profile = family ? colorProfileForFamily(family) : undefined;
+            const profile = family
+              ? colorProfileForFamily(family)
+              : isScientificBrush(object)
+                ? "cell"
+                : undefined;
             if (
               !profile ||
               !canvas ||
               !canvas.getObjects().includes(object) ||
-              canvas.getActiveObject() !== object
+              canvas.getActiveObjects().length !== 1 ||
+              canvas.getActiveObjects()[0] !== object
             ) {
               return;
             }
-            const mapping = presetColorMap(originalPaints(object), profile, preset);
-            restoreOriginalColors(object);
-            applyPresetColors(object, mapping, preset.id);
+            recolorAsset(object, profile, preset);
             canvas.requestRenderAll();
             setSelection([...canvas.getActiveObjects()]);
             commit("Apply color preset");
@@ -3780,6 +3852,7 @@ export function EditorProvider({
       }
     });
     canvas.requestRenderAll();
+    setSelection([...canvas.getActiveObjects()]);
     commit("Reset colors");
   }, [canvas, commit]);
 

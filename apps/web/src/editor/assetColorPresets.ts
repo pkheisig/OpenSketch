@@ -4,12 +4,14 @@ import type { AssetFamily } from "@workspace/editor-core";
 export type AssetColorProfile = "cell" | "protein" | "equipment";
 
 export interface AssetColorPreset {
-  id: "green" | "blue" | "purple" | "red" | "gold";
+  id: string;
+  family?: string;
+  shade?: string;
   label: string;
   ramps: Record<AssetColorProfile, string[]>;
 }
 
-export const ASSET_COLOR_PRESETS: AssetColorPreset[] = [
+const BASE_PRESETS: AssetColorPreset[] = [
   {
     id: "green",
     label: "Green",
@@ -57,21 +59,65 @@ export const ASSET_COLOR_PRESETS: AssetColorPreset[] = [
   }
 ];
 
-const SUPPORTED_EQUIPMENT =
-  /\b(plate|dish|flask|beaker|tube|vial|pipette|syringe|bottle|well|rack|microscope|centrifuge|incubator|bioreactor)\b/i;
+export const ASSET_PALETTE_SHADES = ["Light", "Soft", "Classic", "Deep"] as const;
+const extraFamilies: [string, string, string[]][] = [
+  ["orange", "Orange", ["#55301d", "#99532a", "#cf8650", "#e9bb91", "#fae9d9"]],
+  ["teal", "Teal", ["#153e40", "#287c7e", "#51aeb0", "#a0d8d6", "#e0f3ef"]],
+  ["cyan", "Cyan", ["#183d50", "#237b9b", "#49b1cc", "#a0dce7", "#e0f5f8"]],
+  ["indigo", "Indigo", ["#282b54", "#505b99", "#818dca", "#b7c1e9", "#e9ecf9"]],
+  ["pink", "Pink", ["#562b46", "#984d7e", "#c780ab", "#e5b4ce", "#f8e6ef"]],
+  ["brown", "Brown", ["#3c2c23", "#79543d", "#ae8968", "#d7bea3", "#f1e8dc"]],
+  ["slate", "Slate", ["#28343e", "#526879", "#879ba8", "#becdd4", "#edf2f4"]]
+];
+for (const [id, label, ramp] of extraFamilies) {
+  BASE_PRESETS.push({ id, label, ramps: { cell: ramp, protein: ramp, equipment: ramp } });
+}
+const FAMILY_ORDER = [
+  "red",
+  "orange",
+  "gold",
+  "green",
+  "teal",
+  "cyan",
+  "blue",
+  "indigo",
+  "purple",
+  "pink",
+  "brown",
+  "slate"
+];
+export const ASSET_COLOR_PRESETS: AssetColorPreset[] = [...BASE_PRESETS]
+  .sort((a, b) => FAMILY_ORDER.indexOf(a.id) - FAMILY_ORDER.indexOf(b.id))
+  .flatMap((base) =>
+    ASSET_PALETTE_SHADES.map((shade) => ({
+      ...base,
+      id: shade === "Classic" ? base.id : base.id + "-" + shade.toLowerCase(),
+      label: base.label + " " + shade.toLowerCase(),
+      family: base.label,
+      shade,
+      ramps: Object.fromEntries(
+        Object.entries(base.ramps).map(([profile, ramp]) => [
+          profile,
+          ramp.map((color) =>
+            shade === "Light"
+              ? interpolateHex(color, "#ffffff", 0.32)
+              : shade === "Soft"
+                ? interpolateHex(color, "#ffffff", 0.16)
+                : shade === "Deep"
+                  ? interpolateHex(color, ramp[0], 0.2)
+                  : color
+          )
+        ])
+      ) as Record<AssetColorProfile, string[]>
+    }))
+  );
 
 export function colorProfileForFamily(
   family: Pick<AssetFamily, "category" | "title" | "keywords">
-): AssetColorProfile | undefined {
-  if (family.category === "Cells") return "cell";
-  if (family.category === "Proteins") return "protein";
-  if (
-    family.category === "Equipment" &&
-    SUPPORTED_EQUIPMENT.test(`${family.title} ${family.keywords.join(" ")}`)
-  ) {
-    return "equipment";
-  }
-  return undefined;
+): AssetColorProfile {
+  if (/equipment|labware/i.test(family.category)) return "equipment";
+  if (/protein/i.test(family.category)) return "protein";
+  return "cell";
 }
 
 export function normalizedPresetColor(color: string): string {
@@ -106,31 +152,57 @@ function shadeAt(ramp: string[], position: number): string {
   return interpolateHex(ramp[index], ramp[Math.min(index + 1, ramp.length - 1)], scaled - index);
 }
 
+/** Color families are inferred from original paints, not anatomical labels. */
 export function presetColorMap(
   sourceColors: string[],
   profile: AssetColorProfile,
-  preset: AssetColorPreset
+  preset: AssetColorPreset,
+  weights: Map<string, number> = new Map()
 ): Map<string, string> {
-  const unique = [...new Map(sourceColors.map((color) => [normalizedPresetColor(color), color])).values()];
-  const recolorable = unique
-    .filter((color) => {
-      const metrics = colorMetrics(color);
-      if (metrics.alpha === 0) return false;
-      if (profile !== "equipment") return true;
-      return !(
-        metrics.saturation < 0.08 &&
-        (metrics.luminance < 0.2 || metrics.luminance > 0.94)
+  const unique = [
+    ...new Map(sourceColors.map((color) => [normalizedPresetColor(color), color])).values()
+  ];
+  const hue = (color: string) => {
+    const [r, g, b] = new Color(color).getSource();
+    const max = Math.max(r, g, b),
+      min = Math.min(r, g, b),
+      delta = max - min;
+    if (!delta) return 0;
+    return (
+      ((max === r ? (g - b) / delta : max === g ? (b - r) / delta + 2 : (r - g) / delta + 4) * 60 +
+        360) %
+      360
+    );
+  };
+  const distance = (a: number, b: number) => Math.min(Math.abs(a - b), 360 - Math.abs(a - b));
+  const chromatic = unique.filter((color) => {
+    const m = colorMetrics(color);
+    return m.alpha > 0 && m.saturation >= 0.12 && m.luminance > 0.12 && m.luminance < 0.96;
+  });
+  const dominant = chromatic.reduce<string | undefined>((best, color) => {
+    const score = (candidate: string) =>
+      chromatic.reduce(
+        (sum, paint) =>
+          sum +
+          (distance(hue(candidate), hue(paint)) <= 35
+            ? (weights.get(normalizedPresetColor(paint)) ?? 1) * colorMetrics(paint).alpha
+            : 0),
+        0
       );
-    })
-    .sort((left, right) => colorMetrics(left).luminance - colorMetrics(right).luminance);
-
-  return new Map(
-    recolorable.map((color, index) => [
+    return !best || score(color) > score(best) ? color : best;
+  }, undefined);
+  const result = new Map<string, string>();
+  for (const color of unique) {
+    const m = colorMetrics(color);
+    // Keep neutral outlines/highlights and contrasting organelle color families.
+    if (!m.alpha || m.luminance < 0.12 || m.luminance > 0.96) continue;
+    if (dominant && (m.saturation < 0.12 || distance(hue(color), hue(dominant)) > 40)) continue;
+    const mapped = shadeAt(preset.ramps[profile], m.luminance);
+    const [r, g, b] = new Color(mapped).getSource();
+    result.set(
       normalizedPresetColor(color),
-      shadeAt(
-        preset.ramps[profile],
-        recolorable.length === 1 ? 0.5 : index / (recolorable.length - 1)
-      )
-    ])
-  );
+      m.alpha === 1 ? mapped : `rgba(${r}, ${g}, ${b}, ${m.alpha})`
+    );
+  }
+  return result;
 }
