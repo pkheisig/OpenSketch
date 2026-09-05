@@ -16,7 +16,7 @@ Every painted element in a newly authored SVG must inherit or declare one of the
 
 Group-level roles inherit; a child's explicit role overrides its parent. Large organelles are secondary, never detail merely because their original hue differs. Use separately tagged outline paths when a fill and outline need different behavior. Retain source lightness differences between primary and secondary regions, even if both start gray or white. Pure white primary fills can now be themed; white highlight regions remain white.
 
-Store the intended default paints in the original SVG. A white mouse stays white by default; a gray pipette stays gray. Import captures those paints, the palette displays them, and Original colors restores every source paint exactly. The app supplies fifteen color families with four shades, including white, gray and charcoal. Do not substitute a generic neutral preset for exact default restoration.
+Store the intended default paints in the original SVG. A white mouse stays white by default; a gray pipette stays gray. Import captures those paints, Restore to Default restores every source paint exactly. The app supplies fifteen color families with four shades, including white, gray and charcoal. Do not substitute a generic neutral preset for exact default restoration.
 
 Roles survive native project save/reload. A standalone exported SVG preserves the rendered vectors and colors; do not assume it retains the native project metadata. Deliver the source SVG with roles plus an editable native project when component identity must survive.
 
@@ -47,7 +47,7 @@ Use this representative batch before scaling production. It is a review checklis
 | Membrane | editable-membrane | Straight, curved and circular forms; dense aligned lipids; colors survive geometry edits |
 | Composite | Instances of editable-membrane and editable-receptor plus a library protein | Independent editable components and labels, retained library IDs, readable connections |
 
-Also check a neutral asset pair: opensketch-generated-laboratory-mouse and opensketch-generated-micropipette. Confirm native white/gray colors are visible and restoration is exact.
+Also check a neutral asset pair: opensketch-generated-laboratory-mouse and opensketch-generated-micropipette. Confirm Restore to Default restores native white/gray colors exactly.
 
 For each sample, capture original, green, blue, red and neutral palettes at sidebar size and figure size. Check clipping, misplaced parts, opacity, line weight and small-feature legibility. Exercise undo, save/reload, resizing and vector export. Submit the actual rendered sample batch for review before bulk generation.
 

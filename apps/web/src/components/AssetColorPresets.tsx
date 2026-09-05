@@ -1,36 +1,8 @@
-import {
-  ASSET_COLOR_PRESETS,
-  ASSET_PALETTE_SHADES,
-  normalizedPresetColor
-} from "@/editor/assetColorPresets";
+import { ASSET_COLOR_PRESETS, ASSET_PALETTE_SHADES } from "@/editor/assetColorPresets";
 import { useEditorFields } from "@/editor/editorHooks";
-import { Color, Group, type FabricObject } from "fabric";
+import { type FabricObject } from "fabric";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-
-function originalColors(object: FabricObject): string[] {
-  const colors = new Map<string, string>();
-  const add = (paint: unknown) => {
-    if (typeof paint !== "string" || !paint || paint === "none") return;
-    const color = new Color(paint);
-    if (color.getAlpha() > 0) colors.set(normalizedPresetColor(paint), paint);
-  };
-  if (object.scientificBrush) {
-    for (const role of ["fill", "accent", "stroke"] as const)
-      add(object.originalPalette?.["scientific:" + role] ?? object.scientificBrush[role]);
-  } else {
-    const walk = (part: FabricObject) => {
-      add(part.originalFill ?? part.fill);
-      add(part.originalStroke ?? part.stroke);
-      for (const gradient of [part.originalGradientFill, part.originalGradientStroke])
-        if (Array.isArray(gradient?.colorStops))
-          for (const stop of gradient.colorStops) add((stop as { color?: string }).color);
-      if (part instanceof Group) part.getObjects().forEach(walk);
-    };
-    walk(object);
-  }
-  return [...colors.values()];
-}
 
 export function AssetColorPresets({ object }: { object: FabricObject }) {
   const editor = useEditorFields(["applyColorPreset", "resetColors", "selection"]);
@@ -39,7 +11,6 @@ export function AssetColorPresets({ object }: { object: FabricObject }) {
   const trigger = useRef<HTMLButtonElement>(null);
   const popup = useRef<HTMLDivElement>(null);
   const close = useRef<HTMLButtonElement>(null);
-  const colors = originalColors(object);
   const families = [...new Set(ASSET_COLOR_PRESETS.map((p) => p.family))];
   useEffect(() => {
     if (!open) return;
@@ -94,13 +65,8 @@ export function AssetColorPresets({ object }: { object: FabricObject }) {
           Choose palette…
         </button>
         <button onClick={editor.resetColors} title="Restore every original color exactly">
-          Original colors
+          Restore to Default
         </button>
-      </div>
-      <div className="asset-native-preview" aria-label="Original asset colors">
-        {colors.map((color) => (
-          <span key={color} title={color} style={{ background: color }} />
-        ))}
       </div>
       {open &&
         createPortal(
@@ -124,19 +90,6 @@ export function AssetColorPresets({ object }: { object: FabricObject }) {
                 ×
               </button>
             </header>
-            <button
-              className="asset-palette-original"
-              aria-label="Restore original colors"
-              aria-pressed={!object.assetColorPreset}
-              onClick={editor.resetColors}
-            >
-              Restore original colors
-              <span className="asset-native-preview">
-                {colors.map((color) => (
-                  <span key={color} title={color} style={{ background: color }} />
-                ))}
-              </span>
-            </button>
             <div className="asset-palette-grid">
               <span />
               {ASSET_PALETTE_SHADES.map((shade) => (

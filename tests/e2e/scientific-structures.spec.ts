@@ -339,7 +339,7 @@ test("organized asset palettes preserve details, restore originals and survive r
   await expect.poll(paints).toEqual(red);
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await page.getByRole("button", { name: "Choose palette…", exact: true }).click();
-  await page.getByRole("button", { name: "Original colors", exact: true }).click();
+  await page.getByRole("button", { name: "Restore to Default", exact: true }).click();
   expect(await paints()).toEqual(original);
   await palette(page, "Red classic");
   await expect.poll(paints).toEqual(red);
@@ -356,7 +356,7 @@ test("organized asset palettes preserve details, restore originals and survive r
     "true"
   );
   expect(await paints()).toEqual(red);
-  await page.getByRole("button", { name: "Original colors", exact: true }).click();
+  await page.getByRole("button", { name: "Restore to Default", exact: true }).click();
   expect(await paints()).toEqual(original);
 });
 
@@ -394,7 +394,7 @@ test("membrane palette survives bending and restores original semantic colors", 
     "aria-pressed",
     "true"
   );
-  await page.getByRole("button", { name: "Original colors", exact: true }).click();
+  await page.getByRole("button", { name: "Restore to Default", exact: true }).click();
   const restored = await state(page);
   expect(restored.spec.fill).toBe(before.spec.fill);
   expect(restored.spec.arcSweep).toBe(90);
@@ -441,7 +441,7 @@ test("explicit color roles theme white bodies, preserve details and restore defa
   await page.locator(".upper-canvas").click({ position: { x: 480, y: 330 } });
   await page.keyboard.press("ControlOrMeta+a");
   await page.getByRole("button", { name: "Edit", exact: true }).click();
-  await page.getByRole("button", { name: "Original colors", exact: true }).click();
+  await page.getByRole("button", { name: "Restore to Default", exact: true }).click();
   expect(await roles()).toEqual(original);
 });
 
@@ -505,12 +505,7 @@ for (const title of ["laboratory mouse", "micropipette"]) {
           return walk(o);
         });
       const original = await paints();
-      await expect(page.getByLabel("Original asset colors", { exact: true })).toBeVisible();
-      const native = await page
-        .getByLabel("Original asset colors", { exact: true })
-        .locator("span")
-        .evaluateAll((nodes) => nodes.map((n) => (n as HTMLElement).style.background));
-      expect(native.length).toBeGreaterThan(2);
+      await expect(page.locator(".asset-native-preview")).toHaveCount(0);
       await palette(page, "Blue classic");
       await expect.poll(paints).not.toEqual(original);
       await page.keyboard.press("Escape");
@@ -522,14 +517,8 @@ for (const title of ["laboratory mouse", "micropipette"]) {
       await page.locator(".upper-canvas").click({ position: { x: 480, y: 330 } });
       await page.keyboard.press("ControlOrMeta+a");
       await page.getByRole("button", { name: "Edit", exact: true }).click();
-      await page.getByRole("button", { name: "Original colors", exact: true }).click();
+      await page.getByRole("button", { name: "Restore to Default", exact: true }).click();
       expect(await paints()).toEqual(original);
-      expect(
-        await page
-          .getByLabel("Original asset colors", { exact: true })
-          .locator("span")
-          .evaluateAll((nodes) => nodes.map((n) => (n as HTMLElement).style.background))
-      ).toEqual(native);
     }
   );
 }
