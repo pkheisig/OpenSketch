@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a plasma membrane segment, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One gently curved rectangular mammalian plasma membrane patch in three-quarter perspective, cut at its edges to reveal a true phospholipid bilayer: lavender hydrophilic head beads on BOTH exposed aqueous surfaces, paired darker violet hydrocarbon tails directed inward toward the hydrophobic midplane. At the front cut edge clearly distinguish the opposing two tail-bearing leaflets. Embed one teal channel protein spanning the full bilayer with a small central opening, and one purple single-pass glycoprotein with a short branched golden sugar chain only on the upper extracellular side. Include a few small golden cholesterol molecules between lipid tails, oriented with their small polar heads near phospholipid heads. No third leaflet, no protein spikes across every lipid, no surrounding cell or cytoplasm. Smooth matte forms, subtle gradients and crisp outlines; a reusable schematic membrane primitive, molecular numbers illustrative.",
+  "style_refinement": "Correct and restyle image 1 using image 2 only for polished biomedical vector-like rendering. Preserve the membrane patch, teal channel and purple glycoprotein with extracellular gold sugar branch. CRITICAL BILAYER CORRECTION: each top lavender head has two SHORT tails ending at the membrane MIDPLANE; each bottom head has its OWN two SHORT tails pointing upward and ending at that SAME midplane. Leave a narrow irregular dark seam between opposing tail tips so the TWO LEAFLETS are unmistakable. No tail may run continuously between a top and bottom head. Remove the gold cholesterol glyphs entirely to keep this simple membrane primitive accurate and readable. Use smooth matte filled forms, thin crisp dark outlines, subtle gradients; no grainy texture, glow or broad shadows. Complete isolated object with transparent padding; no text, labels, scenery, extra components.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-e2013c0c-2161-4310-aa52-cdb28daf4214.png",
+  "archetype": "Simplified plasma-membrane patch with two opposing phospholipid leaflets, a generic channel and a single-pass glycoprotein. Gold sugars are extracellular. Cholesterol was omitted in the corrected version. Midplane seam clarifies separate tail ends, not an aqueous gap. Lipid counts, channel stoichiometry and glycan composition are illustrative.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "plasma-membrane-segment",
+  "name": "plasma membrane segment",
+  "original": "originals/inventory/plasma-membrane-segment/generated.png",
+  "original_sha256": "4a86ad77a6a74a7449289fde9f5278f2da531d5875f13898c3c7c560dbcf9369"
+}

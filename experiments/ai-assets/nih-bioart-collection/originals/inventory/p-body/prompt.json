@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a P-body, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A compact rounded cytoplasmic processing-body ribonucleoprotein condensate, membrane-free pale lavender continuous phase containing a dense but readable mixture of many smoothly folded purple and teal protein glyphs intertwined with five orange single-stranded mRNA loops. Some protein glyphs are paired lobes representing repression and decapping machinery; others are simple irregular lobes. No ribosomes, no translation products, no nucleus, no vesicles, no phospholipid membrane. RNA is intact, not chopped into fragments. Use a thin subtle phase outline, never a thick wall or double rim. Three-dimensional overlap shows denser material toward the center; avoid cell-like internal organelles. Smooth matte forms, restrained gradients, small highlights and thin crisp outlines, no photographic texture.",
+  "style_refinement": "Refine image 1 into the polished biomedical vector-like style of image 2. Image 2 is only a style reference; do not copy its cell components. Preserve the P-body's compact membrane-free RNP condensate composition, orange RNA loops and dense purple/teal protein glyphs. Replace all grainy protein surfaces and mottled material with smooth matte filled lobes, thin crisp dark outlines, subtle gradients and modest highlights. The pale lavender boundary is a thin condensate-phase outline, no thick enclosing wall or membrane. Keep intact orange RNA with tiny simple base ticks, no fragmented RNA or ribosomes. Complete object centered with transparent padding, no text or unrelated objects.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-31094c52-8902-4c08-b2ff-cacc57fb876d.png",
+  "archetype": "Human cytoplasmic P-body schematic with intact translationally repressed RNA and generic repression/decapping protein glyphs. The pale boundary indicates a condensate phase, not membrane. Does not assert that decay occurs inside the granule. Protein shapes, stoichiometry and RNA counts are illustrative.",
+  "structure_references": [
+    "https://pubmed.ncbi.nlm.nih.gov/28965817/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "p-body",
+  "name": "P-body",
+  "original": "originals/inventory/p-body/generated.png",
+  "original_sha256": "6423f1e8c2574474198049a3c27d81456fc2405fadcf917cf7aff7ad36aba4f1"
+}

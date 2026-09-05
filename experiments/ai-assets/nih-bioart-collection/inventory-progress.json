@@ -8380,17 +8380,101 @@
     "stress-granule": {
       "name": "stress granule",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/stress-granule-bioart-transparent.png",
+      "svg": "svg/stress-granule-bioart-traced.svg",
+      "png_sha256": "3677ced25c78e4a3800caff83a372a91da717b4ac4175b8fb7708680dfe08963",
+      "svg_sha256": "e287b81652b92cfc1a30cc3860385d2eaf50e1f8e57af20884bc53b96b459dd2",
+      "original_sha256": "95b47378f9ad9d15cd12a25482c6c3e3bb5f33c5ebaffec6ec538fdb8f4559e9",
+      "png_dimensions": [
+        1924,
+        1924
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        275,
+        389,
+        293,
+        390
+      ],
+      "svg_paths": 29030,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/stress-granule/prompt.json",
+      "qa": "qa/inventory/stress-granule",
+      "visual_review": "Inspected PNG and SVG on white and dark backgrounds: continuous membrane-free condensate phase, two RNP-rich clusters, orange RNA and three small-subunit glyphs remain readable. Complete silhouette and transparent padding; slight trace banding is acceptable. Internal counts and molecular shapes are schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/stress-granule/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/stress-granule/inspection.webm"
+      }
     },
     "p-body": {
       "name": "P-body",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/p-body-bioart-transparent.png",
+      "svg": "svg/p-body-bioart-traced.svg",
+      "png_sha256": "449ac5228c9235bfb456bd3d82b95941e1013e07b902d8432a1da201e8fba7b0",
+      "svg_sha256": "32a79a7433839cba89967bb8249de7ab842a2240cf8db4566e934b3ec23f413b",
+      "original_sha256": "6423f1e8c2574474198049a3c27d81456fc2405fadcf917cf7aff7ad36aba4f1",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        256,
+        257,
+        251
+      ],
+      "svg_paths": 30866,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/p-body/prompt.json",
+      "qa": "qa/inventory/p-body",
+      "visual_review": "Inspected PNG and SVG on light and dark backgrounds: compact RNP condensate, intact orange RNA loops, smooth protein glyphs and a thin phase boundary preserved. No lipid bilayer or translating ribosomes. SVG retains depth and colors with minor gradient banding; full transparent padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/p-body/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/p-body/inspection.webm"
+      }
     },
     "plasma-membrane-segment": {
       "name": "plasma membrane segment",
       "category": "5. Membranes, junctions, and cell-surface structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/plasma-membrane-segment-bioart-transparent.png",
+      "svg": "svg/plasma-membrane-segment-bioart-traced.svg",
+      "png_sha256": "29f610f60e862306f1e30464f955d57e2d0ee6fb161f9b7910acdb093d01e13a",
+      "svg_sha256": "e55ee067d834fc4c701bdee8abe14035762ee67027ec726fd89ac248e72b5c4b",
+      "original_sha256": "4a86ad77a6a74a7449289fde9f5278f2da531d5875f13898c3c7c560dbcf9369",
+      "png_dimensions": [
+        2340,
+        2340
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        334,
+        706,
+        347,
+        700
+      ],
+      "svg_paths": 21907,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/plasma-membrane-segment/prompt.json",
+      "qa": "qa/inventory/plasma-membrane-segment",
+      "visual_review": "Inspected PNG and SVG on white and dark backgrounds: two opposing phospholipid leaflets with separate inward tails, full-depth teal channel, purple glycoprotein and extracellular sugar branch preserved. Corrected original spans its canvas without clipping and master has generous transparent padding. SVG slightly strengthens outlines but preserves the structure and smooth depth.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/plasma-membrane-segment/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/plasma-membrane-segment/inspection.webm"
+      }
     },
     "lipid-bilayer-cross-section": {
       "name": "lipid bilayer cross-section",

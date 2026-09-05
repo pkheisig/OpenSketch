@@ -1,8 +1,8 @@
 # Inventory production progress
 
-103 of 768 unique inventory names covered across 770 checklist entries.
+106 of 768 unique inventory names covered across 770 checklist entries.
 
-These cover 97 distinct PNG/SVG pairs and 6 explicit archetype aliases. Alias reasons are recorded in the ledger.
+These cover 100 distinct PNG/SVG pairs and 6 explicit archetype aliases. Alias reasons are recorded in the ledger.
 The inventory files currently contain 770 checklist rows; their prose count is stale. Two exact repeated names share a single asset. The existing ten approved pairs are preserved. Completion requires a saved PNG, editable SVG, file validation, and visual review.
 
 Production remains on the experimental branch. Each asset is generated as a transparent PNG, then traced and reviewed on light and dark backgrounds. Completed assets are pushed periodically. The full inventory is still in progress.
@@ -108,6 +108,9 @@ Production remains on the experimental branch. Each asset is generated as a tran
 | eukaryotic flagellum | [PNG](png/eukaryotic-flagellum-bioart-transparent.png) | [SVG](svg/eukaryotic-flagellum-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/eukaryotic-flagellum/comparison.png) |
 | lipid droplet | [PNG](png/lipid-droplet-bioart-transparent.png) | [SVG](svg/lipid-droplet-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lipid-droplet/comparison.png) |
 | glycogen granule | [PNG](png/glycogen-granule-bioart-transparent.png) | [SVG](svg/glycogen-granule-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/glycogen-granule/comparison.png) |
+| stress granule | [PNG](png/stress-granule-bioart-transparent.png) | [SVG](svg/stress-granule-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/stress-granule/comparison.png) |
+| P-body | [PNG](png/p-body-bioart-transparent.png) | [SVG](svg/p-body-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/p-body/comparison.png) |
+| plasma membrane segment | [PNG](png/plasma-membrane-segment-bioart-transparent.png) | [SVG](svg/plasma-membrane-segment-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/plasma-membrane-segment/comparison.png) |
 | generic IgG antibody | [PNG](png/igg-antibody-bioart-transparent.png) | [SVG](svg/igg-antibody-bioart-traced.svg) | Approved earlier batch |
 | CD8 alpha-beta receptor | [PNG](png/cd8-receptor-bioart-transparent.png) | [SVG](svg/cd8-receptor-bioart-traced.svg) | Approved earlier batch |
 | ATP synthase | [PNG](png/atp-synthase-bioart-transparent.png) | [SVG](svg/atp-synthase-bioart-traced.svg) | Approved earlier batch |
