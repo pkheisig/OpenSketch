@@ -2507,14 +2507,18 @@ html[data-theme] .ui-select-menu button svg {
 
 .opensketch-app .asset-editable-badge {
   position: absolute;
-  top: 91px;
-  left: 7px;
-  padding: 2px 7px;
-  border-radius: 4px;
-  background: #176c60;
+  top: 6px;
+  right: 6px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgb(23 108 96 / 90%);
   color: #fff;
-  font-size: 10px;
-  font-weight: 700;
-  line-height: 16px;
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 14px;
   pointer-events: none;
+}
+
+.opensketch-app .asset-card-editable .asset-source-control {
+  top: 27px;
 }
