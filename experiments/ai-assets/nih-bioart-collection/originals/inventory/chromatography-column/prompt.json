@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a chromatography column, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One reusable laboratory packed-bed chromatography column in slight three-quarter view, upright cylindrical clear glass body with a uniform pale cream packed resin bed, a small clear buffer headspace above it, navy threaded end caps at top and bottom and narrow central inlet/outlet fittings. A slim pale porous frit at each end of the packed bed. No stand, clamps, tubing, bottles or flowing particles. No colored separation bands or data. Clear blue-tinted glass walls, smooth polished navy plastic caps, silver small fittings. Complete single column, crisp outlines and gentle gradients, generous true transparent alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-15668d94-19e2-4701-909a-510442cfb32f.png",
+  "archetype": "Generic transparent packed-bed chromatography column with two frits and end fittings. Resin grains enlarged for legibility; not a claim about bead diameter, selectivity or column dimensions.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "chromatography-column",
+  "name": "chromatography column",
+  "original": "originals/inventory/chromatography-column/generated.png",
+  "original_sha256": "3af037381dd46873439ec1fe7c26a71a26b2576f1f09210c624245c382ea2609"
+}

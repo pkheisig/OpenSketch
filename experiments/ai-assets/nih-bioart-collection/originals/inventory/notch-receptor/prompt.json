@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a Notch receptor, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Transparent alpha PNG. Full-length Notch domain-architecture schematic, one continuous receptor, extracellular top, cytoplasmic bottom. Very long gently curved chain of many small elongated teal EGF-like repeat modules occupies upper half; repeats schematic and compressed, no exact number implied. This chain ends in a compact blue negative-regulatory region with three small rounded LNR lobes wrapped around a larger core immediately above ONE short transmembrane alpha helix. Below that helix, a short flexible connector leads to a curved violet ankyrin-repeat solenoid with seven stacked paired-helical ridges, then a long thin flexible violet C-terminal tail. No membrane patch, ligand, cleavage marks, labels, additional molecules. Clear difference between small extracellular bead-like repeats and intracellular curved helical solenoid. Smooth polished matte biomedical forms, broad highlights, full tall asset visible.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-6ac86aab-4c78-44e1-a855-9029fd8dbcd8.png",
+  "references": [
+    "https://www.rcsb.org/structure/3ETO",
+    "https://www.rcsb.org/structure/1YYH",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC1317659/"
+  ],
+  "archetype": "Notch domain-architecture schematic, extracellular EGF repeat array above regulatory region and one transmembrane helix; intracellular ankyrin solenoid and flexible C-terminal tail below. Repeat counts and relative lengths intentionally compressed, not an isoform-specific full atomic model.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "notch-receptor",
+  "name": "Notch receptor",
+  "original": "originals/inventory/notch-receptor/generated.png",
+  "original_sha256": "41bfeca4966f8cf55c49fe350833d6b368cc8dec0c14708e45630335fc0e1822"
+}

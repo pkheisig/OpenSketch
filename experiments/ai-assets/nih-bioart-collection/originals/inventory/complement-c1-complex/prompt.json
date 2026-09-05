@@ -1,0 +1,26 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of complement C1 complex, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. True transparent PNG alpha. Schematic full C1: C1q bouquet with exactly SIX slender collagen-like arms radiating down and out from a short common bundled stalk at top, each arm ends in ONE rounded three-lobed recognition head at bottom. Six total heads, all visible, at staggered depth in a semicircular bouquet. C1q pale saturated blue with subtle twisted ridges on stems. Inside central space among stems is the associated C1r2C1s2 protease assembly: two violet and two coral elongated multi-domain chains, compactly interwoven around the central stems, four chains total represented by connected rounded domain segments. The six C1q heads remain visually distinct from the internal four protease chains. No antibodies, membrane, target or extra floating object. Smooth matte biomedical protein forms, broad highlights, crisp edges, not atomic balls. Schematic topology and stoichiometry rather than atomic coordinates.",
+  "refinements": [
+    "Separate the two overlapping blue recognition heads at lower right: shift the rear one upward and slightly inward so its entire three-lobed outline is visible behind a clear gap, while retaining its own blue collagen stalk. Preserve exactly SIX blue terminal heads, six stalks and the central coral/violet protease assembly. Smooth all globular surfaces to a few broad rounded lobes, removing pebbled texture. Zoom out slightly so the full top stalk and all heads have clear transparent padding. True transparent alpha PNG.",
+    "The two blue stalks terminating together at the lower-right head must instead terminate in TWO separate heads. Keep the front lower-right head at its current position on the diagonal foreground stalk. Shorten the more vertical rear-right stalk and put its OWN separate three-lobed blue head halfway up the right side, in the clear space between the purple central assembly and the far-right head, around x=880 y=680. Exactly six distinct blue terminal heads total: far left, lower left, front bottom center, front lower right, far right, and new rear-right mid-height head. No other changes. Transparent PNG, remove checkerboard background.",
+    "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration."
+  ],
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-8e000a8c-9f7b-4719-af03-4efac1cff51f.png",
+  "references": [
+    "https://www.rcsb.org/structure/6F1C",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC2740559/"
+  ],
+  "archetype": "C1 schematic with six C1q collagen-like arms and six terminal globular heads, enclosing coral/violet C1r2C1s2 protease assembly. Individual protease domains and occluded connectors are simplified; not an atomistic reconstruction or resolved domain-by-domain topology.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "complement-c1-complex",
+  "name": "complement C1 complex",
+  "original": "originals/inventory/complement-c1-complex/generated.png",
+  "original_sha256": "e296a96688e016b0927eb1366ed5f6faea8ca4a76fb06b5d604cac0ce82ba5dd"
+}

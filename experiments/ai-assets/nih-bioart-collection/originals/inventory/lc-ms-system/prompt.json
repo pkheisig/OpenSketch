@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an LC-MS system, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Generic coupled liquid chromatography mass spectrometry instrument in three-quarter front view. On left a compact three-module liquid chromatography stack, closed navy front access panels, blank displays and two clear blue-capped solvent bottles in top tray with tidy inlet tubing. On right a broad lower pale gray mass spectrometer with navy closed analyzer panel and a stainless enclosed electrospray source projecting from front-left corner. ONE thin clear capillary visibly runs from column outlet on right side of LC stack to top of electrospray probe entering source, joining the two modules. No thick gas transfer tube between instruments. Source has a small glass window and neat black connector cable. No external computer, spectra, ions, laser, labels, symbols or separate pumps. Smooth clean cool white/navy materials, crisp edges, gentle highlights and subtle gradients. Entire coupled system centered on true transparent alpha background with generous padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-a1af5fe8-813d-4a81-949d-a77f2cfa3193.png",
+  "archetype": "Generic LC-MS system, liquid chromatography stack connected by fine capillary to enclosed electrospray source on closed mass analyzer. Module panels, tubing and analyzer shape schematic, not exact internal flow path or vendor model.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "lc-ms-system",
+  "name": "LC-MS system",
+  "original": "originals/inventory/lc-ms-system/generated.png",
+  "original_sha256": "0025e292e0504a731e7b0efa7fb445586fb98d3636e119fbcb85d1e07ff94ff6"
+}

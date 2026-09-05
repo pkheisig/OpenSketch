@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an automated cell washer, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Generic benchtop centrifugal cell-washing instrument in three-quarter view, compact pale gray housing with navy front panel and small blank display. Thick hinged round lid raised, revealing a deep circular stainless chamber and a rotor carrying a circular ring of identical small round-bottom sample tubes in holders, slightly tilted outward. A compact central wash-fluid distribution hub with short radial channels sits above the rotor, integral to instrument. Two clear sealed reagent/waste bottles secured in an integrated side bracket, tidy clear tubing running to sealed ports on instrument side. No fluid splashes, blood drops, oversized cells or loose accessories. Lid open for loading, rotor stationary. Do not add text, warning marks, logos, numbers or graphs. Crisp outlines, clean white/navy materials, clear blue plastic highlights, true transparent alpha PNG with complete object and generous padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-f09cbfba-f358-4d4d-b8e9-9f0f39b824c5.png",
+  "archetype": "Generic conceptual centrifugal cell-washing instrument with stationary sample rotor, central fluid hub and attached bottles. Open lid denotes loading/inspection, not running. Tube shapes, plumbing and capacities are schematic and do not represent a specific commercial instrument.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "automated-cell-washer",
+  "name": "automated cell washer",
+  "original": "originals/inventory/automated-cell-washer/generated.png",
+  "original_sha256": "6335a8451f4bafa7974ff7d3a92dfd13bbeaf1304339812bc6b1c8dc38f5caef"
+}

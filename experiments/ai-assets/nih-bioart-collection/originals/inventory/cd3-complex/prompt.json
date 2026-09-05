@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of the CD3 signaling complex, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Real transparent PNG alpha. Scientific domain schematic of the six CD3 signaling chains only, arranged as one compact group of three adjacent dimers, without TCR recognition chains and without a membrane patch. LEFT: one blue gamma chain paired with one teal epsilon chain, each one small extracellular Ig-like oval domain, a short stalk, one membrane-spanning helix and a flexible cytoplasmic tail. RIGHT: one violet delta chain paired with a second teal epsilon chain with the same one-domain architecture. CENTER: two coral zeta chains, each only a tiny extracellular stub, one membrane-spanning helix and a considerably longer flexible cytoplasmic tail. All SIX membrane helices at the SAME horizontal level; four Ig-like domains above them, four medium tails and two long coral tails below. No ITAM dots or chemical decorations, no disulfide symbols needed, no text. Smooth softly sculpted protein domains with broad shallow grooves; clean saturated colors, matte pseudo-3D depth. Schematic subunit layout, not an intact standalone native receptor.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-ce3806f5-7040-48b0-ba9e-0817aa714928.png",
+  "references": [
+    "https://www.rcsb.org/structure/6JXR",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC2845206/"
+  ],
+  "archetype": "Exploded domain schematic of CD3 gamma/epsilon, delta/epsilon and zeta/zeta signaling modules. Six chains, four extracellular Ig-like domains, six helices and longer zeta tails. TCR chains omitted deliberately; this is not a native standalone six-chain complex. ITAM motifs and atomic interfaces are not depicted.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "cd3-complex",
+  "name": "CD3 complex",
+  "original": "originals/inventory/cd3-complex/generated.png",
+  "original_sha256": "8937e31f99ec6d1c489fecc4f1c98dc0696ccc6dda23a007af530849c79d1aee"
+}

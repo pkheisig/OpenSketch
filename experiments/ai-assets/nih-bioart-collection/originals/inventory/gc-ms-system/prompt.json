@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a GC-MS system, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Coupled gas chromatography mass spectrometry system in front three-quarter view. Left module is a compact gas chromatograph with CLOSED insulated oven front door, top autosampler tower above an injection inlet and a small circular vial tray beside tower. Right module is a lower broad mass spectrometer with closed navy vacuum-analyzer panel, pale gray housing and side vents. A short insulated horizontal transfer-line housing directly connects GC right side to MS left side, clearly one connected system. Blank displays and unmarked controls. No electrospray source, solvent bottle stack, laser, spectra, computer, gas cylinders or separate pumps. Vial count schematic. Clean navy/cool white materials, crisp dark outlines, gentle soft gradients, polished metal highlights. Entire two-module system centered with generous true transparent alpha padding, no text or shadows.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-8c57990d-22c1-4373-8766-91fc3a79731a.png",
+  "archetype": "Generic GC-MS with GC oven, top autosampler and closed mass analyzer linked by insulated transfer-line housing. Connector thickness and vial array schematic, not exact capacity or commercial geometry.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "gc-ms-system",
+  "name": "GC-MS system",
+  "original": "originals/inventory/gc-ms-system/generated.png",
+  "original_sha256": "7e141c809b5e94ec9cd4f3e280ed2b970caa22ff745f5e870b3794bd46932ead"
+}

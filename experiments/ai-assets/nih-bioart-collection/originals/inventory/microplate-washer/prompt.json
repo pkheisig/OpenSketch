@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a microplate washer, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Generic benchtop microplate washer front three-quarter view, low pale gray/navy instrument with a microplate seated on a sliding deck. Above one short edge of plate a narrow metal wash manifold on horizontal support carries a row of paired aspiration/dispense needles aligned with wells. Show needles raised slightly above plate in idle loading position, not dispensing. Two capped clear bottles secured to integrated right-side holder, clean transparent tubing connects caps to manifold through rear instrument ports. Blank front display and simple unmarked controls. Clear microplate well grid is schematic and not exact capacity. No splashes, droplets, cells, labels, arrows, warning marks or separate accessories. Smooth cool white/navy housing, crisp outlines, polished metal, subtle blue glass highlights and soft pseudo-3D depth. Full instrument and attached bottles centered with generous true transparent alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-1884df92-b4a5-4cc7-aa3d-e2021716dc7e.png",
+  "archetype": "Generic microplate washer at rest with raised wash manifold and attached fluid bottles. Needle row is simplified; separate inner aspiration/dispense lumens are not resolved. Plate grid and tubing are schematic, not exact capacity or a fluid circuit.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "microplate-washer",
+  "name": "microplate washer",
+  "original": "originals/inventory/microplate-washer/generated.png",
+  "original_sha256": "0d9ae8e3c9a7fc1b826c15e3e3f0139abcf46bb8dbcd3010923f500464be2afe"
+}

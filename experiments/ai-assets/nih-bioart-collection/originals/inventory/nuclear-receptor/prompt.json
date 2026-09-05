@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a nuclear receptor, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Transparent PNG alpha. Generic monomeric nuclear hormone receptor domain schematic, one continuous polypeptide arranged gently diagonally left-to-right. At left a long thin flexible teal N-terminal activation tail, then a compact teal DNA-binding domain containing two small zinc-finger subdomains with exactly two tiny gold zinc spheres intrinsically nestled inside its folds. A short flexible hinge connects to a larger blue oval ligand-binding domain at right, with smooth broad helical ridges and a shallow pocket, then a short C-terminal tail. No DNA, ligand, membrane, receptor partner, cofactors, labels or symbols. Zinc spheres small and embedded in the small DNA-binding domain only. Smooth matte protein surfaces, soft pseudo-3D depth, crisp contours, no atomic bump texture. Domain architecture illustrative, not sequence-specific atomic structure.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-7603619a-97ec-42d5-8469-387c4e91e58b.png",
+  "references": [
+    "https://www.rcsb.org/structure/6CFN",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6201731/"
+  ],
+  "archetype": "Generic nuclear receptor monomer domain schematic: flexible N terminus, two-zinc DNA-binding domain, hinge and larger ligand-binding domain. Zinc positions, secondary structure and domain geometry illustrative; DNA and ligand omitted.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "nuclear-receptor",
+  "name": "nuclear receptor",
+  "original": "originals/inventory/nuclear-receptor/generated.png",
+  "original_sha256": "9e1fd2c6f36db53e337c58882f7eac4af6064486486854190306c6ade8fac526"
+}

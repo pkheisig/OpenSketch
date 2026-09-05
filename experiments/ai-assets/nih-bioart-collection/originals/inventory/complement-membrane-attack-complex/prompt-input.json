@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of complement membrane attack complex, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Transparent alpha PNG. Isolated assembled MAC pore protein only, no surrounding membrane. Oblique three-quarter top view of a hollow barrel with a clearly open central lumen and thin wall of many tightly packed vertical beta-hairpin strips, NOT alpha helices. Repeating blue C9 subunits make most of the circular upper rim and barrel, with softly sculpted blue extracellular heads. At one asymmetric sector, a compact attached cluster of differently shaped teal, violet and coral C5b-C6-C7-C8 components interrupts the regular ring and rises above it. Complete continuous pore wall with open top and bottom, no solid cap or plug. Saturated clean colors and smooth matte forms. Generic repeated subunits, no exact count asserted; recognizable asymmetric MAC architecture, not a generic symmetric ring.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-3175770a-3a2c-4153-b2ef-ef013036efaa.png",
+  "references": [
+    "https://www.rcsb.org/structure/6H04",
+    "https://www.rcsb.org/structure/4E0S"
+  ],
+  "archetype": "MAC pore schematic with repeating C9-rich blue beta-barrel wall and asymmetric multicolor C5b-8 sector. Subunit shapes, strand number and C9 count are schematic. Initiator components partly occluded; no membrane or atomic structure implied."
+}

@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of kinesin on a microtubule, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One conventional dimeric kinesin motor bound to a short hollow microtubule segment. Microtubule runs horizontally across lower half, cut ends visible with hollow lumen; wall assembled from straight longitudinal rows of alternating medium-blue and pale-blue tubulin subunits. A single kinesin rises from the top surface: TWO smooth teal globular motor heads touching two successive tubulin binding positions along the SAME longitudinal protofilament, short flexible teal neck linkers joining upward into one long two-stranded intertwined coiled-coil stalk. Stalk ends in a small paired teal tail region above, no cargo vesicle. Heads side by side along microtubule long axis, not on opposite sides of tube. Protein and microtubule are a compact connected assembly. No ATP molecules, no motion arrows, no labels, no extra motors. Smooth gently lobed outlines and broad subtle gradients, no rough cauliflower texture. Wide true transparent alpha padding.",
+  "refinement": "Keep the kinesin and microtubule geometry exactly: two heads on the same top row, two-stranded stalk, paired small tail and hollow microtubule. Refine all surfaces into smooth clean biomedical illustration. Replace bumpy cauliflower motor heads with smooth gently lobed teal shapes. Replace each rough tubulin blob with a smooth rounded blue or pale-blue subunit, preserving the alternating longitudinal rows and hollow wall. Broad subtle gradients and crisp navy outlines, no pebbly texture or tiny specular spots. Include every cut end fully with generous transparent padding. Transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-612a770d-164c-4995-8072-2e3a6d5d67f4.png",
+  "archetype": "Conventional dimeric kinesin on one longitudinal microtubule track. Paired heads, coiled-coil stalk and tail shown without cargo. Tubulin rows and cut ends schematic, not exact protofilament count or atomic geometry.",
+  "references": [
+    "https://pdb101.rcsb.org/motm/64",
+    "https://pdb101.rcsb.org/motm/175"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "kinesin-on-microtubule",
+  "name": "kinesin on microtubule",
+  "original": "originals/inventory/kinesin-on-microtubule/generated.png",
+  "original_sha256": "b60173e5cd9d5f1bdf7d2f90c783396d14bc64c041094f2a99ec4de4c12bfc22"
+}

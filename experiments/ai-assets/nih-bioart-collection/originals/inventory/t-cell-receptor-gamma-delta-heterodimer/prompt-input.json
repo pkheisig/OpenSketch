@@ -1,0 +1,13 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a T-cell receptor gamma-delta heterodimer, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Transparent PNG. Generic monomeric gamma-delta TCR receptor pair, two continuous chains only: gamma in saturated teal, delta in violet. Each chain has exactly two extracellular immunoglobulin-like globular domains stacked vertically, upper variable domain and lower constant domain. Four main domains total. Upper paired domains form an irregular antigen-binding surface, with a modest projecting loop on violet variable domain; lower paired domains slightly splayed. Two relatively long flexible connecting peptide stalks below constants converge toward one short vertical transmembrane helix per chain, then tiny cytoplasmic tails. One small disulfide bridge joins stalks near membrane-proximal region. No membrane patch, CD3, ligand, antibody, labels, or extra chain. Smooth matte sculpted protein surfaces with subtle contour grooves, not rough atomic balls. Schematic domain architecture, not atomic precision, complete receptor centered.",
+  "refinements": [
+    "Smooth the four extracellular protein domains into polished matte biomedical forms with only a few broad soft ridges and shallow grooves, removing the many tiny knobby atomic bumps. Preserve two teal domains and two violet domains, two connecting stalks, gold disulfide bridge and two lower helices. The upper violet antigen-binding loop must be a SHORT closed loop returning to the same upper violet domain at BOTH ends, not a long free dangling hook. Keep it a modest protrusion close to the domain. Preserve paired upper domains touching. Transparent alpha PNG, no background."
+  ],
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-310e58db-b141-4e6f-993b-8d78e6e6d212.png",
+  "references": [
+    "https://www.rcsb.org/structure/1HXM",
+    "https://www.rcsb.org/structure/9CI8"
+  ],
+  "archetype": "Generic gamma-delta TCR heterodimer schematic: two Ig-like domains per chain and flexible membrane-proximal connections. Domain shapes, binding loop and relative distances illustrative, not a sequence-specific atomic model or unique ligand specificity."
+}

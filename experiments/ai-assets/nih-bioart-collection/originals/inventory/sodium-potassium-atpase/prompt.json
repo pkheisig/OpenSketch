@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of sodium-potassium ATPase, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. True transparent PNG alpha. Side-view domain schematic of Na/K pump alpha-beta-FXYD assembly. Large teal alpha subunit: compact bundle of membrane-spanning alpha helices at middle, with THREE associated smooth globular cytoplasmic catalytic lobes extending BELOW the bundle (A,N,P domains), all connected to the same teal alpha chain. Small violet beta subunit alongside: ONE membrane-spanning helix at same middle level and ONE rounded extracellular domain ABOVE the helix. Small coral FXYD regulatory helix alongside opposite edge of alpha membrane bundle, only short tails. Extracellular side top; cytoplasm bottom. Beta globular head must be on opposite side from the large alpha catalytic lobes. No membrane, ATP, ions, transport arrows, labels or unrelated proteins. Clean broad sculpted shapes, shallow grooves, smooth matte shading; schematic topology, not atomistic helix count.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-c9fe8097-cea0-417b-aaea-188de6aae7a5.png",
+  "references": [
+    "https://pdb101.rcsb.org/motm/118",
+    "https://www.rcsb.org/structure/8D3X"
+  ],
+  "archetype": "Na/K ATPase alpha-beta-FXYD domain schematic, extracellular side above. Teal alpha membrane bundle and partially overlapping lower catalytic lobes, violet beta extracellular domain and single helix, coral FXYD helix. Helix count and exact domain geometry simplified; no catalytic-state claim.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "sodium-potassium-atpase",
+  "name": "sodium-potassium ATPase",
+  "original": "originals/inventory/sodium-potassium-atpase/generated.png",
+  "original_sha256": "d1ed0d2daa5e0aca54e36af0a573da11f360396d06b4412e74254d6e9d2dfdd8"
+}

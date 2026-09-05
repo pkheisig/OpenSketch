@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an isothermal titration calorimeter, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Generic benchtop ITC instrument in front three-quarter view, compact pale gray insulated rectangular base with navy front panel and blank small display. Top has a recessed circular sample-cell access port and neighboring closed reference-cell cap. A vertical motorized injection syringe tower mounted on a small support behind the sample port lowers ONE fine syringe needle into the sample access port. Clear syringe barrel visible within tower, silver plunger shaft and navy motor casing, short tidy cable returns to base. Both calorimetric cells are enclosed inside base, no invented glowing internals or heat arrows. Clean purposeful laboratory instrument, simple unmarked controls, no external computer, binding curves, molecules, labels or text. Polished smooth white/navy materials, subtle blue highlights, crisp outlines and gentle pseudo-3D gradients. Complete apparatus centered with generous true transparent alpha padding.",
+  "refinements": [
+    "Remove all tiny black printed markings, graduations and text from the clear syringe barrel. Leave a plain clear glass barrel with visible silver plunger and small blue seal. Keep all other instrument geometry, the needle entering the sample port and closed reference cap unchanged. True transparent alpha PNG.",
+    "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration."
+  ],
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-205a01fb-be57-4eed-84a9-ede962793808.png",
+  "archetype": "Generic isothermal titration calorimeter with motorized syringe needle entering sample access port and adjacent closed reference access. Cells enclosed. Geometry schematic, not a commercial model or operational dosing specification.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "isothermal-titration-calorimeter",
+  "name": "isothermal titration calorimeter",
+  "original": "originals/inventory/isothermal-titration-calorimeter/generated.png",
+  "original_sha256": "fb95cf63140c2c1215acfeeebc0cdc4c46a408fa4dac227ff141d62fde954a88"
+}

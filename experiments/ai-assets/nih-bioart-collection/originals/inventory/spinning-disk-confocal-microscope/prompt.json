@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a spinning-disk confocal microscope, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Real transparent PNG alpha. Coherent compact inverted microscope assembly in white, navy blue, silver and charcoal. Low binocular head left, black slide stage in middle, upward-facing objectives on rotary turret beneath the stage, downward condenser above the stage on rear support. Attached right-side blue spinning-disk scanning housing with a small restrained cutaway window showing one circular perforated metal Nipkow disk internally and a compact camera attached at its output port. Perforations schematic, not an exact pinhole array. Entire assembly centered, three-quarter view, all parts connected. No rays, glowing light, computer, text or logos. Smooth matte vector-friendly biomedical shading.",
+  "refinements": [
+    "Correct the inverted microscope objectives below the sample stage. Remove the downward-hanging objective cluster. Replace with a rotary nosepiece mounted LOW on the lower optical block, with three objectives rising UP from it toward the underside of the upper sample stage: broad threaded rear ends at the BOTTOM on the rotary mount, narrow lens tips at the TOP. The central objective is vertical and its top lens nearly touches the underside of the slide. Delete the extra blue slide on the lower block; there is only one slide on the upper stage. Preserve the right scan head with perforated disk and camera, frame and condenser. Transparent alpha background.",
+    "Remove all tiny white numbers and tick markings around the large focus knob. Leave that ring plain black. Preserve everything else exactly including the upward-facing objectives. Output transparent alpha PNG."
+  ],
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-6970d8e5-43f1-431e-b28c-ca6f3f28dfe2.png",
+  "archetype": "Generic inverted spinning-disk confocal instrument with schematic scan-head cutaway and camera. Visible disk perforations are illustrative, not an exact optical design or pinhole layout.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "spinning-disk-confocal-microscope",
+  "name": "spinning-disk confocal microscope",
+  "original": "originals/inventory/spinning-disk-confocal-microscope/generated.png",
+  "original_sha256": "498bb9e7f4c2fafe3f408edbee52766cd8e519bca989c884efef2e8415958153"
+}

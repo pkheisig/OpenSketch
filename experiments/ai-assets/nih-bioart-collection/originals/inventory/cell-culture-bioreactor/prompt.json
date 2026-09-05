@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a cell-culture bioreactor, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One hollow-fiber cell-culture bioreactor cartridge, an elongated transparent cylindrical plastic housing lying diagonally in three-quarter view. A dense bundle of parallel fine pale ivory hollow fibers runs axially inside, potted into pale solid disks near both ends. Navy end caps with central axial tubing connectors at each end access fiber lumens; two small blue side ports near opposite ends access extracapillary space. A hint of transparent pale pink culture medium around fibers. This is a closed reusable scientific culture cartridge, no cells enlarged, no motor, no impeller, no tank, no stand and no external tubes. Show hollow fiber ends as tiny pores within end view where visible, no literal count claim. Clear smooth forms, crisp outlines, broad gentle blue glass highlights and navy caps. True transparent alpha PNG with wide padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-83252066-d710-489f-b12b-a06e941a3b9f.png",
+  "archetype": "Cell-culture bioreactor represented by a hollow-fiber cartridge, distinct from separately inventoried stirred-tank and wave systems. Axial ports access fiber lumens; side ports access extracapillary space. Fiber number, pores and sizes schematic, not a physical specification.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "cell-culture-bioreactor",
+  "name": "cell culture bioreactor",
+  "original": "originals/inventory/cell-culture-bioreactor/generated.png",
+  "original_sha256": "97292965b4c9cfb6f2bde48e758274b16106926b0482f4a3d2e99e56c3d99a5b"
+}

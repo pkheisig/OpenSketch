@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a mass spectrometer, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One generic laboratory electrospray mass spectrometer, broad benchtop pale gray rectangular analyzer chassis with navy front panels and side cooling vents. At left front an attached compact stainless enclosed electrospray ion-source housing with cylindrical spray probe entering diagonally through a sealed fitting, small clear source window, and tidy short cable/fluid connector bundle returning into chassis. Analyzer vacuum housing remains closed, no invented visible particles or beam. A small blank dark display and two unmarked controls at right front. Low sturdy feet, clean professional saturated navy and cyan accents, polished metal highlights with crisp outlines and subtle pseudo-3D shading. No LC stack, computer, floor pump or unrelated accessory, no labels, logos, warnings or text. Whole object with complete source probe centered on true transparent alpha background and generous padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-c4c8f9ea-5f9a-4066-932c-9b0b17bfbc29.png",
+  "archetype": "Generic electrospray mass spectrometer with enclosed front source and closed analyzer cabinet. Exterior and connectors schematic, not a specific analyzer type, instrument specification or ion-path diagram.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "mass-spectrometer",
+  "name": "mass spectrometer",
+  "original": "originals/inventory/mass-spectrometer/generated.png",
+  "original_sha256": "d3959b51400d74774ad23046da50b18a05ccec67c7785bdd8a8ad2d66fe84b2f"
+}

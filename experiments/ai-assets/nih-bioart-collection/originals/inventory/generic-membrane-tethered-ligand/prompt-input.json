@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a generic membrane-tethered ligand, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Transparent alpha PNG. Generic type-I single-pass membrane-tethered protein ligand, one chain only: a broad asymmetrical coral-red extracellular globular ligand head with a softly lobed surface and gently convex binding face, above a short flexible stalk that attaches to one vertical coral transmembrane alpha helix, ending in a short thin cytoplasmic tail below. No receptor-like binding cup, no receptor partner, no membrane patch, no soluble ligand, no glycan decorations, no labels. Smooth matte sculpted biomedical shapes, saturated coral and warm red shades, subtle highlights and crisp outline. This is deliberately generic topology, not a specific named protein.",
+  "refinements": [
+    "Make the coral extracellular globular head smooth and broadly convex with only three or four shallow lobes. Fill the deep open cup-shaped depression into a gently rounded binding face. Remove tiny pebbled bumps. Preserve the single stalk, transmembrane helix and tail. Smooth matte biomedical illustration with subtle gradients and true transparent alpha.",
+    "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration."
+  ],
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-668e718c-17a6-47fb-b912-c624d7d610b2.png",
+  "archetype": "Generic type-I membrane-tethered ligand topology: extracellular globular head, stalk, one transmembrane helix and short cytoplasmic tail. Deliberately nonspecific shape, not a named ligand or binding specificity."
+}

@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a mechanosensitive ion channel, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. True transparent alpha PNG. Piezo1-like mechanosensitive channel trimer with exactly THREE sweeping curved protein blades arranged around a compact central pore/cap, unmistakable three-bladed propeller architecture. Each broad curved blade formed from many short closely packed membrane-spanning helical bundles, bowed into a shallow dome, not a mechanical solid fan. Three subunits in teal, blue and violet, each blade joins center continuously. Small trilobed central extracellular cap above narrow pore region, viewed obliquely from above. No membrane patch, force arrows, ions, external objects, extra fourth blade, or lettering. Smooth matte protein forms and clean softly shaded ribbons, schematic helix count, no pebbled atomic texture.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-c5c8bf7d-3ddc-4ac6-8322-1c027e00078a.png",
+  "references": [
+    "https://pdb101.rcsb.org/motm/223",
+    "https://www.rcsb.org/structure/5Z10"
+  ],
+  "archetype": "Piezo1-like trimeric mechanosensitive channel schematic with three curved helical blades and central cap. Helical orientation, count and curvature simplified; not atomic coordinates or a specific gating state."
+}

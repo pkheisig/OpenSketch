@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an ABC transporter, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Generic dimeric ABC exporter protein complex shown in side three-quarter view, no membrane. TWO associated membrane-spanning helical bundles form the upper portion, one teal bundle left and one blue bundle right. Each bundle consists of several closely packed upright alpha-helical ribbons connected by short loops, with a narrow central transport cleft. Beneath each bundle on the same cytoplasmic side sits ONE large smooth bilobed nucleotide-binding domain, teal left and blue right, attached through short coupling connections. Exactly two nucleotide-binding domains total, gently separated at the bottom in an inward-facing schematic. No extra periplasmic binding protein, no ATP or substrates, no lipid bilayer, no labels or motion arrows. Smooth crisp helix ribbons, gently lobed domain surfaces and broad soft gradients, no bumpy atom clusters. Whole compact assembly with wide transparent alpha padding.",
+  "refinement": "Make the two ABC transporter halves one associated complex: tilt the teal and blue helical bundles slightly toward each other so they TOUCH at their upper extracellular ends, while their lower ends and two nucleotide-binding domains remain separated, giving an inward-open V-shaped cavity. Do not add a covalent link between the halves. Replace the rough cauliflower surfaces of the two bottom nucleotide-binding domains with smooth gently bilobed shapes and subtle broad gradients. Shorten the coupling connectors so bottom domains sit close beneath their helical bundles. Retain two colors and clean helical ribbons. No membrane or text. Transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-a75c486c-7fc7-4ab8-aa21-8c3cb387d3d8.png",
+  "archetype": "Generic dimeric ABC exporter with two associated transmembrane helical bundles and two cytoplasmic nucleotide-binding domains. Inward-open arrangement is schematic; occluded helices are not an exact helix count or atomic structure.",
+  "references": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC4338842/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "abc-transporter",
+  "name": "ABC transporter",
+  "original": "originals/inventory/abc-transporter/generated.png",
+  "original_sha256": "0175b9c2f360631d0ed3e71dd2eb676a457cfc5b4ce848dff8e0ffcb301dbdee"
+}

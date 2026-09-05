@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a two-photon microscope, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Transparent alpha PNG. Generic upright multiphoton research microscope, open bridge frame on a compact integrated dark instrument platform, white and navy blue housing. A large enclosed scanning head above a single downward-facing water immersion objective, objective centered above a small empty specimen dish on an XY stage. Two compact detector housings flank the objective optical block for nondescanned collection. Attached enclosed rectangular ultrafast laser module at rear-right connected through a short sealed beam-delivery tube to the scanner. All optical paths enclosed, no visible beams, no animal or tissue, no monitor or data, no words numbers or logos. Three-quarter front view, complete connected instrument. Smooth matte forms and restrained illustrated gradients.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-bf572fe3-4d6e-4d46-8029-a9cf0cd55d32.png",
+  "archetype": "Generic upright two-photon research microscope with enclosed scan head, objective, paired detector housings and connected laser module. Empty dish and simplified mechanical layout; optical performance is not implied.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "two-photon-microscope",
+  "name": "two-photon microscope",
+  "original": "originals/inventory/two-photon-microscope/generated.png",
+  "original_sha256": "84c730beeeff2b8089344a592b9d93be97b48a43405349c06191233b1b08ba58"
+}

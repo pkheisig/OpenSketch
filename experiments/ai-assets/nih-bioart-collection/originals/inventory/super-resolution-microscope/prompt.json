@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a super-resolution microscope, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Real transparent alpha PNG. Generic enclosed single-molecule-localization super-resolution imaging instrument: compact white and navy rectangular vibration-isolated enclosure with an open front access door revealing a precision black XY specimen stage holding one small glass-bottom dish, a single high-NA objective rising upward from a low optical block underneath the dish, and compact enclosed illumination and camera modules connected below and beside the stage. Large blank charcoal status panel, simple silver door handle, four short vibration-isolation feet. Three-quarter view. No specimen fluorescence, no localization points, no reconstruction, no monitor, no lasers shown, no markings or logo. Smooth illustrated shading and crisp contours.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-d10fd77a-9e94-4c32-88f7-1b58ad17e43d.png",
+  "archetype": "Generic enclosed localization-microscopy instrument, shown open for specimen access. Single upward objective and enclosed optical modules are schematic; external appearance alone does not establish imaging resolution or technique.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "super-resolution-microscope",
+  "name": "super-resolution microscope",
+  "original": "originals/inventory/super-resolution-microscope/generated.png",
+  "original_sha256": "298b9212b259b089fec237eb5ef8c5b2936585089faa47ab89533f16ef12ba9e"
+}

@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a colony picker, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Automated benchtop bacterial colony-picking instrument in three-quarter front view. Pale gray and navy enclosed workstation with closed clear front cover, horizontal gantry supporting a small vertical head with ONE thin metal picking pin. Pin hovers just above a single small cream colony in an open round agar dish on left deck. Dish contains a few separate small cream colonies on pale amber agar, no oversized cells. A rectangular microplate with clear wells sits on right deck as receiving labware. A small dark downward-facing imaging camera with lens mounted above agar dish beside head. A compact recessed pin-washing station at back deck. Small blank touchscreen on front. Clean registered deck holders, no loose floating parts, no motion lines, no text, logos or numbers. Smooth cool gray navy finish, gentle gradients, crisp outlines, true transparent alpha background with generous padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-eb66d285-4f95-4c28-a394-d77475b80585.png",
+  "archetype": "Generic automated single-pin colony picker with imaging camera, agar plate, receiving microplate and rear service station. Colony pattern is synthetic, not experimental data; plate grid and instrument dimensions schematic.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "colony-picker",
+  "name": "colony picker",
+  "original": "originals/inventory/colony-picker/generated.png",
+  "original_sha256": "b743ba980eb804e35f6beced3035c891679b80c085aa2b0cc31e2e825609d742"
+}
