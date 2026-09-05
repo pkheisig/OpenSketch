@@ -90,6 +90,7 @@ import { InspectorContent, LayersPanel } from "@/components/Inspector";
 import { UiSelect } from "@/components/UiSelect";
 import {
   useOpenSketchHostServices,
+  useOpenSketchPortalRoot,
   type ImportedMediaLibraryRecord
 } from "@/application/hostServices";
 import { IMPORT_LIBRARY_CHANGED_EVENT } from "@/persistence/database";
@@ -1317,6 +1318,7 @@ function AssetCard({
   onAssetDragStart: () => void;
   onAssetDragEnd: () => void;
 }) {
+  const portalRoot = useOpenSketchPortalRoot();
   const sourceLabel = assetSourceLabel(family);
   const sourcePage = assetSourcePage(family);
   const sourceId = `asset-source-${family.familyId}`;
@@ -1462,7 +1464,7 @@ function AssetCard({
             ) : null}
           </div>
         </MotionPresence>,
-        document.body
+        portalRoot ?? document.body
       )}
       <div className="asset-card-copy">
         <strong title={family.title}>{family.title}</strong>

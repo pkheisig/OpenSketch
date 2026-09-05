@@ -1,4 +1,11 @@
-import { createContext, createElement, useContext, type ReactNode } from "react";
+import {
+  Fragment,
+  createContext,
+  createElement,
+  useContext,
+  useState,
+  type ReactNode
+} from "react";
 import type {
   AssetFamily,
   AssetManifest,
@@ -162,6 +169,23 @@ export interface OpenSketchHostServices {
 export interface OpenSketchApplicationContext {
   routePrefix?: string;
   activeProjectId?: string | null;
+  mode?: "standalone" | "opensuite";
+  theme?: Theme;
+  density?: "comfortable" | "compact" | "standard";
+  reducedMotion?: boolean;
+  uiContractVersion?: string;
+  ownership?: {
+    globalChrome?: "module" | "host";
+    theme?: "module" | "host";
+    updating?: "module" | "host";
+    shutdown?: "module" | "host";
+  };
+  ownsGlobalChrome?: boolean;
+  ownsThemeControl?: boolean;
+  ownsUpdater?: boolean;
+  ownsShutdown?: boolean;
+  themeRootId?: string;
+  portalRootId?: string;
 }
 
 export interface OpenSketchLifecycleState extends OpenSketchApplicationContext {
@@ -190,6 +214,7 @@ export interface OpenSketchModuleManifest {
   entry: "OpenSketchApplication";
   stylesheetEntry: string;
   assetManifestEntry: string;
+  uiContractVersion: "0.1.0-bootstrap";
   peerDependencies: {
     react: string;
     "react-dom": string;
@@ -198,6 +223,7 @@ export interface OpenSketchModuleManifest {
 }
 
 const HostServicesContext = createContext<OpenSketchHostServices | null>(null);
+const OpenSketchPortalRootContext = createContext<HTMLElement | null>(null);
 
 export function OpenSketchHostProvider({
   services,
@@ -213,4 +239,30 @@ export function useOpenSketchHostServices(): OpenSketchHostServices {
   const services = useContext(HostServicesContext);
   if (!services) throw new Error("OpenSketch host services are not available.");
   return services;
+}
+
+export function OpenSketchPortalRoot({
+  children,
+  portalRootId
+}: {
+  children?: ReactNode;
+  portalRootId?: string;
+}) {
+  const [root, setRoot] = useState<HTMLDivElement | null>(null);
+  const hostRoot =
+    portalRootId && typeof document !== "undefined" ? document.getElementById(portalRootId) : null;
+  return createElement(
+    OpenSketchPortalRootContext.Provider,
+    { value: hostRoot ?? root },
+    createElement(
+      Fragment,
+      null,
+      createElement("div", { className: "opensketch-portal-root", ref: setRoot }),
+      children
+    )
+  );
+}
+
+export function useOpenSketchPortalRoot(): HTMLElement | null {
+  return useContext(OpenSketchPortalRootContext);
 }

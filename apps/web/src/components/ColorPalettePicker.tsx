@@ -11,6 +11,7 @@ import {
 import { createPortal } from "react-dom";
 import { Check, Pipette } from "lucide-react";
 import { MotionPresence } from "@/components/MotionPresence";
+import { useOpenSketchPortalRoot } from "@/application/hostServices";
 
 const THEME_COLUMNS = [
   ["#ffffff", "#f2f2f2", "#d9d9d9", "#bfbfbf", "#7f7f7f", "#3f3f3f"],
@@ -145,6 +146,7 @@ export function ColorPalettePicker({
   className = "",
   showValue = false
 }: ColorPalettePickerProps) {
+  const portalRoot = useOpenSketchPortalRoot();
   const pickerId = useId();
   const triggerRef = useRef<HTMLButtonElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -607,7 +609,7 @@ export function ColorPalettePicker({
             </label>
           </div>
         </MotionPresence>,
-        document.body
+        portalRoot ?? document.body
       )}
     </span>
   );

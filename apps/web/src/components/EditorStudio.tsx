@@ -1,10 +1,11 @@
-import { lazy, Suspense, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import type { ProjectRecord } from "@workspace/editor-core";
 import type { ProjectSaveState } from "@/editor/projectSaveState";
 import { EditorProvider } from "@/editor/EditorContext";
 import { CanvasWorkspace } from "@/components/CanvasWorkspace";
 import { OpenSketchHostProvider, type OpenSketchHostServices } from "@/application/hostServices";
 import type { WebMcpRegistry } from "@/semantic/webmcp";
+import { loadDocumentFontStyles } from "@/editor/documentFonts";
 
 const TopToolbar = lazy(() =>
   import("@/components/TopToolbar").then((module) => ({ default: module.TopToolbar }))
@@ -22,7 +23,8 @@ export function EditorStudio({
   services,
   webMcpRegistry,
   theme,
-  onToggleTheme
+  onToggleTheme,
+  showThemeControl
 }: {
   project: ProjectRecord;
   onProjectChange: (project: ProjectRecord) => Promise<void>;
@@ -33,10 +35,33 @@ export function EditorStudio({
   webMcpRegistry: WebMcpRegistry;
   theme: "light" | "dark";
   onToggleTheme: () => void;
+  showThemeControl: boolean;
 }) {
+  const [documentFontsReady, setDocumentFontsReady] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(
     () => services.preferences.get("OpenSketch:left-sidebar-collapsed") === "true"
   );
+  useEffect(() => {
+    let active = true;
+    void loadDocumentFontStyles()
+      .catch(() => undefined)
+      .finally(() => {
+        if (active) setDocumentFontsReady(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  if (!documentFontsReady) {
+    return (
+      <div className="opensketch-app-font-loading loading-screen" aria-live="polite">
+        <div className="loading-mark" />
+        <span>Preparing document fonts…</span>
+      </div>
+    );
+  }
+
   const toggleSidebar = () => {
     setSidebarCollapsed((current) => {
       const next = !current;
@@ -64,6 +89,7 @@ export function EditorStudio({
               onHome={onHome}
               theme={theme}
               onToggleTheme={onToggleTheme}
+              showThemeControl={showThemeControl}
             />
           </Suspense>
           <div className={`editor-grid ${sidebarCollapsed ? "sidebar-collapsed" : ""}`}>

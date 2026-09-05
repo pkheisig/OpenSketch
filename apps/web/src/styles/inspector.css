@@ -1338,7 +1338,7 @@
   background: #fffefb;
 }
 
-html[data-theme] :is(.ui-select-menu, .asset-variant-menu) button:focus-visible {
+.opensketch-app :is(.ui-select-menu, .asset-variant-menu) button:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--shell-accent) 56%, transparent);
   outline-offset: 2px;
 }
@@ -2336,7 +2336,7 @@ html[data-theme] :is(.ui-select-menu, .asset-variant-menu) button:focus-visible 
   border-color: var(--shell-border-strong);
 }
 
-html[data-theme] .ui-select-menu {
+.opensketch-app .ui-select-menu {
   border: 1px solid var(--shell-border);
   border-radius: 6px;
   color: var(--shell-text);
@@ -2368,7 +2368,7 @@ html[data-theme] .ui-select-menu {
   font-size: 12px;
 }
 
-html[data-theme] .ui-select-menu button {
+.opensketch-app .ui-select-menu button {
   color: var(--shell-text);
   font-size: 12px;
 }
@@ -2386,12 +2386,12 @@ html[data-theme] .ui-select-menu button {
   text-align: center;
 }
 
-html[data-theme] .ui-select-menu button:hover {
+.opensketch-app .ui-select-menu button:hover {
   color: var(--shell-text);
   background: var(--shell-accent-soft);
 }
 
-html[data-theme] .ui-select-menu button.active {
+.opensketch-app .ui-select-menu button.active {
   color: var(--shell-text);
   background: var(--shell-accent-soft);
 }
@@ -2410,13 +2410,13 @@ html[data-theme] .ui-select-menu button.active {
   font-weight: 700;
 }
 
-html[data-theme] .ui-select-menu button[aria-selected="true"] {
+.opensketch-app .ui-select-menu button[aria-selected="true"] {
   color: var(--shell-text);
   background: var(--shell-accent-soft);
   font-weight: 700;
 }
 
-html[data-theme] .ui-select-menu button svg {
+.opensketch-app .ui-select-menu button svg {
   color: var(--shell-accent);
 }
 

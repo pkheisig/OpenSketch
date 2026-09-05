@@ -15,6 +15,7 @@ export const OPENSKETCH_MODULE_MANIFEST: OpenSketchModuleManifest = {
   displayName: "OpenSketch",
   version: "0.1.0",
   contractVersion: "1.0.0",
+  uiContractVersion: "0.1.0-bootstrap",
   entry: "OpenSketchApplication",
   stylesheetEntry: "./styles/app.css",
   assetManifestEntry: "./assets/manifest.json",

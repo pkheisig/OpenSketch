@@ -132,7 +132,9 @@ describe("stylesheet ownership checks", () => {
     const home = fs.readFileSync(path.join(sourceStyles, "home.css"), "utf8");
     expect(base).toMatch(/@media \(prefers-reduced-motion: reduce\)/);
     expect(base).toMatch(/animation-duration: 0\.01ms !important/);
-    expect(home).toMatch(/html\[data-theme="dark"\] \.project-preview-vector\.transparent/);
+    expect(home).toMatch(
+      /\.opensketch-app\[data-opensketch-theme="dark"\] \.project-preview-vector\.transparent/
+    );
     expect(home).toMatch(/#40382f/);
   });
 });
