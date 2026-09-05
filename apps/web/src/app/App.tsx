@@ -1,14 +1,16 @@
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { AlertTriangle, X } from "lucide-react";
 import type { ProjectFolderRecord, ProjectRecord } from "@workspace/editor-core";
 import { normalizeProjectForLoad } from "@/persistence/portable";
 import { isProjectThumbnailCurrent } from "@/persistence/thumbnailFormat";
 import { HomeScreen } from "@/components/HomeScreen";
+import { OpenSketchPortalRoot } from "@/application/hostServices";
 import type {
   OpenSketchApplicationContext,
   OpenSketchHostServices,
   OpenSketchLifecycleState
 } from "@/application/hostServices";
+import { resolveOpenSketchApplicationPresentation } from "@/application/uiContract";
 import { createProjectLifecycleRuntime } from "@/semantic/projectLifecycle";
 import { SemanticExecutionAborted, type SemanticExecutionOptions } from "@/semantic/semanticTypes";
 import { createWebMcpRegistry, type WebMcpRegistry, type WebMcpRuntime } from "@/semantic/webmcp";
@@ -40,7 +42,11 @@ export function App({
   initialContext?: OpenSketchApplicationContext;
   onLifecycleStateChange?: (state: Partial<OpenSketchLifecycleState>) => void;
 }) {
-  const [theme, setTheme] = useState<Theme>(() => services.preferences.theme.get());
+  const [standaloneTheme, setStandaloneTheme] = useState<Theme>(() =>
+    services.preferences.theme.get()
+  );
+  const presentation = resolveOpenSketchApplicationPresentation(initialContext, standaloneTheme);
+  const { theme } = presentation;
   const [projects, setProjects] = useState<ProjectRecord[]>([]);
   const [folders, setFolders] = useState<ProjectFolderRecord[]>([]);
   const [current, setCurrent] = useState<ProjectRecord | null>(null);
@@ -60,16 +66,18 @@ export function App({
   foldersRef.current = folders;
 
   const toggleTheme = useCallback(() => {
-    setTheme((current) => {
+    if (!presentation.ownsTheme) return;
+    setStandaloneTheme((current) => {
       const next = current === "light" ? "dark" : "light";
       services.preferences.theme.set(next);
       return next;
     });
-  }, [services]);
+  }, [presentation.ownsTheme, services]);
 
   useEffect(() => {
+    if (presentation.mode !== "standalone") return;
     services.preferences.theme.apply(theme);
-  }, [services, theme]);
+  }, [presentation.mode, services, theme]);
 
   useEffect(() => {
     services.navigation.ensureEntryIndex();
@@ -163,14 +171,15 @@ export function App({
   }, [refresh, services]);
 
   useEffect(() => {
+    if (!presentation.ownsUpdating) return undefined;
     if (services.pwa.isUpdateReady()) setUpdateReady(true);
     return services.pwa.onUpdateReady(() => setUpdateReady(true));
-  }, [services]);
+  }, [presentation.ownsUpdating, services]);
 
   useEffect(() => {
-    if (loading || current || !updateReady) return;
+    if (!presentation.ownsUpdating || loading || current || !updateReady) return;
     void services.pwa.applyUpdate();
-  }, [current, loading, services, updateReady]);
+  }, [current, loading, presentation.ownsUpdating, services, updateReady]);
 
   useEffect(() => {
     const syncViewToHistory = () => {
@@ -345,19 +354,36 @@ export function App({
     });
   }, [current?.id, initialContext?.activeProjectId, loading, onLifecycleStateChange]);
 
+  const renderShell = (content: ReactNode) => (
+    <div
+      className={`opensketch-app theme-${theme}`}
+      data-opensketch-mode={presentation.mode}
+      data-opensketch-theme={theme}
+      data-opensketch-density={presentation.density}
+      data-opensketch-reduced-motion={presentation.reducedMotion}
+      data-opensketch-ui-contract={presentation.uiContractVersion}
+      data-opensketch-theme-root-id={initialContext?.themeRootId}
+      data-opensketch-owns-global-chrome={presentation.ownsGlobalChrome}
+      data-opensketch-owns-theme={presentation.ownsTheme}
+      data-opensketch-owns-updating={presentation.ownsUpdating}
+    >
+      <OpenSketchPortalRoot portalRootId={initialContext?.portalRootId}>
+        {content}
+      </OpenSketchPortalRoot>
+    </div>
+  );
+
   if (loading) {
-    return (
-      <div className={`opensketch-app theme-${theme}`}>
-        <div className="loading-screen">
-          <div className="loading-mark" />
-          <span>Preparing local studio…</span>
-        </div>
+    return renderShell(
+      <div className="loading-screen">
+        <div className="loading-mark" />
+        <span>Preparing local studio…</span>
       </div>
     );
   }
 
-  return (
-    <div className={`opensketch-app theme-${theme}`}>
+  return renderShell(
+    <>
       {current ? (
         <Suspense
           fallback={
@@ -377,6 +403,7 @@ export function App({
             webMcpRegistry={webMcpRegistryRef.current!}
             theme={theme}
             onToggleTheme={toggleTheme}
+            showThemeControl={presentation.ownsTheme}
           />
         </Suspense>
       ) : (
@@ -385,6 +412,8 @@ export function App({
           folders={folders}
           theme={theme}
           onToggleTheme={toggleTheme}
+          showThemeControl={presentation.ownsTheme}
+          showBrand={presentation.ownsGlobalChrome}
           onNew={onNewProject}
           onNewFolder={(name) => {
             services.projects
@@ -501,6 +530,6 @@ export function App({
           </button>
         </div>
       )}
-    </div>
+    </>
   );
 }

@@ -34,6 +34,8 @@ export function HomeScreen({
   folders,
   theme,
   onToggleTheme,
+  showThemeControl,
+  showBrand,
   onNew,
   onNewFolder,
   onOpen,
@@ -52,6 +54,8 @@ export function HomeScreen({
   folders: ProjectFolderRecord[];
   theme: "light" | "dark";
   onToggleTheme: () => void;
+  showThemeControl: boolean;
+  showBrand: boolean;
   onNew: () => void;
   onNewFolder: (name: string) => void;
   onOpen: (project: ProjectRecord) => void;
@@ -112,10 +116,6 @@ export function HomeScreen({
   };
 
   useEffect(() => {
-    document.title = "OpenSketch";
-  }, []);
-
-  useEffect(() => {
     const closeOtherProjectMenus = (event: PointerEvent) => {
       const clickedMenu =
         event.target instanceof Element
@@ -132,16 +132,18 @@ export function HomeScreen({
   return (
     <main className="home-shell">
       <header className="home-header">
-        <Logo />
+        {showBrand ? <Logo /> : <span className="home-header-spacer" aria-hidden="true" />}
         <div className="home-header-actions">
-          <button
-            className="icon-button theme-toggle"
-            onClick={onToggleTheme}
-            aria-label={`Use ${theme === "light" ? "dark" : "light"} theme`}
-            title={`Use ${theme === "light" ? "dark" : "light"} theme`}
-          >
-            {theme === "light" ? <Moon size={16} /> : <Sun size={16} />}
-          </button>
+          {showThemeControl ? (
+            <button
+              className="icon-button theme-toggle"
+              onClick={onToggleTheme}
+              aria-label={`Use ${theme === "light" ? "dark" : "light"} theme`}
+              title={`Use ${theme === "light" ? "dark" : "light"} theme`}
+            >
+              {theme === "light" ? <Moon size={16} /> : <Sun size={16} />}
+            </button>
+          ) : null}
           <button className="button secondary" onClick={() => input.current?.click()}>
             <Upload size={16} /> Import project
           </button>

@@ -32,6 +32,7 @@ describe("OpenSketch application module", () => {
       id: "opensketch",
       displayName: "OpenSketch",
       contractVersion: "1.0.0",
+      uiContractVersion: "0.1.0-bootstrap",
       entry: "OpenSketchApplication"
     });
     expect(OPENSKETCH_MODULE_MANIFEST).not.toHaveProperty("rootId");

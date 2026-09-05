@@ -117,12 +117,14 @@ export function TopToolbar({
   project,
   onHome,
   theme,
-  onToggleTheme
+  onToggleTheme,
+  showThemeControl
 }: {
   project: ProjectRecord;
   onHome: () => void;
   theme: "light" | "dark";
   onToggleTheme: () => void;
+  showThemeControl: boolean;
 }) {
   const editor = useEditorFields([
     "flushSave",
@@ -218,14 +220,16 @@ export function TopToolbar({
           onExport={editor.exportProject}
         />
         <div className="toolbar-actions">
-          <button
-            className="icon-button theme-toggle"
-            onClick={onToggleTheme}
-            aria-label={`Use ${theme === "light" ? "dark" : "light"} theme`}
-            title={`Use ${theme === "light" ? "dark" : "light"} theme`}
-          >
-            {theme === "light" ? <Moon size={17} /> : <Sun size={17} />}
-          </button>
+          {showThemeControl ? (
+            <button
+              className="icon-button theme-toggle"
+              onClick={onToggleTheme}
+              aria-label={`Use ${theme === "light" ? "dark" : "light"} theme`}
+              title={`Use ${theme === "light" ? "dark" : "light"} theme`}
+            >
+              {theme === "light" ? <Moon size={17} /> : <Sun size={17} />}
+            </button>
+          ) : null}
           <button className="icon-button" onClick={() => setHelpOpen(true)} aria-label="Help">
             <HelpCircle size={17} />
           </button>

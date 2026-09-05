@@ -1,3 +1,5 @@
+/* global console, process */
+
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -12,7 +14,8 @@ const ownedFiles = [
   "canvas.css",
   "dialogs.css"
 ];
-const selectorFiles = ["tokens.css", ...ownedFiles];
+const standaloneFiles = ["standalone.css"];
+const selectorFiles = ["tokens.css", ...ownedFiles, "openSuiteTheme.css"];
 
 function stripCssComments(source) {
   let result = "";
@@ -323,6 +326,7 @@ export function checkStyleOwnership(root = repoRoot) {
   const appEntry = fs.readFileSync(path.join(stylesDir, "app.css"), "utf8");
   const expectedImports = [
     '@import "./tokens.css";',
+    '@import "./openSuiteTheme.css";',
     '@import "./base.css";',
     '@import "./home.css";',
     '@import "./editor.css";',
@@ -343,7 +347,7 @@ export function checkStyleOwnership(root = repoRoot) {
       throw new Error(`retired stylesheet still exists: ${legacyFile}`);
     }
   }
-  const expectedStyleFiles = new Set(["app.css", ...selectorFiles]);
+  const expectedStyleFiles = new Set(["app.css", ...standaloneFiles, ...selectorFiles]);
   const actualStyleFiles = fs
     .readdirSync(stylesDir)
     .filter((file) => file.endsWith(".css"))
@@ -371,6 +375,10 @@ export function checkStyleOwnership(root = repoRoot) {
       }
       seen.set(normalized, file);
     }
+  }
+  for (const file of standaloneFiles) {
+    const source = fs.readFileSync(path.join(stylesDir, file), "utf8");
+    if (containsCssImport(source)) throw new Error(`${file} must not import another stylesheet`);
   }
   return { modules: ownedFiles.length, selectorFiles: selectorFiles.length, selectors: seen.size };
 }
