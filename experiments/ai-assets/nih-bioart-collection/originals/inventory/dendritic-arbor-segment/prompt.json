@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a dendritic arbor segment, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One isolated neuronal dendrite fragment: a tapered pale lavender primary branch entering from a short rounded cut end at lower left, dividing into several progressively finer curved secondary and tertiary branches toward upper right. All terminal branch tips complete and rounded. Many short sparse mushroom-shaped dendritic spines with narrow necks and small rounded heads project from branch surfaces. No neuron cell body, nucleus, axon, myelin, synaptic boutons or other cells. Organic asymmetric branching with open negative space; no tree leaves, roots or vascular lumen. Smooth matte biomedical neuron style, thin crisp purple outlines, restrained broad gradients and highlights, no granular texture. Representative arbor morphology, not a specific neuronal subtype. Real transparent background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-cc3cc931-4a60-4da0-a0e2-41224de872c2.png",
+  "archetype": "Representative branched dendritic segment with mushroom spines; no claim of neuronal subtype or measured spine density.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "dendritic-arbor-segment",
+  "name": "dendritic arbor segment",
+  "original": "originals/inventory/dendritic-arbor-segment/generated.png",
+  "original_sha256": "4cf262b30f84511a2527bb0054b5779073aff5b686f9f58d7630c8abc1aa72a9"
+}

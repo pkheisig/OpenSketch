@@ -1,0 +1,7 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an enzyme-substrate complex, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Edit the supplied approved generic enzyme: preserve its exact teal body, silhouette, folds, orientation, shading and upper-right binding cleft. Add ONE small smooth gold substrate snugly nestled inside that existing dark-teal cleft, partly occluded by its lips. The substrate is a compact irregular rounded form, about one fifth of the enzyme width; not a sphere cluster, not a second enzyme. Show a bound substrate, no floating molecules, products, arrows or reaction symbols. Keep matching smooth biomedical domain-cartoon style. Real transparent PNG background.",
+  "reference": "png/generic-enzyme-bioart-transparent.png",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-32037748-aff1-4f08-b09e-53c212af9725.png",
+  "archetype": "Generic bound enzyme-substrate complex; substrate glyph denotes occupancy, not a particular chemical structure."
+}

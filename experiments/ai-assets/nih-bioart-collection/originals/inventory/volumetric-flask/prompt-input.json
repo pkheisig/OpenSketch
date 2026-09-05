@@ -1,0 +1,7 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a volumetric flask, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One empty clear glass volumetric flask, broad pear-shaped bulb with a small flat base, long very narrow straight cylindrical neck and a fitted blue glass stopper at top. One single fine dark-blue calibration ring encircles the neck below the stopper; no multiple ticks, numbers or units. Upright slight three-quarter view, complete stopper and base. Pale blue-gray smooth glass with restrained broad highlights and gradients, thin crisp gray-blue outlines, same equipment style as supplied beaker. No liquid, sidearm, handle or props. Real transparent background.",
+  "style_reference": "png/glass-beaker-bioart-transparent.png",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-5bf45f23-7c3a-4e76-a107-5e547c6e8980.png",
+  "archetype": "Empty volumetric flask with one calibration ring and seated stopper; no numerical volume or dimensional calibration implied."
+}

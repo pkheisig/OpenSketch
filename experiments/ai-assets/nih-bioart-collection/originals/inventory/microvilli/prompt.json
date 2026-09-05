@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of microvilli, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A small isolated apical membrane patch bearing FIVE short closely spaced upright finger-shaped microvilli of similar height and thickness, rounded closed tips, pale lavender membrane continuous across their bases. Three-quarter view. The two front microvilli have narrow cutaway windows revealing parallel rose actin core bundles extending into a shallow rose terminal web beneath the common membrane base. Other microvilli intact smooth membranes. No ciliary basal bodies, microtubule rings, long motile cilia, nucleus, whole cell or branched fingers. Thin crisp purple outlines, smooth matte fills, restrained gradients and small highlights. Schematic brush-border fragment; count not quantitative. Real transparent background.",
+  "style_refinement": "Refine image 1 to the smooth biomedical cartoon style of image 2 (style only). Preserve exactly five microvilli on one continuous membrane patch; two front cutaways expose parallel rose actin bundles connecting to a shallow terminal web. Remove granular membrane texture and rope-like actin glare; use smooth pale lavender filled membranes, fine crisp purple outlines, restrained gradients and broad subtle highlights. Simplify actin to slender smooth rose filaments with sparse crosslinks. Keep all rounded distal caps and base boundary complete, no extra fingers or organelles. Transparent background, generous padding.",
+  "style_reference": "png/filopodium-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "padding_correction": "Zoom out so the complete microvilli cluster fits with at least 15 percent empty padding on ALL sides. Restore the full rounded top of the tallest central projection and all outside contours. Preserve exactly five microvilli, two front actin cutaways, all colors and smooth illustration style. Do not crop any tips or base edges. Real transparent PNG background.",
+  "background_retry_1": "Remove the checkerboard background. Output a transparent PNG with an alpha channel. Keep the complete illustration at its current size and position; do not zoom or crop.",
+  "background_retry_2": "Remove the background. Output a transparent PNG with an alpha channel.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-a6937522-361d-42be-b0ff-3c58774b4715.png",
+  "archetype": "Five-microvillus brush-border fragment with two actin cutaways and terminal web. Counts and dimensions schematic; no ciliary axoneme.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "microvilli",
+  "name": "microvilli",
+  "original": "originals/inventory/microvilli/generated.png",
+  "original_sha256": "d8fe050a43111ca6e4853f6348cf81967173d904712365bfe349b172a905c38d"
+}

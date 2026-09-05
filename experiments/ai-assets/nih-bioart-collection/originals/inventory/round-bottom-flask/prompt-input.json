@@ -1,0 +1,8 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a round-bottom flask, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One empty single-neck round-bottom laboratory flask in upright slight three-quarter view. Nearly spherical clear glass bulb with a completely rounded lower contour, one short narrow cylindrical neck rising at top, open ground-glass joint rim. No flat base, foot, stand, stopper, sidearm or liquid. No graduation marks. Pale blue-gray glass, fine crisp dark gray-blue outlines, clean broad highlights and restrained gradients matching the supplied beaker reference. Smooth biomedical equipment cartoon, not photographic refraction. Real transparent background.",
+  "style_reference": "png/glass-beaker-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-1f1a5eab-4b47-434f-8d31-7655f3594691.png",
+  "archetype": "Empty single-neck round-bottom flask; dimensions and glass joint size unspecified."
+}

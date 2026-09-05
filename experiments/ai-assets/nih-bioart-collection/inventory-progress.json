@@ -8847,7 +8847,35 @@
     "neuronal-synapse": {
       "name": "neuronal synapse",
       "category": "5. Membranes, junctions, and cell-surface structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/neuronal-synapse-bioart-transparent.png",
+      "svg": "svg/neuronal-synapse-bioart-traced.svg",
+      "png_sha256": "3f666015b99f8cbaec05fdf9e1caf7f8d3a256679c7a533842f6c335974945c2",
+      "svg_sha256": "748119c761d2485c01b517d0acf28c45148fdb95c6d9a396f43bc319a53127eb",
+      "original_sha256": "b129759d4c832f04008100f5c0352a5d7059563db442155aa3f7938f1a88c855",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        612,
+        307,
+        615,
+        327
+      ],
+      "svg_paths": 11199,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/neuronal-synapse/prompt.json",
+      "qa": "qa/inventory/neuronal-synapse",
+      "visual_review": "Inspected complete upper bouton and lower spine cutaways, distinct separated membranes, vesicles and single mitochondrion, fusion site and cleft transmitter dots, postsynaptic channels and density. SVG retains small components and transparency on light and dark backgrounds. Generic chemical synapse, not a receptor-specific or scale model.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/neuronal-synapse/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/neuronal-synapse/inspection.webm"
+      }
     },
     "neuromuscular-junction": {
       "name": "neuromuscular junction",
@@ -8857,22 +8885,134 @@
     "filopodium": {
       "name": "filopodium",
       "category": "5. Membranes, junctions, and cell-surface structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/filopodium-bioart-transparent.png",
+      "svg": "svg/filopodium-bioart-traced.svg",
+      "png_sha256": "9cb55945d40090c387dcc73b9399995f79c0a1354e538dc503a2211f94af679e",
+      "svg_sha256": "3412dbd471905ea3a16192771c8801deaea75cb0822ff344163bc0b647289ef4",
+      "original_sha256": "7ef97d11df2f3e7ab9e51be2f75c968da05fae15cf7b007b0712c52422432da6",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        353,
+        584,
+        343,
+        589
+      ],
+      "svg_paths": 6871,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/filopodium/prompt.json",
+      "qa": "qa/inventory/filopodium",
+      "visual_review": "Inspected PNG/SVG light and dark: one slender finger with intact rounded membrane tip, small flared parent membrane patch and cutaway parallel actin bundle with sparse crosslinks. No external filament projection or microtubule. Complete contours, real alpha and padding; vector preserves fine bundle structure and smooth membrane shading. Beading, filament count and crosslink spacing schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/filopodium/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/filopodium/inspection.webm"
+      }
     },
     "lamellipodium": {
       "name": "lamellipodium",
       "category": "5. Membranes, junctions, and cell-surface structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/lamellipodium-bioart-transparent.png",
+      "svg": "svg/lamellipodium-bioart-traced.svg",
+      "png_sha256": "fad19ab3f7d75c468f395f823b66029a50813262f4d95f5449d3390faeac58d4",
+      "svg_sha256": "33b2cb93e19c8c4f4dff1d803943832fce6a459ba316e62f54e145eca68e6571",
+      "original_sha256": "77e09d31771274b92c033d07f5e3acb0a30e5c145a6f1ff98f7a8a23ba93fd61",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        585,
+        321,
+        578
+      ],
+      "svg_paths": 18910,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/lamellipodium/prompt.json",
+      "qa": "qa/inventory/lamellipodium",
+      "visual_review": "Inspected PNG/SVG light and dark: broad thin fan with intact scalloped leading membrane edge and small parent base, branched rose actin mesh remains internal. Complete boundary, no finger projections, nucleus or organelles. Real alpha and padding; SVG retains branching and smooth membrane gradients with minor edge texture. Branch geometry, filament count and thickness schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lamellipodium/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lamellipodium/inspection.webm"
+      }
     },
     "microvilli": {
       "name": "microvilli",
       "category": "5. Membranes, junctions, and cell-surface structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/microvilli-bioart-transparent.png",
+      "svg": "svg/microvilli-bioart-traced.svg",
+      "png_sha256": "11d400c8f9d3fe8e4bbc20a6b75d5399fbb4044cb97b722e0672b01739aa3953",
+      "svg_sha256": "401219172a1526b0b9906ca961077c049232d7fd480a76cd71e47073a5c1facb",
+      "original_sha256": "d8fe050a43111ca6e4853f6348cf81967173d904712365bfe349b172a905c38d",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        343,
+        563
+      ],
+      "svg_paths": 23278,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/microvilli/prompt.json",
+      "qa": "qa/inventory/microvilli",
+      "visual_review": "Inspected PNG/SVG light and dark: five complete rounded projections on common membrane, two cutaways expose parallel actin cores continuous into terminal web. Restored central tip is complete; no actual background glow. Real alpha and generous padding. SVG retains topology and smooth shading, mild texture acceptable. Counts, spacing and crosslinks schematic; no ciliary axoneme implied.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microvilli/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microvilli/inspection.webm"
+      }
     },
     "stereocilia": {
       "name": "stereocilia",
       "category": "5. Membranes, junctions, and cell-surface structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/stereocilia-bioart-transparent.png",
+      "svg": "svg/stereocilia-bioart-traced.svg",
+      "png_sha256": "b7ccc20aa47b25b0d64c4ea64382c1ffbcfd41238a4ae25db9bea8ae36f654d5",
+      "svg_sha256": "a5659a4596dcf284625a70dd80113511b42bbafabf7624082074d0f833bbd3f9",
+      "original_sha256": "c894d791482b7e768851ecaccbbd7c7f393e342c795b7aafa6d92a069d329bd1",
+      "png_dimensions": [
+        1813,
+        1813
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        371,
+        275,
+        346,
+        259
+      ],
+      "svg_paths": 11070,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/stereocilia/prompt.json",
+      "qa": "qa/inventory/stereocilia",
+      "visual_review": "Inspected PNG/SVG light and dark: five stepped membrane-covered stereocilia, tapered bases on one patch, two actin cutaways, oblique links from shorter tips to taller neighbors. Complete tips and base. Real alpha and padding; links remain visible in SVG with minor contour texture. Five instead of prompt six accepted as representative fragment; no fixed biological count or molecular tip-link model implied.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/stereocilia/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/stereocilia/inspection.webm"
+      }
     },
     "igg-antibody": {
       "name": "generic IgG antibody",
@@ -8897,27 +9037,167 @@
     "antibody-fab-fragment": {
       "name": "antibody Fab fragment",
       "category": "6. Distinct immune recognition and antibody structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/antibody-fab-fragment-bioart-transparent.png",
+      "svg": "svg/antibody-fab-fragment-bioart-traced.svg",
+      "png_sha256": "79495af7623bd09f577895a1d2d096da660de2258e41f59929d58af7e4bb714d",
+      "svg_sha256": "9f1d09dddf3551576486fdc5f50e9cae74524caeb9ce2ce57639aafd76ea6c99",
+      "original_sha256": "3562b185db6349b4097066eb0f9d83d15898d369c3a40d82ff0f133b66b2314f",
+      "png_dimensions": [
+        1962,
+        1962
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        420,
+        280,
+        424,
+        316
+      ],
+      "svg_paths": 10694,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/antibody-fab-fragment/prompt.json",
+      "qa": "qa/inventory/antibody-fab-fragment",
+      "visual_review": "Inspected four domains, two short linkers and gold interchain bridge in PNG and SVG on light/dark backgrounds. No Fc stem, antigen, arrows or background. Editable trace retains smooth domain shading with minor stronger contours.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/antibody-fab-fragment/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/antibody-fab-fragment/inspection.webm"
+      }
     },
     "antibody-fc-fragment": {
       "name": "antibody Fc fragment",
       "category": "6. Distinct immune recognition and antibody structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/antibody-fc-fragment-bioart-transparent.png",
+      "svg": "svg/antibody-fc-fragment-bioart-traced.svg",
+      "png_sha256": "3d219f2b863f19e895b9fb93e54279d24632c8638fddfcddc91b20e65716d6ed",
+      "svg_sha256": "3f3eedf612033d0c7caf9728bee660719c1869e005d967ad978232994fb1eaf3",
+      "original_sha256": "11442c575666f0d4cdc8ca6944192988cfcfb15daf44dafe45d9b8a2360b2a7d",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        599,
+        317,
+        593,
+        345
+      ],
+      "svg_paths": 9838,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/antibody-fc-fragment/prompt.json",
+      "qa": "qa/inventory/antibody-fc-fragment",
+      "visual_review": "Inspected PNG/SVG comparison on both backgrounds: four Fc domains, central cleft, touching lower pair, hinge bridges and two attached glycan glyphs preserved. No Fab arms or background; SVG retains smooth shading with slight stronger outlines.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/antibody-fc-fragment/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/antibody-fc-fragment/inspection.webm"
+      }
     },
     "bispecific-antibody": {
       "name": "bispecific antibody",
       "category": "6. Distinct immune recognition and antibody structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/bispecific-antibody-bioart-transparent.png",
+      "svg": "svg/bispecific-antibody-bioart-traced.svg",
+      "png_sha256": "7dc081433681b77b4eacee91473ac708991a0d1aa2fd01a66b1cd6cb66293205",
+      "svg_sha256": "6c0524d8041388a5c66c23af3ed0745a0fc295a8302cb8692897ede9385ccd79",
+      "original_sha256": "0858493e31bd94cfaafb7bcf5b07389aa66d2e0b752e7a68208b44519f60bbc8",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        271,
+        279,
+        251
+      ],
+      "svg_paths": 8623,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/bispecific-antibody/prompt.json",
+      "qa": "qa/inventory/bispecific-antibody",
+      "visual_review": "Inspected PNG/SVG light and dark: IgG-like Y with two differently colored paired variable tips, blue constant domains, four-domain Fc stem and simple hinge. Incorrect lowest Fc gold bridge removed; lowest domains contact. No antigens or extra arms. Real alpha, complete contours and padding; SVG preserves domain layout and style. Representative format with glycans and exact hinge chemistry omitted.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bispecific-antibody/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bispecific-antibody/inspection.webm"
+      }
     },
     "antibody-drug-conjugate": {
       "name": "antibody-drug conjugate",
       "category": "6. Distinct immune recognition and antibody structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/antibody-drug-conjugate-bioart-transparent.png",
+      "svg": "svg/antibody-drug-conjugate-bioart-traced.svg",
+      "png_sha256": "e43211b5086f7a20052a97ceb3fe34f2f2ff608424d553db0ab82a552331ca2e",
+      "svg_sha256": "3e5fead05af9206d83fc781a5d1bb43f19ccf22d3eb6f65076d84ccd42db1aa8",
+      "original_sha256": "bbc41a38e77eb63fdfaa78dd0c09ae9c352ecfd9eed123690783340fb0da2ec1",
+      "png_dimensions": [
+        1813,
+        1813
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        320,
+        298,
+        336,
+        291
+      ],
+      "svg_paths": 10008,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/antibody-drug-conjugate/prompt.json",
+      "qa": "qa/inventory/antibody-drug-conjugate",
+      "visual_review": "Viewed PNG/SVG light and dark: IgG-like antibody with matching teal binding tips and four small coral payload glyphs visibly attached by short gold linkers to constant regions. Corrected Fc framework preserved, no free antigens. Real alpha, complete contours and padding; SVG retains attachments and domain style. Drug load, sites and linker chemistry schematic; glycans omitted.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/antibody-drug-conjugate/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/antibody-drug-conjugate/inspection.webm"
+      }
     },
     "nanobody-vhh": {
       "name": "nanobody / VHH",
       "category": "6. Distinct immune recognition and antibody structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/nanobody-vhh-bioart-transparent.png",
+      "svg": "svg/nanobody-vhh-bioart-traced.svg",
+      "png_sha256": "392d9f8d94c50c04d03fcf51d71f72d7fd2ec3f586a23a97d9d202e1a85e2557",
+      "svg_sha256": "a66096cb5ab8fed032b39ddc14e510c34866830e1ee81fdfec108a7331b82a23",
+      "original_sha256": "af793b41fe375e611cde15e8383ddfe3da295968d2e224e78af9e350dbbe40da",
+      "png_dimensions": [
+        2028,
+        2028
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        471,
+        307,
+        495,
+        320
+      ],
+      "svg_paths": 6451,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/nanobody-vhh/prompt.json",
+      "qa": "qa/inventory/nanobody-vhh",
+      "visual_review": "Reviewed single domain silhouette, three modest binding-end bumps and smooth teal shading on light/dark PNG/SVG previews. SVG preserves shape with mild gradient banding and stronger edge. No background, extra domains or labels.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nanobody-vhh/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nanobody-vhh/inspection.webm"
+      }
     },
     "t-cell-receptor-alpha-beta-heterodimer": {
       "name": "T-cell receptor alpha-beta heterodimer",
@@ -8937,7 +9217,35 @@
     "cd4-receptor": {
       "name": "CD4 receptor",
       "category": "6. Distinct immune recognition and antibody structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cd4-receptor-bioart-transparent.png",
+      "svg": "svg/cd4-receptor-bioart-traced.svg",
+      "png_sha256": "ca94cae9235b82c52f51051a36a44ba55f3254d5e0f2bee08b9b7cc0582c6858",
+      "svg_sha256": "2d016baa1f5a780e1dc6e24bb970334e6de2f52082f1bdfea79c5ae1f86f54a0",
+      "original_sha256": "2061daa4d351f6f167defb0e7f83264c51dfa08913142e7ae882985e6b44af2e",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        345,
+        577,
+        341
+      ],
+      "svg_paths": 2192,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cd4-receptor/prompt.json",
+      "qa": "qa/inventory/cd4-receptor",
+      "visual_review": "Inspected four separate domains, single small transmembrane glyph and complete cytoplasmic tail in PNG/SVG previews. Domain count and connections retained, clean transparent backgrounds, no extra chain or ligand. Trace keeps thin contours and subtle fills.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cd4-receptor/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cd4-receptor/inspection.webm"
+      }
     },
     "cd8-receptor": {
       "name": "CD8 alpha-beta receptor",
@@ -9127,47 +9435,299 @@
     "generic-globular-protein": {
       "name": "generic globular protein",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/generic-globular-protein-bioart-transparent.png",
+      "svg": "svg/generic-globular-protein-bioart-traced.svg",
+      "png_sha256": "83f960ab919edf90d8cb16b0d366d8289bac929f2bc6fa301f3ac9b43ad70f5a",
+      "svg_sha256": "b66e166e9c7dde03b16a2ffc1558cb2edc902fba31208428f79d1d7bc73aa512",
+      "original_sha256": "1a5a907970ef761bb0d9fafd3a8e5ca151cdb550d07e36ab83894cbc9173f093",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        307,
+        260,
+        299,
+        299
+      ],
+      "svg_paths": 6610,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/generic-globular-protein/prompt.json",
+      "qa": "qa/inventory/generic-globular-protein",
+      "visual_review": "Inspected PNG/SVG on light/dark backgrounds: compact continuous teal protein silhouette, broad folds and highlights preserved, no separate subunits or ligand. Trace shows mild gradient banding and slightly stronger contours but retains visual quality. No visible background.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-globular-protein/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-globular-protein/inspection.webm"
+      }
     },
     "generic-enzyme": {
       "name": "generic enzyme",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/generic-enzyme-bioart-transparent.png",
+      "svg": "svg/generic-enzyme-bioart-traced.svg",
+      "png_sha256": "67678fa933ea3e978449505706c69a60e55f99de342557dc7ffcf2654e54e356",
+      "svg_sha256": "67f01b11c11b83e39a65e8248cd2cff87607c564dd4e457c391fff0b962e5bd0",
+      "original_sha256": "05af3d8df5200c3cde1a475e6f63ec3d1e14d22a0263274878a590dd0f6c623d",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        295,
+        300,
+        297,
+        305
+      ],
+      "svg_paths": 6672,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/generic-enzyme/prompt.json",
+      "qa": "qa/inventory/generic-enzyme",
+      "visual_review": "Inspected PNG and editable SVG on light and dark backgrounds: complete continuous teal globular enzyme, empty upper-right recessed pocket, no ligand or extra components. Smooth domain-cartoon forms and restrained depth retained; minor vector contour texture acceptable. Real transparency and generous padding verified. Functional archetype only, no named enzyme or atomic geometry implied.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-enzyme/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-enzyme/inspection.webm"
+      }
     },
     "enzyme-substrate-complex": {
       "name": "enzyme-substrate complex",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/enzyme-substrate-complex-bioart-transparent.png",
+      "svg": "svg/enzyme-substrate-complex-bioart-traced.svg",
+      "png_sha256": "8380fa408592d66da6c047808f851c60444b7e383bdb2653185e4b0e90c924e7",
+      "svg_sha256": "63c7786e46c8f8d2f8cd114cb4eb0bc9e85b1e7ee78fab8d0d0a5e87130c4568",
+      "original_sha256": "04ca8518968fd42feb327966c1562882ae66f9fd285d4b2d3737528cdc2982a4",
+      "png_dimensions": [
+        1826,
+        1826
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        366,
+        354,
+        301,
+        350
+      ],
+      "svg_paths": 8077,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/enzyme-substrate-complex/prompt.json",
+      "qa": "qa/inventory/enzyme-substrate-complex",
+      "visual_review": "Inspected light/dark PNG and SVG: matched teal enzyme silhouette and fold style; one connected gold substrate occupies the existing cleft with partial lip occlusion. No free ligand or products. Real alpha, complete contours and generous padding; vector preserves depth with minor contour texture. Generic occupancy schematic, not molecular chemical geometry.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/enzyme-substrate-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/enzyme-substrate-complex/inspection.webm"
+      }
     },
     "protein-homodimer": {
       "name": "protein homodimer",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/protein-homodimer-bioart-transparent.png",
+      "svg": "svg/protein-homodimer-bioart-traced.svg",
+      "png_sha256": "a1a87238d17eff9819c3a40f147d01b29edb5394efee826e06a9e77b5a3bfc5d",
+      "svg_sha256": "8a2719ee2d29690fd66c5e179318055634a746ebea8867d849848344d7b91b6a",
+      "original_sha256": "2cb142536e4079a7d217286640a7ba266ff9a28af749f6a3f04827fdfbb00201",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        594,
+        379,
+        595
+      ],
+      "svg_paths": 5237,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/protein-homodimer/prompt.json",
+      "qa": "qa/inventory/protein-homodimer",
+      "visual_review": "Inspected PNG/SVG light and dark: two continuous same-color subunits, one central interface, faint fold marks do not divide additional units. Complete contours, real alpha and generous padding. Smooth matte style retained with mild vector banding. Schematic opposing views of the same archetype; not an atomic symmetry claim.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/protein-homodimer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/protein-homodimer/inspection.webm"
+      }
     },
     "protein-heterodimer": {
       "name": "protein heterodimer",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/protein-heterodimer-bioart-transparent.png",
+      "svg": "svg/protein-heterodimer-bioart-traced.svg",
+      "png_sha256": "06720d171f70afc3cdbac50786b1fd276d87ec7d8ed1a304e095bf17fc34ad2d",
+      "svg_sha256": "9830f484cde2e7305ef5ce0e7f1a2b5ebd8176b145c1b8ad58037cf7998b5472",
+      "original_sha256": "dfbd61cc68cfbf7b14d473b47ffc420837f2fffbd39226e6e8296c1359d45e79",
+      "png_dimensions": [
+        1996,
+        1996
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        398,
+        453,
+        367,
+        496
+      ],
+      "svg_paths": 6988,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/protein-heterodimer/prompt.json",
+      "qa": "qa/inventory/protein-heterodimer",
+      "visual_review": "Inspected PNG/SVG light and dark: exactly two connected different subunits, larger teal and smaller lavender, one complementary interface. No extra ligands or fragments. Complete outlines, real transparency and padding. Shared smooth protein style preserved; minor vector banding accepted. Shape and size ratio schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/protein-heterodimer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/protein-heterodimer/inspection.webm"
+      }
     },
     "tetrameric-protein-complex": {
       "name": "tetrameric protein complex",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/tetrameric-protein-complex-bioart-transparent.png",
+      "svg": "svg/tetrameric-protein-complex-bioart-traced.svg",
+      "png_sha256": "ef1313cb8ae85a1e23a90d6e89fd962db0de17112cd939302ae38a6ea0ee896f",
+      "svg_sha256": "8422918d789a0e770fba4f8a71967382548f73b10deefcc23157fd12f1090658",
+      "original_sha256": "692de13b702fe11570c57c26c7218d55598c5c9a7c9a3a6158319be8928c685a",
+      "png_dimensions": [
+        1790,
+        1790
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        256,
+        323,
+        274,
+        280
+      ],
+      "svg_paths": 7668,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/tetrameric-protein-complex/prompt.json",
+      "qa": "qa/inventory/tetrameric-protein-complex",
+      "visual_review": "Viewed PNG/SVG on light and dark: exactly four touching subunits in a two-by-two assembly, clear interfaces, no fifth central unit or ligand. Same smooth protein-family style. Complete contours, real transparency and generous padding; SVG keeps gradients with minor banding. Generic tetramer schematic without molecular identity.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tetrameric-protein-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tetrameric-protein-complex/inspection.webm"
+      }
     },
     "ring-shaped-protein-complex": {
       "name": "ring-shaped protein complex",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/ring-shaped-protein-complex-bioart-transparent.png",
+      "svg": "svg/ring-shaped-protein-complex-bioart-traced.svg",
+      "png_sha256": "acde7b72936c7d57024c980593477a831647acd25527d10d6c549c1f67aad1f2",
+      "svg_sha256": "bb992e297c98a62940bd56e24fb047de0e5b5116010f9fc4c5d168a1b6048ac8",
+      "original_sha256": "b16ce61258d524d7abdfb76f251698b61603e3031329bf2f5b35c63fb8414c6c",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        308,
+        436,
+        293
+      ],
+      "svg_paths": 5596,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/ring-shaped-protein-complex/prompt.json",
+      "qa": "qa/inventory/ring-shaped-protein-complex",
+      "visual_review": "Viewed PNG/SVG light and dark: six joined countable teal subunits form one closed ring; central pore is genuinely transparent on both composites. No second ring or extra component. Complete contours, generous padding and matching smooth protein style; minor vector banding acceptable. Sixfold example is schematic, not a universal ring stoichiometry.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ring-shaped-protein-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ring-shaped-protein-complex/inspection.webm"
+      }
     },
     "coiled-coil-protein": {
       "name": "coiled-coil protein",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/coiled-coil-protein-bioart-transparent.png",
+      "svg": "svg/coiled-coil-protein-bioart-traced.svg",
+      "png_sha256": "2dc167c91aaf9e3b01fa42394dc509ede74d8969689d930cb9ed8eedd45bbbc4",
+      "svg_sha256": "6e60d8b964a290b347a3c0d2d6e3d5f1808db22effff075eb0c5e75619f7dadd",
+      "original_sha256": "353931a1fb1d275733dbf8b605fcb9ad86b16fc5c2ba0db0c611005fdb2f61b7",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        610,
+        355,
+        601,
+        339
+      ],
+      "svg_paths": 7059,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/coiled-coil-protein/prompt.json",
+      "qa": "qa/inventory/coiled-coil-protein",
+      "visual_review": "Viewed PNG/SVG on light and dark: two continuous colored helical ribbons associate along a long superhelical axis, both chain ends complete. No DNA rungs, third chain or ligand. Real transparency and padding; SVG preserves ribbon crossings and depth with minor edge texture. Pitch and turns illustrative, not a sequence-specific structural model.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/coiled-coil-protein/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/coiled-coil-protein/inspection.webm"
+      }
     },
     "intrinsically-disordered-protein": {
       "name": "intrinsically disordered protein",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/intrinsically-disordered-protein-bioart-transparent.png",
+      "svg": "svg/intrinsically-disordered-protein-bioart-traced.svg",
+      "png_sha256": "f44055b429ae384109cb1c14288ed4a47d56c027478986bb5e00d50e98263da4",
+      "svg_sha256": "167b1cae77bbefb6e0e9c2a070d173a2751bb614c8bfb307a6c01bb87f240bdd",
+      "original_sha256": "c63cfd27257cc6f0de3496e98dfa7197133a4a8bcf15cda1d34d870405cfd537",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        362,
+        585,
+        356,
+        597
+      ],
+      "svg_paths": 7242,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/intrinsically-disordered-protein/prompt.json",
+      "qa": "qa/inventory/intrinsically-disordered-protein",
+      "visual_review": "Viewed PNG/SVG light and dark: irregular continuous teal chain with two visible termini and over-under crossings, no regular helix or globular domain. Internal loop spaces genuinely transparent, complete contour and padding. SVG retains chain path and depth with minor contour texture. One schematic conformation only, not a stable structure or ensemble measurement.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/intrinsically-disordered-protein/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/intrinsically-disordered-protein/inspection.webm"
+      }
     },
     "transmembrane-protein": {
       "name": "transmembrane protein",
@@ -9207,12 +9767,68 @@
     "collagen-triple-helix": {
       "name": "collagen triple helix",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/collagen-triple-helix-bioart-transparent.png",
+      "svg": "svg/collagen-triple-helix-bioart-traced.svg",
+      "png_sha256": "d5e4178a6412472a85f5a713a28dd67180453c98038685f1820fb7bec90f34c5",
+      "svg_sha256": "9796aeec6a6f57a679589fd5a40de20a727c1ca4b545ed74be68283a8c5c45b5",
+      "original_sha256": "cc57dccb7756d7b28ed1d3fd6dfd3a09bb3fa420f7403a22627ade1b352eb892",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        578,
+        340,
+        578,
+        335
+      ],
+      "svg_paths": 8038,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/collagen-triple-helix/prompt.json",
+      "qa": "qa/inventory/collagen-triple-helix",
+      "visual_review": "Inspected three individually colored continuous chains and six complete ends. SVG preserves crossings, gradients and transparent surrounding space on both backgrounds. Representative three-chain molecular schematic; pitch and proportions are not structural measurements.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/collagen-triple-helix/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/collagen-triple-helix/inspection.webm"
+      }
     },
     "collagen-fibril": {
       "name": "collagen fibril",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/collagen-fibril-bioart-transparent.png",
+      "svg": "svg/collagen-fibril-bioart-traced.svg",
+      "png_sha256": "5ad115981e48f43abb0781d00ab1996256226564e5d39652b9034e4017cb1822",
+      "svg_sha256": "ea1db82fd74165609405d9bb5e81f0d822697971873bddb377f2d4418d2fd764",
+      "original_sha256": "b0dd04c72a422d9a1bc23178ca31f526f995b0e929febca7122f97bb87e169cf",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        347,
+        583,
+        334,
+        609
+      ],
+      "svg_paths": 18859,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/collagen-fibril/prompt.json",
+      "qa": "qa/inventory/collagen-fibril",
+      "visual_review": "Inspected single complete cylindrical fibril, transverse banding, longitudinal lines and packed cut-face dots. SVG preserves the bands and contour with matching smooth depth on light and dark backgrounds; true transparent padding confirmed. Molecular count, dimensions and band spacing are schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/collagen-fibril/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/collagen-fibril/inspection.webm"
+      }
     },
     "fibrin-fiber": {
       "name": "fibrin fiber",
@@ -9222,7 +9838,35 @@
     "clathrin-triskelion": {
       "name": "clathrin triskelion",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/clathrin-triskelion-bioart-transparent.png",
+      "svg": "svg/clathrin-triskelion-bioart-traced.svg",
+      "png_sha256": "d1d7aa391be07c9119b56454aff744a136fd03f2cc2a43992e5c5cd84aa4d3b1",
+      "svg_sha256": "7c8ae7395c8496af39b18d2e90e698ec998a7d04b49155c2e855d44eb5558a9e",
+      "original_sha256": "dfded9114b7454e2cdc40e5037875acb2b453d28953139b08ad904966069f0cc",
+      "png_dimensions": [
+        1813,
+        1813
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        371,
+        280,
+        325,
+        299
+      ],
+      "svg_paths": 5344,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/clathrin-triskelion/prompt.json",
+      "qa": "qa/inventory/clathrin-triskelion",
+      "visual_review": "Inspected PNG/SVG light and dark: exactly three bent heavy-chain legs from a shared vertex, three proximal cream light-chain accents, three complete terminal domains. No cage or vesicle. Real alpha and padding; smooth protein rendering and bends retained in SVG with minor banding. Terminal lobes and leg curvature schematic, not atomic domain counts.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/clathrin-triskelion/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/clathrin-triskelion/inspection.webm"
+      }
     },
     "snare-complex": {
       "name": "SNARE complex",
@@ -10382,32 +11026,200 @@
     "multichannel-micropipette": {
       "name": "multichannel micropipette",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/multichannel-micropipette-bioart-transparent.png",
+      "svg": "svg/multichannel-micropipette-bioart-traced.svg",
+      "png_sha256": "1222851064fa1d22549ee828016c8d42defb02f30646fdedbe7e9068e1941fc8",
+      "svg_sha256": "9e45204c83d699539b356cdc16d1830072df1a0900007bbddde61bcee230babe",
+      "original_sha256": "a745aa4c4a998f570532e059eb4fe44d3e477b6b5e0aec83403ae7ce1dc07e47",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        323,
+        577,
+        307
+      ],
+      "svg_paths": 5278,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/multichannel-micropipette/prompt.json",
+      "qa": "qa/inventory/multichannel-micropipette",
+      "visual_review": "Reviewed original and light/dark PNG/SVG comparison: eight distinct complete tips, blue and white housing, blank display, intact plunger. No visible glow or background. SVG retains fine contours and shading; tips slightly more opaque after tracing.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/multichannel-micropipette/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/multichannel-micropipette/inspection.webm"
+      }
     },
     "electronic-pipette": {
       "name": "electronic pipette",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/electronic-pipette-bioart-transparent.png",
+      "svg": "svg/electronic-pipette-bioart-traced.svg",
+      "png_sha256": "c94e8ed71ff84c52cb9f2d60ac971e23efef81acb41ff62a7f0f5f1cc8d9ca27",
+      "svg_sha256": "eb54ffb957653831e8e92972e0a175f7161925884504560d37f841e1c824ba4b",
+      "original_sha256": "70db4d50539438240b256a7a06305b25f55b42b23de3e5394202f2ead5bd2504",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        324,
+        625,
+        325
+      ],
+      "svg_paths": 2457,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/electronic-pipette/prompt.json",
+      "qa": "qa/inventory/electronic-pipette",
+      "visual_review": "Reviewed PNG and SVG on light/dark backgrounds: complete angled pipette, blank LCD and three control buttons, no mechanical plunger, intact tip. SVG retains body shading and thin contours; transparent tip becomes slightly more opaque. No visible background glow.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/electronic-pipette/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/electronic-pipette/inspection.webm"
+      }
     },
     "pipette-tip": {
       "name": "pipette tip",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/pipette-tip-bioart-transparent.png",
+      "svg": "svg/pipette-tip-bioart-traced.svg",
+      "png_sha256": "094be5734c467685d586f1c54838293d15f7adc96ee442281da23322840c859d",
+      "svg_sha256": "5d2cfa160a23d02a6bf9b1e5cde269f43d5809e6b60324e024f086b94d533059",
+      "original_sha256": "2e86fd71e458a1ecbf371c9c50fcbfbbf75f8e1965f079aa797607c90619979c",
+      "png_dimensions": [
+        2028,
+        2028
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        471,
+        355,
+        553,
+        362
+      ],
+      "svg_paths": 4817,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/pipette-tip/prompt.json",
+      "qa": "qa/inventory/pipette-tip",
+      "visual_review": "Inspected original and light/dark comparison: open mounting rim, collar ribs and full tapered outlet preserved. SVG slightly strengthens clear plastic highlights but retains recognizable empty tip and transparency. No background or unrelated parts.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pipette-tip/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pipette-tip/inspection.webm"
+      }
     },
     "filtered-pipette-tip": {
       "name": "filtered pipette tip",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/filtered-pipette-tip-bioart-transparent.png",
+      "svg": "svg/filtered-pipette-tip-bioart-traced.svg",
+      "png_sha256": "fe4369aa7199792ab61c3835f12ccacbfc275a658753b9df79d16dc48f3228e1",
+      "svg_sha256": "4c8a4c79ac5efd08b259759e032e86ea4f2ecc162652ba907ccc99eae2afb256",
+      "original_sha256": "0521e59bdb6f9a26b42607daf20cc8fc99fb23a159025bf277c9ac184ca72960",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        339,
+        575,
+        337
+      ],
+      "svg_paths": 6544,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/filtered-pipette-tip/prompt.json",
+      "qa": "qa/inventory/filtered-pipette-tip",
+      "visual_review": "Inspected PNG/SVG on light/dark backgrounds: internal white filter visible below open collar, continuous empty shaft and full outlet preserved; false internal ring removed. SVG retains filter and plastic shading with stronger fine outlines. No visible checkerboard or glow.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/filtered-pipette-tip/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/filtered-pipette-tip/inspection.webm"
+      }
     },
     "serological-pipette": {
       "name": "serological pipette",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/serological-pipette-bioart-transparent.png",
+      "svg": "svg/serological-pipette-bioart-traced.svg",
+      "png_sha256": "c1a711d0a010115e8dc88391b056bae35b23fbd8919f0acb7d7234eeccd1c94e",
+      "svg_sha256": "ef747128170b7761852825bddb151326ebc630758accb72e7e7bd08a5a5d50dc",
+      "original_sha256": "7f2559d25ef2c971b6d536bc191ed8dafb2f0800f14fe261579725438e91fd22",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        345,
+        595,
+        375,
+        613
+      ],
+      "svg_paths": 4382,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/serological-pipette/prompt.json",
+      "qa": "qa/inventory/serological-pipette",
+      "visual_review": "Reviewed original and light/dark PNG/SVG comparison: complete long cylindrical barrel, upper plug, blue band, unnumbered ticks and short dispensing tip retained. SVG preserves clear-plastic highlights with slightly stronger outlines. No visible background or text.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/serological-pipette/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/serological-pipette/inspection.webm"
+      }
     },
     "pasteur-pipette": {
       "name": "Pasteur pipette",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/pasteur-pipette-bioart-transparent.png",
+      "svg": "svg/pasteur-pipette-bioart-traced.svg",
+      "png_sha256": "52347a431558a4669f1a90819154da6e4a9601e312a843b9de246e4238f4beb2",
+      "svg_sha256": "095d4f11f5cea476b2f7d52dbf6049d12486de3487259067ff60c893a83cfbe7",
+      "original_sha256": "414f5d80a2f3e391fe056e9df6ec781418c1becdc45ef3720a492059f28fe3ce",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        341,
+        579,
+        355,
+        617
+      ],
+      "svg_paths": 5345,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/pasteur-pipette/prompt.json",
+      "qa": "qa/inventory/pasteur-pipette",
+      "visual_review": "Inspected PNG/SVG on light/dark backgrounds: intact rubber bulb, ungraduated glass barrel, shoulder and complete capillary outlet. SVG retains bulb shading and fine glass walls; no visible background glow, liquid or extra objects.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pasteur-pipette/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pasteur-pipette/inspection.webm"
+      }
     },
     "microcentrifuge-tube": {
       "name": "microcentrifuge tube",
@@ -10422,22 +11234,134 @@
     "screw-cap-microtube": {
       "name": "screw-cap microtube",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/screw-cap-microtube-bioart-transparent.png",
+      "svg": "svg/screw-cap-microtube-bioart-traced.svg",
+      "png_sha256": "d9119c66cdb1671a80ea9f5354afc3459d85d1fd376311f8dda3dfef9f712940",
+      "svg_sha256": "03899b70bd19a8ff5e0d329a204d0826c7e26fa3a7db7e15db7695b84a940f17",
+      "original_sha256": "8824cacb0cd87f9439eea9f8f4b62cfeaac1f4fa52f6c4f353182d6f24c1eb04",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        335,
+        577,
+        379
+      ],
+      "svg_paths": 3545,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/screw-cap-microtube/prompt.json",
+      "qa": "qa/inventory/screw-cap-microtube",
+      "visual_review": "Viewed light/dark PNG and SVG: closed ribbed blue screw cap, visible neck, continuous clear cylindrical wall and complete conical bottom. Empty tube; ellipse at cone transition is wall contour. No hinge, scale or label. Real alpha without visible halo; vector preserves shape and clean equipment rendering with minor gradient banding. Volume unspecified.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/screw-cap-microtube/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/screw-cap-microtube/inspection.webm"
+      }
     },
     "pcr-tube": {
       "name": "PCR tube",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/pcr-tube-bioart-transparent.png",
+      "svg": "svg/pcr-tube-bioart-traced.svg",
+      "png_sha256": "954837b0dbe5d501b4f38346b54ba5941677f6b3614391dc35d32f6141e38613",
+      "svg_sha256": "cd42cf671d6e4f8ed41903f2d10cecab8ba9f4410b1bce516379ea71c2cc2a78",
+      "original_sha256": "3bc04132bd326ca17dd8c3ddf1531c4fd220aa17cffb68dc004792fb48c157a4",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        368,
+        597,
+        379
+      ],
+      "svg_paths": 4988,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/pcr-tube/prompt.json",
+      "qa": "qa/inventory/pcr-tube",
+      "visual_review": "Viewed PNG/SVG on light and dark: thin tapered PCR chamber, open elliptical mouth, attached strap and complete snap-cap sealing plug. No screw threads, liquid or label. Real alpha and generous padding; no glow on composites. Smooth equipment rendering retained with slight trace edge texture. Nominal small-volume archetype, not dimensional specification.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pcr-tube/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pcr-tube/inspection.webm"
+      }
     },
     "pcr-strip": {
       "name": "PCR strip",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/pcr-strip-bioart-transparent.png",
+      "svg": "svg/pcr-strip-bioart-traced.svg",
+      "png_sha256": "581f18f5144a1497cd0b902c501e9333ebbe16c656b3277cda924d9699825e0b",
+      "svg_sha256": "bc3d5c73821e08bbba82515a5f02090c3565553015f5caae9132d78c378cc204",
+      "original_sha256": "84d49252b93635d0b1bdc83c38a817a0cfe9c327b9bb8907d7bd51d863884b35",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        340,
+        690,
+        364,
+        635
+      ],
+      "svg_paths": 7274,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/pcr-strip/prompt.json",
+      "qa": "qa/inventory/pcr-strip",
+      "visual_review": "Counted eight connected tubes, each with complete conical tip and seated clear top. Inspected PNG and SVG on light and dark backgrounds: connectors, collars and gradients preserved, real transparent gaps. Cylinder-cone wall contours are not liquid levels; no capacity specified.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pcr-strip/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pcr-strip/inspection.webm"
+      }
     },
     "cryovial": {
       "name": "cryovial",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cryovial-bioart-transparent.png",
+      "svg": "svg/cryovial-bioart-traced.svg",
+      "png_sha256": "9e3c5eca57816fb7923cccc52be998fc11997e3b6f5e7314cb380239328dca94",
+      "svg_sha256": "ea0d806acc2321c5f97130dc9b7c6f5631c472b12db24c6084552824ac7945c1",
+      "original_sha256": "0729c2fef991d056d6b31c2c253c08263f298b0cd3f6cd16c1d7eb1f4a1829f4",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        676,
+        345,
+        577,
+        373
+      ],
+      "svg_paths": 8087,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cryovial/prompt.json",
+      "qa": "qa/inventory/cryovial",
+      "visual_review": "Inspected PNG/SVG on light and dark: seated ribbed cap, blank top insert and writing patch, empty cylindrical chamber with rounded inner bottom and self-standing skirt. Complete outlines, real alpha and padding. Clean equipment appearance retained with mild vector texture on cap. No volume, brand or cryogenic performance implied.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cryovial/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cryovial/inspection.webm"
+      }
     },
     "15-ml-conical-tube": {
       "name": "15 mL conical tube",
@@ -10457,37 +11381,233 @@
     "reagent-vial": {
       "name": "reagent vial",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/reagent-vial-bioart-transparent.png",
+      "svg": "svg/reagent-vial-bioart-traced.svg",
+      "png_sha256": "0ed1119fac64278e1933c1378c3e31c2690c5843ae25307151182408e1f9791e",
+      "svg_sha256": "e4feee94997474be516f8b4da49277b6a35acd4512e57f967ec685fde55de78f",
+      "original_sha256": "74980102d823c4a055a2a47c7903b0274601c54d6e8c2dbb60ff6d2f22757b9b",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        314,
+        723,
+        349
+      ],
+      "svg_paths": 6130,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/reagent-vial/prompt.json",
+      "qa": "qa/inventory/reagent-vial",
+      "visual_review": "Inspected complete ribbed navy screw cap, rounded shoulder, cylindrical glass body and thick flat base on light and dark backgrounds. Empty interior; SVG preserves contours and broad highlights without an opaque background.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/reagent-vial/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/reagent-vial/inspection.webm"
+      }
     },
     "glass-ampoule": {
       "name": "glass ampoule",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/glass-ampoule-bioart-transparent.png",
+      "svg": "svg/glass-ampoule-bioart-traced.svg",
+      "png_sha256": "fc9970f5d46063988992027c33d9c779d9fbee0e0fb07a25b6bcaf54fed90349",
+      "svg_sha256": "11153c4b6a25e42341a6c3c005fca2c04698c4df67a8c58ae846bc091be9c63d",
+      "original_sha256": "f9f973df326fd37b1d511cac626ca2fe97ede95eea618c554ea9a1842c3c83b4",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        339,
+        649,
+        363
+      ],
+      "svg_paths": 3621,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/glass-ampoule/prompt.json",
+      "qa": "qa/inventory/glass-ampoule",
+      "visual_review": "Inspected sealed rounded glass tip, narrow scored neck, chamber, meniscus and complete flat base. PNG/SVG match on light and dark backgrounds with transparent padding; small contour simplification does not obscure the glassware.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/glass-ampoule/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/glass-ampoule/inspection.webm"
+      }
     },
     "glass-beaker": {
       "name": "glass beaker",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/glass-beaker-bioart-transparent.png",
+      "svg": "svg/glass-beaker-bioart-traced.svg",
+      "png_sha256": "fceb9d26a1f7f10a482fa3452dec2552e254ab6872b9dedf172320e52b1d57b2",
+      "svg_sha256": "7c2585686f2d436b75e95a4bca47f60f307b18ea1a6e949e35694a6c9838179c",
+      "original_sha256": "0067f65b42927d8528f6cbdf875bb02912a54b25a59ed6ecbe1774bf52a879a0",
+      "png_dimensions": [
+        1790,
+        1790
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        390,
+        326,
+        414,
+        316
+      ],
+      "svg_paths": 6472,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/glass-beaker/prompt.json",
+      "qa": "qa/inventory/glass-beaker",
+      "visual_review": "Viewed PNG/SVG on light and dark: complete open cylindrical beaker with left pouring spout, thick base and unnumbered ticks. Empty interior, no meniscus or props. Real alpha and generous padding; spout and rim remain readable in SVG, slight trace texture acceptable. Ticks are schematic and imply no calibrated volume.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/glass-beaker/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/glass-beaker/inspection.webm"
+      }
     },
     "graduated-cylinder": {
       "name": "graduated cylinder",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/graduated-cylinder-bioart-transparent.png",
+      "svg": "svg/graduated-cylinder-bioart-traced.svg",
+      "png_sha256": "760da6b9d091e0ecbdce1592a01fbe1c7e246528449cda60c546ebcfbb3c0440",
+      "svg_sha256": "8302c5f71a57db279274606a3970b579260f00b124e6ce21457aee5165131026",
+      "original_sha256": "2afcf771ac6d51c450e0a62fb4d02ce48634b54f060ee87ca3fa6ad05f222371",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        827,
+        349,
+        745,
+        355
+      ],
+      "svg_paths": 3860,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/graduated-cylinder/prompt.json",
+      "qa": "qa/inventory/graduated-cylinder",
+      "visual_review": "Inspected PNG/SVG light and dark: tall empty column with small pouring spout, unnumbered ticks and complete broad hexagonal foot. Real transparency and generous padding, glass contours readable on both backgrounds. SVG retains structure with minor line texture. Scale not calibrated and volume unspecified.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/graduated-cylinder/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/graduated-cylinder/inspection.webm"
+      }
     },
     "erlenmeyer-flask": {
       "name": "Erlenmeyer flask",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/erlenmeyer-flask-bioart-transparent.png",
+      "svg": "svg/erlenmeyer-flask-bioart-traced.svg",
+      "png_sha256": "a897e4ebf6a66b4ca17de543c7c62c54789c39af608590ff31ae21c5d2fe2906",
+      "svg_sha256": "8c3c4bfcdf606ad8a26d999f09946c7781e83ff779a5971a481523a142988142",
+      "original_sha256": "65d111f5485b45a8d8c3cc21de2e5099e74073bfb8ae33c210fa637a68bc4f72",
+      "png_dimensions": [
+        1813,
+        1813
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        299,
+        278,
+        389,
+        316
+      ],
+      "svg_paths": 6665,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/erlenmeyer-flask/prompt.json",
+      "qa": "qa/inventory/erlenmeyer-flask",
+      "visual_review": "Viewed PNG/SVG light and dark: complete conical body, flat base, narrow open cylindrical neck and rolled lip. Empty interior with no stopper, sidearm or spout. Real transparency and padding, matching beaker style. SVG retains glass contours and broad highlights with minor line texture. Unnumbered scale schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/erlenmeyer-flask/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/erlenmeyer-flask/inspection.webm"
+      }
     },
     "volumetric-flask": {
       "name": "volumetric flask",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/volumetric-flask-bioart-transparent.png",
+      "svg": "svg/volumetric-flask-bioart-traced.svg",
+      "png_sha256": "c15635f9d75b3c8ac4297ead7c0ebc0089855b54cfaa047af21360a9655b0b41",
+      "svg_sha256": "519104d8e62d40e9bacd9f02bd7022934153d86941c36ad8d395a8cd29f4b202",
+      "original_sha256": "39dd1af4b5c044331823b693e915783cfffbb1920475cb0ef0ae6b94c7a5b26e",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        346,
+        577,
+        379
+      ],
+      "svg_paths": 4143,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/volumetric-flask/prompt.json",
+      "qa": "qa/inventory/volumetric-flask",
+      "visual_review": "Viewed PNG/SVG light and dark: pear-shaped bulb, long narrow neck, seated stopper and exactly one calibration ring below the stopper joint. Complete boundaries, real alpha and padding. Matching smooth glassware style; SVG retains ring and glass contours with minor edge texture. No calibrated volume claimed.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/volumetric-flask/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/volumetric-flask/inspection.webm"
+      }
     },
     "round-bottom-flask": {
       "name": "round-bottom flask",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/round-bottom-flask-bioart-transparent.png",
+      "svg": "svg/round-bottom-flask-bioart-traced.svg",
+      "png_sha256": "efc578b1ef17ce91fcec135d25805c367a27ab75eab8663f24fd5089a88ab5b0",
+      "svg_sha256": "e63aa48b45196375683468326819b83ce98b442dc2df58aa9128018aa21bd68f",
+      "original_sha256": "e6c8c8c46e800e79a0a9ec4b9585b623c0dc0151e85947c64b9a671a49896065",
+      "png_dimensions": [
+        1924,
+        1924
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        389,
+        275,
+        424,
+        305
+      ],
+      "svg_paths": 6557,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/round-bottom-flask/prompt.json",
+      "qa": "qa/inventory/round-bottom-flask",
+      "visual_review": "Inspected PNG/SVG light and dark: spherical bulb with fully rounded lower contour, one open neck, no foot, stand or liquid. Complete rim and contour with real alpha and padding. SVG preserves shape and broad glass highlights, minor gradient banding acceptable. Size and joint specification unspecified.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/round-bottom-flask/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/round-bottom-flask/inspection.webm"
+      }
     },
     "separatory-funnel": {
       "name": "separatory funnel",
@@ -11912,17 +13032,101 @@
     "cell-pellet-in-tube": {
       "name": "cell pellet in tube",
       "category": "39. Common experimental states and readout primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cell-pellet-in-tube-bioart-transparent.png",
+      "svg": "svg/cell-pellet-in-tube-bioart-traced.svg",
+      "png_sha256": "c764b79c488022bbe13c9f711b61ec4a850a6d6383bea11e84bcab1fd217fe3b",
+      "svg_sha256": "2fdca46a01723adca98ba7f992e63541cf5112559325a2cf60616e237765bf84",
+      "original_sha256": "508e1f576bab23c2c66ebbdc2b76788ce773559ba8160072fcd0a7372c421d76",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        764,
+        386,
+        787,
+        447
+      ],
+      "svg_paths": 5400,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cell-pellet-in-tube/prompt.json",
+      "qa": "qa/inventory/cell-pellet-in-tube",
+      "visual_review": "Inspected PNG/SVG light and dark: small coherent cream pellet settled in conical tip, clear supernatant with one meniscus above, attached closed snap cap. Pellet remains visible in vector. Real alpha, complete boundaries and padding; smooth equipment style. Pellet texture is schematic, not cell dimensions, yield or identity.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-pellet-in-tube/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-pellet-in-tube/inspection.webm"
+      }
     },
     "confluent-cell-monolayer": {
       "name": "confluent cell monolayer",
       "category": "39. Common experimental states and readout primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/confluent-cell-monolayer-bioart-transparent.png",
+      "svg": "svg/confluent-cell-monolayer-bioart-traced.svg",
+      "png_sha256": "77955500c09801a7d8128c4fd1a0a3fc3d6a3bad4a2260b276e3bad2cbf17603",
+      "svg_sha256": "54e95f1ac1f4d7e6ebd8ca0cabcf818dd960d595759c70ada91f2664e71021d0",
+      "original_sha256": "2d5c9594c39494e76c0cafe66afadd3cc5298bab530448477ebd15dfd5945d4b",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        325,
+        563
+      ],
+      "svg_paths": 13094,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/confluent-cell-monolayer/prompt.json",
+      "qa": "qa/inventory/confluent-cell-monolayer",
+      "visual_review": "Reviewed original and PNG/SVG comparison on light and dark backgrounds: thirteen contiguous cells in one layer, complete outer cells, one nucleus per cell, clean internal organelle glyphs. SVG preserves cell boundaries and coloration. No visible background or glow.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/confluent-cell-monolayer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/confluent-cell-monolayer/inspection.webm"
+      }
     },
     "isolated-adherent-cell-colony": {
       "name": "isolated adherent cell colony",
       "category": "39. Common experimental states and readout primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/isolated-adherent-cell-colony-bioart-transparent.png",
+      "svg": "svg/isolated-adherent-cell-colony-bioart-traced.svg",
+      "png_sha256": "6e2beff7039e6ac42de14fdfe16f1a894301b72cf259698cdadcb16b42534b7f",
+      "svg_sha256": "9182681646f268f5f64d3916abbaacbdc2d824f1deb9a9330436e7c957f6b740",
+      "original_sha256": "4d239dda946d90390011bc1c3758bc5b32ef8998d1b4e1a9ae98daffea590a2b",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        394,
+        563,
+        321,
+        563
+      ],
+      "svg_paths": 13086,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/isolated-adherent-cell-colony/prompt.json",
+      "qa": "qa/inventory/isolated-adherent-cell-colony",
+      "visual_review": "Inspected light/dark PNG and SVG: compact center and spread peripheral cells retained, full colony boundary, single nuclear compartment per cell. No background glow or disconnected stray parts. SVG preserves cell silhouettes and organelle details with slight contour strengthening.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/isolated-adherent-cell-colony/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/isolated-adherent-cell-colony/inspection.webm"
+      }
     },
     "bacterial-colony-on-agar": {
       "name": "bacterial colony on agar",
@@ -11952,32 +13156,200 @@
     "isolated-axon": {
       "name": "isolated axon",
       "category": "40. Additional neuroscience primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/isolated-axon-bioart-transparent.png",
+      "svg": "svg/isolated-axon-bioart-traced.svg",
+      "png_sha256": "a709a3c562b3970e3830e4dbcda28960ee295aa562bd37cf0dc21d6923cad7f8",
+      "svg_sha256": "af146b15607a24c983c8c57c84607f37027f71ce98d479c5a4d1101b583fd1a4",
+      "original_sha256": "2532701df69a87c4f19e36c3c689825e83bb11e609e70c5029e232be125236bd",
+      "png_dimensions": [
+        2868,
+        2868
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        495,
+        1050,
+        442,
+        1050
+      ],
+      "svg_paths": 13440,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/isolated-axon/prompt.json",
+      "qa": "qa/inventory/isolated-axon",
+      "visual_review": "Inspected PNG and SVG: complete curved cylinder and both end faces, continuous exposed longitudinal blue bundles, two mitochondria and vesicles retained. No myelin, branches or background glow. Trace keeps window boundaries and fine detail with slightly stronger outlines.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/isolated-axon/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/isolated-axon/inspection.webm"
+      }
     },
     "dendritic-arbor-segment": {
       "name": "dendritic arbor segment",
       "category": "40. Additional neuroscience primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/dendritic-arbor-segment-bioart-transparent.png",
+      "svg": "svg/dendritic-arbor-segment-bioart-traced.svg",
+      "png_sha256": "2ee31fd19d4e9074d6ca9b5b68e9fbac35f6d9513cae79b3f95aad5436d1fcf4",
+      "svg_sha256": "7a8171a577077a012ad05d0b6a6c22cc80af77e863324bbf15b76dfa3d82e043",
+      "original_sha256": "4cf262b30f84511a2527bb0054b5779073aff5b686f9f58d7630c8abc1aa72a9",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        418,
+        577,
+        321,
+        603
+      ],
+      "svg_paths": 8494,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/dendritic-arbor-segment/prompt.json",
+      "qa": "qa/inventory/dendritic-arbor-segment",
+      "visual_review": "Inspected PNG and SVG on light and dark backgrounds: complete arbor and cut end, intact mushroom spines, open transparent spaces, preserved lavender shading. Representative morphology; no subtype or measured density implied.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dendritic-arbor-segment/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dendritic-arbor-segment/inspection.webm"
+      }
     },
     "myelin-sheath": {
       "name": "myelin sheath",
       "category": "40. Additional neuroscience primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/myelin-sheath-bioart-transparent.png",
+      "svg": "svg/myelin-sheath-bioart-traced.svg",
+      "png_sha256": "ee678c574dbb901103c4e9925709ccf6dd7a2c79ea304d5af9e839c7a5660317",
+      "svg_sha256": "58072163e491781e0a9dbaf319005843b3db0d0f564c59116d3117757339a543",
+      "original_sha256": "e84d6507a11d7e8fc22be0a15a81451765e48bb4e1fd5e3ff8e29fa17c432755",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        335,
+        634,
+        333,
+        585
+      ],
+      "svg_paths": 8903,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/myelin-sheath/prompt.json",
+      "qa": "qa/inventory/myelin-sheath",
+      "visual_review": "Inspected PNG/SVG on light and dark: one layered sleeve encloses a continuous peach axon, both short projecting ends complete. Nested lamellae readable at cut end; smooth outer sleeve and restrained gradients. No actual background glow in composites. Real alpha and padding verified; SVG retains structure with slight edge texture. Lamellar count and cut-face dots are schematic, not quantitative ultrastructure.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/myelin-sheath/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/myelin-sheath/inspection.webm"
+      }
     },
     "node-of-ranvier": {
       "name": "node of Ranvier",
       "category": "40. Additional neuroscience primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/node-of-ranvier-bioart-transparent.png",
+      "svg": "svg/node-of-ranvier-bioart-traced.svg",
+      "png_sha256": "414b40dd98bca528dd99a444fa9e88b06201ed8901551f6065c2b77d65b409ae",
+      "svg_sha256": "8ef8766ddc880f45c8609ca723c66616e19e5d4ba0b9d93bdc5a0deb3bdbb031",
+      "original_sha256": "e3fdc0d3286156fc80c189d139f6242c3de89492649041ed798d6588f651a161",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        355,
+        584,
+        348,
+        589
+      ],
+      "svg_paths": 4809,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/node-of-ranvier/prompt.json",
+      "qa": "qa/inventory/node-of-ranvier",
+      "visual_review": "Inspected PNG/SVG on light and dark: one uninterrupted peach axon passes through two myelin sleeves with one exposed central nodal gap. Complete outer ends, nested layers at sleeve terminations, matching approved myelin palette. Transparent composites contain no glow. SVG preserves geometry and gradients with slight line texture. Internodes and gap are schematic proportions; nodal channel clusters omitted.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/node-of-ranvier/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/node-of-ranvier/inspection.webm"
+      }
     },
     "synaptic-vesicle": {
       "name": "synaptic vesicle",
       "category": "40. Additional neuroscience primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/synaptic-vesicle-bioart-transparent.png",
+      "svg": "svg/synaptic-vesicle-bioart-traced.svg",
+      "png_sha256": "9fcfb4d551ce04c708ddf13249320275a437cb70e12de8d1ba2f9a26e7a4b68c",
+      "svg_sha256": "151e2b5a8add815d3e4c65c28c5e9ef8905e1c216b9e5ca936410c43b58efb4c",
+      "original_sha256": "6ec1e848274ad3ad4fc8a251117f4ca562c0c2dfc8eba66f771860c79c18b124",
+      "png_dimensions": [
+        1828,
+        1828
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        261,
+        311,
+        317,
+        312
+      ],
+      "svg_paths": 16427,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/synaptic-vesicle/prompt.json",
+      "qa": "qa/inventory/synaptic-vesicle",
+      "visual_review": "Inspected PNG/SVG on light and dark: single cutaway membrane shell, two head rows separated by smooth core, dispersed small gold cargo, compact teal membrane proteins. No dense core, antenna stalks or organelles. Complete visible contours with real alpha and generous padding; vector retains readable cargo and membrane with minor contour texture. Transmitter identity and all component counts schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/synaptic-vesicle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/synaptic-vesicle/inspection.webm"
+      }
     },
     "neuronal-growth-cone": {
       "name": "neuronal growth cone",
       "category": "40. Additional neuroscience primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/neuronal-growth-cone-bioart-transparent.png",
+      "svg": "svg/neuronal-growth-cone-bioart-traced.svg",
+      "png_sha256": "fb968ae3a309b93d03b89d1e7a4bbe486e1ede637c25b98b782b525c71a0df48",
+      "svg_sha256": "dd9b7a29c43baaa24f5f3d47070ce3d2b4a577cc08c29f5a8bb49ea4912c4fa3",
+      "original_sha256": "310bf406816f71322f8a7a98d2d860b79dff232bb8e3f996e000d8e3abd8a2eb",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        340,
+        571,
+        361,
+        587
+      ],
+      "svg_paths": 12739,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/neuronal-growth-cone/prompt.json",
+      "qa": "qa/inventory/neuronal-growth-cone",
+      "visual_review": "Inspected light/dark PNG and SVG: seven complete filopodia, continuous peripheral membrane and axon segment, central blue fibers and pink peripheral actin retained. No exterior debris or background glow. SVG preserves fine networks and silhouette with modest stronger outlines.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/neuronal-growth-cone/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/neuronal-growth-cone/inspection.webm"
+      }
     },
     "blood-brain-barrier-neurovascular-unit": {
       "name": "blood-brain barrier neurovascular unit",
@@ -11992,7 +13364,35 @@
     "apoptotic-body": {
       "name": "apoptotic body",
       "category": "41. Additional immune and pathology structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/apoptotic-body-bioart-transparent.png",
+      "svg": "svg/apoptotic-body-bioart-traced.svg",
+      "png_sha256": "f85c9ed7017ec54f1e1c7ff70752dda6698858fcaeb14f5e3786583492ee351b",
+      "svg_sha256": "2220a5abb2ad22b9b45f0c3ae5d479643900e6dca7d7df44bd3d10a74782a2b0",
+      "original_sha256": "38be66fc46efbd7c58c8a0607a8b869b912f8d2fb4f2d1af1172dd753d94d3e1",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        262,
+        335,
+        302,
+        353
+      ],
+      "svg_paths": 11042,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/apoptotic-body/prompt.json",
+      "qa": "qa/inventory/apoptotic-body",
+      "visual_review": "Reviewed PNG and SVG on light/dark backgrounds: complete rounded membrane contour, two condensed chromatin fragments and one mitochondrion retained. No intact nucleus, ruptured edge or exterior debris. SVG preserves clean forms with minor stronger contour lines; background is transparent.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/apoptotic-body/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/apoptotic-body/inspection.webm"
+      }
     },
     "antigen-antibody-immune-complex": {
       "name": "antigen-antibody immune complex",

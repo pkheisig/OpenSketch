@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an isolated adherent cell colony, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A small approximately circular colony of about eighteen adherent cultured mammalian epithelial-like cells viewed from above. Compact small polygonal cells touch in the center; around the periphery several flatter more spread cells have irregular broad tapered margins extending outward, all joined to the same colony. A visible contrast between dense center and looser spread perimeter, not a uniform confluent sheet and not a three-dimensional spheroid. Soft peach cytoplasm with one purple nucleus in each cell, a few tiny pink organelle glyphs, thin warm coral cell outlines, smooth gradients and restrained highlights. Single layer only, complete colony boundary, no petri dish, substrate slab, whole culture vessel, scattered separate cells or background. Matte polished biomedical domain-cartoon style, not microscopic or granular.",
+  "style_refinement": "Refine image 1 into image 2's clean polished biomedical cell style. Image 2 is style only. Keep image 1's flat isolated colony, compact polygonal central cells and broader spread peripheral cells, one nucleus per cell, complete connected patch. Smooth grainy cytoplasm and nuclei into matte filled forms, thin crisp coral outlines, restrained gradients and small highlights. Keep peach cytoplasm, purple nuclei and a few pink organelle glyphs per cell. Broaden the sharp outer tips into softer rounded tapered cell margins, while preserving spread peripheral morphology. No additional cells, substrate or scene. Generous transparent padding, no text, arrows or cast shadow.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-9723f029-c5c8-41f1-aec4-596962257f02.png",
+  "archetype": "Generic adherent epithelial-like colony with compact center and spread peripheral cells, viewed from above. Illustrative colony morphology, not a specified cell line, clonal provenance or universal growth phenotype. Some nuclei have two nucleoli; each depicted cell has one nuclear compartment.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "isolated-adherent-cell-colony",
+  "name": "isolated adherent cell colony",
+  "original": "originals/inventory/isolated-adherent-cell-colony/generated.png",
+  "original_sha256": "4d239dda946d90390011bc1c3758bc5b32ef8998d1b4e1a9ae98daffea590a2b"
+}
