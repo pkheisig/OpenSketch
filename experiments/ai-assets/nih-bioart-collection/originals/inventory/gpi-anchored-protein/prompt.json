@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a GPI-anchored protein, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One smooth teal globular protein at top, with its C-terminal short teal stalk connected through a small gold linker to an oligosaccharide connector drawn as a short chain of four small rounded sugar beads in pale green, ending at one pale blue inositol-like head group. Below this head group, a short linker leads to a small blue glycerol junction bearing TWO parallel gently curved golden lipid tails pointing downward. This is a generic schematic GPI anchor attached to a protein, with no membrane patch, no transmembrane helix, no intracellular protein domain. All parts connected into one object. Glycan and lipid structure stylized, no chemical symbols. Smooth matte surfaces, crisp dark contours and restrained shading, transparent alpha PNG.",
+  "refinement": "Simplify only the large teal protein at the top into one compact smooth globular form with about five broad lobes and two shallow grooves, removing the dozens of small bumps. Match polished NIH BioArt illustration with matte surfaces, subtle gradients and crisp contours. Preserve the continuous teal stalk, gold linker, four green sugar beads, pale blue head group, blue junction and TWO gold lipid tails exactly. Keep the full object centered with generous padding. Transparent PNG with actual alpha channel.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-89bddcd1-ec3c-42f7-80cf-c5351197f3d4.png",
+  "reference": "https://www.ncbi.nlm.nih.gov/books/NBK453072/",
+  "archetype": "Generic protein attached at its C terminus via a schematic glycan and phospholipid anchor with two lipid tails. Sugar beads are a simplified connector, not a chemically exact glycan linkage map. No transmembrane or cytoplasmic protein domain.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "gpi-anchored-protein",
+  "name": "GPI-anchored protein",
+  "original": "originals/inventory/gpi-anchored-protein/generated.png",
+  "original_sha256": "8ff2dfbad2783fb108870a8d4481b3889d79b12eaa07903659995fb46e369861"
+}

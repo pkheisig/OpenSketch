@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a fluorescence plate reader, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Generic benchtop fluorescence microplate reader in three-quarter view, compact low box-shaped light-gray optical enclosure with navy lower chassis. One front plate drawer extended, holding a flat BLACK microplate with a regular grid of round wells; wells dark with restrained teal highlights, not glowing beams. Small blank dark-blue control display on front upper right, one unmarked round button, side vents. Drawer rails and plate seated realistically. No exposed internal optics, no sample vials, no DNA or cells, no letters, numbers, logos or computer. Clean smooth surfaces and subtle saturated navy accents. Complete device and drawer with wide transparent alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-bf40710d-fd33-42dc-b02a-122eb7f526ab.png",
+  "archetype": "Generic fluorescence reader with black microplate in a loading drawer. Well grid is illustrative rather than a capacity specification.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "fluorescence-plate-reader",
+  "name": "fluorescence plate reader",
+  "original": "originals/inventory/fluorescence-plate-reader/generated.png",
+  "original_sha256": "5c765ed91585086f0a9e715277210e2ea05826554f9be108167c2a2923dedcbc"
+}

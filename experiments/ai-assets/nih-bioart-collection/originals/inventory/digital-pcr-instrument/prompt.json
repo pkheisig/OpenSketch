@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a digital PCR instrument, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Generic chip-based digital PCR benchtop analyzer, three-quarter view. Compact wide off-white enclosed housing with rounded navy upper optical compartment, blank cyan display on upper front right, one plain blue button. At lower front left a shallow drawer is open with ONE small flat rectangular microfluidic PCR chip in a blue holder, showing a fine regular array of tiny partition dots under a clear cover and a small filling port at one end. Chip much smaller and flatter than a multiwell plate; no tubes, no separate droplet generator, no visible internal optics, no rainbow beams. Side vents and small feet, smooth matte forms and crisp outlined contours. True transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-5d5d4032-6388-4e5a-bf4b-e67ca22a03ba.png",
+  "archetype": "Generic chip-based digital PCR analyzer with partitioned microfluidic chip in drawer. Partition dots enlarged schematically, no count, performance or assay-result specification.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "digital-pcr-instrument",
+  "name": "digital PCR instrument",
+  "original": "originals/inventory/digital-pcr-instrument/generated.png",
+  "original_sha256": "ae24b81656595f6d9cc9a026c8eb56a645ab7f6effb99410859ee01b58871754"
+}

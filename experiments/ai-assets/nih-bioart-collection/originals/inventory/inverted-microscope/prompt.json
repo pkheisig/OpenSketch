@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an inverted microscope, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One inverted cell-culture light microscope, three-quarter side view. Broad navy and light-gray base with low forward-facing binocular eyepieces on the left front. A broad flat black stage in center holds one clear round culture dish with a thin layer of pale pink medium. Crucially, the objective turret is BELOW the stage, with one silver objective pointing UPWARD through stage opening toward dish bottom. A tall rear illumination pillar supports a condenser ABOVE the dish pointing downward, aligned vertically with the upward objective. Two other short objectives on lower turret, side coarse/fine focus knobs. No downward objectives above the stage; upper assembly is condenser only. Smooth clean forms, no writing, no numbers, no external computer or cables, no floating cells. Entire pillar, eyepieces and base visible, generous transparent alpha padding.",
+  "refinement": "Correct the lower objective turret: it is currently upside down. All silver objectives below the stage must point UPWARD toward the stage, not downward toward the base. Put the black revolving turret disk lower near the base, with three silver objective barrels rising above it; central active objective rises vertically to just under the culture dish bottom. Other two barrels angle upward away slightly. Keep upper condenser, stage, dish, eyepieces and body unchanged. True transparent alpha PNG.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-c892a54d-281a-4e67-aab6-2fc6a6b1f6a2.png",
+  "archetype": "Inverted cell-culture microscope with objectives pointing upward beneath the stage and condenser above the dish. Corrected lower turret orientation; schematic mechanical dimensions.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "inverted-microscope",
+  "name": "inverted microscope",
+  "original": "originals/inventory/inverted-microscope/generated.png",
+  "original_sha256": "ea2829243b59ef422159b5da9993b6fa05bb671e0bf0c630201ff662810ad19b"
+}

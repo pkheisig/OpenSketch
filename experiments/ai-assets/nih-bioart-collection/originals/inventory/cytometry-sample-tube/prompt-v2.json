@@ -1,0 +1,14 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a cytometry sample tube, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One upright clear cylindrical 12-by-75-mm-style flow cytometry sample tube with smoothly rounded bottom, open circular rim, no cap. Lower quarter contains pale blue cell suspension shown as smooth translucent liquid with a few tiny purple suspended dots, schematic cells not anatomically detailed. Thin clear plastic walls with pale cyan contour lines and restrained white highlights. Complete tube stands isolated without rack, foot, label, graduations, numbers or bench. Smooth polished biomedical illustration, gentle pseudo-3D shading, generous true transparent alpha background.",
+  "refinement": "Preserve the tube shape, rim and liquid level. Replace all large detailed purple cell spheres in the liquid with a sparse scattering of very tiny plain purple dots, each less than one fiftieth of the tube width. No visible nuclei or giant cells. The suspension should look almost clear at normal size. Clean smooth NIH BioArt style, subtle plastic highlights, complete tube, transparent alpha PNG.",
+  "transparency": "Remove the background. Output a transparent PNG with an alpha channel.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-bf14ee44-0c23-4d0e-aa6a-b6bb9cff6b86.png",
+  "archetype": "Open round-bottom cytometry tube with faint cell-suspension dots. Dots schematic, no cell count, concentration or literal cell scale.",
+  "svg_source": "originals/inventory/cytometry-sample-tube/tube-translucent-vector.svg",
+  "vector_method": "VTracer editable paths with native translucent linear-gradient underlay restoring glass shading lost at alpha threshold.",
+  "id": "cytometry-sample-tube",
+  "name": "cytometry sample tube",
+  "original": "originals/inventory/cytometry-sample-tube/generated-v2.png",
+  "original_sha256": "77dfed7801090451a0a8d09a16367ffc4c7c8750ebdcae0ee3290193884139fd"
+}

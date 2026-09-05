@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a spectrophotometer, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Generic benchtop UV-visible cuvette spectrophotometer, three-quarter view. Low wide light-gray instrument with navy lower chassis. On left, a small hinged dark sample-compartment lid raised to reveal one square cuvette seated vertically in a fitted black cuvette holder; cuvette contains pale blue liquid. On right, a small sloped control panel with a blank dark-blue display and three unlabeled round buttons. Sample chamber optically enclosed on all sides except opened lid. No external light beams, no diagrams, no loose cuvettes, no computer or cables. Smooth crisp housing, restrained gradients. Entire lid and instrument centered with generous transparent alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-a2dae78a-993e-4883-b31a-df39cba10c9a.png",
+  "archetype": "Generic UV-visible spectrophotometer with a square cuvette in an open sample chamber. Loading view; no measurement performance or operating-state claim.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "spectrophotometer",
+  "name": "spectrophotometer",
+  "original": "originals/inventory/spectrophotometer/generated.png",
+  "original_sha256": "b511aa5ca5f217e6ebbe7247d17fba8afb7bc8c637a07bb5ca88e0aff49b6c2d"
+}

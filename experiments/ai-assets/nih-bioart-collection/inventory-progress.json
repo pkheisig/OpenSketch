@@ -9565,12 +9565,68 @@
     "mhc-i-tetramer": {
       "name": "MHC-I tetramer",
       "category": "6. Distinct immune recognition and antibody structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/mhc-i-tetramer-bioart-transparent.png",
+      "svg": "svg/mhc-i-tetramer-bioart-traced.svg",
+      "png_sha256": "4ce3f1f234a5d273a299dd81c589a747338bfe1bc1b275468d8e8ac0f65cd639",
+      "svg_sha256": "add7d7fc622db50d1908bed57b6080a7c0fcd965b24e6c0747d2378e4fa2b42f",
+      "original_sha256": "a08fce7a9626d1f2aeddf2baa3c6f47654096e4c53ce311a2bb3e7a541560d03",
+      "png_dimensions": [
+        1811,
+        1811
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        259,
+        332,
+        277,
+        297
+      ],
+      "svg_paths": 17739,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/mhc-i-tetramer/prompt.json",
+      "qa": "qa/inventory/mhc-i-tetramer",
+      "visual_review": "Four complete soluble pMHC-I units, four associated beta2-microglobulin domains, four linkers and tetrameric core are retained. Peptides and groove contours readable in PNG and SVG on light and dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mhc-i-tetramer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mhc-i-tetramer/inspection.webm"
+      }
     },
     "mhc-ii-tetramer": {
       "name": "MHC-II tetramer",
       "category": "6. Distinct immune recognition and antibody structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/mhc-ii-tetramer-bioart-transparent.png",
+      "svg": "svg/mhc-ii-tetramer-bioart-traced.svg",
+      "png_sha256": "96921ce67431235d481b8d52053d663f031d818d391efa9a220ed3bc24b3d3b1",
+      "svg_sha256": "0532c2a83be5372ca265faa87d77a6521717ae333e671905805998418b35acaf",
+      "original_sha256": "c45d52308f27d43fc3c0164699bfbe12a510f3beccd2fe66d892aa57f2f61256",
+      "png_dimensions": [
+        1790,
+        1790
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        268,
+        299,
+        271,
+        280
+      ],
+      "svg_paths": 14762,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/mhc-ii-tetramer/prompt.json",
+      "qa": "qa/inventory/mhc-ii-tetramer",
+      "visual_review": "Four two-chain monomers with open-ended grooves and extended peptides remain readable. All gold attachments now meet blue lower domains; chain colors continuous. SVG preserves structure and transparent padding on light and dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mhc-ii-tetramer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mhc-ii-tetramer/inspection.webm"
+      }
     },
     "streptavidin-tetramer": {
       "name": "streptavidin tetramer",
@@ -9783,7 +9839,35 @@
     "receptor-serine-threonine-kinase": {
       "name": "receptor serine/threonine kinase",
       "category": "7. Receptor and membrane-protein archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/receptor-serine-threonine-kinase-bioart-transparent.png",
+      "svg": "svg/receptor-serine-threonine-kinase-bioart-traced.svg",
+      "png_sha256": "b9d205df3ee638ff6e6dbdc4497e2d3a2e3538618841de62400e34efb7fc519a",
+      "svg_sha256": "c38d603f7247315008b8b00f99131c866d4c44ef2d53da5d0e462e719b7494ea",
+      "original_sha256": "0da1184d18af2ba5074e48c08e72e1018dcde54e611c833f691f7b18ab240413",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        322,
+        575,
+        326
+      ],
+      "svg_paths": 17595,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/receptor-serine-threonine-kinase/prompt.json",
+      "qa": "qa/inventory/receptor-serine-threonine-kinase",
+      "visual_review": "Four chains, four aligned single-pass helices, four bilobed kinase domains, two type-I regulatory segments and connected dimeric ligand retained in both formats. Light/dark alpha clean; smooth contour shading comparable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/receptor-serine-threonine-kinase/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/receptor-serine-threonine-kinase/inspection.webm"
+      }
     },
     "seven-transmembrane-gpcr": {
       "name": "seven-transmembrane GPCR",
@@ -10097,7 +10181,35 @@
     "gpi-anchored-protein": {
       "name": "GPI-anchored protein",
       "category": "7. Receptor and membrane-protein archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/gpi-anchored-protein-bioart-transparent.png",
+      "svg": "svg/gpi-anchored-protein-bioart-traced.svg",
+      "png_sha256": "2b701c595203cbc48c0b762084c1d3c06fbfd2f8ca272423197394df3846c0d9",
+      "svg_sha256": "e1636c5e52a845285b68878dbea4807506290ef94978c8cd543eafec9c8fabdc",
+      "original_sha256": "8ff2dfbad2783fb108870a8d4481b3889d79b12eaa07903659995fb46e369861",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        319,
+        647,
+        337
+      ],
+      "svg_paths": 5668,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/gpi-anchored-protein/prompt.json",
+      "qa": "qa/inventory/gpi-anchored-protein",
+      "visual_review": "PNG and SVG retain connected protein-glycan-lipid topology and two distinct tails, without a transmembrane helix or cytoplasmic domain. Alpha is clean on light/dark; smooth shading and narrow connectors remain intact.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gpi-anchored-protein/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gpi-anchored-protein/inspection.webm"
+      }
     },
     "generic-membrane-tethered-ligand": {
       "name": "generic membrane-tethered ligand",
@@ -10404,7 +10516,35 @@
     "transmembrane-protein": {
       "name": "transmembrane protein",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/transmembrane-protein-bioart-transparent.png",
+      "svg": "svg/transmembrane-protein-bioart-traced.svg",
+      "png_sha256": "f6bf9aa537e2ecc0bad56d2a7e03b7f9556a524ce919f28902f9bd9e7c1a6659",
+      "svg_sha256": "95577a76114deaeabe5ff14938190384b19ae930fe0eb5fff31e578628e8d4cd",
+      "original_sha256": "d2ba66b8aa3c715b813c6ee74c12a4ce241d0e03654af027adfdda37526167bc",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        872,
+        344,
+        719,
+        337
+      ],
+      "svg_paths": 4399,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/transmembrane-protein/prompt.json",
+      "qa": "qa/inventory/transmembrane-protein",
+      "visual_review": "Continuous folded-domain linker, single membrane-spanning helix and short tail retained. Ribbon contours readable in editable SVG; no exterior glow in transparent composites.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/transmembrane-protein/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/transmembrane-protein/inspection.webm"
+      }
     },
     "atp-synthase": {
       "name": "ATP synthase",
@@ -10581,17 +10721,101 @@
     "ubiquitinated-protein": {
       "name": "ubiquitinated protein",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/ubiquitinated-protein-bioart-transparent.png",
+      "svg": "svg/ubiquitinated-protein-bioart-traced.svg",
+      "png_sha256": "a8d5ebd3778e55db069ad5d391be2439df7822d20c881c3b4b89a37e7c35fed0",
+      "svg_sha256": "7e310e199e387e0cba42b2c2147becbd7ed2bf6938d8f8f342216fbb0ac4ee3b",
+      "original_sha256": "7523b3b47b7828e52215638d5a2038ebd2481d68c0b10ac6d9bfdd0244df4daa",
+      "png_dimensions": [
+        1790,
+        1790
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        280,
+        256,
+        296,
+        256
+      ],
+      "svg_paths": 18898,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/ubiquitinated-protein/prompt.json",
+      "qa": "qa/inventory/ubiquitinated-protein",
+      "visual_review": "One target protein, one ubiquitin ribbon and one attachment retained. Extra ball-and-stick connector and free tail removed. Both formats retain ribbon gaps and connector; alpha clean, shading comparable on light/dark.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ubiquitinated-protein/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ubiquitinated-protein/inspection.webm"
+      }
     },
     "nucleosome": {
       "name": "nucleosome",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/nucleosome-bioart-transparent.png",
+      "svg": "svg/nucleosome-bioart-traced.svg",
+      "png_sha256": "a8dbd962131e58f0233ac59e13339225cd1f86021f0f84bdd9a24411de9ccb3c",
+      "svg_sha256": "6c53d44fa05afcb2bb4be8a105c6b20979f37357c676ed6d3cedc1ea6361eb5b",
+      "original_sha256": "80bf975b928cc993a4289f6691414c4fd5a25717be32729cd153aee9b6ae3aa2",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        577,
+        321,
+        589
+      ],
+      "svg_paths": 14911,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/nucleosome/prompt.json",
+      "qa": "qa/inventory/nucleosome",
+      "visual_review": "Compared both formats on light/dark: compact histone core, two wrapped DNA passages, paired backbones and rungs, two free DNA ends and protein tails preserved. Entire silhouette padded, alpha clean, thin DNA/tail contours remain intact.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nucleosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nucleosome/inspection.webm"
+      }
     },
     "histone-octamer": {
       "name": "histone octamer",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/histone-octamer-bioart-transparent.png",
+      "svg": "svg/histone-octamer-bioart-traced.svg",
+      "png_sha256": "e8075a2836a963b98f6299a42a3d8cddd5c5811a3c94eed811b63742864a9165",
+      "svg_sha256": "ed65912cb4f0c99bb2decc5beb568c429fbecebebf306f9f714052eb3d2d411f",
+      "original_sha256": "e4ee060bb8701968f8b10eaee1e92da1bb01005096616246bd9ad7d2b17b1400",
+      "png_dimensions": [
+        1962,
+        1962
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        280,
+        430,
+        290,
+        436
+      ],
+      "svg_paths": 16123,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/histone-octamer/prompt.json",
+      "qa": "qa/inventory/histone-octamer",
+      "visual_review": "Eight connected colored subunits and flexible tails retained in both formats; central tetramer and flanking dimers readable. Full tail tips padded, true alpha clean on light/dark, smooth shading comparable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/histone-octamer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/histone-octamer/inspection.webm"
+      }
     },
     "transcription-factor-bound-to-dna": {
       "name": "transcription factor bound to DNA",
@@ -13974,7 +14198,35 @@
     "ultracentrifuge": {
       "name": "ultracentrifuge",
       "category": "21. Centrifugation, mixing, and general bench equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/ultracentrifuge-bioart-transparent.png",
+      "svg": "svg/ultracentrifuge-bioart-traced.svg",
+      "png_sha256": "e089183573a53856da36277905e5eb3738c9624479b13defc7fb8e11b1fcfca3",
+      "svg_sha256": "bb66774d61ea3f96d40762482760168aaccbea39567bbe7502a75215a82cabbf",
+      "original_sha256": "e37f2f6d02ba642b11d44c2d17bcee5db4f60978b538125342e4a8284b55e711",
+      "png_dimensions": [
+        1799,
+        1799
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        287,
+        257,
+        289,
+        257
+      ],
+      "svg_paths": 14006,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/ultracentrifuge/prompt.json",
+      "qa": "qa/inventory/ultracentrifuge",
+      "visual_review": "Light/dark comparisons retain full heavy lid, gasket, deep chamber, covered rotor and cabinet controls. Transparent padding clean; editable contours preserve metal and cabinet depth with minor bands.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ultracentrifuge/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ultracentrifuge/inspection.webm"
+      }
     },
     "fixed-angle-rotor": {
       "name": "fixed-angle rotor",
@@ -14507,132 +14759,860 @@
     "thermal-cycler": {
       "name": "thermal cycler",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/thermal-cycler-bioart-transparent.png",
+      "svg": "svg/thermal-cycler-bioart-traced.svg",
+      "png_sha256": "9130f08dfceadbd6e5eb5d067e8f2c4d08ee2c927bba33a5b3c5654cc0223efa",
+      "svg_sha256": "0b5512d6055e11514a2a94ca6e966951d5e28f6e0b2b7a5ceb7ae4de2543727e",
+      "original_sha256": "fdb76201d5088ae9bdc1a7d5a047f7a1723784fd0c7a84fc191b0a254bb4c5ce",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        262,
+        332,
+        276,
+        337
+      ],
+      "svg_paths": 13128,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/thermal-cycler/prompt.json",
+      "qa": "qa/inventory/thermal-cycler",
+      "visual_review": "Both formats preserve heated lid, regular sample-well block, blank display, vents and feet. Entire device padded with genuine alpha; SVG remains visually comparable on light and dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/thermal-cycler/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/thermal-cycler/inspection.webm"
+      }
     },
     "qpcr-instrument": {
       "name": "qPCR instrument",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/qpcr-instrument-bioart-transparent.png",
+      "svg": "svg/qpcr-instrument-bioart-traced.svg",
+      "png_sha256": "792376b426fba18b55ab444274ef40d1b93b6e4bfd7480a68028d30f3d2e49ee",
+      "svg_sha256": "96c1bf43ce5d509249f72c2d3f18a20725d90c8d84adae620ddcccb1d41f4eab",
+      "original_sha256": "26fee4203d85a9adfbb2f80bdea82792fb2e2a2ddc10b58d21cbf2bce911091e",
+      "png_dimensions": [
+        1799,
+        1799
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        287,
+        278,
+        288,
+        311
+      ],
+      "svg_paths": 12944,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/qpcr-instrument/prompt.json",
+      "qa": "qa/inventory/qpcr-instrument",
+      "visual_review": "Complete enclosed analyzer, sample drawer with plate, blank screen, vents and feet retained. Invented internal optical display removed. Light/dark alpha clean and SVG contour shading comparable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/qpcr-instrument/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/qpcr-instrument/inspection.webm"
+      }
     },
     "digital-pcr-instrument": {
       "name": "digital PCR instrument",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/digital-pcr-instrument-bioart-transparent.png",
+      "svg": "svg/digital-pcr-instrument-bioart-traced.svg",
+      "png_sha256": "c845d5bc759a65fc90d25e34ad98070e67cd3fb79bb7ddb40e8fc27b8435f3d6",
+      "svg_sha256": "33715d4953725620c9e123bbbaea4b00719effae1651d6511c75f4f3d17fd381",
+      "original_sha256": "ae24b81656595f6d9cc9a026c8eb56a645ab7f6effb99410859ee01b58871754",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        400,
+        594,
+        333,
+        629
+      ],
+      "svg_paths": 13472,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/digital-pcr-instrument/prompt.json",
+      "qa": "qa/inventory/digital-pcr-instrument",
+      "visual_review": "Both formats preserve compact chip drawer, flat partitioned cartridge, blank controls and closed analyzer housing. Complete padded silhouette, clean alpha and comparable illustrated shading.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/digital-pcr-instrument/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/digital-pcr-instrument/inspection.webm"
+      }
     },
     "gel-electrophoresis-chamber": {
       "name": "gel electrophoresis chamber",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/gel-electrophoresis-chamber-bioart-transparent.png",
+      "svg": "svg/gel-electrophoresis-chamber-bioart-traced.svg",
+      "png_sha256": "c3a1d5eb179f01b89c440e8c283a3d14c85c19c9b3f7e2be9edc0683a4c258c5",
+      "svg_sha256": "09c8b8b7c6097ce6d458bde3e2ac6e186c5e617c1535a1abf33701aa2e728cfe",
+      "original_sha256": "4f3850a296d598c7b78139fe4a2499cc86f2f5444502bcccd3fef0d5df25eac5",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        341,
+        580
+      ],
+      "svg_paths": 22594,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/gel-electrophoresis-chamber/prompt.json",
+      "qa": "qa/inventory/gel-electrophoresis-chamber",
+      "visual_review": "Corrected loading wells to cathode short edge, perpendicular to electrode axis. Light/dark comparisons preserve tank, central gel, buffer and red/black connectors; genuine outer alpha and comparable transparent-housing appearance in SVG.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gel-electrophoresis-chamber/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gel-electrophoresis-chamber/inspection.webm"
+      }
     },
     "agarose-gel-tray": {
       "name": "agarose gel tray",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/agarose-gel-tray-bioart-transparent.png",
+      "svg": "svg/agarose-gel-tray-bioart-traced.svg",
+      "png_sha256": "b6e0839e4aee077ec850bd5b3d1054677e4406ee6367bf3cf3788780d7507e2a",
+      "svg_sha256": "0edbe636720cea9df7c111cf29c44f2cdd8643775e05065c4f35342b95ba6854",
+      "original_sha256": "396316299bace54e5637c00d56270680a943307aa641caaa95c2ceee6805eb66",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        352,
+        586,
+        327,
+        587
+      ],
+      "svg_paths": 10556,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/agarose-gel-tray/prompt.json",
+      "qa": "qa/inventory/agarose-gel-tray",
+      "visual_review": "Full tray, two end dams and supported comb retained in light/dark comparisons. Gel and clear wall edges remain readable; alpha is clean and SVG matches the smooth PNG shading.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/agarose-gel-tray/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/agarose-gel-tray/inspection.webm"
+      }
     },
     "page-gel-cassette": {
       "name": "PAGE gel cassette",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/page-gel-cassette-bioart-transparent.png",
+      "svg": "svg/page-gel-cassette-bioart-traced.svg",
+      "png_sha256": "c7a04dc69aed9ab4c608cc25892f22efb4059d6189e437f5017e7cb369e3fd19",
+      "svg_sha256": "31e5080cc2c85e2a12e208e3a9ee230bbb71314458c9732e6ab61ad104895195",
+      "original_sha256": "9386502821716e3c877c1124d2cd8f495c61ed8bebe701119c3d04e793f94c87",
+      "png_dimensions": [
+        1813,
+        1813
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        299,
+        259,
+        328,
+        259
+      ],
+      "svg_paths": 11721,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/page-gel-cassette/prompt.json",
+      "qa": "qa/inventory/page-gel-cassette",
+      "visual_review": "Light/dark review preserves thin plate sandwich, side spacers, lowered front edge and empty top well row. Complete padded alpha silhouette; SVG retains clear edge highlights and pale gel surface.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/page-gel-cassette/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/page-gel-cassette/inspection.webm"
+      }
     },
     "electrophoresis-power-supply": {
       "name": "electrophoresis power supply",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/electrophoresis-power-supply-bioart-transparent.png",
+      "svg": "svg/electrophoresis-power-supply-bioart-traced.svg",
+      "png_sha256": "35ab1156f4b0bd3b8398373c2b8148e51e12030ec7ddb91bd62e8ab8382803bd",
+      "svg_sha256": "fd871f9424a25264560f4ee741d1f305cb6b82a181b16239acb4f1f6655abdae",
+      "original_sha256": "49a50156e659523a3a91891b10ea321ea5c2ed53d7fbee7afa312392fb55b78d",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        338,
+        584,
+        331,
+        563
+      ],
+      "svg_paths": 15311,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/electrophoresis-power-supply/prompt.json",
+      "qa": "qa/inventory/electrophoresis-power-supply",
+      "visual_review": "Two complete red-black socket pairs, blank display, knob, buttons and vented enclosure preserved. Light/dark comparison shows true alpha and clear editable outlines with comparable shading.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/electrophoresis-power-supply/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/electrophoresis-power-supply/inspection.webm"
+      }
     },
     "western-blot-transfer-tank": {
       "name": "western blot transfer tank",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/western-blot-transfer-tank-bioart-transparent.png",
+      "svg": "svg/western-blot-transfer-tank-bioart-traced.svg",
+      "png_sha256": "037e5ee2687d2ed626971db49b247b33101fa7def6643ea8a6a7c4292fd30ed2",
+      "svg_sha256": "7c7687104d59d225b319e73badc14116fb5937727615d3581ca41f46098d6895",
+      "original_sha256": "12b89f94acf979c59cd10583d9a099825cf4a51f86cbf1bca590d713ebb6fae6",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        262,
+        318,
+        282,
+        319
+      ],
+      "svg_paths": 18941,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/western-blot-transfer-tank/prompt.json",
+      "qa": "qa/inventory/western-blot-transfer-tank",
+      "visual_review": "Corrected parallel electrode/sandwich planes and full buffer submersion. Both formats preserve tank, lid, terminals, perforated panels and pale sandwich edges; clean alpha and comparable outlines on light/dark.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/western-blot-transfer-tank/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/western-blot-transfer-tank/inspection.webm"
+      }
     },
     "semi-dry-blot-transfer-apparatus": {
       "name": "semi-dry blot transfer apparatus",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/semi-dry-blot-transfer-apparatus-bioart-transparent.png",
+      "svg": "svg/semi-dry-blot-transfer-apparatus-bioart-traced.svg",
+      "png_sha256": "8890dc57d0d234fd476b0846eb8596bbed73099084d67cd5957742669d230af7",
+      "svg_sha256": "be7162c852ab9dae3ae5fee938dff0217d951a423c33d12bc85583a98b2f4698",
+      "original_sha256": "e37a4f62d2de6469ad168e1da3196668eb9b80cae94b643d41cac575768de741",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        256,
+        299,
+        267
+      ],
+      "svg_paths": 15399,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/semi-dry-blot-transfer-apparatus/prompt.json",
+      "qa": "qa/inventory/semi-dry-blot-transfer-apparatus",
+      "visual_review": "Open pressure lid, flat upper/lower electrode surfaces and thin transfer stack retained on light/dark. Complete handle, hinges and terminals; true alpha clean, minor vector shading contours comparable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/semi-dry-blot-transfer-apparatus/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/semi-dry-blot-transfer-apparatus/inspection.webm"
+      }
     },
     "gel-documentation-system": {
       "name": "gel documentation system",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/gel-documentation-system-bioart-transparent.png",
+      "svg": "svg/gel-documentation-system-bioart-traced.svg",
+      "png_sha256": "619655198578d25fcb379b932c255f7ee17935653f1ae7ef14fc3568479d6987",
+      "svg_sha256": "9fb621795a38c9a42d07dedd83bc97caf56fc3609c1402024ea26d536ae5275a",
+      "original_sha256": "a8448de8aefe182cc93f7f3b0a370a0886877f54cb431c4f69cb86730812cd72",
+      "png_dimensions": [
+        1813,
+        1813
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        299,
+        259,
+        314,
+        292
+      ],
+      "svg_paths": 10352,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/gel-documentation-system/prompt.json",
+      "qa": "qa/inventory/gel-documentation-system",
+      "visual_review": "Complete open door, downward camera, empty transilluminator bed and blank exterior controls retained in both formats. Light/dark alpha clean; SVG shading remains comparable with minor contour bands.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gel-documentation-system/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gel-documentation-system/inspection.webm"
+      }
     },
     "uv-transilluminator": {
       "name": "UV transilluminator",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/uv-transilluminator-bioart-transparent.png",
+      "svg": "svg/uv-transilluminator-bioart-traced.svg",
+      "png_sha256": "5dba4dad1d3626a59a61f2267c5ab59bc2c182ddc0c2a3f40dfbe273de5d64b0",
+      "svg_sha256": "db0d0a3a10f5a83ba2f29e48d6420c694ceb8b7fde438c583371c7f4a54342ad",
+      "original_sha256": "254786746e97167fcdea76369139a328034d05d800c6734343e16a6d0648cc09",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        585,
+        387,
+        585
+      ],
+      "svg_paths": 7971,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/uv-transilluminator/prompt.json",
+      "qa": "qa/inventory/uv-transilluminator",
+      "visual_review": "Removed switch lettering. Both formats preserve raised protective shield, violet filter window, complete handle and hinge. True outer alpha, clean light/dark rendering and comparable broad shading.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/uv-transilluminator/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/uv-transilluminator/inspection.webm"
+      }
     },
     "blue-light-transilluminator": {
       "name": "blue-light transilluminator",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/blue-light-transilluminator-bioart-transparent.png",
+      "svg": "svg/blue-light-transilluminator-bioart-traced.svg",
+      "png_sha256": "cdb65347f28f6a839e05a0da358c7891d76b1b550a31413f19a1f66a6fa4d953",
+      "svg_sha256": "8102acd780482a1a493aa41ef24bd8e2f085181916cfae05176c5deabacff7d9",
+      "original_sha256": "381811911ac1cceba3ea680abe1a31950886179ea49698c13292dcfeebdaa6a8",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        396,
+        587,
+        387,
+        583
+      ],
+      "svg_paths": 7312,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/blue-light-transilluminator/prompt.json",
+      "qa": "qa/inventory/blue-light-transilluminator",
+      "visual_review": "Amber raised filter, blue viewing window, blank button, hinge and complete enclosure retained. True alpha checked on light/dark; SVG remains comparable with slightly stepped lid gradients.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/blue-light-transilluminator/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/blue-light-transilluminator/inspection.webm"
+      }
     },
     "nucleic-acid-extraction-column": {
       "name": "nucleic-acid extraction column",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/nucleic-acid-extraction-column-bioart-transparent.png",
+      "svg": "svg/nucleic-acid-extraction-column-bioart-traced.svg",
+      "png_sha256": "8efc4b7d91ce7d49090c5d786e177153002adfd705b2779326939de47513e1a1",
+      "svg_sha256": "f1df5b161d75336c388fd31bb77f2a479ff4de8b2e53cb46512d6cd8c61cdf5d",
+      "original_sha256": "159a09562a99ba4c8797128b26f989da6c0725c57997a3701bab7f63cfa407d5",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        355,
+        672,
+        347
+      ],
+      "svg_paths": 7584,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/nucleic-acid-extraction-column/prompt.json",
+      "qa": "qa/inventory/nucleic-acid-extraction-column",
+      "visual_review": "Membrane, inner outlet, collection tube and hinged cap preserved in editable paths. Light and dark composites retain translucent plastic appearance and clean transparent padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nucleic-acid-extraction-column/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nucleic-acid-extraction-column/inspection.webm"
+      }
     },
     "magnetic-bead-extraction-plate": {
       "name": "magnetic-bead extraction plate",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/magnetic-bead-extraction-plate-bioart-transparent.png",
+      "svg": "svg/magnetic-bead-extraction-plate-bioart-traced.svg",
+      "png_sha256": "dade5f596cd3018ab76168e24c13250ad13f9062794582db6cc981442d4646f0",
+      "svg_sha256": "a7ced3f510c6eb068914ff6f52c4e8e40211f03a2ae39bb58bc2b4baf5bb0940",
+      "original_sha256": "1320f20430348bccfa1af5057579d91eb28bf9dc46cd7ce47977c8670967220c",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        588,
+        373,
+        587
+      ],
+      "svg_paths": 19249,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/magnetic-bead-extraction-plate/prompt.json",
+      "qa": "qa/inventory/magnetic-bead-extraction-plate",
+      "visual_review": "Sidewall bead pellets, translucent deep wells and fitted magnetic base remain readable in SVG. Consistent pellet placement and clean transparent light and dark composites.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/magnetic-bead-extraction-plate/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/magnetic-bead-extraction-plate/inspection.webm"
+      }
     },
     "automated-nucleic-acid-extractor": {
       "name": "automated nucleic-acid extractor",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/automated-nucleic-acid-extractor-bioart-transparent.png",
+      "svg": "svg/automated-nucleic-acid-extractor-bioart-traced.svg",
+      "png_sha256": "eed5b16fb1f93f68fc2a37c97d9019947898ca63da51778ebaadc8f425176cf6",
+      "svg_sha256": "4630f70cdbcd43f48e72d1564386a16810816e197c7d6a51a26fe6df289812b7",
+      "original_sha256": "cb8e17d4d2a2026d28ad21cf7f53204b1e7b5fc81aa8a6e58dbd2abb75d2018e",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        320,
+        563
+      ],
+      "svg_paths": 9943,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/automated-nucleic-acid-extractor/prompt.json",
+      "qa": "qa/inventory/automated-nucleic-acid-extractor",
+      "visual_review": "Corrected eight covered rods and centered deep-well plate are visible. Housing, clear door and blank controls retain detail in SVG; transparent padding confirmed on light and dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/automated-nucleic-acid-extractor/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/automated-nucleic-acid-extractor/inspection.webm"
+      }
     },
     "sanger-sequencer-capillary-electrophoresis-instrument": {
       "name": "Sanger sequencer / capillary electrophoresis instrument",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/sanger-sequencer-capillary-electrophoresis-instrument-bioart-transparent.png",
+      "svg": "svg/sanger-sequencer-capillary-electrophoresis-instrument-bioart-traced.svg",
+      "png_sha256": "850f82d8ca89aa07e19d3f9869d24de239778572e8889493d75d794e1034610d",
+      "svg_sha256": "69d9f171dc321fc44bcac61330c8969faf638a35a2424e5e8d8d4bf11edc306e",
+      "original_sha256": "0631b93b79418e42e9bbe3ef39cac54e9e792284b676854de7262c03ce4fe8dd",
+      "png_dimensions": [
+        1843,
+        1843
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        351,
+        263,
+        345,
+        283
+      ],
+      "svg_paths": 13518,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/sanger-sequencer-capillary-electrophoresis-instrument/prompt.json",
+      "qa": "qa/inventory/sanger-sequencer-capillary-electrophoresis-instrument",
+      "visual_review": "Capillary bundle, polymer reservoir and sample deck retain detail in SVG. Unwanted markings removed; entire cabinet and feet visible, transparent composites clean.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sanger-sequencer-capillary-electrophoresis-instrument/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sanger-sequencer-capillary-electrophoresis-instrument/inspection.webm"
+      }
     },
     "benchtop-next-generation-sequencer": {
       "name": "benchtop next-generation sequencer",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/benchtop-next-generation-sequencer-bioart-transparent.png",
+      "svg": "svg/benchtop-next-generation-sequencer-bioart-traced.svg",
+      "png_sha256": "11627c3704edf368b301d305dc7fb8951a3c8acbec94bb670bca6ce56c791d38",
+      "svg_sha256": "3db3e1b014fd6b15dcaff52391581f02923f1ab0bc4dc4bb63e478c94f005ed5",
+      "original_sha256": "3fbe5ce5a5926044fc3df68ab0e1c50fef91434b14f186e03ee143930bdcd0e5",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        359,
+        563
+      ],
+      "svg_paths": 7941,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/benchtop-next-generation-sequencer/prompt.json",
+      "qa": "qa/inventory/benchtop-next-generation-sequencer",
+      "visual_review": "Complete instrument, separate compartment seams, blank display and feet preserved. SVG gradient banding is minor; light and dark comparison confirms comparable appearance and transparent padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/benchtop-next-generation-sequencer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/benchtop-next-generation-sequencer/inspection.webm"
+      }
     },
     "high-throughput-sequencing-instrument": {
       "name": "high-throughput sequencing instrument",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/high-throughput-sequencing-instrument-bioart-transparent.png",
+      "svg": "svg/high-throughput-sequencing-instrument-bioart-traced.svg",
+      "png_sha256": "7e038e3e1d908af192b40b521db38a5a161538a60ba0d6d4e7cb76a82ebec84a",
+      "svg_sha256": "dd02103a8fd250e28800ad43a29c27f3cf4dee91a7b8e07322c3e336d92072cb",
+      "original_sha256": "0a742b80381a3d4919dacbdc86edf0a07cf8cbb8b9b378907c5fa723e423f10c",
+      "png_dimensions": [
+        1799,
+        1799
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        287,
+        257,
+        304,
+        257
+      ],
+      "svg_paths": 9061,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/high-throughput-sequencing-instrument/prompt.json",
+      "qa": "qa/inventory/high-throughput-sequencing-instrument",
+      "visual_review": "Dual upper compartments, two reagent drawers and lower access panel remain readable. Complete cabinet and feet retained; alpha composites clean and editable SVG visually comparable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/high-throughput-sequencing-instrument/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/high-throughput-sequencing-instrument/inspection.webm"
+      }
     },
     "nanopore-sequencing-device": {
       "name": "nanopore sequencing device",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/nanopore-sequencing-device-bioart-transparent.png",
+      "svg": "svg/nanopore-sequencing-device-bioart-traced.svg",
+      "png_sha256": "9a5b79da258d1593d62340cdab405395778ef60af014505c9f7e79fed12a0ef2",
+      "svg_sha256": "6d8cc91e94377753633c1918a18a34272e2b2a7c6301d2130a47f5f508901aef",
+      "original_sha256": "57d13c5018b1df7d2756cd7ca1d2b9e05655c0af7a0a9c35915bc2ed086fbbe5",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        598,
+        395,
+        627
+      ],
+      "svg_paths": 5302,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/nanopore-sequencing-device/prompt.json",
+      "qa": "qa/inventory/nanopore-sequencing-device",
+      "visual_review": "Corrected full lid is visible with all corners and generous transparent padding. Seated cartridge, loading port, contact strip and housing preserved in editable vector form on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nanopore-sequencing-device/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nanopore-sequencing-device/inspection.webm"
+      }
     },
     "microarray-slide": {
       "name": "microarray slide",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/microarray-slide-bioart-transparent.png",
+      "svg": "svg/microarray-slide-bioart-traced.svg",
+      "png_sha256": "c26490708fef2110a63d5ce50f3fbcb598d4ab532c63c0d8c98b54dfd794563e",
+      "svg_sha256": "d61040fcc5576162784523f799a1a950616ce0bb086d57242ed793045440929d",
+      "original_sha256": "2f7cd756b3d0add066a67d77a73df6caf9417291155ceb2f54b6727327b03070",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        351,
+        595,
+        371,
+        563
+      ],
+      "svg_paths": 14638,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/microarray-slide/prompt.json",
+      "qa": "qa/inventory/microarray-slide",
+      "visual_review": "Four spot-grid patches and frosted end remain distinct, glass perimeter complete. Synthetic spot pattern retained in SVG on light and dark composites; clean alpha padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microarray-slide/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microarray-slide/inspection.webm"
+      }
     },
     "microarray-scanner": {
       "name": "microarray scanner",
       "category": "22. Molecular biology and genomics equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/microarray-scanner-bioart-transparent.png",
+      "svg": "svg/microarray-scanner-bioart-traced.svg",
+      "png_sha256": "2c9c6573f932d22a93c050ad25c12bc296d0460a67290a905d420aeefa3f5b78",
+      "svg_sha256": "c4c4cbcfae77055829d717a3163df1d61f9fc1ac2bf57f139209e27298fe12cf",
+      "original_sha256": "53de33336c5162278412408573bd250e081c158c0cc8ecc27782d7ecc8cf509d",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        372,
+        563,
+        387,
+        563
+      ],
+      "svg_paths": 10162,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/microarray-scanner/prompt.json",
+      "qa": "qa/inventory/microarray-scanner",
+      "visual_review": "Scanner enclosure, single-slide drawer and array patches retain their form in editable paths. Entire object visible, blank controls and clean alpha confirmed on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microarray-scanner/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microarray-scanner/inspection.webm"
+      }
     },
     "spectrophotometer": {
       "name": "spectrophotometer",
       "category": "23. Protein, biochemistry, and analytical equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/spectrophotometer-bioart-transparent.png",
+      "svg": "svg/spectrophotometer-bioart-traced.svg",
+      "png_sha256": "200b8b24aba9025844726ca9f2a710a7bd98c577fd9ca0698ebba2af78795b05",
+      "svg_sha256": "45f3800b3df176cde8eb2a3a315e223ab026ffdc5b5fc3306e40b57fab862bee",
+      "original_sha256": "b511aa5ca5f217e6ebbe7247d17fba8afb7bc8c637a07bb5ca88e0aff49b6c2d",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        565,
+        359,
+        579
+      ],
+      "svg_paths": 10011,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/spectrophotometer/prompt.json",
+      "qa": "qa/inventory/spectrophotometer",
+      "visual_review": "Cuvette, holder and full hinged sample-chamber lid are readable. Blank control panel and instrument silhouette retained in vector form; light and dark alpha composites pass.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/spectrophotometer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/spectrophotometer/inspection.webm"
+      }
     },
     "nanodrop-style-microvolume-spectrophotometer": {
       "name": "NanoDrop-style microvolume spectrophotometer",
       "category": "23. Protein, biochemistry, and analytical equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/nanodrop-style-microvolume-spectrophotometer-bioart-transparent.png",
+      "svg": "svg/nanodrop-style-microvolume-spectrophotometer-bioart-traced.svg",
+      "png_sha256": "faa82c977133944c8f8771cb7ec9c5cd21f7c84a97823fbc5ae61b5fedc0181d",
+      "svg_sha256": "049544323bf70d0418fb8004fbe8319f86889b5c8d197f37f34d94879823db2e",
+      "original_sha256": "ea44102e26f8cfe2721acd5e293521be0cb54631fb7cc1cc462da7af8511be88",
+      "png_dimensions": [
+        1790,
+        1790
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        280,
+        275,
+        298,
+        256
+      ],
+      "svg_paths": 11397,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/nanodrop-style-microvolume-spectrophotometer/prompt.json",
+      "qa": "qa/inventory/nanodrop-style-microvolume-spectrophotometer",
+      "visual_review": "Paired optical pedestals, small droplet, hinged arm and complete base are preserved. Comparable metallic shading in vector form; clean transparent light and dark composites.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nanodrop-style-microvolume-spectrophotometer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nanodrop-style-microvolume-spectrophotometer/inspection.webm"
+      }
     },
     "fluorescence-plate-reader": {
       "name": "fluorescence plate reader",
       "category": "23. Protein, biochemistry, and analytical equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/fluorescence-plate-reader-bioart-transparent.png",
+      "svg": "svg/fluorescence-plate-reader-bioart-traced.svg",
+      "png_sha256": "4644bb83ed31acae2373bd6a8ed54bde53e8b94c85a010acfaf72151a9f3237f",
+      "svg_sha256": "80d91130e6a3a7c1c910965ad9ec439d99e69b1d8e057dd0b0881d65a22dcb67",
+      "original_sha256": "5c765ed91585086f0a9e715277210e2ea05826554f9be108167c2a2923dedcbc",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        332,
+        563,
+        389,
+        563
+      ],
+      "svg_paths": 13401,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/fluorescence-plate-reader/prompt.json",
+      "qa": "qa/inventory/fluorescence-plate-reader",
+      "visual_review": "Black plate grid and drawer remain crisp, entire enclosure visible. SVG preserves the intended shading and blank controls; clean alpha on light and dark composites.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fluorescence-plate-reader/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fluorescence-plate-reader/inspection.webm"
+      }
     },
     "multimode-plate-reader": {
       "name": "multimode plate reader",
       "category": "23. Protein, biochemistry, and analytical equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/multimode-plate-reader-bioart-transparent.png",
+      "svg": "svg/multimode-plate-reader-bioart-traced.svg",
+      "png_sha256": "a15581e8d282c4f782446b202c9237265d97f9c5a145067344bc453919fdb991",
+      "svg_sha256": "04a436b3090d9f66b47cf0cf3743a7762e42225dcfdcf1d1a820cd1c80f4eb17",
+      "original_sha256": "0121c5a416d26f7196422b08bae9e341c40874d9409821b0bc088315cbefa2b5",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        565,
+        347,
+        587
+      ],
+      "svg_paths": 17172,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/multimode-plate-reader/prompt.json",
+      "qa": "qa/inventory/multimode-plate-reader",
+      "visual_review": "Both reagent bottles, continuous tubing into sealed ports and plate drawer preserved. Clean instrument silhouette and blank display; SVG remains comparable on light and dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/multimode-plate-reader/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/multimode-plate-reader/inspection.webm"
+      }
     },
     "luminometer": {
       "name": "luminometer",
       "category": "23. Protein, biochemistry, and analytical equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/luminometer-bioart-transparent.png",
+      "svg": "svg/luminometer-bioart-traced.svg",
+      "png_sha256": "a6d699aa3aea9b7d59b36d4ca99b859d65787925b78a6906c5b2157336e98021",
+      "svg_sha256": "379e46a92ab67b4bb2e16b13d3ed7537724dbb37b5c019ba7ad193e25be6da5f",
+      "original_sha256": "a37e9bf4079a1ea0ed572234f8ffa4ccee3f13c536f76fac7abe2528db5d9184",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        359,
+        344,
+        314,
+        359
+      ],
+      "svg_paths": 9729,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/luminometer/prompt.json",
+      "qa": "qa/inventory/luminometer",
+      "visual_review": "Single tube and light-tight sample well remain distinct, cap complete. Blank controls, housing and subtle shading preserved in SVG; clean transparent composites.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/luminometer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/luminometer/inspection.webm"
+      }
     },
     "hplc-system": {
       "name": "HPLC system",
@@ -14727,12 +15707,68 @@
     "upright-light-microscope": {
       "name": "upright light microscope",
       "category": "24. Microscopy and imaging",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/upright-light-microscope-bioart-transparent.png",
+      "svg": "svg/upright-light-microscope-bioart-traced.svg",
+      "png_sha256": "a16a562c27ce9f2ef7c9376bbe14a8dc3efdb17ebe66b5435ad5c88ba604fbfa",
+      "svg_sha256": "4b00227fd549477a27ab6ed6ce1d761d451726c8baf2090f6b87228a13ef8def",
+      "original_sha256": "9b270a3b3d903b888d222e6418b474ed7113dfd1c1bde857e27e4d091e8a5ce7",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        336,
+        581,
+        331
+      ],
+      "svg_paths": 13188,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/upright-light-microscope/prompt.json",
+      "qa": "qa/inventory/upright-light-microscope",
+      "visual_review": "Upright objective above slide, condenser below stage and base illuminator form coherent optical axis. Eyepieces, turret and focus controls retained in SVG; all edges complete and alpha clean.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/upright-light-microscope/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/upright-light-microscope/inspection.webm"
+      }
     },
     "inverted-microscope": {
       "name": "inverted microscope",
       "category": "24. Microscopy and imaging",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/inverted-microscope-bioart-transparent.png",
+      "svg": "svg/inverted-microscope-bioart-traced.svg",
+      "png_sha256": "eaaa9fa11185d6f8722cffc5a029c6eba011fa7928a4e62af60d658ebd324eb9",
+      "svg_sha256": "63783653dac5504e8b1891af21277e98acd114112c8a7ab545db5bf49200397d",
+      "original_sha256": "ea2829243b59ef422159b5da9993b6fa05bb671e0bf0c630201ff662810ad19b",
+      "png_dimensions": [
+        1808,
+        1808
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        258,
+        295,
+        282,
+        311
+      ],
+      "svg_paths": 12141,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/inverted-microscope/prompt.json",
+      "qa": "qa/inventory/inverted-microscope",
+      "visual_review": "Corrected upward objective turret below culture dish and condenser above are retained. Eyepieces, stage and full body remain recognizable in SVG, alpha composites clean.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/inverted-microscope/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/inverted-microscope/inspection.webm"
+      }
     },
     "fluorescence-microscope": {
       "name": "fluorescence microscope",
@@ -14787,22 +15823,134 @@
     "microscope-objective": {
       "name": "microscope objective",
       "category": "24. Microscopy and imaging",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/microscope-objective-bioart-transparent.png",
+      "svg": "svg/microscope-objective-bioart-traced.svg",
+      "png_sha256": "94a40c6e9cf58dcf2a8868de7901fa43e76127476b21eb26f744561d07be8dce",
+      "svg_sha256": "00b2381f04373ecd15b56652a42d2e3a8f640d0a75dabd394588a7419da208fe",
+      "original_sha256": "6f728fc0e7e622957a5cbd124901a5a140ed338531d484031a1f8907b8226d5a",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        414,
+        595,
+        499,
+        690
+      ],
+      "svg_paths": 12282,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/microscope-objective/prompt.json",
+      "qa": "qa/inventory/microscope-objective",
+      "visual_review": "Threaded neck, grip ring and front lens remain distinct. Metallic reflections preserved in vector paths; complete object with clean light and dark alpha composites.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microscope-objective/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microscope-objective/inspection.webm"
+      }
     },
     "immersion-oil-bottle": {
       "name": "immersion-oil bottle",
       "category": "24. Microscopy and imaging",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/immersion-oil-bottle-bioart-transparent.png",
+      "svg": "svg/immersion-oil-bottle-bioart-traced.svg",
+      "png_sha256": "0e28b8cf9aed513a5e80426e77c149deb1eeaf4ede27eba53232e80e8a1d2975",
+      "svg_sha256": "765a581e14dfba5d5e21e60d0a35c530d1a9ce067a403902118542402753749f",
+      "original_sha256": "98f550415a0d1ee1cb9cb0990c65b4cbb0172203ffef56083799e6c4f4ef9ca7",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        356,
+        643,
+        349
+      ],
+      "svg_paths": 8252,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/immersion-oil-bottle/prompt.json",
+      "qa": "qa/inventory/immersion-oil-bottle",
+      "visual_review": "Closed dispensing nozzle, ribbed cap, liquid meniscus and glass base retained. PNG and SVG remain comparable on light and dark backgrounds, with no exterior glow in alpha composites.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/immersion-oil-bottle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/immersion-oil-bottle/inspection.webm"
+      }
     },
     "microscope-camera": {
       "name": "microscope camera",
       "category": "24. Microscopy and imaging",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/microscope-camera-bioart-transparent.png",
+      "svg": "svg/microscope-camera-bioart-traced.svg",
+      "png_sha256": "ea4c1c1a2ace0d82fd8423eea961ec0d49d11ae1a52af5612952d5f6b13aca39",
+      "svg_sha256": "c5453fd82d66bf71f460a277fd40e63e366a2784e370cc2fb72e17371d56c032",
+      "original_sha256": "1fd35608a985a98cc03bfd71c6e355740fa46a9f6732f84f95e2fe90490b6db9",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        508,
+        585,
+        393,
+        587
+      ],
+      "svg_paths": 19540,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/microscope-camera/prompt.json",
+      "qa": "qa/inventory/microscope-camera",
+      "visual_review": "Rectangular sensor, threaded optical mount, cooling fins and side connector remain recognizable. Clean complete silhouette; SVG shading comparable on both alpha backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microscope-camera/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microscope-camera/inspection.webm"
+      }
     },
     "live-cell-imaging-incubator": {
       "name": "live-cell imaging incubator",
       "category": "24. Microscopy and imaging",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/live-cell-imaging-incubator-bioart-transparent.png",
+      "svg": "svg/live-cell-imaging-incubator-bioart-traced.svg",
+      "png_sha256": "86d1901e1c7a650dc0ebc7ee98aadeaad12166adea0fb74d828a0e263fc4f876",
+      "svg_sha256": "47444af89cdf0ab48471d1148096e773087bca5af5bced4428b1d087208f802c",
+      "original_sha256": "d8b6aabf79670be15d56d8c4dcb2ef38bfad37be6c012792626d35bbd13e2e7b",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        608,
+        355,
+        589
+      ],
+      "svg_paths": 20333,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/live-cell-imaging-incubator/prompt.json",
+      "qa": "qa/inventory/live-cell-imaging-incubator",
+      "visual_review": "Culture dish, sealing gasket, gas fittings and heater connector preserved. Complete chamber with transparent lid and lower optical window; PNG/SVG light and dark composites comparable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/live-cell-imaging-incubator/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/live-cell-imaging-incubator/inspection.webm"
+      }
     },
     "automated-high-content-imaging-system": {
       "name": "automated high-content imaging system",
@@ -14812,47 +15960,299 @@
     "whole-slide-scanner": {
       "name": "whole-slide scanner",
       "category": "24. Microscopy and imaging",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/whole-slide-scanner-bioart-transparent.png",
+      "svg": "svg/whole-slide-scanner-bioart-traced.svg",
+      "png_sha256": "69365cb9bd21f772027852b73e0a621793e8f1f1bad440b5f83858a18e5007e0",
+      "svg_sha256": "3c8ac9ffef9cf695052f3c69caa36191ec3d039139e7b5af47a5126310bc0019",
+      "original_sha256": "8e8ff08b505e25b61e74629399e15d408c4d321c74069354e79c26346ed2752c",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        295,
+        318,
+        265,
+        351
+      ],
+      "svg_paths": 10362,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/whole-slide-scanner/prompt.json",
+      "qa": "qa/inventory/whole-slide-scanner",
+      "visual_review": "Horizontal slides seated in cassette, tissue patch and loading door retained. Entire cabinet visible; PNG/SVG comparison preserves readable components and clean alpha.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/whole-slide-scanner/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/whole-slide-scanner/inspection.webm"
+      }
     },
     "benchtop-flow-cytometer": {
       "name": "benchtop flow cytometer",
       "category": "25. Flow cytometry and cell sorting",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/benchtop-flow-cytometer-bioart-transparent.png",
+      "svg": "svg/benchtop-flow-cytometer-bioart-traced.svg",
+      "png_sha256": "9a3237941c3bbca67ba07ed7f1d7d48e9dbdd943f196c6b123c7fbe576256353",
+      "svg_sha256": "d32d96dd7aa8145f0006aa913f9b34cd1c56425e972859f33db6d70c40a71d54",
+      "original_sha256": "36a6578b58b0f9ebe078507e6abd6f41bc7c3e095ba81a424224096752d527e5",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        347,
+        577
+      ],
+      "svg_paths": 11412,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/benchtop-flow-cytometer/prompt.json",
+      "qa": "qa/inventory/benchtop-flow-cytometer",
+      "visual_review": "Integrated probe enters the upright sample tube; enclosed optics, blank controls and complete instrument preserved. Light/dark alpha clean; SVG retains tube/probe and readable housing depth.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/benchtop-flow-cytometer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/benchtop-flow-cytometer/inspection.webm"
+      }
     },
     "spectral-flow-cytometer": {
       "name": "spectral flow cytometer",
       "category": "25. Flow cytometry and cell sorting",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/spectral-flow-cytometer-bioart-transparent.png",
+      "svg": "svg/spectral-flow-cytometer-bioart-traced.svg",
+      "png_sha256": "3ec3b6da8977a69ffd32571c1e37148a119df41a23ec81dd56b700f089e46c36",
+      "svg_sha256": "a0658ad7e73206b62492098d427aac68c1644cf8cb7969dca2f19b887f26cf44",
+      "original_sha256": "ee341bb103b97984130d02357fe21aae72c88dbaa3176e9dd8a9a17303a5c6a3",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        565,
+        361,
+        563
+      ],
+      "svg_paths": 7507,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/spectral-flow-cytometer/prompt.json",
+      "qa": "qa/inventory/spectral-flow-cytometer",
+      "visual_review": "Corrected open sample tube and internal probe retained. Detector housing, access door and complete device preserved with comparable vector shading and clean alpha composites.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/spectral-flow-cytometer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/spectral-flow-cytometer/inspection.webm"
+      }
     },
     "fluorescence-activated-cell-sorter": {
       "name": "fluorescence-activated cell sorter",
       "category": "25. Flow cytometry and cell sorting",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/fluorescence-activated-cell-sorter-bioart-transparent.png",
+      "svg": "svg/fluorescence-activated-cell-sorter-bioart-traced.svg",
+      "png_sha256": "69d997c159244f270779a7c483e639ae3a01c084f58e34229a668894c689b987",
+      "svg_sha256": "0ad4fe0a5e723d50c6198de959b89ea18210404267883d4a6fc900a2a66e2bbe",
+      "original_sha256": "b47f2a07f5c3d69e3341b4a9ab89ee619b48e3be0b0933937a3892f72a395445",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        579,
+        377,
+        563
+      ],
+      "svg_paths": 13019,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/fluorescence-activated-cell-sorter/prompt.json",
+      "qa": "qa/inventory/fluorescence-activated-cell-sorter",
+      "visual_review": "Opposed plate orientation corrected; nozzle, collection tubes and central waste funnel retained. Open input tube and closed sort chamber visible. SVG comparable with complete silhouette and clean alpha.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fluorescence-activated-cell-sorter/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fluorescence-activated-cell-sorter/inspection.webm"
+      }
     },
     "imaging-flow-cytometer": {
       "name": "imaging flow cytometer",
       "category": "25. Flow cytometry and cell sorting",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/imaging-flow-cytometer-bioart-transparent.png",
+      "svg": "svg/imaging-flow-cytometer-bioart-traced.svg",
+      "png_sha256": "75cf431c7c2afb21467c587c34e5e79a436cdb4842de83902cb1b1c1b2649a71",
+      "svg_sha256": "f2282688b6927542d65b7bcb4442aab226e923b8d660849eb80eab35c6692cd3",
+      "original_sha256": "c84196096c847ca5d57f0add7ba471a0c67fdeee3ffa89d8696cab1563ccb10a",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        311,
+        318,
+        263,
+        319
+      ],
+      "svg_paths": 8419,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/imaging-flow-cytometer/prompt.json",
+      "qa": "qa/inventory/imaging-flow-cytometer",
+      "visual_review": "Probe enters sample tube, imaging chamber and camera access remain enclosed. Entire instrument and blank screen preserved; vector gradients comparable and alpha clean on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/imaging-flow-cytometer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/imaging-flow-cytometer/inspection.webm"
+      }
     },
     "cytometry-sample-tube": {
       "name": "cytometry sample tube",
       "category": "25. Flow cytometry and cell sorting",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cytometry-sample-tube-bioart-transparent.png",
+      "svg": "svg/cytometry-sample-tube-bioart-traced.svg",
+      "png_sha256": "3cbd1f857587143a90ce9725012d62c06d998ccf436f95fb395e6920a17d65f6",
+      "svg_sha256": "5f57d828d25b0d4f9e70cde2582ee3ff6aa9f113ecdce1536199756af7dcb965",
+      "original_sha256": "77dfed7801090451a0a8d09a16367ffc4c7c8750ebdcae0ee3290193884139fd",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        307,
+        623,
+        307
+      ],
+      "svg_paths": 2609,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cytometry-sample-tube/prompt-v2.json",
+      "qa": "qa/inventory/cytometry-sample-tube",
+      "visual_review": "Reduced oversized cells to faint dots. Added native editable translucent gradient beneath trace to restore glass-body shading on dark background. Complete rim, rounded base and liquid level retained; both formats have clean outer alpha.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cytometry-sample-tube/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cytometry-sample-tube/inspection.webm"
+      }
     },
     "cytometry-bead-standard": {
       "name": "cytometry bead standard",
       "category": "25. Flow cytometry and cell sorting",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cytometry-bead-standard-bioart-transparent.png",
+      "svg": "svg/cytometry-bead-standard-bioart-traced.svg",
+      "png_sha256": "1499c5b89e71e30d552d5e8d3409f230e9970bfceebf0c225dbdba2ca0eb8a93",
+      "svg_sha256": "f57ba1e1064ac2609aeb4c713359e577659c37973ea0d58e33ac99949bf0f56e",
+      "original_sha256": "ea1a485926cbac6003fc4cfbfa9df00889c3b92ef25cb88ee19db96fa415cf4d",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        262,
+        345,
+        333,
+        359
+      ],
+      "svg_paths": 20308,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cytometry-bead-standard/prompt.json",
+      "qa": "qa/inventory/cytometry-bead-standard",
+      "visual_review": "Seven smooth uniform microspheres preserved with internal fluorescence shading. SVG remains comparable on light and dark backgrounds, with no exterior glow or background.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cytometry-bead-standard/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cytometry-bead-standard/inspection.webm"
+      }
     },
     "sheath-fluid-container": {
       "name": "sheath-fluid container",
       "category": "25. Flow cytometry and cell sorting",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/sheath-fluid-container-bioart-transparent.png",
+      "svg": "svg/sheath-fluid-container-bioart-traced.svg",
+      "png_sha256": "04ef68a486538440930180fb3920aa57f595c407378e89e4aa2f1ef3b46a302e",
+      "svg_sha256": "18bc5a5ad48ff542368dce8fe5abb35b93b11040b8cb6f0fe17380e7193164a8",
+      "original_sha256": "289d63d91af305c5dc1fab1d1a9bb52bca4c93e6e6a718ea30298e144d441aa1",
+      "png_dimensions": [
+        1924,
+        1924
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        389,
+        296,
+        420,
+        275
+      ],
+      "svg_paths": 12075,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/sheath-fluid-container/prompt.json",
+      "qa": "qa/inventory/sheath-fluid-container",
+      "visual_review": "Both formats preserve handle opening, two cap fittings, dip tube and fluid level. Complete transparent-alpha outline; pale container shading and internal tube remain readable on light/dark.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sheath-fluid-container/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sheath-fluid-container/inspection.webm"
+      }
     },
     "cell-sort-collection-tube-rack": {
       "name": "cell-sort collection tube rack",
       "category": "25. Flow cytometry and cell sorting",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cell-sort-collection-tube-rack-bioart-transparent.png",
+      "svg": "svg/cell-sort-collection-tube-rack-bioart-traced.svg",
+      "png_sha256": "207f66003877dc4726d67a8bcc08b8d0d44837e227edbd3f209001d8a79da316",
+      "svg_sha256": "7171417153bf029052898cc0d2f06d8e2b5d8c0c2e31409e65d82e1688e87eb9",
+      "original_sha256": "31234bb15b27132323ceab1c62ca66599bbad86bc3feb03090edfce737647882",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        353,
+        563
+      ],
+      "svg_paths": 13679,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cell-sort-collection-tube-rack/prompt.json",
+      "qa": "qa/inventory/cell-sort-collection-tube-rack",
+      "visual_review": "Four tubes, holder sockets and mounting tab remain recognizable in editable vector form. Light and dark composites confirm transparent padding and retained glass contours; minor highlight simplification is acceptable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-sort-collection-tube-rack/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-sort-collection-tube-rack/inspection.webm"
+      }
     },
     "single-cell-sorting-plate": {
       "name": "single-cell sorting plate",

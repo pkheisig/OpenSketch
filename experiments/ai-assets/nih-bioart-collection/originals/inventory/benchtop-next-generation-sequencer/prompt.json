@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a benchtop next-generation sequencer, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One generic medium compact benchtop sequencing-by-synthesis instrument in three-quarter view. White light-gray upper housing with navy lower chassis. Front has a closed large opaque flow-cell compartment door on the left and a separate lower reagent-cartridge access door with recessed handle; small blank dark touchscreen angled at upper right. A narrow turquoise indicator strip, subtle side ventilation, four low feet. Smooth realistic molded housing, clear panel seams, no visible internal optical mechanisms, no DNA molecules, no sample tubes or external computer, no cables. No logos, letters, numbers or fake controls. Complete machine fits comfortably inside image with wide transparent alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-b4eedbc5-9f1c-4b64-ae29-39ae8e0fc602.png",
+  "archetype": "Generic benchtop sequencing-by-synthesis instrument with separate flow-cell and reagent access compartments. No specific brand or performance specification.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "benchtop-next-generation-sequencer",
+  "name": "benchtop next-generation sequencer",
+  "original": "originals/inventory/benchtop-next-generation-sequencer/generated.png",
+  "original_sha256": "3fbe5ce5a5926044fc3df68ab0e1c50fef91434b14f186e03ee143930bdcd0e5"
+}

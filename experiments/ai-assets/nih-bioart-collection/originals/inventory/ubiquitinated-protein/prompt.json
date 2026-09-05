@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a ubiquitinated protein, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One large smooth lavender globular target protein at lower left, compact with four broad irregular lobes. At its upper-right surface, a short side-chain attachment connects to the C-terminal flexible tail of ONE smaller teal ubiquitin domain. Use the supplied ubiquitin picture for the small domain style and fold: teal beta-grasp ribbon surrounding a short alpha helix, complete as one connected protein. The short C-terminal tail connects directly to the target surface, visibly distinct from the target backbone. Mono-ubiquitinated representative, no polyubiquitin chain, no proteasome, no loose molecules. Target about twice the ubiquitin width. Clean matte broad shading and crisp outlines, no atomic texture. Whole conjugate on transparent alpha PNG.",
+  "refinement": "Refine this conjugate. Smooth the large lavender target into four broad lobes with shallow clefts, removing all small bumps and mottled atomic texture. For the teal ubiquitin ribbon, the long free tail currently extending to the RIGHT is its C-terminal attachment tail: bend that tail downward and left to connect directly to the lavender target upper-right surface. Remove the current separate ball-and-stick connector and the incorrect connector from the bottom-left ubiquitin loop; leave that bottom-left loop as a closed local ribbon loop. There must be ONE covalent connection only, via the redirected terminal teal tail, no free terminal tail extending right and no atoms shown. Keep the same small teal ribbon fold otherwise. Full object, crisp outlines, subtle matte shading, transparent alpha PNG.",
+  "transparency": "Remove the background. Output a transparent PNG with an alpha channel.",
+  "style_reference": "png/ubiquitin-bioart-transparent.png",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-665dc906-9451-450c-aca8-5dff5574b50a.png",
+  "reference": "https://pdb101-east.rcsb.org/motm/60",
+  "archetype": "Mono-ubiquitinated generic target with one small ubiquitin ribbon domain attached via a flexible terminal connector. Schematic topology, not atomic residue or bond geometry; no degradation-fate claim.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "ubiquitinated-protein",
+  "name": "ubiquitinated protein",
+  "original": "originals/inventory/ubiquitinated-protein/generated.png",
+  "original_sha256": "7523b3b47b7828e52215638d5a2038ebd2481d68c0b10ac6d9bfdd0244df4daa"
+}

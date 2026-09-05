@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a microarray scanner, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Generic benchtop laser microarray slide scanner in three-quarter view: compact light-gray upright rectangular instrument with navy lower housing, a narrow front-loading horizontal drawer extended slightly, holding one thin glass microscope slide flat in a fitted slide carrier. Four small teal and magenta spotted rectangular microarray patches visible on the slide. Closed opaque scanner housing, small blank dark-blue control display and one plain round button, subtle ventilation slots on side. No microscope eyepiece, no exposed laser or beam, no computer, no cable, no written text or brand. Keep the whole device and extended drawer visible with wide padding. Clean smooth industrial surfaces. Transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-9663dcaf-5621-4ee2-a655-4f619217995f.png",
+  "archetype": "Generic enclosed microarray slide scanner with a single-slide drawer. Illustrative spots, not measured fluorescence data.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "microarray-scanner",
+  "name": "microarray scanner",
+  "original": "originals/inventory/microarray-scanner/generated.png",
+  "original_sha256": "53de33336c5162278412408573bd250e081c158c0cc8ecc27782d7ecc8cf509d"
+}

@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a magnetic-bead extraction plate, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One translucent pale-blue deep-well microplate seated on a thin navy magnetic separation base, in three-quarter view. Regular grid of square deep wells with rounded corners, tall clear sidewalls. Wells contain a shallow level of clear pale blue liquid. In the frontmost visible wells, tiny dark-brown magnetic bead pellets are collected against one consistent sidewall near the bottom, visible through translucent plastic. Beads are very small clustered specks, no giant spheres. Plate and magnetic base fit exactly as one assembled laboratory accessory. No labels or well coordinates, no pipettes, no tubes, no particles outside wells, no visible magnetic field or arrows. Clean smooth biomedical illustration, subtle gradients and crisp contours. Complete plate and base centered with generous transparent alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-16676fbf-e9ed-4902-a0f3-95e97a0dd403.png",
+  "archetype": "Deep-well magnetic extraction plate on a separation base, with bead pellets collected near consistent sidewalls. Bead scale and well grid illustrative, not an exact capacity.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "magnetic-bead-extraction-plate",
+  "name": "magnetic-bead extraction plate",
+  "original": "originals/inventory/magnetic-bead-extraction-plate/generated.png",
+  "original_sha256": "1320f20430348bccfa1af5057579d91eb28bf9dc46cd7ce47977c8670967220c"
+}

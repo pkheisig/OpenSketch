@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a Sanger sequencer / capillary electrophoresis instrument, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One generic benchtop capillary DNA sequencer in three-quarter view. Tall light-gray cabinet with navy lower housing. A closed lightly tinted clear front door reveals an upper enclosed capillary oven module, a small vertical polymer reservoir cartridge at right, and a lower autosampler deck holding one rectangular white sample plate. A short tidy bundle of thin pale capillary lines leads from oven module toward sample injection head above plate, secured inside instrument. Blank dark control screen at upper right, plain latch and side vents. No DNA strand, colored sequencing trace, letters, numbers, logos, computer, loose tubes or external cables. Mechanically restrained enclosed instrument, smooth clean surfaces with subtle gradients. Full top and base visible with generous transparent alpha padding.",
+  "refinements": [
+    "Remove the tiny triangular warning symbol on the internal silver module and the tiny printed mark below the injection head. Leave those surfaces blank. Preserve the capillary bundle, sample plate, polymer reservoir, complete instrument and clear door. True transparent alpha PNG.",
+    "Erase the tiny black printed text on the white bottom edge of the injection head, immediately above the fine needles in the lower middle of the instrument. That edge must be completely plain white. Preserve everything else. Transparent PNG."
+  ],
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-4765e1e5-69ec-4424-a59a-761ad4cbd4d2.png",
+  "archetype": "Generic capillary electrophoresis sequencer showing capillary bundle, polymer reservoir and autosampler plate. Simplified internal layout and capillary count; no product or capacity claim.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "sanger-sequencer-capillary-electrophoresis-instrument",
+  "name": "Sanger sequencer / capillary electrophoresis instrument",
+  "original": "originals/inventory/sanger-sequencer-capillary-electrophoresis-instrument/generated.png",
+  "original_sha256": "0631b93b79418e42e9bbe3ef39cac54e9e792284b676854de7262c03ce4fe8dd"
+}

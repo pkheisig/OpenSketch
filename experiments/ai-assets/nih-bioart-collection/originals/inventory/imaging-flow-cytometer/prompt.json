@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an imaging flow cytometer, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One generic benchtop imaging flow cytometer in three-quarter view: tall compact light-gray optical enclosure with navy base, closed opaque central imaging chamber and a narrow vertical front sample-loading bay on left. One clear round-bottom sample tube seated upright in the bay, with a slender stainless aspiration probe descending into it from above. On right a large integrated blank dark-blue control screen; beneath it a small separate closed camera-access panel with a recessed handle. Subtle side cooling vents and small cyan indicator. No microscope eyepieces, no sort collection tubes, no exposed lasers, no invented cells on screen, no computer or external bottles, no cable. Whole instrument and sample tube visible, smooth clean consistent biomedical illustration, wide transparent alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-f6818760-041e-4d8f-8749-98fd43facbdd.png",
+  "archetype": "Generic imaging flow cytometer with sample probe and enclosed optical/camera compartments. Sample-tube base simplified and instrument housing illustrative, not a product model.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "imaging-flow-cytometer",
+  "name": "imaging flow cytometer",
+  "original": "originals/inventory/imaging-flow-cytometer/generated.png",
+  "original_sha256": "c84196096c847ca5d57f0add7ba471a0c67fdeee3ffa89d8696cab1563ccb10a"
+}

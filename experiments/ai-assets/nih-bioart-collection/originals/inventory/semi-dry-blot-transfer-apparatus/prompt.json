@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a semi-dry blot transfer apparatus, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One low square laboratory semi-dry transfer press in three-quarter view. Off-white base with navy lower trim and a broad flat dark gray electrode surface. At center a thin square moist transfer stack with white filter paper outer layers, pale cyan gel and thin cream membrane visible only at the edge. A matching navy pressure lid is hinged upward, revealing its flat dark gray upper electrode underside; lid has a small handle. One red and one black terminal on the base side, no cables. No tank, standing liquid, labels, bands, loose paper or extra objects. Smooth matte illustrated surfaces, crisp contours, complete hinge and lid, generous true transparent alpha PNG padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-7784372a-6e5e-4a72-9ea0-a67ad17b64b3.png",
+  "archetype": "Semi-dry transfer press with two flat electrode surfaces and moist filter-paper/gel/membrane stack. Layer thickness exaggerated for visibility, no operational settings.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "semi-dry-blot-transfer-apparatus",
+  "name": "semi-dry blot transfer apparatus",
+  "original": "originals/inventory/semi-dry-blot-transfer-apparatus/generated.png",
+  "original_sha256": "e37a4f62d2de6469ad168e1da3196668eb9b80cae94b643d41cac575768de741"
+}

@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an MHC-I tetramer reagent, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Scientifically clear schematic reagent assembly: one central small purple streptavidin tetramer core with FOUR attached soluble peptide-MHC class I monomers radiating diagonally outward, evenly separated for readability. Core visibly has four compact connected lobes. Each monomer attaches through a short thin golden biotin linker at its membrane-proximal heavy-chain end pointing toward the center. Each monomer has a teal heavy chain: one lower immunoglobulin-like alpha3 domain and one broader outer alpha1/alpha2 peptide-binding platform, with two parallel curled rails forming a groove. A short coral peptide lies along that groove. One small blue beta2-microglobulin domain nestles alongside the lower teal domain of EACH monomer. Four identical complete pMHC-I units total, oriented outward. No membrane, no transmembrane helices, no T cells, no antibodies, no extra protein complexes. Smooth gently lobed protein surfaces, clean illustration not bumpy molecular spheres or atomic ribbons. True transparent alpha PNG.",
+  "refinement": "Preserve the four-arm MHC-I tetramer assembly, all four peptides, four blue beta2-microglobulin domains, four gold linkers and four-lobed purple central core. Refine to a cleaner NIH BioArt illustration: smooth gently lobed matte protein surfaces with subtle broad gradients and crisp dark outlines. Remove the bumpy cauliflower surface and excessive glossy highlights. Retain the two groove rails around each coral peptide and the lower folded domain. Zoom out slightly to include generous empty padding around all four arms. Transparent background with real alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-dcacc141-77e7-4c40-b8cc-69bab9fa5d28.png",
+  "archetype": "Four soluble peptide-MHC-I monomers attached by biotin linkers to a streptavidin tetramer. Radially spread schematic, not atomic arrangement; no fluorophore specified.",
+  "references": [
+    "https://www.immunology.org/public-information/bitesized-immunology/experimental-techniques/production-mhc-class-i-tetramers",
+    "https://pdb101.rcsb.org/motm/62"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "mhc-i-tetramer",
+  "name": "MHC-I tetramer",
+  "original": "originals/inventory/mhc-i-tetramer/generated.png",
+  "original_sha256": "a08fce7a9626d1f2aeddf2baa3c6f47654096e4c53ce311a2bb3e7a541560d03"
+}

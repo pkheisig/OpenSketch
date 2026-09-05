@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a cell-sort collection tube rack, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One compact navy rectangular cell-sort collection holder seen in three-quarter view, carrying FOUR upright clear round-bottom collection tubes in a single straight row. Each open tube is seated securely in a circular holder recess and contains a shallow layer of pale pink collection medium. Rack is a low solid block with four sockets and a modest side mounting tab for a sorter, no handle, no tube caps. Tubes all same size and evenly spaced, entire rims and rack visible. No cells drawn, no labels, no droplets, no sorter machine, no numbers or bench. Smooth clean plastic forms, crisp outlines and restrained gradients, true transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-6e3db248-2c41-40ce-ad9b-2dfbed2e33fb.png",
+  "archetype": "Four-position cell-sort collection holder with open tubes and small volumes of collection medium. Simplified tube bottoms and mounting tab; no commercial compatibility claim.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "cell-sort-collection-tube-rack",
+  "name": "cell-sort collection tube rack",
+  "original": "originals/inventory/cell-sort-collection-tube-rack/generated.png",
+  "original_sha256": "31234bb15b27132323ceab1c62ca66599bbad86bc3feb03090edfce737647882"
+}
