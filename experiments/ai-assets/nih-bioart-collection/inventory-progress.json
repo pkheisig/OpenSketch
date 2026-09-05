@@ -8182,17 +8182,101 @@
     "cilium": {
       "name": "cilium",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cilium-bioart-transparent.png",
+      "svg": "svg/cilium-bioart-traced.svg",
+      "png_sha256": "9a4d2971298b8f9d2beac7c929f986643cc71f0fd9855f83e1ed52b5e79ec499",
+      "svg_sha256": "fc1e0cc0626414d6cfd1107eeb334b92fe6bbc134644fc533315b0cf30b7165c",
+      "original_sha256": "38783c7c9bcee505569669ca785834570941175e0d4c483c679546c9dd30687a",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        644,
+        322,
+        744,
+        347
+      ],
+      "svg_paths": 6069,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cilium/prompt.json",
+      "qa": "qa/inventory/cilium",
+      "visual_review": "Complete rounded membrane-covered shaft, narrow axonemal window and basal body preserved. SVG retains smooth teal shading and golden longitudinal details with slight gradient bands. Clear transparency around complete tip and base on both backgrounds; full cross-sectional architecture intentionally not shown.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cilium/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cilium/inspection.webm"
+      }
     },
     "primary-cilium": {
       "name": "primary cilium",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/primary-cilium-bioart-transparent.png",
+      "svg": "svg/primary-cilium-bioart-traced.svg",
+      "png_sha256": "866c39c5a7f70ed9776abb089ee98b9ddefb97de33ca53ec8e86049b1d831cbd",
+      "svg_sha256": "8ef19c201589f9112495bdcd7d7e3b199edc907ce3e7e548c658b549e9537552",
+      "original_sha256": "74878abb9726b2068b5486f2d0e98cddc23e055f228fd752781fb25d057a5d91",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        756,
+        317,
+        719,
+        355
+      ],
+      "svg_paths": 3124,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/primary-cilium/prompt.json",
+      "qa": "qa/inventory/primary-cilium",
+      "visual_review": "Slender closed-tip shaft, basal body and continuous fibers with staggered distal endpoints remain clear. SVG preserves fine longitudinal fibers and smooth membrane shading with minor quantization. Clean alpha on both backgrounds; longitudinal simplifications recorded.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/primary-cilium/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/primary-cilium/inspection.webm"
+      }
     },
     "motile-cilium-bundle": {
       "name": "motile cilium bundle",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/motile-cilium-bundle-bioart-transparent.png",
+      "svg": "svg/motile-cilium-bundle-bioart-traced.svg",
+      "png_sha256": "9941ff2aa06c7cfe18c7903b3560dc64446a2b99a04bf46ea99f3a3c3841780e",
+      "svg_sha256": "92f2190fecf46984eb1a989e8c6847c53ad66f5a88a6ae8bf1815f91b23e5bcf",
+      "original_sha256": "5268e1346c50fc187e9f7ec1a0b17d9fa9f5d215da69cb72d3bf6eb4e47fd809",
+      "png_dimensions": [
+        1790,
+        1790
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        319,
+        278,
+        383,
+        286
+      ],
+      "svg_paths": 9816,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/motile-cilium-bundle/prompt.json",
+      "qa": "qa/inventory/motile-cilium-bundle",
+      "visual_review": "Six distinct complete cilia with separate bases, coordinated curvature and one cutaway retained. SVG preserves membrane shading and fine golden details; transparent gaps remain clear on both backgrounds. Compositional count documented.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/motile-cilium-bundle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/motile-cilium-bundle/inspection.webm"
+      }
     },
     "eukaryotic-flagellum": {
       "name": "eukaryotic flagellum",
