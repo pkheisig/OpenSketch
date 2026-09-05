@@ -7708,17 +7708,101 @@
     "peroxisome": {
       "name": "peroxisome",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/peroxisome-bioart-transparent.png",
+      "svg": "svg/peroxisome-bioart-traced.svg",
+      "png_sha256": "2fe0ca209221af140a27f8b17486a655bba3e66fe7290168fbf89bb0960d6fad",
+      "svg_sha256": "5461dce9ff9001ee42d2e5c5840a268fee28183538bd3e82b2823bf8b50bc6a8",
+      "original_sha256": "97ef8fe4187dab0999d27d66c0922602a05b83c12d8c7ee386c2bfc13a422db7",
+      "png_dimensions": [
+        1805,
+        1805
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        258,
+        311,
+        288,
+        324
+      ],
+      "svg_paths": 10781,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/peroxisome/prompt.json",
+      "qa": "qa/inventory/peroxisome",
+      "visual_review": "Light/dark PNG and SVG inspected: full single-membrane green organelle, compact ordered core and sparse matrix granules. Transparent margin clean. SVG retains clear core rods and shape with visible but modest gradient banding. Rat-liver crystalloid-core archetype explicitly documented, not universal human morphology.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/peroxisome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/peroxisome/inspection.webm"
+      }
     },
     "autophagosome": {
       "name": "autophagosome",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/autophagosome-bioart-transparent.png",
+      "svg": "svg/autophagosome-bioart-traced.svg",
+      "png_sha256": "9e8135897539c683442ef3cc5bdd7a77012e58bdbb99c8ceab86ef4aa7c3f089",
+      "svg_sha256": "56cbe6df3fc005702de4ec3b3f106d696d25a631b03b253fe78d19419c65bdd0",
+      "original_sha256": "5f52f4e3a51e020d9a89ea98926cdb38d08f348c097e243155455595deaaf612",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        274,
+        309,
+        329
+      ],
+      "svg_paths": 15238,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/autophagosome/prompt.json",
+      "qa": "qa/inventory/autophagosome",
+      "visual_review": "PNG/SVG inspected on light/dark: two separate membrane bands with pale intermembrane gap, enclosing mitochondrial and protein cargo. Each band represents a complete bilayer. Full outline, clean alpha and padding. SVG preserves double-membrane distinction and cargo with minor gradient banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/autophagosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/autophagosome/inspection.webm"
+      }
     },
     "phagosome": {
       "name": "phagosome",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/phagosome-bioart-transparent.png",
+      "svg": "svg/phagosome-bioart-traced.svg",
+      "png_sha256": "4158194f79f449274e6302d6b12d11f9c7613f0f96256c845fa093e1d4d5059a",
+      "svg_sha256": "4c793515d2ec2c06742ce003c09c04e6e690baacc0d32f8bd0af8b6c2eb80646",
+      "original_sha256": "958fb193ef64bb0ae069dbf24941c27d465965c4292bb46f6b3bc0f9b43779b3",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        590,
+        387,
+        597
+      ],
+      "svg_paths": 13580,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/phagosome/prompt.json",
+      "qa": "qa/inventory/phagosome",
+      "visual_review": "Light/dark PNG and SVG inspected: one host bilayer enclosing complete bacterial rod and short pili; all cargo inside. Transparent margins clean, no glow in composite. SVG preserves membrane detail, shape and orange/lavender colors with minor gradient banding. Early phagosome archetype, unspecified bacterial species.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/phagosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/phagosome/inspection.webm"
+      }
     },
     "transport-vesicle": {
       "name": "transport vesicle",
