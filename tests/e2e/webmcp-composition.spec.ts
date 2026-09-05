@@ -191,7 +191,6 @@ test("qualifies a real-asset cancer-immunity reference through registered WebMCP
         "apply_layout_plan",
         "analyze_composition",
         "validate_figure",
-        "render_scene_preview",
         "export_figure"
       ])
     );
@@ -1011,11 +1010,6 @@ test("qualifies a real-asset cancer-immunity reference through registered WebMCP
       maxFindings: 256,
       padding: 48
     });
-    const preview = await call("render_scene_preview", {
-      maxWidth: 800,
-      maxHeight: 600,
-      background: "canvas"
-    });
     return {
       stages,
       stageContents,
@@ -1052,7 +1046,6 @@ test("qualifies a real-asset cancer-immunity reference through registered WebMCP
       stageGeometry,
       hubGeometry,
       hubId,
-      preview,
       callNames: [...calls]
     };
   });
@@ -1076,7 +1069,7 @@ test("qualifies a real-asset cancer-immunity reference through registered WebMCP
       Math.hypot(actual!.geometry.center.x - planned.x, actual!.geometry.center.y - planned.y)
     ).toBeLessThanOrEqual(1);
   }
-  expect(composition.preview.data).toMatchObject({ supported: false, width: 800, height: 600 });
+
   expect(composition.staleApply).toMatchObject({ ok: false });
   expect(composition.staleApply.error?.code).toBe("STALE_LAYOUT_PLAN");
   expect(composition.failedBatch).toMatchObject({ ok: false });

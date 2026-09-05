@@ -92,6 +92,76 @@ function makeAdapter(
 }
 
 describe("semantic editor adapter", () => {
+  it("resizes SVG groups through scale and remains stable when repeated", async () => {
+    const part = new Rect({ width: 80, height: 40, left: 12, top: 8 });
+    const group = new Group([part], { angle: 25, scaleX: 2, scaleY: 3 });
+    group.objectId = "svg";
+    group.familyId = "asset";
+    const adapter = makeAdapter(makeCanvas([group]));
+    const intrinsic = { width: group.width, height: group.height, left: part.left, top: part.top };
+    const ratio = (group.width * group.scaleX) / (group.height * group.scaleY);
+    await adapter.execute("resize_objects", { objectIds: ["svg"], width: 200 });
+    expect(group.width * group.scaleX).toBeCloseTo(200);
+    expect(group.height * group.scaleY).toBeCloseTo(200 / ratio);
+    const scale = { x: group.scaleX, y: group.scaleY };
+    await adapter.execute("resize_objects", { objectIds: ["svg"], width: 200 });
+    expect(group.scaleX).toBeCloseTo(scale.x);
+    expect(group.scaleY).toBeCloseTo(scale.y);
+    expect({ width: group.width, height: group.height, left: part.left, top: part.top }).toEqual(
+      intrinsic
+    );
+    expect(group.angle).toBe(25);
+    await adapter.execute("resize_objects", {
+      objectIds: ["svg"],
+      width: 100,
+      height: 60,
+      preserveAspectRatio: false
+    });
+    expect(group.width * group.scaleX).toBeCloseTo(100);
+    expect(group.height * group.scaleY).toBeCloseTo(60);
+  });
+
+  it("rejects unsafe raw group dimensions before mutating a mixed target list", async () => {
+    const rect = new Rect({ width: 40, height: 20 });
+    rect.objectId = "rect";
+    const group = new Group([new Rect({ width: 30, height: 20 })]);
+    group.objectId = "group";
+    const adapter = makeAdapter(makeCanvas([rect, group]));
+    await expect(
+      adapter.execute("set_object_properties", {
+        objectIds: ["rect", "group"],
+        properties: { width: 400, opacity: 0.2 }
+      })
+    ).rejects.toMatchObject({ code: "INVALID_PROPERTY_TARGET" });
+    expect(rect.width).toBe(40);
+    expect(rect.opacity).toBe(1);
+    expect(adapter.commit).not.toHaveBeenCalled();
+  });
+
+  it("validates every resize target and ambiguous dimensions before mutation", async () => {
+    const rect = new Rect({ width: 40, height: 20 });
+    rect.objectId = "rect";
+    const bound = new Group([new Rect({ width: 30, height: 20 })]);
+    bound.objectId = "bound";
+    bound.connector = { fromObjectId: "rect", toObjectId: "other" } as typeof bound.connector;
+    const adapter = makeAdapter(makeCanvas([rect, bound]));
+    await expect(
+      adapter.execute("resize_objects", {
+        objectIds: ["rect", "bound"],
+        width: 400
+      })
+    ).rejects.toMatchObject({ code: "INVALID_TARGET" });
+    await expect(
+      adapter.execute("resize_objects", {
+        objectIds: ["rect"],
+        width: 400,
+        height: 200
+      })
+    ).rejects.toMatchObject({ code: "INVALID_INPUT" });
+    expect(rect.scaleX).toBe(1);
+    expect(adapter.commit).not.toHaveBeenCalled();
+  });
+
   it("reports cancellation after asynchronous export preparation", async () => {
     let release!: () => void;
     const pending = new Promise<void>((resolve) => {

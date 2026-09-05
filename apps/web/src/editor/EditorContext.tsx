@@ -1484,7 +1484,8 @@ export function EditorProvider({
         };
         await onProjectChange(next);
         // Advance the durable revision even if a newer scene is waiting in the queue.
-        latestProject.current.revision = next.revision;
+        // Never mutate the incoming project prop: its revision keys explicit reloads.
+        latestProject.current = { ...latestProject.current, revision: next.revision };
         const isLatestRevision = revision === saveRevision.current && !pendingSnapshot.current;
         if (isLatestRevision) {
           latestProject.current = next;

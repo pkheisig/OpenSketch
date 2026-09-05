@@ -247,6 +247,9 @@ export function createSemanticRuntime(adapter: SemanticEditorAdapter): SemanticR
         "The OpenSketch canvas is not ready for semantic commands."
       );
     }
+    const availability = adapter.getCommandAvailability?.(name);
+    if (availability?.available === false)
+      return failure("COMMAND_UNAVAILABLE", availability.reason ?? "This command is unavailable.");
     if (name === "inspect_scene") {
       return success(
         adapter.inspectScene({
@@ -436,7 +439,7 @@ export function createSemanticRuntime(adapter: SemanticEditorAdapter): SemanticR
             definition.name,
             definition.requires.includes("canvas") && !canvasReady
               ? { available: false, reason: "The canvas is not ready." }
-              : { available: true }
+              : (adapter.getCommandAvailability?.(definition.name) ?? { available: true })
           ])
         )
       };

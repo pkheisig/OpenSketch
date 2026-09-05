@@ -90,6 +90,7 @@ export const MUTATION_COMMAND_NAMES = [
   "place_object_between",
   "rotate_objects",
   "scale_objects",
+  "resize_objects",
   "flip_objects",
   "set_object_properties",
   "set_asset_color_preset",
@@ -805,7 +806,7 @@ const definitions: SemanticCommandDefinition[] = [
     name: "attach_object",
     title: "Attach object",
     description:
-      "Place one exact object's anchor on another object's anchor with an optional canvas offset and absolute rotation.",
+      "Place one exact object's anchor on another object's anchor once, with an optional canvas offset and absolute rotation. This does not create a persistent attachment.",
     version: SEMANTIC_RUNTIME_VERSION,
     risk: "reversible_mutation",
     confirmation: "none",
@@ -912,6 +913,31 @@ const definitions: SemanticCommandDefinition[] = [
     outputSchema: changedOutput
   },
   {
+    name: "resize_objects",
+    title: "Resize objects",
+    description:
+      "Set absolute displayed width and/or height in each object's parent plane, before rotation, using the inspector's scale-based sizing. Preserves intrinsic SVG geometry. One dimension preserves aspect ratio by default; two dimensions require preserveAspectRatio: false. Bound connectors must be resized through their endpoints instead.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: true,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        objectIds: objectIds(),
+        width: number(0.01, 100000),
+        height: number(0.01, 100000),
+        preserveAspectRatio: { type: "boolean" }
+      },
+      required: ["objectIds"],
+      additionalProperties: false
+    },
+    outputSchema: changedOutput
+  },
+  {
     name: "flip_objects",
     title: "Flip objects",
     description: "Flip exact scene objects on one canvas axis.",
@@ -933,7 +959,8 @@ const definitions: SemanticCommandDefinition[] = [
   {
     name: "set_object_properties",
     title: "Set object properties",
-    description: "Set only the typed, whitelisted properties supported by OpenSketch objects.",
+    description:
+      "Apply typed, whitelisted object properties. Use resize_objects for displayed size: raw width/height are not allowed on groups or assets. Use set_asset_color_preset to recolor an asset, and text properties only on text objects.",
     version: SEMANTIC_RUNTIME_VERSION,
     risk: "reversible_mutation",
     confirmation: "none",

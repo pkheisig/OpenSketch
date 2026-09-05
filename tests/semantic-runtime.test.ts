@@ -414,3 +414,16 @@ describe("semantic runtime", () => {
     expect(adapter.calls).toEqual(["create_shape"]);
   });
 });
+
+it("reports host-unavailable commands and rejects execution before invoking the adapter", async () => {
+  const adapter = fakeAdapter();
+  adapter.getCommandAvailability = (command) =>
+    command === "render_scene_preview"
+      ? { available: false, reason: "Image transport unavailable." }
+      : { available: true };
+  const runtime = createSemanticRuntime(adapter);
+  expect(runtime.getCapabilities().commands.render_scene_preview.available).toBe(false);
+  const result = await runtime.execute("render_scene_preview", {});
+  expect(result).toMatchObject({ ok: false, error: { code: "COMMAND_UNAVAILABLE" } });
+  expect(adapter.calls).toEqual([]);
+});

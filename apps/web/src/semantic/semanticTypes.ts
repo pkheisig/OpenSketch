@@ -164,6 +164,7 @@ export interface SemanticAdapterResult {
 }
 
 export interface SemanticEditorAdapter {
+  getCommandAvailability?(command: string): { available: boolean; reason?: string };
   getProjectId(): string;
   isCanvasReady(): boolean;
   getCanvasSettings(): SemanticSceneSnapshot["canvas"];
