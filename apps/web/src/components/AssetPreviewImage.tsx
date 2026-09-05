@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Group, StaticCanvas, util, type FabricObject } from "fabric";
+import { useOpenSketchHostServices } from "@/application/hostServices";
 import { applyElementStyle, type ElementStyleSnapshot } from "@/editor/elementStyles";
 import { loadEditableSvg } from "@/editor/svg";
 
@@ -26,7 +27,8 @@ function rememberPreview(key: string, source: string): void {
 
 async function renderAssetPreview(
   assetPath: string,
-  snapshot?: ElementStyleSnapshot
+  snapshot: ElementStyleSnapshot | undefined,
+  loadText: (path: string) => Promise<string>
 ): Promise<string> {
   const key = previewKey(assetPath, snapshot);
   const resolved = previewSources.get(key);
@@ -38,9 +40,7 @@ async function renderAssetPreview(
   if (cached) return cached;
 
   const preview = (async () => {
-    const response = await fetch(assetPath);
-    if (!response.ok) throw new Error(`Could not preview ${assetPath}.`);
-    const parsed = await loadEditableSvg(await response.text());
+    const parsed = await loadEditableSvg(await loadText(assetPath));
     const objects = parsed.objects.filter((object): object is FabricObject => Boolean(object));
     const grouped = util.groupSVGElements(objects, parsed.options);
     const group = grouped instanceof Group ? grouped : new Group([grouped]);
@@ -152,6 +152,7 @@ function StyledAssetPreview({
   savedStyle: ElementStyleSnapshot;
   className?: string;
 }) {
+  const services = useOpenSketchHostServices();
   const key = previewKey(assetPath, savedStyle);
   const cachedSource = previewSources.get(key);
   const [preview, setPreview] = useState(() => ({
@@ -168,7 +169,7 @@ function StyledAssetPreview({
       source: cached ?? TRANSPARENT_PREVIEW,
       ready: Boolean(cached)
     });
-    void renderAssetPreview(assetPath, savedStyle)
+    void renderAssetPreview(assetPath, savedStyle, (path) => services.assets.loadText(path))
       .then((nextSource) => {
         if (active) setPreview({ key, source: nextSource, ready: true });
       })
@@ -180,7 +181,7 @@ function StyledAssetPreview({
     return () => {
       active = false;
     };
-  }, [assetPath, fallbackPath, key, savedStyle]);
+  }, [assetPath, fallbackPath, key, savedStyle, services]);
 
   const current = preview.key === key ? preview : null;
   return (

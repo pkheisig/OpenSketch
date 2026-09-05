@@ -4,12 +4,14 @@ import { ColorPalettePicker } from "@/components/ColorPalettePicker";
 import { MotionCollapse } from "@/components/MotionCollapse";
 import { MotionPresence } from "@/components/MotionPresence";
 import { useEditorFields } from "@/editor/editorHooks";
+import { useOpenSketchHostServices } from "@/application/hostServices";
 import { UiSelect } from "@/components/UiSelect";
 import { EXPORT_DPI_OPTIONS, loadExportDpi, saveExportDpi } from "@/export/preferences";
 import { inspectPngExportResource } from "@/export/png";
 import { useModalDialog } from "./useModalDialog";
 
 export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const services = useOpenSketchHostServices();
   const editor = useEditorFields([
     "canvasSettings",
     "exportSvg",
@@ -19,7 +21,7 @@ export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => 
   ]);
   const dialogRef = useModalDialog(open, onClose);
   const [format, setFormat] = useState<"svg" | "png" | "pdf">("svg");
-  const [dpi, setDpi] = useState(() => loadExportDpi());
+  const [dpi, setDpi] = useState(() => loadExportDpi(1200, services.preferences.storage));
   const [transparent, setTransparent] = useState(false);
   const [background, setBackground] = useState(editor.canvasSettings.background);
   const [exportError, setExportError] = useState("");
@@ -107,7 +109,7 @@ export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => 
                 value={dpi}
                 options={pngDpiOptions}
                 onChange={(dpi) => {
-                  setDpi(saveExportDpi(dpi));
+                  setDpi(saveExportDpi(dpi, services.preferences.storage));
                 }}
               />
               <label className="check-field">

@@ -1,5 +1,6 @@
 import { Group, type FabricObject } from "fabric";
 import type { ConnectorBinding } from "@workspace/editor-core";
+import type { StringListStorage } from "@/editor/stringListStorage";
 
 export const SAVED_ELEMENT_STYLES_STORAGE_KEY = "OpenSketch:element-styles";
 export const SAVED_ELEMENT_STYLES_CHANGED_EVENT = "opensketch:element-styles-changed";
@@ -83,7 +84,9 @@ export function elementStyleKey(object: FabricObject | undefined): string | unde
   }
   if (type === "text") return "text:point";
   if (type === "shape" && target.name) return `shape:${target.name.trim().toLowerCase()}`;
-  if (["connector", "line", "curved-line", "arrow", "double-arrow", "curved-arrow"].includes(type)) {
+  if (
+    ["connector", "line", "curved-line", "arrow", "double-arrow", "curved-arrow"].includes(type)
+  ) {
     return `connector:${type}`;
   }
   return undefined;
@@ -123,18 +126,23 @@ export function applyElementStyle(
   object.setCoords();
 }
 
-export function loadSavedElementStyles(): SavedElementStyles {
+export function loadSavedElementStyles(
+  storage: StringListStorage = localStorage
+): SavedElementStyles {
   try {
-    const value = JSON.parse(localStorage.getItem(SAVED_ELEMENT_STYLES_STORAGE_KEY) ?? "{}");
+    const value = JSON.parse(storage.getItem(SAVED_ELEMENT_STYLES_STORAGE_KEY) ?? "{}");
     return value && typeof value === "object" ? (value as SavedElementStyles) : {};
   } catch {
     return {};
   }
 }
 
-export function persistSavedElementStyles(styles: SavedElementStyles): void {
+export function persistSavedElementStyles(
+  styles: SavedElementStyles,
+  storage: StringListStorage = localStorage
+): void {
   try {
-    localStorage.setItem(SAVED_ELEMENT_STYLES_STORAGE_KEY, JSON.stringify(styles));
+    storage.setItem(SAVED_ELEMENT_STYLES_STORAGE_KEY, JSON.stringify(styles));
   } catch {
     // Styling remains active for this session if persistent storage is unavailable.
   }

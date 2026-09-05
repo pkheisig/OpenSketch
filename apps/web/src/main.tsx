@@ -1,7 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { registerSW } from "virtual:pwa-register";
-import { App } from "./app/App";
+import { createOpenSketchModule } from "./application";
+import { createStandaloneOpenSketchHostServices } from "./application/standaloneHost";
 import "@fontsource/inter/400.css";
 import "@fontsource/inter/600.css";
 import "@fontsource/inter/700.css";
@@ -90,8 +91,16 @@ window.addEventListener("opensketch:apply-update", () => {
   void updateServiceWorker(true);
 });
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
-);
+const rootContainer = document.getElementById("root");
+if (!rootContainer) throw new Error("OpenSketch standalone host requires a #root element.");
+
+const reactRoot = createRoot(rootContainer);
+const host = createStandaloneOpenSketchHostServices({
+  updateServiceWorker,
+  render: (_container, node) => {
+    reactRoot.render(<StrictMode>{node}</StrictMode>);
+    return { unmount: () => reactRoot.unmount() };
+  }
+});
+const application = createOpenSketchModule(host);
+application.mount(rootContainer);

@@ -25,6 +25,7 @@ import { GLOBAL_CREDIT } from "@/assets/credit";
 import { MotionPresence } from "@/components/MotionPresence";
 import { Logo } from "./Logo";
 import { useModalDialog } from "./useModalDialog";
+import { useOpenSketchHostServices } from "@/application/hostServices";
 
 const OPEN_FOLDER_STORAGE_KEY = "opensketch.openFolderId";
 
@@ -65,17 +66,14 @@ export function HomeScreen({
   onRename: (project: ProjectRecord) => void;
   onImport: (file: File) => void;
 }) {
+  const services = useOpenSketchHostServices();
   const input = useRef<HTMLInputElement>(null);
   const [about, setAbout] = useState(false);
   const [archiveOpen, setArchiveOpen] = useState(false);
   const [creatingFolder, setCreatingFolder] = useState(false);
   const [folderName, setFolderName] = useState("");
   const [openFolderId, setOpenFolderId] = useState<string | undefined>(() => {
-    try {
-      return localStorage.getItem(OPEN_FOLDER_STORAGE_KEY) || undefined;
-    } catch {
-      return undefined;
-    }
+    return services.preferences.get(OPEN_FOLDER_STORAGE_KEY) || undefined;
   });
   const [draggedProjectId, setDraggedProjectId] = useState<string>();
   const [dropTarget, setDropTarget] = useState<string>();
@@ -109,12 +107,8 @@ export function HomeScreen({
     : [];
   const setOpenFolder = (folderId?: string) => {
     setOpenFolderId(folderId);
-    try {
-      if (folderId) localStorage.setItem(OPEN_FOLDER_STORAGE_KEY, folderId);
-      else localStorage.removeItem(OPEN_FOLDER_STORAGE_KEY);
-    } catch {
-      // Keep the drawer functional for this session if browser storage is unavailable.
-    }
+    if (folderId) services.preferences.set(OPEN_FOLDER_STORAGE_KEY, folderId);
+    else services.preferences.remove(OPEN_FOLDER_STORAGE_KEY);
   };
 
   useEffect(() => {

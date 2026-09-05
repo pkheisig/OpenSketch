@@ -35,6 +35,7 @@ import {
 } from "@workspace/editor-core";
 import { Color, FabricObject, Group as FabricGroup, Text } from "fabric";
 import { useEditorFields } from "@/editor/editorHooks";
+import { useOpenSketchHostServices } from "@/application/hostServices";
 import { TEXT_FONT_FAMILIES } from "@/editor/fonts";
 import { isManualGroup } from "@/editor/grouping";
 import { AssetVariantGrid } from "@/components/AssetVariantPicker";
@@ -83,6 +84,7 @@ export function InspectorContent({ onClose }: { onClose?: () => void }) {
 }
 
 function ObjectInspector({ object }: { object: FabricObject }) {
+  const services = useOpenSketchHostServices();
   const editor = useEditorFields([
     "selection",
     "setObject",
@@ -136,13 +138,13 @@ function ObjectInspector({ object }: { object: FabricObject }) {
       return;
     }
     let active = true;
-    void import("@/assets/manifest").then(({ assetManifest }) => {
+    void services.assets.getManifest().then((assetManifest) => {
       if (active) setAssetFamilies(assetManifest.families);
     });
     return () => {
       active = false;
     };
-  }, [object]);
+  }, [object, services]);
   const assetFamily =
     object instanceof FabricGroup && object.familyId
       ? assetFamilies?.find((family) => family.familyId === object.familyId)

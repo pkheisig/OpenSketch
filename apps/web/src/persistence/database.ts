@@ -29,7 +29,7 @@ export interface AssetTemplateMigrationRecord {
   completedAt: string;
 }
 
-class OpenSketchDatabase extends Dexie {
+export class OpenSketchDatabase extends Dexie {
   projects!: EntityTable<ProjectRecord, "id">;
   folders!: EntityTable<ProjectFolderRecord, "id">;
   imports!: EntityTable<ImportedMediaLibraryRecord, "id">;
@@ -60,7 +60,28 @@ class OpenSketchDatabase extends Dexie {
   }
 }
 
-export const db = new OpenSketchDatabase();
+let database: OpenSketchDatabase | undefined;
+
+/**
+ * The standalone adapter owns the browser database. Keeping construction lazy
+ * lets the reusable application module be imported by a host without opening
+ * IndexedDB as an import-time side effect.
+ */
+export function getOpenSketchDatabase(): OpenSketchDatabase {
+  database ??= new OpenSketchDatabase();
+  return database;
+}
+
+/**
+ * Compatibility surface for existing standalone tests and callers. Property
+ * access is the first point at which the Dexie instance is created.
+ */
+export const db = new Proxy({} as OpenSketchDatabase, {
+  get(_target, property) {
+    const value = Reflect.get(getOpenSketchDatabase(), property, getOpenSketchDatabase());
+    return typeof value === "function" ? value.bind(getOpenSketchDatabase()) : value;
+  }
+});
 export const IMPORT_LIBRARY_CHANGED_EVENT = "OpenSketch:import-library-changed";
 
 async function importedMediaHash(media: ImportedMediaRecord): Promise<string> {
@@ -76,21 +97,23 @@ function notifyImportLibraryChanged(): void {
 }
 
 export async function listImportedMedia(): Promise<ImportedMediaLibraryRecord[]> {
-  return db.imports.orderBy("updatedAt").reverse().toArray();
+  const database = getOpenSketchDatabase();
+  return database.imports.orderBy("updatedAt").reverse().toArray();
 }
 
 export async function getImportedMedia(
   id: string
 ): Promise<ImportedMediaLibraryRecord | undefined> {
-  return db.imports.get(id);
+  return getOpenSketchDatabase().imports.get(id);
 }
 
 export async function saveImportedMedia(
   media: ImportedMediaRecord,
   timestamp = new Date().toISOString()
 ): Promise<ImportedMediaLibraryRecord> {
+  const database = getOpenSketchDatabase();
   const contentHash = await importedMediaHash(media);
-  const matching = await db.imports.where("contentHash").equals(contentHash).first();
+  const matching = await database.imports.where("contentHash").equals(contentHash).first();
   const record: ImportedMediaLibraryRecord = matching
     ? { ...matching, name: media.name, updatedAt: timestamp }
     : {
@@ -99,7 +122,7 @@ export async function saveImportedMedia(
         updatedAt: timestamp,
         contentHash
       };
-  await db.imports.put(record);
+  await database.imports.put(record);
   notifyImportLibraryChanged();
   return record;
 }
@@ -114,7 +137,7 @@ export async function rememberProjectImports(
 }
 
 export async function deleteImportedMedia(id: string): Promise<void> {
-  await db.imports.delete(id);
+  await getOpenSketchDatabase().imports.delete(id);
   notifyImportLibraryChanged();
 }
 
@@ -136,15 +159,17 @@ export function createProject(name = "Untitled figure"): ProjectRecord {
 }
 
 export async function listProjects(): Promise<ProjectRecord[]> {
-  return db.projects.orderBy("updatedAt").reverse().toArray();
+  const database = getOpenSketchDatabase();
+  return database.projects.orderBy("updatedAt").reverse().toArray();
 }
 
 export async function listProjectFolders(): Promise<ProjectFolderRecord[]> {
-  return db.folders.orderBy("updatedAt").reverse().toArray();
+  const database = getOpenSketchDatabase();
+  return database.folders.orderBy("updatedAt").reverse().toArray();
 }
 
 export async function saveProject(project: ProjectRecord): Promise<void> {
-  await db.projects.put(project);
+  await getOpenSketchDatabase().projects.put(project);
 }
 
 export async function saveProjectThumbnail(
@@ -152,11 +177,12 @@ export async function saveProjectThumbnail(
   projectRevision: string,
   thumbnail: string
 ): Promise<ProjectRecord | undefined> {
-  return db.transaction("rw", db.projects, async () => {
-    const current = await db.projects.get(projectId);
+  const database = getOpenSketchDatabase();
+  return database.transaction("rw", database.projects, async () => {
+    const current = await database.projects.get(projectId);
     if (!current || current.updatedAt !== projectRevision) return current;
     const next = { ...current, thumbnail };
-    await db.projects.put(next);
+    await database.projects.put(next);
     return next;
   });
 }
@@ -169,40 +195,42 @@ export async function createProjectFolder(name: string): Promise<ProjectFolderRe
     createdAt: now,
     updatedAt: now
   };
-  await db.folders.put(folder);
+  await getOpenSketchDatabase().folders.put(folder);
   return folder;
 }
 
 export async function saveProjectFolder(folder: ProjectFolderRecord): Promise<void> {
-  await db.folders.put(folder);
+  await getOpenSketchDatabase().folders.put(folder);
 }
 
 export async function moveProjectToFolder(
   project: ProjectRecord,
   folderId?: string
 ): Promise<void> {
+  const database = getOpenSketchDatabase();
   const next = { ...project, folderId };
   if (!folderId) delete next.folderId;
-  await db.projects.put(next);
+  await database.projects.put(next);
   if (folderId) {
-    const folder = await db.folders.get(folderId);
+    const folder = await database.folders.get(folderId);
     if (folder) {
-      await db.folders.put({ ...folder, updatedAt: new Date().toISOString() });
+      await database.folders.put({ ...folder, updatedAt: new Date().toISOString() });
     }
   }
 }
 
 export async function deleteProjectFolder(folderId: string): Promise<void> {
-  await db.transaction("rw", db.projects, db.folders, async () => {
-    const projects = await db.projects.where("folderId").equals(folderId).toArray();
+  const database = getOpenSketchDatabase();
+  await database.transaction("rw", database.projects, database.folders, async () => {
+    const projects = await database.projects.where("folderId").equals(folderId).toArray();
     await Promise.all(
       projects.map((project) => {
         const next = { ...project };
         delete next.folderId;
-        return db.projects.put(next);
+        return database.projects.put(next);
       })
     );
-    await db.folders.delete(folderId);
+    await database.folders.delete(folderId);
   });
 }
 
