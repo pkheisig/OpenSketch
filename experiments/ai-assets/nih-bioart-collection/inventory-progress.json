@@ -7609,17 +7609,101 @@
     "lysosome": {
       "name": "lysosome",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/lysosome-bioart-transparent.png",
+      "svg": "svg/lysosome-bioart-traced.svg",
+      "png_sha256": "a05fc523e5ff76dd081cfdfec16ae8e75b5da2b16f5b0c2f11a401fee6141456",
+      "svg_sha256": "9e6fe149447a592707a0ac2c440d78367d7b88a880c147c467b8ba454477c81f",
+      "original_sha256": "04b99f2ebaddc93c1bf37ef767d383e1ebe79c56a691d5467839291d5578c0d0",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        299,
+        312,
+        321
+      ],
+      "svg_paths": 20310,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/lysosome/prompt.json",
+      "qa": "qa/inventory/lysosome",
+      "visual_review": "Reviewed light/dark PNG and SVG: complete single-bilayer cutaway, enzyme-like granules and curled degraded fragments retained. No intact organelles, background halo or clipping. SVG closely preserves coral/gold palette and internal details with minor gradient banding; contents are schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lysosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lysosome/inspection.webm"
+      }
     },
     "early-endosome": {
       "name": "early endosome",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/early-endosome-bioart-transparent.png",
+      "svg": "svg/early-endosome-bioart-traced.svg",
+      "png_sha256": "b9a635f6bc590cc64188af5b70d22b57fb68932d20107fe6eaa270cabd991ef4",
+      "svg_sha256": "b4442f29190de72c2d75190af1ef82607f3d726a87db70f0071d34e2d587d1b3",
+      "original_sha256": "b6090cbb9df9c59b361f06b1fa7513561dc5fac9e1218dd68a1eaf8ec37b6776",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        388,
+        576,
+        347,
+        593
+      ],
+      "svg_paths": 10929,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/early-endosome/prompt.json",
+      "qa": "qa/inventory/early-endosome",
+      "visual_review": "Reviewed light/dark PNG and SVG: complete vacuolar body with three attached tubules, one limiting bilayer and sparse luminal contents. All tips preserved, clean alpha and no glow in composite. SVG keeps structure and turquoise palette with slight gradient banding; contents and topology are schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/early-endosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/early-endosome/inspection.webm"
+      }
     },
     "late-endosome": {
       "name": "late endosome",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/late-endosome-bioart-transparent.png",
+      "svg": "svg/late-endosome-bioart-traced.svg",
+      "png_sha256": "8871a7ece9c436bf7543b1b9a840e8ca988af6f0060f5ace3d119bc262214003",
+      "svg_sha256": "f8d30f4d48158806976153c797b082e32188f4ae2c19797df175ee3906a2b606",
+      "original_sha256": "7391458d9ce812c9f514ba3c5264095d3f347c51eaa3124232a74f158ed5d151",
+      "png_dimensions": [
+        1843,
+        1843
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        263,
+        345,
+        301,
+        355
+      ],
+      "svg_paths": 18804,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/late-endosome/prompt.json",
+      "qa": "qa/inventory/late-endosome",
+      "visual_review": "Light/dark PNG and SVG reviewed: single limiting bilayer, many separated intraluminal vesicles, small closed tubular nub and complete outline. Clean alpha and generous padding. SVG retains fine membrane rims and teal/lavender palette with slight banding. Vesicle abundance is schematic rather than a fixed diagnostic threshold.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/late-endosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/late-endosome/inspection.webm"
+      }
     },
     "peroxisome": {
       "name": "peroxisome",
