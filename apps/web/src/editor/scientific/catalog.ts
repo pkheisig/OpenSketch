@@ -40,3 +40,8 @@ export {
   type BrushKind,
   type BrushPoint
 } from "@workspace/editor-core";
+
+export const FIXED_MEMBRANE_PRESETS = [
+  { id: "fixed-circular-bilayer", label: "Circular membrane (fixed)", kind: "membrane" },
+  { id: "fixed-circular-monolayer", label: "Circular monolayer (fixed)", kind: "monolayer" }
+] as const;

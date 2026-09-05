@@ -55,3 +55,11 @@ The Assets sidebar now exposes only OpenSketch generated artwork and OpenSketch 
 NIH BioArt, SciDraw, BioIcons, Arcadia and other prior collections are excluded from browsing, search, source filters, recent/favorite results and the offline pack UI. Their files and a separate internal lookup manifest remain for existing project references. The About dialog no longer advertises those sources. Stale source filters reset to All sources.
 
 Validation: 478 unit tests, three targeted Chromium flows, typecheck and production build pass. [Sidebar screenshots and recording](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/editable-sidebar-20260905/index.html).
+
+## Circular membranes
+
+Curved membrane and Membrane ring now use an analytical circular arc, rather than a three-point interpolated path. Lipid positions have constant radius and follow the circle tangent. The curved preset begins as a semicircle; the ring begins at 360°. In Edit, set radius and arc angle, drag the radius/arc-end handles, or choose **Make full circle**. A full circle has no duplicated lipid at its seam. Save/reload retains the circular settings. Existing freeform membrane objects remain readable and offer **Use circular arc** to convert them explicitly.
+
+Two additional asset cards, **Circular membrane (fixed)** and **Circular monolayer (fixed)**, provide complete circular SVG artwork without procedural controls or an Editable badge. They retain ordinary SVG placement, rotation and scaling. The sidebar now contains 230 OpenSketch assets, including the 17 Editable structures. These new files do not replace any original inventory entry.
+
+Validation covers constant radius and tangent orientation at 30°, 180°, 270°, 359° and 360°, a rotated arc edit retaining its center, strict metadata validation, full-circle save/reload, and insertion of a fixed circle without procedural metadata. [Circular membrane screenshots and recording](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/round-membranes-20260905/index.html).

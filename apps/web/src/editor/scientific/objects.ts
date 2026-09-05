@@ -415,15 +415,18 @@ export function createScientificObject(id: string, defaults: CreationDefaults): 
       { x: 160, y: -45 },
       { x: 320, y: 20 }
     ];
-  if (preset.form === "ring")
-    points = Array.from({ length: 8 }, (_, i) => ({
-      x: Math.cos((i * Math.PI) / 4) * 115,
-      y: Math.sin((i * Math.PI) / 4) * 115
-    }));
+  const circular =
+    preset.kind === "membrane" && (preset.form === "curve" || preset.form === "ring");
+  if (circular)
+    points = [
+      { x: 0, y: 0 },
+      { x: preset.form === "ring" ? 115 : -160, y: 0 }
+    ];
   const brush = createBrushObject({
     version: 1,
     kind: preset.kind,
     points,
+    ...(circular ? { arcSweep: preset.form === "ring" ? 360 : 180 } : {}),
     closed: preset.form === "ring",
     smooth: preset.form !== "line",
     unitSize: preset.kind === "dna" ? 14 : 22,

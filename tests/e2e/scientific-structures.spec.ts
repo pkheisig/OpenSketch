@@ -194,3 +194,53 @@ test("sidebar identifies editable structures and hides legacy sources", async ({
   await page.waitForTimeout(400); // Capture the settled inspector.
   await page.screenshot({ path: testInfo.outputPath("editable-inserted.png"), fullPage: true });
 });
+
+test("round membrane expands to a full circle and fixed circles remain separate choices", async ({
+  page
+}, testInfo) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await observeCanvas(page);
+  await choose(page, "Curved membrane", 480, 330);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await expect(page.getByLabel("Membrane arc angle")).toHaveValue("180");
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: testInfo.outputPath("round-arc.png"), fullPage: true });
+  await page.getByLabel("Membrane arc angle").fill("270");
+  expect((await state(page)).spec.arcSweep).toBe(270);
+  await page.getByRole("button", { name: "Make full circle", exact: true }).click();
+  const full = await state(page);
+  expect(full.spec.arcSweep).toBe(360);
+  expect(full.spec.closed).toBe(true);
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible({ timeout: 15000 });
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: testInfo.outputPath("full-circle.png"), fullPage: true });
+  await page.reload();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await observeCanvas(page);
+  await page.locator(".upper-canvas").click({ position: full.controls.brushPoint1 });
+  expect((await state(page)).spec).toEqual(full.spec);
+  await page.getByRole("tab", { name: "Assets", exact: true }).click();
+  await page
+    .getByPlaceholder("Search cells, proteins, equipment…")
+    .fill("Circular membrane (fixed)");
+  const card = page
+    .locator(".asset-card")
+    .filter({
+      has: page.getByRole("button", { name: "Insert Circular membrane (fixed)", exact: true })
+    });
+  await expect(card).toBeVisible();
+  await expect(card.getByText("Editable", { exact: true })).toHaveCount(0);
+  await card.getByRole("button", { name: "Insert Circular membrane (fixed)", exact: true }).click();
+  await expect
+    .poll(() =>
+      page.evaluate(() => (window as ProbeWindow).structureQaCanvas?.getActiveObject()?.assetId)
+    )
+    .toBe("fixed-circular-bilayer");
+  expect(
+    await page.evaluate(
+      () => (window as ProbeWindow).structureQaCanvas?.getActiveObject()?.scientificBrush
+    )
+  ).toBeUndefined();
+});

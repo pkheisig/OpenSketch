@@ -1,1 +1,1 @@
-export { brushPolyline, sampleBrush } from "@workspace/editor-core";
+export { brushPolyline, sampleBrush, circularBrushGeometry } from "@workspace/editor-core";

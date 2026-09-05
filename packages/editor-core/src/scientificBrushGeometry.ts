@@ -3,6 +3,11 @@ import { MAX_BRUSH_UNITS, type BrushPoint, type ScientificBrushSpec } from "./sc
 const distance = (a: BrushPoint, b: BrushPoint) => Math.hypot(b.x - a.x, b.y - a.y);
 /** Sample a Catmull–Rom path; spacing is subsequently measured along arc length. */
 export function brushPolyline(spec: ScientificBrushSpec): BrushPoint[] {
+  if (spec.arcSweep !== undefined) {
+    const circle = circularBrushGeometry(spec);
+    const steps = Math.max(16, Math.ceil(spec.arcSweep));
+    return Array.from({ length: steps + 1 }, (_, i) => circle.position(i / steps));
+  }
   const p = spec.points;
   const count = spec.closed ? p.length : p.length - 1;
   if (!spec.smooth) return spec.closed ? [...p, p[0]] : [...p];
@@ -30,6 +35,23 @@ export function brushPolyline(spec: ScientificBrushSpec): BrushPoint[] {
 }
 export function sampleBrush(spec: ScientificBrushSpec) {
   const points = brushPolyline(spec);
+  if (spec.arcSweep !== undefined) {
+    const circle = circularBrushGeometry(spec);
+    const requested = Math.max(
+      2,
+      Math.floor(circle.length / (spec.unitSize * spec.spacing)) + (spec.closed ? 0 : 1)
+    );
+    if (requested > MAX_BRUSH_UNITS)
+      throw new Error(`Shorten the arc or increase spacing (maximum ${MAX_BRUSH_UNITS} units).`);
+    const samples = Array.from({ length: requested }, (_, i) => {
+      const fraction = i / (spec.closed ? requested : requested - 1);
+      return {
+        ...circle.position(fraction),
+        angle: circle.start + circle.sweep * fraction + Math.PI / 2
+      };
+    });
+    return { points, samples, length: circle.length };
+  }
   const cumulative = [0];
   for (let i = 1; i < points.length; i++)
     cumulative.push(cumulative[i - 1] + distance(points[i - 1], points[i]));
@@ -57,4 +79,21 @@ export function sampleBrush(spec: ScientificBrushSpec) {
     };
   });
   return { points, samples, length };
+}
+
+export function circularBrushGeometry(spec: ScientificBrushSpec) {
+  const [center, handle] = spec.points;
+  const radius = distance(center, handle);
+  const start = Math.atan2(handle.y - center.y, handle.x - center.x);
+  const sweep = ((spec.arcSweep ?? 360) * Math.PI) / 180;
+  return {
+    radius,
+    start,
+    sweep,
+    length: radius * sweep,
+    position: (fraction: number) => ({
+      x: center.x + radius * Math.cos(start + sweep * fraction),
+      y: center.y + radius * Math.sin(start + sweep * fraction)
+    })
+  };
 }

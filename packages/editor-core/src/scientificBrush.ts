@@ -18,6 +18,8 @@ export type ScientificBrushSpec = {
   version: 1;
   kind: BrushKind;
   points: BrushPoint[];
+  /** Circular arc: points are center and radius/start handle; sweep is in degrees. */
+  arcSweep?: number;
   closed: boolean;
   smooth: boolean;
   unitSize: number;
@@ -38,6 +40,7 @@ export function validBrushSpec(value: unknown): value is ScientificBrushSpec {
         "version",
         "kind",
         "points",
+        "arcSweep",
         "closed",
         "smooth",
         "unitSize",
@@ -63,7 +66,7 @@ export function validBrushSpec(value: unknown): value is ScientificBrushSpec {
     v.spacing >= 0.65 &&
     v.spacing <= 3 &&
     Array.isArray(v.points) &&
-    v.points.length >= (v.closed ? 3 : 2) &&
+    v.points.length >= (v.closed && v.arcSweep === undefined ? 3 : 2) &&
     v.points.length <= MAX_BRUSH_ANCHORS &&
     v.points.every(
       (p) =>
@@ -74,6 +77,15 @@ export function validBrushSpec(value: unknown): value is ScientificBrushSpec {
         Math.abs(p.x) <= 10000 &&
         Math.abs(p.y) <= 10000
     ) &&
+    (v.arcSweep === undefined ||
+      ((v.kind === "membrane" || v.kind === "monolayer") &&
+        v.points.length === 2 &&
+        Number.isFinite(v.arcSweep) &&
+        v.arcSweep >= 1 &&
+        v.arcSweep <= 360 &&
+        v.closed === (v.arcSweep === 360) &&
+        Math.hypot(v.points[1].x - v.points[0].x, v.points[1].y - v.points[0].y) >=
+          v.unitSize * 2)) &&
     withinRenderBudget(v)
   );
 }

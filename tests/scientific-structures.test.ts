@@ -14,7 +14,8 @@ import {
 } from "../apps/web/src/editor/scientific/objects";
 import {
   moveBrushAnchor,
-  configureScientificControls
+  configureScientificControls,
+  moveArcEnd
 } from "../apps/web/src/editor/scientific/controls";
 import { sampleBrush } from "../apps/web/src/editor/scientific/geometry";
 
@@ -193,4 +194,46 @@ it("rejects a bundled insertion before exceeding the portable scene budget", () 
   const existing = Array.from({ length: 10000 }, () => new FabricObject());
   expect(() => assertAssetCapacity(existing, incoming)).toThrow(/editable-object limit/);
   expect(existing).toHaveLength(10000);
+});
+
+it("samples round membranes on an exact circle and closes without a duplicate seam", () => {
+  const object = createScientificObject("curved-membrane", DEFAULT_CREATION_DEFAULTS)!;
+  const spec = object.scientificBrush!;
+  expect(spec.arcSweep).toBe(180);
+  for (const sweep of [30, 180, 270, 359, 360]) {
+    const circle = { ...spec, arcSweep: sweep, closed: sweep === 360 };
+    const result = sampleBrush(circle),
+      center = circle.points[0];
+    for (const p of result.samples) {
+      expect(Math.hypot(p.x - center.x, p.y - center.y)).toBeCloseTo(160, 8);
+      const radialAngle = Math.atan2(p.y - center.y, p.x - center.x);
+      expect(Math.cos(p.angle - radialAngle)).toBeCloseTo(0, 8);
+    }
+    const first = result.samples[0],
+      last = result.samples.at(-1)!;
+    expect(Math.hypot(first.x - last.x, first.y - last.y)).toBeGreaterThan(0);
+  }
+});
+it("edits arc extent in a rotated group and preserves its circle center", () => {
+  const object = createScientificObject("curved-membrane", DEFAULT_CREATION_DEFAULTS)!;
+  object.set({ left: 300, top: 200, angle: 27, scaleX: 1.2, scaleY: 1.2 });
+  const center = brushAnchorInScene(
+    object as Group & { scientificBrush: NonNullable<Group["scientificBrush"]> },
+    0
+  );
+  const spec = object.scientificBrush!,
+    p = spec.points[0];
+  const target = util.transformPoint(new Point(p.x, p.y + 160), object.calcOwnMatrix());
+  expect(moveArcEnd(object, target)).toBe(true);
+  expect(object.scientificBrush!.arcSweep).toBe(270);
+  near(
+    brushAnchorInScene(
+      object as Group & { scientificBrush: NonNullable<Group["scientificBrush"]> },
+      0
+    ),
+    center
+  );
+  configureScientificControls(object);
+  expect(object.controls.arcEnd).toBeDefined();
+  expect(object.controls.brushPoint0).toBeUndefined();
 });

@@ -44,11 +44,23 @@ describe("reviewed generated artwork app snapshot", () => {
 
 it("exposes only OpenSketch collections while preserving legacy lookup data", async () => {
   const { assetManifest, bundledAssetManifest } = await import("../apps/web/src/assets/manifest");
-  expect(assetManifest.families).toHaveLength(228);
+  expect(assetManifest.families).toHaveLength(230);
   expect(new Set(assetManifest.families.map((f) => f.sourceName))).toEqual(
     new Set(["OpenSketch generated", "OpenSketch structures"])
   );
   expect(assetManifest.families.filter((f) => f.editableStructure)).toHaveLength(17);
   expect(bundledAssetManifest.families.length).toBeGreaterThan(assetManifest.families.length);
   expect(bundledAssetManifest.families.some((f) => f.nihSourcePage)).toBe(true);
+});
+
+it("offers two fixed circular choices without the Editable badge", async () => {
+  const { assetManifest } = await import("../apps/web/src/assets/manifest");
+  const fixed = assetManifest.families.filter((f) => f.familyId.startsWith("fixed-circular-"));
+  expect(fixed).toHaveLength(2);
+  for (const family of fixed) {
+    expect(family.editableStructure).toBe(false);
+    expect(
+      readFileSync(`apps/web/public/${family.variants[0].assetPath.replace(/^\//, "")}`).length
+    ).toBeGreaterThan(100);
+  }
 });
