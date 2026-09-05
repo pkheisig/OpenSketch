@@ -8083,17 +8083,101 @@
     "microtubule": {
       "name": "microtubule",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/microtubule-bioart-transparent.png",
+      "svg": "svg/microtubule-bioart-traced.svg",
+      "png_sha256": "4c8640d34e700dfdeb22f4a931356d9e02105c5516840ae56172b1d2173181cc",
+      "svg_sha256": "a2dbb4f54cbb88081cc1cc299b7936835353934ac72d384b6ca69279608addf8",
+      "original_sha256": "2c6d842339be373f6505952d93a6f712446dfd8cfe8a2a4ecf39bf42fc074b34",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        596,
+        331,
+        611
+      ],
+      "svg_paths": 14419,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/microtubule/prompt.json",
+      "qa": "qa/inventory/microtubule",
+      "visual_review": "Hollow tube, thirteen front terminal subunits and longitudinal alternating tubulin columns remain readable. SVG retains smooth subunit shading and crisp lattice silhouette with slight gradient quantization. No glow in light or dark composites; complete object and transparent padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microtubule/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microtubule/inspection.webm"
+      }
     },
     "actin-filament": {
       "name": "actin filament",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/actin-filament-bioart-transparent.png",
+      "svg": "svg/actin-filament-bioart-traced.svg",
+      "png_sha256": "b7b5dc3237f44790aebec7deeb08be3e6f7465eebba5c9e2037243f310ed95c3",
+      "svg_sha256": "ad2a422e5e5e0d13f3cea7f15e922071e5f1e4118b7e4eed50b431c796993621",
+      "original_sha256": "b7510d17b120f6df68374a6ec373bc3f8f64674a939a1494770318641da94766",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        340,
+        584,
+        333,
+        589
+      ],
+      "svg_paths": 6951,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/actin-filament/prompt.json",
+      "qa": "qa/inventory/actin-filament",
+      "visual_review": "Closely packed globular monomers and repeated two-strand crossover pattern remain clear. SVG closely retains coral shading, small clefts and full silhouette. Transparent padding on both backgrounds; no glow in composite.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/actin-filament/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/actin-filament/inspection.webm"
+      }
     },
     "intermediate-filament": {
       "name": "intermediate filament",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/intermediate-filament-bioart-transparent.png",
+      "svg": "svg/intermediate-filament-bioart-traced.svg",
+      "png_sha256": "e280836707ac16cf530a0d1f79b48feb7cbbdd26245eee276e53860c14da9d0d",
+      "svg_sha256": "cd28c611facc37a564f3d21365d5999337215aa5c96db67176f89e4ae119edd2",
+      "original_sha256": "b4bb53736ff76b8eed7d08b58c5e11a6b07da6f75c4c6e404af271f33dda3f92",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        360,
+        599,
+        352,
+        563
+      ],
+      "svg_paths": 5538,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/intermediate-filament/prompt.json",
+      "qa": "qa/inventory/intermediate-filament",
+      "visual_review": "Compact gently curved cable, intertwined strand glyphs and neat ends preserved. SVG closely matches gradients, lavender contours and helical grooves. Both backgrounds show clean transparency; molecular strand count explicitly schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/intermediate-filament/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/intermediate-filament/inspection.webm"
+      }
     },
     "cilium": {
       "name": "cilium",

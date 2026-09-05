@@ -1,8 +1,8 @@
 # Inventory production progress
 
-94 of 768 unique inventory names covered across 770 checklist entries.
+97 of 768 unique inventory names covered across 770 checklist entries.
 
-These cover 88 distinct PNG/SVG pairs and 6 explicit archetype aliases. Alias reasons are recorded in the ledger.
+These cover 91 distinct PNG/SVG pairs and 6 explicit archetype aliases. Alias reasons are recorded in the ledger.
 The inventory files currently contain 770 checklist rows; their prose count is stale. Two exact repeated names share a single asset. The existing ten approved pairs are preserved. Completion requires a saved PNG, editable SVG, file validation, and visual review.
 
 Production remains on the experimental branch. Each asset is generated as a transparent PNG, then traced and reviewed on light and dark backgrounds. Completed assets are pushed periodically. The full inventory is still in progress.
@@ -99,6 +99,9 @@ Production remains on the experimental branch. Each asset is generated as a tran
 | centrosome | [PNG](png/centrosome-bioart-transparent.png) | [SVG](svg/centrosome-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/centrosome/comparison.png) |
 | centriole pair | [PNG](png/centriole-pair-bioart-transparent.png) | [SVG](svg/centriole-pair-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/centriole-pair/comparison.png) |
 | mitotic spindle | [PNG](png/mitotic-spindle-bioart-transparent.png) | [SVG](svg/mitotic-spindle-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mitotic-spindle/comparison.png) |
+| microtubule | [PNG](png/microtubule-bioart-transparent.png) | [SVG](svg/microtubule-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microtubule/comparison.png) |
+| actin filament | [PNG](png/actin-filament-bioart-transparent.png) | [SVG](svg/actin-filament-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/actin-filament/comparison.png) |
+| intermediate filament | [PNG](png/intermediate-filament-bioart-transparent.png) | [SVG](svg/intermediate-filament-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/intermediate-filament/comparison.png) |
 | generic IgG antibody | [PNG](png/igg-antibody-bioart-transparent.png) | [SVG](svg/igg-antibody-bioart-traced.svg) | Approved earlier batch |
 | CD8 alpha-beta receptor | [PNG](png/cd8-receptor-bioart-transparent.png) | [SVG](svg/cd8-receptor-bioart-traced.svg) | Approved earlier batch |
 | ATP synthase | [PNG](png/atp-synthase-bioart-transparent.png) | [SVG](svg/atp-synthase-bioart-traced.svg) | Approved earlier batch |

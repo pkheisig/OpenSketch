@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an intermediate filament, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Conventional cytoplasmic intermediate-filament schematic: one short flexible gently curved rope-like protein cable, composed of several tightly intertwined slender longitudinal coiled protein strands, with a compact dense cross section, no large open lumen. Lavender-purple palette with slightly alternating tones to distinguish constituent strands. Ends neatly expose a few constituent fine strands over a very short distance, not dramatically frayed. Fine smooth rope-like texture, no globular bead-chain appearance, no DNA ladder rungs, no microtubule wall or membrane, no other proteins. Both ends complete; length about seven times cable diameter. Matte vector-like biomedical illustration, thin dark violet outlines, smooth restrained gradients and subtle highlights; no photographic fibers.",
+  "style_refinement": "Refine image 1's intermediate filament to the matte biomedical vector-like illustration style of image 2. Keep one gently curved compact cable of intertwined fine protein strands. Smooth lavender filled forms, thin crisp dark violet outlines, restrained gradients and small highlights; remove photographic grain, metallic sheen and glow. Shorten the splayed tips at both ends so only a compact neat cable end is shown, with subtle constituent-strand grooves; no dramatically frayed rope. This is a generic filament-level schematic, not an exact molecular cross-section. Image 2 supplies style only, no cell structures. Full isolated object centered, generous transparent padding, no labels or text.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-8a082462-ad22-4eba-b298-27ef0517e3e1.png",
+  "archetype": "Generic cytoplasmic intermediate-filament cable schematic. Four visible strand glyphs and helical grooves illustrate bundled fibrous proteins, not a universal protofibril stoichiometry or a vimentin molecular reconstruction. Protein-specific internal architectures differ; the 2024 vimentin structure describes five protofibrils enclosing a head-domain fiber.",
+  "structure_references": [
+    "https://www.nature.com/articles/s41594-024-01261-2"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "intermediate-filament",
+  "name": "intermediate filament",
+  "original": "originals/inventory/intermediate-filament/generated.png",
+  "original_sha256": "b4bb53736ff76b8eed7d08b58c5e11a6b07da6f75c4c6e404af271f33dda3f92"
+}
