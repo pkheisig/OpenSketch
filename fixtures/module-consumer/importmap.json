@@ -2,6 +2,8 @@
   "imports": {
     "@opensketch/application-module": "/releases/opensketch/0.1.0/module/opensketch-module.js",
     "react": "/consumer/node_modules/react/index.js",
+    "react/jsx-runtime": "/consumer/node_modules/react/jsx-runtime.js",
+    "react-dom": "/consumer/node_modules/react-dom/index.js",
     "react-dom/client": "/consumer/node_modules/react-dom/client.js"
   }
 }

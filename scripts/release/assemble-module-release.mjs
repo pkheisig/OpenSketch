@@ -14,6 +14,12 @@ const appPackage = JSON.parse(await readFile(join(repositoryRoot, "apps/web/pack
 const editorCorePackage = JSON.parse(
   await readFile(join(repositoryRoot, "packages/editor-core/package.json"), "utf8")
 );
+const reactPackage = JSON.parse(
+  await readFile(join(repositoryRoot, "apps/web/node_modules/react/package.json"), "utf8")
+);
+const reactDomPackage = JSON.parse(
+  await readFile(join(repositoryRoot, "apps/web/node_modules/react-dom/package.json"), "utf8")
+);
 const version = appPackage.version;
 const sourceSha = runGit(["rev-parse", "HEAD"]);
 const editorCoreSource = await readFile(
@@ -107,8 +113,8 @@ const sbom = {
   },
   components: [
     { type: "library", name: "@workspace/editor-core", version: editorCoreVersion },
-    { type: "library", name: "react", version: reactVersionRange, scope: "required" },
-    { type: "library", name: "react-dom", version: reactDomVersionRange, scope: "required" }
+    { type: "library", name: "react", version: reactPackage.version, scope: "required" },
+    { type: "library", name: "react-dom", version: reactDomPackage.version, scope: "required" }
   ]
 };
 await writeJson(join(releaseRoot, sbomPath), sbom);

@@ -12,6 +12,8 @@ const moduleManifest = await readJson(join(releaseRoot, "module-manifest.json"))
 const releaseAttestation = await readJson(join(releaseRoot, "release-attestation.json"));
 const packageManifest = await readJson(join(releaseRoot, "package.json"));
 const editorCorePackage = await readJson(join(repositoryRoot, "packages/editor-core/package.json"));
+const reactPackage = await readJson(join(repositoryRoot, "apps/web/node_modules/react/package.json"));
+const reactDomPackage = await readJson(join(repositoryRoot, "apps/web/node_modules/react-dom/package.json"));
 const editorCoreSource = await readFile(join(repositoryRoot, "packages/editor-core/src/index.ts"), "utf8");
 const formatSource = await readFile(join(repositoryRoot, "packages/editor-core/src/types.ts"), "utf8");
 const hostServicesSource = await readFile(join(repositoryRoot, "apps/web/src/application/hostServices.ts"), "utf8");
@@ -113,6 +115,15 @@ for (const name of ["@workspace/editor-core", "react", "react-dom"]) {
     errors.push(`release SBOM is missing ${name}`);
   }
 }
+for (const [name, expected] of Object.entries({
+  react: reactPackage.version,
+  "react-dom": reactDomPackage.version
+})) {
+  const component = sbom.components?.find((candidate) => candidate.name === name);
+  if (component?.version !== expected || !/^\d+\.\d+\.\d+(?:[-+].*)?$/.test(component?.version || "")) {
+    errors.push(`release SBOM must contain the resolved ${name} version`);
+  }
+}
 if (packageManifest.types !== "./module/opensketch-module.d.ts") {
   errors.push("package must publish the module TypeScript declaration");
 }
@@ -155,6 +166,10 @@ for (const moduleFile of moduleFiles) {
   }
 }
 const moduleSource = moduleJavaScript.join("\n");
+const externalReactSpecifiers = new Set();
+for (const match of moduleSource.matchAll(/\bfrom\s+["']((?:react|react-dom)(?:\/[^"']+)?)['"]/g)) {
+  externalReactSpecifiers.add(match[1]);
+}
 if (!/from\s+["']react(?:\/[^"']+)?["']/.test(moduleSource)) {
   errors.push("module bundle does not retain an external React import");
 }
@@ -179,6 +194,9 @@ if (!fixture.includes("@opensketch/application-module")) errors.push("consumer f
 if (fixture.includes("apps/web") || fixture.includes("../../apps")) errors.push("consumer fixture imports workspace source");
 if (/\bcreateRoot\s*\(|\bStrictMode\b/.test(fixture)) errors.push("consumer fixture must let the module host own the mount root");
 if (!importMap.imports?.["@opensketch/application-module"]) errors.push("consumer fixture has no packaged module import map");
+for (const specifier of externalReactSpecifiers) {
+  if (!importMap.imports?.[specifier]) errors.push(`consumer import map is missing ${specifier}`);
+}
 
 if (errors.length > 0) {
   throw new Error(`OpenSketch module release check failed:\n- ${errors.join("\n- ")}`);
