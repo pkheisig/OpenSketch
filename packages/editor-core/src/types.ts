@@ -86,7 +86,7 @@ export interface PortableProject {
 
 export interface ProjectRecord extends PortableProject {
   /** Monotonic local IndexedDB revision; never imported from a portable file. */
-  revision: number;
+  revision?: number;
   thumbnail?: string;
   /** Local project-library placement; not included in portable project exports. */
   folderId?: string;

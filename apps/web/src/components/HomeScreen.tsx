@@ -29,6 +29,7 @@ import { GLOBAL_CREDIT } from "@/assets/credit";
 import { MotionPresence } from "@/components/MotionPresence";
 import { Logo } from "./Logo";
 import { useModalDialog } from "./useModalDialog";
+import { useOpenSketchHostServices } from "@/application/hostServices";
 
 const OPEN_FOLDER_STORAGE_KEY = "opensketch.openFolderId";
 
@@ -37,6 +38,8 @@ export function HomeScreen({
   folders,
   theme,
   onToggleTheme,
+  showThemeControl,
+  showBrand,
   onNew,
   onNewFolder,
   onOpen,
@@ -55,6 +58,8 @@ export function HomeScreen({
   folders: ProjectFolderRecord[];
   theme: "light" | "dark";
   onToggleTheme: () => void;
+  showThemeControl: boolean;
+  showBrand: boolean;
   onNew: () => void;
   onNewFolder: (name: string) => void;
   onOpen: (project: ProjectRecord) => void;
@@ -69,17 +74,14 @@ export function HomeScreen({
   onRename: (project: ProjectRecord) => void;
   onImport: (file: File) => void;
 }) {
+  const services = useOpenSketchHostServices();
   const input = useRef<HTMLInputElement>(null);
   const [about, setAbout] = useState(false);
   const [archiveOpen, setArchiveOpen] = useState(false);
   const [creatingFolder, setCreatingFolder] = useState(false);
   const [folderName, setFolderName] = useState("");
   const [openFolderId, setOpenFolderId] = useState<string | undefined>(() => {
-    try {
-      return localStorage.getItem(OPEN_FOLDER_STORAGE_KEY) || undefined;
-    } catch {
-      return undefined;
-    }
+    return services.preferences.get(OPEN_FOLDER_STORAGE_KEY) || undefined;
   });
   const [draggedProjectId, setDraggedProjectId] = useState<string>();
   const [dropTarget, setDropTarget] = useState<string>();
@@ -113,17 +115,9 @@ export function HomeScreen({
     : [];
   const setOpenFolder = (folderId?: string) => {
     setOpenFolderId(folderId);
-    try {
-      if (folderId) localStorage.setItem(OPEN_FOLDER_STORAGE_KEY, folderId);
-      else localStorage.removeItem(OPEN_FOLDER_STORAGE_KEY);
-    } catch {
-      // Keep the drawer functional for this session if browser storage is unavailable.
-    }
+    if (folderId) services.preferences.set(OPEN_FOLDER_STORAGE_KEY, folderId);
+    else services.preferences.remove(OPEN_FOLDER_STORAGE_KEY);
   };
-
-  useEffect(() => {
-    document.title = "OpenSketch";
-  }, []);
 
   useEffect(() => {
     const closeOtherProjectMenus = (event: PointerEvent) => {
@@ -142,16 +136,18 @@ export function HomeScreen({
   return (
     <main className="home-shell">
       <header className="home-header">
-        <Logo />
+        {showBrand ? <Logo /> : <span className="home-header-spacer" aria-hidden="true" />}
         <div className="home-header-actions">
-          <button
-            className="icon-button theme-toggle"
-            onClick={onToggleTheme}
-            aria-label={`Use ${theme === "light" ? "dark" : "light"} theme`}
-            title={`Use ${theme === "light" ? "dark" : "light"} theme`}
-          >
-            {theme === "light" ? <Moon size={16} /> : <Sun size={16} />}
-          </button>
+          {showThemeControl ? (
+            <button
+              className="icon-button theme-toggle"
+              onClick={onToggleTheme}
+              aria-label={`Use ${theme === "light" ? "dark" : "light"} theme`}
+              title={`Use ${theme === "light" ? "dark" : "light"} theme`}
+            >
+              {theme === "light" ? <Moon size={16} /> : <Sun size={16} />}
+            </button>
+          ) : null}
           <button className="button secondary" onClick={() => input.current?.click()}>
             <Upload size={16} /> Import project
           </button>

@@ -1,0 +1,437 @@
+/* Dialog, loading, and feedback ownership. */
+
+@keyframes dialog-backdrop-in {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+}
+
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+.about-sources ul {
+  display: grid;
+  gap: 7px;
+  margin: 9px 0 0;
+  padding-left: 18px;
+}
+
+.dialog-titlebar h2 {
+  margin-bottom: 0;
+}
+
+.format-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: 17px;
+}
+
+.format-tabs button:active {
+  transform: scale(0.97);
+}
+
+.format-tabs span {
+  display: grid;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.export-dialog > .button.secondary {
+  margin-top: 8px;
+}
+
+.export-dialog > .dialog-note {
+  margin: 10px 0 0;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.shortcut-keys {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px 8px;
+}
+
+.shortcut-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.shortcut-combo {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.shortcut-key-part {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.dialog-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.error-toast button {
+  display: grid;
+  padding: 3px;
+  border: 0;
+  background: transparent;
+}
+
+.opensketch-app .dialog-backdrop {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 30px;
+  background: color-mix(in srgb, #1d1916 58%, transparent);
+  backdrop-filter: blur(5px);
+  animation: dialog-backdrop-in 180ms ease-out both;
+}
+
+.opensketch-app .dialog {
+  position: relative;
+  width: min(480px, 100%);
+  padding: 27px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 7px;
+  background: var(--shell-card);
+  box-shadow: 0 28px 80px color-mix(in srgb, #000 28%, transparent);
+  animation: dialog-in 170ms ease-out both;
+  border-color: var(--shell-border);
+  color: var(--shell-text);
+}
+
+.opensketch-app .dialog h2 {
+  margin: 4px 0 13px;
+  font-family: var(--font-sans);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--shell-text);
+  letter-spacing: -0.03em;
+}
+
+.opensketch-app .export-dialog {
+  font-weight: 400;
+}
+
+.opensketch-app .export-dialog .dialog-titlebar h2 {
+  font-weight: 700;
+}
+
+.opensketch-app .export-dialog .format-tabs span {
+  font-weight: 400;
+}
+
+.opensketch-app .export-dialog .format-tabs strong {
+  font-weight: 400;
+}
+
+.opensketch-app .export-dialog .field {
+  font-weight: 400;
+}
+
+.opensketch-app .export-dialog .check-field {
+  font-weight: 400;
+}
+
+.opensketch-app .export-dialog .color-field {
+  font-weight: 400;
+}
+
+.opensketch-app .export-dialog .color-field > span {
+  font-weight: 400;
+}
+
+.opensketch-app .export-dialog > .button.primary {
+  font-weight: 400;
+  margin-top: 12px;
+}
+
+.opensketch-app .dialog > p:not(.eyebrow) {
+  color: var(--shell-muted);
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.opensketch-app .about-sources {
+  margin: 17px 0;
+  color: var(--shell-muted);
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.opensketch-app .dialog-note {
+  font-size: 10px !important;
+  color: var(--shell-muted);
+}
+
+.opensketch-app .about-sources strong {
+  color: var(--shell-accent);
+  font-size: 12px;
+}
+
+.opensketch-app .dialog a {
+  color: var(--shell-accent);
+}
+
+.opensketch-app .about-sources a {
+  color: var(--shell-accent);
+  font-weight: 700;
+}
+
+.opensketch-app .dialog-titlebar {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 17px;
+  border-color: var(--shell-border);
+}
+
+.opensketch-app .export-summary {
+  display: flex;
+  justify-content: space-between;
+  margin: 18px 0 10px;
+  padding-top: 12px;
+  border-top: 1px solid #d8ddd9;
+  color: #768481;
+  font-size: 9px;
+  border-color: var(--shell-border);
+}
+
+.opensketch-app .shortcut-grid {
+  display: grid;
+  grid-template-columns: minmax(120px, 1fr) minmax(0, 300px);
+  align-items: center;
+  gap: 10px 20px;
+  padding: 14px 0;
+  border-block: 1px solid #d9ded9;
+  color: var(--shell-muted);
+  font-size: 12px;
+  border-color: var(--shell-border);
+}
+
+.opensketch-app .format-tabs button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid #cdd4d0;
+  border-radius: 7px;
+  background: var(--shell-input);
+  text-align: left;
+  transition:
+    color var(--motion-ui),
+    border-color var(--motion-ui),
+    background var(--motion-ui),
+    box-shadow var(--motion-ui),
+    transform var(--motion-ui);
+  border-color: var(--shell-border);
+  color: var(--shell-text);
+}
+
+.opensketch-app .shortcut-grid kbd {
+  padding: 7px 10px;
+  border: 1px solid #cbd2ce;
+  border-bottom-width: 3px;
+  border-radius: 5px;
+  color: var(--shell-text);
+  background: var(--shell-input);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: center;
+  white-space: nowrap;
+  border-color: var(--shell-border);
+}
+
+.opensketch-app .format-tabs button.active {
+  border-color: var(--shell-accent);
+  color: var(--shell-accent);
+  background: var(--shell-accent-soft);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--shell-accent) 14%, transparent);
+}
+
+.opensketch-app .format-tabs strong {
+  color: var(--shell-muted);
+  font-size: 8px;
+  font-weight: 500;
+}
+
+.opensketch-app .shortcut-plus {
+  color: var(--shell-muted);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.opensketch-app .shortcut-or {
+  color: var(--shell-muted);
+  font-family: var(--font-sans);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.opensketch-app .error-toast {
+  position: fixed;
+  z-index: 200;
+  right: 18px;
+  bottom: 18px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  max-width: 450px;
+  padding: 12px 13px;
+  border: 1px solid #be665f;
+  border-radius: 7px;
+  color: var(--shell-danger);
+  background: color-mix(in srgb, var(--shell-danger) 12%, var(--shell-card));
+  box-shadow: var(--shadow);
+  font-size: 11px;
+  animation: feedback-in var(--motion-disclosure) both;
+  border-color: color-mix(in srgb, var(--shell-danger) 65%, var(--shell-border));
+}
+
+.opensketch-app .loading-screen {
+  display: grid;
+  height: 100%;
+  place-content: center;
+  justify-items: center;
+  gap: 13px;
+  color: var(--shell-muted);
+  background: var(--shell-bg);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.opensketch-app .loading-mark {
+  width: 39px;
+  height: 39px;
+  border: 2px solid #bad0c9;
+  border-top-color: var(--shell-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  border-color: color-mix(in srgb, var(--shell-accent) 24%, transparent);
+}
+
+.project-conflict-notice {
+  position: fixed;
+  z-index: 190;
+  top: 72px;
+  left: 50%;
+  display: grid;
+  width: min(760px, calc(100vw - 36px));
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 16px;
+  border: 1px solid #d9a65f;
+  border-radius: 10px;
+  color: #65451f;
+  background: #fff8e9;
+  box-shadow: 0 16px 42px rgba(91, 62, 25, 0.2);
+  transform: translateX(-50%);
+  animation: feedback-in var(--motion-disclosure) both;
+}
+
+.project-conflict-copy {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: 0;
+}
+
+.project-conflict-copy > svg {
+  flex: none;
+  margin-top: 1px;
+  color: #b56d1d;
+}
+
+.project-conflict-copy strong {
+  display: block;
+  color: #5c3b16;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.project-conflict-copy p {
+  margin: 4px 0 0;
+  color: #7d6038;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.project-conflict-copy small {
+  display: block;
+  margin-top: 5px;
+  color: #9d3f31;
+  font-size: 10px;
+}
+
+.project-conflict-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.project-conflict-actions .button {
+  min-height: 32px;
+  padding-inline: 10px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.project-conflict-actions .button.secondary {
+  border-color: #d8bd91;
+  color: #76572e;
+  background: rgba(255, 255, 255, 0.58);
+}
+
+.project-conflict-actions .button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+@media (max-width: 680px) {
+  .project-conflict-notice {
+    top: 58px;
+    width: calc(100vw - 24px);
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .project-conflict-actions {
+    justify-content: stretch;
+  }
+
+  .project-conflict-actions .button {
+    flex: 1;
+  }
+}
+
+.project-save-error {
+  align-items: start;
+}
+
+.project-save-error strong {
+  display: block;
+  margin-bottom: 2px;
+}

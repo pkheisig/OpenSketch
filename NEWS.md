@@ -10,8 +10,11 @@
 - Converted OpenSketch into a static, browser-native GitHub Pages application
   while preserving the version-1 `.OpenSketch` project format and editor
   behavior.
-- Added a repository-base-aware Vite build, complete offline PWA cache, and
-  automated test/build/deploy workflow for `main`.
+- Added a repository-base-aware Vite build, an offline app shell with explicit
+  complete-library preparation, and an automated test/build/deploy workflow for
+  `main`.
+- Added durable IndexedDB saved templates with transactional legacy migration
+  and actionable browser-storage errors.
 - Added production-path, offline reload, and portable-project round-trip
   regression coverage.
 - Added the deterministic, public-domain-only NIH BioArt synchronization and
@@ -26,5 +29,10 @@
 - Added scientific typography controls, gradient-aware tint/saturation/brightness
   adjustments, project descriptions, keyboard-safe dialogs, and stricter project
   and upload validation.
+- Added deterministic PDF mappings for every selectable editor font, including
+  the documented Georgia-to-Noto Serif equivalent, and removed the default
+  human document-author attribution from PDF exports.
 - Added relevance-ranked biological search, late-loading font metric correction,
   and a verified portable example project with provenance-rich SVG output.
+- Added fail-closed validation for portable project bounds, Fabric scene
+  structure, connector metadata, and embedded media before import persistence.

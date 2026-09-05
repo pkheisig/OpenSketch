@@ -1,0 +1,28 @@
+/* Standalone page ownership. Hosted OpenSketch modules receive a mount node. */
+
+html {
+  width: 100%;
+  min-width: 900px;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  width: 100%;
+  min-width: 900px;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+#root {
+  width: 100%;
+  min-width: 900px;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+}

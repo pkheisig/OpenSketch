@@ -29,7 +29,7 @@ installation, or application server is required.
 - Search and reuse thousands of bundled biological and laboratory illustrations.
 - Add text, shapes, arrows, inhibitors, connectors, and imported media.
 - Arrange, group, style, rotate, align, and layer objects on a freeform canvas.
-- Organize local projects in folders and reopen them offline.
+- Organize local projects in folders, save reusable templates, and reopen them offline.
 - Export editable SVG and PDF, high-resolution PNG, or portable `.OpenSketch`
   project files.
 
@@ -38,24 +38,33 @@ installation, or application server is required.
 Projects, settings, and imported media stay in your browser. OpenSketch has no
 account system, analytics, telemetry, or project-upload service. Export important
 work as an `.OpenSketch` file for backup, especially before clearing browser data.
-After the first complete visit, the installable web app can reopen offline.
+After the first visit, the installable web app can reopen its editor shell offline.
+Use the Assets panel's **Prepare offline library** action when the complete bundled
+illustration library is needed offline; this is an explicit, large download rather
+than an automatic first-visit download.
 
 ## Open artwork and software
 
 The bundled library includes public-domain and openly licensed artwork from
 NIAID NIH BioArt, SciDraw, the Arcadia Science Free organism illustration
 library, BioIcons, and Servier Medical Art. Every asset retains its original
-source, author, and license metadata; exports preserve that provenance.
+source, author, and license metadata; exports preserve that provenance. If a
+downstream figure tool strips embedded metadata, use the Export dialog's
+readable credits download as a sidecar.
 
 OpenSketch itself is licensed under
-[AGPL-3.0-or-later](LICENSE). Artwork keeps its original license and is not
-relicensed as part of the software.
+[AGPL-3.0-only](LICENSE). Artwork keeps its original license and is not
+relicensed as part of the software. External contributions are subject to the
+additional contributor license and patent grants in
+[`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## Project links
 
 - [Contributor guide](CONTRIBUTING.md)
 - [Architecture](docs/architecture.md)
+- [WebMCP judge and architecture guide](docs/webmcp.md)
 - [Asset and licensing pipeline](docs/asset-pipeline.md)
+- [Deployment variants](docs/deployment.md)
 - [Security policy](SECURITY.md)
 - [Citation metadata](CITATION.cff)
 

@@ -11,6 +11,7 @@ import {
 import { createPortal } from "react-dom";
 import { Check, ChevronDown } from "lucide-react";
 import { MotionPresence } from "@/components/MotionPresence";
+import { useOpenSketchPortalRoot } from "@/application/hostServices";
 
 export interface UiSelectOption<T extends string | number> {
   value: T;
@@ -44,6 +45,7 @@ export function UiSelect<T extends string | number>({
   className = "",
   disabled = false
 }: UiSelectProps<T>) {
+  const portalRoot = useOpenSketchPortalRoot();
   const id = useId();
   const triggerRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -279,7 +281,7 @@ export function UiSelect<T extends string | number>({
               ))}
             </div>
           </MotionPresence>,
-          document.body
+          portalRoot ?? document.body
         )}
     </div>
   );

@@ -2,10 +2,13 @@
   "name": "@workspace/web",
   "version": "0.1.0",
   "private": true,
+  "license": "AGPL-3.0-only",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "build:module": "tsc --noEmit && vite build --mode module",
+    "build:release-pwa": "tsc --noEmit && vite build --mode release-pwa",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit"
   },

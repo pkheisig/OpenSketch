@@ -1,0 +1,14 @@
+{
+  "fixture": "historical-cancer-immunity-cycle",
+  "status": "negative-evidence",
+  "historicalValidation": {
+    "pass": true,
+    "note": "Legacy baseline accepted a schematic ellipse cycle with hard-coded coordinates and no applied layout plan."
+  },
+  "correctedValidation": {
+    "pass": false,
+    "requiredFinding": "out_of_bounds"
+  },
+  "sourceUrls": ["https://www.biorxiv.org/", "https://www.nih.gov/"],
+  "artifactPolicy": "Keep source URLs and validation facts; do not copy external figure binaries into the repository."
+}

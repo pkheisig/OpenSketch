@@ -62,7 +62,7 @@ import { ColorPalettePicker } from "@/components/ColorPalettePicker";
 import { CanvasRulers } from "@/components/CanvasRulers";
 import { MotionPresence } from "@/components/MotionPresence";
 import { UiSelect } from "@/components/UiSelect";
-import { useEditor } from "@/editor/EditorContext";
+import { useEditorFields } from "@/editor/editorHooks";
 import { isManualGroup } from "@/editor/grouping";
 import {
   captureZoomAnchor,
@@ -80,7 +80,7 @@ import {
 } from "@/editor/creationDrag";
 import { elementStyleKey } from "@/editor/elementStyles";
 import { loadAssetFavorites, toggleAssetFavorite } from "@/editor/assetFavorites";
-import { loadAssetTemplates, TEMPLATE_DRAG_TYPE } from "@/editor/assetTemplates";
+import { TEMPLATE_DRAG_TYPE } from "@/editor/assetTemplates";
 import { CURSOR_GRABBING } from "@/editor/cursors";
 import { importedMediaFilesFromDataTransfer } from "@/editor/clipboardImport";
 import type { Point } from "@/editor/geometry";
@@ -89,7 +89,7 @@ import {
   IMPORTED_MEDIA_DRAG_TYPE,
   parseAssetDragPayload
 } from "@/editor/assetDrag";
-import { getImportedMedia } from "@/persistence/database";
+import { useOpenSketchHostServices, useOpenSketchPortalRoot } from "@/application/hostServices";
 
 interface StoredViewport {
   zoom: number;
@@ -129,6 +129,7 @@ function CanvasContextMenu({
   "aria-hidden"?: boolean;
   style?: CSSProperties;
 }) {
+  const portalRoot = useOpenSketchPortalRoot();
   const menuRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ left: x, top: y });
 
@@ -209,14 +210,17 @@ function CanvasContextMenu({
         </button>
       ))}
     </div>,
-    document.body
+    portalRoot ?? document.body
   );
 }
 
-function storedViewport(projectId: string): StoredViewport | null {
+function storedViewport(
+  projectId: string,
+  getItem: (key: string) => string | null
+): StoredViewport | null {
   try {
     const value = JSON.parse(
-      localStorage.getItem(`OpenSketch:viewport:${projectId}`) ?? "null"
+      getItem(`OpenSketch:viewport:${projectId}`) ?? "null"
     ) as Partial<StoredViewport> | null;
     if (
       !value ||
@@ -237,7 +241,48 @@ function storedViewport(projectId: string): StoredViewport | null {
 }
 
 export function CanvasWorkspace() {
-  const editor = useEditor();
+  const services = useOpenSketchHostServices();
+  const editor = useEditorFields([
+    "projectId",
+    "canvas",
+    "canvasReady",
+    "selection",
+    "editingGroup",
+    "zoom",
+    "fitRequest",
+    "canvasSettings",
+    "autoEditEnabled",
+    "creationTool",
+    "creationDefaults",
+    "setCanvasElement",
+    "setCanvasSettings",
+    "setAutoEditEnabled",
+    "setCreationDefaults",
+    "placeCreationTool",
+    "placeCreation",
+    "addAsset",
+    "addTemplate",
+    "addImportedMedia",
+    "importMedia",
+    "deleteSelection",
+    "duplicateSelection",
+    "saveSelectionAsTemplate",
+    "copySelectionToClipboard",
+    "pasteSelection",
+    "groupSelection",
+    "ungroupSelection",
+    "arrange",
+    "align",
+    "distribute",
+    "flip",
+    "setObject",
+    "saveSelectionStyle",
+    "resetSelectionStyle",
+    "closeGroupEdit",
+    "setZoom",
+    "previewZoom",
+    "fitCanvas"
+  ]);
   const {
     setCanvasElement,
     canvas,
@@ -283,7 +328,7 @@ export function CanvasWorkspace() {
   const [viewportReady, setViewportReady] = useState(false);
   const [rulerVisible, setRulerVisible] = useState(() => {
     try {
-      return localStorage.getItem(RULER_VISIBILITY_KEY) !== "false";
+      return services.preferences.get(RULER_VISIBILITY_KEY) !== "false";
     } catch {
       return true;
     }
@@ -396,14 +441,14 @@ export function CanvasWorkspace() {
       window.clearTimeout(viewportSaveTimer.current);
       viewportSaveTimer.current = window.setTimeout(() => {
         if (!pendingViewport.current) return;
-        localStorage.setItem(
+        services.preferences.set(
           `OpenSketch:viewport:${projectId}`,
           JSON.stringify(pendingViewport.current)
         );
         pendingViewport.current = null;
       }, 120);
     },
-    [projectId, zoom]
+    [projectId, services, zoom]
   );
 
   useLayoutEffect(() => {
@@ -412,7 +457,7 @@ export function CanvasWorkspace() {
     if (!host) return;
 
     if (!initialViewport.current) {
-      const saved = storedViewport(projectId);
+      const saved = storedViewport(projectId, services.preferences.get);
       const center = viewportCenterOffset();
       const fittedZoom = Math.max(
         0.1,
@@ -461,6 +506,7 @@ export function CanvasWorkspace() {
     fitRequest,
     projectId,
     queueViewportSave,
+    services,
     setZoom,
     viewportCenterOffset,
     zoom
@@ -515,13 +561,13 @@ export function CanvasWorkspace() {
     () => () => {
       window.clearTimeout(viewportSaveTimer.current);
       if (pendingViewport.current) {
-        localStorage.setItem(
+        services.preferences.set(
           `OpenSketch:viewport:${projectId}`,
           JSON.stringify(pendingViewport.current)
         );
       }
     },
-    [projectId]
+    [projectId, services]
   );
 
   useEffect(() => {
@@ -648,10 +694,12 @@ export function CanvasWorkspace() {
     if (encoded) {
       const data = parseAssetDragPayload(encoded);
       if (data) {
-        void import("@/assets/manifest").then(({ assetManifest }) => {
-          const family = assetManifest.families.find((item) => item.familyId === data.familyId);
+        void services.assets.getManifest().then((manifest) => {
+          const family = manifest.families.find((item) => item.familyId === data.familyId);
           const variant = family?.variants.find((item) => item.id === data.variantId);
-          if (family && variant) void editor.addAsset(family, variant, point);
+          if (family && variant) {
+            void editor.addAsset(family, services.assets.resolveVariant(family, variant), point);
+          }
         });
       }
       return;
@@ -678,15 +726,19 @@ export function CanvasWorkspace() {
     }
     const importId = event.dataTransfer.getData(IMPORTED_MEDIA_DRAG_TYPE);
     if (importId) {
-      void getImportedMedia(importId).then((media) => {
+      void services.importedMedia.get(importId).then((media) => {
         if (media) void editor.addImportedMedia(media, point);
       });
       return;
     }
     const templateId = event.dataTransfer.getData(TEMPLATE_DRAG_TYPE);
     if (templateId) {
-      const template = loadAssetTemplates().find((item) => item.id === templateId);
-      if (template) void editor.addTemplate(template, point);
+      void services.templates
+        .get(templateId)
+        .then((template) => {
+          if (template) void editor.addTemplate(template, point);
+        })
+        .catch(() => undefined);
       return;
     }
     const files = importedMediaFilesFromDataTransfer(event.dataTransfer);
@@ -928,7 +980,7 @@ export function CanvasWorkspace() {
     setRulerVisible((current) => {
       const next = !current;
       try {
-        localStorage.setItem(RULER_VISIBILITY_KEY, String(next));
+        services.preferences.set(RULER_VISIBILITY_KEY, String(next));
       } catch {
         // The ruler can still be toggled for this session when storage is unavailable.
       }
@@ -978,7 +1030,9 @@ export function CanvasWorkspace() {
       objects.length === 1 && objects[0].OpenSketchType === "nih-asset"
         ? objects[0].familyId
         : undefined;
-    const assetIsFavorite = assetFamilyId ? loadAssetFavorites().has(assetFamilyId) : false;
+    const assetIsFavorite = assetFamilyId
+      ? loadAssetFavorites(services.preferences.storage).has(assetFamilyId)
+      : false;
     const actions: ContextMenuAction[] = [
       {
         label: "Cut",
@@ -1045,7 +1099,7 @@ export function CanvasWorkspace() {
           label: assetIsFavorite ? "Remove from favorites" : "Add to favorites",
           icon: <Heart size={15} fill={assetIsFavorite ? "currentColor" : "none"} />,
           action: () => {
-            toggleAssetFavorite(assetFamilyId);
+            toggleAssetFavorite(assetFamilyId, services.preferences.storage);
           }
         });
       }

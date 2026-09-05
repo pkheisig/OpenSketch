@@ -1,8 +1,8 @@
 import {
-  migrateProject,
   normalizeProjectMedia,
   PROJECT_STORAGE_LIMITS,
   rehydrateProjectScene,
+  migrateProjectForLoad,
   type PortableProject,
   type ProjectRecord
 } from "@workspace/editor-core";
@@ -85,6 +85,25 @@ export function supportsProjectDirectory(): boolean {
   return typeof (window as DirectoryPickerWindow).showDirectoryPicker === "function";
 }
 
+export interface ProjectLoadResult {
+  project: ProjectRecord;
+  identityRepaired: boolean;
+  identityWarnings: string[];
+}
+
+/** Validate a stored project while repairing legacy scene identity before Fabric sees it. */
+export function normalizeProjectForLoad(project: ProjectRecord): ProjectLoadResult {
+  const loaded = migrateProjectForLoad({
+    ...project,
+    objects: rehydrateProjectScene(project.objects, project.uploads)
+  });
+  return {
+    project: { ...project, ...loaded.project },
+    identityRepaired: loaded.identityRepaired,
+    identityWarnings: loaded.identityWarnings
+  };
+}
+
 export async function saveProjectToDirectory(project: ProjectLike): Promise<boolean> {
   const picker = (window as DirectoryPickerWindow).showDirectoryPicker;
   if (!picker) {
@@ -120,7 +139,7 @@ function readFileText(file: File): Promise<string> {
   });
 }
 
-export async function readProjectFile(file: File): Promise<ProjectRecord> {
+export async function readProjectFileWithWarnings(file: File): Promise<ProjectLoadResult> {
   if (file.size > PROJECT_STORAGE_LIMITS.maxPortableProjectBytes) {
     throw new Error("This project is larger than the 100 MiB portable-project limit.");
   }
@@ -130,17 +149,26 @@ export async function readProjectFile(file: File): Promise<ProjectRecord> {
   } catch {
     throw new Error("The project file contains invalid JSON.");
   }
-  const migrated = migrateProject(parsed);
-  const imported: ProjectRecord = {
-    ...migrated,
-    id: crypto.randomUUID(),
-    name: migrated.name,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    revision: 0
+  const migrated = migrateProjectForLoad(parsed);
+  const now = new Date().toISOString();
+  const result = {
+    project: {
+      ...migrated.project,
+      id: crypto.randomUUID(),
+      name: migrated.project.name,
+      createdAt: now,
+      updatedAt: now,
+      revision: 0
+    },
+    identityRepaired: migrated.identityRepaired,
+    identityWarnings: migrated.identityWarnings
   };
-  assertPortableProjectWithinBudget(imported);
-  return imported;
+  assertPortableProjectWithinBudget(result.project);
+  return result;
+}
+
+export async function readProjectFile(file: File): Promise<ProjectRecord> {
+  return (await readProjectFileWithWarnings(file)).project;
 }
 
 export function downloadBlob(blob: Blob, filename: string): void {

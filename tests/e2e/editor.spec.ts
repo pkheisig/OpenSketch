@@ -1,7 +1,64 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
-import { PDFDocument } from "pdf-lib";
+import { decodePDFRawStream, PDFDocument, PDFRawStream } from "pdf-lib";
+import { normalizePublicBase } from "../../apps/web/src/deploymentBase";
+
+const publicBase = normalizePublicBase(process.env.VITE_PUBLIC_BASE);
+
+function decodeXml(value: string): string {
+  return value.replace(/&(quot|apos|lt|gt|amp);/g, (_, entity: string) => {
+    const values: Record<string, string> = {
+      quot: '"',
+      apos: "'",
+      lt: "<",
+      gt: ">",
+      amp: "&"
+    };
+    return values[entity];
+  });
+}
+
+function svgExportMetadata(svg: string): { provenance: { version: number; assets: unknown[] } } {
+  const encoded = svg.match(/<metadata>([\s\S]*?)<\/metadata>/)?.[1];
+  if (!encoded) throw new Error("The SVG export has no metadata element.");
+  return JSON.parse(decodeXml(encoded)) as {
+    provenance: { version: number; assets: unknown[] };
+  };
+}
+
+function pngProvenance(bytes: Buffer): unknown {
+  let offset = 8;
+  while (offset + 12 <= bytes.length) {
+    const length = bytes.readUInt32BE(offset);
+    const type = bytes.toString("latin1", offset + 4, offset + 8);
+    const dataStart = offset + 8;
+    const dataEnd = dataStart + length;
+    if (dataEnd + 4 > bytes.length) throw new Error("The PNG export contains a truncated chunk.");
+    if (type === "iTXt") {
+      const keywordEnd = bytes.indexOf(0, dataStart);
+      const keyword = bytes.toString("utf8", dataStart, keywordEnd);
+      if (keyword === "OpenSketch:provenance") {
+        return JSON.parse(bytes.toString("utf8", keywordEnd + 5, dataEnd));
+      }
+    }
+    offset = dataEnd + 4;
+  }
+  throw new Error("The PNG export has no OpenSketch provenance metadata.");
+}
+
+function decodedPdfContentStreams(pdf: PDFDocument): string[] {
+  return pdf.context.enumerateIndirectObjects().flatMap(([, object]) => {
+    if (!(object instanceof PDFRawStream)) return [];
+    return [new TextDecoder("latin1").decode(decodePDFRawStream(object).decode())];
+  });
+}
+
+function decodedPdfTextStreams(pdf: PDFDocument): string[] {
+  return decodedPdfContentStreams(pdf).filter(
+    (stream) => stream.includes(" Tf") && stream.includes(" Tj")
+  );
+}
 
 async function selectUiOption(
   page: Page,
@@ -150,7 +207,10 @@ async function expectLayerCount(page: Page, count: number) {
 
 async function placeTool(page: Page, name: string | RegExp, xRatio = 0.5, yRatio = 0.5) {
   if (name === "Text") {
-    await page.getByRole("button", { name: "Text", exact: true }).click();
+    await page
+      .getByLabel("Editor tools")
+      .getByRole("button", { name: "Text", exact: true })
+      .click();
   } else if (name === "Line" || name === "Arrow") {
     const lineMenu = page.getByRole("menu", { name: "Line and arrow tools" });
     if (!(await lineMenu.isVisible().catch(() => false))) {
@@ -190,7 +250,7 @@ async function placeTool(page: Page, name: string | RegExp, xRatio = 0.5, yRatio
 test("@smoke never paints fallback asset sizing or uninitialized canvas geometry", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.evaluate(() => {
     const states: Array<{
       ready: string | null;
@@ -264,7 +324,7 @@ test("@smoke never paints fallback asset sizing or uninitialized canvas geometry
 test("@smoke keeps the canvas mounted during drag saves and restores the active project after reload", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle");
   await ensureLayersOpen(page);
@@ -330,7 +390,7 @@ test("@smoke keeps the canvas mounted during drag saves and restores the active 
 test("clears the text tool when another sidebar section or the page is clicked", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   const textTool = page.getByRole("button", { name: "Text", exact: true });
 
@@ -345,8 +405,56 @@ test("clears the text tool when another sidebar section or the page is clicked",
   await expect(textTool).toHaveAttribute("aria-pressed", "false");
 });
 
+test("debounces focused title saves and keeps blank titles loadable", async ({ page }) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "New figure" }).click();
+  const title = page.getByLabel("Document title");
+
+  await page.evaluate(() => {
+    const originalPut = IDBObjectStore.prototype.put;
+    let projectPuts = 0;
+    Object.defineProperty(window, "__opensketchProjectPutCount", {
+      configurable: true,
+      get: () => projectPuts
+    });
+    IDBObjectStore.prototype.put = new Proxy(originalPut, {
+      apply(target, thisArg, args) {
+        if ((thisArg as IDBObjectStore).name === "projects") projectPuts += 1;
+        return Reflect.apply(target, thisArg, args);
+      }
+    });
+  });
+
+  await title.fill("");
+  await title.pressSequentially("Draft figure");
+  await expect(page.locator('[data-save-state="saving"]')).toBeVisible();
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
+  expect(
+    await page.evaluate(
+      () =>
+        (window as typeof window & { __opensketchProjectPutCount?: number })
+          .__opensketchProjectPutCount
+    )
+  ).toBe(1);
+
+  await title.fill("   ");
+  await expect(page.locator('[data-save-state="saving"]')).toBeVisible();
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
+  expect(
+    await page.evaluate(
+      () =>
+        (window as typeof window & { __opensketchProjectPutCount?: number })
+          .__opensketchProjectPutCount
+    )
+  ).toBe(2);
+
+  await page.reload();
+  await expect(page.locator(".editor-shell")).toBeVisible();
+  await expect(page.getByLabel("Document title")).toHaveValue("Untitled figure");
+});
+
 test("rotates an object by dragging its rotation handle", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle");
   await page.getByRole("button", { name: "Edit", exact: true }).click();
@@ -380,7 +488,7 @@ test("rotates an object by dragging its rotation handle", async ({ page }) => {
 });
 
 test("resizes through the enlarged invisible control hitbox with a UI cursor", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle");
   await page.getByRole("button", { name: "Edit", exact: true }).click();
@@ -424,7 +532,7 @@ test("resizes through the enlarged invisible control hitbox with a UI cursor", a
 });
 
 test("inserts editable standard top-view labware", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("24 well plate top view");
 
@@ -448,7 +556,7 @@ test("inserts editable standard top-view labware", async ({ page }) => {
 });
 
 test("previews and inserts the selected top-view plate color variant", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("24 well plate top view");
 
@@ -497,7 +605,7 @@ test("previews and inserts the selected top-view plate color variant", async ({ 
 test("drags the chosen top-view plate variant preview instead of the default plate", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("24 well plate top view");
 
@@ -540,7 +648,7 @@ test("drags the chosen top-view plate variant preview instead of the default pla
 });
 
 test("uses the complete SVG selector bounds as its canvas hitbox", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await expect(page.locator(".upper-canvas")).toBeVisible();
   await page.evaluate(() => {
@@ -578,7 +686,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
     const url = new URL(request.url());
     if (!["127.0.0.1", "localhost"].includes(url.hostname)) externalRequests.push(request.url());
   });
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await expect(page.getByLabel("OpenSketch figure artboard")).toBeVisible();
 
@@ -631,6 +739,20 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   const svgPath = await svgDownload.path();
   expect(svgPath).not.toBeNull();
   const svg = await readFile(svgPath!, "utf8");
+  const svgMetadata = svgExportMetadata(svg);
+  expect(svgMetadata.provenance.version).toBe(1);
+  expect(svgMetadata.provenance.assets).toHaveLength(1);
+  const assetRecord = svgMetadata.provenance.assets[0] as {
+    assetId: string;
+    source: string;
+    author: string;
+    license: string;
+    credit: string;
+  };
+  expect(assetRecord.source).toMatch(/^https?:/);
+  expect(assetRecord.author).toBeTruthy();
+  expect(assetRecord.license).toBeTruthy();
+  expect(assetRecord.credit).toBeTruthy();
   expect(svg).toContain("<metadata>");
   expect(svg).toContain("Per-asset authorship");
   expect(svg).toContain("<rect");
@@ -649,6 +771,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   const physicalChunk = png.indexOf(Buffer.from("pHYs"));
   expect(physicalChunk).toBeGreaterThan(0);
   expect(png.readUInt32BE(physicalChunk + 4)).toBe(5906);
+  expect(pngProvenance(png)).toEqual(svgMetadata.provenance);
 
   await page.getByRole("button", { name: "Export" }).click();
   await page.getByRole("tab", { name: /PDF/ }).click();
@@ -659,13 +782,28 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   const pdfBytes = await readFile(pdfPath!);
   expect(pdfBytes.subarray(0, 5).toString()).toBe("%PDF-");
   expect(pdfBytes.toString("latin1")).toContain("/FontName /Source#20Sans#203");
+  expect(pdfBytes.toString("latin1")).toContain("/Producer (OpenSketch)");
+  expect(pdfBytes.toString("latin1")).not.toContain("/Producer (jsPDF");
   const pdf = await PDFDocument.load(pdfBytes);
   expect(pdf.getPageCount()).toBe(1);
   expect(pdf.getTitle()).toBe("Untitled figure");
-  expect(pdf.getAuthor()).toBe("Paul Heisig");
+  expect(pdf.getAuthor()).toBeUndefined();
   expect(pdf.getCreator()).toBe("OpenSketch");
+  expect(pdf.getSubject()).toContain(assetRecord.credit);
+  expect(pdfBytes.toString("utf8")).toContain("opensketch:provenanceManifest");
+  expect(pdfBytes.toString("utf8")).toContain(assetRecord.assetId);
   const pageSize = pdf.getPage(0).getSize();
   expect(pageSize.width).toBeGreaterThan(pageSize.height);
+
+  await page.getByRole("button", { name: "Export" }).click();
+  const creditsDownloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Download credits" }).click();
+  const creditsPath = await (await creditsDownloadPromise).path();
+  expect(creditsPath).not.toBeNull();
+  const credits = await readFile(creditsPath!, "utf8");
+  expect(credits).toContain(assetRecord.source);
+  expect(credits).toContain(assetRecord.author);
+  expect(credits).toContain(assetRecord.license);
 
   await page.getByRole("button", { name: "Back to projects" }).click();
   await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
@@ -709,7 +847,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
 });
 
 test("keeps the canvas preset label synchronized with its dimensions", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("button", { name: "Canvas size", exact: true }).click();
 
@@ -741,7 +879,7 @@ test("keeps the canvas preset label synchronized with its dimensions", async ({ 
 });
 
 test("builds and persists a styled object-attached connector", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
@@ -809,7 +947,7 @@ test("builds and persists a styled object-attached connector", async ({ page }) 
 });
 
 test("changes line ends between blunt and curved in the edit menu", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Line", 0.35, 0.5);
   await page.keyboard.press("ControlOrMeta+A");
@@ -836,7 +974,7 @@ test("changes line ends between blunt and curved in the edit menu", async ({ pag
 });
 
 test("extends a free line from one endpoint without scaling both dimensions", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Line", 0.32, 0.5);
 
@@ -850,8 +988,12 @@ test("extends a free line from one endpoint without scaling both dimensions", as
         request.onerror = () => reject(request.error);
       });
       const project = await new Promise<Record<string, any> | null>((resolve, reject) => {
-        const request = database.transaction("projects", "readonly").objectStore("projects").get(projectId);
-        request.onsuccess = () => resolve((request.result as Record<string, any> | undefined) ?? null);
+        const request = database
+          .transaction("projects", "readonly")
+          .objectStore("projects")
+          .get(projectId);
+        request.onsuccess = () =>
+          resolve((request.result as Record<string, any> | undefined) ?? null);
         request.onerror = () => reject(request.error);
       });
       database.close();
@@ -913,7 +1055,7 @@ test("extends a free line from one endpoint without scaling both dimensions", as
 test("places text and shapes from active tools and persists line creation defaults", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   const shapeMenu = page.getByRole("menu", { name: "Shape tools" });
@@ -1087,7 +1229,7 @@ test("places text from the first Shapes tool without blanking the editor", async
   const pageErrors: string[] = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
 
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await expect(page.getByRole("tab", { name: "Text", exact: true })).toHaveCount(0);
   await expect(page.locator(".shape-grid")).toHaveCount(0);
@@ -1114,7 +1256,7 @@ test("places text from the first Shapes tool without blanking the editor", async
 });
 
 test("shows only controls supported by each editor object type", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   const inspector = page.locator(".inspector-embedded");
 
@@ -1193,7 +1335,7 @@ test("shows only controls supported by each editor object type", async ({ page }
 test("optionally creates Text on an empty-artboard double-click and persists the preference", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("button", { name: "Canvas size" }).click();
 
@@ -1218,7 +1360,7 @@ test("optionally creates Text on an empty-artboard double-click and persists the
 test("double-clicking an existing text item edits it instead of creating another", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const textTool = page
@@ -1241,7 +1383,7 @@ test("double-clicking an existing text item edits it instead of creating another
 });
 
 test("preserves clipboard object size across repeated pastes", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.45, 0.45);
@@ -1267,7 +1409,7 @@ test("copies canvas objects to the system clipboard as PNG and SVG", async ({
 }) => {
   test.skip(browserName !== "chromium", "Clipboard image reads are only exposed by Chromium.");
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.5, 0.5);
 
@@ -1326,7 +1468,7 @@ test("copies canvas objects to the system clipboard as PNG and SVG", async ({
 });
 
 test("inserts assets from the sidebar at the reduced default size", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
   await page.getByRole("button", { name: "Insert T Cell", exact: true }).first().click();
@@ -1387,7 +1529,7 @@ test("keeps family variant previews normalized and drags the selected variant", 
     });
   };
 
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Activated Neutrophil");
   await expect(page.locator(".asset-card")).toHaveCount(1);
@@ -1438,7 +1580,7 @@ test("keeps family variant previews normalized and drags the selected variant", 
 });
 
 test("previews bundled variants and inserts nested-clip-path assets", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Immune Cell");
   const immuneCell = page
@@ -1541,7 +1683,7 @@ test("previews bundled variants and inserts nested-clip-path assets", async ({ p
 test("promotes a canvas asset variant to the Assets default only when styling is saved", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Immune Cell");
   const assetCard = page
@@ -1621,32 +1763,35 @@ test.describe("bundled NIH BioArt SVG compatibility", () => {
         "The browser-independent asset corpus only needs one pass."
       );
       test.setTimeout(60_000);
-      await page.goto("/");
-      const failures = await page.evaluate(async (items) => {
-        const { loadEditableSvg } = await import("/OpenSketch/src/editor/svg.ts");
-        const failed: Array<{ id: string; family: string; error: string }> = [];
-        for (let offset = 0; offset < items.length; offset += 24) {
-          const results = await Promise.all(
-            items.slice(offset, offset + 24).map(async (item) => {
-              try {
-                const response = await fetch(`/OpenSketch${item.assetPath}`);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const parsed = await loadEditableSvg(await response.text());
-                if (!parsed.objects.some(Boolean)) throw new Error("No editable objects");
-                return null;
-              } catch (reason) {
-                return { ...item, error: String(reason) };
-              }
-            })
-          );
-          failed.push(
-            ...results.filter((result): result is { id: string; family: string; error: string } =>
-              Boolean(result)
-            )
-          );
-        }
-        return failed;
-      }, variants);
+      await page.goto(publicBase);
+      const failures = await page.evaluate(
+        async ({ base, items }) => {
+          const { loadEditableSvg } = await import(`${base}src/editor/svg.ts`);
+          const failed: Array<{ id: string; family: string; error: string }> = [];
+          for (let offset = 0; offset < items.length; offset += 24) {
+            const results = await Promise.all(
+              items.slice(offset, offset + 24).map(async (item) => {
+                try {
+                  const response = await fetch(`${base}${item.assetPath.replace(/^\/+/, "")}`);
+                  if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                  const parsed = await loadEditableSvg(await response.text());
+                  if (!parsed.objects.some(Boolean)) throw new Error("No editable objects");
+                  return null;
+                } catch (reason) {
+                  return { ...item, error: String(reason) };
+                }
+              })
+            );
+            failed.push(
+              ...results.filter((result): result is { id: string; family: string; error: string } =>
+                Boolean(result)
+              )
+            );
+          }
+          return failed;
+        },
+        { base: publicBase, items: variants }
+      );
 
       expect(failures).toEqual([]);
     });
@@ -1656,7 +1801,7 @@ test.describe("bundled NIH BioArt SVG compatibility", () => {
 test("uses accessible in-app dropdowns with keyboard and outside-click behavior", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("button", { name: "Canvas size" }).click();
 
@@ -1715,8 +1860,28 @@ test("uses accessible in-app dropdowns with keyboard and outside-click behavior"
   await expect(page.getByLabel("Accessible description")).toHaveCount(0);
 });
 
+test("prevents PNG export above the browser raster budget", async ({ page }) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "Canvas size", exact: true }).click();
+  await selectUiOption(page, "Preset", "A4 portrait");
+  await page.getByRole("button", { name: "Canvas size", exact: true }).click();
+
+  await page.getByRole("button", { name: "Export", exact: true }).click();
+  await page.getByRole("tab", { name: /PNG/ }).click();
+  const outputDpi = page.getByRole("combobox", { name: "Output DPI" });
+  await outputDpi.click();
+  const unavailableDpi = page.getByRole("option", { name: "1200 DPI" });
+  await expect(unavailableDpi).toBeDisabled();
+  await page.keyboard.press("Escape");
+
+  await expect(page.getByRole("button", { name: "Export PNG" })).toBeDisabled();
+  await expect(page.getByRole("alert")).toContainText("9920 × 14032 pixels");
+  await expect(page.getByRole("alert")).toContainText("SVG/PDF");
+});
+
 test("offers selection-aware canvas context actions", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
@@ -1782,7 +1947,7 @@ test("offers selection-aware canvas context actions", async ({ page }) => {
 });
 
 test("adds a selected asset to Favorites from its context menu", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
   await page.getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true }).click();
@@ -1803,7 +1968,7 @@ test("adds a selected asset to Favorites from its context menu", async ({ page }
 });
 
 test("saves and resets per-element styling for future sidebar shapes", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
 
@@ -1847,7 +2012,7 @@ test("saves and resets per-element styling for future sidebar shapes", async ({ 
 });
 
 test("resizes text by changing font size instead of stretching its glyphs", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   await placeTool(page, "Text", 0.5, 0.45);
@@ -1908,7 +2073,7 @@ test("resizes text by changing font size instead of stretching its glyphs", asyn
 });
 
 test("saved text styling overrides later new-text defaults", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const firstPoint = await artboardPoint(page, 0.32, 0.45);
@@ -1951,7 +2116,7 @@ test("saved text styling overrides later new-text defaults", async ({ page }) =>
 });
 
 test("ungroups exactly one level of a nested group hierarchy", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.3, 0.5);
@@ -1988,7 +2153,7 @@ test("ungroups exactly one level of a nested group hierarchy", async ({ page }) 
 });
 
 test("treats an imported SVG as one atomic canvas object", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Imports", exact: true }).click();
   await page
@@ -2009,7 +2174,7 @@ test("treats an imported SVG as one atomic canvas object", async ({ page }) => {
 });
 
 test("enters imported SVG vector editing and selects a nested part", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Imports", exact: true }).click();
   await page
@@ -2031,7 +2196,7 @@ test("enters imported SVG vector editing and selects a nested part", async ({ pa
 });
 
 test("double-clicks through overlapping objects and into grouped children", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.5, 0.5);
   await placeTool(page, "Circle", 0.5, 0.5);
@@ -2096,7 +2261,7 @@ test("double-clicks through overlapping objects and into grouped children", asyn
 });
 
 test("double-clicks into nested groups one hierarchy level at a time", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.4, 0.5);
   await placeTool(page, "Circle", 0.4, 0.5);
@@ -2152,7 +2317,7 @@ test("double-clicks into nested groups one hierarchy level at a time", async ({ 
 });
 
 test("double-clicking outside exits one group hierarchy level", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
   await placeTool(page, "Circle", 0.35, 0.5);
@@ -2179,7 +2344,7 @@ test("double-clicking outside exits one group hierarchy level", async ({ page })
 });
 
 test("edits a group with single-click and modifier multi-selection", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.3, 0.5);
   await placeTool(page, "Circle", 0.5, 0.5);
@@ -2219,7 +2384,7 @@ test("edits a group with single-click and modifier multi-selection", async ({ pa
 });
 
 test("keeps a group created inside group editing nested at one canvas layer", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.3, 0.5);
   await placeTool(page, "Circle", 0.5, 0.5);
@@ -2246,7 +2411,7 @@ test("keeps a group created inside group editing nested at one canvas layer", as
 });
 
 test("adds independent canvas objects to the selection with Ctrl-click", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
   await placeTool(page, "Circle", 0.65, 0.5);
@@ -2263,7 +2428,7 @@ test("adds independent canvas objects to the selection with Ctrl-click", async (
 });
 
 test("keeps the edit panel open while changing the selected object", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
   await placeTool(page, "Circle", 0.65, 0.5);
@@ -2287,7 +2452,7 @@ test("keeps the edit panel open while changing the selected object", async ({ pa
 });
 
 test("preserves nested group dimensions when duplicating by modifier-drag", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.4, 0.5);
   await placeTool(page, "Circle", 0.4, 0.5);
@@ -2351,7 +2516,7 @@ test("preserves nested group dimensions when duplicating by modifier-drag", asyn
 });
 
 test("shows every visible layer of a grouped stack in the project preview", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
 
@@ -2388,7 +2553,7 @@ test("shows every visible layer of a grouped stack in the project preview", asyn
 });
 
 test("moves objects exactly one layer through the canvas context menu", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.25, 0.5);
@@ -2419,7 +2584,7 @@ test("moves objects exactly one layer through the canvas context menu", async ({
 });
 
 test("keeps grouped layers nested and preserves their outer stack slot", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
 
@@ -2445,7 +2610,7 @@ test("keeps grouped layers nested and preserves their outer stack slot", async (
 test("keeps front and back actions at the outer canvas boundaries around groups", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
 
@@ -2474,7 +2639,7 @@ test("keeps front and back actions at the outer canvas boundaries around groups"
 test("renders project previews with Fabric and upgrades legacy raster thumbnails", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Dentritic");
   await page.waitForTimeout(250);
@@ -2555,7 +2720,7 @@ test("renders project previews with Fabric and upgrades legacy raster thumbnails
 });
 
 test("@smoke supports visible and native navigation for new figures", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   const landingBrand = page.locator(".home-header .brand");
   await expect(landingBrand.locator(".brand-mark")).toHaveAttribute("src", /favicon\.svg$/);
   await expect(landingBrand.locator("span")).toHaveText("OpenSketch");
@@ -2647,7 +2812,7 @@ test("@smoke supports visible and native navigation for new figures", async ({ p
 });
 
 test("@smoke exits the editor with Escape", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await expect(page.getByLabel("OpenSketch figure artboard")).toBeVisible();
 
@@ -2667,7 +2832,7 @@ test("archives projects and organizes newest-first project rows with folders", a
     await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
   };
 
-  await page.goto("/");
+  await page.goto("./");
   await createNamedProject("Alpha");
   await createNamedProject("Beta");
 
@@ -2745,7 +2910,7 @@ test("archives projects and organizes newest-first project rows with folders", a
 });
 
 test("previews canvas zoom without resizing its backing stores or the page", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   const workspace = page.locator(".workspace-scroll");
 
@@ -2807,7 +2972,7 @@ test("previews canvas zoom without resizing its backing stores or the page", asy
 });
 
 test("zooms around the cursor instead of the artboard center", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   const workspace = page.locator(".workspace-scroll");
   const stage = workspace.locator(".artboard-stage");
@@ -2841,7 +3006,7 @@ test("zooms around the cursor instead of the artboard center", async ({ page }) 
 });
 
 test("rerenders vector artwork at the current zoom resolution", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
   await page.getByRole("button", { name: "Insert T Cell", exact: true }).first().click();
@@ -2877,7 +3042,7 @@ test("rerenders vector artwork at the current zoom resolution", async ({ page })
 });
 
 test("keeps mirror controls out of the header and toggles grid and rulers", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const workspace = page.locator(".workspace-scroll");
@@ -2950,7 +3115,7 @@ test("keeps mirror controls out of the header and toggles grid and rulers", asyn
 });
 
 test("centers a new artboard and restores each project's zoom and pan", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const viewportGeometry = async () => {
@@ -3012,7 +3177,7 @@ test("centers a new artboard and restores each project's zoom and pan", async ({
 });
 
 test("shows alignment guides only while an object is moving", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
@@ -3045,7 +3210,7 @@ test("shows alignment guides only while an object is moving", async ({ page }) =
 });
 
 test("duplicates with modifier-drag and disables snapping while Alt is held", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
@@ -3103,7 +3268,7 @@ test("duplicates with modifier-drag and disables snapping while Alt is held", as
 });
 
 test("preserves an asset's rendered size when duplicating by modifier-drag", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
   await page.getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true }).click();
@@ -3146,7 +3311,7 @@ test("preserves an asset's rendered size when duplicating by modifier-drag", asy
 });
 
 test("documents large cross-platform shortcuts and accepts Ctrl commands", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("button", { name: "Help" }).click();
 
@@ -3191,7 +3356,7 @@ test("documents large cross-platform shortcuts and accepts Ctrl commands", async
 test.skip("selects across the artboard and previews collapsed sidebars without shifting the canvas", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
@@ -3404,7 +3569,7 @@ test.skip("selects across the artboard and previews collapsed sidebars without s
 });
 
 test("fills the asset sidebar with the merged scientific catalog", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const insertTabs = page.getByRole("tab");
@@ -3510,7 +3675,7 @@ test("fills the asset sidebar with the merged scientific catalog", async ({ page
 });
 
 test("reveals asset filters and filters catalog metadata", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const filterToggle = page.getByRole("button", { name: "Toggle asset filters" });
@@ -3572,7 +3737,7 @@ test("rapidly scrolls the complete symbols catalog without leaving blank thumbna
     }
   });
 
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   collectAssetRequests = true;
   await page.getByRole("button", { name: "Symbols & diagrams", exact: true }).click();
@@ -3648,7 +3813,7 @@ test("rapidly scrolls the complete symbols catalog without leaving blank thumbna
 test("uses title-free insert panels and supports the expanded offline font catalog", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   await expect(page.getByRole("heading", { name: "Illustration library" })).toHaveCount(0);
@@ -3683,8 +3848,897 @@ test("uses title-free insert panels and supports the expanded offline font catal
   await expect(page.getByText(/Imported SVGs are sanitized locally/)).toHaveCount(0);
 });
 
+test("embeds every selectable editor font in PDF output", async ({ page }) => {
+  test.setTimeout(120_000);
+  const fonts = [
+    "Source Sans 3",
+    "Inter",
+    "Atkinson Hyperlegible",
+    "IBM Plex Sans",
+    "Lato",
+    "Noto Sans",
+    "Source Serif 4",
+    "IBM Plex Serif",
+    "Merriweather",
+    "Noto Serif",
+    "STIX Two Text",
+    "Roboto Mono",
+    "Georgia"
+  ];
+
+  await page.goto("./");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+
+  const missingBrowserFaces = await page.evaluate(async (families) => {
+    const coverageSamples: Record<string, string> = {
+      "Atkinson Hyperlegible": "Zażółć gęślą",
+      "IBM Plex Sans": "Γειά σου кириллица",
+      "IBM Plex Serif": "Жизнь науки",
+      Lato: "Zażółć gęślą",
+      Merriweather: "Жизнь науки",
+      "Noto Sans": "Γειά σου кириллица नमस्ते",
+      "Noto Serif": "Γειά σου кириллица",
+      "Roboto Mono": "Γειά σου кириллица"
+    };
+    const faces = families
+      .filter((family) => family !== "Georgia")
+      .flatMap((family) =>
+        (["normal", "italic"] as const).flatMap((style) =>
+          ([400, 600, 700] as const).map((weight) => ({ family, style, weight }))
+        )
+      );
+    return (
+      await Promise.all(
+        faces.map(async ({ family, style, weight }) => {
+          const descriptor = `${style} ${weight} 16px "${family}"`;
+          await document.fonts.load(descriptor, coverageSamples[family] ?? "OpenSketch");
+          return document.fonts.check(descriptor) ? null : descriptor;
+        })
+      )
+    ).filter((descriptor): descriptor is string => descriptor !== null);
+  }, fonts);
+  expect(missingBrowserFaces).toEqual([]);
+
+  for (const [index, font] of fonts.entries()) {
+    await placeTool(page, "Text", index % 2 === 0 ? 0.25 : 0.75, 0.1 + index * 0.06);
+    await page.keyboard.type(`PDF ${font}`);
+    await page.keyboard.press("Escape");
+    await ensureEditorOpen(page);
+    await selectUiOption(page, "Font", font);
+    await selectUiOption(page, "Weight", index % 2 === 0 ? "Regular" : "Bold");
+    if (index === 2) {
+      const italic = page.locator(".inspector-embedded .segmented-icons.text-style button").first();
+      await italic.click();
+      await expect(italic).toHaveClass(/active/);
+    }
+  }
+
+  await page.getByRole("button", { name: "Export" }).click();
+  await page.getByRole("tab", { name: /PDF/ }).click();
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export PDF" }).click();
+  const path = await (await downloadPromise).path();
+  expect(path).not.toBeNull();
+  const pdfBytes = await readFile(path!);
+  const rawPdf = pdfBytes.toString("latin1");
+  const expectedFamilies = new Set(fonts.map((font) => (font === "Georgia" ? "Noto Serif" : font)));
+  for (const family of expectedFamilies) {
+    const pdfName = family.replace(/ /g, "#20");
+    expect(rawPdf).toContain(`/BaseFont /${pdfName}`);
+  }
+  expect(rawPdf).not.toContain("/BaseFont /Times");
+});
+
+test("embeds every selectable editor font face in PDF resources", async ({ page }) => {
+  test.setTimeout(180_000);
+  const fonts = [
+    "Source Sans 3",
+    "Inter",
+    "Atkinson Hyperlegible",
+    "IBM Plex Sans",
+    "Lato",
+    "Noto Sans",
+    "Source Serif 4",
+    "IBM Plex Serif",
+    "Merriweather",
+    "Noto Serif",
+    "STIX Two Text",
+    "Roboto Mono",
+    "Georgia"
+  ];
+
+  await page.goto("./");
+  const rawPdf = await page.evaluate(async (families) => {
+    const combinations = [
+      { weight: 400, style: "normal" },
+      { weight: 600, style: "normal" },
+      { weight: 700, style: "normal" },
+      { weight: 400, style: "italic" },
+      { weight: 600, style: "italic" },
+      { weight: 700, style: "italic" }
+    ];
+    const textNodes = families
+      .flatMap((family, familyIndex) =>
+        combinations.map(({ weight, style }, combinationIndex) => {
+          const y = 24 + (familyIndex * combinations.length + combinationIndex) * 18;
+          return `<text x="12" y="${y}" font-family="${family}" font-size="12" font-style="${style}" font-weight="${weight}">${family} ${weight} ${style}</text>`;
+        })
+      )
+      .join("");
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1450">${textNodes}</svg>`;
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const blob = await svgToPdfBlob(svg, 900, 1450, {
+      title: "PDF font face matrix",
+      description: "Every selectable OpenSketch text font face",
+      credit: "OpenSketch",
+      provenance: { version: 1, assets: [] }
+    });
+    return new TextDecoder("latin1").decode(await blob.arrayBuffer());
+  }, fonts);
+
+  const expectedFamilies = new Set(fonts.map((font) => (font === "Georgia" ? "Noto Serif" : font)));
+  for (const family of expectedFamilies) {
+    const pdfName = family.replace(/ /g, "#20");
+    const resourceCount = rawPdf.split(`/BaseFont /${pdfName}`).length - 1;
+    expect(resourceCount, `${family} face resources`).toBeGreaterThanOrEqual(6);
+  }
+  expect(rawPdf).not.toContain("/BaseFont /Times");
+});
+
+test("writes an explicit PDF document author when supplied", async ({ page }) => {
+  await page.goto("./");
+  const encodedPdf = await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const blob = await svgToPdfBlob(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><rect width="600" height="240" fill="white" /></svg>',
+      600,
+      240,
+      {
+        title: "Explicit author",
+        description: "PDF author metadata",
+        credit: "OpenSketch",
+        author: "Ada & Research",
+        provenance: { version: 1 as const, assets: [] }
+      }
+    );
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    let binary = "";
+    for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+    }
+    return btoa(binary);
+  });
+
+  const pdf = await PDFDocument.load(Buffer.from(encodedPdf, "base64"));
+  expect(pdf.getAuthor()).toBe("Ada & Research");
+});
+
+test("materializes imported PDF text styles and rejects unsafe glyph coverage", async ({
+  page
+}) => {
+  await page.goto("./");
+  const result = await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const metadata = {
+      title: "PDF text safety",
+      description: "Imported text style and glyph safety",
+      credit: "OpenSketch",
+      provenance: { version: 1 as const, assets: [] }
+    };
+    const render = async (svg: string) => {
+      try {
+        const blob = await svgToPdfBlob(svg, 600, 240, metadata);
+        return { error: null, pdf: new TextDecoder("latin1").decode(await blob.arrayBuffer()) };
+      } catch (error) {
+        return { error: error instanceof Error ? error.message : String(error), pdf: "" };
+      }
+    };
+
+    return {
+      shorthand: await render(`<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240">
+        <style>
+          .parent { font-family: "Inter"; font-weight: 400; }
+          .label { font: italic 600 18px "Inter" !important; }
+          .relative { font-family: "Source Serif 4"; font-weight: bolder; font-style: oblique; }
+        </style>
+        <text class="label" x="12" y="40">Shorthand</text>
+        <text class="parent" x="12" y="80"><tspan class="relative">Relative</tspan></text>
+      </svg>`),
+      stylesheetWins:
+        await render(`<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240">
+        <style>.label { font-family: "Lato"; }</style>
+        <text class="label" font-family="Inter" x="12" y="40">Stylesheet wins</text>
+      </svg>`),
+      stylesheetOverridesPresentationStyles: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><style>.label { font-family: "Inter"; font-style: normal; font-weight: 400; font-size: 16px; }</style><g font-family="Lato" font-style="italic" font-weight="700" font-size="24px"><text class="label" x="12" y="40">Cascade wins</text></g></svg>`
+      ),
+      missingGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></svg>`
+      ),
+      missingInheritedGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><g font-family="Atkinson Hyperlegible"><text x="12" y="40">AΓB</text></g></svg>`
+      ),
+      missingMixedGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible">AΓ<tspan>B</tspan></text></svg>`
+      ),
+      hiddenGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><g style="visibility: hidden"><text x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></g></svg>`
+      ),
+      collapsedText: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" visibility="collapse"><tspan>AΓB</tspan></text></svg>`
+      ),
+      stylesheetPaintOverride: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><style>.visible { fill: black; }</style><text class="visible" x="12" y="40" font-family="Atkinson Hyperlegible" fill="none">CSS visible</text></svg>`
+      ),
+      stylesheetOpacityOverride: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" opacity="0" style="opacity: 1">CSS visible</text></svg>`
+      ),
+      cssFunctions: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><style>:root { --pdf-weight: 600; --pdf-style: italic; --font-weight: compact; --font-style: compact; } .label { font-family: "Inter"; font-weight: var(--pdf-weight); font-style: var(--pdf-style); }</style><text class="label" x="12" y="40">CSS functions</text></svg>`
+      ),
+      clipPathText: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><clipPath id="label-clip"><text x="12" y="40" font-family="Inter" fill="none">Label</text></clipPath></defs><rect width="600" height="240" fill="black" clip-path="url(#label-clip)" /></svg>`
+      ),
+      indirectClipPathText: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="clip-label" x="12" y="40" font-family="Inter">Label</text><clipPath id="indirect-label-clip"><use href="#clip-label" /></clipPath></defs><rect width="600" height="240" fill="black" clip-path="url(#indirect-label-clip)" /></svg>`
+      ),
+      hiddenVisibilityClipPathElement: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><clipPath id="hidden-visibility-clip"><text x="12" y="40" font-family="Inter">Label</text></clipPath></defs><rect style="visibility: hidden" width="600" height="240" fill="black" clip-path="url(#hidden-visibility-clip)" /></svg>`
+      ),
+      hiddenIndirectClipPathText: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="visible-clip-label" visibility="visible" x="12" y="40" font-family="Inter">Label</text><clipPath id="hidden-indirect-label-clip"><use href="#visible-clip-label" style="visibility: hidden" /></clipPath></defs><rect width="600" height="240" fill="black" clip-path="url(#hidden-indirect-label-clip)" /></svg>`
+      ),
+      hiddenClipPathElement: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><clipPath id="hidden-clip"><text x="12" y="40" font-family="Inter">Label</text></clipPath></defs><rect display="none" width="600" height="240" fill="black" clip-path="url(#hidden-clip)" /></svg>`
+      ),
+      hiddenClipPathDescendant: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><clipPath id="label-clip"><text visibility="hidden"><tspan visibility="visible">Label</tspan></text></clipPath></defs><rect width="600" height="240" fill="black" clip-path="url(#label-clip)" /></svg>`
+      ),
+      unusedCssClipPath: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><style>.unused { clip-path: url(#unused-clip); }</style><defs><clipPath id="unused-clip"><text x="12" y="40" font-family="Inter">Label</text></clipPath></defs><rect width="600" height="240" fill="black" /></svg>`
+      ),
+      usedCssClipPath: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><style>.used { clip-path: url(#used-clip); }</style><defs><clipPath id="used-clip"><text x="12" y="40" font-family="Inter">Label</text></clipPath></defs><rect class="used" width="600" height="240" fill="black" /></svg>`
+      ),
+      unusedDefinitionGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><rect width="600" height="240" fill="black" /></svg>`
+      ),
+      hiddenUseGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="hidden-label" x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><use href="#hidden-label" display="none" /></svg>`
+      ),
+      hiddenAncestorUseGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="hidden-label" x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><g style="display: none"><use href="#hidden-label" /></g></svg>`
+      ),
+      hiddenVisibilityUseGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="hidden-label" x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><use href="#hidden-label" style="visibility: hidden" /></svg>`
+      ),
+      visibleHiddenUseGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="hidden-label" x="12" y="40" font-family="Atkinson Hyperlegible" visibility="visible">AΓB</text></defs><use href="#hidden-label" style="visibility: hidden" /></svg>`
+      ),
+      visibleIdStyledHiddenUseGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><style>#visible-label { visibility: visible; }</style><defs><text id="visible-label" x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><use href="#visible-label" style="visibility: hidden" /></svg>`
+      ),
+      visibleNestedHiddenUseGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="hidden-label" x="12" y="40" font-family="Atkinson Hyperlegible" visibility="visible">AΓB</text><g id="hidden-wrapper"><use href="#hidden-label" visibility="visible" /></g></defs><use href="#hidden-wrapper" style="visibility: hidden" /></svg>`
+      ),
+      cssDisplayOpacityUseOverride: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><style>.visible-use { display: inline; opacity: 1; }</style><defs><text id="visible-label" x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><use class="visible-use" href="#visible-label" display="none" opacity="0" /></svg>`
+      ),
+      transparentUseGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="hidden-label" x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><use href="#hidden-label" opacity="0" /></svg>`
+      ),
+      transparentPaintUseGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="hidden-label" x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><use href="#hidden-label" fill="none" stroke="none" /></svg>`
+      ),
+      paintHexDefinitionId: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="fff" x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></defs><rect width="600" height="240" fill="#fff" /></svg>`
+      ),
+      hiddenTextPathDescendant: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><path id="curve" d="M0 0"/><text font-family="Inter"><textPath visibility="hidden" href="#curve"><tspan visibility="visible">Label</tspan></textPath></text></svg>`
+      ),
+      linkedTextGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible"><a href="#missing-link-target">AΓB</a></text></svg>`
+      ),
+      linkedLocalFontStyle: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Inter"><a font-family="Lato">Linked font</a></text></svg>`
+      ),
+      linkedAccessibilityMetadata: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><a font-family="Atkinson Hyperlegible"><title>AΓB</title><rect x="12" y="12" width="40" height="40" fill="black" /></a></svg>`
+      ),
+      orphanedLinkText: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><a font-family="Atkinson Hyperlegible"><rect x="12" y="12" width="40" height="40" fill="black" />AΓB</a></svg>`
+      ),
+      linkedNavigation: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><defs><text id="unused-link-target" font-family="Atkinson Hyperlegible">AΓB</text></defs><text x="12" y="40" font-family="Inter"><a href="#unused-link-target">Linked text</a></text></svg>`
+      ),
+      visibleDescendant: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" visibility="hidden"><tspan visibility="visible">Γ</tspan></text></svg>`
+      ),
+      cdata: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Inter"><![CDATA[CDATA text]]></text></svg>`
+      ),
+      transparentGlyph: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><g opacity="0"><text x="12" y="40" font-family="Atkinson Hyperlegible">AΓB</text></g></svg>`
+      ),
+      missingTypographicSpace: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible">A\u2009B</text></svg>`
+      ),
+      standaloneTypographicSpace: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible">\u2009</text></svg>`
+      ),
+      complexScript: await render(
+        `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Noto Sans">नमस्ते</text></svg>`
+      )
+    };
+  });
+
+  expect(result.shorthand.error).toBeNull();
+  expect(result.shorthand.pdf).toContain("/BaseFont /Inter");
+  expect(result.shorthand.pdf).toContain("/BaseFont /Source#20Serif#204");
+  expect(result.shorthand.pdf).not.toContain("/BaseFont /Times");
+  expect(result.stylesheetWins.error).toBeNull();
+  expect(result.stylesheetWins.pdf).toContain("/BaseFont /Lato");
+  expect(result.stylesheetOverridesPresentationStyles.error).toBeNull();
+  expect(result.stylesheetOverridesPresentationStyles.pdf).toContain("/BaseFont /Inter");
+  expect(result.stylesheetOverridesPresentationStyles.pdf).not.toContain("/BaseFont /Lato");
+  expect(result.missingGlyph.error).toContain("U+0393");
+  expect(result.missingGlyph.error).toContain("cannot render");
+  expect(result.missingInheritedGlyph.error).toContain("U+0393");
+  expect(result.missingInheritedGlyph.error).toContain("cannot render");
+  expect(result.missingMixedGlyph.error).toContain("U+0393");
+  expect(result.missingMixedGlyph.error).toContain("cannot render");
+  expect(result.hiddenGlyph.error).toBeNull();
+  expect(result.collapsedText.error).toBeNull();
+  expect(result.collapsedText.pdf).not.toContain("/BaseFont /Times");
+  expect(result.stylesheetPaintOverride.error).toBeNull();
+  expect(result.stylesheetPaintOverride.pdf).toContain("/BaseFont /Atkinson#20Hyperlegible");
+  expect(result.stylesheetPaintOverride.pdf).not.toContain("/BaseFont /Times");
+  expect(result.stylesheetOpacityOverride.error).toBeNull();
+  expect(result.stylesheetOpacityOverride.pdf).toContain("/BaseFont /Atkinson#20Hyperlegible");
+  expect(result.stylesheetOpacityOverride.pdf).not.toContain("/BaseFont /Times");
+  expect(result.cssFunctions.error).toBeNull();
+  expect(result.cssFunctions.pdf).toContain("/BaseFont /Inter");
+  expect(result.cssFunctions.pdf).not.toContain("/BaseFont /Times");
+  expect(result.clipPathText.error).toContain("text-based clip paths");
+  expect(result.clipPathText.pdf).toBe("");
+  expect(result.indirectClipPathText.error).toContain("text-based clip paths");
+  expect(result.indirectClipPathText.pdf).toBe("");
+  expect(result.hiddenVisibilityClipPathElement.error).toBeNull();
+  expect(result.hiddenVisibilityClipPathElement.pdf).not.toContain("text-based clip paths");
+  expect(result.hiddenIndirectClipPathText.error).toContain("text-based clip paths");
+  expect(result.hiddenIndirectClipPathText.pdf).toBe("");
+  expect(result.hiddenClipPathElement.error).toBeNull();
+  expect(result.hiddenClipPathElement.pdf).not.toContain("text-based clip paths");
+  expect(result.hiddenClipPathDescendant.error).toContain("text-based clip paths");
+  expect(result.hiddenClipPathDescendant.pdf).toBe("");
+  expect(result.unusedCssClipPath.error).toBeNull();
+  expect(result.unusedCssClipPath.pdf).not.toContain("text-based clip paths");
+  expect(result.usedCssClipPath.error).toContain("text-based clip paths");
+  expect(result.usedCssClipPath.pdf).toBe("");
+  expect(result.unusedDefinitionGlyph.error).toBeNull();
+  expect(result.unusedDefinitionGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
+  expect(result.hiddenUseGlyph.error).toBeNull();
+  expect(result.hiddenUseGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
+  expect(result.hiddenAncestorUseGlyph.error).toBeNull();
+  expect(result.hiddenAncestorUseGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
+  expect(result.hiddenVisibilityUseGlyph.error).toBeNull();
+  expect(result.hiddenVisibilityUseGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
+  expect(result.visibleHiddenUseGlyph.error).toContain("U+0393");
+  expect(result.visibleHiddenUseGlyph.pdf).toBe("");
+  expect(result.visibleIdStyledHiddenUseGlyph.error).toContain("U+0393");
+  expect(result.visibleIdStyledHiddenUseGlyph.pdf).toBe("");
+  expect(result.visibleNestedHiddenUseGlyph.error).toContain("U+0393");
+  expect(result.visibleNestedHiddenUseGlyph.pdf).toBe("");
+  expect(result.cssDisplayOpacityUseOverride.error).toContain("U+0393");
+  expect(result.cssDisplayOpacityUseOverride.pdf).toBe("");
+  expect(result.transparentUseGlyph.error).toBeNull();
+  expect(result.transparentUseGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
+  expect(result.transparentPaintUseGlyph.error).toBeNull();
+  expect(result.transparentPaintUseGlyph.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
+  expect(result.paintHexDefinitionId.error).toBeNull();
+  expect(result.paintHexDefinitionId.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
+  expect(result.hiddenTextPathDescendant.error).toContain("textPath");
+  expect(result.hiddenTextPathDescendant.pdf).toBe("");
+  expect(result.linkedTextGlyph.error).toContain("U+0393");
+  expect(result.linkedTextGlyph.pdf).toBe("");
+  expect(result.linkedLocalFontStyle.error).toBeNull();
+  expect(result.linkedLocalFontStyle.pdf).toContain("/BaseFont /Lato");
+  expect(result.linkedLocalFontStyle.pdf).not.toContain("/BaseFont /Inter");
+  expect(result.linkedAccessibilityMetadata.error).toBeNull();
+  expect(result.orphanedLinkText.error).toBeNull();
+  expect(result.linkedNavigation.error).toBeNull();
+  expect(result.linkedNavigation.pdf).not.toContain("/BaseFont /Atkinson#20Hyperlegible");
+  expect(result.visibleDescendant.error).toContain("U+0393");
+  expect(result.cdata.error).toBeNull();
+  expect(result.cdata.pdf).toContain("/BaseFont /Inter");
+  expect(result.cdata.pdf).not.toContain("/BaseFont /Times");
+  expect(result.transparentGlyph.error).toBeNull();
+  expect(result.missingTypographicSpace.error).toContain("U+2009");
+  expect(result.missingTypographicSpace.error).toContain("cannot render");
+  expect(result.standaloneTypographicSpace.error).toContain("U+2009");
+  expect(result.standaloneTypographicSpace.error).toContain("cannot render");
+  expect(result.complexScript.error).toContain("cannot shape");
+});
+
+test("skips invisible PDF paint during glyph coverage", async ({ page }) => {
+  await page.goto("./");
+  const result = await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const metadata = {
+      title: "Invisible PDF paint",
+      description: "Invisible text should not require glyph coverage",
+      credit: "OpenSketch",
+      provenance: { version: 1 as const, assets: [] }
+    };
+    const render = async (svg: string) => {
+      try {
+        await svgToPdfBlob(svg, 600, 240, metadata);
+        return null;
+      } catch (error) {
+        return error instanceof Error ? error.message : String(error);
+      }
+    };
+
+    return {
+      transparent: await render(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" fill="transparent">AΓB</text></svg>'
+      ),
+      zeroFillOpacity: await render(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" fill-opacity="0">AΓB</text></svg>'
+      ),
+      zeroStrokeWidth: await render(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" fill="none" stroke="black" stroke-width="0">AΓB</text></svg>'
+      ),
+      zeroFillHex: await render(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" fill="#fff0">AΓB</text></svg>'
+      ),
+      visibleFillZeroStroke: await render(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible" fill="black" stroke="black" stroke-width="0">AΓB</text></svg>'
+      ),
+      zeroWidthBom: await render(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible">A\uFEFFB</text></svg>'
+      ),
+      zeroWidthSpace: await render(
+        '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Atkinson Hyperlegible">A\u200BB</text></svg>'
+      )
+    };
+  });
+
+  expect(result.transparent).toBeNull();
+  expect(result.zeroFillOpacity).toBeNull();
+  expect(result.zeroStrokeWidth).toBeNull();
+  expect(result.zeroFillHex).toBeNull();
+  expect(result.visibleFillZeroStroke).toContain("U+0393");
+  expect(result.zeroWidthBom).toBeNull();
+  expect(result.zeroWidthSpace).toBeNull();
+});
+
+test("fetches only the PDF font face used by an SVG text run", async ({ page }) => {
+  const requests: string[] = [];
+  page.on("request", (request) => {
+    if (request.resourceType() === "fetch" && request.url().includes(".ttf")) {
+      requests.push(request.url());
+    }
+  });
+  await page.goto("./");
+  await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    await svgToPdfBlob(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Inter" font-weight="600" font-style="italic">Only one face</text></svg>`,
+      600,
+      240,
+      {
+        title: "PDF face loading",
+        description: "Only the used PDF face",
+        credit: "OpenSketch",
+        provenance: { version: 1 as const, assets: [] }
+      }
+    );
+  });
+
+  expect(requests).toHaveLength(1);
+  expect(requests[0]).toMatch(/inter-600-italic\.ttf/);
+});
+
+test("resolves font styles for each rendered SVG use instance", async ({ page }) => {
+  await page.goto("./");
+  const rawPdf = await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const blob = await svgToPdfBlob(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240">
+        <defs><text id="label">Reusable label</text></defs>
+        <use href="#label" font-family="Inter" x="12" y="40" />
+        <use href="#label" font-family="Lato" font-weight="700" x="12" y="80" />
+      </svg>`,
+      600,
+      240,
+      {
+        title: "PDF use styles",
+        description: "Each rendered SVG use instance keeps its font",
+        credit: "OpenSketch",
+        provenance: { version: 1 as const, assets: [] }
+      }
+    );
+    return new TextDecoder("latin1").decode(await blob.arrayBuffer());
+  });
+
+  expect(rawPdf).toContain("/BaseFont /Inter");
+  expect(rawPdf).toContain("/BaseFont /Lato");
+  expect(rawPdf).not.toContain("/BaseFont /Times");
+});
+
+test("preserves per-instance paint for shape and mixed SVG use targets", async ({ page }) => {
+  await page.goto("./");
+  const encodedPdf = await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const blob = await svgToPdfBlob(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240">
+        <defs>
+          <path id="shape" d="M0 0h40v40H0z" />
+          <g id="mixed"><path d="M0 0h40v40H0z" /><text x="4" y="28" font-family="Inter">Mixed</text></g>
+        </defs>
+        <use href="#shape" fill="red" x="12" y="12" />
+        <use href="#shape" fill="none" stroke="blue" stroke-width="4" x="72" y="12" />
+        <use href="#shape" fill="none" stroke="none" x="132" y="12" />
+        <use href="#mixed" fill="green" font-family="Inter" x="192" y="12" />
+      </svg>`,
+      600,
+      240,
+      {
+        title: "SVG use paint",
+        description: "Per-instance shape and mixed target paint",
+        credit: "OpenSketch",
+        provenance: { version: 1 as const, assets: [] }
+      }
+    );
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    let binary = "";
+    for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+    }
+    return btoa(binary);
+  });
+
+  const pdf = await PDFDocument.load(Buffer.from(encodedPdf, "base64"));
+  const content = decodedPdfContentStreams(pdf).join("\n");
+  const rawPdf = Buffer.from(encodedPdf, "base64").toString("latin1");
+  expect(content).toContain("1. 0. 0. rg");
+  expect(content).toContain("0. 0. 1. RG");
+  expect(content).toContain("4. w");
+  expect(rawPdf).not.toContain("/BaseFont /Times");
+  expect(rawPdf).toContain("/BaseFont /Inter");
+});
+
+test("preserves ID-based computed styles for cloned SVG use targets", async ({ page }) => {
+  await page.goto("./");
+  const encodedPdf = await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const blob = await svgToPdfBlob(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240">
+        <style>
+          #hidden-shape { display: none; }
+          #transparent-shape { opacity: 0; }
+        </style>
+        <defs>
+          <path id="hidden-shape" d="M0 0h40v40H0z" />
+          <path id="transparent-shape" d="M0 0h40v40H0z" />
+        </defs>
+        <use href="#hidden-shape" fill="red" x="12" y="12" />
+        <use href="#transparent-shape" fill="blue" x="72" y="12" />
+      </svg>`,
+      600,
+      240,
+      {
+        title: "SVG use computed styles",
+        description: "ID-based styles remain applied to cloned SVG targets",
+        credit: "OpenSketch",
+        provenance: { version: 1 as const, assets: [] }
+      }
+    );
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    let binary = "";
+    for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+    }
+    return btoa(binary);
+  });
+
+  const pdf = await PDFDocument.load(Buffer.from(encodedPdf, "base64"));
+  const shapeStreams = decodedPdfContentStreams(pdf).filter(
+    (stream) => stream.includes("0. 0. m") && stream.includes("40. 40. l")
+  );
+  expect(shapeStreams).toHaveLength(1);
+  expect(shapeStreams[0]).toContain("/GS2 gs");
+});
+
+test("keeps visible SVG use targets from rendering twice", async ({ page }) => {
+  await page.goto("./");
+  const encodedPdf = await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const blob = await svgToPdfBlob(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240">
+        <text id="label" x="12" y="40" font-family="Inter">Visible label</text>
+        <use href="#label" font-family="Inter" x="12" y="80" />
+      </svg>`,
+      600,
+      240,
+      {
+        title: "PDF use target",
+        description: "A visible SVG use target renders once per instance",
+        credit: "OpenSketch",
+        provenance: { version: 1 as const, assets: [] }
+      }
+    );
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    let binary = "";
+    for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+    }
+    return btoa(binary);
+  });
+
+  const pdf = await PDFDocument.load(Buffer.from(encodedPdf, "base64"));
+  const renderedTextOperators = decodedPdfTextStreams(pdf)
+    .join("\n")
+    .match(/\bTj\b/g);
+  expect(renderedTextOperators).toHaveLength(2);
+});
+
+test("preserves nested SVG use font context and computed size", async ({ page }) => {
+  await page.goto("./");
+  const encodedPdf = await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const blob = await svgToPdfBlob(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240">
+        <defs>
+          <text id="label">Nested label</text>
+          <g id="wrapper"><use href="#label" /></g>
+        </defs>
+        <use href="#wrapper" font-family="Lato" font-size="24px" x="12" y="40" />
+      </svg>`,
+      600,
+      240,
+      {
+        title: "Nested PDF use styles",
+        description: "Nested SVG use instances preserve inherited font context",
+        credit: "OpenSketch",
+        provenance: { version: 1 as const, assets: [] }
+      }
+    );
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    let binary = "";
+    for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+    }
+    return btoa(binary);
+  });
+
+  const rawPdf = Buffer.from(encodedPdf, "base64").toString("latin1");
+  const pdf = await PDFDocument.load(Buffer.from(encodedPdf, "base64"));
+  const textStreams = decodedPdfTextStreams(pdf).join("\n");
+  expect(rawPdf).toContain("/BaseFont /Lato");
+  expect(rawPdf).not.toContain("/BaseFont /Times");
+  expect(textStreams).toContain("24 Tf");
+});
+
+test("preserves computed PDF text size from CSS shorthand", async ({ page }) => {
+  await page.goto("./");
+  const encodedPdf = await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const blob = await svgToPdfBlob(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240">
+        <style>.label { font: italic 600 24px "Inter"; }</style>
+        <text class="label" x="12" y="40">Sized label</text>
+      </svg>`,
+      600,
+      240,
+      {
+        title: "PDF text size",
+        description: "Computed CSS text size remains explicit in PDF output",
+        credit: "OpenSketch",
+        provenance: { version: 1 as const, assets: [] }
+      }
+    );
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    let binary = "";
+    for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+    }
+    return btoa(binary);
+  });
+
+  const pdf = await PDFDocument.load(Buffer.from(encodedPdf, "base64"));
+  expect(decodedPdfTextStreams(pdf).join("\n")).toContain("24 Tf");
+});
+
+test("preserves stylesheet font cascade over inherited SVG presentation attributes", async ({
+  page
+}) => {
+  const requests: string[] = [];
+  page.on("request", (request) => {
+    if (request.resourceType() === "fetch" && request.url().includes(".ttf")) {
+      requests.push(request.url());
+    }
+  });
+  await page.goto("./");
+  const encodedPdf = await page.evaluate(async () => {
+    const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
+    const { svgToPdfBlob } = await import(moduleUrl);
+    const blob = await svgToPdfBlob(
+      `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><style>.label { font-family: "Inter"; font-style: normal; font-weight: 400; font-size: 16px; }</style><g font-family="Lato" font-style="italic" font-weight="700" font-size="24px"><text class="label" x="12" y="40">Cascade wins</text></g></svg>`,
+      600,
+      240,
+      {
+        title: "PDF font cascade",
+        description: "Stylesheet declarations override inherited SVG presentation attributes",
+        credit: "OpenSketch",
+        provenance: { version: 1 as const, assets: [] }
+      }
+    );
+    const bytes = new Uint8Array(await blob.arrayBuffer());
+    let binary = "";
+    for (let offset = 0; offset < bytes.length; offset += 0x8000) {
+      binary += String.fromCharCode(...bytes.subarray(offset, offset + 0x8000));
+    }
+    return btoa(binary);
+  });
+
+  expect(requests).toContainEqual(expect.stringMatching(/inter-400-normal\.ttf/));
+  expect(requests).not.toContainEqual(expect.stringMatching(/inter-700-italic\.ttf/));
+  const pdf = await PDFDocument.load(Buffer.from(encodedPdf, "base64"));
+  const textStreams = decodedPdfTextStreams(pdf).join("\n");
+  expect(textStreams).toContain("16 Tf");
+  expect(textStreams).not.toContain("24 Tf");
+});
+
+test("waits for the selected browser font before exporting PDF", async ({ page }) => {
+  test.setTimeout(120_000);
+  const releaseDelayMs = 2_000;
+  let fontRequestStartedAt = 0;
+  let fontRequestReleasedAt = 0;
+
+  await page.route(/noto-serif-latin-400-normal\.woff2(?:\?.*)?$/, async (route) => {
+    fontRequestStartedAt = Date.now();
+    await new Promise((resolve) => setTimeout(resolve, releaseDelayMs));
+    fontRequestReleasedAt = Date.now();
+    await route.continue();
+  });
+
+  await page.goto("./");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  await placeTool(page, "Text", 0.5, 0.5);
+  await page.keyboard.type("Noto Serif race");
+  await page.keyboard.press("Escape");
+  await ensureEditorOpen(page);
+  await selectUiOption(page, "Font", "Noto Serif");
+  await expect.poll(() => fontRequestStartedAt).toBeGreaterThan(0);
+
+  await page.getByRole("button", { name: "Export" }).click();
+  await page.getByRole("tab", { name: /PDF/ }).click();
+  const exportStartedAt = Date.now();
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export PDF" }).click();
+  const download = await downloadPromise;
+  const downloadedAt = Date.now();
+
+  expect(await download.path()).not.toBeNull();
+  expect(fontRequestReleasedAt).toBeGreaterThanOrEqual(fontRequestStartedAt + releaseDelayMs);
+  expect(downloadedAt).toBeGreaterThanOrEqual(fontRequestReleasedAt);
+  expect(downloadedAt - exportStartedAt).toBeGreaterThanOrEqual(releaseDelayMs - 250);
+});
+
+test("waits for imported Fabric text fonts before exporting PDF", async ({ page }) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Imports", exact: true }).click();
+
+  await page.evaluate(() => {
+    const calls: Array<{ descriptor: string; text: string }> = [];
+    const fontSet = document.fonts as FontFaceSet & {
+      __originalLoad?: FontFaceSet["load"];
+    };
+    const originalLoad = fontSet.load.bind(fontSet);
+    fontSet.__originalLoad = originalLoad;
+    fontSet.load = (descriptor: string, text?: string) => {
+      calls.push({ descriptor, text: text ?? "" });
+      return originalLoad(descriptor, text);
+    };
+    (window as typeof window & { __pdfFontLoadCalls?: typeof calls }).__pdfFontLoadCalls = calls;
+  });
+
+  await page.locator('input[type="file"][accept*="image/svg+xml"]').setInputFiles({
+    name: "imported-text.svg",
+    mimeType: "image/svg+xml",
+    buffer: Buffer.from(
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 240"><text x="12" y="40" font-family="Noto Serif">Imported Γ text</text></svg>'
+    )
+  });
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+
+  await page.getByRole("button", { name: "Export" }).click();
+  await page.getByRole("tab", { name: /PDF/ }).click();
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export PDF" }).click();
+  expect(await (await downloadPromise).path()).not.toBeNull();
+
+  const fontLoadCalls = await page.evaluate(() => {
+    const calls = (
+      window as typeof window & {
+        __pdfFontLoadCalls?: Array<{ descriptor: string; text: string }>;
+      }
+    ).__pdfFontLoadCalls;
+    return calls ?? [];
+  });
+  expect(fontLoadCalls).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({ descriptor: expect.stringContaining('"Noto Serif"') })
+    ])
+  );
+  expect(fontLoadCalls.some(({ text }) => text === "Imported Γ text")).toBe(true);
+});
+
+test("preloads every text payload used by a PDF font face", async ({ page }) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+
+  await placeTool(page, "Text", 0.3, 0.35);
+  await page.keyboard.type("Latin glyphs");
+  await page.keyboard.press("Escape");
+  await placeTool(page, "Text", 0.7, 0.65);
+  await page.keyboard.type("Γειά σου");
+  await page.keyboard.press("Escape");
+
+  await page.evaluate(() => {
+    const calls: Array<{ descriptor: string; text: string }> = [];
+    const fontSet = document.fonts as FontFaceSet & {
+      __originalLoad?: FontFaceSet["load"];
+    };
+    const originalLoad = fontSet.load.bind(fontSet);
+    fontSet.__originalLoad = originalLoad;
+    fontSet.load = (descriptor: string, text?: string) => {
+      calls.push({ descriptor, text: text ?? "" });
+      return originalLoad(descriptor, text);
+    };
+    (window as typeof window & { __pdfFontLoadCalls?: typeof calls }).__pdfFontLoadCalls = calls;
+  });
+
+  await page.getByRole("button", { name: "Export" }).click();
+  await page.getByRole("tab", { name: /PDF/ }).click();
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export PDF" }).click();
+  expect(await (await downloadPromise).path()).not.toBeNull();
+
+  const fontLoadTexts = await page.evaluate(() => {
+    const calls = (
+      window as typeof window & {
+        __pdfFontLoadCalls?: Array<{ descriptor: string; text: string }>;
+      }
+    ).__pdfFontLoadCalls;
+    return (
+      calls
+        ?.filter(({ descriptor }) => descriptor.includes('"Source Sans 3"'))
+        .map(({ text }) => text) ?? []
+    );
+  });
+  expect(fontLoadTexts).toEqual(expect.arrayContaining(["Latin glyphs", "Γειά σου"]));
+});
+
 test("shows favorites only in a dedicated asset category", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const favoritesCategory = page.getByRole("button", { name: "Favorites", exact: true });
@@ -3719,7 +4773,7 @@ test("shows favorites only in a dedicated asset category", async ({ page }) => {
 });
 
 test("preserves an asset search after inserting artwork and reopening Assets", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const search = page.getByPlaceholder("Search cells, proteins, equipment…");
@@ -3747,7 +4801,7 @@ test("preserves an asset search after inserting artwork and reopening Assets", a
 });
 
 test("preserves asset filters after closing and reopening Assets", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const filterToggle = page.getByRole("button", { name: "Toggle asset filters" });
@@ -3781,7 +4835,7 @@ test("shows a minimal no-match state and preserves native page-text copying", as
   if (browserName === "chromium") {
     await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   }
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   const search = page.getByPlaceholder("Search cells, proteins, equipment…");
@@ -3804,7 +4858,7 @@ test("shows a minimal no-match state and preserves native page-text copying", as
 });
 
 test("orders the audited taxonomy from cell biology to macroscopic assets", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
   await expect(page.locator(".category-strip button")).toHaveText([
@@ -3865,7 +4919,7 @@ test("renders and persists complex NIH illustrations without losing their colors
   page
 }) => {
   test.setTimeout(45_000);
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("dendritic");
   await page.getByRole("button", { name: "Toggle asset filters" }).click();
@@ -3959,7 +5013,7 @@ test("renders and persists complex NIH illustrations without losing their colors
 });
 
 test("treats a bundled biological SVG as one atomic canvas object", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
   await page.getByRole("button", { name: "Insert T Cell", exact: true }).first().click();
@@ -3987,7 +5041,7 @@ test("treats a bundled biological SVG as one atomic canvas object", async ({ pag
 test("shows no synthetic style or variant menu for a single-variant biological asset", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
   await page.getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true }).click();
@@ -4006,7 +5060,7 @@ test("shows no synthetic style or variant menu for a single-variant biological a
 test("saves and resets styling for future copies of the same biological asset", async ({
   page
 }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
   await expect(page.locator(".asset-card")).toHaveCount(1);
@@ -4101,7 +5155,7 @@ test("saves and resets styling for future copies of the same biological asset", 
 });
 
 test("renders every styled eosinophil part in a stable sidebar preview", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Eosinophil");
   const eosinophilCard = page
@@ -4169,7 +5223,7 @@ test("renders every styled eosinophil part in a stable sidebar preview", async (
 });
 
 test("saves an inserted SVG before immediately leaving the editor", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("dendritic");
   const dendriticCell = page.locator(".asset-card").filter({ hasText: "Dendritic Cell" }).first();
@@ -4188,8 +5242,235 @@ test("saves an inserted SVG before immediately leaving the editor", async ({ pag
   ).toHaveCount(1);
 });
 
+test("keeps the latest project edits recoverable when autosave fails", async ({ page }) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
+
+  await page.evaluate(() => {
+    const originalPut = IDBObjectStore.prototype.put;
+    Object.defineProperty(window, "__opensketchOriginalProjectPut", {
+      configurable: true,
+      value: originalPut
+    });
+    IDBObjectStore.prototype.put = new Proxy(originalPut, {
+      apply(target, thisArg, args) {
+        if ((thisArg as IDBObjectStore).name === "projects") {
+          throw new DOMException("The project store is full", "QuotaExceededError");
+        }
+        return Reflect.apply(target, thisArg, args);
+      }
+    });
+  });
+
+  await placeTool(page, "Rectangle");
+  const errorStatus = page.locator('[data-save-state="error"]');
+  await expect(errorStatus).toBeVisible();
+  await expect(errorStatus).toContainText("browser storage is full");
+  await expect(errorStatus.getByRole("button", { name: "Retry save" })).toBeVisible();
+
+  const title = page.getByLabel("Document title");
+  await title.fill("Draft figure");
+  await expect(title).toHaveValue("Draft figure");
+  await expect(errorStatus).toBeVisible();
+
+  await page.getByRole("tab", { name: "Imports", exact: true }).click();
+  await page.evaluate(() => {
+    const originalRead = FileReader.prototype.readAsDataURL;
+    const target = window as typeof window & {
+      __opensketchOriginalReadAsDataURL?: typeof originalRead;
+    };
+    Object.defineProperty(target, "__opensketchOriginalReadAsDataURL", {
+      configurable: true,
+      value: originalRead
+    });
+    FileReader.prototype.readAsDataURL = function (this: FileReader, blob: Blob) {
+      window.setTimeout(() => originalRead.call(this, blob), 1200);
+    };
+  });
+  await page
+    .locator('input[type="file"][accept*="image/svg+xml"]')
+    .setInputFiles("tests/fixtures/nested-groups.svg");
+  await expect(errorStatus).toBeVisible();
+
+  const guarded = await page.evaluate(() => {
+    const event = new Event("beforeunload", { cancelable: true });
+    window.dispatchEvent(event);
+    return event.defaultPrevented;
+  });
+  expect(guarded).toBe(true);
+
+  await page.goBack();
+  await expect(page.locator(".editor-shell")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Projects" })).toHaveCount(0);
+
+  const recoveryDownload = page.waitForEvent("download");
+  await errorStatus.getByRole("button", { name: "Export recovery copy" }).click();
+  const recovery = await recoveryDownload;
+  expect(recovery.suggestedFilename()).toMatch(/draft-figure\.OpenSketch$/i);
+  const recoveryPath = await recovery.path();
+  expect(recoveryPath).not.toBeNull();
+  const recoveryProject = JSON.parse(await readFile(recoveryPath!, "utf8")) as {
+    name?: string;
+    objects?: { objects?: unknown[] };
+  };
+  expect(recoveryProject.name).toBe("Draft figure");
+  expect(recoveryProject.objects?.objects).toHaveLength(2);
+
+  await page.evaluate(() => {
+    const target = window as typeof window & {
+      __opensketchOriginalReadAsDataURL?: typeof FileReader.prototype.readAsDataURL;
+    };
+    const originalRead = target.__opensketchOriginalReadAsDataURL;
+    if (!originalRead) throw new Error("The original FileReader method was not captured.");
+    FileReader.prototype.readAsDataURL = originalRead;
+  });
+
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await expect(page.locator(".editor-shell")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Projects" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Back to projects" })).toBeEnabled();
+
+  await page.evaluate(() => {
+    const target = window as typeof window & {
+      __opensketchOriginalProjectPut?: typeof IDBObjectStore.prototype.put;
+    };
+    const originalPut = target.__opensketchOriginalProjectPut;
+    if (!originalPut) throw new Error("The original project save method was not captured.");
+    IDBObjectStore.prototype.put = originalPut;
+  });
+  await page.getByRole("button", { name: "Retry save" }).click();
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
+
+  const unguarded = await page.evaluate(() => {
+    const event = new Event("beforeunload", { cancelable: true });
+    window.dispatchEvent(event);
+    return event.defaultPrevented;
+  });
+  expect(unguarded).toBe(false);
+
+  await page.getByRole("button", { name: "Back to projects" }).click();
+  await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
+});
+
+test("restores the current history entry when legacy unsaved Forward traversal is blocked", async ({
+  page
+}) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible({ timeout: 30_000 });
+
+  const currentProjectId = await page.evaluate(
+    () => (history.state as Record<string, string> | null)?.OpenSketchProjectId
+  );
+  const currentHistoryIndex = await page.evaluate(
+    () => (history.state as Record<string, number> | null)?.OpenSketchHistoryIndex
+  );
+  if (!currentProjectId || typeof currentHistoryIndex !== "number") {
+    throw new Error("The active project history entry was not initialized.");
+  }
+
+  await page.evaluate(() => {
+    const state = history.state as Record<string, unknown> | null;
+    const legacyState = { ...(state ?? {}) };
+    delete legacyState.OpenSketchHistoryIndex;
+    history.pushState(
+      {
+        ...legacyState,
+        OpenSketchProjectId: "forward-target"
+      },
+      "",
+      window.location.href
+    );
+  });
+  await page.goBack();
+  await expect(page.locator(".editor-shell")).toBeVisible();
+
+  await page.evaluate(() => {
+    const originalPut = IDBObjectStore.prototype.put;
+    const target = window as typeof window & {
+      __opensketchOriginalProjectPut?: typeof originalPut;
+    };
+    Object.defineProperty(target, "__opensketchOriginalProjectPut", {
+      configurable: true,
+      value: originalPut
+    });
+    IDBObjectStore.prototype.put = new Proxy(originalPut, {
+      apply(target, thisArg, args) {
+        if ((thisArg as IDBObjectStore).name === "projects") {
+          throw new DOMException("The project store is full", "QuotaExceededError");
+        }
+        return Reflect.apply(target, thisArg, args);
+      }
+    });
+  });
+
+  await placeTool(page, "Rectangle");
+  await expect(page.locator('[data-save-state="error"]')).toBeVisible();
+  await page.goForward();
+  await expect
+    .poll(() =>
+      page.evaluate(() => (history.state as Record<string, string> | null)?.OpenSketchProjectId)
+    )
+    .toBe(currentProjectId);
+  await expect(page.locator(".editor-shell")).toBeVisible();
+});
+
+test("guards browser exit while an image import is still processing", async ({ page }) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("tab", { name: "Imports", exact: true }).click();
+
+  await page.evaluate(() => {
+    const originalRead = FileReader.prototype.readAsDataURL;
+    const target = window as typeof window & {
+      __opensketchOriginalReadAsDataURL?: typeof originalRead;
+    };
+    Object.defineProperty(target, "__opensketchOriginalReadAsDataURL", {
+      configurable: true,
+      value: originalRead
+    });
+    FileReader.prototype.readAsDataURL = function (this: FileReader, blob: Blob) {
+      window.setTimeout(() => originalRead.call(this, blob), 1200);
+    };
+  });
+
+  const importInput = page.locator('input[type="file"][accept*="image/svg+xml"]');
+  await importInput.setInputFiles("tests/fixtures/nested-groups.svg");
+  await importInput.setInputFiles("tests/fixtures/nested-groups.svg");
+  await expect(page.locator('[data-save-state="saving"]')).toBeVisible();
+
+  const guarded = await page.evaluate(() => {
+    const event = new Event("beforeunload", { cancelable: true });
+    window.dispatchEvent(event);
+    return event.defaultPrevented;
+  });
+  expect(guarded).toBe(true);
+
+  await expect(page.locator(".layers-title small")).toHaveText("1");
+  await expect(page.locator('[data-save-state="saving"]')).toBeVisible();
+
+  await page.evaluate(() => {
+    const target = window as typeof window & {
+      __opensketchOriginalReadAsDataURL?: typeof FileReader.prototype.readAsDataURL;
+    };
+    const originalRead = target.__opensketchOriginalReadAsDataURL;
+    if (!originalRead) throw new Error("The original FileReader method was not captured.");
+    FileReader.prototype.readAsDataURL = originalRead;
+  });
+  await expect(page.locator(".layers-title small")).toHaveText("2");
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
+
+  const unguarded = await page.evaluate(() => {
+    const event = new Event("beforeunload", { cancelable: true });
+    window.dispatchEvent(event);
+    return event.defaultPrevented;
+  });
+  expect(unguarded).toBe(false);
+});
+
 test("exports an atomic SVG asset with its vector parts intact", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("dendritic");
   const dendriticCell = page.locator(".asset-card").filter({ hasText: "Dendritic Cell" }).first();
@@ -4249,7 +5530,7 @@ test("keeps the canvas responsive with one hundred ordinary objects", async ({
     "The stress benchmark runs once; workflows run in all engines."
   );
   test.setTimeout(45_000);
-  await page.goto("/");
+  await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await placeTool(page, "Rectangle", 0.25, 0.25);
   for (let index = 1; index < 100; index += 1) {

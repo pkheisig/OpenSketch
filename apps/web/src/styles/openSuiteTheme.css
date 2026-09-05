@@ -1,0 +1,101 @@
+/* OpenSuite adapter ownership. The host owns suite tokens; this maps the
+   module's legacy semantic names without importing private host selectors. */
+
+.opensketch-app[data-opensketch-mode="opensuite"] {
+  --shell-bg: var(--suite-bg-shell, #eee7db);
+  --shell-card: var(--suite-bg-surface, #fffaf0);
+  --shell-raised: var(--suite-bg-surface-raised, #fffdf6);
+  --shell-border: var(--suite-border, #d5c8b7);
+  --shell-border-strong: var(--suite-border-strong, #c5b6a4);
+  --shell-text: var(--suite-text-main, #29251f);
+  --shell-muted: var(--suite-text-muted, #766c61);
+  --shell-faint: var(--suite-text-faint, #9a8d7e);
+  --shell-accent: var(--suite-accent, #c65a24);
+  --shell-accent-strong: var(--suite-accent-hover, #a4481b);
+  --shell-accent-soft: var(--suite-accent-soft, #f7e2d3);
+  --shell-on-accent: var(--suite-text-on-accent, #ffffff);
+  --shell-danger: var(--suite-semantic-danger, #b84c38);
+  --shell-input: var(--suite-bg-input, color-mix(in srgb, var(--shell-card) 92%, var(--shell-bg)));
+  --shell-canvas: var(
+    --suite-bg-workspace,
+    color-mix(in srgb, var(--shell-bg) 82%, var(--shell-border))
+  );
+  --shell-row: var(--suite-bg-subtle, color-mix(in srgb, var(--shell-card) 90%, var(--shell-bg)));
+  --shell-focus: var(--suite-focus, color-mix(in srgb, var(--shell-accent) 18%, var(--shell-card)));
+  --font-sans: var(--suite-font-app, Inter, "Avenir Next", Avenir, "Helvetica Neue", sans-serif);
+  --motion-ui: var(--suite-motion-normal, 160ms cubic-bezier(0.2, 0.7, 0.2, 1));
+  --motion-panel: var(--suite-motion-slow, 220ms cubic-bezier(0.2, 0.7, 0.2, 1));
+  --opensketch-control-normal: var(--suite-control-normal, 36px);
+  --opensketch-control-compact: var(--suite-control-compact, 30px);
+  --opensketch-radius-control: var(--suite-radius-control, 7px);
+  --opensketch-radius-card: var(--suite-radius-card, 9px);
+  --opensketch-radius-dialog: var(--suite-radius-dialog, 10px);
+  font-family: var(--font-sans);
+  color-scheme: light;
+}
+
+.opensketch-app[data-opensketch-mode="opensuite"][data-opensketch-theme="dark"] {
+  --shell-bg: var(--suite-bg-shell, #1d1916);
+  --shell-card: var(--suite-bg-surface, #2a241f);
+  --shell-raised: var(--suite-bg-surface-raised, #332a24);
+  --shell-border: var(--suite-border, #504338);
+  --shell-border-strong: var(--suite-border-strong, #665548);
+  --shell-text: var(--suite-text-main, #f6eee5);
+  --shell-muted: var(--suite-text-muted, #c4b5a7);
+  --shell-faint: var(--suite-text-faint, #9e8c7d);
+  --shell-accent: var(--suite-accent, #ff9654);
+  --shell-accent-strong: var(--suite-accent-hover, #ffb27d);
+  --shell-accent-soft: var(--suite-accent-soft, #4a2d1e);
+  --shell-on-accent: var(--suite-text-on-accent, #2a180e);
+  --shell-danger: var(--suite-semantic-danger, #f08a78);
+  color-scheme: dark;
+}
+
+.opensketch-app[data-opensketch-mode="opensuite"][data-opensketch-reduced-motion="true"] {
+  --motion-ui: 0.01ms;
+  --motion-panel: 0.01ms;
+}
+
+.opensketch-app[data-opensketch-mode="opensuite"] :is(.button, .ui-select-trigger) {
+  min-height: var(--opensketch-control-normal);
+  border-radius: var(--opensketch-radius-control);
+  transition-duration: var(--motion-ui);
+}
+
+.opensketch-app[data-opensketch-mode="opensuite"] .icon-button {
+  width: var(--opensketch-control-normal);
+  min-height: var(--opensketch-control-normal);
+  border-radius: var(--opensketch-radius-control);
+  transition-duration: var(--motion-ui);
+}
+
+.opensketch-app[data-opensketch-mode="opensuite"] :is(.text-button, .quiet-button) {
+  min-height: var(--opensketch-control-compact);
+  border-radius: var(--opensketch-radius-control);
+  transition-duration: var(--motion-ui);
+}
+
+.opensketch-app[data-opensketch-mode="opensuite"] :is(.menu, .ui-select-menu, .asset-variant-menu) {
+  border-radius: var(--opensketch-radius-control);
+}
+
+.opensketch-app[data-opensketch-mode="opensuite"] :is(.dialog, .dialog-backdrop) {
+  --opensketch-dialog-radius: var(--opensketch-radius-dialog);
+}
+
+.opensketch-app[data-opensketch-mode="opensuite"]
+  :is(button, input, select, textarea):focus-visible {
+  outline: 2px solid var(--suite-focus, color-mix(in srgb, var(--shell-accent) 56%, transparent));
+  outline-offset: 2px;
+}
+
+.opensketch-app[data-opensketch-mode="opensuite"] .opensketch-portal-root {
+  position: fixed;
+  z-index: 300;
+  inset: 0;
+  pointer-events: none;
+}
+
+.opensketch-app[data-opensketch-mode="opensuite"] .opensketch-portal-root > * {
+  pointer-events: auto;
+}

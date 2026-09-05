@@ -21,10 +21,28 @@ export interface ImportedMediaSaveResult {
   created: boolean;
 }
 
-class OpenSketchDatabase extends Dexie {
+export interface AssetTemplateRecord {
+  id: string;
+  name: string;
+  object: Record<string, unknown>;
+  thumbnail: string;
+  createdAt: string;
+  updatedAt: string;
+  schemaVersion: 1;
+}
+
+export interface AssetTemplateMigrationRecord {
+  id: string;
+  schemaVersion: 1;
+  completedAt: string;
+}
+
+export class OpenSketchDatabase extends Dexie {
   projects!: EntityTable<ProjectRecord, "id">;
   folders!: EntityTable<ProjectFolderRecord, "id">;
   imports!: EntityTable<ImportedMediaLibraryRecord, "id">;
+  templates!: EntityTable<AssetTemplateRecord, "id">;
+  templateMigrations!: EntityTable<AssetTemplateMigrationRecord, "id">;
 
   constructor() {
     super("OpenSketch");
@@ -40,26 +58,55 @@ class OpenSketchDatabase extends Dexie {
       folders: "id, updatedAt, name",
       imports: "id, updatedAt, name, mimeType, contentHash"
     });
-    this.version(4)
+    this.version(4).stores({
+      projects: "id, updatedAt, name, archivedAt, folderId",
+      folders: "id, updatedAt, name",
+      imports: "id, updatedAt, name, mimeType, contentHash",
+      templates: "id, updatedAt, name",
+      templateMigrations: "id"
+    });
+    this.version(5)
       .stores({
         projects: "id, updatedAt, name, archivedAt, folderId",
         folders: "id, updatedAt, name",
-        imports: "id, updatedAt, name, mimeType, contentHash"
+        imports: "id, updatedAt, name, mimeType, contentHash",
+        templates: "id, updatedAt, name",
+        templateMigrations: "id"
       })
       .upgrade((transaction) =>
         transaction
           .table("projects")
           .toCollection()
           .modify((project) => {
-            if (!Number.isSafeInteger(project.revision) || project.revision < 0) {
+            if (!Number.isSafeInteger(project.revision) || project.revision < 0)
               project.revision = 0;
-            }
           })
       );
   }
 }
 
-export const db = new OpenSketchDatabase();
+let database: OpenSketchDatabase | undefined;
+
+/**
+ * The standalone adapter owns the browser database. Keeping construction lazy
+ * lets the reusable application module be imported by a host without opening
+ * IndexedDB as an import-time side effect.
+ */
+export function getOpenSketchDatabase(): OpenSketchDatabase {
+  database ??= new OpenSketchDatabase();
+  return database;
+}
+
+/**
+ * Compatibility surface for existing standalone tests and callers. Property
+ * access is the first point at which the Dexie instance is created.
+ */
+export const db = new Proxy({} as OpenSketchDatabase, {
+  get(_target, property) {
+    const value = Reflect.get(getOpenSketchDatabase(), property, getOpenSketchDatabase());
+    return typeof value === "function" ? value.bind(getOpenSketchDatabase()) : value;
+  }
+});
 export const IMPORT_LIBRARY_CHANGED_EVENT = "OpenSketch:import-library-changed";
 export const PROJECT_CHANGED_EVENT = "OpenSketch:project-changed";
 const PROJECT_CHANGED_CHANNEL = "OpenSketch:project-changed";
@@ -73,8 +120,10 @@ export interface ProjectChangeNotice {
   deleted?: boolean;
 }
 
+type StoredProject = ProjectRecord & { revision: number };
+
 export type ProjectSaveResult =
-  { status: "saved"; project: ProjectRecord } | { status: "conflict"; current?: ProjectRecord };
+  { status: "saved"; project: StoredProject } | { status: "conflict"; current?: ProjectRecord };
 
 export type ProjectDeleteResult =
   { status: "deleted" } | { status: "conflict"; current?: ProjectRecord };
@@ -93,7 +142,7 @@ function normalizedRevision(value: unknown): number {
     : INITIAL_PROJECT_REVISION;
 }
 
-function normalizeProjectRecord(project: ProjectRecord): ProjectRecord {
+function normalizeProjectRecord(project: ProjectRecord): StoredProject {
   return { ...project, revision: normalizedRevision(project.revision) };
 }
 
@@ -183,13 +232,14 @@ function notifyImportLibraryChanged(): void {
 }
 
 export async function listImportedMedia(): Promise<ImportedMediaLibraryRecord[]> {
-  return db.imports.orderBy("updatedAt").reverse().toArray();
+  const database = getOpenSketchDatabase();
+  return database.imports.orderBy("updatedAt").reverse().toArray();
 }
 
 export async function getImportedMedia(
   id: string
 ): Promise<ImportedMediaLibraryRecord | undefined> {
-  return db.imports.get(id);
+  return getOpenSketchDatabase().imports.get(id);
 }
 
 export async function saveImportedMedia(
@@ -203,8 +253,9 @@ export async function saveImportedMediaWithStatus(
   media: ImportedMediaRecord,
   timestamp = new Date().toISOString()
 ): Promise<ImportedMediaSaveResult> {
+  const database = getOpenSketchDatabase();
   const contentHash = await importedMediaHash(media);
-  const matching = await db.imports.where("contentHash").equals(contentHash).first();
+  const matching = await database.imports.where("contentHash").equals(contentHash).first();
   const record: ImportedMediaLibraryRecord = matching
     ? { ...matching, name: media.name, updatedAt: timestamp }
     : {
@@ -213,7 +264,7 @@ export async function saveImportedMediaWithStatus(
         updatedAt: timestamp,
         contentHash
       };
-  await db.imports.put(record);
+  await database.imports.put(record);
   notifyImportLibraryChanged();
   return { record, created: !matching };
 }
@@ -228,7 +279,7 @@ export async function rememberProjectImports(
 }
 
 export async function deleteImportedMedia(id: string): Promise<void> {
-  await db.imports.delete(id);
+  await getOpenSketchDatabase().imports.delete(id);
   notifyImportLibraryChanged();
 }
 
@@ -261,14 +312,15 @@ export async function getProject(projectId: string): Promise<ProjectRecord | und
 }
 
 export async function listProjectFolders(): Promise<ProjectFolderRecord[]> {
-  return db.folders.orderBy("updatedAt").reverse().toArray();
+  const database = getOpenSketchDatabase();
+  return database.folders.orderBy("updatedAt").reverse().toArray();
 }
 
 export async function saveProject(project: ProjectRecord): Promise<ProjectSaveResult> {
   const candidate = normalizeProjectRecord(project);
   const referenced = referencedUploadIds(candidate.objects, candidate.uploads);
   const uploads = candidate.uploads.filter((upload) => referenced.has(upload.id));
-  const prepared: ProjectRecord = {
+  const prepared: StoredProject = {
     ...candidate,
     objects: compactProjectScene(candidate.objects, uploads),
     uploads
@@ -286,7 +338,7 @@ export async function saveProject(project: ProjectRecord): Promise<ProjectSaveRe
     if (current && current.revision >= Number.MAX_SAFE_INTEGER) {
       throw new Error("This project has reached its maximum local revision.");
     }
-    const next: ProjectRecord = {
+    const next: StoredProject = {
       ...prepared,
       revision: current ? current.revision + 1 : 1,
       updatedAt: new Date().toISOString()
@@ -330,12 +382,12 @@ export async function createProjectFolder(name: string): Promise<ProjectFolderRe
     createdAt: now,
     updatedAt: now
   };
-  await db.folders.put(folder);
+  await getOpenSketchDatabase().folders.put(folder);
   return folder;
 }
 
 export async function saveProjectFolder(folder: ProjectFolderRecord): Promise<void> {
-  await db.folders.put(folder);
+  await getOpenSketchDatabase().folders.put(folder);
 }
 
 export async function moveProjectToFolder(
@@ -347,16 +399,17 @@ export async function moveProjectToFolder(
   const result = await saveProject(next);
   if (result.status === "conflict") return result;
   if (folderId) {
-    const folder = await db.folders.get(folderId);
+    const database = getOpenSketchDatabase();
+    const folder = await database.folders.get(folderId);
     if (folder) {
-      await db.folders.put({ ...folder, updatedAt: new Date().toISOString() });
+      await database.folders.put({ ...folder, updatedAt: new Date().toISOString() });
     }
   }
   return result;
 }
 
 export async function deleteProjectFolder(folderId: string): Promise<void> {
-  const changed: ProjectRecord[] = [];
+  const changed: StoredProject[] = [];
   await db.transaction("rw", db.projects, db.folders, async () => {
     const projects = await db.projects.where("folderId").equals(folderId).toArray();
     for (const project of projects) {

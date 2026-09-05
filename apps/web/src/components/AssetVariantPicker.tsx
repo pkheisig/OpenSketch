@@ -12,6 +12,7 @@ import { Check, ChevronDown } from "lucide-react";
 import type { AssetFamily } from "@workspace/editor-core";
 import { AssetPreviewImage } from "@/components/AssetPreviewImage";
 import { MotionPresence } from "@/components/MotionPresence";
+import { useOpenSketchPortalRoot } from "@/application/hostServices";
 import { setAssetDragImage, setAssetDragPayload } from "@/editor/assetDrag";
 
 function startVariantDrag(
@@ -75,6 +76,7 @@ export function AssetVariantPicker({
   value: string;
   onChange: (id: string) => void;
 }) {
+  const portalRoot = useOpenSketchPortalRoot();
   const id = useId();
   const triggerRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -204,7 +206,7 @@ export function AssetVariantPicker({
               ))}
             </div>
           </MotionPresence>,
-          document.body
+          portalRoot ?? document.body
         )}
     </div>
   );

@@ -1,0 +1,71 @@
+/* Semantic token ownership. Components consume these values instead of
+   replaying theme-specific declarations in a second stylesheet. */
+:root,
+html[data-theme="light"] {
+  --shell-bg: #eee7db;
+  --shell-card: #fffaf0;
+  --shell-raised: #fffdf6;
+  --shell-border: #d5c8b7;
+  --shell-border-strong: #c5b6a4;
+  --shell-text: #29251f;
+  --shell-muted: #766c61;
+  --shell-faint: #9a8d7e;
+  --shell-accent: #c65a24;
+  --shell-accent-strong: #a4481b;
+  --shell-accent-soft: #f7e2d3;
+  --shell-on-accent: #ffffff;
+  --shell-danger: #b84c38;
+  --shell-input: color-mix(in srgb, var(--shell-card) 92%, var(--shell-bg));
+  --shell-canvas: color-mix(in srgb, var(--shell-bg) 82%, var(--shell-border));
+  --shell-row: color-mix(in srgb, var(--shell-card) 90%, var(--shell-bg));
+  --shell-focus: color-mix(in srgb, var(--shell-accent) 18%, var(--shell-card));
+  --font-sans: "Avenir Next", Avenir, Inter, "Helvetica Neue", sans-serif;
+  --motion-ui: 160ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  --motion-panel: 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  --shell-bg: #1d1916;
+  --shell-card: #2a241f;
+  --shell-raised: #332a24;
+  --shell-border: #504338;
+  --shell-border-strong: #665548;
+  --shell-text: #f6eee5;
+  --shell-muted: #c4b5a7;
+  --shell-faint: #9e8c7d;
+  --shell-accent: #ff9654;
+  --shell-accent-strong: #ffb27d;
+  --shell-accent-soft: #4a2d1e;
+  --shell-on-accent: #2a180e;
+  --shell-danger: #f08a78;
+  --shell-input: color-mix(in srgb, var(--shell-card) 84%, var(--shell-bg));
+  --shell-canvas: color-mix(in srgb, var(--shell-bg) 88%, var(--shell-border));
+  --shell-row: color-mix(in srgb, var(--shell-card) 92%, var(--shell-bg));
+  --shell-focus: color-mix(in srgb, var(--shell-accent) 22%, var(--shell-card));
+  color-scheme: dark;
+}
+
+:root {
+  font-family: var(--font-sans);
+  color: var(--shell-text);
+  background: var(--shell-bg);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  --ink: var(--shell-text);
+  --ink-soft: var(--shell-muted);
+  --panel: var(--shell-card);
+  --panel-raised: var(--shell-raised);
+  --workspace: var(--shell-canvas);
+  --line: var(--shell-border);
+  --line-dark: var(--shell-border-strong);
+  --teal: var(--shell-accent);
+  --teal-dark: var(--shell-accent-strong);
+  --teal-pale: var(--shell-accent-soft);
+  --ochre: var(--shell-accent);
+  --danger: var(--shell-danger);
+  --shadow: 0 16px 50px color-mix(in srgb, var(--shell-text) 13%, transparent);
+  --motion-sidebar-hover: 340ms cubic-bezier(0.22, 1, 0.36, 1);
+  --motion-disclosure: 220ms cubic-bezier(0.22, 1, 0.36, 1);
+  interpolate-size: allow-keywords;
+}

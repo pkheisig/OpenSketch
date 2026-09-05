@@ -48,7 +48,7 @@ async function renderSavedProjectThumbnail(project: ProjectRecord): Promise<stri
   });
   try {
     await canvas.loadFromJSON(rehydrateProjectScene(project.objects, project.uploads));
-    return createVectorThumbnail(canvas, project.canvas, project.revision);
+    return createVectorThumbnail(canvas, project.canvas, project.revision ?? project.updatedAt);
   } finally {
     canvas.dispose();
   }
@@ -59,7 +59,7 @@ export async function upgradeProjectThumbnails(
 ): Promise<ProjectRecord[]> {
   const upgraded: ProjectRecord[] = [];
   for (const project of projects) {
-    if (isProjectThumbnailCurrent(project.thumbnail, project.revision)) {
+    if (isProjectThumbnailCurrent(project.thumbnail, project.revision ?? project.updatedAt)) {
       upgraded.push(project);
       continue;
     }

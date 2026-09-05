@@ -3,7 +3,7 @@ name: Test, build, and deploy
 on:
   pull_request:
   push:
-    branches: [main2]
+    branches: [dev]
 
 permissions:
   contents: read

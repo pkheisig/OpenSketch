@@ -3,21 +3,49 @@ import { Download, FileImage, FileText, FileType2, X } from "lucide-react";
 import { ColorPalettePicker } from "@/components/ColorPalettePicker";
 import { MotionCollapse } from "@/components/MotionCollapse";
 import { MotionPresence } from "@/components/MotionPresence";
-import { useEditor } from "@/editor/EditorContext";
+import { useEditorFields } from "@/editor/editorHooks";
+import { useOpenSketchHostServices } from "@/application/hostServices";
 import { UiSelect } from "@/components/UiSelect";
 import { EXPORT_DPI_OPTIONS, loadExportDpi, saveExportDpi } from "@/export/preferences";
+import { inspectPngExportResource } from "@/export/png";
 import { useModalDialog } from "./useModalDialog";
 
 export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const editor = useEditor();
+  const services = useOpenSketchHostServices();
+  const editor = useEditorFields([
+    "canvasSettings",
+    "exportSvg",
+    "exportPdf",
+    "exportPng",
+    "exportCredits"
+  ]);
   const dialogRef = useModalDialog(open, onClose);
   const [format, setFormat] = useState<"svg" | "png" | "pdf">("svg");
-  const [dpi, setDpi] = useState(() => loadExportDpi());
+  const [dpi, setDpi] = useState(() => loadExportDpi(1200, services.preferences.storage));
   const [transparent, setTransparent] = useState(false);
   const [background, setBackground] = useState(editor.canvasSettings.background);
   const [exportError, setExportError] = useState("");
   const [exporting, setExporting] = useState(false);
-  const pngMultiplier = dpi / editor.canvasSettings.dpi;
+  const pngResource = inspectPngExportResource(
+    editor.canvasSettings.width,
+    editor.canvasSettings.height,
+    editor.canvasSettings.dpi,
+    dpi
+  );
+  const pngDpiOptions = EXPORT_DPI_OPTIONS.map((value) => {
+    const resource = inspectPngExportResource(
+      editor.canvasSettings.width,
+      editor.canvasSettings.height,
+      editor.canvasSettings.dpi,
+      value
+    );
+    return {
+      value,
+      label: `${value} DPI`,
+      disabled: Boolean(resource.error)
+    };
+  });
+  const displayedError = exportError || (format === "png" ? pngResource.error : "");
   return (
     <MotionPresence open={open} exitMs={180}>
       <div className="dialog-backdrop" onMouseDown={onClose}>
@@ -79,12 +107,9 @@ export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => 
                 className="field"
                 label="Output DPI"
                 value={dpi}
-                options={EXPORT_DPI_OPTIONS.map((value) => ({
-                  value,
-                  label: `${value} DPI`
-                }))}
+                options={pngDpiOptions}
                 onChange={(dpi) => {
-                  setDpi(saveExportDpi(dpi));
+                  setDpi(saveExportDpi(dpi, services.preferences.storage));
                 }}
               />
               <label className="check-field">
@@ -108,21 +133,21 @@ export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => 
               </MotionCollapse>
             </div>
           </MotionCollapse>
-          {exportError ? (
+          {displayedError ? (
             <p className="panel-error" role="alert">
-              {exportError}
+              {displayedError}
             </p>
           ) : null}
           <button
             className="button primary wide"
-            disabled={exporting}
+            disabled={exporting || (format === "png" && Boolean(pngResource.error))}
             onClick={async () => {
               setExporting(true);
               setExportError("");
               try {
                 if (format === "svg") editor.exportSvg();
                 else if (format === "pdf") await editor.exportPdf();
-                else await editor.exportPng(pngMultiplier, transparent, dpi, background);
+                else await editor.exportPng(transparent, dpi, background);
                 setExporting(false);
                 onClose();
               } catch (reason) {
@@ -133,6 +158,24 @@ export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => 
           >
             <Download size={17} /> {exporting ? "Preparing…" : `Export ${format.toUpperCase()}`}
           </button>
+          <button
+            className="button secondary wide"
+            disabled={exporting}
+            onClick={() => {
+              setExportError("");
+              try {
+                editor.exportCredits();
+                onClose();
+              } catch (reason) {
+                setExportError(String(reason).replace(/^Error:\s*/, ""));
+              }
+            }}
+          >
+            <FileText size={17} /> Download credits
+          </button>
+          <p className="dialog-note">
+            A readable credits file is available if another tool strips figure metadata.
+          </p>
         </section>
       </div>
     </MotionPresence>

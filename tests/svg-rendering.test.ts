@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { Group, type FabricObject } from "../apps/web/node_modules/fabric";
 import { describe, expect, it } from "vitest";
+import { sanitizeImportedSvg } from "../apps/web/src/assets/browserSanitizer";
 import {
   copySvgBlendModes,
   loadEditableSvg,
@@ -39,6 +40,20 @@ describe("editable SVG rendering", () => {
     `);
 
     expect(leaves(parsed.objects)[1]?.globalCompositeOperation).toBe("multiply");
+  });
+
+  it("applies a namespaced compound selector during editable SVG loading", async () => {
+    const source = sanitizeImportedSvg(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+        <style>.parent #shape { fill: #123456; }</style>
+        <g class="parent"><rect id="shape" width="10" height="10"/></g>
+      </svg>`,
+      "render"
+    );
+
+    const parsed = await loadEditableSvg(source);
+
+    expect(leaves(parsed.objects)[0]?.fill).toBe("#123456");
   });
 
   it("keeps Gaussian-blur glow filters on editable Fabric objects", async () => {
