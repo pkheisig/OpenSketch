@@ -8578,17 +8578,101 @@
     "clathrin-coated-vesicle": {
       "name": "clathrin-coated vesicle",
       "category": "5. Membranes, junctions, and cell-surface structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/clathrin-coated-vesicle-bioart-transparent.png",
+      "svg": "svg/clathrin-coated-vesicle-bioart-traced.svg",
+      "png_sha256": "941eebae793ba932365036c8f6f246e3f7690468c3e767f3996482af79737fe5",
+      "svg_sha256": "64741c03c4c94238293857fc068223cfe83eff5c0d982dc1595a93c77c928763",
+      "original_sha256": "536009fe6ec2c84a408fee43f2539e363776e101a4ea65c60532d9b05e4db11c",
+      "png_dimensions": [
+        1834,
+        1834
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        336,
+        350,
+        298,
+        371
+      ],
+      "svg_paths": 20968,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/clathrin-coated-vesicle/prompt.json",
+      "qa": "qa/inventory/clathrin-coated-vesicle",
+      "visual_review": "Inspected PNG and SVG on white and dark backgrounds: detached vesicle with external teal coat, blue adaptors, three luminal receptor-bound cargo glyphs, and corrected two-head-row membrane cutaway. Window is an illustrative cutaway, not an open biological pore. No unwanted middle bead row remains. SVG preserves cage openings, shading and complete transparent silhouette with minor banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/clathrin-coated-vesicle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/clathrin-coated-vesicle/inspection.webm"
+      }
     },
     "caveola": {
       "name": "caveola",
       "category": "5. Membranes, junctions, and cell-surface structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/caveola-bioart-transparent.png",
+      "svg": "svg/caveola-bioart-traced.svg",
+      "png_sha256": "6a6d15911510af0b21b7721f1fc3198e6d148430d8046c5ddf3e6a22decd70f1",
+      "svg_sha256": "a08ab85c4b45c4a27b2813355a6a1a8cc74bf5a1659506d55f78580d9d33c04d",
+      "original_sha256": "fa9531bc98a8ecabc9e34de8276d45a3b0adc9c75b421e57cdaa71bc648cc48f",
+      "png_dimensions": [
+        1834,
+        1834
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        317,
+        262,
+        335,
+        294
+      ],
+      "svg_paths": 23860,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/caveola/prompt.json",
+      "qa": "qa/inventory/caveola",
+      "visual_review": "Inspected PNG and SVG on white and dark backgrounds: flask-like invagination remains continuous with membrane shoulders through a narrow neck, fine outer filament net over disc glyphs, distinct blue neck collar. Coat partly occludes the outer leaflet around the bulb. Full silhouette and transparent padding, SVG preserves fine coat strands and depth with mild gradient banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/caveola/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/caveola/inspection.webm"
+      }
     },
     "tight-junction": {
       "name": "tight junction",
       "category": "5. Membranes, junctions, and cell-surface structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/tight-junction-bioart-transparent.png",
+      "svg": "svg/tight-junction-bioart-traced.svg",
+      "png_sha256": "1821d761a8e717f2c86a2544ead9f83e3d2caecff6630335f838e73189a637cc",
+      "svg_sha256": "8df3c866f4215b23ed127b5ee0dc5c099e998732939e1fa65c340259d4cf1c2a",
+      "original_sha256": "cf5b4cb0e7e346412d69303a6eac1f818062dcaa0d9c2982066434c6f83fd7af",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        318,
+        264,
+        319,
+        262
+      ],
+      "svg_paths": 21385,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/tight-junction/prompt.json",
+      "qa": "qa/inventory/tight-junction",
+      "visual_review": "Inspected PNG and SVG on light and dark backgrounds: two distinct closely apposed bilayer panels, three connected short paired contact modules, cytoplasmic scaffold glyphs and orange actin segments. Simplified smooth membrane cores avoid false continuous tails; no floating lower contact remains. SVG preserves contact alignment, shading and full transparent silhouette with slight contour strengthening.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tight-junction/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tight-junction/inspection.webm"
+      }
     },
     "adherens-junction": {
       "name": "adherens junction",
