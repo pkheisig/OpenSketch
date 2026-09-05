@@ -102,6 +102,74 @@ test("registers a safe figure workflow through the browser model context", async
     })
   ).resolves.toMatchObject({ ok: false, error: { code: "EXECUTION_ABORTED" } });
 
+  const sizing = await page.evaluate(async () => {
+    type Tool = {
+      name: string;
+      execute(input: Record<string, unknown>): Promise<{
+        ok: boolean;
+        data?: { objectId?: string; object?: { bounds: { width: number; height: number } } };
+        error?: { code: string };
+      }>;
+    };
+    const tools = (window as typeof window & { __webmcpTools?: Tool[] }).__webmcpTools ?? [];
+    (window as typeof window & { __savedSceneTool?: Tool }).__savedSceneTool = tools.find(
+      (tool) => tool.name === "inspect_scene"
+    );
+    const call = async (name: string, input: Record<string, unknown>) => {
+      const tool = tools.find((item) => item.name === name);
+      if (!tool) throw new Error(`Missing tool: ${name}`);
+      return tool.execute(input);
+    };
+    const first = await call("create_shape", { kind: "rectangle", x: 100, y: 100 });
+    const second = await call("create_shape", { kind: "circle", x: 200, y: 100 });
+    const group = await call("group_objects", {
+      objectIds: [first.data!.objectId, second.data!.objectId]
+    });
+    const objectId = group.data!.objectId;
+    const before = await call("inspect_object", { objectId });
+    const rejected = await call("set_object_properties", {
+      objectIds: [objectId],
+      properties: { width: 400 }
+    });
+    const resized = await call("resize_objects", { objectIds: [objectId], width: 400 });
+    const after = await call("inspect_object", { objectId });
+    const undone = await call("undo", {});
+    const restored = await call("inspect_object", { objectId });
+    await call("delete_objects", { objectIds: [objectId], confirmed: true });
+    return {
+      before,
+      rejected,
+      resized,
+      after,
+      undone,
+      restored,
+      previewRegistered: tools.some((tool) => tool.name === "render_scene_preview")
+    };
+  });
+  expect(sizing.previewRegistered).toBe(false);
+  expect(sizing.rejected).toMatchObject({ ok: false, error: { code: "INVALID_PROPERTY_TARGET" } });
+  expect(sizing.resized).toMatchObject({ ok: true });
+  expect(sizing.after.data!.object!.bounds.width).toBeCloseTo(400, 1);
+  expect(sizing.undone).toMatchObject({ ok: true });
+  expect(sizing.restored.data!.object!.bounds.width).toBeCloseTo(
+    sizing.before.data!.object!.bounds.width,
+    1
+  );
+
+  await expect(page.getByRole("status").filter({ hasText: "Saved" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Undo", exact: true })).toBeEnabled();
+  // Ordinary saves must retain the mounted editor, history and registered callbacks.
+  expect(
+    await page.evaluate(async () => {
+      const tool = (
+        window as typeof window & {
+          __savedSceneTool?: { execute(input: Record<string, unknown>): Promise<unknown> };
+        }
+      ).__savedSceneTool;
+      return tool!.execute({});
+    })
+  ).toMatchObject({ ok: true });
+
   const initialWorkflow = await page.evaluate(async () => {
     const tools =
       (

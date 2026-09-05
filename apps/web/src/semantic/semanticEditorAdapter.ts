@@ -2474,23 +2474,10 @@ export function createSemanticEditorAdapter(
       };
     }
     if (command === "render_scene_preview") {
-      const settings = dependencies.getCanvasSettings();
-      const maxWidth = Math.min(2048, Math.max(64, Math.floor(safeNumber(input.maxWidth) ?? 1024)));
-      const maxHeight = Math.min(
-        2048,
-        Math.max(64, Math.floor(safeNumber(input.maxHeight) ?? 1024))
+      throw new SemanticAdapterError(
+        "COMMAND_UNAVAILABLE",
+        "This host has no scene-preview image transport. Use a browser screenshot."
       );
-      return {
-        data: {
-          supported: false,
-          reason:
-            "This host does not expose an image-result transport; inspect the live canvas screenshot instead.",
-          sceneRevision: sceneRevision(canvas),
-          width: Math.min(maxWidth, Math.max(1, Math.round(settings.width))),
-          height: Math.min(maxHeight, Math.max(1, Math.round(settings.height)))
-        },
-        changedObjectIds: []
-      };
     }
     if (command === "analyze_composition") {
       const settings = dependencies.getCanvasSettings();
@@ -3225,6 +3212,57 @@ export function createSemanticEditorAdapter(
       commitSemantic("Semantic scale");
       return { data: { objectIds: ids }, changedObjectIds: ids };
     }
+    if (command === "resize_objects") {
+      const ids = objectIds(input);
+      const objects = resolveObjects(canvas, ids);
+      assertNonOverlappingTargets(objects);
+      const width = input.width === undefined ? undefined : finiteNumber(input.width, "width");
+      const height = input.height === undefined ? undefined : finiteNumber(input.height, "height");
+      const preserveAspectRatio = input.preserveAspectRatio !== false;
+      if (width === undefined && height === undefined)
+        throw new SemanticAdapterError("INVALID_INPUT", "width or height is required.");
+      if ((width !== undefined && width <= 0) || (height !== undefined && height <= 0))
+        throw new SemanticAdapterError("INVALID_INPUT", "Dimensions must be positive.");
+      if (width !== undefined && height !== undefined && preserveAspectRatio)
+        throw new SemanticAdapterError(
+          "INVALID_INPUT",
+          "Supply one dimension, or set preserveAspectRatio: false."
+        );
+      // Validate all targets before changing any of them, including mixed selections.
+      const scales = objects.map((object) => {
+        if (object.connector)
+          throw new SemanticAdapterError(
+            "INVALID_TARGET",
+            "Resize a bound connector by moving or rebinding its endpoints."
+          );
+        const currentWidth = object.width * object.scaleX;
+        const currentHeight = object.height * object.scaleY;
+        if (
+          !(currentWidth > 0 && currentHeight > 0) ||
+          !Number.isFinite(currentWidth) ||
+          !Number.isFinite(currentHeight)
+        )
+          throw new SemanticAdapterError(
+            "INVALID_TARGET",
+            "Cannot resize zero or invalid geometry."
+          );
+        const factorX = width === undefined ? undefined : width / currentWidth;
+        const factorY = height === undefined ? undefined : height / currentHeight;
+        return {
+          scaleX: object.scaleX * (factorX ?? (preserveAspectRatio ? factorY! : 1)),
+          scaleY: object.scaleY * (factorY ?? (preserveAspectRatio ? factorX! : 1))
+        };
+      });
+      objects.forEach((object, index) => {
+        object.set(scales[index]);
+        object.setCoords();
+        refreshParentGroups(object);
+      });
+      dependencies.refreshConnectors();
+      canvas.requestRenderAll();
+      commitSemantic("Semantic resize");
+      return { data: { objectIds: ids }, changedObjectIds: ids };
+    }
     if (command === "flip_objects") {
       const ids = objectIds(input);
       const axis = input.axis === "x" ? "flipX" : input.axis === "y" ? "flipY" : undefined;
@@ -3249,6 +3287,15 @@ export function createSemanticEditorAdapter(
       }
       const objects = resolveObjects(canvas, ids);
       assertNonOverlappingTargets(objects);
+      const propertyRecord = properties as Record<string, unknown>;
+      if (
+        ("width" in propertyRecord || "height" in propertyRecord) &&
+        objects.some((object) => isGroup(object) || Boolean(object.familyId))
+      )
+        throw new SemanticAdapterError(
+          "INVALID_PROPERTY_TARGET",
+          "Use resize_objects for groups and assets; raw dimensions would corrupt their geometry."
+        );
       objects.forEach((object) => {
         object.set(properties as Record<string, unknown>);
         configureTextObject(object);
@@ -3798,6 +3845,13 @@ export function createSemanticEditorAdapter(
 
   return {
     getProjectId: dependencies.getProjectId,
+    getCommandAvailability: (command) =>
+      command === "render_scene_preview"
+        ? {
+            available: false,
+            reason: "This host has no scene-preview image transport. Use a browser screenshot."
+          }
+        : { available: true },
     isCanvasReady: dependencies.isCanvasReady,
     getCanvasSettings: () => {
       const settings = dependencies.getCanvasSettings();
