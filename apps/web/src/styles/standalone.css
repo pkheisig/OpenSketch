@@ -16,6 +16,11 @@ body {
   margin: 0;
   overflow: hidden;
   overscroll-behavior: none;
+  background: #eee7db;
+}
+
+html[data-theme="dark"] body {
+  background: #1d1916;
 }
 
 #root {

@@ -9,6 +9,11 @@ describe("OpenSketch application presentation contract", () => {
     expect(resolveOpenSketchApplicationPresentation({}, "dark")).toEqual({
       mode: "standalone",
       theme: "dark",
+      appearance: "dark",
+      systemTheme: "dark",
+      style: "default",
+      palette: "opensuite-default",
+      themeContractVersion: "1.0.0",
       density: "comfortable",
       reducedMotion: false,
       uiContractVersion: OPENSUITE_UI_CONTRACT_VERSION,
@@ -57,5 +62,15 @@ describe("OpenSketch application presentation contract", () => {
       ownsUpdating: false,
       ownsShutdown: false
     });
+  });
+
+  it("resolves system appearance from the host-provided system theme", () => {
+    expect(
+      resolveOpenSketchApplicationPresentation({
+        mode: "opensuite",
+        appearance: "system",
+        systemTheme: "dark"
+      })
+    ).toMatchObject({ appearance: "system", systemTheme: "dark", theme: "dark" });
   });
 });

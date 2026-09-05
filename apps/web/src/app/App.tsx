@@ -366,6 +366,14 @@ export function App({
       data-opensketch-owns-global-chrome={presentation.ownsGlobalChrome}
       data-opensketch-owns-theme={presentation.ownsTheme}
       data-opensketch-owns-updating={presentation.ownsUpdating}
+      data-suite-theme-root=""
+      data-suite-ui="opensketch"
+      data-suite-style={presentation.style}
+      data-suite-palette={presentation.palette}
+      data-suite-appearance={presentation.appearance}
+      data-suite-theme-contract-version={presentation.themeContractVersion}
+      data-theme={theme}
+      data-density={presentation.density === "comfortable" ? "standard" : presentation.density}
     >
       <OpenSketchPortalRoot portalRootId={initialContext?.portalRootId}>
         {content}

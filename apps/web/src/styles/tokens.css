@@ -1,7 +1,6 @@
 /* Semantic token ownership. Components consume these values instead of
    replaying theme-specific declarations in a second stylesheet. */
-:root,
-html[data-theme="light"] {
+.opensketch-app[data-opensketch-theme="light"] {
   --shell-bg: #eee7db;
   --shell-card: #fffaf0;
   --shell-raised: #fffdf6;
@@ -25,28 +24,8 @@ html[data-theme="light"] {
   color-scheme: light;
 }
 
-html[data-theme="dark"] {
-  --shell-bg: #1d1916;
-  --shell-card: #2a241f;
-  --shell-raised: #332a24;
-  --shell-border: #504338;
-  --shell-border-strong: #665548;
-  --shell-text: #f6eee5;
-  --shell-muted: #c4b5a7;
-  --shell-faint: #9e8c7d;
-  --shell-accent: #ff9654;
-  --shell-accent-strong: #ffb27d;
-  --shell-accent-soft: #4a2d1e;
-  --shell-on-accent: #2a180e;
-  --shell-danger: #f08a78;
-  --shell-input: color-mix(in srgb, var(--shell-card) 84%, var(--shell-bg));
-  --shell-canvas: color-mix(in srgb, var(--shell-bg) 88%, var(--shell-border));
-  --shell-row: color-mix(in srgb, var(--shell-card) 92%, var(--shell-bg));
-  --shell-focus: color-mix(in srgb, var(--shell-accent) 22%, var(--shell-card));
-  color-scheme: dark;
-}
-
-:root {
+.opensketch-app[data-opensketch-mode="standalone"],
+.opensketch-app[data-opensketch-mode="opensuite"] {
   font-family: var(--font-sans);
   color: var(--shell-text);
   background: var(--shell-bg);

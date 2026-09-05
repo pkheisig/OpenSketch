@@ -780,7 +780,7 @@ input[type="range"] {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 32px;
+  min-height: var(--opensketch-control-normal, 32px);
   padding: 0 12px;
   border: 1px solid var(--shell-border);
   border-radius: 6px;
@@ -823,8 +823,8 @@ input[type="range"] {
 
 .opensketch-app .icon-button {
   display: inline-grid;
-  width: 32px;
-  height: 32px;
+  width: var(--opensketch-control-normal, 32px);
+  height: var(--opensketch-control-normal, 32px);
   padding: 0;
   place-items: center;
   border: 0;
