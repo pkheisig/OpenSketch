@@ -1,0 +1,180 @@
+/* global URL, console, process */
+
+import { createHash } from "node:crypto";
+import { cp, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
+import { join, relative, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { spawnSync } from "node:child_process";
+
+const repositoryRoot = resolve(fileURLToPath(new URL("../..", import.meta.url)));
+const distRoot = join(repositoryRoot, "dist");
+const moduleBuild = join(distRoot, "module");
+const pwaBuild = join(distRoot, "release-pwa");
+const appPackage = JSON.parse(await readFile(join(repositoryRoot, "apps/web/package.json"), "utf8"));
+const editorCorePackage = JSON.parse(
+  await readFile(join(repositoryRoot, "packages/editor-core/package.json"), "utf8")
+);
+const version = appPackage.version;
+const sourceSha = runGit(["rev-parse", "HEAD"]);
+
+if (!/^[0-9a-f]{40}$/.test(sourceSha)) throw new Error("The release source SHA is invalid.");
+if (!process.env.OPENSKETCH_ALLOW_DIRTY_RELEASE && !isCleanGit()) {
+  throw new Error("Refusing to assemble a release from a dirty worktree.");
+}
+
+for (const required of [moduleBuild, pwaBuild]) {
+  if (!(await exists(required))) throw new Error(`Missing build output: ${required}`);
+}
+
+const releaseRoot = join(distRoot, "releases", "opensketch", version);
+await rm(releaseRoot, { recursive: true, force: true });
+await mkdir(releaseRoot, { recursive: true });
+await cp(moduleBuild, join(releaseRoot, "module"), { recursive: true });
+await cp(pwaBuild, join(releaseRoot, "pwa"), { recursive: true });
+await cp(join(repositoryRoot, "apps/web/public/assets"), join(releaseRoot, "assets"), {
+  recursive: true
+});
+await cp(
+  join(repositoryRoot, "apps/web/public/THIRD_PARTY_NOTICES.txt"),
+  join(releaseRoot, "THIRD_PARTY_NOTICES.txt")
+);
+
+const assetManifest = join(releaseRoot, "assets/manifest.json");
+const manifestResult = spawnSync(
+  "pnpm",
+  ["exec", "tsx", "scripts/release/write-asset-manifest.ts", assetManifest],
+  { cwd: repositoryRoot, stdio: "inherit" }
+);
+if (manifestResult.status !== 0) throw new Error("Could not assemble the versioned asset manifest.");
+const typesResult = spawnSync(
+  "node",
+  ["scripts/release/write-module-types.mjs", join(releaseRoot, "module/opensketch-module.d.ts")],
+  { cwd: repositoryRoot, stdio: "inherit" }
+);
+if (typesResult.status !== 0) throw new Error("Could not assemble TypeScript declarations.");
+
+const moduleEntry = `module/opensketch-module.js`;
+const moduleStylesheet = `module/opensketch-module.css`;
+const assetManifestPath = `assets/manifest.json`;
+const moduleFiles = await filesUnder(join(releaseRoot, "module"));
+const artifactFiles = [moduleEntry, moduleStylesheet, assetManifestPath, "THIRD_PARTY_NOTICES.txt"];
+const artifactHashes = {};
+for (const file of artifactFiles) artifactHashes[file] = await sha256(join(releaseRoot, file));
+
+const moduleManifest = {
+  schemaVersion: 1,
+  id: "opensketch",
+  displayName: "OpenSketch",
+  version,
+  sourceSha,
+  applicationContractVersion: "1.0.0",
+  openSuiteContractVersion: "0.1.0-bootstrap",
+  entry: `./${moduleEntry}`,
+  stylesheetEntry: `./${moduleStylesheet}`,
+  assetManifestEntry: `./${assetManifestPath}`,
+  editorCore: {
+    packageName: "@workspace/editor-core",
+    version: editorCorePackage.version,
+    projectFormatVersion: 1
+  },
+  peerDependencies: {
+    react: "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  compatibility: {
+    projectFormatVersion: 1,
+    moduleContractVersion: "1.0.0",
+    openSuiteContractVersion: "0.1.0-bootstrap"
+  },
+  lazyLoading: {
+    moduleEntry: `./${moduleEntry}`,
+    scientificAssetPayload: `./${assetManifestPath}`,
+    fullAssetLibraryIsNotAppShell: true
+  },
+  moduleFiles,
+  artifacts: artifactHashes
+};
+await writeJson(join(releaseRoot, "module-manifest.json"), moduleManifest);
+
+const packageManifest = {
+  name: "@opensketch/application-module",
+  version,
+  description: "Versioned OpenSketch application module for qualified hosts.",
+  type: "module",
+  license: "AGPL-3.0-only",
+  main: `./${moduleEntry}`,
+  types: "./module/opensketch-module.d.ts",
+  exports: {
+    ".": `./${moduleEntry}`,
+    "./manifest": "./module-manifest.json",
+    "./style.css": `./${moduleStylesheet}`,
+    "./assets/manifest.json": `./${assetManifestPath}`
+  },
+  peerDependencies: moduleManifest.peerDependencies,
+  files: ["module", "assets", "pwa", "module-manifest.json", "THIRD_PARTY_NOTICES.txt"]
+};
+await writeJson(join(releaseRoot, "package.json"), packageManifest);
+
+const moduleManifestSha256 = await sha256(join(releaseRoot, "module-manifest.json"));
+await writeJson(join(releaseRoot, "release-attestation.json"), {
+  schemaVersion: 1,
+  moduleId: "opensketch",
+  version,
+  sourceSha,
+  moduleManifestSha256,
+  editorCoreVersion: editorCorePackage.version,
+  projectFormatVersion: 1,
+  releaseArtifactsAreImmutable: true,
+  mutableRefsAllowed: false,
+  generatedBy: "scripts/release/assemble-module-release.mjs"
+});
+
+const allFiles = await filesUnder(releaseRoot);
+const checksumLines = [];
+for (const file of allFiles.filter((value) => value !== "SHA256SUMS")) {
+  checksumLines.push(`${await sha256(join(releaseRoot, file))}  ${file}`);
+}
+checksumLines.sort((left, right) => left.localeCompare(right));
+await writeFile(join(releaseRoot, "SHA256SUMS"), `${checksumLines.join("\n")}\n`, "utf8");
+console.log(`Assembled OpenSketch ${version} release at ${relative(repositoryRoot, releaseRoot)}`);
+
+function runGit(args) {
+  const result = spawnSync("git", args, { cwd: repositoryRoot, encoding: "utf8" });
+  if (result.status !== 0) throw new Error(result.stderr || `git ${args.join(" ")} failed`);
+  return result.stdout.trim();
+}
+
+function isCleanGit() {
+  const result = spawnSync("git", ["diff", "--quiet"], { cwd: repositoryRoot });
+  const cached = spawnSync("git", ["diff", "--cached", "--quiet"], { cwd: repositoryRoot });
+  return result.status === 0 && cached.status === 0;
+}
+
+async function exists(path) {
+  try {
+    await readdir(path);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+async function filesUnder(directory, prefix = "") {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const files = [];
+  for (const entry of entries) {
+    const relativePath = prefix ? `${prefix}/${entry.name}` : entry.name;
+    const fullPath = join(directory, entry.name);
+    if (entry.isDirectory()) files.push(...(await filesUnder(fullPath, relativePath)));
+    else if (entry.isFile()) files.push(relativePath);
+  }
+  return files;
+}
+
+async function sha256(path) {
+  return createHash("sha256").update(await readFile(path)).digest("hex");
+}
+
+async function writeJson(path, value) {
+  await writeFile(path, `${JSON.stringify(value, null, 2)}\n`, "utf8");
+}

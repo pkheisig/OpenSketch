@@ -8,6 +8,8 @@
   "scripts": {
     "dev": "pnpm --filter @workspace/web dev",
     "build": "pnpm --filter @workspace/editor-core build && pnpm --filter @workspace/web build",
+    "build:module": "pnpm --filter @workspace/editor-core build && pnpm --filter @workspace/web build:module",
+    "build:module-release": "pnpm --filter @workspace/editor-core build && pnpm --filter @workspace/web build:release-pwa && pnpm --filter @workspace/web build:module && node scripts/release/assemble-module-release.mjs && node scripts/release/check-module-release.mjs",
     "build:pages": "VITE_PUBLIC_BASE=/OpenSketch/ pnpm build",
     "build:root": "VITE_PUBLIC_BASE=/ pnpm build",
     "preview": "pnpm --filter @workspace/web preview",

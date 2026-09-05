@@ -183,6 +183,7 @@ export interface OpenSketchApplicationModule {
 }
 
 export interface OpenSketchModuleManifest {
+  schemaVersion: 1;
   id: "opensketch";
   displayName: "OpenSketch";
   version: string;
@@ -190,6 +191,16 @@ export interface OpenSketchModuleManifest {
   entry: "OpenSketchApplication";
   stylesheetEntry: string;
   assetManifestEntry: string;
+  editorCore: {
+    packageName: "@workspace/editor-core";
+    version: string;
+    projectFormatVersion: number;
+  };
+  compatibility: {
+    openSuiteContractVersion: string;
+    react: string;
+    "react-dom": string;
+  };
   peerDependencies: {
     react: string;
     "react-dom": string;

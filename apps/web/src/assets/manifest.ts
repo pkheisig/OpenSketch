@@ -3,7 +3,10 @@ import manifest from "../generated/nih-bioart-manifest.json";
 import openAssetsManifest from "../generated/open-assets-manifest.json";
 import { TOP_VIEW_LABWARE_FAMILIES } from "./labware";
 
-export function resolveBundledAssetPath(path: string, baseUrl = import.meta.env.BASE_URL): string {
+export function resolveBundledAssetPath(
+  path: string,
+  baseUrl = import.meta.env?.BASE_URL ?? "/"
+): string {
   if (/^(?:data:|blob:|https?:)/i.test(path)) return path;
   const normalizedBase = baseUrl.endsWith("/") ? baseUrl : `${baseUrl}/`;
   return `${normalizedBase}${path.replace(/^\/+/, "")}`;

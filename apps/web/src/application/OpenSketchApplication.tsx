@@ -1,4 +1,5 @@
 import { createElement, useState, type Dispatch, type SetStateAction } from "react";
+import { OpenSketch_FORMAT_VERSION } from "@workspace/editor-core";
 import { App } from "@/app/App";
 import type {
   OpenSketchApplicationContext,
@@ -11,13 +12,24 @@ import type {
 import { OpenSketchHostProvider } from "@/application/hostServices";
 
 export const OPENSKETCH_MODULE_MANIFEST: OpenSketchModuleManifest = {
+  schemaVersion: 1,
   id: "opensketch",
   displayName: "OpenSketch",
   version: "0.1.0",
   contractVersion: "1.0.0",
   entry: "OpenSketchApplication",
-  stylesheetEntry: "./styles/app.css",
+  stylesheetEntry: "./module/opensketch-module.css",
   assetManifestEntry: "./assets/manifest.json",
+  editorCore: {
+    packageName: "@workspace/editor-core",
+    version: "0.1.0",
+    projectFormatVersion: OpenSketch_FORMAT_VERSION
+  },
+  compatibility: {
+    openSuiteContractVersion: "0.1.0-bootstrap",
+    react: "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
   peerDependencies: {
     react: "^19.0.0",
     "react-dom": "^19.0.0"
