@@ -7401,17 +7401,101 @@
     "nucleolus": {
       "name": "nucleolus",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/nucleolus-bioart-transparent.png",
+      "svg": "svg/nucleolus-bioart-traced.svg",
+      "png_sha256": "77cdae4d1ace534a0580f90b7ad532118c6b918d259f0ac442e7f89e79f21a7e",
+      "svg_sha256": "71baca38cc0949f7e67033806dc44704698c01dc7802a5536853d3f228ca7bdd",
+      "original_sha256": "e65c958354fe0705bd0a75e434d7b1479743c587e9ccf24dc914f3bee6c1222e",
+      "png_dimensions": [
+        1819,
+        1819
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        260,
+        304,
+        273,
+        304
+      ],
+      "svg_paths": 38176,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/nucleolus/prompt.json",
+      "qa": "qa/inventory/nucleolus",
+      "visual_review": "PNG/SVG inspected on light and dark: complete membrane-free nucleolar cutaway, three pale centers and surrounding fibrillar regions retained. Fine detail and purple palette remain recognizable; trace has minor texture quantization. No checkerboard or background halo. Component sizes/counts are illustrative.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nucleolus/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nucleolus/inspection.webm"
+      }
     },
     "nuclear-envelope": {
       "name": "nuclear envelope",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/nuclear-envelope-bioart-transparent.png",
+      "svg": "svg/nuclear-envelope-bioart-traced.svg",
+      "png_sha256": "1d392f0d91543722bb8a93eeed7283662c2ea9bac9a19cebfa7aa51d87567a79",
+      "svg_sha256": "af9125632d1fe8b1061356880ca8ed59ff201abea2ceb0dc904d7c6fcb3a6c78",
+      "original_sha256": "84865c59310cabd15216caec660a97283ce4444297be5de753376eabfaa79686",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        580,
+        327,
+        563
+      ],
+      "svg_paths": 15452,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/nuclear-envelope/prompt.json",
+      "qa": "qa/inventory/nuclear-envelope",
+      "visual_review": "Reviewed PNG and SVG on light/dark: complete double-bilayer patch, continuous curved membrane returns at pore edges, underside lamina retained. Transparent spaces and external padding are clean. SVG closely matches PNG with minor banding; pore architecture is simplified.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nuclear-envelope/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nuclear-envelope/inspection.webm"
+      }
     },
     "nuclear-pore-complex": {
       "name": "nuclear pore complex",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/nuclear-pore-complex-bioart-transparent.png",
+      "svg": "svg/nuclear-pore-complex-bioart-traced.svg",
+      "png_sha256": "eb49334b80aca34ccd88dbeabada77b2ecc08e4abb165d1f0a9b756411322edb",
+      "svg_sha256": "e92daf2f9948cc6fb7f80f154de0ba1d5c2533d286f6d6de8d147581cebfb082",
+      "original_sha256": "b8c38aa754538b50c24764e21ec8a37a9883507fc04785ba98341f3c5ef6121a",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        251,
+        305,
+        251
+      ],
+      "svg_paths": 16841,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/nuclear-pore-complex/prompt.json",
+      "qa": "qa/inventory/nuclear-pore-complex",
+      "visual_review": "Light/dark PNG and SVG inspected: eight upper sectors with eight filaments, open channel, aligned scaffold rings and tapered basket retained. Six basket strands visible in projection. Clear transparent inter-filament spaces and margins; slight trace contour banding only. Simplified archetype, not atomistic reconstruction.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nuclear-pore-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nuclear-pore-complex/inspection.webm"
+      }
     },
     "mitochondrion": {
       "name": "mitochondrion",
