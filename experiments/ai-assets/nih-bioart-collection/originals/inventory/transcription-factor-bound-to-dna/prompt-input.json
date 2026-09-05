@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a transcription factor bound to DNA, matching NIH BioArt style: polished detailed biomedical illustration, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, saturated colors. Show a short horizontal blue double-stranded DNA helix with visible connecting base-pair rungs and major/minor groove spacing. At the center a generic bZIP transcription-factor dimer: two smooth coral elongated alpha-helical protein arms grip the DNA major groove from opposite sides, then join above into a short paired coiled-coil zipper stem. DNA continues intact left and right, not severed or melted; protein contacts outside groove and does not pierce backbone. Compact recognizable protein-DNA complex, smooth matte molecular schematic not atomistic. Complete centered generous transparent padding, no text labels arrows borders scenery unrelated objects or cast shadows. Actual transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-d0f2168d-9d2e-4bb2-995f-12afde980334.png",
+  "archetype": "Generic bZIP DNA-binding dimer represented as two diverging helical arms and a paired zipper stem. Protein-DNA contact angles, DNA groove spacing and base colors are schematic; no sequence identity or exact GCN4 coordinates claimed.",
+  "references": [
+    "https://www.rcsb.org/structure/1YSA"
+  ]
+}

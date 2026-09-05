@@ -1,0 +1,12 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a minimal actin-myosin contractile unit, matching NIH BioArt style: polished biomedical illustration, smooth clean protein forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, saturated colors. A simplified bipolar myosin-II minifilament lies horizontally across center as a coral bundled rod, central bare zone free of heads, groups of bent coral motor projections at each end. Above it, one violet double-helical actin filament extends from left toward middle; below it, a second violet actin filament extends from right toward middle, overlapping the myosin region. Left-half myosin heads reach upward and contact the upper actin filament; right-half heads reach downward and contact lower actin. Show two opposing filament overlaps with clear empty space, one complete minimal molecular assembly. No sarcomere boundaries, membranes, cells, extra filaments, arrows, text or labels. Smooth matte molecular schematic, no atomistic bumps. Complete centered with generous transparent padding, transparent alpha PNG, no scenery or cast shadows.",
+  "refinement": "Smooth this illustration: replace pebbled grainy actin subunits with smooth rounded matte lobes and rough myosin surfaces with smooth coral shapes and subtle shading. Preserve central head-free bare zone, bipolar bundle, upper-left and lower-right actin tracks with attached myosin heads, and all connections. Crisp clean contours, no mottled texture, no extra parts. Transparent alpha PNG, full assembly padded.",
+  "alpha_refinement": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-7b8c3675-ee0e-4185-93c9-8aa639867d3b.png",
+  "archetype": "Minimal bipolar actomyosin assembly with central myosin bare zone and opposite actin overlaps. Molecular number, filament lengths and light-chain detail simplified; no full sarcomere or motion measurement depicted.",
+  "references": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC5793755/",
+    "https://pdb101.rcsb.org/motm/18"
+  ]
+}

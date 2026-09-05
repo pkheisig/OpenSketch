@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a transcription bubble, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Use a clean untwisted ladder schematic: DNA duplex has a continuous BLUE upper backbone and continuous CYAN lower backbone, paired at left and right, separated around an elongated oval central bubble. Upper strand bows upward and lower bows down, no backbone branches. Within the bubble one short ORANGE RNA strand lies alongside the LOWER cyan DNA template for a short RNA-DNA hybrid with about five short base-pair rungs; its free left end exits downward-left from the bubble as an unpaired orange tail. The orange RNA right end terminates inside the bubble. No RNA polymerase protein. No orange rail outside paired DNA. Broad smooth pseudo-3D tubular forms and thin dark outlines, transparent alpha PNG. Base-pair rungs symbolic without letters.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-7beaa62d-5c54-4180-8f51-f0f4810c3aff.png",
+  "archetype": "Untwisted transcription bubble with continuous DNA strands and emerging RNA paired locally to lower template. Symbolic bases and uncalibrated bubble size; polymerase and polarity labels omitted.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "transcription-bubble",
+  "name": "transcription bubble",
+  "original": "originals/inventory/transcription-bubble/generated.png",
+  "original_sha256": "d7d5bb16c052a72bf343f263e17272baad6c7d6527f7c4bc6208d6c17d828813"
+}

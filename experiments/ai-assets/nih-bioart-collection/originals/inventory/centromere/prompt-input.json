@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a centromere, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Show a close schematic view of a paired sister centromere region: two short vertical violet compact chromatin columns adjacent to each other, constricted at middle and joined by a narrow central pericentromeric chromatin bridge. On the OUTER left face of left column and OUTER right face of right column, show small coral centromeric chromatin domains beneath teal layered kinetochore plates that face in opposite directions. No spindle fibers. Keep both chromatin columns short so the centromere is dominant; rounded complete endpoints, no giant whole chromosomes. Smooth broad packing ridges, clean matte surfaces and restrained highlights, crisp fine outlines. This is a region schematic, not atomic machinery. True transparent alpha PNG.",
+  "refinement": "Preserve this centromere region composition, violet paired chromatin segments, narrow connecting bridge, coral centromeric patches and outward-facing teal plates. Remove ALL granular wrinkled surface texture. Use smooth matte biomedical vector-like forms with thin crisp darker outlines, broad restrained gradients, soft highlights. Slightly narrow each violet column at the level of the central bridge. Keep everything complete on true transparent alpha PNG background, no glow/shadow.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-cdb6e81c-ecee-435c-bd94-84855b68f7d0.png",
+  "archetype": "Schematic paired centromere region with violet chromatin, coral centromeric domains and outward-facing teal kinetochores. Region-scale abstraction; plate numbers, molecular packing and bridge not a structural model.",
+  "references": [
+    "https://www.rcsb.org/structure/3AN2",
+    "https://www.rcsb.org/structure/6MUO"
+  ]
+}

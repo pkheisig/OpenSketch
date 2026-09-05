@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a reusable glass hemocytometer, matching NIH BioArt visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, saturated cool blue glass colors. Thick rectangular polished glass slide with beveled edges, central H-shaped recessed channel separating two raised coverglass-support rails and two central counting platforms. Each platform has a very small fine etched counting grid, shown schematically at natural scale, not enlarged into a diagram. A thick rectangular clear coverslip correctly rests across the support rails above the two counting platforms. Three-quarter near overhead view, empty clean glass, no cells or sample. Complete centered generous transparent padding. No text, numerical graduations, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Actual transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-514cc8fa-f46d-47c8-871e-9209a4ab4350.png",
+  "archetype": "Reusable glass hemocytometer with two counting platforms and support rails beneath coverslip. Grid marks are schematic, not an exact Neubauer ruling or calibrated measurement surface. No cells or sample shown.",
+  "references": [
+    "https://www.marienfeld-superior.com/counting-grids.html",
+    "https://www.marienfeld-superior.com/counting-chambers-2817.html"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "hemocytometer",
+  "name": "hemocytometer",
+  "original": "originals/inventory/hemocytometer/generated.png",
+  "original_sha256": "9f0a72cfdad0d72ded61be5db79f54cf65a64fa038f153102c54743899207971"
+}

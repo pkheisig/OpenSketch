@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a DNA insertion/deletion locus, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Specifically an insertion-deletion heteroduplex loop schematic: a straight untwisted DNA ladder with BLUE upper backbone and CYAN lower backbone. Upper blue backbone forms one short upward unpaired loop at the center containing THREE extra nucleotide beads and base tabs pointing inward. The lower cyan backbone stays straight and continuous underneath the loop, without corresponding bases for the extra upper loop bases. Normal paired base rungs on the left and right flanks continue the duplex. Both backbones continuous, no nick, no deletion hole through either backbone. Three unpaired base tabs in the loop are coral; paired flanking bases gold/violet. Smooth matte tubes, subtle highlights, crisp fine outlines. True transparent alpha PNG.",
+  "refinement": "Keep the upper blue three-base bulge and the paired flanking ladder unchanged. Remove ONLY the two cyan circular nucleotide beads on the straight lower backbone directly beneath the bulge. Replace that lower central span with one smooth uninterrupted cyan connecting tube, no beads and no base tabs there, so there are no apparent abasic nucleotides opposite the three extra upper bases. Maintain true transparent alpha PNG and smooth biomedical styling.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-939ebee2-d23d-4968-8445-e9abdf2af4b5.png",
+  "archetype": "Insertion-deletion heteroduplex loop: three extra upper-strand bases, continuous backbones and paired flanks. Rungs represent base pairs; stretched lower connecting span is schematic, not a long abasic region.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "dna-insertion-deletion-locus",
+  "name": "DNA insertion/deletion locus",
+  "original": "originals/inventory/dna-insertion-deletion-locus/generated.png",
+  "original_sha256": "ecba27304d50a455a191b28c2379595d98e4413f11898a07495002fb1bded69e"
+}

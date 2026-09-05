@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a spliceosome, matching NIH BioArt visual style: detailed polished biomedical illustration, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, saturated colors. Show an asymmetric compact ribonucleoprotein assembly with a large crescent-shaped teal scaffold, a violet upper lobe, coral side lobe, and smaller gold and blue intrinsic protein domains around a central RNA-rich pocket. A few visible green RNA stems and hairpin loops nest inside the pocket, partly occluded by proteins, indicating the snRNA catalytic core. One orange pre-mRNA strand threads through the assembly with short free extensions on opposite sides; no excised lariat or completed reaction diagram. Irregular connected molecular assembly, not a symmetric ring or ribosome. Smooth softly lobed matte protein surfaces, no atomistic granular texture. Full centered object generous transparent padding; no labels text arrows borders scenery unrelated objects or cast shadows. Transparent alpha PNG.",
+  "refinement": "Remove all pebbled granular and mottled texture from protein surfaces. Make smooth softly lobed matte domains with clean contours and subtle gradients in teal violet coral blue gold. Preserve asymmetric assembly, green RNA stems nested inside pocket and single orange pre-mRNA crossing. Zoom out slightly to keep all RNA ends and protein edges fully visible with clear transparent padding. Transparent alpha PNG.",
+  "alpha_refinement": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-0ff79bac-9d60-448d-a2cd-4c2867706fa5.png",
+  "archetype": "Schematic spliceosomal ribonucleoprotein assembly with internal snRNA stems and threaded pre-mRNA. Protein lobes, snRNA paths and subunit counts are illustrative, not a reconstruction of a specific Bact/C/C-star state or atomic coordinates. No reaction outcome shown.",
+  "references": [
+    "https://pdb101.rcsb.org/motm/245",
+    "https://www.rcsb.org/structure/5Z56"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "spliceosome",
+  "name": "spliceosome",
+  "original": "originals/inventory/spliceosome/generated.png",
+  "original_sha256": "292e7c48aeefc06fce6b45093df9efd6be28f5a06c86ec4e63668b5e8f748802"
+}

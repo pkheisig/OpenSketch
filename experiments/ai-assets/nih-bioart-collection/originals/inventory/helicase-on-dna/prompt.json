@@ -1,0 +1,26 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of helicase on DNA, matching NIH BioArt style: detailed polished biomedical illustration, smooth clean protein domains, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, saturated colors. A generic six-subunit ring helicase colored violet, each subunit one rounded wedge around a clear central pore, three-quarter view. Blue/cyan duplex DNA approaches from left and separates just before ring. Exactly ONE blue single strand threads through central pore and exits to right. The other cyan strand is excluded from pore and curves below and outside ring toward lower right. Short dangling bases on each single strand, intact paired rungs in left duplex. Exactly two DNA backbones total, continuous, no extra branches. No polymerase, primase, free nucleotides, labels arrows text borders scenery or shadows. Molecular topology schematic but clear steric exclusion. Complete centered generous transparent padding, matte smooth domains no rough atomic texture. Actual transparent alpha PNG.",
+  "refinements": [
+    "Correct the helicase ring to exactly SIX protein subunits, not seven. Arrange six smooth violet rounded wedges around central pore, no additional ring lobes. Smooth out mottled rough protein surface. Zoom out to show BOTH complete left DNA duplex ends and both right single-strand ends with generous padding. Preserve blue strand passing through ring and cyan strand outside below it. Transparent alpha PNG.",
+    "At the far left DNA endpoint, separate the blue and cyan backbones into two distinct rounded terminal tips, offset vertically slightly. Remove the little blue ball joining them: DNA duplex ends are not a closed hairpin. Preserve six violet helicase subunits and all strand paths. Remove checkerboard background and colored outer glow; actual transparent alpha PNG."
+  ],
+  "alpha_refinement": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-ee91239f-b23a-41df-9705-160aef5d51b4.png",
+  "archetype": "Generic hexameric replicative helicase with one DNA strand threaded through central pore and complementary strand excluded. Six subunits visible. DNA endpoints capped schematically; no exact sequence, polarity, ATP state or species claimed.",
+  "references": [
+    "https://pdb101.rcsb.org/motm/168",
+    "https://www.rcsb.org/structure/1CR0"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "helicase-on-dna",
+  "name": "helicase on DNA",
+  "original": "originals/inventory/helicase-on-dna/generated.png",
+  "original_sha256": "96f1aff4c2932ebcf6863c5f47782080ebc1f0efe074cd3f439497c58ecfa210"
+}

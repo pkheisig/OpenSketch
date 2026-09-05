@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a 48-well plate, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Transparent alpha PNG. One clear rectangular laboratory culture plate, NO lid, exactly 48 round cylindrical wells in a perfectly regular grid of SIX rows by EIGHT columns. High near-top three-quarter view makes every well clearly countable, with only modest perspective. Long edge horizontal, eight wells across each row, six rows back-to-front. Each well contains a shallow equal volume of soft pink medium; clear pale blue transparent plastic rim, one subtly chamfered corner, crisp outlines, slight depth on front and right side walls. No row letters, numbers, logos, marks, or contents other than uniform medium. Generous transparent margin, smooth illustration rather than photographic texture.",
+  "refinements": [
+    "Add one full extra row of eight wells between the current fourth row and front row, extending the plate depth to accommodate it. Current image has only FIVE rows of eight; final must have SIX rows of EIGHT = 48. All six rows completely visible, same clear wells and pink medium. Keep no markings. Transparent alpha PNG, generous margins."
+  ],
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-fa851d0a-2575-417a-bb10-f11d1dcc7696.png",
+  "archetype": "48-well culture plate with six rows of eight round wells. Uniform pink medium is illustrative, not experimental data. Exterior dimensions and fluid volumes not specified.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "48-well-plate",
+  "name": "48-well plate",
+  "original": "originals/inventory/48-well-plate/generated.png",
+  "original_sha256": "412806ba0f6b724397688392f195f9dd5e79bb4f18761294753a85b88200f78a"
+}

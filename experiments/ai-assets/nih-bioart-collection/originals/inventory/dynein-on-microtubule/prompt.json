@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of dynein on a microtubule, matching NIH BioArt reference style: detailed polished biomedical illustration, smooth clean protein forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, saturated professional colors. Simplified cytoplasmic dynein dimer: two large flattened AAA motor rings, one violet and one coral, each ring visibly composed of six connected lobes around a small central depression. Each motor ring has its own long thin paired coiled-coil stalk descending obliquely to a small microtubule-binding foot. Both feet touch the top of a short horizontal blue hollow microtubule segment made of aligned tubulin protofilaments, open circular end visible on right. The two large rings are above the track, not the feet; thick flexible tail/linker arms leave their upper sides and join into one compact shared tail assembly above. No cargo, dynactin, extra motors, arrows or labels. Complete centered motor-track complex with generous transparent padding, no scenery or cast shadows. Smooth matte molecular schematic, not atom-level rendering or machine gears. Transparent alpha PNG.",
+  "refinement": "Refine into smooth NIH BioArt-style biomedical illustration. Remove bumpy atomistic pebbled texture from all protein surfaces; use smooth softly lobed matte domains with crisp contours and subtle gradients. Preserve both six-lobed motor rings, two long paired stalks and two feet contacting the blue microtubule. Preserve ring-to-tail connections and compact upper tail assembly. Keep complete object, reduce zoom for generous transparent padding. No new components or text. Transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-36f3574e-89d6-431a-8f35-50057df45df4.png",
+  "archetype": "Simplified cytoplasmic dynein dimer attached to a short microtubule segment by two stalk-tip binding domains. Six-lobed AAA rings shown; tail accessory subunits, linker paths and microtubule protofilament number schematic, not atomic topology or a defined nucleotide state.",
+  "references": [
+    "https://pdb101.rcsb.org/motm/176",
+    "https://www.rcsb.org/structure/3WUQ"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "dynein-on-microtubule",
+  "name": "dynein on microtubule",
+  "original": "originals/inventory/dynein-on-microtubule/generated.png",
+  "original_sha256": "2878077bc227760d6f06c355be29cc88bd2ee599f363a98167f7d35eade510a6"
+}

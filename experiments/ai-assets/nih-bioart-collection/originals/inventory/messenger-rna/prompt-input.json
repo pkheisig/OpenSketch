@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of messenger RNA, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A mature capped polyadenylated eukaryotic mRNA schematic: ONE continuous unbranched orange backbone in a shallow horizontal S curve, a small violet terminal cap attached at LEFT end, mixed-color short individual base tabs along middle region, and a visibly uniform run of gold base tabs on the same backbone at RIGHT end representing poly-A tail. Cap small, comparable to a few nucleotides, not a protein ball. No ribosome or proteins, no duplex, no loops returning to form a circle. Entire RNA and both ends visible. Smooth clean tube and tabs, saturated orange/violet/gold with cyan/coral middle bases, restrained gradients and fine crisp outlines. True transparent PNG alpha. Sequence and lengths schematic.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-fdb0be8a-16e0-4889-b105-3c9ab4275a05.png",
+  "archetype": "Representative mature capped polyadenylated eukaryotic mRNA. Violet terminal cap and repeated gold poly-A base tabs on continuous orange strand. Symbolic base/cap shapes, transcript length and sequence; not all RNA classes have these terminal features.",
+  "references": [
+    "https://www.ncbi.nlm.nih.gov/books/NBK26887/"
+  ]
+}

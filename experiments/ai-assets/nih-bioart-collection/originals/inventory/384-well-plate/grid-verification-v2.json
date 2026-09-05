@@ -1,0 +1,28 @@
+{
+  "source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-a89dc598-5203-42ad-957b-ca070659f43b.png",
+  "rows": 16,
+  "columns_per_row": [
+    24,
+    24,
+    24,
+    24,
+    24,
+    24,
+    24,
+    24,
+    24,
+    24,
+    24,
+    24,
+    24,
+    24,
+    24,
+    24
+  ],
+  "well_count": 384,
+  "alpha_extrema": [
+    0,
+    254
+  ],
+  "method": "Pink interior runs in all 16 row centers of final original; no image edits."
+}

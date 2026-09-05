@@ -1,0 +1,15 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an inflammasome complex, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Use the NAIP/NLRC4 inflammasome archetype: broad shallow circular disk of eleven radially arranged curved protein subunits, ten teal and one gold sensor subunit, each with an outer curved leucine-rich-repeat arm and an inner compact lobe. Short violet helical CARD filament rises from center of disk. Elevated three-quarter view so full wheel and filament visible. Biological smooth lobed protein forms, not mechanical gears. No membrane, cytokines, cell, substrate or text. Matte restrained gradients, not granular atom surfaces. True transparent PNG.",
+  "refinements": [
+    "Rebuild the disk with ELEVEN radial subunits total: TEN teal crescent-and-lobe units plus ONE golden sensor unit. Current image has too few. Arrange evenly around a shallow continuous disk, smaller units so all eleven fit. Central violet CARD filament keep but shorten to half current height. Smooth clean broad protein surfaces, no atom bumps, no gritty texture, polished restrained gradients and crisp outlines in NIH BioArt style. Zoom out with generous clear padding, all crescents complete. Transparent PNG alpha. No text.",
+    "Preserve the eleven-subunit radial wheel layout. Color the entire foreground sensor subunit gold, including its curved outer arm that is currently partly teal. Keep all other ten subunits teal and central CARD filament violet. Simplify each protein surface into broad smooth lobes with subtle matte gradients and fine dark outlines, eliminating all granular bumps. Keep inner lobes joined as continuous disk; no added or removed subunits. Transparent alpha PNG, generous padding, no backdrop."
+  ],
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-f82d6393-b53a-41ff-9bed-9922d8f7740f.png",
+  "archetype": "NAIP/NLRC4 disk archetype with gold sensor, ten teal radial units and central violet CARD filament. Domain conformations, filament length and relative packing schematic, not a coordinate model or universal inflammasome structure.",
+  "references": [
+    "https://www.rcsb.org/structure/3JBL",
+    "https://www.rcsb.org/structure/8FW2"
+  ]
+}

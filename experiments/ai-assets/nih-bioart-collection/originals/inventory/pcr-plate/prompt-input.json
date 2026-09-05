@@ -1,0 +1,6 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a PCR plate, matching NIH BioArt visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. Unskirted white translucent polypropylene PCR plate with a thin rectangular connected top deck and rows of small thin-walled tapered conical reaction tubes extending downward. Three-quarter low angle emphasizes the individual tapered tubes and thin connecting deck, distinguishing from deep-well blocks. Empty open round tube mouths; rear wells naturally occluded. Generic capacity unspecified. No caps, separate rack, liquid, text, labels, markings, arrows, borders, scenery or large cast shadows. Complete centered object with generous transparent padding, transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-1a672b16-909a-426d-a1e8-9aaa3eae5048.png",
+  "archetype": "Unskirted PCR plate with thin connecting deck and tapered reaction wells. Generic capacity and dimensions unspecified."
+}

@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an ELISA stripwell plate, matching NIH BioArt style: polished biomedical illustration, smooth forms, crisp outlines, subtle pseudo-3D depth and highlights, saturated colors. Blue rectangular reusable microplate support frame holding parallel clear removable eight-well strips. One intrinsic strip at the near edge is slightly lifted at an angle, showing eight joined clear cylindrical flat-bottom wells; other strips remain seated. Wells empty, no experimental data or colored result pattern. Show clear strip structure and support frame, three-quarter view, complete centered asset generous transparent padding. No text, numbers, labels, arrows, borders, scenery, unrelated objects, shadows or background. Actual transparent alpha PNG.",
+  "refinement": "Correct the lifted foreground strip to exactly EIGHT joined wells; it currently has nine. Remove one well and redistribute the remaining eight evenly along its length so it still fits the frame. Each seated strip should also have eight wells. Preserve blue holder and clear empty flat-bottom cylindrical wells. No markings. Transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-58386715-db68-42b1-a98b-8a85334641c7.png",
+  "archetype": "ELISA removable-strip plate archetype, partially loaded blue frame with one lifted eight-well strip. Seated strips are schematic; total capacity is not specified. Empty wells show no assay results.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "elisa-plate",
+  "name": "ELISA plate",
+  "original": "originals/inventory/elisa-plate/generated.png",
+  "original_sha256": "f057131ee816328c6dcc2f11b739231dabeef45e35a0c00c750b2cc4d44453e0"
+}

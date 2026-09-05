@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a DNA polymerase replication complex, matching NIH BioArt visual style: detailed polished biomedical illustration, clean smooth protein forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, saturated professional colors. Minimal polymerase-clamp complex on a primer-template junction, not a full replisome. Large smooth coral hand-like polymerase domain with fingers/thumb surrounding active cleft; compact violet ring-shaped sliding clamp directly adjoining rear face and encircling the newly formed duplex. Blue template DNA single strand enters from right with short dangling bases. Inside polymerase it pairs with a growing cyan complementary DNA strand; completed blue/cyan duplex exits left through center hole of violet clamp. Growing complementary strand ends inside active site, no second single-stranded extension on right. One continuous template, one primer/product strand, no RNA tail, no extra DNA branches or free nucleotides. Smooth matte molecular schematic, no atomistic texture. Complete centered generous transparent padding, no text labels arrows borders scenery cast shadow. Actual transparent alpha PNG.",
+  "refinement": "Smooth the coral polymerase and violet clamp surfaces, removing pebbled roughness and mottled glare. Keep soft matte biomedical shading, crisp contours and same architecture: violet closed ring around duplex, blue template continues alone to right, cyan complementary strand ends inside polymerase. Preserve every DNA connection and colors. No extra components or text. Transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-a1822726-ced6-471c-bf8a-60210f88720c.png",
+  "archetype": "Minimal DNA polymerase and sliding-clamp complex on primer-template DNA. One template enters alone and duplex product passes through the clamp. Protein domain layout, clamp subunit number and base identities schematic; not a full replisome.",
+  "references": [
+    "https://pubmed.ncbi.nlm.nih.gov/1939066/",
+    "https://www.rcsb.org/structure/7AZ5"
+  ]
+}

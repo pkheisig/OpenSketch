@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a nucleosome array, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Show an extended beads-on-a-string array of FIVE well separated violet histone core disks, arranged along one gently waving horizontal DNA duplex. Blue and cyan DNA duplex winds around each disk about 1.7 turns and continues as a single linker to the next disk. Expose some violet disk face in each bead; disk lobes are subtle symbolic protein domains. Two short DNA duplex ends at left/right. No branching DNA, no closed rings disconnected from linkers, no stacking of disks into a fiber. Smooth matte clean surfaces, fine deep-blue/violet outlines, restrained highlights and gradients. Transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-7d3d290a-0ef5-495e-aa71-51b7c2c38999.png",
+  "archetype": "Extended beads-on-a-string nucleosome array with five cores and duplex linkers. Protein subdivisions and DNA wrapping are symbolic, not an atomic model.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "nucleosome-array",
+  "name": "nucleosome array",
+  "original": "originals/inventory/nucleosome-array/generated.png",
+  "original_sha256": "4a23f65e2f12deca2eecad3c7e69107a8cf3c5c3da721100de66fe2a695911f8"
+}

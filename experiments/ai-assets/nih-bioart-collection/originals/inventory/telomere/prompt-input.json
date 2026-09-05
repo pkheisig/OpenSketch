@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a telomere, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Show a symbolic telomeric DNA T-loop: blue/cyan duplex enters from lower left, curves into a large relaxed oval loop, and its terminal strand returns to tuck into the duplex near the base of the loop. Make a small local displacement bubble at the entry/invasion junction, with one single DNA strand briefly displaced. The loop is made of duplex DNA, with short colored base-pair rungs. One short incoming duplex tail; NOT a free circular plasmid, no knot, no unrelated protein balls. No shelterin proteins for this nucleic-acid-only diagram. Clearly schematic geometry, no exact sequence. Smooth matte forms, thin crisp dark-blue outlines, subtle gradient depth. True transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-5e2f19b1-bd96-421c-8576-b99fb5093620.png",
+  "archetype": "Telomeric T-loop with incoming duplex and local displacement/invasion junction. Junction strands and helix geometry are schematic; shelterin omitted and no universal telomere conformation asserted.",
+  "references": [
+    "https://pdb101.rcsb.org/motm/227",
+    "https://pubmed.ncbi.nlm.nih.gov/31723267/"
+  ]
+}

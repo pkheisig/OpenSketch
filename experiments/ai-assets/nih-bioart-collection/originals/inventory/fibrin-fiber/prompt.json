@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of one fibrin fiber segment, matching NIH BioArt visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, saturated golden peach color. Show an elongated slightly curved protein fiber built from multiple closely packed parallel protofibrils. Surface has subtle repeating staggered nodules and fine longitudinal strand texture, gentle transverse periodic banding. One end gently splays into a few paired protofibrils revealing laterally bundled construction; other end a clean rounded bundle cross-section. This is a fibrin fiber, not collagen rope, not DNA, no large spiraling braid. Smooth matte structural schematic, no atomistic bumpy texture. Complete centered generous transparent padding; no blood cells, platelets, network scenery, text labels arrows borders unrelated objects or cast shadows. Transparent alpha PNG.",
+  "refinement": "Polish the fibrin fiber into clean smooth NIH BioArt-style illustration. Remove the rough hairy texture from the strands and use smooth softly shaded golden peach forms with subtle longitudinal lines. Retain laterally bundled staggered nodular protofibrils, splayed end and bundle cross-section. Avoid shiny glare. Transparent alpha PNG, no background or glow outside object.",
+  "alpha_refinement": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-8b5b0476-2b67-4b61-8ce7-179343b27767.png",
+  "archetype": "Fibrin fiber segment with bundled protofibrils and splayed end exposing substructure. Nodule spacing, molecular packing and cross-section are schematic; not a calibrated 22.5 nm repeat or exact molecular topology.",
+  "references": [
+    "https://pdb101.rcsb.org/motm/83",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC3010386/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "fibrin-fiber",
+  "name": "fibrin fiber",
+  "original": "originals/inventory/fibrin-fiber/generated.png",
+  "original_sha256": "edd05a25ad5e360e6f84134b511e13a3df947ebb1f39b8c5fe9753eebecdf0b9"
+}

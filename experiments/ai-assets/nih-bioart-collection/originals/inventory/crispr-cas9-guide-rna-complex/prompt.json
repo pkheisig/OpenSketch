@@ -1,0 +1,24 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a CRISPR-Cas9-guide RNA complex, matching NIH BioArt visual style: polished biomedical illustration, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, saturated professional colors. Binary Cas9 plus a single guide RNA, no target DNA. A compact bilobed Cas9 protein with a large teal recognition lobe and coral nuclease lobe, joined as one protein body around a narrow central cleft. Green single-guide RNA nestled in cleft: a short unpaired guide segment follows internal channel, structured scaffold duplex and two small hairpins extend modestly from lower side, all connected as one RNA molecule and partly occluded by protein. Protein occupies most silhouette; RNA is a bound intrinsic component, not a giant loose RNA cloud. Smooth matte softly lobed domains, no granular atomic texture. Complete centered generous transparent padding; no scissors icon, DNA, labels, text, arrows, border, scenery, unrelated objects, shadows. Transparent alpha PNG.",
+  "refinements": [
+    "Smooth the teal and coral Cas9 protein surfaces into clean softly lobed matte forms, eliminating pebbled and mottled atomistic texture. Preserve bilobed body and green guide RNA in cleft with scaffold stem and hairpins. RNA should remain a continuous unbranched backbone folded into stems; crossings show occlusion rather than fused branch junctions. Keep complete centered complex with transparent padding. Transparent alpha PNG.",
+    "Zoom out and center the entire unchanged Cas9-guide RNA complex at 65 percent canvas size. Restore the complete left protein edge which is clipped. Generous transparent padding on ALL four sides. Keep same smooth forms, teal coral and green colors and RNA scaffold. Transparent alpha PNG."
+  ],
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-5927a883-d070-4be5-be7c-cdff71411a4c.png",
+  "archetype": "Binary Cas9-single guide RNA complex, without target DNA. Protein colored by recognition/nuclease lobes; guide/scaffold stems partly exposed. RNA folding, lobe boundaries and nucleotide count schematic, not exact 4ZT0 coordinates or a sequence-specific construct.",
+  "references": [
+    "https://www.rcsb.org/structure/4ZT0"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "crispr-cas9-guide-rna-complex",
+  "name": "CRISPR-Cas9-guide RNA complex",
+  "original": "originals/inventory/crispr-cas9-guide-rna-complex/generated.png",
+  "original_sha256": "f27da66987a44a119d2449bf1c53d51e787fd3fa5240e3198eb159baca711c9b"
+}

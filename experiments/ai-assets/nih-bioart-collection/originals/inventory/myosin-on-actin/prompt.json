@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of myosin on actin, matching NIH BioArt visual style: detailed polished biomedical illustration, clean smooth protein forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, saturated colors. A simplified myosin-II molecule with TWO distinct smooth coral pear-shaped motor heads directly contacting adjacent sites on a short horizontal violet F-actin double-helical beaded filament. Each head extends into a narrow lever-arm neck carrying exactly TWO small gold light-chain lobes, four light chains total. The two necks merge into one long paired coral coiled-coil tail extending upward and gently curving to the right, ending cleanly; no cargo-binding bulb at tail end. Motor heads touch actin directly, no extra thin feet. F-actin is a slim two-stranded solid helical filament, not hollow microtubule. Smooth softly lobed matte domains, not atomistic bumpy texture. Complete centered complex with generous transparent padding; no text labels arrows borders scenery unrelated components or cast shadows. Transparent alpha PNG.",
+  "refinement": "Smooth the material surfaces into clean NIH BioArt biomedical illustration: eliminate pebbled grain and mottled texture, retaining soft matte gradients and crisp contours. Keep exact architecture: two coral motor heads touching violet actin, four gold light chains two per neck, paired long coral coiled-coil tail. Preserve entire object and no extra components. Transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-64a7bbcd-af2d-4d97-b510-78e0568d3ef1.png",
+  "archetype": "Myosin-II dimer with two motor heads bound to a short actin filament, two light chains per neck and paired coiled-coil tail. Relative lengths, actin subunit geometry and binding state schematic, not atomic coordinates.",
+  "references": [
+    "https://pdb101.rcsb.org/motm/18",
+    "https://www.ncbi.nlm.nih.gov/books/NBK9961/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "myosin-on-actin",
+  "name": "myosin on actin",
+  "original": "originals/inventory/myosin-on-actin/generated.png",
+  "original_sha256": "b92b49043e28fcdb52191bc5f8abec6cdfe2c46c7ba00aaae9230fcace154d8a"
+}

@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an apoptosome, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Human Apaf-1/cytochrome-c heptameric platform without recruited caspases. Exactly SEVEN violet radial spokes extend from a small teal seven-sector central hub, each ending in TWO unequal rounded beta-propeller domains forming a V-shaped sensor head with ONE tiny gold cytochrome-c nestled between them. Seven spokes, seven paired sensor heads, seven gold cytochromes total. Nearly top-down slightly tilted wheel view. Organic broad smooth domains with radial propeller grooves, clean fine outlines and subtle matte gradients, no grain or atomic bumps. Transparent PNG alpha. Complete symmetrical seven-spoke wheel with no eighth spoke.",
+  "refinement": "Preserve exactly these seven spokes, seven paired outer propeller domains, seven gold cytochrome-c objects and seven-sector teal hub. Smooth the bumpy molecular surfaces into broad clean shaded protein forms with crisp thin outlines, subtle matte gradients and polished NIH BioArt style. Keep propeller radial grooves but simplify to broad curved grooves rather than rough ridges. Violet spokes, blue/lavender sensor domains, gold small bound molecules, teal hub. Complete object with generous padding. Transparent PNG alpha, no text or backdrop.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-70b1de7f-f0c9-46c0-ba3e-8a7e58bebf29.png",
+  "archetype": "Human Apaf-1/cytochrome-c heptameric platform without caspase recruitment. Seven paired propeller sensor heads and seven cytochromes; propeller grooves and domain proportions illustrative, not coordinate-derived.",
+  "references": [
+    "https://www.rcsb.org/structure/3JBT",
+    "https://elifesciences.org/articles/17755"
+  ]
+}

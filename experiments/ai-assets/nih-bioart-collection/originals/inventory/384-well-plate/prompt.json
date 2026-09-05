@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Polish the attached exact layout guide into a detailed NIH BioArt style scientific illustration of a 384-well plate. Preserve EVERY well and its exact center: the reference has exactly 16 rows and 24 columns, 384 total. Do not regenerate a different grid. Add polished white plastic beveled rim, subtle pseudo-3D well depths, fine blue-gray outlines and soft highlights, with pale pink illustrative well interiors. Straight overhead view, same complete rectangular plate and uniform grid. No text, labels, arrows, shadows, unrelated objects or background. Transparent PNG alpha with generous padding. Reference geometry is authoritative; apply surface finish only.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-172872ac-c012-4942-8052-2a5e95945cda.png",
+  "layout_reference": "originals/inventory/384-well-plate/layout-guide.png",
+  "archetype": "384-well plate with exact 16 by 24 square-well layout guided by native SVG scaffold after prior 23-column drafts. Pale pink interiors illustrative, not assay results. Layout guide retained separately from final generated PNG and traced SVG.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "384-well-plate",
+  "name": "384-well plate",
+  "original": "originals/inventory/384-well-plate/generated.png",
+  "original_sha256": "4830a7c0bb7cd972c0928b2ecb564d821eea4914562975f06adcc6129dfaa6b4"
+}

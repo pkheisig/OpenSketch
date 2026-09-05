@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a DNA double-strand break, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Clean untwisted DNA ladder schematic, BLUE top backbone and CYAN bottom backbone linked by short colored two-part base-pair rungs. A clear central gap cuts BOTH backbones at the same position, producing two separated blunt-ended duplex fragments aligned horizontally. Exactly two DNA fragments, each with about eight base-pair rungs. Central broken ends gently separate but no jagged lightning symbol, no scissors or enzyme. All four broken backbone tips visible and rounded. Broad smooth gradients, matte biomedical finish and crisp thin outlines. True transparent alpha PNG background.",
+  "refinement": "Make this a genuinely untwisted straight ladder schematic: remove all helical crossings and waves. Both fragments should have one straight BLUE upper rail, one straight CYAN lower rail and colored two-part base-pair rungs between. Preserve the large center gap breaking both rails. Exactly two separate blunt-ended double-stranded DNA fragments. Clean smooth matte surfaces, no texture speckles. Keep full object and true transparent alpha PNG. No other symbols.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-bd31b73f-895e-44d6-b073-3ae1d756fc7e.png",
+  "archetype": "Untwisted duplex with central blunt double-strand break. Base rungs symbolic; no chemical end groups or sequence claimed.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "dna-double-strand-break",
+  "name": "DNA double-strand break",
+  "original": "originals/inventory/dna-double-strand-break/generated.png",
+  "original_sha256": "4b86b8442418cfa55f6949090abafaf3f3c016c701046e5332125ea8c9a0450b"
+}

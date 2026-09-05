@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an RNA polymerase transcription elongation complex, matching NIH BioArt style: polished biomedical illustration, smooth clean forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. Large smooth teal and violet multilobed polymerase clasp surrounding a central cleft. A short blue DNA double helix enters from right and exits left; within cleft a small local transcription bubble separates the two blue DNA strands and they rejoin at the opposite side. One orange nascent single-stranded RNA emerges from a separate side channel and curves toward lower left, distinct from both blue DNA strands. Show a subtle cutaway into cleft only enough to indicate a short RNA-template hybrid; no severed DNA, no replication fork splitting into two duplexes. No free nucleotides, ribosomes, accessory factors, text labels arrows or borders. Complete centered complex generous transparent padding, smooth matte domains no granular atomic surface, no scenery or cast shadow. Transparent alpha PNG.",
+  "refinement": "Correct orange RNA topology: there must be exactly ONE continuous orange backbone from the external lower-left free end through the exit channel into the short RNA-DNA hybrid in cleft. Remove the extra parallel orange branch underneath the diagonal exit segment, including rungs between orange branches. Keep a single orange strand with short dangling bases outside protein and base pairs only where orange contacts blue template inside cleft. Preserve both continuous blue DNA strands, polymerase silhouette and colors. Smooth matte protein domains. Transparent alpha PNG.",
+  "alpha_refinement": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-2f853f0d-d6c6-4604-b4a5-ba03539dc74b.png",
+  "archetype": "Generic RNA-polymerase elongation complex with exposed transcription bubble and one orange RNA strand emerging from short RNA-template hybrid. Polymerase subunits, exact bubble size, contact geometry and base identities schematic, not a specified species or atomic structure.",
+  "references": [
+    "https://pdb101.rcsb.org/motm/40",
+    "https://www.rcsb.org/structure/1Y1W"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "rna-polymerase-transcription-complex",
+  "name": "RNA polymerase transcription complex",
+  "original": "originals/inventory/rna-polymerase-transcription-complex/generated.png",
+  "original_sha256": "1f57e4020bedf420e6636a87dcdbe770c4de7aedd456483e5488706803b29d40"
+}

@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a disposable dual-chamber cell counting slide, matching NIH BioArt reference style: polished biomedical illustration, scientifically recognizable, clean smooth forms, crisp outlines, subtle pseudo-3D depth, gradients and highlights. Thin clear rectangular plastic slide with two separate shallow rectangular optical counting chambers molded internally, each linked by a short narrow channel to a small round sample-loading port. Broad flat frosted gripping tab at one short end, cool blue transparent plastic edges, blank unmarked surface. Empty chambers, no cells, no liquid, no magnified insets. Three-quarter overhead view, complete object centered generous transparent padding. No text labels numbers arrows borders scenery unrelated objects large cast shadows or background. Transparent alpha PNG.",
+  "refinement": "Cover both rectangular counting chambers and their narrow channels with a flush continuous optically clear plastic roof, bonded to the slide. These are CLOSED thin capillary chambers, not open trays. Keep only two round loading ports open. Show chamber outlines subtly through the transparent roof; remove tall raised walls around rectangular chambers. Preserve slide shape and frosted grip tab. Transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-4200d676-52a5-4bae-bdc4-f89c31795511.png",
+  "archetype": "Disposable dual-chamber cell-counting slide with two covered optical chambers, inlet channels and loading ports. Chamber depth, venting details and dimensions schematic; no sample or measured data.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "counting-chamber",
+  "name": "counting chamber",
+  "original": "originals/inventory/counting-chamber/generated.png",
+  "original_sha256": "70019fb8f593621ce3993ea0ca65dd0bb2071738dd5c4e9826d0f33ea33ff563"
+}

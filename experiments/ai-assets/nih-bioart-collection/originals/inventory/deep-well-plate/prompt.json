@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a deep-well sample storage microplate, matching NIH BioArt visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. White polypropylene rectangular block with tall deep square wells, a rigid rectangular top rim and subtly translucent lower side walls revealing elongated well columns. Three-quarter view from fairly low angle emphasizes substantial depth versus a shallow assay plate. Empty wells, no liquids, no cap mat or lid. Generic deep-well plate architecture, capacity not specified, rear wells partially occluded naturally. Complete object centered generous transparent padding; only requested object and intrinsic components. No text labels arrows borders scenery unrelated objects or large cast shadows. Actual transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-f5552cd6-3398-4ec0-99c1-f9d4e1531da4.png",
+  "archetype": "Generic deep-well polypropylene sample plate with elongated square wells. Capacity and dimensions unspecified; translucent walls expose depth schematically.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "deep-well-plate",
+  "name": "deep-well plate",
+  "original": "originals/inventory/deep-well-plate/generated.png",
+  "original_sha256": "617bf83df2c8cf7c8be8766149b24444c1f2a07ab269c5010629cc0ca93b014e"
+}

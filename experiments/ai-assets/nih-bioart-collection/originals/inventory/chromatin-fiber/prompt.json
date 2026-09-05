@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of chromatin fiber, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A short irregular compacted chain of nucleosomes, about twelve rounded violet histone core disks at varied angles in a loosely folded undulating cluster, each wrapped by blue/cyan duplex DNA, connected in one continuous path by short blue DNA linkers. Several front nucleosomes clearly show the blue DNA winding around their violet disk sides approximately twice. Overall elongated gentle S silhouette with local packing and variable spacing, not a regular cylindrical solenoid, not a spring and not a chromosome. Two short DNA duplex ends exit opposite ends of the cluster. Clean matte surfaces, thin crisp dark outlines, broad restrained gradients, no granular speckles. Transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-62467027-7a7b-4ca8-be1f-b9ab639d4f1f.png",
+  "archetype": "Irregular folded nucleosome chain. Histone core subdivisions, linker geometry and wrap angles schematic; no universal regular 30-nm fiber asserted.",
+  "references": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC5646685/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "chromatin-fiber",
+  "name": "chromatin fiber",
+  "original": "originals/inventory/chromatin-fiber/generated.png",
+  "original_sha256": "334616d44538e2101f990b4ee99505b36be981508cacda3d1eb66e8c77e14991"
+}

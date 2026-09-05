@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a DNA electrophoresis gel with bands, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A single thin translucent blue agarose rectangular slab in nearly top-down slight three-quarter view. Six small loading wells evenly spaced along top edge, each aligned with a vertical lane below. Left lane illustrative DNA ladder with seven discrete horizontal cyan bands spaced progressively closer toward the bottom; remaining five lanes each contain two or three separate horizontal cyan bands at varied heights. Bands confined to the slab, modest brightness without external glow. Synthetic schematic educational band pattern, clearly polished illustration not a photograph or experimental result. No equipment, tray, labels, axes, numbers or frame. Smooth gel edge and subtle transparent depth. Real transparent PNG alpha outside gel.",
+  "refinement": "Preserve the six loading wells and exact illustrative horizontal band pattern, but remove the visible vertical pale lane strips beneath each well. Agarose is one continuous uniform slab, no molded channels or vertical lane boundaries. Make gel smooth translucent blue with subtle edge depth and crisp outline; horizontal cyan bands remain discrete. No tray, external glow or shadows. Transparent alpha background, complete object padded. This is a synthetic educational schematic, not experimental data.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-73159c1a-d522-4e7e-8404-1f3c22629285.png",
+  "archetype": "Synthetic educational DNA gel illustration, six loading wells and illustrative ladder/sample bands. Not experimental data, no molecular weights or quantitative inference; blue color and cyan fluorescence schematic.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "dna-electrophoresis-gel-with-bands",
+  "name": "DNA electrophoresis gel with bands",
+  "original": "originals/inventory/dna-electrophoresis-gel-with-bands/generated.png",
+  "original_sha256": "818e6ee4e7a884f1ffc1792e9bd1d7b81792da0a5e783def71d746b199da0959"
+}

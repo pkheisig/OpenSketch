@@ -10984,17 +10984,101 @@
     "dynein-on-microtubule": {
       "name": "dynein on microtubule",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/dynein-on-microtubule-bioart-transparent.png",
+      "svg": "svg/dynein-on-microtubule-bioart-traced.svg",
+      "png_sha256": "008615f7a5ca08ec5d5ed037bef04705bfbb458bd5abb05641c34b379922cda1",
+      "svg_sha256": "c40a0813af3be127f2f49971408a243fc29a3f604771d4a382a6cc0c0b1cf0a0",
+      "original_sha256": "2878077bc227760d6f06c355be29cc88bd2ee599f363a98167f7d35eade510a6",
+      "png_dimensions": [
+        1785,
+        1785
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        275,
+        274,
+        282,
+        255
+      ],
+      "svg_paths": 16817,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/dynein-on-microtubule/prompt.json",
+      "qa": "qa/inventory/dynein-on-microtubule",
+      "visual_review": "Two six-lobed motor rings, long paired stalks and two microtubule contacts preserved. Hollow microtubule end visible. Smooth shading matches protein set; SVG clean on light and dark with no exterior alpha artifacts.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dynein-on-microtubule/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dynein-on-microtubule/inspection.webm"
+      }
     },
     "myosin-on-actin": {
       "name": "myosin on actin",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/myosin-on-actin-bioart-transparent.png",
+      "svg": "svg/myosin-on-actin-bioart-traced.svg",
+      "png_sha256": "ae83b56700217143875603ae9461c9fa25f5ec7d2dcc9a299cb752e4cc39ffd8",
+      "svg_sha256": "6ad2fdeeac153ecc353a218bb7c5391b69f3566819cea15fafda0fdfcf7935f6",
+      "original_sha256": "b92b49043e28fcdb52191bc5f8abec6cdfe2c46c7ba00aaae9230fcace154d8a",
+      "png_dimensions": [
+        1867,
+        1867
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        368,
+        267,
+        371,
+        267
+      ],
+      "svg_paths": 8340,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/myosin-on-actin/prompt.json",
+      "qa": "qa/inventory/myosin-on-actin",
+      "visual_review": "Two heads contact actin directly, four gold light chains visible, long paired tail complete. Smooth surface and transparent margins preserved in SVG with clear light/dark renderings.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/myosin-on-actin/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/myosin-on-actin/inspection.webm"
+      }
     },
     "actin-myosin-contractile-unit": {
       "name": "actin-myosin contractile unit",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/actin-myosin-contractile-unit-bioart-transparent.png",
+      "svg": "svg/actin-myosin-contractile-unit-bioart-traced.svg",
+      "png_sha256": "646f8af192d4007514208c9f6efb99a0ae98fc1cea32e1dc73c4279c516dcadf",
+      "svg_sha256": "1383a86e07d079a7ec9ac95bc49381d58790dc0978900d8a46990c29c2095af8",
+      "original_sha256": "6a14f138b5f838d63a6b9d0e9822e6c878754d2e708d0d759b6913af309d26fb",
+      "png_dimensions": [
+        2340,
+        2340
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        334,
+        767,
+        340,
+        700
+      ],
+      "svg_paths": 12037,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/actin-myosin-contractile-unit/prompt.json",
+      "qa": "qa/inventory/actin-myosin-contractile-unit",
+      "visual_review": "Bipolar myosin bundle and clear bare zone preserved, left upper and right lower actin contacts intact. SVG retains smooth shading and clean alpha silhouette; schematic molecular counts documented.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/actin-myosin-contractile-unit/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/actin-myosin-contractile-unit/inspection.webm"
+      }
     },
     "collagen-triple-helix": {
       "name": "collagen triple helix",
@@ -11065,7 +11149,35 @@
     "fibrin-fiber": {
       "name": "fibrin fiber",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/fibrin-fiber-bioart-transparent.png",
+      "svg": "svg/fibrin-fiber-bioart-traced.svg",
+      "png_sha256": "60b0384d31ad4a070c91e4af3a1fe8c72c05922a03c756f1041ea2c7139ce5a8",
+      "svg_sha256": "be8e886917e4b82dc2ad9e7d1b472f09fa8a5c87ceb59e12e18ee1bf8129ed75",
+      "original_sha256": "edd05a25ad5e360e6f84134b511e13a3df947ebb1f39b8c5fe9753eebecdf0b9",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        318,
+        582,
+        322,
+        563
+      ],
+      "svg_paths": 12821,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/fibrin-fiber/prompt.json",
+      "qa": "qa/inventory/fibrin-fiber",
+      "visual_review": "Bundled longitudinal protofibrils, staggered nodules and splayed end preserved in SVG. Complete curved silhouette with clean alpha exterior; polished gold shading comparable on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fibrin-fiber/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fibrin-fiber/inspection.webm"
+      }
     },
     "clathrin-triskelion": {
       "name": "clathrin triskelion",
@@ -11268,157 +11380,983 @@
     "transcription-factor-bound-to-dna": {
       "name": "transcription factor bound to DNA",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/transcription-factor-bound-to-dna-bioart-transparent.png",
+      "svg": "svg/transcription-factor-bound-to-dna-bioart-traced.svg",
+      "png_sha256": "ebbc37f44fde8ffdcfb9e4d9ccafe0614cfe30ecb6208882ffcb15bc098ee37e",
+      "svg_sha256": "53058fc3a008e18a10e3ca9d08d4e516a8d7a6be81f2e0bf4513d3cc0342ac55",
+      "original_sha256": "a3ca495a26d951d4d4841298edb9ce7f01f8212a532233a9b78f89d4bf1f1266",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        334,
+        594,
+        337,
+        581
+      ],
+      "svg_paths": 10689,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/transcription-factor-bound-to-dna/prompt.json",
+      "qa": "qa/inventory/transcription-factor-bound-to-dna",
+      "visual_review": "Two helical arms contact intact double-stranded DNA with a joined zipper stem. Ribbon contours, DNA rungs and smooth colors survive vectorization; exterior transparency verified. Geometry schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/transcription-factor-bound-to-dna/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/transcription-factor-bound-to-dna/inspection.webm"
+      }
     },
     "rna-polymerase-transcription-complex": {
       "name": "RNA polymerase transcription complex",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/rna-polymerase-transcription-complex-bioart-transparent.png",
+      "svg": "svg/rna-polymerase-transcription-complex-bioart-traced.svg",
+      "png_sha256": "f37337c551bbdb52d1d8332212c431ed3f38762ea7a6c163d67ee49d6cf91be9",
+      "svg_sha256": "6ab313ad02d3def7f4cf4c7de0a8d800181a3eaf8fd7f247da5d6dbdf45a9e4c",
+      "original_sha256": "1f57e4020bedf420e6636a87dcdbe770c4de7aedd456483e5488706803b29d40",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        316,
+        577,
+        307,
+        582
+      ],
+      "svg_paths": 17264,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/rna-polymerase-transcription-complex/prompt.json",
+      "qa": "qa/inventory/rna-polymerase-transcription-complex",
+      "visual_review": "Continuous DNA through local bubble and single orange RNA exit preserved; erroneous RNA branch removed before tracing. Smooth polymerase lobes and alpha exterior clean on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rna-polymerase-transcription-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rna-polymerase-transcription-complex/inspection.webm"
+      }
     },
     "dna-polymerase-replication-complex": {
       "name": "DNA polymerase replication complex",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/dna-polymerase-replication-complex-bioart-transparent.png",
+      "svg": "svg/dna-polymerase-replication-complex-bioart-traced.svg",
+      "png_sha256": "58376ce17e03b368b42b384431b1104bd755ccbb58b6ac91f12e38a4ef4c8ce8",
+      "svg_sha256": "332b38dd5fc020e71527d28e3d6057fbe32e283d384bf5e3342399ff6242d3e3",
+      "original_sha256": "944498046de3a7cac884c71fa9f1cf3d805ccc0140a9fec08a2d07dbea646f30",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        320,
+        574,
+        318,
+        589
+      ],
+      "svg_paths": 13453,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/dna-polymerase-replication-complex/prompt.json",
+      "qa": "qa/inventory/dna-polymerase-replication-complex",
+      "visual_review": "Primer strand ends in cleft while template continues alone. Duplex passes through attached clamp. Protein shading, DNA continuity and clean alpha silhouette retained in SVG on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-polymerase-replication-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-polymerase-replication-complex/inspection.webm"
+      }
     },
     "helicase-on-dna": {
       "name": "helicase on DNA",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/helicase-on-dna-bioart-transparent.png",
+      "svg": "svg/helicase-on-dna-bioart-traced.svg",
+      "png_sha256": "2df4c15d45d652ee82913c67932a90f4d65e8ff35ab5663b05a21887bafddb02",
+      "svg_sha256": "c529c5ecb846fe70304ffc765547f068d195f6b05754164f31b9eb235de75ae8",
+      "original_sha256": "96f1aff4c2932ebcf6863c5f47782080ebc1f0efe074cd3f439497c58ecfa210",
+      "png_dimensions": [
+        2484,
+        2484
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        390,
+        819,
+        375,
+        850
+      ],
+      "svg_paths": 7697,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/helicase-on-dna/prompt.json",
+      "qa": "qa/inventory/helicase-on-dna",
+      "visual_review": "Six helicase wedges verified, blue strand through pore and cyan excluded outside. Separate complete left termini restored. SVG preserves topology, smooth contours and transparent exterior on light and dark.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/helicase-on-dna/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/helicase-on-dna/inspection.webm"
+      }
     },
     "topoisomerase-dna-complex": {
       "name": "topoisomerase-DNA complex",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/topoisomerase-dna-complex-bioart-transparent.png",
+      "svg": "svg/topoisomerase-dna-complex-bioart-traced.svg",
+      "png_sha256": "84988a9a3c2c5862bcec5c9b634c6db97a784e247194be7bfdad1772f3dd5ea1",
+      "svg_sha256": "8063ca9258badd2812db18b81d904048ad50a728f2b647a0ef66f3df2584d7bb",
+      "original_sha256": "595a7da47f989a391ee9bae8e0ff09f03a1da006cb4c411e8a185e8c9ded968f",
+      "png_dimensions": [
+        1840,
+        1840
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        288,
+        321,
+        319,
+        322
+      ],
+      "svg_paths": 23518,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/topoisomerase-dna-complex/prompt.json",
+      "qa": "qa/inventory/topoisomerase-dna-complex",
+      "visual_review": "Two colored catalytic-core halves join at lower gate around clear cavity; bent duplex and separate termini preserved. PNG and SVG show comparable smooth surfaces with clean exterior alpha.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/topoisomerase-dna-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/topoisomerase-dna-complex/inspection.webm"
+      }
     },
     "spliceosome": {
       "name": "spliceosome",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/spliceosome-bioart-transparent.png",
+      "svg": "svg/spliceosome-bioart-traced.svg",
+      "png_sha256": "bb6b8ce3570ba2145d8dcf0acab32096d195e4a61303097b33cfaae8d1e8d36b",
+      "svg_sha256": "dc91f5c25ffdd8be1d77038052cc0dbf1981375f82512d34ddce546e6c5edc17",
+      "original_sha256": "292e7c48aeefc06fce6b45093df9efd6be28f5a06c86ec4e63668b5e8f748802",
+      "png_dimensions": [
+        1827,
+        1827
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        261,
+        310,
+        262,
+        345
+      ],
+      "svg_paths": 25992,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/spliceosome/prompt.json",
+      "qa": "qa/inventory/spliceosome",
+      "visual_review": "Asymmetric connected assembly, internal green RNA stems and orange pre-mRNA extensions preserved. Smooth lobes comparable in SVG; clean alpha on light and dark. Specific subunit topology not claimed.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/spliceosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/spliceosome/inspection.webm"
+      }
     },
     "crispr-cas9-guide-rna-complex": {
       "name": "CRISPR-Cas9-guide RNA complex",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/crispr-cas9-guide-rna-complex-bioart-transparent.png",
+      "svg": "svg/crispr-cas9-guide-rna-complex-bioart-traced.svg",
+      "png_sha256": "fcfc808c49cc86463aa91ad18c68d7f31e5b474d8bd437031e4426378a333ecd",
+      "svg_sha256": "5d39307f92fd5f9115e008b204932644fbc9f5bc374491031f1b3d14cd96fb99",
+      "original_sha256": "f27da66987a44a119d2449bf1c53d51e787fd3fa5240e3198eb159baca711c9b",
+      "png_dimensions": [
+        1808,
+        1808
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        295,
+        281,
+        336,
+        278
+      ],
+      "svg_paths": 17494,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/crispr-cas9-guide-rna-complex/prompt.json",
+      "qa": "qa/inventory/crispr-cas9-guide-rna-complex",
+      "visual_review": "Complete bilobed Cas9 and bound guide/scaffold RNA preserved; crop repaired. Smooth teal coral surfaces and green RNA detail comparable in SVG, transparent exterior clean on light and dark.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/crispr-cas9-guide-rna-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/crispr-cas9-guide-rna-complex/inspection.webm"
+      }
     },
     "ribonucleoprotein-complex": {
       "name": "ribonucleoprotein complex",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/ribonucleoprotein-complex-bioart-transparent.png",
+      "svg": "svg/ribonucleoprotein-complex-bioart-traced.svg",
+      "png_sha256": "60be86c78402cb9a71b880d71a16371d7d8773fcd55bf9f85ebf9fd749813c19",
+      "svg_sha256": "3826ab88c23d2aeca47304c1aaa10a9b05d4f9cfb75536a203ef43ac0e4e8bb0",
+      "original_sha256": "27bc223fc4c642325c9eb45dfc5e3f359974bc7b6f8685412f19cd7bc7a49e22",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        330,
+        581,
+        321,
+        579
+      ],
+      "svg_paths": 16183,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/ribonucleoprotein-complex/prompt.json",
+      "qa": "qa/inventory/ribonucleoprotein-complex",
+      "visual_review": "PNG and editable SVG inspected on light and dark backgrounds. Complete three protein bodies and continuous folded RNA with visible hairpin; no backdrop or glow survives compositing. Fine outlines and broad color shading preserved. Generic schematic contacts, not a named stoichiometric assembly.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ribonucleoprotein-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ribonucleoprotein-complex/inspection.webm"
+      }
     },
     "chaperonin-barrel": {
       "name": "chaperonin barrel",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/chaperonin-barrel-bioart-transparent.png",
+      "svg": "svg/chaperonin-barrel-bioart-traced.svg",
+      "png_sha256": "22205d138cd246c93f4368950a1f0e9e6193c47939e8263e31063e65a872d916",
+      "svg_sha256": "2d1e803ec2bcc394d6c1998927fb746b557929f95b8a9abaadbe68ee6ca09943",
+      "original_sha256": "567f95e88d9d39b80c69db8e6660e2806efd4d7dab9f9b83803e42333af478ef",
+      "png_dimensions": [
+        1765,
+        1765
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        252,
+        280,
+        357,
+        275
+      ],
+      "svg_paths": 14833,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/chaperonin-barrel/prompt.json",
+      "qa": "qa/inventory/chaperonin-barrel",
+      "visual_review": "Light and dark PNG/SVG comparisons inspected. Seven upper ring subunits counted, central front seam and hollow cavity preserved; joined violet lower ring with occluded rear subunits. Smooth shading, complete silhouette and transparency retained. Schematic domain shapes and inter-ring registration.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chaperonin-barrel/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chaperonin-barrel/inspection.webm"
+      }
     },
     "inflammasome-complex": {
       "name": "inflammasome complex",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/inflammasome-complex-bioart-transparent.png",
+      "svg": "svg/inflammasome-complex-bioart-traced.svg",
+      "png_sha256": "322110720a41b947212afe89023232488ba642fbf1ce6a01a923dc3d2dbd3a6c",
+      "svg_sha256": "119aafc4e3d98be506962e36e8f5e4e180f58bda5b3450d039e9fd32627637cc",
+      "original_sha256": "b8125df81d326d628a0e2e6de592e8e6b18b357e43e9c098965bf384b68fd763",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        569,
+        325,
+        579
+      ],
+      "svg_paths": 20185,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/inflammasome-complex/prompt.json",
+      "qa": "qa/inventory/inflammasome-complex",
+      "visual_review": "PNG and SVG inspected on light/dark. Eleven radial crescent units including one gold sensor, short central violet filament and connected disk retained. Clean transparency and complete silhouette; mild tracing gradient banding acceptable at asset scale. NAIP/NLRC4 archetype only, schematic contacts and domain packing.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/inflammasome-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/inflammasome-complex/inspection.webm"
+      }
     },
     "apoptosome": {
       "name": "apoptosome",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/apoptosome-bioart-transparent.png",
+      "svg": "svg/apoptosome-bioart-traced.svg",
+      "png_sha256": "ae4dbdce980a12da64e5bbedc88ae0b31677f46edfa140f9e1dc67506d2e9fa0",
+      "svg_sha256": "d561464b73608776c5bb5c7c07a83b947f789662646139f13a7c24ccee165154",
+      "original_sha256": "66a1e4ffef8a387996189e33ae084593d59d9f0c17ef93475927a6d301739eee",
+      "png_dimensions": [
+        1834,
+        1834
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        285,
+        317,
+        298,
+        341
+      ],
+      "svg_paths": 22006,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/apoptosome/prompt.json",
+      "qa": "qa/inventory/apoptosome",
+      "visual_review": "Seven spokes, paired sensor heads and seven gold cytochromes counted in PNG and SVG. Full wheel, open hub, shading and fine domain detail preserved on light and dark backgrounds. Transparent with generous padding. Propeller groove counts and proportions schematic; no recruited caspase state claimed.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/apoptosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/apoptosome/inspection.webm"
+      }
     },
     "ribosome-translating-mrna": {
       "name": "ribosome translating mRNA",
       "category": "8. Distinct protein and macromolecular machinery",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/ribosome-translating-mrna-bioart-transparent.png",
+      "svg": "svg/ribosome-translating-mrna-bioart-traced.svg",
+      "png_sha256": "c7d5d48e866604c8c27a498bb6b114ba9965f180b6cc15abca99c72a744c5671",
+      "svg_sha256": "008743562c54ac581108bc130444885354af63660dd65f2774e535da994de988",
+      "original_sha256": "3620c77c0d9db100dbd2762e6297af572c6166f24874420ddf94b06d87db8adf",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        321,
+        589
+      ],
+      "svg_paths": 11870,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/ribosome-translating-mrna/prompt.json",
+      "qa": "qa/inventory/ribosome-translating-mrna",
+      "visual_review": "PNG/SVG inspected on light and dark: both subunits, mRNA termini, two bound tRNAs with triplet anticodon contacts and complete nascent peptide preserved. Cutaway exposes peptide exit path. No background glow in composites; clean transparent margins. RNA folding and ribosome surface are schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ribosome-translating-mrna/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ribosome-translating-mrna/inspection.webm"
+      }
     },
     "dna-double-helix": {
       "name": "DNA double helix",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/dna-double-helix-bioart-transparent.png",
+      "svg": "svg/dna-double-helix-bioart-traced.svg",
+      "png_sha256": "8be270cc560f80f7373375a21818a68ee41f357b1e1f07b3f8ae6a149182fcc3",
+      "svg_sha256": "7e602615f6ab1fd15584c9ae92a7c12e619f59182c8f22e20f6f77e8a57ae586",
+      "original_sha256": "3c0def528bf1ed1fb5b5995e8ce76ef1a14f3eef540f632aac16131fa37f2750",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        344,
+        577,
+        359
+      ],
+      "svg_paths": 7206,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/dna-double-helix/prompt.json",
+      "qa": "qa/inventory/dna-double-helix",
+      "visual_review": "PNG/SVG light and dark inspected. Two continuous backbones, right-handed front crossings rising left to right, paired colored rungs and four complete strand ends retained. Transparent interstrand spaces and padded exterior clean. Generic duplex schematic; groove geometry and base density not molecularly scaled.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-double-helix/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-double-helix/inspection.webm"
+      }
     },
     "single-stranded-dna": {
       "name": "single-stranded DNA",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/single-stranded-dna-bioart-transparent.png",
+      "svg": "svg/single-stranded-dna-bioart-traced.svg",
+      "png_sha256": "c7b2cbe34c39c4c0cbc23911a21d78b6efec8320858c3c807c174105e088ef23",
+      "svg_sha256": "7ac2a50510084d068aa2800226f882e17fc0e5ba084627b2a0ffd93d3779dcf1",
+      "original_sha256": "5c6e8f28d5b28069086c7c9d989a291b6229181d7089f38bcad62bbb2d44f6d8",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        326,
+        595,
+        327,
+        587
+      ],
+      "svg_paths": 3589,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/single-stranded-dna/prompt.json",
+      "qa": "qa/inventory/single-stranded-dna",
+      "visual_review": "PNG/SVG inspected on light and dark: one continuous backbone, singly attached unpaired base tabs, two complete ends and smooth shading preserved. Transparent exterior clean; chemical rings and sequence represented symbolically.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/single-stranded-dna/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/single-stranded-dna/inspection.webm"
+      }
     },
     "rna-strand": {
       "name": "RNA strand",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "single-stranded-dna",
+      "alias_reason": "At this unlabeled symbolic backbone-and-base-tab scale, an unpaired generic RNA strand and single-stranded DNA have the same visible topology. Sugar hydroxyl and uracil/thymine chemistry are not drawn. Reuse a generic single-stranded nucleic-acid archetype; named folded or processed RNAs receive distinct assets.",
+      "reference": "https://www.ncbi.nlm.nih.gov/books/NBK26887/",
+      "png": "png/single-stranded-dna-bioart-transparent.png",
+      "svg": "svg/single-stranded-dna-bioart-traced.svg",
+      "png_sha256": "c7b2cbe34c39c4c0cbc23911a21d78b6efec8320858c3c807c174105e088ef23",
+      "svg_sha256": "7ac2a50510084d068aa2800226f882e17fc0e5ba084627b2a0ffd93d3779dcf1"
     },
     "messenger-rna": {
       "name": "messenger RNA",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/messenger-rna-bioart-transparent.png",
+      "svg": "svg/messenger-rna-bioart-traced.svg",
+      "png_sha256": "bebf72a563abde3ea39f025e8024f67366a9e343d788cf23800ef402b0ca82a9",
+      "svg_sha256": "df61160c831794fd0a81925dc5ca3862e7b65fb1571958453e4b2223b11635a6",
+      "original_sha256": "4f95d4cf6f736d32e1d7107ad490913ff24db652f32d908db460e4d35b348ed1",
+      "png_dimensions": [
+        2906,
+        2906
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        464,
+        1097,
+        445,
+        1101
+      ],
+      "svg_paths": 3863,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/messenger-rna/prompt.json",
+      "qa": "qa/inventory/messenger-rna",
+      "visual_review": "PNG/SVG white/dark comparisons inspected. Continuous orange strand, violet left terminal cap, mixed central bases and repeated gold right tail preserved. Complete termini and clean transparent padding; lengths and chemistry symbolic, mature eukaryotic mRNA archetype.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/messenger-rna/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/messenger-rna/inspection.webm"
+      }
     },
     "transfer-rna": {
       "name": "transfer RNA",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/transfer-rna-bioart-transparent.png",
+      "svg": "svg/transfer-rna-bioart-traced.svg",
+      "png_sha256": "77dab29bc3db4f3cbf82a7215376a545d485131c9319cb77a42d596fed721c3f",
+      "svg_sha256": "cf9a12801da646d38d29721eb562a69895605b6705d8fed4e2c636a92cbde32c",
+      "original_sha256": "86fe9d691c27982c19413e5ae0854ac4de7c3e662dd8d053f48369eef17c8a73",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        580,
+        326,
+        575,
+        307
+      ],
+      "svg_paths": 12719,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/transfer-rna/prompt.json",
+      "qa": "qa/inventory/transfer-rna",
+      "visual_review": "Compared PNG/SVG light and dark and 1EHZ structural reference. Folded elbow, acceptor arm and anticodon-end silhouette retained with green RNA and internal base faces. Clean transparent margins, complete object. Overall geometry guided by structure, but base placement/contacts simplified and not an atomic model.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/transfer-rna/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/transfer-rna/inspection.webm"
+      }
     },
     "microrna-hairpin": {
       "name": "microRNA hairpin",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/microrna-hairpin-bioart-transparent.png",
+      "svg": "svg/microrna-hairpin-bioart-traced.svg",
+      "png_sha256": "5547af351d1a54c145c6d2509583a0d86515b78efbec4687fb3cc27eb0ca64bd",
+      "svg_sha256": "8a090fb014f656e1de698fbdb6568623b5324dfbbbcb583a0bef405fe58cece3",
+      "original_sha256": "4aa26e331257f10603c25b6d84a40f70d78426ccf8709771123f2ec67051da28",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        326,
+        579,
+        357
+      ],
+      "svg_paths": 5184,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/microrna-hairpin/prompt.json",
+      "qa": "qa/inventory/microrna-hairpin",
+      "visual_review": "Inspected PNG and SVG on light and dark backgrounds: open terminal loop, symbolic paired stem, bulged base and two-base overhang preserved; no background or glow in composited exports. Schematic topology, not atomic RNA.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microrna-hairpin/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microrna-hairpin/inspection.webm"
+      }
     },
     "guide-rna": {
       "name": "guide RNA",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/guide-rna-bioart-transparent.png",
+      "svg": "svg/guide-rna-bioart-traced.svg",
+      "png_sha256": "5a7b5a106511e3e108b81864a593f0ca2b941c75e9f77abbe5ecc62b6fc79ecb",
+      "svg_sha256": "e1fcb9c8b8797a1fb8d226aef759a5f431bd4aea52cb6c86750e1cfa21061d39",
+      "original_sha256": "b94bb90260b738b45f9dc2bff57143429bdd915201889a63e5553997c5f90b57",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        339,
+        578,
+        321,
+        563
+      ],
+      "svg_paths": 4031,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/guide-rna/prompt.json",
+      "qa": "qa/inventory/guide-rna",
+      "visual_review": "Inspected light/dark PNG and SVG composites: extended guide tail and folded multi-loop scaffold remain legible with transparent loop interiors. Symbolic RNA topology and base rungs; not an exact sgRNA sequence or atomic geometry.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/guide-rna/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/guide-rna/inspection.webm"
+      }
     },
     "circular-plasmid-dna": {
       "name": "circular plasmid DNA",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/circular-plasmid-dna-bioart-transparent.png",
+      "svg": "svg/circular-plasmid-dna-bioart-traced.svg",
+      "png_sha256": "87393ecfa8e59ff561e05aa237e5c5a3e6cd282243b0febebffb8977f1fd88a9",
+      "svg_sha256": "facd4a42a687e073d0ffaf6ebe7b897de14265c935923f3e4fac8a74e09df960",
+      "original_sha256": "1c234f0e21f466d3b4000de3bc3d64decd9670f4041ebf11359047bb11a66a6f",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        428,
+        618,
+        359,
+        597
+      ],
+      "svg_paths": 11790,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/circular-plasmid-dna/prompt.json",
+      "qa": "qa/inventory/circular-plasmid-dna",
+      "visual_review": "Viewed PNG/SVG on both backgrounds: continuous closed duplex ring and fully transparent center, crisp outlines and retained blue/cyan shading. Relaxed plasmid schematic; turn count and dimensions not molecularly calibrated.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/circular-plasmid-dna/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/circular-plasmid-dna/inspection.webm"
+      }
     },
     "linear-dna-fragment": {
       "name": "linear DNA fragment",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "dna-double-helix",
+      "alias_reason": "The existing isolated double-helix asset is already a short linear duplex DNA fragment with two visible ends. No distinct end chemistry, sequence or experimental form is specified here.",
+      "reference": "https://pdb101.rcsb.org/motm/23",
+      "png": "png/dna-double-helix-bioart-transparent.png",
+      "svg": "svg/dna-double-helix-bioart-traced.svg",
+      "png_sha256": "8be270cc560f80f7373375a21818a68ee41f357b1e1f07b3f8ae6a149182fcc3",
+      "svg_sha256": "7e602615f6ab1fd15584c9ae92a7c12e619f59182c8f22e20f6f77e8a57ae586"
     },
     "condensed-metaphase-chromosome": {
       "name": "condensed metaphase chromosome",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/condensed-metaphase-chromosome-bioart-transparent.png",
+      "svg": "svg/condensed-metaphase-chromosome-bioart-traced.svg",
+      "png_sha256": "1c92297241e2f32ec547aced235252e529e1bd90c415d776c9c13d42de1fc7bd",
+      "svg_sha256": "606fa92bb13f2cc66af4d7df666cc9d03156e42087c2581d08afee8158736704",
+      "original_sha256": "830a92d0bd0ba5fb9eb3f0ec8383ed9f6e5738ffdc7faddfde84cb85a8ecb763",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        326,
+        595,
+        323
+      ],
+      "svg_paths": 19006,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/condensed-metaphase-chromosome/prompt.json",
+      "qa": "qa/inventory/condensed-metaphase-chromosome",
+      "visual_review": "Compared PNG/SVG on light/dark: smooth violet packing ridges, two joined sister chromatids, narrow centromere and four rounded arms retained. Transparent margins and no background glow. Packing is schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/condensed-metaphase-chromosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/condensed-metaphase-chromosome/inspection.webm"
+      }
     },
     "chromosome-pair": {
       "name": "chromosome pair",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/chromosome-pair-bioart-transparent.png",
+      "svg": "svg/chromosome-pair-bioart-traced.svg",
+      "png_sha256": "26a27d960b1a7d2f338fe7ce9360f915ea1f3c453f0ec30e89c48097bfe23f12",
+      "svg_sha256": "c2b59cf9b4894a1742593379ec425c702fbbc24b33855eb740c731ec3e75409f",
+      "original_sha256": "1a76ebbbb414486b9f4827db95d64cce73fa143f9393f4c2053828a04e470c7f",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        370,
+        574,
+        483,
+        582
+      ],
+      "svg_paths": 15189,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/chromosome-pair/prompt.json",
+      "qa": "qa/inventory/chromosome-pair",
+      "visual_review": "Inspected light/dark comparisons: two separate matching replicated chromosomes, violet/teal parental coding, smooth surfaces and transparent separation preserved in editable SVG. Generic homologues, not a named chromosome or synapsed bivalent.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chromosome-pair/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chromosome-pair/inspection.webm"
+      }
     },
     "chromatin-fiber": {
       "name": "chromatin fiber",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/chromatin-fiber-bioart-transparent.png",
+      "svg": "svg/chromatin-fiber-bioart-traced.svg",
+      "png_sha256": "75e5597a58d227af86ba915903cc9311a11e572fd15d3c6c3d06cff42d566a23",
+      "svg_sha256": "ce87fc96cbc9db1f9d97a9407b56c07593b4f861d76cece5fe94501f231f02ea",
+      "original_sha256": "334616d44538e2101f990b4ee99505b36be981508cacda3d1eb66e8c77e14991",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        341,
+        584,
+        338,
+        589
+      ],
+      "svg_paths": 15717,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/chromatin-fiber/prompt.json",
+      "qa": "qa/inventory/chromatin-fiber",
+      "visual_review": "Viewed PNG/SVG on light and dark backgrounds: irregular nucleosome chain, blue duplex wraps/linkers and violet cores retained without halos. Compact arrangement is illustrative, not a calibrated folding model.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chromatin-fiber/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chromatin-fiber/inspection.webm"
+      }
     },
     "nucleosome-array": {
       "name": "nucleosome array",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/nucleosome-array-bioart-transparent.png",
+      "svg": "svg/nucleosome-array-bioart-traced.svg",
+      "png_sha256": "56d8521193f6f69c9d6ebb40cf01eb9d708e1cfc5024d0569a7c05581e27601f",
+      "svg_sha256": "0c94d1d25158c79b883b0eeb7a984cf883fcedbd79a0aa3ae0655bad4001d1af",
+      "original_sha256": "4a23f65e2f12deca2eecad3c7e69107a8cf3c5c3da721100de66fe2a695911f8",
+      "png_dimensions": [
+        3040,
+        3040
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        459,
+        1167,
+        452,
+        1222
+      ],
+      "svg_paths": 10368,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/nucleosome-array/prompt.json",
+      "qa": "qa/inventory/nucleosome-array",
+      "visual_review": "Inspected five separated DNA-wrapped histone cores and connecting duplex on light/dark PNG/SVG renders. Transparent gaps retained; editable vector matches master. Symbolic packing and core subdivisions.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nucleosome-array/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nucleosome-array/inspection.webm"
+      }
     },
     "replication-fork": {
       "name": "replication fork",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/replication-fork-bioart-transparent.png",
+      "svg": "svg/replication-fork-bioart-traced.svg",
+      "png_sha256": "2f440ddf40a6ef28c7baa591a0d91f515d14348a16b4eb62f3ea0e36924b168d",
+      "svg_sha256": "f977604746e376966f4ae6c4cdaaab1efcd853eeb0e46e4119441362e9610763",
+      "original_sha256": "d7de9b2958b203782361767d13c2f165026380da224731d49b964134c2435038",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        387,
+        599,
+        331,
+        619
+      ],
+      "svg_paths": 3110,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/replication-fork/prompt.json",
+      "qa": "qa/inventory/replication-fork",
+      "visual_review": "Viewed light/dark renders: continuous blue and cyan parental rails, one coral continuous daughter rail and two separated coral fragments preserved. No branching or color swaps. Untwisted schematic; primers, polarity and proteins omitted.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/replication-fork/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/replication-fork/inspection.webm"
+      }
     },
     "transcription-bubble": {
       "name": "transcription bubble",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/transcription-bubble-bioart-transparent.png",
+      "svg": "svg/transcription-bubble-bioart-traced.svg",
+      "png_sha256": "94917126720ab36b2dcddf3db5bd505053a773365323f28f147e1ec0a0c6cf2e",
+      "svg_sha256": "3c1f523e45a554ff0678f5f2ef32fce2e536ffbacefdda830d02ae10b2b6a47e",
+      "original_sha256": "d7d5bb16c052a72bf343f263e17272baad6c7d6527f7c4bc6208d6c17d828813",
+      "png_dimensions": [
+        2484,
+        2484
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        355,
+        817,
+        365,
+        832
+      ],
+      "svg_paths": 7806,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/transcription-bubble/prompt.json",
+      "qa": "qa/inventory/transcription-bubble",
+      "visual_review": "Viewed light/dark PNG/SVG: continuous separated DNA backbones, paired outer DNA and local orange RNA-template hybrid retained. RNA tail exits independently and bubble interior is transparent. Symbolic bases, no calibrated bubble length.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/transcription-bubble/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/transcription-bubble/inspection.webm"
+      }
     },
     "dna-double-strand-break": {
       "name": "DNA double-strand break",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/dna-double-strand-break-bioart-transparent.png",
+      "svg": "svg/dna-double-strand-break-bioart-traced.svg",
+      "png_sha256": "a88a3d7596941ba09f834960b227f1c97254c47b7e96d99ceafb718b01bd0a58",
+      "svg_sha256": "53a8939610c518053bc123430bbae1819e6574a273037bd8ff14162738a6f06e",
+      "original_sha256": "4b86b8442418cfa55f6949090abafaf3f3c016c701046e5332125ea8c9a0450b",
+      "png_dimensions": [
+        3004,
+        3004
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        456,
+        1156,
+        456,
+        1331
+      ],
+      "svg_paths": 2738,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/dna-double-strand-break/prompt.json",
+      "qa": "qa/inventory/dna-double-strand-break",
+      "visual_review": "Inspected light/dark renders: two aligned duplex fragments, gap through both blue/cyan backbones and four central broken tips. PNG/SVG match; no opaque background. Symbolic base colors, no exact chemistry.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-double-strand-break/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-double-strand-break/inspection.webm"
+      }
     },
     "dna-single-strand-break": {
       "name": "DNA single-strand break",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/dna-single-strand-break-bioart-transparent.png",
+      "svg": "svg/dna-single-strand-break-bioart-traced.svg",
+      "png_sha256": "762c43416ab4d8673af19d256dca040c041709fadb742ea62a2aa2873e639cd0",
+      "svg_sha256": "c1aabc27db72894ca0447373ae371c4b0fcb7dc8a8ffc19d427c07f092a998f7",
+      "original_sha256": "8d2c1c7b6e301b1e09789366129398a9712dfd33e3ce205081d60cca479b56f0",
+      "png_dimensions": [
+        2868,
+        2868
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        437,
+        1091,
+        439,
+        1068
+      ],
+      "svg_paths": 9338,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/dna-single-strand-break/prompt.json",
+      "qa": "qa/inventory/dna-single-strand-break",
+      "visual_review": "Inspected PNG/SVG on both backgrounds: upper blue nick visible, lower cyan backbone continuous and paired bases retained. No background; symbolic geometry and enlarged nick.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-single-strand-break/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-single-strand-break/inspection.webm"
+      }
     },
     "dna-base-pair-mismatch": {
       "name": "DNA base-pair mismatch",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/dna-base-pair-mismatch-bioart-transparent.png",
+      "svg": "svg/dna-base-pair-mismatch-bioart-traced.svg",
+      "png_sha256": "c874d140d4084c9412b35f85da51a8c377601d7429987e6c7acd85c8c3cde7d2",
+      "svg_sha256": "21e57a4d00e0c01f0af50b3b413ec206d7e0e3717bc850731a925e90c852348a",
+      "original_sha256": "f0c08fd698597ee5154ffbc14620928c76caab1ae8afc5ac7575b74216e67e05",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        334,
+        598,
+        327,
+        589
+      ],
+      "svg_paths": 9455,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/dna-base-pair-mismatch/prompt.json",
+      "qa": "qa/inventory/dna-base-pair-mismatch",
+      "visual_review": "Inspected PNG/SVG on light/dark: one central separated nonmatching pair, both bases and both backbones present, surrounding pairs intact. Symbolic color/shape code and exaggerated distortion; transparent interior.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-base-pair-mismatch/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-base-pair-mismatch/inspection.webm"
+      }
     },
     "dna-insertion-deletion-locus": {
       "name": "DNA insertion/deletion locus",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/dna-insertion-deletion-locus-bioart-transparent.png",
+      "svg": "svg/dna-insertion-deletion-locus-bioart-traced.svg",
+      "png_sha256": "b3fdf09af2f8046e955c3c2a740cab1089c09746ae39417eb0861a19bd44e117",
+      "svg_sha256": "12a0e80a16066fe390f51532c4a4e1c2a203c5f3a2ad114bfe0c406ecb3f2488",
+      "original_sha256": "ecba27304d50a455a191b28c2379595d98e4413f11898a07495002fb1bded69e",
+      "png_dimensions": [
+        3040,
+        3040
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        459,
+        1215,
+        477,
+        1181
+      ],
+      "svg_paths": 8825,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/dna-insertion-deletion-locus/prompt.json",
+      "qa": "qa/inventory/dna-insertion-deletion-locus",
+      "visual_review": "Viewed PNG/SVG: three unpaired upper-loop bases, paired flanks and continuous lower connector preserved. Interior and padding transparent. Heteroduplex loop schematic with stretched connector, not an abasic lesion.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-insertion-deletion-locus/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-insertion-deletion-locus/inspection.webm"
+      }
     },
     "dna-protein-complex": {
       "name": "DNA-protein complex",
@@ -11428,7 +12366,14 @@
     "rna-protein-complex": {
       "name": "RNA-protein complex",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "ribonucleoprotein-complex",
+      "alias_reason": "RNA-protein complex and ribonucleoprotein complex name the same generic molecular assembly; the existing RNA-associated protein archetype directly covers this inventory synonym.",
+      "reference": "https://www.rcsb.org/structure/4OO8",
+      "png": "png/ribonucleoprotein-complex-bioart-transparent.png",
+      "svg": "svg/ribonucleoprotein-complex-bioart-traced.svg",
+      "png_sha256": "60be86c78402cb9a71b880d71a16371d7d8773fcd55bf9f85ebf9fd749813c19",
+      "svg_sha256": "3826ab88c23d2aeca47304c1aaa10a9b05d4f9cfb75536a203ef43ac0e4e8bb0"
     },
     "viral-rna-genome": {
       "name": "viral RNA genome",
@@ -11443,12 +12388,68 @@
     "telomere": {
       "name": "telomere",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/telomere-bioart-transparent.png",
+      "svg": "svg/telomere-bioart-traced.svg",
+      "png_sha256": "b4728ccc5025917eefe600c24f03ce92b076c5774992c18bc40ed3a788f10dfe",
+      "svg_sha256": "81f5c837a19a748eae0e0b320d5250832060ef5cfc41f11ea6c8bb42180b341c",
+      "original_sha256": "34fc0d52e01bbdf3de4a738c5142c19970ee79eb8da365594903c64eba5cb2ab",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        349,
+        594,
+        329,
+        587
+      ],
+      "svg_paths": 8491,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/telomere/prompt.json",
+      "qa": "qa/inventory/telomere",
+      "visual_review": "Inspected light/dark PNG/SVG: looped duplex, incoming tail and local displacement junction preserved, transparent central hole. T-loop archetype with schematic strand invasion; no exact sequence or shelterin structure.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/telomere/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/telomere/inspection.webm"
+      }
     },
     "centromere": {
       "name": "centromere",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/centromere-bioart-transparent.png",
+      "svg": "svg/centromere-bioart-traced.svg",
+      "png_sha256": "6a1281993faddf436ee3d4bea2d41eeedb4fcad6d4040222b231c98c5e4e483b",
+      "svg_sha256": "fd251b7ba274a75bf823de78142ec98251812e346439173b25af779dd9b9d608",
+      "original_sha256": "229061357a27852a53a8208c046da3fa93c78c8a4975a0690f745b951c15374c",
+      "png_dimensions": [
+        1973,
+        1973
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        282,
+        458,
+        300,
+        429
+      ],
+      "svg_paths": 17379,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/centromere/prompt.json",
+      "qa": "qa/inventory/centromere",
+      "visual_review": "Inspected light/dark PNG/SVG: paired violet centromeric regions, coral domains and opposite-facing teal kinetochore plates preserved. Smooth surfaces and alpha retained. Region schematic; no molecular stoichiometry or exact bridge architecture implied.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/centromere/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/centromere/inspection.webm"
+      }
     },
     "crispr-cut-site": {
       "name": "CRISPR cut site",
@@ -11463,17 +12464,101 @@
     "chemokine": {
       "name": "chemokine",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/chemokine-bioart-transparent.png",
+      "svg": "svg/chemokine-bioart-traced.svg",
+      "png_sha256": "fa6a00f828b378bb13b45d57e93848c70b49fd0607c78cd06ecb763699f44a8b",
+      "svg_sha256": "107bad2b31c1a54bec03aac0be0f3b9ca4d0f30f05613cdc583492a6bd97d642",
+      "original_sha256": "a9e3b4853ef94b6439e6fabadb32a1ffed1533819f2bbcb928c6bc32d34dc32a",
+      "png_dimensions": [
+        1812,
+        1812
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        292,
+        307,
+        322,
+        320
+      ],
+      "svg_paths": 7249,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/chemokine/prompt.json",
+      "qa": "qa/inventory/chemokine",
+      "visual_review": "Inspected light/dark renders: three connected beta strands, terminal violet helix and two free termini; no branching, gold backbone substitutions or arrowheads. Clean transparent SVG matches PNG. Simplified fold archetype; disulfides and atomic topology omitted.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chemokine/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chemokine/inspection.webm"
+      }
     },
     "growth-factor-dimer": {
       "name": "growth-factor dimer",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/growth-factor-dimer-bioart-transparent.png",
+      "svg": "svg/growth-factor-dimer-bioart-traced.svg",
+      "png_sha256": "9c587a03d3b9dbf8925a8a7af4310de57ef311e79da9049dc59b0c856822629d",
+      "svg_sha256": "092b12d3484d0390bc216c304ee9dd91c5682948eae9fc1d9c42efcc9fbb9fd3",
+      "original_sha256": "70c8b66b0ca6bd97aaf716d6dc0967d8f1377d7c86dd61917d7f4c4fd2b14804",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        372,
+        582,
+        321,
+        579
+      ],
+      "svg_paths": 15585,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/growth-factor-dimer/prompt.json",
+      "qa": "qa/inventory/growth-factor-dimer",
+      "visual_review": "Inspected light/dark PNG/SVG: two differently colored packed subunits and beta-rich surface motif preserved with smooth gradients and transparent gaps. Neurotrophin-like archetype, not exact molecular coordinates.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/growth-factor-dimer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/growth-factor-dimer/inspection.webm"
+      }
     },
     "linear-peptide": {
       "name": "linear peptide",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/linear-peptide-bioart-transparent.png",
+      "svg": "svg/linear-peptide-bioart-traced.svg",
+      "png_sha256": "49fb0b9fc50291d06885f1f4e05db040e27d254a29ca27a6159d0c1204c38c7e",
+      "svg_sha256": "d78f9426518cff5f14f6c3364bffef52d3cc92275edb05350f54ecb4f1a92169",
+      "original_sha256": "fc877c5538edce63ab29cf6ee0034cfb7b9babb1843d2eef545ae4f704885203",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        342,
+        620,
+        321,
+        579
+      ],
+      "svg_paths": 3850,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/linear-peptide/prompt.json",
+      "qa": "qa/inventory/linear-peptide",
+      "visual_review": "Viewed light/dark PNG/SVG: nine smooth connected residue beads, one open chain and two free ends preserved, no background or glow. Generic residue-level schematic, not atomic chemistry or a specific sequence.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/linear-peptide/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/linear-peptide/inspection.webm"
+      }
     },
     "cyclic-peptide": {
       "name": "cyclic peptide",
@@ -13629,32 +14714,200 @@
     "48-well-plate": {
       "name": "48-well plate",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/48-well-plate-bioart-transparent.png",
+      "svg": "svg/48-well-plate-bioart-traced.svg",
+      "png_sha256": "b44524e001a227a02c627ee41178ef2103476e1b4a76194009b2d78810e652ce",
+      "svg_sha256": "fd1dc8d13bf9d19e93b03608f8cab52683705242f19955ecfa1a522b25effa67",
+      "original_sha256": "412806ba0f6b724397688392f195f9dd5e79bb4f18761294753a85b88200f78a",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        310,
+        563
+      ],
+      "svg_paths": 31150,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/48-well-plate/prompt.json",
+      "qa": "qa/inventory/48-well-plate",
+      "visual_review": "Corrected and counted six rows of eight wells, 48 total. PNG/SVG light-dark comparison preserves every well and clear rim, with clean external alpha and generous padding. Uniform medium illustrative; fine plastic highlights slightly quantized.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/48-well-plate/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/48-well-plate/inspection.webm"
+      }
     },
     "96-well-plate": {
       "name": "96-well plate",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/96-well-plate-bioart-transparent.png",
+      "svg": "svg/96-well-plate-bioart-traced.svg",
+      "png_sha256": "ab481543310c348ac92e8b5cb69f54d6f2f22b4634ea3d0a36251b7414c8f3c5",
+      "svg_sha256": "f16eddc276db1937b93ff0a625ca65a00c22efa70cfb5f30899c7a935544ce8a",
+      "original_sha256": "9261e259b95ee9e25e8844b78add965c170909c7fb265dd7103af9fbca743627",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        323,
+        581
+      ],
+      "svg_paths": 43218,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/96-well-plate/prompt.json",
+      "qa": "qa/inventory/96-well-plate",
+      "visual_review": "Verified eight rows of twelve circular openings. Clear plastic rim and uniform illustrative pink medium retained in SVG; transparent exterior clean on light and dark backgrounds. Complete padded silhouette.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/96-well-plate/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/96-well-plate/inspection.webm"
+      }
     },
     "384-well-plate": {
       "name": "384-well plate",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/384-well-plate-bioart-transparent.png",
+      "svg": "svg/384-well-plate-bioart-traced.svg",
+      "png_sha256": "b09e04ae84703a0c8c4c96123cf6d3600e959e7b3ba688523b2da1eedb02f649",
+      "svg_sha256": "16b10e24244156b6fc71f30bcbd262a6c762804d9da688bf8d3e57c41c04caa2",
+      "original_sha256": "092e771893797106db2d11a13489b02008f48ff526dc96172e3c0b043f6f7ce8",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        374,
+        563,
+        417,
+        589
+      ],
+      "svg_paths": 22196,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/384-well-plate/prompt-v2.json",
+      "qa": "qa/inventory/384-well-plate",
+      "visual_review": "Version 2 accepted after independent all-row count: sixteen rows each with twenty-four well interiors, 384 total; verification JSON retained. Light/dark PNG and SVG inspected: full grid, complete rim, alpha transparency and polished well depth preserved. Version 1 rejected for 23 columns. Pink fill illustrative.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/384-well-plate/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/384-well-plate/inspection.webm"
+      }
     },
     "deep-well-plate": {
       "name": "deep-well plate",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/deep-well-plate-bioart-transparent.png",
+      "svg": "svg/deep-well-plate-bioart-traced.svg",
+      "png_sha256": "2767c6f7a22ed3d8e48075ca2497c7127b963ccaf68e96f8b3e7771a678136b4",
+      "svg_sha256": "01be181f16122f422f5c037f4776d3f603abec9208a2aa00054f5b63bc3396f9",
+      "original_sha256": "617bf83df2c8cf7c8be8766149b24444c1f2a07ab269c5010629cc0ca93b014e",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        572,
+        351,
+        579
+      ],
+      "svg_paths": 15157,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/deep-well-plate/prompt.json",
+      "qa": "qa/inventory/deep-well-plate",
+      "visual_review": "Deep square wells and extended vertical columns clearly distinguish the plate from shallow assay plates. SVG retains smooth plastic shading and clean alpha silhouette on light and dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/deep-well-plate/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/deep-well-plate/inspection.webm"
+      }
     },
     "pcr-plate": {
       "name": "PCR plate",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/pcr-plate-bioart-transparent.png",
+      "svg": "svg/pcr-plate-bioart-traced.svg",
+      "png_sha256": "86214ae7eb51ae79a4d75d5b8577e2bbf580b05b996fbc063e5899149b8cdd6a",
+      "svg_sha256": "2963f721626113cb5913bdfff4947d02531a678ffb046615b9b10c65b858f40b",
+      "original_sha256": "b5c1b991dbf4f838e02899b39fcbcce7a8053f451c93c620847b3640b78cc088",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        331,
+        720,
+        347,
+        619
+      ],
+      "svg_paths": 16380,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/pcr-plate/prompt.json",
+      "qa": "qa/inventory/pcr-plate",
+      "visual_review": "Thin deck, circular mouths and individually tapered tubes remain recognizable in PNG and SVG. Complete silhouette with transparent surroundings verified on light and dark panels.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pcr-plate/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pcr-plate/inspection.webm"
+      }
     },
     "elisa-plate": {
       "name": "ELISA plate",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/elisa-plate-bioart-transparent.png",
+      "svg": "svg/elisa-plate-bioart-traced.svg",
+      "png_sha256": "72c090112d01aa358233ae781d58867a44d642832192f2ce82bd9caab3b41a8c",
+      "svg_sha256": "600adde2e1c139cf817c1d89963b73cc7440043f3b38384254dc98846544c6d6",
+      "original_sha256": "4aaf31306936245eba2cf5ceac193e4600e6b7483e049a92cc1737eec48fa285",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        596,
+        330,
+        595
+      ],
+      "svg_paths": 19411,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/elisa-plate/prompt-v2.json",
+      "qa": "qa/inventory/elisa-plate",
+      "visual_review": "Corrected to eight wells per visible strip, including lifted foreground strip. Blue holder and clear cylindrical wells retained in editable SVG, clean exterior alpha on both backgrounds. Partial loading shown; no assay results.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/elisa-plate/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/elisa-plate/inspection.webm"
+      }
     },
     "reservoir-tray": {
       "name": "reservoir tray",
@@ -13956,12 +15209,68 @@
     "hemocytometer": {
       "name": "hemocytometer",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/hemocytometer-bioart-transparent.png",
+      "svg": "svg/hemocytometer-bioart-traced.svg",
+      "png_sha256": "e9a917257c22f6f39808f8665e4e048eede1a591161f59137a0824b925eaab5b",
+      "svg_sha256": "536d7cf9a2ebacb789552940dc1202718665c29df08960f88893e22bf75c34dc",
+      "original_sha256": "9f0a72cfdad0d72ded61be5db79f54cf65a64fa038f153102c54743899207971",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        575,
+        343,
+        587
+      ],
+      "svg_paths": 24813,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/hemocytometer/prompt.json",
+      "qa": "qa/inventory/hemocytometer",
+      "visual_review": "Two gridded counting platforms, support rails and seated coverslip visible. Grid explicitly schematic. Glass highlights and complete silhouette remain comparable in SVG; alpha background clean on light and dark.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hemocytometer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hemocytometer/inspection.webm"
+      }
     },
     "counting-chamber": {
       "name": "counting chamber",
       "category": "19. Basic laboratory glassware and plasticware",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/counting-chamber-bioart-transparent.png",
+      "svg": "svg/counting-chamber-bioart-traced.svg",
+      "png_sha256": "d22b6d6e3fc681e24d40dc02c5623783166d1107992b5df23b8f84d579459203",
+      "svg_sha256": "3d770e435b0f83f02835f566a3860c0901a2f8543d5e744f4546555242519c71",
+      "original_sha256": "70019fb8f593621ce3993ea0ca65dd0bb2071738dd5c4e9826d0f33ea33ff563",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        584,
+        384,
+        587
+      ],
+      "svg_paths": 12608,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/counting-chamber/prompt.json",
+      "qa": "qa/inventory/counting-chamber",
+      "visual_review": "Covered optical chambers connected to two loading ports, frosted grip and thin slide silhouette visible in both formats. Alpha surroundings clean and blue plastic shading preserved.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/counting-chamber/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/counting-chamber/inspection.webm"
+      }
     },
     "magnetic-separation-column": {
       "name": "magnetic separation column",
@@ -16210,7 +17519,14 @@
     "uhplc-system": {
       "name": "UHPLC system",
       "category": "23. Protein, biochemistry, and analytical equipment",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "hplc-system",
+      "alias_reason": "Reviewed existing modular LC exterior: solvent reservoirs, pump, autosampler, column compartment and detector represent both HPLC and UHPLC. Pressure capability and internal dispersion do not supply a unique unlabeled exterior; one generic LC archetype follows inventory visual-distinction rule.",
+      "reference": "https://www.agilent.com/en/product/liquid-chromatography/hplc-systems/analytical-hplc-systems/1260-prime-lc-system",
+      "png": "png/hplc-system-bioart-transparent.png",
+      "svg": "svg/hplc-system-bioart-traced.svg",
+      "png_sha256": "506d2c1798d49b9469ad85440835c82cc4dbb37d3df8cbb69266ee6751e3e519",
+      "svg_sha256": "8fec0dec0e914abad3a369d9fb4ea9ea3015b9a832a39c5baac37163f5189c9d"
     },
     "fplc-protein-purification-system": {
       "name": "FPLC protein-purification system",
@@ -16281,12 +17597,68 @@
     "size-exclusion-chromatography-column": {
       "name": "size-exclusion chromatography column",
       "category": "23. Protein, biochemistry, and analytical equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/size-exclusion-chromatography-column-bioart-transparent.png",
+      "svg": "svg/size-exclusion-chromatography-column-bioart-traced.svg",
+      "png_sha256": "12e90f8248d376d0498708effc80ccf6be9affbdba8015f961b2bd0de448f486",
+      "svg_sha256": "503da853851248def27a9136d3dd914e25d41688baf556cf5ed6a53f8a448300",
+      "original_sha256": "543606b5754e14b18610fee182e58dcda55f2d185a85dbfd1a5d6d8e7a71069d",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        324,
+        577,
+        334
+      ],
+      "svg_paths": 6196,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/size-exclusion-chromatography-column/prompt.json",
+      "qa": "qa/inventory/size-exclusion-chromatography-column",
+      "visual_review": "Light/dark PNG and SVG compared. Long slender packed column, complete inlet/outlet fittings, collars and frits preserved with transparent exterior. Fine resin texture remains legible without backdrop. Long SEC format illustrative; chemistry not inferable from exterior alone.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/size-exclusion-chromatography-column/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/size-exclusion-chromatography-column/inspection.webm"
+      }
     },
     "affinity-chromatography-column": {
       "name": "affinity chromatography column",
       "category": "23. Protein, biochemistry, and analytical equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/affinity-chromatography-column-bioart-transparent.png",
+      "svg": "svg/affinity-chromatography-column-bioart-traced.svg",
+      "png_sha256": "ea566aa707b1fc36204a4bdda1a634f98c4db3a0e4a141b19fd9ad359bfb3d87",
+      "svg_sha256": "7abe08c62d681c67163e43d666de7f767f4b7f1e32b9cfc6799b7438ea5e1f75",
+      "original_sha256": "2ce7196553c84d06754ddf459f6fa8a5b26e164faeb52f9e4c726880702ed2c4",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        368,
+        625,
+        371
+      ],
+      "svg_paths": 8590,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/affinity-chromatography-column/prompt.json",
+      "qa": "qa/inventory/affinity-chromatography-column",
+      "visual_review": "PNG/SVG compared on white and dark. Compact cartridge, cream bed, two frits, navy collars and both connector openings retained. Clean exterior alpha, no labels or clipping. Representative short affinity cartridge format, not chemistry-specific exterior.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/affinity-chromatography-column/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/affinity-chromatography-column/inspection.webm"
+      }
     },
     "fraction-collector": {
       "name": "fraction collector",
@@ -17545,7 +18917,14 @@
     "single-cell-sorting-plate": {
       "name": "single-cell sorting plate",
       "category": "25. Flow cytometry and cell sorting",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "96-well-plate",
+      "alias_reason": "Single-cell sorting uses ordinary multiwell collection plates; the reviewed 8 by 12 plate is a representative 96-well collection format. Single-cell deposition is a workflow state, not a distinct unlabeled plate geometry. Reuse avoids inventing oversized visible cells or implying verified occupancy.",
+      "reference": "https://www.bdbiosciences.com/content/dam/bdb/marketing-documents/products-pdf-folder/instruments/research-cell-sorters/BD-FACSDiscover-S8-Cell-Sorter-Technical-Specifications-v2-ANZ.pdf",
+      "png": "png/96-well-plate-bioart-transparent.png",
+      "svg": "svg/96-well-plate-bioart-traced.svg",
+      "png_sha256": "ab481543310c348ac92e8b5cb69f54d6f2f22b4634ea3d0a36251b7414c8f3c5",
+      "svg_sha256": "f16eddc276db1937b93ff0a625ca65a00c22efa70cfb5f30899c7a935544ce8a"
     },
     "tissue-cassette": {
       "name": "tissue cassette",
@@ -18438,12 +19817,68 @@
     "dna-electrophoresis-gel-with-bands": {
       "name": "DNA electrophoresis gel with bands",
       "category": "39. Common experimental states and readout primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/dna-electrophoresis-gel-with-bands-bioart-transparent.png",
+      "svg": "svg/dna-electrophoresis-gel-with-bands-bioart-traced.svg",
+      "png_sha256": "659f41e4181fed2b1e072deaf52ff32f975ec5f34709ed6e7facf2e8a9d3bbf5",
+      "svg_sha256": "d6e5bc1b79df0b6d798f6e6b2909f12f1669feed0ed3e70865cc91373cf3226f",
+      "original_sha256": "818e6ee4e7a884f1ffc1792e9bd1d7b81792da0a5e783def71d746b199da0959",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        582,
+        329,
+        563
+      ],
+      "svg_paths": 11329,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/dna-electrophoresis-gel-with-bands/prompt.json",
+      "qa": "qa/inventory/dna-electrophoresis-gel-with-bands",
+      "visual_review": "PNG and SVG light/dark inspected: six wells aligned with discrete band lanes, seven-band illustrative ladder, continuous slab without false molded lane channels. Complete transparent exterior and preserved cyan bands. Entire band pattern synthetic educational illustration, not measured results.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-electrophoresis-gel-with-bands/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-electrophoresis-gel-with-bands/inspection.webm"
+      }
     },
     "western-blot-membrane-with-bands": {
       "name": "western blot membrane with bands",
       "category": "39. Common experimental states and readout primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/western-blot-membrane-with-bands-bioart-transparent.png",
+      "svg": "svg/western-blot-membrane-with-bands-bioart-traced.svg",
+      "png_sha256": "70261483ca2a200ce906fe9860e54d07dd2b622821ab69983e800090c84313a4",
+      "svg_sha256": "2cadc8d0c7ab35cd08c0f6f5aadbe228545c7f07c429b84f31b354a626ede396",
+      "original_sha256": "e762aaf075c3c4a89786dcd161c2db7500f78ce055a3896c2dbc48fe5bd88418",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        403,
+        583,
+        321,
+        619
+      ],
+      "svg_paths": 4532,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/western-blot-membrane-with-bands/prompt.json",
+      "qa": "qa/inventory/western-blot-membrane-with-bands",
+      "visual_review": "Compared PNG/SVG light and dark: thin membrane, clipped corner, slight curl and separated illustrative bands preserved. No false loading wells or lane channels; complete transparent exterior. Synthetic educational band pattern, not experimental evidence or quantitative data.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/western-blot-membrane-with-bands/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/western-blot-membrane-with-bands/inspection.webm"
+      }
     },
     "isolated-axon": {
       "name": "isolated axon",

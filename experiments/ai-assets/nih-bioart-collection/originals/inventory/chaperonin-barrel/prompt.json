@@ -1,0 +1,28 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a chaperonin barrel, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Depict uncapped bacterial GroEL as two stacked back-to-back heptameric rings forming one hollow cylindrical barrel. Exactly seven broad lobed subunits around the upper ring, clearly separated by seams around a deep central cavity, and a second aligned seven-subunit ring below. Upper ring teal, lower ring violet. Three-quarter elevated view, top cavity visible, both rings continuous joined at equatorial waist. Smooth matte vector-like lobes rather than atom bumps. No lid, substrate or floating nucleotides. Transparent PNG.",
+  "refinements": [
+    "Correct this GroEL illustration: rebuild each ring with exactly SEVEN subunits, not eight. On upper rim arrange seven large separated wedges at clock positions 12, 1:43, 3:26, 5:09, 6:51, 8:34, 10:17 around central cavity. Two stacked rings, teal upper, violet lower, seven corresponding lobed columns in each. Smooth broad matte protein lobes with crisp fine outlines and subtle gradients, remove granular bumpy surface texture. Lower camera slightly to show both equally tall rings. Complete centered barrel with generous transparent padding; transparent PNG alpha, no text.",
+    "The upper ring still has eight subunits. Remove the upper-left rear subunit at 10:30 completely, then redistribute the remaining SEVEN around the ring. Make seven sectors, no extra seams: one back center, two on right, two across front, two on left. A heptagon has odd sevenfold symmetry, so there must NOT be a central front subunit opposite the central back one: instead the FRONT CENTER is a SEAM between two front subunits. Keep exactly seven per ring. Show an open two-ring GroEL barrel with smooth teal upper and violet lower subunits. Transparent alpha PNG, no checkerboard, no rough grain.",
+    "Create a NEW GroEL chaperonin barrel illustration from scratch, without copying the prior arrangement. Two stacked heptamer rings. The upper rim has SEVEN large teal subunits forming a regular seven-sided opening, like seven petals: ONE at back center, THREE along the left half, THREE along the right half. The front center is a deep seam between two subunits. No subunit at front center. Seven teal subunits total. Lower ring violet with matching sevenfold structure. View as nearly side-on barrel from slightly above, broad hollow top and clear equatorial seam. Scientific NIH BioArt style, smooth shaded broad protein lobes, thin crisp outlines, saturated colors, no grain. Single complete object centered with generous padding. Transparent background PNG. No labels.",
+    "Keep precisely this seven-subunit upper ring and corresponding lower ring, preserving every major boundary and central front seam. Polish into clean NIH BioArt illustration with smooth broad matte lobes, fine crisp dark outlines, subtle gradients. Remove the small bumps and granular surface texture only. Teal upper ring, violet lower ring, hollow cavity. Zoom out 20 percent so every edge has generous transparent padding. PNG real alpha background; no checkerboard or glow."
+  ],
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-f97e254c-1b3a-4046-81b1-2c0e3f387b51.png",
+  "archetype": "Uncapped GroEL double heptameric barrel. Seven upper subunits visible; rear lower subunits occluded. Domain shapes and inter-ring registration schematic.",
+  "references": [
+    "https://pdb101.rcsb.org/motm/32",
+    "https://www.rcsb.org/structure/1AON"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "chaperonin-barrel",
+  "name": "chaperonin barrel",
+  "original": "originals/inventory/chaperonin-barrel/generated.png",
+  "original_sha256": "567f95e88d9d39b80c69db8e6660e2806efd4d7dab9f9b83803e42333af478ef"
+}

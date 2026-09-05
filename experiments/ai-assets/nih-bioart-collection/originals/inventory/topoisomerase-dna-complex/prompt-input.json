@@ -1,0 +1,12 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a topoisomerase-DNA complex, matching NIH BioArt style: polished detailed biomedical illustration, smooth clean protein domains, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, saturated colors. Simplified type IIA topoisomerase DNA-binding core dimer: two mirrored curved multilobed protein halves, teal left and violet right, form a heart-shaped clamp with a large central lower cavity and joined lower gate. A single short blue double-stranded DNA segment runs left-to-right across upper DNA-binding saddle with a pronounced gentle central bend, held between the two protein halves. Both DNA backbones remain paired and continuous. Show bound closed-gate complex, not strand passage in motion. Omit ATPase head and disordered tails for isolated catalytic-core archetype. No second duplex, free nucleotide, arrows, labels, text, borders, scenery or shadows. Complete centered generous transparent padding; smooth matte domains without atomistic rough texture. Transparent alpha PNG.",
+  "refinement": "Smooth both teal and violet protein halves into softly lobed matte surfaces with clean contours and subtle gradients, removing pebbled mottled texture. Preserve central cavity and joined lower dimer gate. At both far ends of DNA show TWO distinct open strand termini, not backbones joined into closed loops. Keep bent paired duplex continuous through binding saddle. Entire complex centered padded, transparent alpha PNG.",
+  "alpha_refinement": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-5cb6019b-ff2a-4549-9b11-9d0e35c448fe.png",
+  "archetype": "Type IIA topoisomerase DNA-binding catalytic-core dimer bound to bent gate DNA. ATPase domains and disordered tails omitted. Closed lower gate; no transported second duplex or strand-passage event. Domain shapes and DNA bend schematic.",
+  "references": [
+    "https://www.rcsb.org/structure/2RGR",
+    "https://www.rcsb.org/structure/3L4J"
+  ]
+}
