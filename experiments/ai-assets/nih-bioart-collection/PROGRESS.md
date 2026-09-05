@@ -1,8 +1,8 @@
 # Inventory production progress
 
-66 of 768 unique inventory names covered across 770 checklist entries.
+69 of 768 unique inventory names covered across 770 checklist entries.
 
-These cover 62 distinct PNG/SVG pairs and 4 explicit archetype aliases. Alias reasons are recorded in the ledger.
+These cover 65 distinct PNG/SVG pairs and 4 explicit archetype aliases. Alias reasons are recorded in the ledger.
 The inventory files currently contain 770 checklist rows; their prose count is stale. Two exact repeated names share a single asset. The existing ten approved pairs are preserved. Completion requires a saved PNG, editable SVG, file validation, and visual review.
 
 Production remains on the experimental branch. Each asset is generated as a transparent PNG, then traced and reviewed on light and dark backgrounds. Completed assets are pushed periodically. The full inventory is still in progress.
@@ -70,6 +70,9 @@ Production remains on the experimental branch. Each asset is generated as a tran
 | senescent cell | [PNG](png/senescent-cell-bioart-transparent.png) | [SVG](svg/senescent-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/senescent-cell/comparison.png) |
 | polarized migrating cell | [PNG](png/polarized-migrating-cell-bioart-transparent.png) | [SVG](svg/polarized-migrating-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/polarized-migrating-cell/comparison.png) |
 | adherent spread cell | [PNG](png/adherent-spread-cell-bioart-transparent.png) | [SVG](svg/adherent-spread-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adherent-spread-cell/comparison.png) |
+| rounded suspension cell | [PNG](png/rounded-suspension-cell-bioart-transparent.png) | [SVG](svg/rounded-suspension-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rounded-suspension-cell/comparison.png) |
+| cell with membrane blebs | [PNG](png/cell-with-membrane-blebs-bioart-transparent.png) | [SVG](svg/cell-with-membrane-blebs-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-with-membrane-blebs/comparison.png) |
+| phagocytic cell engulfing a particle | [PNG](png/phagocytic-cell-engulfing-a-particle-bioart-transparent.png) | [SVG](svg/phagocytic-cell-engulfing-a-particle-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/phagocytic-cell-engulfing-a-particle/comparison.png) |
 | mitochondrion | [PNG](png/mitochondrion-bioart-transparent.png) | [SVG](svg/mitochondrion-bioart-traced.svg) | Approved earlier batch |
 | generic IgG antibody | [PNG](png/igg-antibody-bioart-transparent.png) | [SVG](svg/igg-antibody-bioart-traced.svg) | Approved earlier batch |
 | CD8 alpha-beta receptor | [PNG](png/cd8-receptor-bioart-transparent.png) | [SVG](svg/cd8-receptor-bioart-traced.svg) | Approved earlier batch |

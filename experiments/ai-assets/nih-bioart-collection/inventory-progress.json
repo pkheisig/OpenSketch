@@ -7191,17 +7191,101 @@
     "rounded-suspension-cell": {
       "name": "rounded suspension cell",
       "category": "3. Cell states and morphology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/rounded-suspension-cell-bioart-transparent.png",
+      "svg": "svg/rounded-suspension-cell-bioart-traced.svg",
+      "png_sha256": "11e471d5f195a2c2fb9c06df6d88a17ae176e87f7be7dbbdd3d657f8ab3bb8fd",
+      "svg_sha256": "63eda1701f8fde0e0ce0c520a37c8c2bcf12d3dbfe92bace6df75fbae56fa7c3",
+      "original_sha256": "c062618026fc2d09a5dd80588ca223ce0b288643e75625cae5f05ba952882bdf",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        289,
+        283,
+        251
+      ],
+      "svg_paths": 18863,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/rounded-suspension-cell/prompt.json",
+      "qa": "qa/inventory/rounded-suspension-cell",
+      "visual_review": "Complete smooth rounded cell with one nucleus and moderate peripheral organelles. No attachment structures or long processes. Clean white/dark transparency; SVG retains cell edge and organelle contours with mild gradient banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rounded-suspension-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rounded-suspension-cell/inspection.webm"
+      }
     },
     "cell-with-membrane-blebs": {
       "name": "cell with membrane blebs",
       "category": "3. Cell states and morphology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cell-with-membrane-blebs-bioart-transparent.png",
+      "svg": "svg/cell-with-membrane-blebs-bioart-traced.svg",
+      "png_sha256": "924ed1136e99e5a7f457e1b416256477514b12d734e69cfa8bd4bd61bc27c1de",
+      "svg_sha256": "29331471d24b294e27c7e4ec688760bcc1f3e5eec9b41d52e6381200e2e0e0ff",
+      "original_sha256": "3f271e9b38076b5924d19a1d1fd451a4b16c15e55e6d6277d77ceb1101318dcd",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        368,
+        563,
+        321,
+        575
+      ],
+      "svg_paths": 16108,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cell-with-membrane-blebs/prompt.json",
+      "qa": "qa/inventory/cell-with-membrane-blebs",
+      "visual_review": "Four attached cytoplasmic blebs around one dominant cell body with an intact nucleus. No organs or nuclei inside the blebs and no detached cells. Clean white/dark transparency without glow. SVG preserves connected necks and round bulges with mild gradient banding; cause of blebbing remains unspecified.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-with-membrane-blebs/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-with-membrane-blebs/inspection.webm"
+      }
     },
     "phagocytic-cell-engulfing-a-particle": {
       "name": "phagocytic cell engulfing a particle",
       "category": "3. Cell states and morphology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/phagocytic-cell-engulfing-a-particle-bioart-transparent.png",
+      "svg": "svg/phagocytic-cell-engulfing-a-particle-bioart-traced.svg",
+      "png_sha256": "00000f9b6713571c6a777b28c88b7952bde4536d2d3d92cab6dc53e95408fcb1",
+      "svg_sha256": "31b684e05cf26c933bb72e5bb0eea34cf9985351bea7c3b73b436ed004e67b50",
+      "original_sha256": "ec23c0359b8becbc9bce5ca567c56859342a44fc407b75718527a00f649bddc7",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        262,
+        269,
+        251
+      ],
+      "svg_paths": 20434,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/phagocytic-cell-engulfing-a-particle/prompt.json",
+      "qa": "qa/inventory/phagocytic-cell-engulfing-a-particle",
+      "visual_review": "One particle partially wrapped by an open phagocytic cup; kidney-shaped nucleus and complete pseudopods. Transparent exterior and cup gaps are clean on light/dark composites. SVG preserves particle separation, cup opening and cellular contours with mild gradient banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/phagocytic-cell-engulfing-a-particle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/phagocytic-cell-engulfing-a-particle/inspection.webm"
+      }
     },
     "multinucleated-syncytium": {
       "name": "multinucleated syncytium",
