@@ -8281,17 +8281,101 @@
     "eukaryotic-flagellum": {
       "name": "eukaryotic flagellum",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/eukaryotic-flagellum-bioart-transparent.png",
+      "svg": "svg/eukaryotic-flagellum-bioart-traced.svg",
+      "png_sha256": "22f431a90b3c15a1238b16dc539212e6edc9e4beaf3da53c1f3dc14bf128f167",
+      "svg_sha256": "a4a4ea7c661e73cfdb354f3e033a67b216e932514f43ccf9ef0ed7190c1ba80d",
+      "original_sha256": "f0fef17c63044402c670e34d956465dbea534db1f433d200974146d09f66a782",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        337,
+        584,
+        337,
+        587
+      ],
+      "svg_paths": 3453,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/eukaryotic-flagellum/prompt.json",
+      "qa": "qa/inventory/eukaryotic-flagellum",
+      "visual_review": "Long sinuous membrane-covered shaft, rounded distal tip and proximal axonemal window preserved. SVG retains continuous fine tail and smooth contours with slight gradient bands. True transparency verified on both backgrounds after alpha retry.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/eukaryotic-flagellum/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/eukaryotic-flagellum/inspection.webm"
+      }
     },
     "lipid-droplet": {
       "name": "lipid droplet",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/lipid-droplet-bioart-transparent.png",
+      "svg": "svg/lipid-droplet-bioart-traced.svg",
+      "png_sha256": "cacece0727af3c62fa88a2d2a32cc111d6a450c2caf5a18255a943369f905f4b",
+      "svg_sha256": "6ce4dffe87964f046644fed79fae91ee502aa0e9a478d4696fc5d7bb01a37546",
+      "original_sha256": "38e982e671068de87ae8464f5ab1340f0c31b08ee469e99bbc09ed0d328bfe0a",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        298,
+        298,
+        251
+      ],
+      "svg_paths": 13480,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/lipid-droplet/prompt.json",
+      "qa": "qa/inventory/lipid-droplet",
+      "visual_review": "Single monolayer head row with inward tails, homogeneous lipid core and three shallow protein patches preserved. SVG keeps fine rim detail and complete silhouette with modest gradient banding. Transparent padding clean on light and dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lipid-droplet/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lipid-droplet/inspection.webm"
+      }
     },
     "glycogen-granule": {
       "name": "glycogen granule",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/glycogen-granule-bioart-transparent.png",
+      "svg": "svg/glycogen-granule-bioart-traced.svg",
+      "png_sha256": "749081e9917106d64469222f960ca726ce97d00a3e44725d3548f7eed6a80e0f",
+      "svg_sha256": "f133dea7937f1a1097199beb1777f9a75142a80e73f7f97341b1c96f0e83a902",
+      "original_sha256": "bb0deaaacf0a4386fe85f9a9227b15b722de6fc2bd9a8c7dbc7a9d6a6fdf4dd2",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        258,
+        251,
+        251
+      ],
+      "svg_paths": 24041,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/glycogen-granule/prompt.json",
+      "qa": "qa/inventory/glycogen-granule",
+      "visual_review": "Inspected PNG and editable SVG on light and dark backgrounds: complete branched bead network and golden core, transparent interbranch spaces, no enclosing membrane. SVG preserves the silhouette and bead highlights with slightly stronger outlines. Molecular counts and branching geometry are schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/glycogen-granule/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/glycogen-granule/inspection.webm"
+      }
     },
     "stress-granule": {
       "name": "stress granule",
