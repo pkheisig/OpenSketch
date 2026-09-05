@@ -89,7 +89,7 @@ import {
   IMPORTED_MEDIA_DRAG_TYPE,
   parseAssetDragPayload
 } from "@/editor/assetDrag";
-import { useOpenSketchHostServices } from "@/application/hostServices";
+import { useOpenSketchHostServices, useOpenSketchPortalRoot } from "@/application/hostServices";
 
 interface StoredViewport {
   zoom: number;
@@ -129,6 +129,7 @@ function CanvasContextMenu({
   "aria-hidden"?: boolean;
   style?: CSSProperties;
 }) {
+  const portalRoot = useOpenSketchPortalRoot();
   const menuRef = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ left: x, top: y });
 
@@ -209,7 +210,7 @@ function CanvasContextMenu({
         </button>
       ))}
     </div>,
-    document.body
+    portalRoot ?? document.body
   );
 }
 

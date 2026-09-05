@@ -16,7 +16,7 @@
     "lint": "eslint .",
     "typecheck": "pnpm -r typecheck && tsc --project scripts/tsconfig.json",
     "test": "pnpm styles:check && vitest run",
-    "styles:check": "node scripts/check-style-ownership.mjs",
+    "styles:check": "node scripts/check-style-ownership.mjs && node scripts/check-primitive-usage.mjs",
     "test:e2e": "playwright test",
     "test:e2e:smoke": "playwright test --project=chromium --grep @smoke",
     "test:e2e:cross-browser": "playwright test --project=firefox --project=webkit --grep @smoke",

@@ -93,7 +93,7 @@
   background-size: 16px 16px;
 }
 
-html[data-theme="dark"] .project-preview-vector.transparent {
+.opensketch-app[data-opensketch-theme="dark"] .project-preview-vector.transparent {
   background:
     linear-gradient(45deg, #40382f 25%, transparent 25%),
     linear-gradient(-45deg, #40382f 25%, transparent 25%),

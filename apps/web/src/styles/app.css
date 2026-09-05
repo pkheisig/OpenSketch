@@ -1,5 +1,6 @@
 /* Deterministic stylesheet entry point. Each module owns one UI surface. */
 @import "./tokens.css";
+@import "./openSuiteTheme.css";
 @import "./base.css";
 @import "./home.css";
 @import "./editor.css";

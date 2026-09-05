@@ -17,6 +17,7 @@ import {
   OPENSKETCH_REACT_VERSION_RANGE,
   OpenSketchHostProvider
 } from "@/application/hostServices";
+import { OPENSUITE_UI_CONTRACT_VERSION } from "@/application/uiContract";
 
 export const OPENSKETCH_MODULE_MANIFEST: OpenSketchModuleManifest = {
   schemaVersion: 1,
@@ -24,6 +25,7 @@ export const OPENSKETCH_MODULE_MANIFEST: OpenSketchModuleManifest = {
   displayName: "OpenSketch",
   version: OPENSKETCH_APPLICATION_VERSION,
   contractVersion: OPENSKETCH_APPLICATION_CONTRACT_VERSION,
+  uiContractVersion: OPENSUITE_UI_CONTRACT_VERSION,
   entry: "OpenSketchApplication",
   stylesheetEntry: "./module/opensketch-module.css",
   assetManifestEntry: "./assets/manifest.json",
