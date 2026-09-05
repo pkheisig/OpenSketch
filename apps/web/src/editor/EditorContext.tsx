@@ -1,3 +1,5 @@
+import { isScientificBrush, updateBrushObject, detachBrush } from "@/editor/scientific/objects";
+import { scientificPreset } from "@/editor/scientific/catalog";
 import {
   createContext,
   useCallback,
@@ -171,6 +173,7 @@ import { createWebMcpAdapter, type WebMcpAdapter } from "@/semantic/webmcp";
 export const PROJECT_NAME_CHANGE_EVENT = "opensketch:project-name-change";
 
 FabricObject.customProperties = [
+  "scientificBrush",
   "objectId",
   "name",
   "OpenSketchType",
@@ -204,6 +207,7 @@ FabricObject.customProperties = [
 ];
 
 const RESTORABLE_GROUP_PROPERTIES = [
+  "scientificBrush",
   "name",
   "OpenSketchType",
   "assetId",
@@ -2706,8 +2710,14 @@ export function EditorProvider({
       }
       return addObject(
         createShapeObject(kind, creationDefaults),
-        kind === "polygon" ? "hexagon" : kind.replace("-", " "),
-        kind.includes("arrow") ? "connector" : "shape",
+        scientificPreset(kind)?.label ?? (kind === "polygon" ? "hexagon" : kind.replace("-", " ")),
+        scientificPreset(kind)?.form === "parts"
+          ? "group"
+          : scientificPreset(kind)
+            ? "scientific-brush"
+            : kind.includes("arrow")
+              ? "connector"
+              : "shape",
         point,
         options.select !== false
       );
@@ -3491,7 +3501,17 @@ export function EditorProvider({
       if (!canvas) return;
       const objects = canvas.getActiveObjects();
       objects.forEach((object) => {
-        object.set(properties);
+        if (isScientificBrush(object) && Object.hasOwn(properties, "scientificBrush")) {
+          if (properties.scientificBrush === null) detachBrush(object);
+          else
+            updateBrushObject(
+              object,
+              properties.scientificBrush as NonNullable<FabricObject["scientificBrush"]>
+            );
+          configureSelectionControls(object, latestZoom.current);
+        } else {
+          object.set(properties);
+        }
         configureTextObject(object);
         if (
           object instanceof Group &&

@@ -1,3 +1,4 @@
+import { SCIENTIFIC_PRESETS } from "@/editor/scientific/catalog";
 import {
   useEffect,
   useLayoutEffect,
@@ -169,6 +170,7 @@ const ASSET_VARIANT_OPTIONS = [
 ] as const;
 
 const SHAPE_GROUPS = {
+  scientific: SCIENTIFIC_PRESETS.map((preset) => [preset.id, "ellipse", preset.label] as const),
   basic: [
     ["rectangle", "rectangle", "Rectangle"],
     ["rounded-rectangle", "rounded-rectangle", "Rounded rectangle"],
@@ -699,11 +701,22 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
               >
                 <ShapePresetIcon glyph="hexagon" /> Polygons
               </button>
+              <button
+                ref={(element) => {
+                  primaryFamilyButtonRefs.current.scientific = element;
+                }}
+                className={shapeFamily === "scientific" ? "active" : ""}
+                onPointerEnter={() => setShapeFamily("scientific")}
+                onClick={() => setShapeFamily("scientific")}
+                role="menuitem"
+              >
+                <ShapePresetIcon glyph="ellipse" /> Scientific structures
+              </button>
             </div>
             <MotionPresence open={Boolean(shapeFamily)} exitMs={120}>
               {shapeFamily ? (
                 <div
-                  className="tool-flyout-secondary shape-flyout-grid"
+                  className={`tool-flyout-secondary ${shapeFamily === "scientific" ? "scientific-preset-list" : "shape-flyout-grid"}`}
                   style={{ marginTop: secondaryTop }}
                 >
                   {SHAPE_GROUPS[shapeFamily].map(([kind, glyph, label]) => (
@@ -740,7 +753,19 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
                       aria-label={label}
                       title={label}
                     >
-                      <ShapePresetIcon glyph={glyph} />
+                      <>
+                        {shapeFamily === "scientific" ? (
+                          <img
+                            src={`${import.meta.env.BASE_URL}assets/scientific-structures/${kind}.svg`}
+                            alt=""
+                            width={30}
+                            height={30}
+                          />
+                        ) : (
+                          <ShapePresetIcon glyph={glyph} />
+                        )}
+                      </>
+                      {shapeFamily === "scientific" && <span>{label}</span>}
                     </button>
                   ))}
                 </div>

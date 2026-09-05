@@ -1,3 +1,4 @@
+import { validBrushSpec } from "./scientificBrush";
 import { DEFAULT_CANVAS } from "./presets";
 import {
   OpenSketch_FORMAT_VERSION,
@@ -201,6 +202,7 @@ const SCENE_PROPERTIES = new Set([
   "defaultElementStyle",
   "semanticMetadata",
   "semanticRelations",
+  "scientificBrush",
   "particleFieldSpec",
   "semanticConnector"
 ]);
@@ -1076,6 +1078,7 @@ function validateCustomProperties(
     "recognizedGroups",
     "semanticMetadata",
     "semanticRelations",
+    "scientificBrush",
     "particleFieldSpec",
     "semanticConnector",
     "defaultElementStyle"
@@ -1118,6 +1121,9 @@ function validateCustomProperties(
       validateSemanticMetadata(item, `${path}.${key}`);
     } else if (key === "semanticRelations") {
       validateSemanticRelations(item, `${path}.${key}`);
+    } else if (key === "scientificBrush") {
+      if (!validBrushSpec(item))
+        fail(`${path}.${key}`, "has invalid scientific structure settings");
     } else if (key === "particleFieldSpec") {
       validateParticleFieldSpec(item, `${path}.${key}`);
     } else if (key === "semanticConnector") {
@@ -1474,6 +1480,7 @@ function validateSceneObject(
             "group",
             "shape",
             "text",
+            "scientific-brush",
             "nih-asset",
             "import",
             "upload",
@@ -1568,10 +1575,18 @@ function validateSceneObject(
       validateRecognizedGroups(item, `${path}.${key}`, context);
     } else if (key === "defaultElementStyle") {
       validateStyleSnapshot(item, `${path}.${key}`, context);
+    } else if (key === "scientificBrush") {
+      if (!validBrushSpec(item))
+        fail(`${path}.${key}`, "has invalid scientific structure settings");
     } else if (key === "particleFieldSpec") {
       validateParticleFieldSpec(item, `${path}.${key}`);
     }
   }
+
+  if (value.scientificBrush !== undefined && value.type !== "Group")
+    fail(`${path}.scientificBrush`, "requires a group");
+  if (value.OpenSketchType === "scientific-brush" && !validBrushSpec(value.scientificBrush))
+    fail(`${path}.scientificBrush`, "is required for scientific structures");
 
   if (value.objectId !== undefined) {
     if (typeof value.objectId !== "string") fail(`${path}.objectId`, "is invalid");
@@ -1585,7 +1600,10 @@ function validateSceneObject(
   }
   if (value.OpenSketchType === "connector" && !["Group", "Path"].includes(value.type))
     fail(`${path}.OpenSketchType`, "is invalid for this object type");
-  if (["group", "nih-asset"].includes(String(value.OpenSketchType)) && value.type !== "Group") {
+  if (
+    ["group", "nih-asset", "scientific-brush"].includes(String(value.OpenSketchType)) &&
+    value.type !== "Group"
+  ) {
     fail(`${path}.OpenSketchType`, "is invalid for this object type");
   }
   if (

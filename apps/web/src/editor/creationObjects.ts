@@ -1,4 +1,5 @@
 import { Circle, FabricObject, Group, Line, Path, Polygon, Rect, Triangle } from "fabric";
+import { createScientificObject } from "./scientific/objects";
 import type { CreationDefaults, ShapeKind } from "./creation";
 
 function createArrowPath(doubleHeaded = false, curved = false): FabricObject {
@@ -18,6 +19,8 @@ function createArrowPath(doubleHeaded = false, curved = false): FabricObject {
 
 /** Create an existing editor shape without adding it to a canvas or selection. */
 export function createShapeObject(kind: ShapeKind, defaults: CreationDefaults): FabricObject {
+  const scientific = createScientificObject(kind, defaults);
+  if (scientific) return scientific;
   const common = { ...defaults.shape };
   if (kind === "rectangle" || kind === "rounded-rectangle") {
     return new Rect({

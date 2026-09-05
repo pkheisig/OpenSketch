@@ -47,3 +47,5 @@ python3 docs/scientific-asset-planning/tools/build_catalog.py
 ```
 
 The generator fails if a protected baseline file changes. A future rebase onto a newer inventory requires an explicit baseline update and another deduplication pass. Do not silently remove that guard. The script writes planning documents and JSON/CSV only.
+
+App implementation: [Editable structures and generated artwork](EDITABLE-STRUCTURES.md).

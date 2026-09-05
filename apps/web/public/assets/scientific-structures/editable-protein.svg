@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="151" viewBox="0 0 160 151"><title>Protein with movable domains</title><desc>Original OpenSketch flat schematic. Independent vector parts; use the Scientific structures palette for path editing.</desc><g transform="matrix(1 0 0 1 79.6182 75.4276)"  >
+<g style=""   >
+		<g transform="matrix(1 0 0 1 0 0)"  >
+<path style="stroke: rgb(37,73,75); stroke-width: 2.5; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(216,239,233); fill-rule: nonzero; opacity: 1;"  transform=" translate(-58.6182, -55.6307)" d="M 5 42 Q -8 12 28 5 Q 55 -12 72 17 Q 109 12 110 46 Q 132 76 95 93 Q 78 125 49 99 Q 8 105 5 72 Q -12 60 5 42 Z" stroke-linecap="round" />
+</g>
+		<g transform="matrix(1 0 0 1 -19.6182 -8.6307)"  >
+<circle style="stroke: rgb(37,73,75); stroke-width: 1.4; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(155,129,181); fill-rule: nonzero; opacity: 1;"  cx="0" cy="0" r="17" />
+</g>
+		<g transform="matrix(1 0 0 1 24.3818 11.3693)"  >
+<circle style="stroke: rgb(37,73,75); stroke-width: 1.4; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(198,222,217); fill-rule: nonzero; opacity: 1;"  cx="0" cy="0" r="13" />
+</g>
+</g>
+</g>
+</svg>

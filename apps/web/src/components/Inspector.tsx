@@ -1,3 +1,5 @@
+import { ScientificBrushInspector } from "./ScientificBrushInspector";
+import { isScientificBrush } from "@/editor/scientific/objects";
 import { useEffect, useState } from "react";
 import {
   AlignCenter,
@@ -176,6 +178,11 @@ function ObjectInspector({ object }: { object: FabricObject }) {
   );
   return (
     <>
+      {isScientificBrush(object) && (
+        <InspectorSection title="Editable structure" open>
+          <ScientificBrushInspector object={object} />
+        </InspectorSection>
+      )}
       <InspectorSection title="Transform" open>
         {isSvgPart && <p className="section-note">Position and size within the parent SVG.</p>}
         <div className="field-row two">
@@ -190,42 +197,44 @@ function ObjectInspector({ object }: { object: FabricObject }) {
             onChange={(top) => editor.setObject({ top })}
           />
         </div>
-        <div className="field-row dimensions">
-          <NumberField
-            label="W"
-            value={width}
-            min={1}
-            onChange={(next) => {
-              const scaleX = next / (object.width || 1);
-              editor.setObject(
-                aspectLocked
-                  ? { scaleX, scaleY: (object.scaleY ?? 1) * (next / Math.max(width, 1)) }
-                  : { scaleX }
-              );
-            }}
-          />
-          <button
-            className={`aspect-lock ${aspectLocked ? "active" : ""}`}
-            onClick={() => setAspectLocked((current) => !current)}
-            aria-label={aspectLocked ? "Unlock aspect ratio" : "Lock aspect ratio"}
-            aria-pressed={aspectLocked}
-          >
-            {aspectLocked ? <Lock size={13} /> : <Unlock size={13} />}
-          </button>
-          <NumberField
-            label="H"
-            value={height}
-            min={1}
-            onChange={(next) => {
-              const scaleY = next / (object.height || 1);
-              editor.setObject(
-                aspectLocked
-                  ? { scaleY, scaleX: (object.scaleX ?? 1) * (next / Math.max(height, 1)) }
-                  : { scaleY }
-              );
-            }}
-          />
-        </div>
+        {!isScientificBrush(object) && (
+          <div className="field-row dimensions">
+            <NumberField
+              label="W"
+              value={width}
+              min={1}
+              onChange={(next) => {
+                const scaleX = next / (object.width || 1);
+                editor.setObject(
+                  aspectLocked
+                    ? { scaleX, scaleY: (object.scaleY ?? 1) * (next / Math.max(width, 1)) }
+                    : { scaleX }
+                );
+              }}
+            />
+            <button
+              className={`aspect-lock ${aspectLocked ? "active" : ""}`}
+              onClick={() => setAspectLocked((current) => !current)}
+              aria-label={aspectLocked ? "Unlock aspect ratio" : "Lock aspect ratio"}
+              aria-pressed={aspectLocked}
+            >
+              {aspectLocked ? <Lock size={13} /> : <Unlock size={13} />}
+            </button>
+            <NumberField
+              label="H"
+              value={height}
+              min={1}
+              onChange={(next) => {
+                const scaleY = next / (object.height || 1);
+                editor.setObject(
+                  aspectLocked
+                    ? { scaleY, scaleX: (object.scaleX ?? 1) * (next / Math.max(height, 1)) }
+                    : { scaleY }
+                );
+              }}
+            />
+          </div>
+        )}
         <NumberField
           label="Rotation"
           value={object.angle ?? 0}

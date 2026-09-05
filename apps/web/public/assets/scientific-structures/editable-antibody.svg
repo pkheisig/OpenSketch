@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="159" height="150" viewBox="0 0 159 150"><title>Antibody with movable arms</title><desc>Original OpenSketch flat schematic. Independent vector parts; use the Scientific structures palette for path editing.</desc><g transform="matrix(1 0 0 1 79.1123 74.7269)"  >
+<g style=""   >
+		<g transform="matrix(0.788 -0.6157 0.6157 0.788 -33.3993 -26.2563)"  >
+<g style=""   >
+		<g transform="matrix(1 0 0 1 8.5 0)"  >
+<rect style="stroke: rgb(37,73,75); stroke-width: 2; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(216,239,233); fill-rule: nonzero; opacity: 1;"  x="-7.5" y="-32" rx="7" ry="7" width="15" height="64" />
+</g>
+		<g transform="matrix(1 0 0 1 -10.5 0)"  >
+<rect style="stroke: rgb(37,73,75); stroke-width: 2; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(155,129,181); fill-rule: nonzero; opacity: 1;"  x="-5.5" y="-22" rx="5" ry="5" width="11" height="44" />
+</g>
+</g>
+</g>
+		<g transform="matrix(0.788 0.6157 -0.6157 0.788 33.3993 -26.2563)"  >
+<g style=""   >
+		<g transform="matrix(1 0 0 1 -8.5 0)"  >
+<rect style="stroke: rgb(37,73,75); stroke-width: 2; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(216,239,233); fill-rule: nonzero; opacity: 1;"  x="-7.5" y="-32" rx="7" ry="7" width="15" height="64" />
+</g>
+		<g transform="matrix(1 0 0 1 10.5 0)"  >
+<rect style="stroke: rgb(37,73,75); stroke-width: 2; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(155,129,181); fill-rule: nonzero; opacity: 1;"  x="-5.5" y="-22" rx="5" ry="5" width="11" height="44" />
+</g>
+</g>
+</g>
+		<g transform="matrix(1 0 0 1 0 27.7269)"  >
+<rect style="stroke: rgb(37,73,75); stroke-width: 2; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(216,239,233); fill-rule: nonzero; opacity: 1;"  x="-13.5" y="-34" rx="10" ry="10" width="27" height="68" />
+</g>
+</g>
+</g>
+</svg>

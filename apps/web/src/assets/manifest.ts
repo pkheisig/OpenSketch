@@ -1,4 +1,5 @@
 import { ASSET_CATEGORY_ORDER, type AssetManifest } from "@workspace/editor-core";
+import generatedArtwork from "../generated/opensketch-generated-manifest.json";
 import manifest from "../generated/nih-bioart-manifest.json";
 import openAssetsManifest from "../generated/open-assets-manifest.json";
 import { TOP_VIEW_LABWARE_FAMILIES } from "./labware";
@@ -11,8 +12,9 @@ export function resolveBundledAssetPath(path: string, baseUrl = import.meta.env.
 
 export const assetManifest: AssetManifest = {
   ...(manifest as AssetManifest),
-  source: `${(manifest as AssetManifest).source}, SciDraw, Arcadia Science, and BioIcons`,
+  source: `${(manifest as AssetManifest).source}, SciDraw, Arcadia Science, BioIcons, and OpenSketch generated`,
   families: [
+    ...(generatedArtwork as AssetManifest).families,
     ...TOP_VIEW_LABWARE_FAMILIES,
     ...(openAssetsManifest as AssetManifest).families,
     ...(manifest as AssetManifest).families
@@ -28,6 +30,7 @@ export const assetManifest: AssetManifest = {
 
 export const ASSET_OFFLINE_PACK_VERSION = [
   "asset-pack-v1",
+  generatedArtwork.sourceCommit,
   (manifest as AssetManifest).generatedAt,
   (openAssetsManifest as AssetManifest).generatedAt,
   TOP_VIEW_LABWARE_FAMILIES.reduce((total, family) => total + family.variants.length, 0)

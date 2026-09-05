@@ -1,3 +1,4 @@
+import { configureScientificControls } from "./scientific/controls";
 import {
   ActiveSelection,
   controlsUtils,
@@ -314,6 +315,7 @@ function installSelectionBorderShadow(object: FabricObject): void {
 export function configureSelectionControls(object: FabricObject, zoom = 1): void {
   configureTextObject(object);
   configureVectorControls(object);
+  configureScientificControls(object);
   const color = isManualGroup(object) ? GROUP_SELECTION_COLOR : SINGLE_OBJECT_SELECTION_COLOR;
   installSelectionBorderShadow(object);
   selectionHitSize.set(object, selectionControlHitSizeForObject(object, zoom));

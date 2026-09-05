@@ -7,6 +7,7 @@ import type {
 export type TextKind = "point" | "box";
 
 export type ShapeKind =
+  | import("./scientific/catalog").ScientificPresetId
   | "rectangle"
   | "rounded-rectangle"
   | "ellipse"

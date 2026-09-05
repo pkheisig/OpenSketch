@@ -33,7 +33,8 @@ export type AssetLicense =
   | "CC-BY-SA-3.0"
   | "CC-BY-SA-4.0"
   | "MIT"
-  | "BSD-3-Clause";
+  | "BSD-3-Clause"
+  | "AGPL-3.0-only";
 
 export interface AssetFamily {
   familyId: string;

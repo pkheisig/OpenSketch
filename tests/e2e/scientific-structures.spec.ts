@@ -1,0 +1,162 @@
+import { expect, test, type Page } from "@playwright/test";
+import type { Canvas } from "../../apps/web/node_modules/fabric";
+import { readFile } from "node:fs/promises";
+
+type ProbeWindow = Window & { structureQaCanvas?: Canvas };
+/** Observe the existing canvas only; all mutations below use real UI interactions. */
+async function observeCanvas(page: Page) {
+  await page.evaluate(async () => {
+    const url = performance
+      .getEntriesByType("resource")
+      .map((r) => r.name)
+      .find((url) => /\/fabric\.js\?/.test(url));
+    if (!url) throw new Error("Fabric development module was not loaded.");
+    const { Canvas } = (await import(url)) as typeof import("../../apps/web/node_modules/fabric");
+    const add = Canvas.prototype.add,
+      select = Canvas.prototype.setActiveObject;
+    Canvas.prototype.add = function (...objects) {
+      (window as ProbeWindow).structureQaCanvas = this;
+      return add.apply(this, objects);
+    };
+    Canvas.prototype.setActiveObject = function (...args) {
+      (window as ProbeWindow).structureQaCanvas = this;
+      return select.apply(this, args);
+    };
+  });
+}
+async function state(page: Page) {
+  return page.evaluate(() => {
+    const canvas = (window as ProbeWindow).structureQaCanvas;
+    const object = canvas?.getActiveObject();
+    if (!canvas || !object || !object.scientificBrush)
+      throw new Error("Select a scientific brush.");
+    object.setCoords();
+    return {
+      id: object.objectId,
+      spec: JSON.parse(JSON.stringify(object.scientificBrush)),
+      controls: Object.fromEntries(
+        Object.entries(object.oCoords).map(([key, p]) => [key, { x: p.x, y: p.y }])
+      ),
+      svg: object.toSVG()
+    };
+  });
+}
+async function choose(page: Page, name: string, x: number, y: number) {
+  await page.getByRole("tab", { name: "Shapes", exact: true }).click();
+  await page.getByRole("menuitem", { name: "Scientific structures", exact: true }).hover();
+  await page.getByRole("menuitem", { name, exact: true }).click();
+  await expect(page.getByRole("menu", { name: "Shape tools", exact: true })).toBeHidden();
+  await page.locator(".upper-canvas").click({ position: { x, y } });
+}
+
+test("flat membrane supports extension, undo, bending, reload, SVG export and editable parts", async ({
+  page
+}, testInfo) => {
+  const errors: string[] = [];
+  page.on("pageerror", (error) => errors.push(error.message));
+  await page.goto("./");
+  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await observeCanvas(page);
+  await choose(page, "Lipid bilayer", 480, 330);
+  const before = await state(page);
+  const box = (await page.locator(".upper-canvas").boundingBox())!;
+  const p = before.controls.brushPoint1;
+  await page.mouse.move(box.x + p.x, box.y + p.y);
+  await page.mouse.down();
+  await page.mouse.move(box.x + p.x + 180, box.y + p.y, { steps: 18 });
+  await page.mouse.up();
+  const extended = await state(page);
+  expect(extended.id).toBe(before.id);
+  expect(extended.controls.brushPoint0.x).toBeCloseTo(before.controls.brushPoint0.x, 3);
+  expect(extended.controls.brushPoint1.x).toBeGreaterThan(p.x + 170);
+  expect(extended.spec.unitSize).toBe(before.spec.unitSize);
+  await page.keyboard.press("ControlOrMeta+z");
+  await page.locator(".upper-canvas").click({ position: { x: 480, y: 330 } });
+  expect((await state(page)).spec).toEqual(before.spec);
+  await page.keyboard.press("ControlOrMeta+Shift+z");
+  await page.locator(".upper-canvas").click({ position: { x: 480, y: 330 } });
+  expect((await state(page)).spec).toEqual(extended.spec);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await page.getByRole("button", { name: "Add bend point", exact: true }).click();
+  const middle = (await state(page)).controls.brushPoint1;
+  await page.mouse.move(box.x + middle.x, box.y + middle.y);
+  await page.mouse.down();
+  await page.mouse.move(box.x + middle.x, box.y + middle.y - 90, { steps: 16 });
+  await page.mouse.up();
+  await page.getByLabel("Smooth path", { exact: true }).check();
+  await page.getByLabel("Structure fill color").fill("#83b9ad");
+  const saved = await state(page);
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible({ timeout: 15000 });
+  await page.screenshot({ path: testInfo.outputPath("bent-membrane.png"), fullPage: true });
+  await page.reload();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await observeCanvas(page);
+  await page
+    .locator(".upper-canvas")
+    .click({ position: { x: saved.controls.brushPoint1.x, y: saved.controls.brushPoint1.y } });
+  expect((await state(page)).spec).toEqual(saved.spec);
+  expect((await state(page)).id).toBe(saved.id);
+  await page.getByRole("button", { name: "Export", exact: true }).click();
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Export SVG", exact: true }).click();
+  const download = await downloadPromise;
+  const svg = await readFile((await download.path())!, "utf8");
+  expect(svg).toMatch(/<circle|<path/);
+  expect(svg).not.toMatch(/<image|NaN|Infinity/);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await page.getByRole("button", { name: "Convert to editable parts", exact: true }).click();
+  await expect(page.getByLabel("Structure unit size")).toHaveCount(0);
+  const released = await page.evaluate(() => {
+    const object = (window as ProbeWindow).structureQaCanvas?.getActiveObject();
+    return { type: object?.OpenSketchType, brush: object?.scientificBrush };
+  });
+  expect(released).toEqual({ type: "group", brush: undefined });
+  expect(errors).toEqual([]);
+});
+
+test("generated artwork is searchable, inserts as editable vectors and reloads", async ({
+  page
+}, testInfo) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await observeCanvas(page);
+  await page.getByRole("button", { name: "Toggle asset filters" }).click();
+  await page.getByRole("combobox", { name: "Filter by source" }).click();
+  await page.getByRole("option", { name: "OpenSketch generated", exact: true }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("nucleolus");
+  await page.getByRole("button", { name: "Insert nucleolus", exact: true }).click();
+  await expect
+    .poll(() =>
+      page.evaluate(() => (window as ProbeWindow).structureQaCanvas?.getActiveObject()?.assetId)
+    )
+    .toBe("opensketch-generated-nucleolus");
+  const inserted = await page.evaluate(() => {
+    const o = (window as ProbeWindow).structureQaCanvas!.getActiveObject()!;
+    return { id: o.objectId, svg: o.toSVG() };
+  });
+  expect(inserted.svg).toContain("<path");
+  expect(inserted.svg).not.toMatch(/<image|NaN|Infinity/);
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible({ timeout: 15000 });
+  await page.screenshot({ path: testInfo.outputPath("generated-artwork.png"), fullPage: true });
+  await page.reload();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await observeCanvas(page);
+  await page.locator(".upper-canvas").click({ position: { x: 480, y: 330 } });
+  await expect(page.getByRole("alert")).toHaveCount(0);
+  await page.keyboard.press("ControlOrMeta+a");
+  expect(
+    await page.evaluate(
+      (id) =>
+        (window as ProbeWindow).structureQaCanvas?.getObjects().some((o) => o.objectId === id),
+      inserted.id
+    )
+  ).toBe(true);
+  // Reopen the library and verify a deliberate alias resolves to the canonical card.
+  await page.getByRole("tab", { name: "Assets", exact: true }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("regulatory T cell");
+  await expect(
+    page.getByRole("button", { name: "Insert T lymphocyte", exact: true })
+  ).toBeVisible();
+});

@@ -45,6 +45,7 @@ export default defineConfig(() => {
           // making every installation download the complete font catalog.
           globPatterns: ["**/*.{html,js,css,svg,png,webp,txt}"],
           globIgnores: [
+            "assets/opensketch-generated/**",
             "assets/nih-bioart/**",
             "assets/nih-bioart-thumbnails/**",
             "assets/scidraw/**",

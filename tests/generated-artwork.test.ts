@@ -1,0 +1,43 @@
+import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
+import { createHash } from "node:crypto";
+import manifest from "../apps/web/src/generated/opensketch-generated-manifest.json";
+import derivatives from "../docs/opensketch-generated-derivatives.json";
+import snapshot from "../docs/opensketch-generated-snapshot.json";
+import {
+  ASSET_CATEGORY_ORDER,
+  filterAssetFamilies,
+  type AssetManifest
+} from "../packages/editor-core/src";
+
+describe("reviewed generated artwork app snapshot", () => {
+  it("indexes all distinct artwork once and retains intentional aliases", () => {
+    expect(manifest.families).toHaveLength(snapshot.distinctAssets);
+    expect(snapshot.completedNames).toBe(217);
+    expect(new Set(manifest.families.map((f) => f.familyId)).size).toBe(211);
+    expect(
+      filterAssetFamilies((manifest as AssetManifest).families, "regulatory T cell").map(
+        (f) => f.title
+      )
+    ).toContain("T lymphocyte");
+  });
+  it("ships the recorded bounded SVG derivatives and matching thumbnails", () => {
+    for (const family of manifest.families) {
+      expect(ASSET_CATEGORY_ORDER).toContain(family.category);
+      const variant = family.variants[0];
+      const bytes = readFileSync(`apps/web/public/${variant.assetPath}`);
+      const hash = createHash("sha256").update(bytes).digest("hex");
+      const receipt = derivatives.assets.find(
+        (e) => variant.id === `opensketch-generated-${e.id}`
+      )!;
+      expect(hash).toBe(variant.localSha256);
+      expect(hash).toBe(receipt.appSvgSha256);
+      const svg = bytes.toString();
+      expect(svg).not.toMatch(/<image\b|<script\b|<foreignObject\b|NaN|Infinity/);
+      expect((svg.match(/<path\b/g) ?? []).length).toBe(receipt.paths);
+      expect(receipt.paths).toBeLessThanOrEqual(4000);
+      expect(new Set(svg.match(/fill="#[a-f\d]{6}"/gi)).size).toBeLessThanOrEqual(48);
+      expect(readFileSync(`apps/web/public/${variant.thumbnailPath}`).length).toBeGreaterThan(100);
+    }
+  });
+});

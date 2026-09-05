@@ -1,0 +1,2716 @@
+{
+  "sourceCommit": "7082acc50c0696215aa64aaade02cb014623886f",
+  "distinctAssets": 211,
+  "completedNames": 217,
+  "assets": [
+    {
+      "id": "t-lymphocyte",
+      "aliases": [
+        "t-lymphocyte",
+        "regulatory-t-cell",
+        "b-lymphocyte"
+      ],
+      "source": "svg/t-lymphocyte-bioart-traced.svg",
+      "sha256": "dbf3e04ce14b7ea35782bfdc86d576a14cab362fee1a7c6d2f200accacec57a7",
+      "visualReview": "Inspected PNG and SVG on white and dark backgrounds: complete round cell, large nucleus and thin rim retained; purple palette and restrained depth match approved cells; no visible background, labels or unrelated objects. Fine trace retains nucleus shading.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/t-lymphocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/t-lymphocyte/inspection.webm"
+      }
+    },
+    {
+      "id": "activated-t-lymphocyte",
+      "aliases": [
+        "activated-t-lymphocyte"
+      ],
+      "source": "svg/activated-t-lymphocyte-bioart-traced.svg",
+      "sha256": "985d78c27c64e9f5827b9fab2a1aac044edad955666a45a064a872f56952c07d",
+      "visualReview": "Inspected original and four-panel PNG/SVG comparison. Enlarged lymphoblast has more cytoplasm, visible nucleolus and organelles; complete silhouette, matching palette, real transparent padding. Fine color-region trace retains depth and components.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/activated-t-lymphocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/activated-t-lymphocyte/inspection.webm"
+      }
+    },
+    {
+      "id": "natural-killer-cell",
+      "aliases": [
+        "natural-killer-cell"
+      ],
+      "source": "svg/natural-killer-cell-bioart-traced.svg",
+      "sha256": "8893b7b16be26e38a98166d3ea1afaf4e6d795e9949cfe9359e5cb23bd34d386",
+      "visualReview": "Compared PNG and path SVG on white/dark: eccentric indented nucleus, cytotoxic granules and complete cell preserved; palette consistent; slightly more textured than resting T cell. No background or extraneous objects.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/natural-killer-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/natural-killer-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "plasma-cell",
+      "aliases": [
+        "plasma-cell"
+      ],
+      "source": "svg/plasma-cell-bioart-traced.svg",
+      "sha256": "493b1099af70d52fe7bb0542c4b6255447eb76b25446701b8d9632742b74273e",
+      "visualReview": "Inspected original and light/dark PNG/SVG panels. Oval plasma cell, eccentric clock-face nucleus, pale Golgi zone and abundant rough ER are retained. Matte outlined palette matches collection. Apparent glow in raw preview is not visible after alpha compositing; no opaque background.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/plasma-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/plasma-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "monocyte",
+      "aliases": [
+        "monocyte"
+      ],
+      "source": "svg/monocyte-bioart-traced.svg",
+      "sha256": "437b77465024ea8fbd2768a444c0b9636dbb98b25a8c2887fc7d94d0cd6519fa",
+      "visualReview": "Reviewed PNG/SVG on light and dark: folded kidney nucleus, fine scattered granules, small vacuoles and compact blood-cell outline are retained. Purple, blue and pink palette consistent. No opaque background or clipped intrinsic components.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/monocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/monocyte/inspection.webm"
+      }
+    },
+    {
+      "id": "macrophage",
+      "aliases": [
+        "macrophage"
+      ],
+      "source": "svg/macrophage-bioart-traced.svg",
+      "sha256": "b18345122dfe56a04b4c167e802028f17ae9b0d0759267c84bf289e53e8c54a0",
+      "visualReview": "Approved batches 01/02"
+    },
+    {
+      "id": "dendritic-cell",
+      "aliases": [
+        "dendritic-cell"
+      ],
+      "source": "svg/dendritic-cell-bioart-traced.svg",
+      "sha256": "eefb9bd07446910014243a9e4e9a2d9fac864bdd71741957d8779c7257fd5c0d",
+      "visualReview": "Approved batches 01/02"
+    },
+    {
+      "id": "plasmacytoid-dendritic-cell",
+      "aliases": [
+        "plasmacytoid-dendritic-cell"
+      ],
+      "source": "svg/plasmacytoid-dendritic-cell-bioart-traced.svg",
+      "sha256": "045d8359424d2dfd3311670c4bfa3d1545b0177b20f8d986e9efb9daf742d934",
+      "visualReview": "Inspected PNG and SVG comparisons on light/dark. Compact resting cell with eccentric lightly indented nucleus and developed ER, no long dendrites or clock-face chromatin. Palette and outlined forms consistent; trace simplifies subtle nuclear shading but retains recognizable structure and clean transparency.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/plasmacytoid-dendritic-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/plasmacytoid-dendritic-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "neutrophil",
+      "aliases": [
+        "neutrophil"
+      ],
+      "source": "svg/neutrophil-bioart-traced.svg",
+      "sha256": "cd488a9f79ed8446bc7aaaa4dff68fe431ac32e741aabafc8c6bcd3780eafc23",
+      "visualReview": "Approved batches 01/02"
+    },
+    {
+      "id": "eosinophil",
+      "aliases": [
+        "eosinophil"
+      ],
+      "source": "svg/eosinophil-bioart-traced.svg",
+      "sha256": "17c0cd36e548f0a8d5a502cc13e792f8a182c647a193181a8ea1b543aed71700",
+      "visualReview": "Inspected source and PNG/SVG white/dark comparison: two purple nuclear lobes with a narrow bridge, coarse orange-pink granules and intact round cell retained. No opaque backdrop or clipping. Fine trace keeps color, granular detail and pseudo-depth.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/eosinophil/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/eosinophil/inspection.webm"
+      }
+    },
+    {
+      "id": "basophil",
+      "aliases": [
+        "basophil"
+      ],
+      "source": "svg/basophil-bioart-traced.svg",
+      "sha256": "2203bed8beb444dd321a26a416550fe87d60d003fcc56157247739ae756d5738",
+      "visualReview": "Inspected original and four-panel comparison. Bilobed S-shaped nucleus partly obscured by dense indigo/violet granules; complete cell silhouette. Smooth saturated outlined drawing, accurate trace including shading and granules, clean on white and dark.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/basophil/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/basophil/inspection.webm"
+      }
+    },
+    {
+      "id": "mast-cell",
+      "aliases": [
+        "mast-cell"
+      ],
+      "source": "svg/mast-cell-bioart-traced.svg",
+      "sha256": "3afee4cc7e44bbd4f203c7379340b25cc66cb3349787b2567d6141ea5d579068",
+      "visualReview": "Inspected original and light/dark PNG/SVG panels. Single round unlobed nucleus with numerous violet-magenta granules; intact oval cell, no released granules. Consistent outlined palette and matched vector trace; background alpha composites cleanly.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mast-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mast-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "erythrocyte",
+      "aliases": [
+        "erythrocyte"
+      ],
+      "source": "svg/erythrocyte-bioart-traced.svg",
+      "sha256": "35a6b35ef922a4ee7258d3288769f74377e603850d7cb27347704453cea706b1",
+      "visualReview": "Inspected PNG and SVG on white and dark backgrounds. Complete isolated coral-red anucleate disk, shallow central depression, crisp outline and transparent padding. Automatic trace flattened shading; reconstructed vector uses two editable contours and radial gradients, preserving recognizable depth with a slightly thinner silhouette.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/erythrocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/erythrocyte/inspection.webm"
+      }
+    },
+    {
+      "id": "platelet",
+      "aliases": [
+        "platelet"
+      ],
+      "source": "svg/platelet-bioart-traced.svg",
+      "sha256": "c459537566b51b5b9cd811dee67168d917717a6656667659224090f41f822f2b",
+      "visualReview": "Inspected white and dark comparison: isolated anucleate discoid platelet, lavender peripheral zone, distinct magenta and purple granules, two small mitochondria and peripheral band. SVG preserves the PNG outlines, components and shading at display scale. Transparent exterior has no visible halo. Organelle sizes are schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/platelet/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/platelet/inspection.webm"
+      }
+    },
+    {
+      "id": "megakaryocyte",
+      "aliases": [
+        "megakaryocyte"
+      ],
+      "source": "svg/megakaryocyte-bioart-traced.svg",
+      "sha256": "cd69bd1e331422cc2883dc241ec92e923d2c7ee0491d362467144e584c88dc1e",
+      "visualReview": "Viewed both formats on white and dark: complete rounded cell outline, a single connected multilobulated nucleus, small granules, membrane channels and intrinsic organelles. SVG retains major shading boundaries and fine components with flatter nuclear shading than PNG, acceptable in the established illustration style. Generous alpha padding and no visible exterior halo.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/megakaryocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/megakaryocyte/inspection.webm"
+      }
+    },
+    {
+      "id": "hematopoietic-stem-progenitor-cell",
+      "aliases": [
+        "hematopoietic-stem-progenitor-cell"
+      ],
+      "source": "svg/hematopoietic-stem-progenitor-cell-bioart-traced.svg",
+      "sha256": "00b557bc7175fdb51901b39aed30aee495bf6e00e6f0f86809b04883c4f19cc2",
+      "visualReview": "Inspected PNG and SVG on light and dark backgrounds. Round immature cell with large round nucleus, visible nucleolus and narrow cytoplasmic rim. Initial tracing lost shading; explicit trace-input color quantization now preserves broad gradients, fine outlines and intrinsic organelles closely. Original PNG remains unchanged. Morphology is a generic HSPC archetype, not a diagnostic identifier.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hematopoietic-stem-progenitor-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hematopoietic-stem-progenitor-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "generic-epithelial-cell",
+      "aliases": [
+        "generic-epithelial-cell"
+      ],
+      "source": "svg/generic-epithelial-cell-bioart-traced.svg",
+      "sha256": "69c4488f14d6c26f5fd02d854331de0cdd55bd99f94e681d140106a5d2ee24ad",
+      "visualReview": "Viewed on white and dark backgrounds: complete soft cuboidal epithelial cell cutaway with central nucleus, nucleolus, ER, Golgi and mitochondria. PNG and SVG match closely in silhouette, coral/violet palette and shading. No external tissue, background or labels; transparent padding is clear. Cuboidal morphology is the chosen generic epithelial archetype.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-epithelial-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-epithelial-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "columnar-epithelial-cell",
+      "aliases": [
+        "columnar-epithelial-cell"
+      ],
+      "source": "svg/columnar-epithelial-cell-bioart-traced.svg",
+      "sha256": "19edaa6964e41e3d0eeb084e58682253fe66f0affd0b2c9b6c31e7c2c814efe8",
+      "visualReview": "Compared PNG and SVG on white and dark: tall isolated columnar cell, basal oval nucleus, supranuclear Golgi, recognizable ER and mitochondria, bare apical surface. Formats preserve coral/violet palette, silhouette and internal shading closely. Exterior is transparent with generous padding and no visible glow.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/columnar-epithelial-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/columnar-epithelial-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "ciliated-epithelial-cell",
+      "aliases": [
+        "ciliated-epithelial-cell"
+      ],
+      "source": "svg/ciliated-epithelial-cell-bioart-traced.svg",
+      "sha256": "892d56007a0c58dc48bba312a559a515e8c6421cb78109bdd9319a3645b3121c",
+      "visualReview": "Inspected PNG/SVG on white and dark. Complete apical cilia remain individually separated with visible basal attachments; oval basal nucleus and internal organelles retained. Matched coral/violet palette and shading, clear alpha exterior and padding. Cilia lengths reduced from the oversized first draft; fine structures remain schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ciliated-epithelial-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ciliated-epithelial-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "goblet-cell",
+      "aliases": [
+        "goblet-cell"
+      ],
+      "source": "svg/goblet-cell-bioart-traced.svg",
+      "sha256": "f7b95bc6a21764f79e53e6d7708a84e01d8272420f848f8a763cc4c3a2235058",
+      "visualReview": "PNG/SVG comparison on white and dark shows matching goblet silhouette, expanded apical cyan mucin granules, narrow basal region with violet nucleus, ER and Golgi. Smooth color gradients and individual granule outlines preserved. All components contained within cell, clear transparent exterior and padding, no labels or mucus plume.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/goblet-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/goblet-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "keratinocyte",
+      "aliases": [
+        "keratinocyte"
+      ],
+      "source": "svg/keratinocyte-bioart-traced.svg",
+      "sha256": "a52c3eda2a0a878a523e2aca91de64d690ebff87d390f752d586ecf89594e9f1",
+      "visualReview": "Inspected PNG and SVG on white/dark: flattened polygonal nucleated keratinocyte, fine internal golden filament bundles ending at purple membrane-associated plaques, mitochondria and ER. SVG preserves fine bundles and broad shading at comparison scale. Clear transparent exterior and complete cell outline. Junctional pads are schematic intrinsic plaque components, without neighboring cells.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/keratinocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/keratinocyte/inspection.webm"
+      }
+    },
+    {
+      "id": "melanocyte",
+      "aliases": [
+        "melanocyte"
+      ],
+      "source": "svg/melanocyte-bioart-traced.svg",
+      "sha256": "61bdb9e0b101420bda81251cd92335d6b8b98d1f0fe6c1b8007b20987ba2bf42",
+      "visualReview": "Compared PNG and SVG on white and dark: one dendritic melanocyte with all connected branches and terminal tips intact, central violet nucleus, brown melanosomes throughout cell body and processes. Thin outlines, gradients and small granules preserved. Transparent gaps between branches and generous padding; no external halo, text or adjacent cells.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/melanocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/melanocyte/inspection.webm"
+      }
+    },
+    {
+      "id": "endothelial-cell",
+      "aliases": [
+        "endothelial-cell"
+      ],
+      "source": "svg/endothelial-cell-bioart-traced.svg",
+      "sha256": "ee3d08800ae0a1cae3c1aa588d5bc2e0f1876b62017255a4cc42abc4fb794dd0",
+      "visualReview": "Inspected PNG/SVG on white and dark: complete flattened elongated endothelial cell, central oval nucleus, small purple rod-shaped WPBs with internal parallel lines distinct from pink mitochondria. Fine structures, smooth coral/violet shading and transparent exterior preserved. No vessel or adjacent tissue; intracellular sizes are schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/endothelial-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/endothelial-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "fibroblast",
+      "aliases": [
+        "fibroblast"
+      ],
+      "source": "svg/fibroblast-bioart-traced.svg",
+      "sha256": "baec4c21037d9152e4dda44b19f56853bff8a909c811d5378a12bd8e0ddda2d4",
+      "visualReview": "Viewed PNG/SVG on white and dark: complete spindle-shaped fibroblast with both tapering processes intact, oval nucleus, abundant rough ER and compact Golgi. Matching colors, shading and organelles. Background retry produced actual alpha; no checkerboard or visible glow in final composite. No extracellular fibers or tissue.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fibroblast/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fibroblast/inspection.webm"
+      }
+    },
+    {
+      "id": "adipocyte",
+      "aliases": [
+        "adipocyte"
+      ],
+      "source": "svg/adipocyte-bioart-traced.svg",
+      "sha256": "b2f214d6a8a4678bda7a8f8b2731488c4ebda46b2305862dfa2ab9731d5e19e0",
+      "visualReview": "Compared PNG/SVG on white and dark: one large golden lipid droplet, narrow cytoplasmic rim, flattened peripheral violet nucleus and small organelles. SVG retains soft droplet shading with minor vector color banding, acceptable at illustration scale. Complete round cell, clear transparent padding, no extra droplets or tissue.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adipocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adipocyte/inspection.webm"
+      }
+    },
+    {
+      "id": "chondrocyte",
+      "aliases": [
+        "chondrocyte"
+      ],
+      "source": "svg/chondrocyte-bioart-traced.svg",
+      "sha256": "63961a2c259c490192b2e03ebecb46f120c1306802435c052ce79ef1f856538c",
+      "visualReview": "Inspected PNG and SVG against light/dark: one rounded cartilage-cell archetype with nucleus, abundant rough ER, Golgi and mitochondria. Fine organelle outlines and soft blue/violet shading closely retained. No matrix or lacuna; complete isolated cell with transparent padding. Unlabeled morphology alone is not a diagnostic identifier.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chondrocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chondrocyte/inspection.webm"
+      }
+    },
+    {
+      "id": "osteoblast",
+      "aliases": [
+        "osteoblast"
+      ],
+      "source": "svg/osteoblast-bioart-traced.svg",
+      "sha256": "d7ed8b517c8336b9095264fc739cbf00d0e0a8205e372e916702ac14c9c5e30c",
+      "visualReview": "Compared PNG/SVG on white and dark: complete plump cuboidal osteoblast archetype with eccentric nucleus, abundant rough ER, Golgi and basal secretory vesicles. Corrected first-draft ruffled edge to smooth basal surface. Fine components and coral/violet shading retained; no extracellular bone, labels or visible background residue.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/osteoblast/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/osteoblast/inspection.webm"
+      }
+    },
+    {
+      "id": "osteoclast",
+      "aliases": [
+        "osteoclast"
+      ],
+      "source": "svg/osteoclast-bioart-traced.svg",
+      "sha256": "840d986cf6289c3ff6514f5cf856544d522241ada5ef53fab345f494deef0eda",
+      "visualReview": "Five separate nuclei and complete ruffled lower membrane remain recognizable. PNG and editable path SVG match on white and dark backgrounds with transparent padding; no external glow survives alpha compositing.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/osteoclast/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/osteoclast/inspection.webm"
+      }
+    },
+    {
+      "id": "osteocyte",
+      "aliases": [
+        "osteocyte"
+      ],
+      "source": "svg/osteocyte-bioart-traced.svg",
+      "sha256": "37031b9a7fe3b39a373b7efe89a37cab753280fe326dbf3c0ab5b590a79d8e98",
+      "visualReview": "Thin branching processes remain connected and taper at visible tips. Single central nucleus and sparse organelles remain clear. PNG and path SVG retain the full silhouette on light and dark backgrounds with transparent padding; SVG has slightly stronger edge contrast.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/osteocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/osteocyte/inspection.webm"
+      }
+    },
+    {
+      "id": "skeletal-muscle-fiber",
+      "aliases": [
+        "skeletal-muscle-fiber"
+      ],
+      "source": "svg/skeletal-muscle-fiber-bioart-traced.svg",
+      "sha256": "093b9f70a11b8a93771f88fb1b96907c6866dfd390d5b62836405b71a06c0e22",
+      "visualReview": "Single unbranched fiber retains transverse striations, four peripheral nuclei and one enclosing outline. PNG and SVG preserve coral shading and complete ends on white and dark backgrounds; transparent padding verified.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/skeletal-muscle-fiber/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/skeletal-muscle-fiber/inspection.webm"
+      }
+    },
+    {
+      "id": "cardiomyocyte",
+      "aliases": [
+        "cardiomyocyte"
+      ],
+      "source": "svg/cardiomyocyte-bioart-traced.svg",
+      "sha256": "da789e71901a2d1b2a056f3e19921ddadd98c326a011f368ba3393b57b237b97",
+      "visualReview": "One branching cell with a single central nucleus, transverse striations, mitochondria and terminal contact faces. PNG and path SVG match on light and dark backgrounds with complete silhouette and transparent padding; organelle sizes are schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cardiomyocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cardiomyocyte/inspection.webm"
+      }
+    },
+    {
+      "id": "smooth-muscle-cell",
+      "aliases": [
+        "smooth-muscle-cell"
+      ],
+      "source": "svg/smooth-muscle-cell-bioart-traced.svg",
+      "sha256": "b11f49f7f2a7e034fe762def724a5bbb31731c71b6bc51f172443c993f4c19f5",
+      "visualReview": "Complete fusiform outline and both tapering tips, central elongated nucleus and sparse oblique/longitudinal fibers remain recognizable without transverse striations. PNG and editable path SVG match on white and dark backgrounds with transparent padding; mild SVG contour banding at close zoom.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/smooth-muscle-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/smooth-muscle-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "neuron",
+      "aliases": [
+        "neuron"
+      ],
+      "source": "svg/neuron-bioart-traced.svg",
+      "sha256": "1167c112379f1b203e625d52aef89a6b1625eb8f20c461563c39b4cc226b2d02",
+      "visualReview": "Single multipolar soma with one continuous long axon and complete terminal boutons. Dendritic tips, nucleus and Nissl stacks remain recognizable. PNG and editable path SVG match on light/dark backgrounds with transparent padding; SVG has slightly stronger outline contrast.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/neuron/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/neuron/inspection.webm"
+      }
+    },
+    {
+      "id": "astrocyte",
+      "aliases": [
+        "astrocyte"
+      ],
+      "source": "svg/astrocyte-bioart-traced.svg",
+      "sha256": "d5487c7bfdb9e7752c65d8ec3e1b7fce2895837bcf5323e5ee8971fc3f94cd5d",
+      "visualReview": "Stellate single cell with central nucleus, branching processes and small flattened endfeet. Complete silhouette and connected fine branches preserved in PNG and editable path SVG on light/dark backgrounds; slight vector edge contrast increase, no visible background residue.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/astrocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/astrocyte/inspection.webm"
+      }
+    },
+    {
+      "id": "oligodendrocyte",
+      "aliases": [
+        "oligodendrocyte"
+      ],
+      "source": "svg/oligodendrocyte-bioart-traced.svg",
+      "sha256": "0446b4863b6b4cb9e450242da45407a5ce40ebbf3c1e11e77164643fd909f324",
+      "visualReview": "Schematic single soma with four connected representative myelin segments. Concentric membrane layers, slender connections and transparent central openings preserved in PNG and SVG on light/dark backgrounds. Axons intentionally omitted; segment count and arrangement are schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/oligodendrocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/oligodendrocyte/inspection.webm"
+      }
+    },
+    {
+      "id": "microglial-cell",
+      "aliases": [
+        "microglial-cell"
+      ],
+      "source": "svg/microglial-cell-bioart-traced.svg",
+      "sha256": "20f09b62f31d98c3e9c5ef22db68b7ced275cdc761a20ecc4abab345c12ff9f7",
+      "visualReview": "Ramified single cell with compact soma, elongated nucleus and fine irregular connected processes. Branch topology and tips preserved in PNG and path SVG on white/dark backgrounds; SVG lines slightly stronger, no visible haze or checkerboard.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microglial-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microglial-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "schwann-cell",
+      "aliases": [
+        "schwann-cell"
+      ],
+      "source": "svg/schwann-cell-bioart-traced.svg",
+      "sha256": "769bb22c33e89aa6c9e9543e39e3c21d69ee07542da892b1ae71900b0e5782a4",
+      "visualReview": "Single continuous myelin internode with outer nucleated cytoplasm and concentric lamellae. Central opening is transparent on white and dark backgrounds, complete sheath silhouette retained in PNG and path SVG. Axon omitted in this isolated cell schematic; mild SVG shading banding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/schwann-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/schwann-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "hepatocyte",
+      "aliases": [
+        "hepatocyte"
+      ],
+      "source": "svg/hepatocyte-bioart-traced.svg",
+      "sha256": "cd5659eb8cb9d108f80fa30779976c74a1daab70df562cdfc6758b95e21ab956",
+      "visualReview": "Rounded polygonal single cell retains central nucleus, abundant mitochondria, ER, glycogen clusters and small lipid droplets. PNG and editable path SVG preserve internal detail and complete outline on light/dark backgrounds with transparent padding; colors and organelle sizes are schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hepatocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hepatocyte/inspection.webm"
+      }
+    },
+    {
+      "id": "pancreatic-beta-cell",
+      "aliases": [
+        "pancreatic-beta-cell"
+      ],
+      "source": "svg/pancreatic-beta-cell-bioart-traced.svg",
+      "sha256": "9b9ce1522d8289904509c12cdc357195e14238559392145c9298502e5f149a05",
+      "visualReview": "Single endocrine-cell schematic with numerous dense-core granules, pale rims, ER, Golgi and mitochondria. PNG and path SVG preserve detail and complete outline on white/dark backgrounds with transparent padding. Final cores are rounded; granule rims and organelle scale are schematic ultrastructural conventions, not a live-cell microscopy claim.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pancreatic-beta-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pancreatic-beta-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "acinar-cell",
+      "aliases": [
+        "acinar-cell"
+      ],
+      "source": "svg/acinar-cell-bioart-traced.svg",
+      "sha256": "857cc084e02fae796453d585f4b2f23e0e64f142c7ae0ef2457af9cf95f4cbd0",
+      "visualReview": "Polarized single pyramidal cell with basal nucleus and rough ER, supranuclear Golgi and apical zymogen granules. PNG and editable path SVG preserve the organelle distribution, complete outline and short apical microvilli on light/dark backgrounds; transparent padding verified, granule sizes schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/acinar-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/acinar-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "podocyte",
+      "aliases": [
+        "podocyte"
+      ],
+      "source": "svg/podocyte-bioart-traced.svg",
+      "sha256": "aa1d57c9b21600add90eb0698a7e18291256967f412493012aae3a802b58ef06",
+      "visualReview": "Single-cell schematic retains broad primary branches and many short narrow foot processes with open gaps. PNG and editable path SVG preserve complete silhouette and intrinsic organelles on white/dark backgrounds with transparent padding. Neighboring cells and basement membrane omitted; process arrangement schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/podocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/podocyte/inspection.webm"
+      }
+    },
+    {
+      "id": "renal-tubular-epithelial-cell",
+      "aliases": [
+        "renal-tubular-epithelial-cell"
+      ],
+      "source": "svg/renal-tubular-epithelial-cell-bioart-traced.svg",
+      "sha256": "5a24cd6eaa28d90cacce8740a086488890b6a249f285d514a1c1c973d6dd269b",
+      "visualReview": "Representative proximal tubular cell: cuboidal body, short apical brush border, central nucleus and basal mitochondria among infoldings. PNG and editable path SVG retain complete outline and polarized details on white/dark backgrounds with transparent padding. Not intended to represent every nephron segment.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/renal-tubular-epithelial-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/renal-tubular-epithelial-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "sperm-cell",
+      "aliases": [
+        "sperm-cell"
+      ],
+      "source": "svg/sperm-cell-bioart-traced.svg",
+      "sha256": "255e20dbf36b221cabbec33e876fa278a0856f0e10f3510e3b1e4be424270e8e",
+      "visualReview": "Complete spermatozoon with acrosomal cap, condensed nuclear head, mitochondrial midpiece and one continuous unbranched tapering flagellum. PNG and path SVG preserve the full tail and colored components on white/dark backgrounds with transparent padding; schematic proportions.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sperm-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sperm-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "oocyte",
+      "aliases": [
+        "oocyte"
+      ],
+      "source": "svg/oocyte-bioart-traced.svg",
+      "sha256": "047017c6e324fc05730ecc05c48ca194ef69e3b1bdec3dd10086c646a2bf7dbd",
+      "visualReview": "Immature primary oocyte schematic with intact germinal vesicle, nucleolus, cortical granules and zona pellucida. PNG and editable path SVG preserve circular outline and internal detail on white/dark backgrounds with transparent padding. No polar body or mature meiotic-stage claim; organelle sizes schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/oocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/oocyte/inspection.webm"
+      }
+    },
+    {
+      "id": "trophoblast",
+      "aliases": [
+        "trophoblast"
+      ],
+      "source": "svg/trophoblast-bioart-traced.svg",
+      "sha256": "67794f31cb8a8ed5deda3fb9f0f57bdb2175479ab2bf125239aae0da2ed6e040",
+      "visualReview": "Complete mononuclear cytotrophoblast schematic, gently polygonal epithelial outline, one nucleus and intrinsic organelles. Transparent on light and dark backgrounds. SVG preserves component layout and saturated palette, with mild gradient banding at close view.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/trophoblast/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/trophoblast/inspection.webm"
+      }
+    },
+    {
+      "id": "generic-stem-cell",
+      "aliases": [
+        "generic-stem-cell",
+        "induced-pluripotent-stem-cell"
+      ],
+      "source": "svg/generic-stem-cell-bioart-traced.svg",
+      "sha256": "107a764f90c1aaed350f50c15fdb899c6b1352561373cd15f1b3f964825b6ffe",
+      "visualReview": "Complete undifferentiated cell schematic, large nucleus with two nucleoli and sparse peripheral organelles. Clean transparency on white and dark. SVG preserves outlines and organelles with slight gradient banding; morphology is illustrative, not diagnostic of stemness.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-stem-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-stem-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "generic-cancer-cell",
+      "aliases": [
+        "generic-cancer-cell",
+        "cancer-stem-like-cell"
+      ],
+      "source": "svg/generic-cancer-cell-bioart-traced.svg",
+      "sha256": "13fc9b27a3322ae4256301a01a4fa415e20c292946bcc6022435eeb781b07d13",
+      "visualReview": "Complete isolated atypical-cell schematic with irregular nucleus, two nucleoli and short membrane blebs. No visible background residue on white or dark composites. SVG preserves morphology and color with slight gradient banding; this is not diagnostic of a tumor subtype.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-cancer-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-cancer-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "multinucleated-giant-cell",
+      "aliases": [
+        "multinucleated-giant-cell",
+        "multinucleated-syncytium"
+      ],
+      "source": "svg/multinucleated-giant-cell-bioart-traced.svg",
+      "sha256": "96fd818ee05d23298c5e4e82682a145dd6252ac0ebd7a97d488387fed23dd441",
+      "visualReview": "Seven separate nuclei within one shared continuous cell body; all short pseudopods complete. White and dark browser composites show clean transparency with no purple glow. SVG retains nuclei, small organelles and perimeter; count and arrangement are schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/multinucleated-giant-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/multinucleated-giant-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "mitotic-cell",
+      "aliases": [
+        "mitotic-cell"
+      ],
+      "source": "svg/mitotic-cell-bioart-traced.svg",
+      "sha256": "f6528c0190cca03475f157394a0d7e1e35a4ed47682907db42cddecb33b3424a",
+      "visualReview": "Metaphase schematic with five visible duplicated chromosomes at the central plate, bipolar spindle and no nuclear envelope. Reduced chromosome count is explicitly documented. Complete perimeter and clean light/dark transparency. SVG preserves thin spindle fibers and centromere attachments with mild gradient banding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mitotic-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mitotic-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "cytokinetic-cell",
+      "aliases": [
+        "cytokinetic-cell"
+      ],
+      "source": "svg/cytokinetic-cell-bioart-traced.svg",
+      "sha256": "0b401c56fceb9f7f3675302a2ef44e25637581cc9d91c777bf3b64f2bf1f7423",
+      "visualReview": "Two daughter lobes remain joined by a narrow membrane-covered bridge with a central midbody and spindle remnants. One reformed nucleus per lobe. Complete silhouette and clean white/dark transparency; SVG retains connecting bridge and fine fibers with slight gradient banding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cytokinetic-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cytokinetic-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "apoptotic-cell",
+      "aliases": [
+        "apoptotic-cell"
+      ],
+      "source": "svg/apoptotic-cell-bioart-traced.svg",
+      "sha256": "1a1755f421b7d2f8ff589343ebad71395d5310689fab86a170cad5c2e70ed985",
+      "visualReview": "Attached membrane blebs and three irregular condensed chromatin fragments remain clear in PNG and SVG. Complete silhouette, no normal nucleoli inside fragments, no visible background residue on light/dark composites. SVG preserves contours with mild gradient banding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/apoptotic-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/apoptotic-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "necrotic-cell",
+      "aliases": [
+        "necrotic-cell"
+      ],
+      "source": "svg/necrotic-cell-bioart-traced.svg",
+      "sha256": "e7082d3f2754542460984e517418d82588b37ab812f82c062be499a772663e48",
+      "visualReview": "Swollen cell with pale vacuoles, sparse mitochondrial cristae, fading nuclear material and a clear local plasma-membrane rupture. Complete asset and clean alpha including the rupture on white/dark. SVG retains damage morphology and organelle layout, with slightly stronger outlines and mild gradient banding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/necrotic-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/necrotic-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "senescent-cell",
+      "aliases": [
+        "senescent-cell"
+      ],
+      "source": "svg/senescent-cell-bioart-traced.svg",
+      "sha256": "c26912b20c61594abae11875ffa1e546982cb85e4e3afba28ebb037367287efc",
+      "visualReview": "Representative spread senescent-fibroblast schematic with broad intact outline, enlarged irregular nucleus, lysosomal residual bodies and fine stress fibers. No background glow in white/dark composites. SVG preserves perimeter and organelles with mild banding; morphology is not a senescence assay.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/senescent-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/senescent-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "polarized-migrating-cell",
+      "aliases": [
+        "polarized-migrating-cell"
+      ],
+      "source": "svg/polarized-migrating-cell-bioart-traced.svg",
+      "sha256": "12bbeb6027a0ab465a6c55ec4e51d9cff3b81500c68ec0a21bf4835df5498ff5",
+      "visualReview": "Clear right leading fan and left trailing tail, branching actin network and complete filopodial tips. Transparent white/dark composites have no glow. SVG retains tail, fine actin strands and organelles with slightly stronger outlines; representative crawling-cell polarity only.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/polarized-migrating-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/polarized-migrating-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "adherent-spread-cell",
+      "aliases": [
+        "adherent-spread-cell"
+      ],
+      "source": "svg/adherent-spread-cell-bioart-traced.svg",
+      "sha256": "893940b648ff86e6fb7506ff12c384a2dc5a0512dc70f98ff24a660e7c330aad",
+      "visualReview": "Broad spread polygonal outline with five short extensions, one nucleus, peripheral adhesion plaques and stress-fiber bundles. All extensions complete, no background glow on light/dark composites. SVG retains thin fibers, organelles and contour with mild gradient banding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adherent-spread-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adherent-spread-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "rounded-suspension-cell",
+      "aliases": [
+        "rounded-suspension-cell"
+      ],
+      "source": "svg/rounded-suspension-cell-bioart-traced.svg",
+      "sha256": "63eda1701f8fde0e0ce0c520a37c8c2bcf12d3dbfe92bace6df75fbae56fa7c3",
+      "visualReview": "Complete smooth rounded cell with one nucleus and moderate peripheral organelles. No attachment structures or long processes. Clean white/dark transparency; SVG retains cell edge and organelle contours with mild gradient banding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rounded-suspension-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rounded-suspension-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "cell-with-membrane-blebs",
+      "aliases": [
+        "cell-with-membrane-blebs"
+      ],
+      "source": "svg/cell-with-membrane-blebs-bioart-traced.svg",
+      "sha256": "29331471d24b294e27c7e4ec688760bcc1f3e5eec9b41d52e6381200e2e0e0ff",
+      "visualReview": "Four attached cytoplasmic blebs around one dominant cell body with an intact nucleus. No organs or nuclei inside the blebs and no detached cells. Clean white/dark transparency without glow. SVG preserves connected necks and round bulges with mild gradient banding; cause of blebbing remains unspecified.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-with-membrane-blebs/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-with-membrane-blebs/inspection.webm"
+      }
+    },
+    {
+      "id": "phagocytic-cell-engulfing-a-particle",
+      "aliases": [
+        "phagocytic-cell-engulfing-a-particle"
+      ],
+      "source": "svg/phagocytic-cell-engulfing-a-particle-bioart-traced.svg",
+      "sha256": "31b684e05cf26c933bb72e5bb0eea34cf9985351bea7c3b73b436ed004e67b50",
+      "visualReview": "One particle partially wrapped by an open phagocytic cup; kidney-shaped nucleus and complete pseudopods. Transparent exterior and cup gaps are clean on light/dark composites. SVG preserves particle separation, cup opening and cellular contours with mild gradient banding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/phagocytic-cell-engulfing-a-particle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/phagocytic-cell-engulfing-a-particle/inspection.webm"
+      }
+    },
+    {
+      "id": "cell-spheroid",
+      "aliases": [
+        "cell-spheroid"
+      ],
+      "source": "svg/cell-spheroid-bioart-traced.svg",
+      "sha256": "6f0e64c855de1050639b744429eabc939f5524ea1d6b9096a7c511a606d62314",
+      "visualReview": "Compact three-dimensional cell aggregate with closely apposed surface profiles and peripheral occlusion. Complete spheroid, one nucleus per visible profile, no extra cells or lumen. Clean transparency on white/dark; SVG preserves surface-cell boundaries and rounded shading with mild banding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-spheroid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-spheroid/inspection.webm"
+      }
+    },
+    {
+      "id": "organoid",
+      "aliases": [
+        "organoid"
+      ],
+      "source": "svg/organoid-bioart-traced.svg",
+      "sha256": "7d1e0377a2f318a631da29163695fe9284b368b67d01cf6edbf280a08334fccf",
+      "visualReview": "Reviewed PNG and rendered SVG on light and dark: complete three-bud intestinal organoid cutaway, continuous lumen, epithelial cell ring, clean transparent padding. SVG retains structure and palette with slight contour banding. Representative intestinal model, not all organoid types.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/organoid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/organoid/inspection.webm"
+      }
+    },
+    {
+      "id": "nucleus",
+      "aliases": [
+        "nucleus"
+      ],
+      "source": "svg/nucleus-bioart-traced.svg",
+      "sha256": "c50f642c709519cef1c63cd5f89650c68fb6df4a002d0860dd10223f3e03fbaa",
+      "visualReview": "Reviewed light/dark PNG and SVG: full interphase nucleus, intact pore-bearing shell and cutaway, nucleolus and chromatin preserved. Clean transparent margins; slight SVG gradient banding does not obscure structure. Pore count and chromatin pattern are schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nucleus/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nucleus/inspection.webm"
+      }
+    },
+    {
+      "id": "nucleolus",
+      "aliases": [
+        "nucleolus"
+      ],
+      "source": "svg/nucleolus-bioart-traced.svg",
+      "sha256": "71baca38cc0949f7e67033806dc44704698c01dc7802a5536853d3f228ca7bdd",
+      "visualReview": "PNG/SVG inspected on light and dark: complete membrane-free nucleolar cutaway, three pale centers and surrounding fibrillar regions retained. Fine detail and purple palette remain recognizable; trace has minor texture quantization. No checkerboard or background halo. Component sizes/counts are illustrative.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nucleolus/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nucleolus/inspection.webm"
+      }
+    },
+    {
+      "id": "nuclear-envelope",
+      "aliases": [
+        "nuclear-envelope"
+      ],
+      "source": "svg/nuclear-envelope-bioart-traced.svg",
+      "sha256": "af9125632d1fe8b1061356880ca8ed59ff201abea2ceb0dc904d7c6fcb3a6c78",
+      "visualReview": "Reviewed PNG and SVG on light/dark: complete double-bilayer patch, continuous curved membrane returns at pore edges, underside lamina retained. Transparent spaces and external padding are clean. SVG closely matches PNG with minor banding; pore architecture is simplified.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nuclear-envelope/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nuclear-envelope/inspection.webm"
+      }
+    },
+    {
+      "id": "nuclear-pore-complex",
+      "aliases": [
+        "nuclear-pore-complex"
+      ],
+      "source": "svg/nuclear-pore-complex-bioart-traced.svg",
+      "sha256": "e92daf2f9948cc6fb7f80f154de0ba1d5c2533d286f6d6de8d147581cebfb082",
+      "visualReview": "Light/dark PNG and SVG inspected: eight upper sectors with eight filaments, open channel, aligned scaffold rings and tapered basket retained. Six basket strands visible in projection. Clear transparent inter-filament spaces and margins; slight trace contour banding only. Simplified archetype, not atomistic reconstruction.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nuclear-pore-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nuclear-pore-complex/inspection.webm"
+      }
+    },
+    {
+      "id": "mitochondrion",
+      "aliases": [
+        "mitochondrion"
+      ],
+      "source": "svg/mitochondrion-bioart-traced.svg",
+      "sha256": "dac23bc596d4513138c89e7d3a9437f6778e5bd7d616595c4c56ba17d4485ebd",
+      "visualReview": "Approved batches 01/02"
+    },
+    {
+      "id": "golgi-apparatus",
+      "aliases": [
+        "golgi-apparatus"
+      ],
+      "source": "svg/golgi-apparatus-bioart-traced.svg",
+      "sha256": "e47cbebbc4b40404a27d587af30d8ba89d115cb96343c2ff3d3a851a031e93ed",
+      "visualReview": "PNG and rendered SVG inspected on light and dark: five flattened curved cisternae, pale cutaway lumens and six associated/budding vesicles preserved. Clean transparent padding and no glow in composite. SVG retains crisp outlines and soft depth with slight gradient quantization.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/golgi-apparatus/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/golgi-apparatus/inspection.webm"
+      }
+    },
+    {
+      "id": "rough-endoplasmic-reticulum",
+      "aliases": [
+        "rough-endoplasmic-reticulum"
+      ],
+      "source": "svg/rough-endoplasmic-reticulum-bioart-traced.svg",
+      "sha256": "4315fb9b9361c1c6633133991d983c9e5441c2f193d617d71f115e3122f67516",
+      "visualReview": "Light/dark PNG and rendered SVG reviewed: interconnected cisternal sheets, empty pale lumens and small external ribosomes remain clear. True alpha including network openings; no glow or white background in composite. SVG maintains anatomy and palette with minor contour quantization.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rough-endoplasmic-reticulum/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rough-endoplasmic-reticulum/inspection.webm"
+      }
+    },
+    {
+      "id": "smooth-endoplasmic-reticulum",
+      "aliases": [
+        "smooth-endoplasmic-reticulum"
+      ],
+      "source": "svg/smooth-endoplasmic-reticulum-bioart-traced.svg",
+      "sha256": "1394763a81ff2b9d5d7946a175a9feccfacb2bcc3be74be5df280dcb964aff74",
+      "visualReview": "Light/dark PNG and rendered SVG inspected: complete branched tubular network, open loops, one cutaway tip, no surface ribosomes. Transparency is clean throughout openings and padding; no glow survives compositing. SVG retains smooth tube depth with minor banding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/smooth-endoplasmic-reticulum/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/smooth-endoplasmic-reticulum/inspection.webm"
+      }
+    },
+    {
+      "id": "lysosome",
+      "aliases": [
+        "lysosome"
+      ],
+      "source": "svg/lysosome-bioart-traced.svg",
+      "sha256": "9e6fe149447a592707a0ac2c440d78367d7b88a880c147c467b8ba454477c81f",
+      "visualReview": "Reviewed light/dark PNG and SVG: complete single-bilayer cutaway, enzyme-like granules and curled degraded fragments retained. No intact organelles, background halo or clipping. SVG closely preserves coral/gold palette and internal details with minor gradient banding; contents are schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lysosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lysosome/inspection.webm"
+      }
+    },
+    {
+      "id": "early-endosome",
+      "aliases": [
+        "early-endosome"
+      ],
+      "source": "svg/early-endosome-bioart-traced.svg",
+      "sha256": "b4442f29190de72c2d75190af1ef82607f3d726a87db70f0071d34e2d587d1b3",
+      "visualReview": "Reviewed light/dark PNG and SVG: complete vacuolar body with three attached tubules, one limiting bilayer and sparse luminal contents. All tips preserved, clean alpha and no glow in composite. SVG keeps structure and turquoise palette with slight gradient banding; contents and topology are schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/early-endosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/early-endosome/inspection.webm"
+      }
+    },
+    {
+      "id": "late-endosome",
+      "aliases": [
+        "late-endosome"
+      ],
+      "source": "svg/late-endosome-bioart-traced.svg",
+      "sha256": "f8d30f4d48158806976153c797b082e32188f4ae2c19797df175ee3906a2b606",
+      "visualReview": "Light/dark PNG and SVG reviewed: single limiting bilayer, many separated intraluminal vesicles, small closed tubular nub and complete outline. Clean alpha and generous padding. SVG retains fine membrane rims and teal/lavender palette with slight banding. Vesicle abundance is schematic rather than a fixed diagnostic threshold.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/late-endosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/late-endosome/inspection.webm"
+      }
+    },
+    {
+      "id": "peroxisome",
+      "aliases": [
+        "peroxisome"
+      ],
+      "source": "svg/peroxisome-bioart-traced.svg",
+      "sha256": "5461dce9ff9001ee42d2e5c5840a268fee28183538bd3e82b2823bf8b50bc6a8",
+      "visualReview": "Light/dark PNG and SVG inspected: full single-membrane green organelle, compact ordered core and sparse matrix granules. Transparent margin clean. SVG retains clear core rods and shape with visible but modest gradient banding. Rat-liver crystalloid-core archetype explicitly documented, not universal human morphology.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/peroxisome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/peroxisome/inspection.webm"
+      }
+    },
+    {
+      "id": "autophagosome",
+      "aliases": [
+        "autophagosome"
+      ],
+      "source": "svg/autophagosome-bioart-traced.svg",
+      "sha256": "56cbe6df3fc005702de4ec3b3f106d696d25a631b03b253fe78d19419c65bdd0",
+      "visualReview": "PNG/SVG inspected on light/dark: two separate membrane bands with pale intermembrane gap, enclosing mitochondrial and protein cargo. Each band represents a complete bilayer. Full outline, clean alpha and padding. SVG preserves double-membrane distinction and cargo with minor gradient banding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/autophagosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/autophagosome/inspection.webm"
+      }
+    },
+    {
+      "id": "phagosome",
+      "aliases": [
+        "phagosome"
+      ],
+      "source": "svg/phagosome-bioart-traced.svg",
+      "sha256": "4c793515d2ec2c06742ce003c09c04e6e690baacc0d32f8bd0af8b6c2eb80646",
+      "visualReview": "Light/dark PNG and SVG inspected: one host bilayer enclosing complete bacterial rod and short pili; all cargo inside. Transparent margins clean, no glow in composite. SVG preserves membrane detail, shape and orange/lavender colors with minor gradient banding. Early phagosome archetype, unspecified bacterial species.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/phagosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/phagosome/inspection.webm"
+      }
+    },
+    {
+      "id": "transport-vesicle",
+      "aliases": [
+        "transport-vesicle"
+      ],
+      "source": "svg/transport-vesicle-bioart-traced.svg",
+      "sha256": "de738cae96576f9a15453ed45020f9a49be27e36b74ba7f28f31ed12dddd52c1",
+      "visualReview": "PNG/SVG light/dark comparison reviewed: complete uncoated single-membrane vesicle, three soluble cargo shapes and three membrane protein symbols. Clean alpha and padding; SVG retains bilayer rim and cargo with minor quantization. Generic schematic, no specific trafficking route or molecular identity implied.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/transport-vesicle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/transport-vesicle/inspection.webm"
+      }
+    },
+    {
+      "id": "secretory-vesicle",
+      "aliases": [
+        "secretory-vesicle"
+      ],
+      "source": "svg/secretory-vesicle-bioart-traced.svg",
+      "sha256": "6897be5f01ef1829631a650a59dc1902093914bd1069485377213f7d405da800",
+      "visualReview": "Complete dense-core granule with intact single membrane, condensed granular cargo and peripheral halo. SVG preserves silhouette, membrane detail and core texture; modest gradient banding remains comparable to PNG. Transparent on light and dark backgrounds.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/secretory-vesicle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/secretory-vesicle/inspection.webm"
+      }
+    },
+    {
+      "id": "exosome",
+      "aliases": [
+        "exosome",
+        "extracellular-vesicle"
+      ],
+      "source": "svg/exosome-bioart-traced.svg",
+      "sha256": "acbd00e55b84a17d13b3f7c66160b76bed79fd724e937966e002822fb48e760a",
+      "visualReview": "Complete single-vesicle cutaway with smooth teal shell, visible bilayer rim, illustrative RNA and protein cargo. SVG retains components and shading with slightly stronger fine outlines. Transparent padding and protein loop openings verified on both backgrounds.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/exosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/exosome/inspection.webm"
+      }
+    },
+    {
+      "id": "ribosome",
+      "aliases": [
+        "ribosome"
+      ],
+      "source": "svg/ribosome-bioart-traced.svg",
+      "sha256": "9a6a60259020afed593b2b1e81d7f2f292194a0e3a64ecb795e5756fc3f1e37b",
+      "visualReview": "Two connected differently colored subunits and asymmetric surface lobes remain clear. SVG closely retains rounded shading, contours and intersubunit boundary. Full silhouette preserved with transparent padding on light and dark backgrounds; molecular surface is explicitly schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ribosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ribosome/inspection.webm"
+      }
+    },
+    {
+      "id": "proteasome",
+      "aliases": [
+        "proteasome"
+      ],
+      "source": "svg/proteasome-bioart-traced.svg",
+      "sha256": "a3bc77597b783ef52a047be736c76954397bcd8b046601a4af2ca50bf6ff1f49",
+      "visualReview": "Four alpha-beta-beta-alpha rows and seven top subunits remain distinct. SVG preserves coherent barrel, axial opening, smooth lobes and shading. Clean alpha on white and dark backgrounds; no glow in composited output.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/proteasome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/proteasome/inspection.webm"
+      }
+    },
+    {
+      "id": "centrosome",
+      "aliases": [
+        "centrosome"
+      ],
+      "source": "svg/centrosome-bioart-traced.svg",
+      "sha256": "241c10acfcc8d185737c80740dd0095b216ef3880bef6a95642b19c760f10c85",
+      "visualReview": "Two perpendicular hollow triplet-bundle barrels and lavender pericentriolar material remain recognizable. Geometry scaffold preserved nine-group organization; tubule and matrix ultrastructure explicitly simplified. SVG retains thin rods, openings and shading with minor stronger outlines. Transparent external padding and internal gaps verified on both backgrounds.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/centrosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/centrosome/inspection.webm"
+      }
+    },
+    {
+      "id": "centriole-pair",
+      "aliases": [
+        "centriole-pair"
+      ],
+      "source": "svg/centriole-pair-bioart-traced.svg",
+      "sha256": "9dfd0734cb79ec37b279e10a84bd34235def75a24d7b385326487482712a8bb7",
+      "visualReview": "Bare paired barrels retain centrosome-derived arrangement and colors with lavender matrix removed. SVG preserves slender triplet bundles, end openings and gradients. No external glow or white fill in transparent gaps on either background; structures and spacing remain schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/centriole-pair/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/centriole-pair/inspection.webm"
+      }
+    },
+    {
+      "id": "mitotic-spindle",
+      "aliases": [
+        "mitotic-spindle"
+      ],
+      "source": "svg/mitotic-spindle-bioart-traced.svg",
+      "sha256": "c29b0fc3c22e986778f121655d366733835aa634d1b47687894bb611e8f326ed",
+      "visualReview": "PNG retains isolated bipolar spindle with transparent inter-fiber spaces. Reconstructed SVG uses 52 editable paths with smooth Bezier fibers and gradient pole glyphs, avoiding jagged trace edges. Fiber trajectories, count and pole detail intentionally simplified while retaining bilateral organization and central antiparallel overlap. Both formats clear on light and dark backgrounds.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mitotic-spindle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mitotic-spindle/inspection.webm"
+      }
+    },
+    {
+      "id": "microtubule",
+      "aliases": [
+        "microtubule"
+      ],
+      "source": "svg/microtubule-bioart-traced.svg",
+      "sha256": "a2dbb4f54cbb88081cc1cc299b7936835353934ac72d384b6ca69279608addf8",
+      "visualReview": "Hollow tube, thirteen front terminal subunits and longitudinal alternating tubulin columns remain readable. SVG retains smooth subunit shading and crisp lattice silhouette with slight gradient quantization. No glow in light or dark composites; complete object and transparent padding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microtubule/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microtubule/inspection.webm"
+      }
+    },
+    {
+      "id": "actin-filament",
+      "aliases": [
+        "actin-filament"
+      ],
+      "source": "svg/actin-filament-bioart-traced.svg",
+      "sha256": "ad2a422e5e5e0d13f3cea7f15e922071e5f1e4118b7e4eed50b431c796993621",
+      "visualReview": "Closely packed globular monomers and repeated two-strand crossover pattern remain clear. SVG closely retains coral shading, small clefts and full silhouette. Transparent padding on both backgrounds; no glow in composite.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/actin-filament/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/actin-filament/inspection.webm"
+      }
+    },
+    {
+      "id": "intermediate-filament",
+      "aliases": [
+        "intermediate-filament"
+      ],
+      "source": "svg/intermediate-filament-bioart-traced.svg",
+      "sha256": "cd28c611facc37a564f3d21365d5999337215aa5c96db67176f89e4ae119edd2",
+      "visualReview": "Compact gently curved cable, intertwined strand glyphs and neat ends preserved. SVG closely matches gradients, lavender contours and helical grooves. Both backgrounds show clean transparency; molecular strand count explicitly schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/intermediate-filament/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/intermediate-filament/inspection.webm"
+      }
+    },
+    {
+      "id": "cilium",
+      "aliases": [
+        "cilium"
+      ],
+      "source": "svg/cilium-bioart-traced.svg",
+      "sha256": "fc1e0cc0626414d6cfd1107eeb334b92fe6bbc134644fc533315b0cf30b7165c",
+      "visualReview": "Complete rounded membrane-covered shaft, narrow axonemal window and basal body preserved. SVG retains smooth teal shading and golden longitudinal details with slight gradient bands. Clear transparency around complete tip and base on both backgrounds; full cross-sectional architecture intentionally not shown.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cilium/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cilium/inspection.webm"
+      }
+    },
+    {
+      "id": "primary-cilium",
+      "aliases": [
+        "primary-cilium"
+      ],
+      "source": "svg/primary-cilium-bioart-traced.svg",
+      "sha256": "8ef19c201589f9112495bdcd7d7e3b199edc907ce3e7e548c658b549e9537552",
+      "visualReview": "Slender closed-tip shaft, basal body and continuous fibers with staggered distal endpoints remain clear. SVG preserves fine longitudinal fibers and smooth membrane shading with minor quantization. Clean alpha on both backgrounds; longitudinal simplifications recorded.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/primary-cilium/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/primary-cilium/inspection.webm"
+      }
+    },
+    {
+      "id": "motile-cilium-bundle",
+      "aliases": [
+        "motile-cilium-bundle"
+      ],
+      "source": "svg/motile-cilium-bundle-bioart-traced.svg",
+      "sha256": "92f2190fecf46984eb1a989e8c6847c53ad66f5a88a6ae8bf1815f91b23e5bcf",
+      "visualReview": "Six distinct complete cilia with separate bases, coordinated curvature and one cutaway retained. SVG preserves membrane shading and fine golden details; transparent gaps remain clear on both backgrounds. Compositional count documented.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/motile-cilium-bundle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/motile-cilium-bundle/inspection.webm"
+      }
+    },
+    {
+      "id": "eukaryotic-flagellum",
+      "aliases": [
+        "eukaryotic-flagellum"
+      ],
+      "source": "svg/eukaryotic-flagellum-bioart-traced.svg",
+      "sha256": "a4a4ea7c661e73cfdb354f3e033a67b216e932514f43ccf9ef0ed7190c1ba80d",
+      "visualReview": "Long sinuous membrane-covered shaft, rounded distal tip and proximal axonemal window preserved. SVG retains continuous fine tail and smooth contours with slight gradient bands. True transparency verified on both backgrounds after alpha retry.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/eukaryotic-flagellum/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/eukaryotic-flagellum/inspection.webm"
+      }
+    },
+    {
+      "id": "lipid-droplet",
+      "aliases": [
+        "lipid-droplet"
+      ],
+      "source": "svg/lipid-droplet-bioart-traced.svg",
+      "sha256": "6ce4dffe87964f046644fed79fae91ee502aa0e9a478d4696fc5d7bb01a37546",
+      "visualReview": "Single monolayer head row with inward tails, homogeneous lipid core and three shallow protein patches preserved. SVG keeps fine rim detail and complete silhouette with modest gradient banding. Transparent padding clean on light and dark backgrounds.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lipid-droplet/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lipid-droplet/inspection.webm"
+      }
+    },
+    {
+      "id": "glycogen-granule",
+      "aliases": [
+        "glycogen-granule"
+      ],
+      "source": "svg/glycogen-granule-bioart-traced.svg",
+      "sha256": "f133dea7937f1a1097199beb1777f9a75142a80e73f7f97341b1c96f0e83a902",
+      "visualReview": "Inspected PNG and editable SVG on light and dark backgrounds: complete branched bead network and golden core, transparent interbranch spaces, no enclosing membrane. SVG preserves the silhouette and bead highlights with slightly stronger outlines. Molecular counts and branching geometry are schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/glycogen-granule/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/glycogen-granule/inspection.webm"
+      }
+    },
+    {
+      "id": "stress-granule",
+      "aliases": [
+        "stress-granule"
+      ],
+      "source": "svg/stress-granule-bioart-traced.svg",
+      "sha256": "e287b81652b92cfc1a30cc3860385d2eaf50e1f8e57af20884bc53b96b459dd2",
+      "visualReview": "Inspected PNG and SVG on white and dark backgrounds: continuous membrane-free condensate phase, two RNP-rich clusters, orange RNA and three small-subunit glyphs remain readable. Complete silhouette and transparent padding; slight trace banding is acceptable. Internal counts and molecular shapes are schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/stress-granule/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/stress-granule/inspection.webm"
+      }
+    },
+    {
+      "id": "p-body",
+      "aliases": [
+        "p-body"
+      ],
+      "source": "svg/p-body-bioart-traced.svg",
+      "sha256": "32a79a7433839cba89967bb8249de7ab842a2240cf8db4566e934b3ec23f413b",
+      "visualReview": "Inspected PNG and SVG on light and dark backgrounds: compact RNP condensate, intact orange RNA loops, smooth protein glyphs and a thin phase boundary preserved. No lipid bilayer or translating ribosomes. SVG retains depth and colors with minor gradient banding; full transparent padding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/p-body/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/p-body/inspection.webm"
+      }
+    },
+    {
+      "id": "plasma-membrane-segment",
+      "aliases": [
+        "plasma-membrane-segment"
+      ],
+      "source": "svg/plasma-membrane-segment-bioart-traced.svg",
+      "sha256": "e55ee067d834fc4c701bdee8abe14035762ee67027ec726fd89ac248e72b5c4b",
+      "visualReview": "Inspected PNG and SVG on white and dark backgrounds: two opposing phospholipid leaflets with separate inward tails, full-depth teal channel, purple glycoprotein and extracellular sugar branch preserved. Corrected original spans its canvas without clipping and master has generous transparent padding. SVG slightly strengthens outlines but preserves the structure and smooth depth.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/plasma-membrane-segment/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/plasma-membrane-segment/inspection.webm"
+      }
+    },
+    {
+      "id": "lipid-bilayer-cross-section",
+      "aliases": [
+        "lipid-bilayer-cross-section"
+      ],
+      "source": "svg/lipid-bilayer-cross-section-bioart-traced.svg",
+      "sha256": "44682ece25191c3192f57b56f4a8d01d8a859471e4669e20ba98e75a4d8a310a",
+      "visualReview": "Inspected PNG and SVG on white and dark backgrounds: two opposing rows of twelve lipid heads, two inward-facing tails per head, distinct leaflet endpoints, no extra components. SVG preserves round head gradients with slightly darker contours and minor banding. Complete transparent strip with padding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lipid-bilayer-cross-section/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lipid-bilayer-cross-section/inspection.webm"
+      }
+    },
+    {
+      "id": "membrane-raft",
+      "aliases": [
+        "membrane-raft"
+      ],
+      "source": "svg/membrane-raft-bioart-traced.svg",
+      "sha256": "c5fd6b823bdc34dd0d4f55fe9044d56a4ba8d6e4707e15e95fff708c794a67bb",
+      "visualReview": "Inspected PNG and SVG on light and dark backgrounds: teal domain remains continuous with the lavender bilayer, opposing leaflet tails and seven front-face cholesterol symbols retained. No protruding cholesterol above the top surface, no rendered glow in the alpha composite. SVG preserves packed head groups and shading with minor banding; generous transparent padding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/membrane-raft/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/membrane-raft/inspection.webm"
+      }
+    },
+    {
+      "id": "clathrin-coated-pit",
+      "aliases": [
+        "clathrin-coated-pit"
+      ],
+      "source": "svg/clathrin-coated-pit-bioart-traced.svg",
+      "sha256": "a343c9699dd2eb68e721f3a30842e30e648e00b147ad8478f5c192b9ca1ad64f",
+      "visualReview": "Inspected PNG and SVG on light and dark backgrounds: open U-shaped membrane continuous with both shoulders, corrected opposing leaflets, three receptor-bound luminal cargo spheres, teal coat on the outer cytoplasmic side. Alpha composite removes preview glow and preserves open lattice spaces. SVG keeps structure, shading and complete silhouette with minor contour strengthening.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/clathrin-coated-pit/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/clathrin-coated-pit/inspection.webm"
+      }
+    },
+    {
+      "id": "clathrin-coated-vesicle",
+      "aliases": [
+        "clathrin-coated-vesicle"
+      ],
+      "source": "svg/clathrin-coated-vesicle-bioart-traced.svg",
+      "sha256": "64741c03c4c94238293857fc068223cfe83eff5c0d982dc1595a93c77c928763",
+      "visualReview": "Inspected PNG and SVG on white and dark backgrounds: detached vesicle with external teal coat, blue adaptors, three luminal receptor-bound cargo glyphs, and corrected two-head-row membrane cutaway. Window is an illustrative cutaway, not an open biological pore. No unwanted middle bead row remains. SVG preserves cage openings, shading and complete transparent silhouette with minor banding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/clathrin-coated-vesicle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/clathrin-coated-vesicle/inspection.webm"
+      }
+    },
+    {
+      "id": "caveola",
+      "aliases": [
+        "caveola"
+      ],
+      "source": "svg/caveola-bioart-traced.svg",
+      "sha256": "a08ab85c4b45c4a27b2813355a6a1a8cc74bf5a1659506d55f78580d9d33c04d",
+      "visualReview": "Inspected PNG and SVG on white and dark backgrounds: flask-like invagination remains continuous with membrane shoulders through a narrow neck, fine outer filament net over disc glyphs, distinct blue neck collar. Coat partly occludes the outer leaflet around the bulb. Full silhouette and transparent padding, SVG preserves fine coat strands and depth with mild gradient banding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/caveola/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/caveola/inspection.webm"
+      }
+    },
+    {
+      "id": "tight-junction",
+      "aliases": [
+        "tight-junction"
+      ],
+      "source": "svg/tight-junction-bioart-traced.svg",
+      "sha256": "8df3c866f4215b23ed127b5ee0dc5c099e998732939e1fa65c340259d4cf1c2a",
+      "visualReview": "Inspected PNG and SVG on light and dark backgrounds: two distinct closely apposed bilayer panels, three connected short paired contact modules, cytoplasmic scaffold glyphs and orange actin segments. Simplified smooth membrane cores avoid false continuous tails; no floating lower contact remains. SVG preserves contact alignment, shading and full transparent silhouette with slight contour strengthening.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tight-junction/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tight-junction/inspection.webm"
+      }
+    },
+    {
+      "id": "adherens-junction",
+      "aliases": [
+        "adherens-junction"
+      ],
+      "source": "svg/adherens-junction-bioart-traced.svg",
+      "sha256": "94a5bf6923a3ee9add8e7a9e24fadbcb94ce518d884860851ac0d56c21372cfe",
+      "visualReview": "Inspected PNG and SVG on light and dark backgrounds: three opposed teal/blue cadherin pairs with corrected five-domain chains, central terminal overlap, separate membrane panels and cytoplasmic scaffolds attached to orange actin. Smooth core bands and complete transparent silhouette preserved. SVG retains fine stems, domain separations and depth with minor contour strengthening.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adherens-junction/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adherens-junction/inspection.webm"
+      }
+    },
+    {
+      "id": "desmosome",
+      "aliases": [
+        "desmosome"
+      ],
+      "source": "svg/desmosome-bioart-traced.svg",
+      "sha256": "16967bd263ea645968cc65120b8fe4aca5910184821192ea204ed12107f21d76",
+      "visualReview": "Inspected PNG and SVG on light and dark backgrounds: paired dense cytoplasmic plaques, keratin filament bundles, separate membrane bands and three cadherin contact glyphs preserved. Complete cut filament ends have transparent padding. No visible background glow in composites; SVG preserves strands, plaque lobes and depth with slight contour strengthening.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/desmosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/desmosome/inspection.webm"
+      }
+    },
+    {
+      "id": "hemidesmosome",
+      "aliases": [
+        "hemidesmosome"
+      ],
+      "source": "svg/hemidesmosome-bioart-traced.svg",
+      "sha256": "501aecfbaceee16dfe51a1f3c32c6b436ce9fe644cdd17a93d891b03b03bb928",
+      "visualReview": "Inspected PNG and SVG on white and dark backgrounds: single membrane, cytoplasmic plaque and complete keratin ends above, corrected slim paired integrin stalks with composite heads contacting an extracellular mesh below, separate collagen-XVII-like rod. Fine matrix strands survive SVG conversion; no clipped ends or visible background haze, mild contour strengthening only.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hemidesmosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hemidesmosome/inspection.webm"
+      }
+    },
+    {
+      "id": "gap-junction",
+      "aliases": [
+        "gap-junction"
+      ],
+      "source": "svg/gap-junction-bioart-traced.svg",
+      "sha256": "03ddb5c91136c9de5a777e70d833bb6e091229c3e478e962794a34ec2062dad6",
+      "visualReview": "Inspected PNG and editable SVG on light and dark backgrounds: three docked channel pairs, two separate membrane patches, continuous exposed left pore and complete padded silhouette preserved. SVG retains gradients with slightly stronger contours. No visible checkerboard, glow or background remains.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gap-junction/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gap-junction/inspection.webm"
+      }
+    },
+    {
+      "id": "focal-adhesion",
+      "aliases": [
+        "focal-adhesion"
+      ],
+      "source": "svg/focal-adhesion-bioart-traced.svg",
+      "sha256": "9eec54287c09ea6bf479d922ae08f82906099e6905b86fa90dd7a5a424ae7973",
+      "visualReview": "Inspected light/dark PNG and SVG comparison: full actin and extracellular strand ends preserved, integrin heads remain below membrane with adaptor connection above. SVG maintains polished forms and color separation with slightly stronger outlines. Real transparency, no checkerboard or visible stray background.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/focal-adhesion/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/focal-adhesion/inspection.webm"
+      }
+    },
+    {
+      "id": "immunological-synapse",
+      "aliases": [
+        "immunological-synapse"
+      ],
+      "source": "svg/immunological-synapse-bioart-traced.svg",
+      "sha256": "933d5873faee2cec4fad7344fe8cbf7fa150d505d05e96eee0f7fa40aed61482",
+      "visualReview": "Inspected two complete cell silhouettes, distinct nuclei, central recognition and flanking adhesion bridges. PNG and editable SVG preserve contact and cell details on light and dark backgrounds with real transparent padding. Recognition topology is schematic, not molecular stoichiometry or resolved ultrastructure.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/immunological-synapse/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/immunological-synapse/inspection.webm"
+      }
+    },
+    {
+      "id": "neuronal-synapse",
+      "aliases": [
+        "neuronal-synapse"
+      ],
+      "source": "svg/neuronal-synapse-bioart-traced.svg",
+      "sha256": "748119c761d2485c01b517d0acf28c45148fdb95c6d9a396f43bc319a53127eb",
+      "visualReview": "Inspected complete upper bouton and lower spine cutaways, distinct separated membranes, vesicles and single mitochondrion, fusion site and cleft transmitter dots, postsynaptic channels and density. SVG retains small components and transparency on light and dark backgrounds. Generic chemical synapse, not a receptor-specific or scale model.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/neuronal-synapse/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/neuronal-synapse/inspection.webm"
+      }
+    },
+    {
+      "id": "neuromuscular-junction",
+      "aliases": [
+        "neuromuscular-junction"
+      ],
+      "source": "svg/neuromuscular-junction-bioart-traced.svg",
+      "sha256": "1afaa93361a9eeddcca433b109bfeb2a63bc5969240e0d04bc4d52fbf034eee4",
+      "visualReview": "Corrected cropped axon and misplaced deep-fold receptors before tracing. PNG/SVG light/dark comparison preserves complete cutaway, receptor-rich crests with bare troughs, separate terminal and muscle membranes, vesicles, mitochondrion and muscle striations. Clean alpha margins, no checkerboard.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/neuromuscular-junction/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/neuromuscular-junction/inspection.webm"
+      }
+    },
+    {
+      "id": "filopodium",
+      "aliases": [
+        "filopodium"
+      ],
+      "source": "svg/filopodium-bioart-traced.svg",
+      "sha256": "3412dbd471905ea3a16192771c8801deaea75cb0822ff344163bc0b647289ef4",
+      "visualReview": "Inspected PNG/SVG light and dark: one slender finger with intact rounded membrane tip, small flared parent membrane patch and cutaway parallel actin bundle with sparse crosslinks. No external filament projection or microtubule. Complete contours, real alpha and padding; vector preserves fine bundle structure and smooth membrane shading. Beading, filament count and crosslink spacing schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/filopodium/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/filopodium/inspection.webm"
+      }
+    },
+    {
+      "id": "lamellipodium",
+      "aliases": [
+        "lamellipodium"
+      ],
+      "source": "svg/lamellipodium-bioart-traced.svg",
+      "sha256": "33b2cb93e19c8c4f4dff1d803943832fce6a459ba316e62f54e145eca68e6571",
+      "visualReview": "Inspected PNG/SVG light and dark: broad thin fan with intact scalloped leading membrane edge and small parent base, branched rose actin mesh remains internal. Complete boundary, no finger projections, nucleus or organelles. Real alpha and padding; SVG retains branching and smooth membrane gradients with minor edge texture. Branch geometry, filament count and thickness schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lamellipodium/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lamellipodium/inspection.webm"
+      }
+    },
+    {
+      "id": "microvilli",
+      "aliases": [
+        "microvilli"
+      ],
+      "source": "svg/microvilli-bioart-traced.svg",
+      "sha256": "401219172a1526b0b9906ca961077c049232d7fd480a76cd71e47073a5c1facb",
+      "visualReview": "Inspected PNG/SVG light and dark: five complete rounded projections on common membrane, two cutaways expose parallel actin cores continuous into terminal web. Restored central tip is complete; no actual background glow. Real alpha and generous padding. SVG retains topology and smooth shading, mild texture acceptable. Counts, spacing and crosslinks schematic; no ciliary axoneme implied.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microvilli/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microvilli/inspection.webm"
+      }
+    },
+    {
+      "id": "stereocilia",
+      "aliases": [
+        "stereocilia"
+      ],
+      "source": "svg/stereocilia-bioart-traced.svg",
+      "sha256": "a5659a4596dcf284625a70dd80113511b42bbafabf7624082074d0f833bbd3f9",
+      "visualReview": "Inspected PNG/SVG light and dark: five stepped membrane-covered stereocilia, tapered bases on one patch, two actin cutaways, oblique links from shorter tips to taller neighbors. Complete tips and base. Real alpha and padding; links remain visible in SVG with minor contour texture. Five instead of prompt six accepted as representative fragment; no fixed biological count or molecular tip-link model implied.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/stereocilia/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/stereocilia/inspection.webm"
+      }
+    },
+    {
+      "id": "igg-antibody",
+      "aliases": [
+        "igg-antibody"
+      ],
+      "source": "svg/igg-antibody-bioart-traced.svg",
+      "sha256": "ecb25705d3924de58191193d85f3dc1f8709f210e04a521455b1c03a3c2ae5d6",
+      "visualReview": "Approved batches 01/02"
+    },
+    {
+      "id": "antibody-fab-fragment",
+      "aliases": [
+        "antibody-fab-fragment"
+      ],
+      "source": "svg/antibody-fab-fragment-bioart-traced.svg",
+      "sha256": "9f1d09dddf3551576486fdc5f50e9cae74524caeb9ce2ce57639aafd76ea6c99",
+      "visualReview": "Inspected four domains, two short linkers and gold interchain bridge in PNG and SVG on light/dark backgrounds. No Fc stem, antigen, arrows or background. Editable trace retains smooth domain shading with minor stronger contours.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/antibody-fab-fragment/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/antibody-fab-fragment/inspection.webm"
+      }
+    },
+    {
+      "id": "antibody-fc-fragment",
+      "aliases": [
+        "antibody-fc-fragment"
+      ],
+      "source": "svg/antibody-fc-fragment-bioart-traced.svg",
+      "sha256": "3f3eedf612033d0c7caf9728bee660719c1869e005d967ad978232994fb1eaf3",
+      "visualReview": "Inspected PNG/SVG comparison on both backgrounds: four Fc domains, central cleft, touching lower pair, hinge bridges and two attached glycan glyphs preserved. No Fab arms or background; SVG retains smooth shading with slight stronger outlines.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/antibody-fc-fragment/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/antibody-fc-fragment/inspection.webm"
+      }
+    },
+    {
+      "id": "bispecific-antibody",
+      "aliases": [
+        "bispecific-antibody"
+      ],
+      "source": "svg/bispecific-antibody-bioart-traced.svg",
+      "sha256": "6c0524d8041388a5c66c23af3ed0745a0fc295a8302cb8692897ede9385ccd79",
+      "visualReview": "Inspected PNG/SVG light and dark: IgG-like Y with two differently colored paired variable tips, blue constant domains, four-domain Fc stem and simple hinge. Incorrect lowest Fc gold bridge removed; lowest domains contact. No antigens or extra arms. Real alpha, complete contours and padding; SVG preserves domain layout and style. Representative format with glycans and exact hinge chemistry omitted.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bispecific-antibody/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bispecific-antibody/inspection.webm"
+      }
+    },
+    {
+      "id": "antibody-drug-conjugate",
+      "aliases": [
+        "antibody-drug-conjugate"
+      ],
+      "source": "svg/antibody-drug-conjugate-bioart-traced.svg",
+      "sha256": "3e5fead05af9206d83fc781a5d1bb43f19ccf22d3eb6f65076d84ccd42db1aa8",
+      "visualReview": "Viewed PNG/SVG light and dark: IgG-like antibody with matching teal binding tips and four small coral payload glyphs visibly attached by short gold linkers to constant regions. Corrected Fc framework preserved, no free antigens. Real alpha, complete contours and padding; SVG retains attachments and domain style. Drug load, sites and linker chemistry schematic; glycans omitted.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/antibody-drug-conjugate/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/antibody-drug-conjugate/inspection.webm"
+      }
+    },
+    {
+      "id": "nanobody-vhh",
+      "aliases": [
+        "nanobody-vhh"
+      ],
+      "source": "svg/nanobody-vhh-bioart-traced.svg",
+      "sha256": "a66096cb5ab8fed032b39ddc14e510c34866830e1ee81fdfec108a7331b82a23",
+      "visualReview": "Reviewed single domain silhouette, three modest binding-end bumps and smooth teal shading on light/dark PNG/SVG previews. SVG preserves shape with mild gradient banding and stronger edge. No background, extra domains or labels.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nanobody-vhh/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nanobody-vhh/inspection.webm"
+      }
+    },
+    {
+      "id": "t-cell-receptor-alpha-beta-heterodimer",
+      "aliases": [
+        "t-cell-receptor-alpha-beta-heterodimer"
+      ],
+      "source": "svg/t-cell-receptor-alpha-beta-heterodimer-bioart-traced.svg",
+      "sha256": "0af9bca50919e60ee6dd0e5a096bcae9202e4c57d732a9761a939a09f5b9df2a",
+      "visualReview": "Inspected four extracellular domains, two color-continuous chains, stalk disulfide bridge, two membrane helices and complete short tails. PNG/SVG preserve contours and gradients on light and dark backgrounds. CD3 and glycans omitted; surface grooves and loop glyphs are schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/t-cell-receptor-alpha-beta-heterodimer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/t-cell-receptor-alpha-beta-heterodimer/inspection.webm"
+      }
+    },
+    {
+      "id": "cd4-receptor",
+      "aliases": [
+        "cd4-receptor"
+      ],
+      "source": "svg/cd4-receptor-bioart-traced.svg",
+      "sha256": "2d016baa1f5a780e1dc6e24bb970334e6de2f52082f1bdfea79c5ae1f86f54a0",
+      "visualReview": "Inspected four separate domains, single small transmembrane glyph and complete cytoplasmic tail in PNG/SVG previews. Domain count and connections retained, clean transparent backgrounds, no extra chain or ligand. Trace keeps thin contours and subtle fills.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cd4-receptor/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cd4-receptor/inspection.webm"
+      }
+    },
+    {
+      "id": "cd8-receptor",
+      "aliases": [
+        "cd8-receptor"
+      ],
+      "source": "svg/cd8-receptor-bioart-traced.svg",
+      "sha256": "530406f6f592915ee8618c08723ad47a6552e7f84e6ac1c38a80a8603a674d0e",
+      "visualReview": "Approved batches 01/02"
+    },
+    {
+      "id": "b-cell-receptor",
+      "aliases": [
+        "b-cell-receptor"
+      ],
+      "source": "svg/b-cell-receptor-bioart-traced.svg",
+      "sha256": "b5016c85a614126aa2c274cd3fc2f9abdcfe3c4bf52e3fc36939fcb650291c95",
+      "visualReview": "Inspected complete blue membrane antibody, paired teal/lavender signaling domains with bridge, four aligned membrane helices and two longer motif-bearing signaling tails. SVG retains all components and transparent spaces on both backgrounds. Tail lengths and motif spacing are schematic; no isotype-specific structural claim.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/b-cell-receptor/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/b-cell-receptor/inspection.webm"
+      }
+    },
+    {
+      "id": "mhc-class-i",
+      "aliases": [
+        "mhc-class-i"
+      ],
+      "source": "svg/mhc-class-i-bioart-traced.svg",
+      "sha256": "50dfac59cbba608308da9469ad3aba350f65d0a582124e3795402f8d9c53dc81",
+      "visualReview": "Inspected teal groove platform and alpha-3 domain with exactly one membrane anchor, separate unanchored lavender beta-2 microglobulin. PNG/SVG retain groove and complete tail on light and dark backgrounds. Peptide is intentionally omitted for architecture; not a stable peptide-free surface complex or atomic model.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mhc-class-i/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mhc-class-i/inspection.webm"
+      }
+    },
+    {
+      "id": "mhc-class-ii",
+      "aliases": [
+        "mhc-class-ii"
+      ],
+      "source": "svg/mhc-class-ii-bioart-traced.svg",
+      "sha256": "f28a49635c4cb91a5c7af56706e327a6aa9894cc74b1d1b1057ae2af7c43678f",
+      "visualReview": "Inspected two-color shared groove with open ends, one continuous rail per chain, two lower domains and two complete membrane anchors. PNG/SVG preserve all components and surrounding alpha on both backgrounds. Peptide omitted; platform proportions and helical turns are schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mhc-class-ii/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mhc-class-ii/inspection.webm"
+      }
+    },
+    {
+      "id": "peptide-mhc-class-i-complex",
+      "aliases": [
+        "peptide-mhc-class-i-complex"
+      ],
+      "source": "svg/peptide-mhc-class-i-complex-bioart-traced.svg",
+      "sha256": "2014b9d7d2c6479251b08ba63c727359c44c5091cf552e22623ad2e97a2ab072",
+      "visualReview": "Inspected one gold peptide within the MHC-I groove, both ends contained, one heavy-chain membrane anchor and separate beta-2 microglobulin. PNG/SVG retain peptide visibility, domain contours and true alpha on both backgrounds. Segment count does not encode amino-acid count; no allele or sequence specified.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/peptide-mhc-class-i-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/peptide-mhc-class-i-complex/inspection.webm"
+      }
+    },
+    {
+      "id": "peptide-mhc-class-ii-complex",
+      "aliases": [
+        "peptide-mhc-class-ii-complex"
+      ],
+      "source": "svg/peptide-mhc-class-ii-complex-bioart-traced.svg",
+      "sha256": "6c93d05f1aa3198e9a1bdd73fb72c6da85b22438240f9ddfc97c4c214396866d",
+      "visualReview": "Inspected single continuous gold peptide within the two-color groove and complete flanks beyond both open ends. Two lower domains and anchors retained. PNG/SVG match on light and dark backgrounds, including fine peptide contour and transparent padding. Sequence, allele and physical dimensions unspecified.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/peptide-mhc-class-ii-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/peptide-mhc-class-ii-complex/inspection.webm"
+      }
+    },
+    {
+      "id": "streptavidin-tetramer",
+      "aliases": [
+        "streptavidin-tetramer"
+      ],
+      "source": "svg/streptavidin-tetramer-bioart-traced.svg",
+      "sha256": "9298083b7e45faf24688ca638c93904b2ad774cc19f7f0e5fa26e346ce89f1ee",
+      "visualReview": "PNG/SVG comparison retains four distinct touching subunits and four outward pocket glyphs, no central pore, clean transparent silhouette. Broad grooves and soft teal shading remain legible on light and dark backgrounds; molecular surface schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/streptavidin-tetramer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/streptavidin-tetramer/inspection.webm"
+      }
+    },
+    {
+      "id": "single-pass-immunoglobulin-like-receptor",
+      "aliases": [
+        "single-pass-immunoglobulin-like-receptor"
+      ],
+      "source": "svg/single-pass-immunoglobulin-like-receptor-bioart-traced.svg",
+      "sha256": "ec2b9b27e4d9c4601e90066488c304d39ea10d68323d13d7b609c57106cf50e6",
+      "visualReview": "PNG/SVG comparison preserves single folded extracellular domain, continuous stalk, one helical anchor and short tail; thin loop gaps remain transparent and all ends complete. Clean purple gradients and outlines.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/single-pass-immunoglobulin-like-receptor/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/single-pass-immunoglobulin-like-receptor/inspection.webm"
+      }
+    },
+    {
+      "id": "multi-domain-immunoglobulin-like-receptor",
+      "aliases": [
+        "multi-domain-immunoglobulin-like-receptor"
+      ],
+      "source": "svg/multi-domain-immunoglobulin-like-receptor-bioart-traced.svg",
+      "sha256": "158964ff0eeeaf6977a201871dd632c7cae7f8a8390d11113d93ec5ca3ee379b",
+      "visualReview": "PNG/SVG comparison retains three separate extracellular domains and their linkers, one anchor and complete short tail; smooth lilac shading matches single-domain family, thin paths and alpha gaps remain intact.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/multi-domain-immunoglobulin-like-receptor/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/multi-domain-immunoglobulin-like-receptor/inspection.webm"
+      }
+    },
+    {
+      "id": "homodimeric-cytokine-receptor",
+      "aliases": [
+        "homodimeric-cytokine-receptor"
+      ],
+      "source": "svg/homodimeric-cytokine-receptor-bioart-traced.svg",
+      "sha256": "72c89c7be3c9b9dd87e9a7b5687fec22b48351810ad7ddfe2f188059941c9b3e",
+      "visualReview": "Light/dark PNG/SVG comparison preserves four smooth domains in two matching chains, two aligned anchors and separate tails; transparent central gap and padding clean, complete silhouette. Refined domains match established protein style.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/homodimeric-cytokine-receptor/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/homodimeric-cytokine-receptor/inspection.webm"
+      }
+    },
+    {
+      "id": "heterodimeric-cytokine-receptor",
+      "aliases": [
+        "heterodimeric-cytokine-receptor"
+      ],
+      "source": "svg/heterodimeric-cytokine-receptor-bioart-traced.svg",
+      "sha256": "dc21a945051cc193375e3918e4c7a78a1dc1765fb7450becea958ea2234593de",
+      "visualReview": "PNG/SVG comparison preserves unlike two-domain teal and three-domain lavender chains, two aligned anchors and separate tails. Clean central transparency, full padding and smooth matching domain style.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/heterodimeric-cytokine-receptor/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/heterodimeric-cytokine-receptor/inspection.webm"
+      }
+    },
+    {
+      "id": "receptor-tyrosine-kinase-dimer",
+      "aliases": [
+        "receptor-tyrosine-kinase-dimer"
+      ],
+      "source": "svg/receptor-tyrosine-kinase-dimer-bioart-traced.svg",
+      "sha256": "e1f2582a4607c874493c8bfc567c02c0f9dafa5dc9a60a7edb24266219bf5a13",
+      "visualReview": "PNG/SVG comparison retains two chains with separate aligned anchors and paired bilobed kinase domains below, full tails and clean central alpha gaps. Teal outlines and soft depth consistent with receptor family.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/receptor-tyrosine-kinase-dimer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/receptor-tyrosine-kinase-dimer/inspection.webm"
+      }
+    },
+    {
+      "id": "generic-globular-protein",
+      "aliases": [
+        "generic-globular-protein"
+      ],
+      "source": "svg/generic-globular-protein-bioart-traced.svg",
+      "sha256": "b66e166e9c7dde03b16a2ffc1558cb2edc902fba31208428f79d1d7bc73aa512",
+      "visualReview": "Inspected PNG/SVG on light/dark backgrounds: compact continuous teal protein silhouette, broad folds and highlights preserved, no separate subunits or ligand. Trace shows mild gradient banding and slightly stronger contours but retains visual quality. No visible background.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-globular-protein/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-globular-protein/inspection.webm"
+      }
+    },
+    {
+      "id": "generic-enzyme",
+      "aliases": [
+        "generic-enzyme"
+      ],
+      "source": "svg/generic-enzyme-bioart-traced.svg",
+      "sha256": "67f01b11c11b83e39a65e8248cd2cff87607c564dd4e457c391fff0b962e5bd0",
+      "visualReview": "Inspected PNG and editable SVG on light and dark backgrounds: complete continuous teal globular enzyme, empty upper-right recessed pocket, no ligand or extra components. Smooth domain-cartoon forms and restrained depth retained; minor vector contour texture acceptable. Real transparency and generous padding verified. Functional archetype only, no named enzyme or atomic geometry implied.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-enzyme/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-enzyme/inspection.webm"
+      }
+    },
+    {
+      "id": "enzyme-substrate-complex",
+      "aliases": [
+        "enzyme-substrate-complex"
+      ],
+      "source": "svg/enzyme-substrate-complex-bioart-traced.svg",
+      "sha256": "63c7786e46c8f8d2f8cd114cb4eb0bc9e85b1e7ee78fab8d0d0a5e87130c4568",
+      "visualReview": "Inspected light/dark PNG and SVG: matched teal enzyme silhouette and fold style; one connected gold substrate occupies the existing cleft with partial lip occlusion. No free ligand or products. Real alpha, complete contours and generous padding; vector preserves depth with minor contour texture. Generic occupancy schematic, not molecular chemical geometry.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/enzyme-substrate-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/enzyme-substrate-complex/inspection.webm"
+      }
+    },
+    {
+      "id": "protein-homodimer",
+      "aliases": [
+        "protein-homodimer"
+      ],
+      "source": "svg/protein-homodimer-bioart-traced.svg",
+      "sha256": "8a2719ee2d29690fd66c5e179318055634a746ebea8867d849848344d7b91b6a",
+      "visualReview": "Inspected PNG/SVG light and dark: two continuous same-color subunits, one central interface, faint fold marks do not divide additional units. Complete contours, real alpha and generous padding. Smooth matte style retained with mild vector banding. Schematic opposing views of the same archetype; not an atomic symmetry claim.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/protein-homodimer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/protein-homodimer/inspection.webm"
+      }
+    },
+    {
+      "id": "protein-heterodimer",
+      "aliases": [
+        "protein-heterodimer"
+      ],
+      "source": "svg/protein-heterodimer-bioart-traced.svg",
+      "sha256": "9830f484cde2e7305ef5ce0e7f1a2b5ebd8176b145c1b8ad58037cf7998b5472",
+      "visualReview": "Inspected PNG/SVG light and dark: exactly two connected different subunits, larger teal and smaller lavender, one complementary interface. No extra ligands or fragments. Complete outlines, real transparency and padding. Shared smooth protein style preserved; minor vector banding accepted. Shape and size ratio schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/protein-heterodimer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/protein-heterodimer/inspection.webm"
+      }
+    },
+    {
+      "id": "tetrameric-protein-complex",
+      "aliases": [
+        "tetrameric-protein-complex"
+      ],
+      "source": "svg/tetrameric-protein-complex-bioart-traced.svg",
+      "sha256": "8422918d789a0e770fba4f8a71967382548f73b10deefcc23157fd12f1090658",
+      "visualReview": "Viewed PNG/SVG on light and dark: exactly four touching subunits in a two-by-two assembly, clear interfaces, no fifth central unit or ligand. Same smooth protein-family style. Complete contours, real transparency and generous padding; SVG keeps gradients with minor banding. Generic tetramer schematic without molecular identity.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tetrameric-protein-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tetrameric-protein-complex/inspection.webm"
+      }
+    },
+    {
+      "id": "ring-shaped-protein-complex",
+      "aliases": [
+        "ring-shaped-protein-complex"
+      ],
+      "source": "svg/ring-shaped-protein-complex-bioart-traced.svg",
+      "sha256": "bb992e297c98a62940bd56e24fb047de0e5b5116010f9fc4c5d168a1b6048ac8",
+      "visualReview": "Viewed PNG/SVG light and dark: six joined countable teal subunits form one closed ring; central pore is genuinely transparent on both composites. No second ring or extra component. Complete contours, generous padding and matching smooth protein style; minor vector banding acceptable. Sixfold example is schematic, not a universal ring stoichiometry.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ring-shaped-protein-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ring-shaped-protein-complex/inspection.webm"
+      }
+    },
+    {
+      "id": "coiled-coil-protein",
+      "aliases": [
+        "coiled-coil-protein"
+      ],
+      "source": "svg/coiled-coil-protein-bioart-traced.svg",
+      "sha256": "6e60d8b964a290b347a3c0d2d6e3d5f1808db22effff075eb0c5e75619f7dadd",
+      "visualReview": "Viewed PNG/SVG on light and dark: two continuous colored helical ribbons associate along a long superhelical axis, both chain ends complete. No DNA rungs, third chain or ligand. Real transparency and padding; SVG preserves ribbon crossings and depth with minor edge texture. Pitch and turns illustrative, not a sequence-specific structural model.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/coiled-coil-protein/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/coiled-coil-protein/inspection.webm"
+      }
+    },
+    {
+      "id": "intrinsically-disordered-protein",
+      "aliases": [
+        "intrinsically-disordered-protein"
+      ],
+      "source": "svg/intrinsically-disordered-protein-bioart-traced.svg",
+      "sha256": "167b1cae77bbefb6e0e9c2a070d173a2751bb614c8bfb307a6c01bb87f240bdd",
+      "visualReview": "Viewed PNG/SVG light and dark: irregular continuous teal chain with two visible termini and over-under crossings, no regular helix or globular domain. Internal loop spaces genuinely transparent, complete contour and padding. SVG retains chain path and depth with minor contour texture. One schematic conformation only, not a stable structure or ensemble measurement.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/intrinsically-disordered-protein/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/intrinsically-disordered-protein/inspection.webm"
+      }
+    },
+    {
+      "id": "atp-synthase",
+      "aliases": [
+        "atp-synthase"
+      ],
+      "source": "svg/atp-synthase-bioart-traced.svg",
+      "sha256": "c90c227aeb351b377aa9142f3f499e07bf969540ceb47433b14b86ac4eef2842",
+      "visualReview": "Approved batches 01/02"
+    },
+    {
+      "id": "collagen-triple-helix",
+      "aliases": [
+        "collagen-triple-helix"
+      ],
+      "source": "svg/collagen-triple-helix-bioart-traced.svg",
+      "sha256": "9796aeec6a6f57a679589fd5a40de20a727c1ca4b545ed74be68283a8c5c45b5",
+      "visualReview": "Inspected three individually colored continuous chains and six complete ends. SVG preserves crossings, gradients and transparent surrounding space on both backgrounds. Representative three-chain molecular schematic; pitch and proportions are not structural measurements.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/collagen-triple-helix/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/collagen-triple-helix/inspection.webm"
+      }
+    },
+    {
+      "id": "collagen-fibril",
+      "aliases": [
+        "collagen-fibril"
+      ],
+      "source": "svg/collagen-fibril-bioart-traced.svg",
+      "sha256": "ea1db82fd74165609405d9bb5e81f0d822697971873bddb377f2d4418d2fd764",
+      "visualReview": "Inspected single complete cylindrical fibril, transverse banding, longitudinal lines and packed cut-face dots. SVG preserves the bands and contour with matching smooth depth on light and dark backgrounds; true transparent padding confirmed. Molecular count, dimensions and band spacing are schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/collagen-fibril/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/collagen-fibril/inspection.webm"
+      }
+    },
+    {
+      "id": "clathrin-triskelion",
+      "aliases": [
+        "clathrin-triskelion"
+      ],
+      "source": "svg/clathrin-triskelion-bioart-traced.svg",
+      "sha256": "7c8ae7395c8496af39b18d2e90e698ec998a7d04b49155c2e855d44eb5558a9e",
+      "visualReview": "Inspected PNG/SVG light and dark: exactly three bent heavy-chain legs from a shared vertex, three proximal cream light-chain accents, three complete terminal domains. No cage or vesicle. Real alpha and padding; smooth protein rendering and bends retained in SVG with minor banding. Terminal lobes and leg curvature schematic, not atomic domain counts.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/clathrin-triskelion/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/clathrin-triskelion/inspection.webm"
+      }
+    },
+    {
+      "id": "ubiquitin",
+      "aliases": [
+        "ubiquitin"
+      ],
+      "source": "svg/ubiquitin-bioart-traced.svg",
+      "sha256": "158715cdd9c8e403ede7700940a5eb53f3f1b44793d584b80969e543388600a5",
+      "visualReview": "Light/dark comparison preserves ribbon sheet, central helix, loops and free tail with clean transparent gaps and no cropping. Slightly stronger SVG contours remain consistent with the collection. Schematic ribbon glyph, not coordinate-derived topology or residue evidence.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ubiquitin/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ubiquitin/inspection.webm"
+      }
+    },
+    {
+      "id": "laboratory-mouse",
+      "aliases": [
+        "laboratory-mouse"
+      ],
+      "source": "svg/laboratory-mouse-bioart-traced.svg",
+      "sha256": "b2fbb4a8ac7ba68cd51dbe3f73bbfd39acb834208b926f68c9604daaa9f64093",
+      "visualReview": "Approved batches 01/02"
+    },
+    {
+      "id": "micropipette",
+      "aliases": [
+        "micropipette"
+      ],
+      "source": "svg/micropipette-bioart-traced.svg",
+      "sha256": "6fa66042954603ffb72adf82f4d23ac76839ac9e59dfe7000085a0b9d1908871",
+      "visualReview": "Approved batches 01/02"
+    },
+    {
+      "id": "multichannel-micropipette",
+      "aliases": [
+        "multichannel-micropipette"
+      ],
+      "source": "svg/multichannel-micropipette-bioart-traced.svg",
+      "sha256": "9e45204c83d699539b356cdc16d1830072df1a0900007bbddde61bcee230babe",
+      "visualReview": "Reviewed original and light/dark PNG/SVG comparison: eight distinct complete tips, blue and white housing, blank display, intact plunger. No visible glow or background. SVG retains fine contours and shading; tips slightly more opaque after tracing.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/multichannel-micropipette/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/multichannel-micropipette/inspection.webm"
+      }
+    },
+    {
+      "id": "electronic-pipette",
+      "aliases": [
+        "electronic-pipette"
+      ],
+      "source": "svg/electronic-pipette-bioart-traced.svg",
+      "sha256": "eb54ffb957653831e8e92972e0a175f7161925884504560d37f841e1c824ba4b",
+      "visualReview": "Reviewed PNG and SVG on light/dark backgrounds: complete angled pipette, blank LCD and three control buttons, no mechanical plunger, intact tip. SVG retains body shading and thin contours; transparent tip becomes slightly more opaque. No visible background glow.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/electronic-pipette/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/electronic-pipette/inspection.webm"
+      }
+    },
+    {
+      "id": "pipette-tip",
+      "aliases": [
+        "pipette-tip"
+      ],
+      "source": "svg/pipette-tip-bioart-traced.svg",
+      "sha256": "5d2cfa160a23d02a6bf9b1e5cde269f43d5809e6b60324e024f086b94d533059",
+      "visualReview": "Inspected original and light/dark comparison: open mounting rim, collar ribs and full tapered outlet preserved. SVG slightly strengthens clear plastic highlights but retains recognizable empty tip and transparency. No background or unrelated parts.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pipette-tip/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pipette-tip/inspection.webm"
+      }
+    },
+    {
+      "id": "filtered-pipette-tip",
+      "aliases": [
+        "filtered-pipette-tip"
+      ],
+      "source": "svg/filtered-pipette-tip-bioart-traced.svg",
+      "sha256": "4c8a4c79ac5efd08b259759e032e86ea4f2ecc162652ba907ccc99eae2afb256",
+      "visualReview": "Inspected PNG/SVG on light/dark backgrounds: internal white filter visible below open collar, continuous empty shaft and full outlet preserved; false internal ring removed. SVG retains filter and plastic shading with stronger fine outlines. No visible checkerboard or glow.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/filtered-pipette-tip/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/filtered-pipette-tip/inspection.webm"
+      }
+    },
+    {
+      "id": "serological-pipette",
+      "aliases": [
+        "serological-pipette"
+      ],
+      "source": "svg/serological-pipette-bioart-traced.svg",
+      "sha256": "ef747128170b7761852825bddb151326ebc630758accb72e7e7bd08a5a5d50dc",
+      "visualReview": "Reviewed original and light/dark PNG/SVG comparison: complete long cylindrical barrel, upper plug, blue band, unnumbered ticks and short dispensing tip retained. SVG preserves clear-plastic highlights with slightly stronger outlines. No visible background or text.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/serological-pipette/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/serological-pipette/inspection.webm"
+      }
+    },
+    {
+      "id": "pasteur-pipette",
+      "aliases": [
+        "pasteur-pipette"
+      ],
+      "source": "svg/pasteur-pipette-bioart-traced.svg",
+      "sha256": "095d4f11f5cea476b2f7d52dbf6049d12486de3487259067ff60c893a83cfbe7",
+      "visualReview": "Inspected PNG/SVG on light/dark backgrounds: intact rubber bulb, ungraduated glass barrel, shoulder and complete capillary outlet. SVG retains bulb shading and fine glass walls; no visible background glow, liquid or extra objects.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pasteur-pipette/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pasteur-pipette/inspection.webm"
+      }
+    },
+    {
+      "id": "microcentrifuge-tube",
+      "aliases": [
+        "microcentrifuge-tube"
+      ],
+      "source": "svg/microcentrifuge-tube-bioart-traced.svg",
+      "sha256": "24f33ef45287308c9b14eab7a64a0005ff64a1063eedc6702b3ab80b474dc852",
+      "visualReview": "Approved batches 01/02"
+    },
+    {
+      "id": "screw-cap-microtube",
+      "aliases": [
+        "screw-cap-microtube"
+      ],
+      "source": "svg/screw-cap-microtube-bioart-traced.svg",
+      "sha256": "03899b70bd19a8ff5e0d329a204d0826c7e26fa3a7db7e15db7695b84a940f17",
+      "visualReview": "Viewed light/dark PNG and SVG: closed ribbed blue screw cap, visible neck, continuous clear cylindrical wall and complete conical bottom. Empty tube; ellipse at cone transition is wall contour. No hinge, scale or label. Real alpha without visible halo; vector preserves shape and clean equipment rendering with minor gradient banding. Volume unspecified.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/screw-cap-microtube/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/screw-cap-microtube/inspection.webm"
+      }
+    },
+    {
+      "id": "pcr-tube",
+      "aliases": [
+        "pcr-tube"
+      ],
+      "source": "svg/pcr-tube-bioart-traced.svg",
+      "sha256": "cd42cf671d6e4f8ed41903f2d10cecab8ba9f4410b1bce516379ea71c2cc2a78",
+      "visualReview": "Viewed PNG/SVG on light and dark: thin tapered PCR chamber, open elliptical mouth, attached strap and complete snap-cap sealing plug. No screw threads, liquid or label. Real alpha and generous padding; no glow on composites. Smooth equipment rendering retained with slight trace edge texture. Nominal small-volume archetype, not dimensional specification.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pcr-tube/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pcr-tube/inspection.webm"
+      }
+    },
+    {
+      "id": "pcr-strip",
+      "aliases": [
+        "pcr-strip"
+      ],
+      "source": "svg/pcr-strip-bioart-traced.svg",
+      "sha256": "bc3d5c73821e08bbba82515a5f02090c3565553015f5caae9132d78c378cc204",
+      "visualReview": "Counted eight connected tubes, each with complete conical tip and seated clear top. Inspected PNG and SVG on light and dark backgrounds: connectors, collars and gradients preserved, real transparent gaps. Cylinder-cone wall contours are not liquid levels; no capacity specified.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pcr-strip/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pcr-strip/inspection.webm"
+      }
+    },
+    {
+      "id": "cryovial",
+      "aliases": [
+        "cryovial"
+      ],
+      "source": "svg/cryovial-bioart-traced.svg",
+      "sha256": "ea0d806acc2321c5f97130dc9b7c6f5631c472b12db24c6084552824ac7945c1",
+      "visualReview": "Inspected PNG/SVG on light and dark: seated ribbed cap, blank top insert and writing patch, empty cylindrical chamber with rounded inner bottom and self-standing skirt. Complete outlines, real alpha and padding. Clean equipment appearance retained with mild vector texture on cap. No volume, brand or cryogenic performance implied.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cryovial/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cryovial/inspection.webm"
+      }
+    },
+    {
+      "id": "15-ml-conical-tube",
+      "aliases": [
+        "15-ml-conical-tube"
+      ],
+      "source": "svg/15-ml-conical-tube-bioart-traced.svg",
+      "sha256": "39ec8ccd584270fdd3348822c04ef8e03e500e54f187562e5427e8d1e44a4dd0",
+      "visualReview": "Inspected slender tube proportions, complete blue screw cap and conical tip, unnumbered ticks and blank writing patch. PNG/SVG retain contours and transparent padding on both backgrounds. Illustration represents the vessel class; graduations are not calibrated.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/15-ml-conical-tube/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/15-ml-conical-tube/inspection.webm"
+      }
+    },
+    {
+      "id": "50-ml-conical-tube",
+      "aliases": [
+        "50-ml-conical-tube"
+      ],
+      "source": "svg/50-ml-conical-tube-bioart-traced.svg",
+      "sha256": "635ac84434e0cc30ba6bd257fcc832d566f0f562110b145fa09ff7a550c8858b",
+      "visualReview": "Inspected complete broader tube silhouette, cap, cone, blank patch and unlabeled ticks. PNG/SVG preserve smooth shading and contours on both backgrounds; transparent padding confirmed. Broader barrel proportions distinguish this vessel class from the 15 mL asset; graduations are not calibrated.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/50-ml-conical-tube/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/50-ml-conical-tube/inspection.webm"
+      }
+    },
+    {
+      "id": "blood-collection-tube",
+      "aliases": [
+        "blood-collection-tube"
+      ],
+      "source": "svg/blood-collection-tube-bioart-traced.svg",
+      "sha256": "5b3fc2cbcbd34cfe5fd80a5462649689cb05abc2a4e0cdb83eaf5dc48a1155ed",
+      "visualReview": "Inspected lavender cap and rubber septum, parallel clear walls, rounded bottom, homogeneous blood and single meniscus, blank patch. PNG/SVG preserve silhouette and shading on both backgrounds; real alpha confirmed. No manufacturer or calibrated fill-volume claim.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/blood-collection-tube/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/blood-collection-tube/inspection.webm"
+      }
+    },
+    {
+      "id": "reagent-vial",
+      "aliases": [
+        "reagent-vial"
+      ],
+      "source": "svg/reagent-vial-bioart-traced.svg",
+      "sha256": "e4feee94997474be516f8b4da49277b6a35acd4512e57f967ec685fde55de78f",
+      "visualReview": "Inspected complete ribbed navy screw cap, rounded shoulder, cylindrical glass body and thick flat base on light and dark backgrounds. Empty interior; SVG preserves contours and broad highlights without an opaque background.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/reagent-vial/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/reagent-vial/inspection.webm"
+      }
+    },
+    {
+      "id": "glass-ampoule",
+      "aliases": [
+        "glass-ampoule"
+      ],
+      "source": "svg/glass-ampoule-bioart-traced.svg",
+      "sha256": "11153c4b6a25e42341a6c3c005fca2c04698c4df67a8c58ae846bc091be9c63d",
+      "visualReview": "Inspected sealed rounded glass tip, narrow scored neck, chamber, meniscus and complete flat base. PNG/SVG match on light and dark backgrounds with transparent padding; small contour simplification does not obscure the glassware.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/glass-ampoule/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/glass-ampoule/inspection.webm"
+      }
+    },
+    {
+      "id": "glass-beaker",
+      "aliases": [
+        "glass-beaker"
+      ],
+      "source": "svg/glass-beaker-bioart-traced.svg",
+      "sha256": "7c2585686f2d436b75e95a4bca47f60f307b18ea1a6e949e35694a6c9838179c",
+      "visualReview": "Viewed PNG/SVG on light and dark: complete open cylindrical beaker with left pouring spout, thick base and unnumbered ticks. Empty interior, no meniscus or props. Real alpha and generous padding; spout and rim remain readable in SVG, slight trace texture acceptable. Ticks are schematic and imply no calibrated volume.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/glass-beaker/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/glass-beaker/inspection.webm"
+      }
+    },
+    {
+      "id": "graduated-cylinder",
+      "aliases": [
+        "graduated-cylinder"
+      ],
+      "source": "svg/graduated-cylinder-bioart-traced.svg",
+      "sha256": "8302c5f71a57db279274606a3970b579260f00b124e6ce21457aee5165131026",
+      "visualReview": "Inspected PNG/SVG light and dark: tall empty column with small pouring spout, unnumbered ticks and complete broad hexagonal foot. Real transparency and generous padding, glass contours readable on both backgrounds. SVG retains structure with minor line texture. Scale not calibrated and volume unspecified.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/graduated-cylinder/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/graduated-cylinder/inspection.webm"
+      }
+    },
+    {
+      "id": "erlenmeyer-flask",
+      "aliases": [
+        "erlenmeyer-flask"
+      ],
+      "source": "svg/erlenmeyer-flask-bioart-traced.svg",
+      "sha256": "8c3c4bfcdf606ad8a26d999f09946c7781e83ff779a5971a481523a142988142",
+      "visualReview": "Viewed PNG/SVG light and dark: complete conical body, flat base, narrow open cylindrical neck and rolled lip. Empty interior with no stopper, sidearm or spout. Real transparency and padding, matching beaker style. SVG retains glass contours and broad highlights with minor line texture. Unnumbered scale schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/erlenmeyer-flask/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/erlenmeyer-flask/inspection.webm"
+      }
+    },
+    {
+      "id": "volumetric-flask",
+      "aliases": [
+        "volumetric-flask"
+      ],
+      "source": "svg/volumetric-flask-bioart-traced.svg",
+      "sha256": "519104d8e62d40e9bacd9f02bd7022934153d86941c36ad8d395a8cd29f4b202",
+      "visualReview": "Viewed PNG/SVG light and dark: pear-shaped bulb, long narrow neck, seated stopper and exactly one calibration ring below the stopper joint. Complete boundaries, real alpha and padding. Matching smooth glassware style; SVG retains ring and glass contours with minor edge texture. No calibrated volume claimed.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/volumetric-flask/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/volumetric-flask/inspection.webm"
+      }
+    },
+    {
+      "id": "round-bottom-flask",
+      "aliases": [
+        "round-bottom-flask"
+      ],
+      "source": "svg/round-bottom-flask-bioart-traced.svg",
+      "sha256": "e63aa48b45196375683468326819b83ce98b442dc2df58aa9128018aa21bd68f",
+      "visualReview": "Inspected PNG/SVG light and dark: spherical bulb with fully rounded lower contour, one open neck, no foot, stand or liquid. Complete rim and contour with real alpha and padding. SVG preserves shape and broad glass highlights, minor gradient banding acceptable. Size and joint specification unspecified.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/round-bottom-flask/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/round-bottom-flask/inspection.webm"
+      }
+    },
+    {
+      "id": "separatory-funnel",
+      "aliases": [
+        "separatory-funnel"
+      ],
+      "source": "svg/separatory-funnel-bioart-traced.svg",
+      "sha256": "5b331bfbca4f1bcf9b86b767c27cdb8b7a3059fb6c993951076486afa5e57d08",
+      "visualReview": "Light/dark PNG-SVG comparison preserves full stopper, two liquid phases, stopcock and drainage tip. No surrounding glow survives compositing; alpha padding clean and complete. Glass highlights and navy hardware consistent with existing glassware.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/separatory-funnel/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/separatory-funnel/inspection.webm"
+      }
+    },
+    {
+      "id": "b-chner-funnel",
+      "aliases": [
+        "b-chner-funnel"
+      ],
+      "source": "svg/b-chner-funnel-bioart-traced.svg",
+      "sha256": "4b9c6ce697858cfde5c995d6733beb36a7e2fdd4d4b7b8c9bf061e1f5a2ef4a6",
+      "visualReview": "Compared light and dark PNG/SVG: perforations remain individually visible, flat support plate and cylindrical cup clear, complete open stem and rim preserved. Clean background alpha; slight gradient banding acceptable at intended illustration scale.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/b-chner-funnel/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/b-chner-funnel/inspection.webm"
+      }
+    },
+    {
+      "id": "reagent-bottle",
+      "aliases": [
+        "reagent-bottle"
+      ],
+      "source": "svg/reagent-bottle-bioart-traced.svg",
+      "sha256": "aa28589929e60735301a36477fe97f1cd8967cc2ed61fc55ce383e354c54b0c6",
+      "visualReview": "Light/dark comparison preserves cap ribs, amber glass body and clean complete base. SVG retains broad highlights with mild gradient banding, consistent with glassware; real alpha, no residual glow or clipping.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/reagent-bottle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/reagent-bottle/inspection.webm"
+      }
+    },
+    {
+      "id": "media-bottle",
+      "aliases": [
+        "media-bottle"
+      ],
+      "source": "svg/media-bottle-bioart-traced.svg",
+      "sha256": "fb03efdf83f1d46755f973309f25aeec7650ca20608a6e9ff4a0d4ded3a47656",
+      "visualReview": "PNG/SVG light-dark comparison retains cap ribs, one liquid meniscus, clear glass highlights and unnumbered ticks. Complete silhouette, clean alpha and no glow; consistent blue/pink culture palette.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/media-bottle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/media-bottle/inspection.webm"
+      }
+    },
+    {
+      "id": "wash-bottle",
+      "aliases": [
+        "wash-bottle"
+      ],
+      "source": "svg/wash-bottle-bioart-traced.svg",
+      "sha256": "1cf7a43b25ff1c71b35a67b56928d04da1a2adb4a47ca2e18ba5384790797b3e",
+      "visualReview": "PNG/SVG light-dark comparison preserves complete bent nozzle, cap and faint continuous dip tube, smooth milky bottle and full base. No residual glow or checkerboard; clean alpha margins.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/wash-bottle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/wash-bottle/inspection.webm"
+      }
+    },
+    {
+      "id": "cuvette",
+      "aliases": [
+        "cuvette"
+      ],
+      "source": "svg/cuvette-bioart-traced.svg",
+      "sha256": "e49062ea0611a6f4b412eeaabcf9886d181b2847e944ca5da877f73453013c2d",
+      "visualReview": "Light/dark comparison retains clear rectangular vessel, open square rim, ribbed side and single cyan meniscus; complete bottom and clean alpha, crisp optical-face outlines survive SVG.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cuvette/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cuvette/inspection.webm"
+      }
+    },
+    {
+      "id": "quartz-cuvette",
+      "aliases": [
+        "quartz-cuvette"
+      ],
+      "source": "svg/quartz-cuvette-bioart-traced.svg",
+      "sha256": "deca1150187afd4407dd1dbba8b59dd56841ecb7d62b1e8fe34a61590e18254e",
+      "visualReview": "Light/dark PNG/SVG comparison preserves fitted cap, polished window edges, thick base and frosted handling face. Transparent window remains clear on dark background, complete silhouette and clean padding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/quartz-cuvette/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/quartz-cuvette/inspection.webm"
+      }
+    },
+    {
+      "id": "microscope-slide",
+      "aliases": [
+        "microscope-slide"
+      ],
+      "source": "svg/microscope-slide-bioart-traced.svg",
+      "sha256": "23ac754169fc767620d8d6fbf304b82e6ff063cc879bf03595bc243f90bdc2e6",
+      "visualReview": "Restored faint glass surface using an editable translucent path beneath traced edges; PNG/SVG comparison now preserves glass body, frosted end, thin complete edges and four corners on light/dark backgrounds. All vector paths, no embedded raster.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microscope-slide/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microscope-slide/inspection.webm"
+      }
+    },
+    {
+      "id": "coverslip",
+      "aliases": [
+        "coverslip"
+      ],
+      "source": "svg/coverslip-bioart-traced.svg",
+      "sha256": "ea5ae16e137a290d4c328059d8d083e86917fe42db6e4288a6fef596706bb42c",
+      "visualReview": "Replaced poor threshold trace with four native editable paths matching generated silhouette and a translucent glass/reflection gradient. Light/dark comparison preserves full square form, thin edges and soft reflection without solid stripe or missing surface; cleaner smooth vector finish, original PNG retained.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/coverslip/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/coverslip/inspection.webm"
+      }
+    },
+    {
+      "id": "petri-dish",
+      "aliases": [
+        "petri-dish"
+      ],
+      "source": "svg/petri-dish-bioart-traced.svg",
+      "sha256": "9b365ac9788da6984fb101bfb401431a796afb583e071fad6f90a6f097a72ff1",
+      "visualReview": "PNG/SVG comparison preserves full circular dish, nested lid/base rims and uniform amber agar. Complete silhouette and clean alpha, minor gradient quantization acceptable; no colonies or accidental markings.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/petri-dish/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/petri-dish/inspection.webm"
+      }
+    },
+    {
+      "id": "cell-culture-dish",
+      "aliases": [
+        "cell-culture-dish"
+      ],
+      "source": "svg/cell-culture-dish-bioart-traced.svg",
+      "sha256": "97fb39eb888aa7aa64c5bcd62c4f421d8a7a2f452c18f8254035f7bc32bc545e",
+      "visualReview": "PNG/SVG light-dark comparison preserves nested clear rims, pink medium and small rim spacer. Entire dish visible with clean alpha; palette and highlights match related culture labware.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-culture-dish/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-culture-dish/inspection.webm"
+      }
+    },
+    {
+      "id": "cell-culture-flask",
+      "aliases": [
+        "cell-culture-flask"
+      ],
+      "source": "svg/cell-culture-flask-bioart-traced.svg",
+      "sha256": "bcda39b7a0a7a8e0d32d585bfd390f8937be41e3195bdf20d9506aa265e2cfba",
+      "visualReview": "Refined sealed top-wall reflection and restored it with editable translucent SVG path. Light/dark comparison preserves complete T-flask chamber, angled neck, vented cap, pink medium and clear headspace. Clean alpha, no cropped corners.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-culture-flask/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-culture-flask/inspection.webm"
+      }
+    },
+    {
+      "id": "spinner-flask",
+      "aliases": [
+        "spinner-flask"
+      ],
+      "source": "svg/spinner-flask-bioart-traced.svg",
+      "sha256": "9ded357085c7468c6e59faf4839a1aa947ce036c3eb658b67a5111e5a5742a0d",
+      "visualReview": "PNG/SVG comparison retains all three capped necks, continuous central shaft, submerged paddle and pink medium. Full glass base, clean transparent padding and matching navy/pink labware palette.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/spinner-flask/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/spinner-flask/inspection.webm"
+      }
+    },
+    {
+      "id": "roller-bottle",
+      "aliases": [
+        "roller-bottle"
+      ],
+      "source": "svg/roller-bottle-bioart-traced.svg",
+      "sha256": "abfb3659a89140439cc82dc181e490156bac2706aae407973c43891a94d4bbc6",
+      "visualReview": "PNG/SVG comparison retains complete horizontal bottle, closed left base, right screw cap, two support rings and shallow pink liquid pool. Fine outlines and broad reflections preserved on light/dark backgrounds, clean alpha.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/roller-bottle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/roller-bottle/inspection.webm"
+      }
+    },
+    {
+      "id": "6-well-plate",
+      "aliases": [
+        "6-well-plate"
+      ],
+      "source": "svg/6-well-plate-bioart-traced.svg",
+      "sha256": "0dca1a3c4b0136ac2cf504440740d3dca1447e33eeaf28aa4d87df7927f9ae16",
+      "visualReview": "Counted exactly six wells in two rows of three in PNG and SVG. All well rims, equal pink medium layers and outer plate corners preserved; clean alpha on light/dark backgrounds.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/6-well-plate/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/6-well-plate/inspection.webm"
+      }
+    },
+    {
+      "id": "12-well-plate",
+      "aliases": [
+        "12-well-plate"
+      ],
+      "source": "svg/12-well-plate-bioart-traced.svg",
+      "sha256": "ac5c662fe9c364ddb5e7b11f8b072a20a9251c0e44ba307bc424d53de6e17959",
+      "visualReview": "Counted twelve complete wells in three rows of four in PNG/SVG; rims and pink medium preserved, full skirt and corners visible. Matches six-well plate style with clean light/dark transparency.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/12-well-plate/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/12-well-plate/inspection.webm"
+      }
+    },
+    {
+      "id": "24-well-plate",
+      "aliases": [
+        "24-well-plate"
+      ],
+      "source": "svg/24-well-plate-bioart-traced.svg",
+      "sha256": "adf967313d91f6ceab950f1922560ab30d7fea6542559ca1aa96f4538fe8fd2c",
+      "visualReview": "Corrected initial eighteen-well error, then obtained real alpha. Counted four rows of six complete wells in PNG/SVG. Entire outer frame visible with padding, pink medium and rim outlines preserved; SVG has stronger bright edge contrast but remains legible.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/24-well-plate/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/24-well-plate/inspection.webm"
+      }
+    },
+    {
+      "id": "class-ii-biosafety-cabinet",
+      "aliases": [
+        "class-ii-biosafety-cabinet"
+      ],
+      "source": "svg/class-ii-biosafety-cabinet-bioart-traced.svg",
+      "sha256": "0f3fc0a585ffe75caab8f60dd7e8c0a00686ecb7f0cd30e56b3e12a75bd8e507",
+      "visualReview": "Inspected complete cabinet, lowered front sash and opening, front intake and rear grilles, empty chamber and four feet. PNG/SVG retain equipment contours and glass/metal depth on light and dark backgrounds with open alpha beneath stand. Representative exterior only, not airflow or operating instructions.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/class-ii-biosafety-cabinet/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/class-ii-biosafety-cabinet/inspection.webm"
+      }
+    },
+    {
+      "id": "laminar-flow-hood",
+      "aliases": [
+        "laminar-flow-hood"
+      ],
+      "source": "svg/laminar-flow-hood-bioart-traced.svg",
+      "sha256": "5cb6b049cac58a191a61814e485bed41328092baf2c71723de21ef05bc9e8814",
+      "visualReview": "PNG/SVG comparison preserves open front, rear filter panel, glass sides, empty work deck and complete feet. No front intake or sash; clean transparent margins, navy/offwhite cabinet palette consistent with equipment family.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/laminar-flow-hood/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/laminar-flow-hood/inspection.webm"
+      }
+    },
+    {
+      "id": "co2-incubator",
+      "aliases": [
+        "co2-incubator"
+      ],
+      "source": "svg/co2-incubator-bioart-traced.svg",
+      "sha256": "4037adfffb2fcce3ed1c8de93ab02cb46f01bada307bde50b8f1c28cf1b7a724",
+      "visualReview": "Inspected complete open outer door and hinges, closed glass inner door and latch, three perforated shelves, humidity pan and visible feet. PNG/SVG preserve chamber depth and contours on light and dark backgrounds; background remnants in raw RGB do not appear in alpha composites. Representative equipment only; no operating settings.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/co2-incubator/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/co2-incubator/inspection.webm"
+      }
+    },
+    {
+      "id": "standard-laboratory-incubator",
+      "aliases": [
+        "standard-laboratory-incubator"
+      ],
+      "source": "svg/standard-laboratory-incubator-bioart-traced.svg",
+      "sha256": "931b43f0f752b49c8e15ac0bac071282e6e64391a43298801a5f84423cca1a00",
+      "visualReview": "PNG/SVG comparison preserves open insulated door and gasket, two perforated shelves, rear fan, blank controls and complete feet. Consistent navy/offwhite housing and clean alpha margins.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/standard-laboratory-incubator/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/standard-laboratory-incubator/inspection.webm"
+      }
+    },
+    {
+      "id": "hypoxia-chamber",
+      "aliases": [
+        "hypoxia-chamber"
+      ],
+      "source": "svg/hypoxia-chamber-bioart-traced.svg",
+      "sha256": "07bc5ddea51c769509c2de16337a2c418a337afe9906ae279a89ccae61b020d3",
+      "visualReview": "Removed erroneous central lid hole. PNG/SVG comparison preserves sealed dome, two gas fittings, three clamps, gasket and perforated support rack, with complete silhouette and clean alpha.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hypoxia-chamber/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hypoxia-chamber/inspection.webm"
+      }
+    },
+    {
+      "id": "orbital-shaker-incubator",
+      "aliases": [
+        "orbital-shaker-incubator"
+      ],
+      "source": "svg/orbital-shaker-incubator-bioart-traced.svg",
+      "sha256": "8c22f5398db05f91308790c801e9f3b06623f2503328bfcfdeb1cbf30d9ee70e",
+      "visualReview": "Complete closed transparent lid, four empty flask clamps, controls and feet remain clear in PNG and editable SVG on light and dark backgrounds.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/orbital-shaker-incubator/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/orbital-shaker-incubator/inspection.webm"
+      }
+    },
+    {
+      "id": "water-bath",
+      "aliases": [
+        "water-bath"
+      ],
+      "source": "svg/water-bath-bioart-traced.svg",
+      "sha256": "2bbe9e77953cd92852bd4f231896db2859287dd4d13f11069ff9431eb4c85073",
+      "visualReview": "Inspected complete raised lid and restored handle, recessed water tank, blank control panel and complete visible feet. PNG/SVG retain steel and water depth with transparent handle opening and padding on both backgrounds. Flat hinged lid is a representative design; no temperature/capacity claim.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/water-bath/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/water-bath/inspection.webm"
+      }
+    },
+    {
+      "id": "bead-bath",
+      "aliases": [
+        "bead-bath"
+      ],
+      "source": "svg/bead-bath-bioart-traced.svg",
+      "sha256": "d48aa24721035a3a8659cc0f8504269f9895f6b992c5a9f01cf665765b6e8364",
+      "visualReview": "Inspected dry packed metallic beads below tank rim, complete raised lid and handle, blank controls and visible feet. PNG/SVG preserve individual bead texture and housing contours on light and dark backgrounds with true alpha. Temperature, material and bead size unspecified.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bead-bath/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bead-bath/inspection.webm"
+      }
+    },
+    {
+      "id": "aspirator-bottle-system",
+      "aliases": [
+        "aspirator-bottle-system"
+      ],
+      "source": "svg/aspirator-bottle-system-bioart-traced.svg",
+      "sha256": "1c6720ebeed59a9cda98c94a804d14e37cc8fded1057443aaa4f8b35380839d5",
+      "visualReview": "Two separate cap connections, continuous wand tubing, inline outlet filter and shallow collection pool remain clear in both formats on light and dark backgrounds.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/aspirator-bottle-system/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/aspirator-bottle-system/inspection.webm"
+      }
+    },
+    {
+      "id": "vacuum-pump",
+      "aliases": [
+        "vacuum-pump"
+      ],
+      "source": "svg/vacuum-pump-bioart-traced.svg",
+      "sha256": "0f71930186b5866cf531f929d8f6b6e48786f2c840dda646cf2d472f4a56d086",
+      "visualReview": "Both diaphragm heads, interconnecting tube, distinct hose ports, vents and feet remain recognizable in PNG and SVG, with clean transparency on both backgrounds.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/vacuum-pump/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/vacuum-pump/inspection.webm"
+      }
+    },
+    {
+      "id": "automated-cell-counter",
+      "aliases": [
+        "automated-cell-counter"
+      ],
+      "source": "svg/automated-cell-counter-bioart-traced.svg",
+      "sha256": "6d1fedb5f2d1415601bb0ea4cd713005fbdc582007c4ed901ec9db6c3a584611",
+      "visualReview": "PNG/SVG comparison preserves blank screen, inserted counting slide and slot, power button and complete feet. Raw-preview white fringe absent on actual light/dark composites; clean alpha, consistent navy/offwhite equipment style.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/automated-cell-counter/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/automated-cell-counter/inspection.webm"
+      }
+    },
+    {
+      "id": "manual-cell-counter",
+      "aliases": [
+        "manual-cell-counter"
+      ],
+      "source": "svg/manual-cell-counter-bioart-traced.svg",
+      "sha256": "650ca5113e970f2b65b053cd60cdcf0be7524c8d6462ae0d1485b0a91004261c",
+      "visualReview": "PNG/SVG comparison preserves five push keys, five blank register windows, mechanical key levers and side reset knob. Complete body and knob, clean light/dark alpha, consistent equipment palette.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/manual-cell-counter/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/manual-cell-counter/inspection.webm"
+      }
+    },
+    {
+      "id": "cell-pellet-in-tube",
+      "aliases": [
+        "cell-pellet-in-tube"
+      ],
+      "source": "svg/cell-pellet-in-tube-bioart-traced.svg",
+      "sha256": "2fdca46a01723adca98ba7f992e63541cf5112559325a2cf60616e237765bf84",
+      "visualReview": "Inspected PNG/SVG light and dark: small coherent cream pellet settled in conical tip, clear supernatant with one meniscus above, attached closed snap cap. Pellet remains visible in vector. Real alpha, complete boundaries and padding; smooth equipment style. Pellet texture is schematic, not cell dimensions, yield or identity.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-pellet-in-tube/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-pellet-in-tube/inspection.webm"
+      }
+    },
+    {
+      "id": "confluent-cell-monolayer",
+      "aliases": [
+        "confluent-cell-monolayer"
+      ],
+      "source": "svg/confluent-cell-monolayer-bioart-traced.svg",
+      "sha256": "54e95f1ac1f4d7e6ebd8ca0cabcf818dd960d595759c70ada91f2664e71021d0",
+      "visualReview": "Reviewed original and PNG/SVG comparison on light and dark backgrounds: thirteen contiguous cells in one layer, complete outer cells, one nucleus per cell, clean internal organelle glyphs. SVG preserves cell boundaries and coloration. No visible background or glow.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/confluent-cell-monolayer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/confluent-cell-monolayer/inspection.webm"
+      }
+    },
+    {
+      "id": "isolated-adherent-cell-colony",
+      "aliases": [
+        "isolated-adherent-cell-colony"
+      ],
+      "source": "svg/isolated-adherent-cell-colony-bioart-traced.svg",
+      "sha256": "9182681646f268f5f64d3916abbaacbdc2d824f1deb9a9330436e7c957f6b740",
+      "visualReview": "Inspected light/dark PNG and SVG: compact center and spread peripheral cells retained, full colony boundary, single nuclear compartment per cell. No background glow or disconnected stray parts. SVG preserves cell silhouettes and organelle details with slight contour strengthening.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/isolated-adherent-cell-colony/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/isolated-adherent-cell-colony/inspection.webm"
+      }
+    },
+    {
+      "id": "isolated-axon",
+      "aliases": [
+        "isolated-axon"
+      ],
+      "source": "svg/isolated-axon-bioart-traced.svg",
+      "sha256": "af146b15607a24c983c8c57c84607f37027f71ce98d479c5a4d1101b583fd1a4",
+      "visualReview": "Inspected PNG and SVG: complete curved cylinder and both end faces, continuous exposed longitudinal blue bundles, two mitochondria and vesicles retained. No myelin, branches or background glow. Trace keeps window boundaries and fine detail with slightly stronger outlines.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/isolated-axon/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/isolated-axon/inspection.webm"
+      }
+    },
+    {
+      "id": "dendritic-arbor-segment",
+      "aliases": [
+        "dendritic-arbor-segment"
+      ],
+      "source": "svg/dendritic-arbor-segment-bioart-traced.svg",
+      "sha256": "7a8171a577077a012ad05d0b6a6c22cc80af77e863324bbf15b76dfa3d82e043",
+      "visualReview": "Inspected PNG and SVG on light and dark backgrounds: complete arbor and cut end, intact mushroom spines, open transparent spaces, preserved lavender shading. Representative morphology; no subtype or measured density implied.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dendritic-arbor-segment/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dendritic-arbor-segment/inspection.webm"
+      }
+    },
+    {
+      "id": "myelin-sheath",
+      "aliases": [
+        "myelin-sheath"
+      ],
+      "source": "svg/myelin-sheath-bioart-traced.svg",
+      "sha256": "58072163e491781e0a9dbaf319005843b3db0d0f564c59116d3117757339a543",
+      "visualReview": "Inspected PNG/SVG on light and dark: one layered sleeve encloses a continuous peach axon, both short projecting ends complete. Nested lamellae readable at cut end; smooth outer sleeve and restrained gradients. No actual background glow in composites. Real alpha and padding verified; SVG retains structure with slight edge texture. Lamellar count and cut-face dots are schematic, not quantitative ultrastructure.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/myelin-sheath/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/myelin-sheath/inspection.webm"
+      }
+    },
+    {
+      "id": "node-of-ranvier",
+      "aliases": [
+        "node-of-ranvier"
+      ],
+      "source": "svg/node-of-ranvier-bioart-traced.svg",
+      "sha256": "8ef8766ddc880f45c8609ca723c66616e19e5d4ba0b9d93bdc5a0deb3bdbb031",
+      "visualReview": "Inspected PNG/SVG on light and dark: one uninterrupted peach axon passes through two myelin sleeves with one exposed central nodal gap. Complete outer ends, nested layers at sleeve terminations, matching approved myelin palette. Transparent composites contain no glow. SVG preserves geometry and gradients with slight line texture. Internodes and gap are schematic proportions; nodal channel clusters omitted.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/node-of-ranvier/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/node-of-ranvier/inspection.webm"
+      }
+    },
+    {
+      "id": "synaptic-vesicle",
+      "aliases": [
+        "synaptic-vesicle"
+      ],
+      "source": "svg/synaptic-vesicle-bioart-traced.svg",
+      "sha256": "151e2b5a8add815d3e4c65c28c5e9ef8905e1c216b9e5ca936410c43b58efb4c",
+      "visualReview": "Inspected PNG/SVG on light and dark: single cutaway membrane shell, two head rows separated by smooth core, dispersed small gold cargo, compact teal membrane proteins. No dense core, antenna stalks or organelles. Complete visible contours with real alpha and generous padding; vector retains readable cargo and membrane with minor contour texture. Transmitter identity and all component counts schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/synaptic-vesicle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/synaptic-vesicle/inspection.webm"
+      }
+    },
+    {
+      "id": "neuronal-growth-cone",
+      "aliases": [
+        "neuronal-growth-cone"
+      ],
+      "source": "svg/neuronal-growth-cone-bioart-traced.svg",
+      "sha256": "dd9b7a29c43baaa24f5f3d47070ce3d2b4a577cc08c29f5a8bb49ea4912c4fa3",
+      "visualReview": "Inspected light/dark PNG and SVG: seven complete filopodia, continuous peripheral membrane and axon segment, central blue fibers and pink peripheral actin retained. No exterior debris or background glow. SVG preserves fine networks and silhouette with modest stronger outlines.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/neuronal-growth-cone/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/neuronal-growth-cone/inspection.webm"
+      }
+    },
+    {
+      "id": "neutrophil-extracellular-trap-net",
+      "aliases": [
+        "neutrophil-extracellular-trap-net"
+      ],
+      "source": "svg/neutrophil-extracellular-trap-net-bioart-traced.svg",
+      "sha256": "837395a605cd5ec59091cbec6ca4579a540632f22ac17a09b74bdd7ec41fd03f",
+      "visualReview": "Inspected disrupted cell with dispersed chromatin continuous with the external web, no intact lobed nucleus, attached magenta protein glyphs. SVG preserves fine web branches and complete ends with transparent intervening spaces on light and dark backgrounds. Representative lytic NET, not every release mechanism or measured protein density.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/neutrophil-extracellular-trap-net/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/neutrophil-extracellular-trap-net/inspection.webm"
+      }
+    },
+    {
+      "id": "apoptotic-body",
+      "aliases": [
+        "apoptotic-body"
+      ],
+      "source": "svg/apoptotic-body-bioart-traced.svg",
+      "sha256": "2220a5abb2ad22b9b45f0c3ae5d479643900e6dca7d7df44bd3d10a74782a2b0",
+      "visualReview": "Reviewed PNG and SVG on light/dark backgrounds: complete rounded membrane contour, two condensed chromatin fragments and one mitochondrion retained. No intact nucleus, ruptured edge or exterior debris. SVG preserves clean forms with minor stronger contour lines; background is transparent.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/apoptotic-body/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/apoptotic-body/inspection.webm"
+      }
+    },
+    {
+      "id": "antigen-antibody-immune-complex",
+      "aliases": [
+        "antigen-antibody-immune-complex"
+      ],
+      "source": "svg/antigen-antibody-immune-complex-bioart-traced.svg",
+      "sha256": "376fc3adbc691ca0c41804845244cc8ea6b664b5837ee27f61486724053078ed",
+      "visualReview": "Counted three gold antigens and three bivalent blue antibody glyphs. Each connects two adjacent antigens via Fab tips; all three outward Fc ends remain free. SVG retains contacts and gradients with transparent center and padding on both backgrounds. Domain glyphs and lattice stoichiometry are illustrative.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/antigen-antibody-immune-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/antigen-antibody-immune-complex/inspection.webm"
+      }
+    },
+    {
+      "id": "granuloma",
+      "aliases": [
+        "granuloma"
+      ],
+      "source": "svg/granuloma-bioart-traced.svg",
+      "sha256": "6b29f00a5362edb179de13de6164dfff7ad4ba32ae4a53781693c6d3bafc041f",
+      "visualReview": "Compared PNG and editable SVG on light and dark backgrounds: distinct macrophage boundaries, central shared multinucleated cytoplasm and peripheral lymphocytes preserved; complete silhouette, real transparency and no background remnants. Architecture is schematic, not diagnostic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/granuloma/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/granuloma/inspection.webm"
+      }
+    }
+  ]
+}
