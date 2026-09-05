@@ -7510,17 +7510,101 @@
     "golgi-apparatus": {
       "name": "Golgi apparatus",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/golgi-apparatus-bioart-transparent.png",
+      "svg": "svg/golgi-apparatus-bioart-traced.svg",
+      "png_sha256": "fdbb0191138504fd65341fbf6de04bd8674afb395a262f4650e41df6c3e750d1",
+      "svg_sha256": "e47cbebbc4b40404a27d587af30d8ba89d115cb96343c2ff3d3a851a031e93ed",
+      "original_sha256": "886154ebbc4ea0ed2c03b83120c8135b9023eceeea13a4ff62886de3aee76351",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        367,
+        571,
+        385,
+        624
+      ],
+      "svg_paths": 11604,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/golgi-apparatus/prompt.json",
+      "qa": "qa/inventory/golgi-apparatus",
+      "visual_review": "PNG and rendered SVG inspected on light and dark: five flattened curved cisternae, pale cutaway lumens and six associated/budding vesicles preserved. Clean transparent padding and no glow in composite. SVG retains crisp outlines and soft depth with slight gradient quantization.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/golgi-apparatus/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/golgi-apparatus/inspection.webm"
+      }
     },
     "rough-endoplasmic-reticulum": {
       "name": "rough endoplasmic reticulum",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/rough-endoplasmic-reticulum-bioart-transparent.png",
+      "svg": "svg/rough-endoplasmic-reticulum-bioart-traced.svg",
+      "png_sha256": "8721fd2ab40663e1f90c428e3a60393b5458eac19df83ff436404d834bc8a7d0",
+      "svg_sha256": "4315fb9b9361c1c6633133991d983c9e5441c2f193d617d71f115e3122f67516",
+      "original_sha256": "cb9e4118ce38f5307003e8662011e686d7c91ce79da6e4f40e71f1b6f25fe3f2",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        330,
+        563
+      ],
+      "svg_paths": 19489,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/rough-endoplasmic-reticulum/prompt.json",
+      "qa": "qa/inventory/rough-endoplasmic-reticulum",
+      "visual_review": "Light/dark PNG and rendered SVG reviewed: interconnected cisternal sheets, empty pale lumens and small external ribosomes remain clear. True alpha including network openings; no glow or white background in composite. SVG maintains anatomy and palette with minor contour quantization.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rough-endoplasmic-reticulum/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rough-endoplasmic-reticulum/inspection.webm"
+      }
     },
     "smooth-endoplasmic-reticulum": {
       "name": "smooth endoplasmic reticulum",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/smooth-endoplasmic-reticulum-bioart-transparent.png",
+      "svg": "svg/smooth-endoplasmic-reticulum-bioart-traced.svg",
+      "png_sha256": "b84b136a400ec14ac7e77755fb0ba5c0cd40ec16eb64993f0dc6edad6c3d7f0f",
+      "svg_sha256": "1394763a81ff2b9d5d7946a175a9feccfacb2bcc3be74be5df280dcb964aff74",
+      "original_sha256": "f9008a4e6f663c44e2b72385f36c5236a2c6b7672e7d70a5a39771afefc5d619",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        370,
+        575,
+        369,
+        563
+      ],
+      "svg_paths": 9441,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/smooth-endoplasmic-reticulum/prompt.json",
+      "qa": "qa/inventory/smooth-endoplasmic-reticulum",
+      "visual_review": "Light/dark PNG and rendered SVG inspected: complete branched tubular network, open loops, one cutaway tip, no surface ribosomes. Transparency is clean throughout openings and padding; no glow survives compositing. SVG retains smooth tube depth with minor banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/smooth-endoplasmic-reticulum/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/smooth-endoplasmic-reticulum/inspection.webm"
+      }
     },
     "lysosome": {
       "name": "lysosome",
