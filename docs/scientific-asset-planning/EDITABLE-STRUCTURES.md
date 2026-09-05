@@ -63,3 +63,11 @@ Curved membrane and Membrane ring now use an analytical circular arc, rather tha
 Two additional asset cards, **Circular membrane (fixed)** and **Circular monolayer (fixed)**, provide complete circular SVG artwork without procedural controls or an Editable badge. They retain ordinary SVG placement, rotation and scaling. The sidebar now contains 230 OpenSketch assets, including the 17 Editable structures. These new files do not replace any original inventory entry.
 
 Validation covers constant radius and tangent orientation at 30°, 180°, 270°, 359° and 360°, a rotated arc edit retaining its center, strict metadata validation, full-circle save/reload, and insertion of a fixed circle without procedural metadata. [Circular membrane screenshots and recording](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/round-membranes-20260905/index.html).
+
+## Curvature controls
+
+The Edit panel now offers a signed curvature slider and Straighten for open bilayers, monolayers, decorated surfaces, protein-domain chains, RNA, vessels, epithelial rows, actin, microtubules and chromatin. Positive and negative angles bend in opposite directions. Changing curvature replaces the freeform path with a uniform circular arc while preserving both endpoints, including on rotated or scaled objects. Unit size and styling remain unchanged. Closed circles have a looser/tighter curvature slider that changes radius while preserving the center. Existing radius, sweep and canvas handles remain available.
+
+DNA retains its existing manual path editing; fixed SVGs and separate semantic components do not receive procedural curvature controls. Composite authors should use these editable structures with existing protein and cell assets rather than redraw a complete composite. Curvature is saved in the project and participates in the existing property-edit undo history.
+
+Validation: 483 unit tests, five Chromium interaction tests, typecheck and production build pass. Tests cover signed curvature, endpoint preservation, straightening, undo and reload. A recorded visual check also verifies closed-circle tightening. [Screenshots and recording](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/curvature-controls-20260905/index.html).

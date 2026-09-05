@@ -5,7 +5,7 @@ const distance = (a: BrushPoint, b: BrushPoint) => Math.hypot(b.x - a.x, b.y - a
 export function brushPolyline(spec: ScientificBrushSpec): BrushPoint[] {
   if (spec.arcSweep !== undefined) {
     const circle = circularBrushGeometry(spec);
-    const steps = Math.max(16, Math.ceil(spec.arcSweep));
+    const steps = Math.max(16, Math.ceil(Math.abs(spec.arcSweep)));
     return Array.from({ length: steps + 1 }, (_, i) => circle.position(i / steps));
   }
   const p = spec.points;
@@ -47,7 +47,7 @@ export function sampleBrush(spec: ScientificBrushSpec) {
       const fraction = i / (spec.closed ? requested : requested - 1);
       return {
         ...circle.position(fraction),
-        angle: circle.start + circle.sweep * fraction + Math.PI / 2
+        angle: circle.start + circle.sweep * fraction + (Math.sign(circle.sweep) * Math.PI) / 2
       };
     });
     return { points, samples, length: circle.length };
@@ -90,10 +90,52 @@ export function circularBrushGeometry(spec: ScientificBrushSpec) {
     radius,
     start,
     sweep,
-    length: radius * sweep,
+    length: radius * Math.abs(sweep),
     position: (fraction: number) => ({
       x: center.x + radius * Math.cos(start + sweep * fraction),
       y: center.y + radius * Math.sin(start + sweep * fraction)
     })
   };
+}
+
+/** Set a uniform circular bend while keeping the two open endpoints fixed. */
+export function withBrushCurvature(
+  spec: ScientificBrushSpec,
+  degrees: number
+): ScientificBrushSpec {
+  if (spec.closed) throw new Error("Open the path before changing its bend angle.");
+  if (!Number.isFinite(degrees) || Math.abs(degrees) > 330)
+    throw new Error("Curvature must be between -330 and 330 degrees.");
+  const circle = spec.arcSweep === undefined ? undefined : circularBrushGeometry(spec);
+  const a = circle ? circle.position(0) : spec.points[0];
+  const b = circle ? circle.position(1) : spec.points[spec.points.length - 1];
+  const chord = distance(a, b);
+  if (chord < 1) throw new Error("Separate the endpoints before adjusting curvature.");
+  if (Math.abs(degrees) < 1)
+    return {
+      ...spec,
+      arcSweep: undefined,
+      points: [{ ...a }, { ...b }],
+      smooth: false,
+      closed: false
+    };
+  const radians = (degrees * Math.PI) / 180;
+  const offset = chord / (2 * Math.tan(radians / 2));
+  const center = {
+    x: (a.x + b.x) / 2 - ((b.y - a.y) / chord) * offset,
+    y: (a.y + b.y) / 2 + ((b.x - a.x) / chord) * offset
+  };
+  return { ...spec, points: [center, { ...a }], arcSweep: degrees, smooth: true, closed: false };
+}
+export function brushCurvature(spec: ScientificBrushSpec): number {
+  if (spec.arcSweep !== undefined) return spec.arcSweep;
+  if (spec.points.length < 3) return 0;
+  const a = spec.points[0],
+    b = spec.points[spec.points.length - 1],
+    m = spec.points[Math.floor(spec.points.length / 2)];
+  const chord = distance(a, b);
+  if (chord < 1) return 0;
+  const sagitta =
+    ((m.x - (a.x + b.x) / 2) * (b.y - a.y) - (m.y - (a.y + b.y) / 2) * (b.x - a.x)) / chord;
+  return Math.max(-330, Math.min(330, (4 * Math.atan((2 * sagitta) / chord) * 180) / Math.PI));
 }

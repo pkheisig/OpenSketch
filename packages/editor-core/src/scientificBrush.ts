@@ -12,6 +12,9 @@ export const BRUSH_KINDS = [
   "microtubule",
   "chromatin"
 ] as const;
+export const CURVATURE_BRUSH_KINDS: readonly BrushKind[] = BRUSH_KINDS.filter(
+  (kind) => kind !== "dna"
+);
 export type BrushKind = (typeof BRUSH_KINDS)[number];
 export type BrushPoint = { x: number; y: number };
 export type ScientificBrushSpec = {
@@ -78,12 +81,12 @@ export function validBrushSpec(value: unknown): value is ScientificBrushSpec {
         Math.abs(p.y) <= 10000
     ) &&
     (v.arcSweep === undefined ||
-      ((v.kind === "membrane" || v.kind === "monolayer") &&
+      (CURVATURE_BRUSH_KINDS.includes(v.kind) &&
         v.points.length === 2 &&
         Number.isFinite(v.arcSweep) &&
-        v.arcSweep >= 1 &&
-        v.arcSweep <= 360 &&
-        v.closed === (v.arcSweep === 360) &&
+        Math.abs(v.arcSweep) >= 1 &&
+        Math.abs(v.arcSweep) <= 360 &&
+        v.closed === (Math.abs(v.arcSweep) === 360) &&
         Math.hypot(v.points[1].x - v.points[0].x, v.points[1].y - v.points[0].y) >=
           v.unitSize * 2)) &&
     withinRenderBudget(v)

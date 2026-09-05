@@ -225,11 +225,9 @@ test("round membrane expands to a full circle and fixed circles remain separate 
   await page
     .getByPlaceholder("Search cells, proteins, equipment…")
     .fill("Circular membrane (fixed)");
-  const card = page
-    .locator(".asset-card")
-    .filter({
-      has: page.getByRole("button", { name: "Insert Circular membrane (fixed)", exact: true })
-    });
+  const card = page.locator(".asset-card").filter({
+    has: page.getByRole("button", { name: "Insert Circular membrane (fixed)", exact: true })
+  });
   await expect(card).toBeVisible();
   await expect(card.getByText("Editable", { exact: true })).toHaveCount(0);
   await card.getByRole("button", { name: "Insert Circular membrane (fixed)", exact: true }).click();
@@ -243,4 +241,42 @@ test("round membrane expands to a full circle and fixed circles remain separate 
       () => (window as ProbeWindow).structureQaCanvas?.getActiveObject()?.scientificBrush
     )
   ).toBeUndefined();
+});
+
+test("curvature slider bends and straightens a membrane and vessel, with undo and reload", async ({
+  page
+}, testInfo) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await observeCanvas(page);
+  await choose(page, "Lipid bilayer", 480, 330);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  const before = await state(page);
+  await page.getByRole("slider", { name: "Structure curvature", exact: true }).focus();
+  for (let i = 0; i < 18; i++) await page.keyboard.press("ArrowRight");
+  const bent = await state(page);
+  expect(bent.spec.arcSweep).toBe(90);
+  expect(bent.id).toBe(before.id);
+  expect(bent.spec.unitSize).toBe(before.spec.unitSize);
+  // Property edits within 600 ms intentionally share one undo entry.
+  await page.waitForTimeout(700);
+  await page.screenshot({ path: testInfo.outputPath("curvature.png"), fullPage: true });
+  await page.getByRole("button", { name: "Straighten", exact: true }).click();
+  expect((await state(page)).spec.arcSweep).toBeUndefined();
+  await page.getByRole("button", { name: "Undo", exact: true }).click();
+  await page.locator(".upper-canvas").click({ position: bent.controls.brushPoint1 });
+  expect((await state(page)).spec.arcSweep).toBe(90);
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible({ timeout: 15000 });
+  await page.reload();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await observeCanvas(page);
+  await page.locator(".upper-canvas").click({ position: bent.controls.brushPoint1 });
+  expect((await state(page)).spec.arcSweep).toBe(90);
+  await choose(page, "Vessel segment", 680, 450);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await page.getByRole("button", { name: "Straighten", exact: true }).click();
+  await page.getByRole("slider", { name: "Structure curvature", exact: true }).focus();
+  for (let i = 0; i < 18; i++) await page.keyboard.press("ArrowLeft");
+  expect((await state(page)).spec.arcSweep).toBe(-90);
 });

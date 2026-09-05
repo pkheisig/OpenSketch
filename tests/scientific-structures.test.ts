@@ -237,3 +237,36 @@ it("edits arc extent in a rotated group and preserves its circle center", () => 
   expect(object.controls.arcEnd).toBeDefined();
   expect(object.controls.brushPoint0).toBeUndefined();
 });
+
+it("changes curvature both ways without moving endpoints across compatible structures", async () => {
+  const { CURVATURE_BRUSH_KINDS, withBrushCurvature, validBrushSpec } =
+    await import("../packages/editor-core/src");
+  for (const kind of CURVATURE_BRUSH_KINDS) {
+    const base = { ...membrane().scientificBrush, kind };
+    const before = sampleBrush(base).samples;
+    for (const angle of [-270, -90, 90, 270]) {
+      const curved = withBrushCurvature(base, angle);
+      expect(validBrushSpec(curved)).toBe(true);
+      const samples = sampleBrush(curved).samples;
+      near(new Point(samples[0]), new Point(before[0]));
+      near(new Point(samples.at(-1)!), new Point(before.at(-1)!));
+      expect(curved.unitSize).toBe(base.unitSize);
+      const straight = withBrushCurvature(curved, 0);
+      expect(straight.arcSweep).toBeUndefined();
+      const ends = sampleBrush(straight).samples;
+      near(new Point(ends[0]), new Point(before[0]));
+      near(new Point(ends.at(-1)!), new Point(before.at(-1)!));
+    }
+  }
+});
+it("preserves endpoint positions in the scene when a rotated structure bends", async () => {
+  const { withBrushCurvature } = await import("../packages/editor-core/src");
+  const object = membrane();
+  object.set({ left: 350, top: 200, angle: 37, scaleX: 1.3, scaleY: 1.3 });
+  const a = brushAnchorInScene(object, 0),
+    b = brushAnchorInScene(object, 1);
+  updateBrushObject(object, withBrushCurvature(object.scientificBrush, -90));
+  const samples = sampleBrush(object.scientificBrush).samples;
+  near(util.transformPoint(new Point(samples[0]), object.calcTransformMatrix()), a);
+  near(util.transformPoint(new Point(samples.at(-1)!), object.calcTransformMatrix()), b);
+});

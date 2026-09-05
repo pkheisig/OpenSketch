@@ -1,3 +1,9 @@
+import {
+  CURVATURE_BRUSH_KINDS,
+  MAX_BRUSH_UNITS,
+  brushCurvature,
+  withBrushCurvature
+} from "@workspace/editor-core";
 import { useState } from "react";
 import type { Group } from "fabric";
 import { useEditorFields } from "@/editor/editorHooks";
@@ -21,6 +27,14 @@ export function ScientificBrushInspector({
       setError(reason instanceof Error ? reason.message : "Could not update the structure.");
     }
   };
+  const changeCurvature = (degrees: number) => {
+    try {
+      update(withBrushCurvature(spec, degrees));
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "Could not adjust curvature.");
+    }
+  };
+  const curvature = brushCurvature(spec);
   const addPoint = () => {
     let index = 0,
       largest = -1;
@@ -69,6 +83,54 @@ export function ScientificBrushInspector({
           />
         </label>
       </div>
+      {CURVATURE_BRUSH_KINDS.includes(spec.kind) && !spec.closed && (
+        <div className="field">
+          <label htmlFor="structure-curvature">Curvature · {Math.round(curvature)}°</label>
+          <input
+            id="structure-curvature"
+            aria-label="Structure curvature"
+            type="range"
+            min={-330}
+            max={330}
+            step={5}
+            value={Math.max(-330, Math.min(330, curvature))}
+            onChange={(e) => changeCurvature(Number(e.target.value))}
+          />
+          <span className="section-note">
+            Bend either way. Zero is straight; endpoints stay in place.
+          </span>
+          <button type="button" onClick={() => changeCurvature(0)}>
+            Straighten
+          </button>
+        </div>
+      )}
+      {circle && spec.closed && (
+        <label className="field">
+          Curvature
+          <input
+            aria-label="Circle curvature"
+            type="range"
+            min={Math.ceil(((4 * Math.PI) / ((MAX_BRUSH_UNITS - 1) * spec.spacing)) * 100)}
+            max={100}
+            step={1}
+            value={Math.round(((spec.unitSize * 2) / circle.radius) * 100)}
+            onChange={(e) => {
+              const radius = (spec.unitSize * 2) / (Number(e.target.value) / 100),
+                center = spec.points[0];
+              update({
+                points: [
+                  { ...center },
+                  {
+                    x: center.x + radius * Math.cos(circle.start),
+                    y: center.y + radius * Math.sin(circle.start)
+                  }
+                ]
+              });
+            }}
+          />
+          <span className="section-note">Looser to tighter. The circle stays centered.</span>
+        </label>
+      )}
       {circle ? (
         <>
           <div className="field-row two">
@@ -100,17 +162,21 @@ export function ScientificBrushInspector({
               <input
                 aria-label="Membrane arc angle"
                 type="number"
-                min={1}
+                min={-360}
                 max={360}
                 value={spec.arcSweep}
                 onChange={(e) => {
                   const arcSweep = Number(e.target.value);
-                  update({ arcSweep, closed: arcSweep === 360 });
+                  update({ arcSweep, closed: Math.abs(arcSweep) === 360 });
                 }}
               />
             </label>
           </div>
-          <button onClick={() => update({ arcSweep: 360, closed: true })}>Make full circle</button>
+          <button
+            onClick={() => update({ arcSweep: Math.sign(spec.arcSweep ?? 1) * 360, closed: true })}
+          >
+            Make full circle
+          </button>
           <p className="section-note">
             Drag the radius handle to resize the circle. Drag the arc end to open or close it.
           </p>
@@ -149,7 +215,7 @@ export function ScientificBrushInspector({
               Remove bend point
             </button>
           </div>
-          {(spec.kind === "membrane" || spec.kind === "monolayer") && (
+          {CURVATURE_BRUSH_KINDS.includes(spec.kind) && (
             <button
               onClick={() => {
                 const xs = spec.points.map((p) => p.x),

@@ -33,12 +33,13 @@ export function moveArcEnd(object: FabricObject, parentPoint: Point): boolean {
     circle = circularBrushGeometry(spec);
   const local = util.transformPoint(parentPoint, util.invertTransform(object.calcOwnMatrix()));
   const angle = Math.atan2(local.y - spec.points[0].y, local.x - spec.points[0].x);
-  let sweep = (((angle - circle.start) * 180) / Math.PI + 720) % 360;
+  const direction = Math.sign(circle.sweep);
+  let sweep = (((angle - circle.start) * direction * 180) / Math.PI + 720) % 360;
   if (sweep < 3 || sweep > 357) sweep = 360;
-  sweep = Math.max(1, Math.round(sweep));
+  sweep = Math.max(1, Math.round(sweep)) * direction;
   if (sweep === spec.arcSweep) return false;
   try {
-    updateBrushObject(object, { ...spec, arcSweep: sweep, closed: sweep === 360 });
+    updateBrushObject(object, { ...spec, arcSweep: sweep, closed: Math.abs(sweep) === 360 });
     return true;
   } catch {
     return false;
