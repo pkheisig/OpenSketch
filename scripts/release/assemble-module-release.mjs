@@ -31,6 +31,10 @@ const hostServicesSource = await readFile(
   join(repositoryRoot, "apps/web/src/application/hostServices.ts"),
   "utf8"
 );
+const uiContractSource = await readFile(
+  join(repositoryRoot, "apps/web/src/application/uiContract.ts"),
+  "utf8"
+);
 const editorCoreVersion = sourceConstant(editorCoreSource, "EDITOR_CORE_VERSION");
 const projectFormatVersion = Number(sourceConstant(formatSource, "OpenSketch_FORMAT_VERSION"));
 const applicationVersion = sourceConstant(hostServicesSource, "OPENSKETCH_APPLICATION_VERSION");
@@ -42,6 +46,7 @@ const openSuiteContractVersion = sourceConstant(
   hostServicesSource,
   "OPENSKETCH_OPEN_SUITE_CONTRACT_VERSION"
 );
+const uiContractVersion = sourceConstant(uiContractSource, "OPENSUITE_UI_CONTRACT_VERSION");
 const reactVersionRange = sourceConstant(hostServicesSource, "OPENSKETCH_REACT_VERSION_RANGE");
 const reactDomVersionRange = sourceConstant(
   hostServicesSource,
@@ -139,6 +144,7 @@ const moduleManifest = {
   sourceSha,
   applicationContractVersion,
   openSuiteContractVersion,
+  uiContractVersion,
   entry: `./${moduleEntry}`,
   stylesheetEntry: `./${moduleStylesheet}`,
   assetManifestEntry: `./${assetManifestPath}`,

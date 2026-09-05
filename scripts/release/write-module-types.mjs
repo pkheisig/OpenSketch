@@ -275,6 +275,23 @@ export interface OpenSketchHostServices {
 export interface OpenSketchApplicationContext {
   routePrefix?: string;
   activeProjectId?: string | null;
+  mode?: "standalone" | "opensuite";
+  theme?: Theme;
+  density?: "comfortable" | "compact" | "standard";
+  reducedMotion?: boolean;
+  uiContractVersion?: string;
+  ownership?: {
+    globalChrome?: "module" | "host";
+    theme?: "module" | "host";
+    updating?: "module" | "host";
+    shutdown?: "module" | "host";
+  };
+  ownsGlobalChrome?: boolean;
+  ownsThemeControl?: boolean;
+  ownsUpdater?: boolean;
+  ownsShutdown?: boolean;
+  themeRootId?: string;
+  portalRootId?: string;
 }
 
 export interface OpenSketchLifecycleState extends OpenSketchApplicationContext {
@@ -314,6 +331,7 @@ export interface OpenSketchModuleManifest {
     react: string;
     "react-dom": string;
   };
+  uiContractVersion: "0.1.0-bootstrap";
   peerDependencies: { react: string; "react-dom": string };
   capabilities: readonly string[];
 }

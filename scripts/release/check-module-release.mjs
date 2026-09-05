@@ -17,11 +17,13 @@ const reactDomPackage = await readJson(join(repositoryRoot, "apps/web/node_modul
 const editorCoreSource = await readFile(join(repositoryRoot, "packages/editor-core/src/index.ts"), "utf8");
 const formatSource = await readFile(join(repositoryRoot, "packages/editor-core/src/types.ts"), "utf8");
 const hostServicesSource = await readFile(join(repositoryRoot, "apps/web/src/application/hostServices.ts"), "utf8");
+const uiContractSource = await readFile(join(repositoryRoot, "apps/web/src/application/uiContract.ts"), "utf8");
 const errors = [];
 const sourceContracts = {
   version: sourceConstant(hostServicesSource, "OPENSKETCH_APPLICATION_VERSION"),
   application: sourceConstant(hostServicesSource, "OPENSKETCH_APPLICATION_CONTRACT_VERSION"),
   openSuite: sourceConstant(hostServicesSource, "OPENSKETCH_OPEN_SUITE_CONTRACT_VERSION"),
+  ui: sourceConstant(uiContractSource, "OPENSUITE_UI_CONTRACT_VERSION"),
   react: sourceConstant(hostServicesSource, "OPENSKETCH_REACT_VERSION_RANGE"),
   reactDom: sourceConstant(hostServicesSource, "OPENSKETCH_REACT_DOM_VERSION_RANGE")
 };
@@ -57,6 +59,9 @@ if (moduleManifest.applicationContractVersion !== sourceContracts.application) {
 }
 if (moduleManifest.openSuiteContractVersion !== sourceContracts.openSuite) {
   errors.push("release OpenSuite contract differs from source");
+}
+if (moduleManifest.uiContractVersion !== sourceContracts.ui) {
+  errors.push("release UI contract differs from source");
 }
 for (const [name, expected] of Object.entries({
   react: sourceContracts.react,
@@ -151,7 +156,16 @@ for (const service of [
   "clipboard: ClipboardService;",
   "pwa: PwaService;",
   "fonts: FontService;",
-  "clock: ClockService;"
+  "clock: ClockService;",
+  "uiContractVersion: \"0.1.0-bootstrap\";",
+  "mode?: \"standalone\" | \"opensuite\";",
+  "ownership?: {",
+  "ownsGlobalChrome?: boolean;",
+  "ownsThemeControl?: boolean;",
+  "ownsUpdater?: boolean;",
+  "ownsShutdown?: boolean;",
+  "themeRootId?: string;",
+  "portalRootId?: string;"
 ]) {
   if (!moduleTypes.includes(service)) errors.push(`published host-services declaration is missing ${service}`);
 }
