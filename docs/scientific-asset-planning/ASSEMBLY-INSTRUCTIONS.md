@@ -2,7 +2,7 @@
 
 ## Current authorization
 
-This branch plans assets and descriptions only. Do not generate assets, modify production artwork, change the original 768-name inventories or implement application features as part of this task.
+The user subsequently authorized the app integration and palette controls on this branch. Follow [GENERATION-HANDOFF.md](GENERATION-HANDOFF.md) for new asset construction, explicit color roles and the first review batch. Keep the original 768-name inventories and unrelated production artwork unchanged. Do not treat the planning catalog as proof that pending assets already exist.
 
 ## Reuse contract
 

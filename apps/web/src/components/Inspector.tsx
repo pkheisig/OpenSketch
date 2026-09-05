@@ -181,7 +181,7 @@ function ObjectInspector({ object }: { object: FabricObject }) {
     <>
       {!canGroup && (assetFamily || isScientificBrush(object)) && (
         <InspectorSection title="Color palette" open>
-          <AssetColorPresets object={object} />
+          <AssetColorPresets key={object.objectId} object={object} />
         </InspectorSection>
       )}
       {isScientificBrush(object) && (

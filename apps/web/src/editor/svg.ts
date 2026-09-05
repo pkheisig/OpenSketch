@@ -1,4 +1,5 @@
-import { Group, Shadow, loadSVGFromString, type FabricObject } from "fabric";
+import { isAssetColorRole } from "@workspace/editor-core";
+import { Group, Path, Shadow, loadSVGFromString, type FabricObject } from "fabric";
 
 const SVG_BLEND_MODES = new Set<GlobalCompositeOperation>([
   "multiply",
@@ -303,6 +304,11 @@ export async function loadEditableSvg(source: string) {
   const filterShadows = svgFilterShadows(annotatedSource);
   const hierarchyPaths = new WeakMap<FabricObject, string[]>();
   const parsed = await loadSVGFromString(annotatedSource, (element, object) => {
+    const role = element.closest("[data-color-role]")?.getAttribute("data-color-role");
+    if (role !== null && role !== undefined) {
+      if (!isAssetColorRole(role)) throw new Error("Unsupported SVG data-color-role: " + role);
+      object.assetColorRole = role;
+    }
     hierarchyPaths.set(object, sourceGroupPath(element));
     applySvgFilterShadow(element, object, filterShadows);
     const blendMode = svgBlendMode(element, rules);
@@ -313,7 +319,11 @@ export async function loadEditableSvg(source: string) {
   });
   return {
     ...parsed,
-    objects: groupSvgHierarchy(parsed.objects, hierarchyPaths)
+    // Empty SVG paths render nothing, but cannot form valid portable scene objects.
+    objects: groupSvgHierarchy(
+      parsed.objects.filter((object) => !(object instanceof Path && object.path.length === 0)),
+      hierarchyPaths
+    )
   };
 }
 

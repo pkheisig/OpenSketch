@@ -41,6 +41,11 @@ async function state(page: Page) {
     };
   });
 }
+async function palette(page: Page, name: string) {
+  if (!(await page.getByRole("dialog", { name: "Choose asset palette" }).isVisible()))
+    await page.getByRole("button", { name: "Choose palette…", exact: true }).click();
+  await page.getByRole("button", { name, exact: true }).click();
+}
 async function choose(page: Page, name: string, x: number, y: number) {
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await page.getByRole("menuitem", { name: "Scientific structures", exact: true }).hover();
@@ -296,6 +301,7 @@ test("organized asset palettes preserve details, restore originals and survive r
     )
     .toBe("opensketch-generated-generic-epithelial-cell");
   await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await page.getByRole("button", { name: "Choose palette…", exact: true }).click();
   const paints = () =>
     page.evaluate(() => {
       const o = (window as ProbeWindow).structureQaCanvas!.getActiveObject()!;
@@ -306,9 +312,9 @@ test("organized asset palettes preserve details, restore originals and survive r
       return walk(o);
     });
   const original = await paints();
-  await expect(page.locator(".asset-palette-row button")).toHaveCount(48);
+  await expect(page.locator(".asset-palette-row button")).toHaveCount(60);
   await page.screenshot({ path: testInfo.outputPath("original.png") });
-  await page.getByRole("button", { name: "Red classic", exact: true }).click();
+  await palette(page, "Red classic");
   await expect(page.getByRole("button", { name: "Red classic", exact: true })).toHaveAttribute(
     "aria-pressed",
     "true"
@@ -321,7 +327,7 @@ test("organized asset palettes preserve details, restore originals and survive r
   expect(red.some((p, i) => p === original[i] && p !== "null")).toBe(true);
   await page.waitForTimeout(700);
   await page.screenshot({ path: testInfo.outputPath("red.png") });
-  await page.getByRole("button", { name: "Blue soft", exact: true }).click();
+  await palette(page, "Blue soft");
   await expect(page.getByRole("button", { name: "Blue soft", exact: true })).toHaveAttribute(
     "aria-pressed",
     "true"
@@ -332,9 +338,10 @@ test("organized asset palettes preserve details, restore originals and survive r
   await page.keyboard.press("ControlOrMeta+a");
   await expect.poll(paints).toEqual(red);
   await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await page.getByRole("button", { name: "Choose palette…", exact: true }).click();
   await page.getByRole("button", { name: "Original colors", exact: true }).click();
   expect(await paints()).toEqual(original);
-  await page.getByRole("button", { name: "Red classic", exact: true }).click();
+  await palette(page, "Red classic");
   await expect.poll(paints).toEqual(red);
   await expect(page.locator('[data-save-state="saved"]')).toBeVisible({ timeout: 15000 });
   await page.reload();
@@ -343,6 +350,7 @@ test("organized asset palettes preserve details, restore originals and survive r
   await page.locator(".upper-canvas").click({ position: { x: 480, y: 330 } });
   await page.keyboard.press("ControlOrMeta+a");
   await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await page.getByRole("button", { name: "Choose palette…", exact: true }).click();
   await expect(page.getByRole("button", { name: "Red classic", exact: true })).toHaveAttribute(
     "aria-pressed",
     "true"
@@ -361,8 +369,9 @@ test("membrane palette survives bending and restores original semantic colors", 
   await observeCanvas(page);
   await choose(page, "Lipid bilayer", 480, 330);
   await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await page.getByRole("button", { name: "Choose palette…", exact: true }).click();
   const before = await state(page);
-  await page.getByRole("button", { name: "Blue deep", exact: true }).click();
+  await palette(page, "Blue deep");
   await expect(page.getByRole("button", { name: "Blue deep", exact: true })).toHaveAttribute(
     "aria-pressed",
     "true"
@@ -380,6 +389,7 @@ test("membrane palette survives bending and restores original semantic colors", 
   await observeCanvas(page);
   await page.locator(".upper-canvas").click({ position: bent.controls.brushPoint1 });
   await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await page.getByRole("button", { name: "Choose palette…", exact: true }).click();
   await expect(page.getByRole("button", { name: "Blue deep", exact: true })).toHaveAttribute(
     "aria-pressed",
     "true"
@@ -389,3 +399,137 @@ test("membrane palette survives bending and restores original semantic colors", 
   expect(restored.spec.fill).toBe(before.spec.fill);
   expect(restored.spec.arcSweep).toBe(90);
 });
+
+test("explicit color roles theme white bodies, preserve details and restore defaults after reload", async ({
+  page
+}) => {
+  const source = await readFile("tests/fixtures/asset-color-roles.svg", "utf8");
+  await page.route("**/assets/opensketch-generated/nucleolus.svg", (route) =>
+    route.fulfill({ contentType: "image/svg+xml", body: source })
+  );
+  await page.goto("./");
+  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await observeCanvas(page);
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("nucleolus");
+  await page.getByRole("button", { name: "Insert nucleolus", exact: true }).click();
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  const roles = () =>
+    page.evaluate(() => {
+      const o = (window as ProbeWindow).structureQaCanvas!.getActiveObject()!;
+      const walk = (p: typeof o): { role: unknown; fill: unknown }[] =>
+        "getObjects" in p
+          ? (p as import("../../apps/web/node_modules/fabric").Group).getObjects().flatMap(walk)
+          : [{ role: p.assetColorRole, fill: p.fill }];
+      return walk(o);
+    });
+  const original = await roles();
+  await palette(page, "Blue classic");
+  await expect
+    .poll(async () =>
+      (await roles()).filter((p) => p.role === "primary").every((p) => p.fill !== "#ffffff")
+    )
+    .toBe(true);
+  expect((await roles()).find((p) => p.role === "detail")?.fill).toBe("#ff0000");
+  await page.keyboard.press("Escape");
+  await expect(page.getByRole("dialog", { name: "Choose asset palette" })).toBeHidden();
+  await expect(page.getByRole("button", { name: "Choose palette…", exact: true })).toBeFocused();
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible({ timeout: 15000 });
+  await page.reload();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await observeCanvas(page);
+  await page.locator(".upper-canvas").click({ position: { x: 480, y: 330 } });
+  await page.keyboard.press("ControlOrMeta+a");
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await page.getByRole("button", { name: "Original colors", exact: true }).click();
+  expect(await roles()).toEqual(original);
+});
+
+test("representative receptor and membrane assemble without flattening library identities", async ({
+  page
+}, testInfo) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await observeCanvas(page);
+  for (const title of ["Lipid bilayer", "Receptor with movable domains"]) {
+    if (!(await page.getByPlaceholder("Search cells, proteins, equipment…").isVisible()))
+      await page.getByRole("tab", { name: "Assets", exact: true }).click();
+    await page.getByPlaceholder("Search cells, proteins, equipment…").fill(title);
+    await page.getByRole("button", { name: "Insert " + title, exact: true }).click();
+  }
+  await page.locator(".upper-canvas").click({ position: { x: 1000, y: 600 } });
+  await page.keyboard.press("ControlOrMeta+a");
+  await page.getByRole("button", { name: "Group", exact: true }).click();
+  const familyIds = () =>
+    page.evaluate(() => {
+      const object = (window as ProbeWindow).structureQaCanvas!.getActiveObject()!;
+      const walk = (o: typeof object): string[] =>
+        o.familyId
+          ? [o.familyId]
+          : "getObjects" in o
+            ? (o as import("../../apps/web/node_modules/fabric").Group).getObjects().flatMap(walk)
+            : [];
+      return walk(object).sort();
+    });
+  expect(await familyIds()).toEqual(["editable-membrane", "editable-receptor"]);
+  await page.waitForTimeout(500);
+  await page.screenshot({ path: testInfo.outputPath("reused-assembly.png") });
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible({ timeout: 15000 });
+  await page.reload();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await observeCanvas(page);
+  await page.locator(".upper-canvas").click({ position: { x: 480, y: 330 } });
+  await page.keyboard.press("ControlOrMeta+a");
+  expect(await familyIds()).toEqual(["editable-membrane", "editable-receptor"]);
+});
+
+for (const title of ["laboratory mouse", "micropipette"]) {
+  test(
+    title + " keeps its native palette and restores it after saved recoloring",
+    async ({ page }) => {
+      await page.goto("./");
+      await page.getByRole("button", { name: "New figure", exact: true }).click();
+      await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+      await observeCanvas(page);
+      await page.getByPlaceholder("Search cells, proteins, equipment…").fill(title);
+      await page.getByRole("button", { name: "Insert " + title, exact: true }).click();
+      await page.getByRole("button", { name: "Edit", exact: true }).click();
+      const paints = () =>
+        page.evaluate(() => {
+          const o = (window as ProbeWindow).structureQaCanvas!.getActiveObject()!;
+          const walk = (p: typeof o): string[] =>
+            "getObjects" in p
+              ? (p as import("../../apps/web/node_modules/fabric").Group).getObjects().flatMap(walk)
+              : [String(p.fill), String(p.stroke)];
+          return walk(o);
+        });
+      const original = await paints();
+      await expect(page.getByLabel("Original asset colors", { exact: true })).toBeVisible();
+      const native = await page
+        .getByLabel("Original asset colors", { exact: true })
+        .locator("span")
+        .evaluateAll((nodes) => nodes.map((n) => (n as HTMLElement).style.background));
+      expect(native.length).toBeGreaterThan(2);
+      await palette(page, "Blue classic");
+      await expect.poll(paints).not.toEqual(original);
+      await page.keyboard.press("Escape");
+      await expect(page.locator('[data-save-state="saved"]')).toBeVisible({ timeout: 15000 });
+      await page.reload();
+      await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+      await expect(page.getByRole("alert")).toHaveCount(0);
+      await observeCanvas(page);
+      await page.locator(".upper-canvas").click({ position: { x: 480, y: 330 } });
+      await page.keyboard.press("ControlOrMeta+a");
+      await page.getByRole("button", { name: "Edit", exact: true }).click();
+      await page.getByRole("button", { name: "Original colors", exact: true }).click();
+      expect(await paints()).toEqual(original);
+      expect(
+        await page
+          .getByLabel("Original asset colors", { exact: true })
+          .locator("span")
+          .evaluateAll((nodes) => nodes.map((n) => (n as HTMLElement).style.background))
+      ).toEqual(native);
+    }
+  );
+}

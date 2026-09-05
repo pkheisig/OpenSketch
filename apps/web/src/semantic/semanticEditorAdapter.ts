@@ -532,6 +532,7 @@ const RESTORABLE_GROUP_PROPERTIES = [
   "familyId",
   "provenance",
   "originalPalette",
+  "assetColorRole",
   "originalFill",
   "originalStroke",
   "effectBaseFill",

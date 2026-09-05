@@ -42,9 +42,9 @@ describe("asset color presets", () => {
     expect(mapping.has(normalizedPresetColor("#df7298"))).toBe(true);
     expect(mapping.has(normalizedPresetColor("#f5b1c5"))).toBe(true);
   });
-  it("offers 12 families with four shades and retains original preset IDs", () => {
-    expect(ASSET_COLOR_PRESETS).toHaveLength(48);
-    expect(new Set(ASSET_COLOR_PRESETS.map((p) => p.id)).size).toBe(48);
+  it("offers 15 families with four shades and retains original preset IDs", () => {
+    expect(ASSET_COLOR_PRESETS).toHaveLength(60);
+    expect(new Set(ASSET_COLOR_PRESETS.map((p) => p.id)).size).toBe(60);
     for (const id of ["green", "blue", "red", "purple", "gold"])
       expect(ASSET_COLOR_PRESETS.some((p) => p.id === id)).toBe(true);
   });
@@ -72,4 +72,12 @@ describe("asset color presets", () => {
       map.get(normalizedPresetColor(sources[1]))
     );
   });
+});
+
+it("can theme explicit white body roles while protecting untagged highlights", () => {
+  const preset = ASSET_COLOR_PRESETS.find((p) => p.id === "blue")!;
+  expect(presetColorMap(["#ffffff"], "cell", preset).size).toBe(0);
+  expect(
+    presetColorMap(["#ffffff"], "cell", preset, true).get(normalizedPresetColor("#ffffff"))
+  ).not.toBe("#ffffff");
 });

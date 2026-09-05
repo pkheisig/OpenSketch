@@ -74,8 +74,10 @@ Validation: 483 unit tests, five Chromium interaction tests, typecheck and produ
 
 ## Asset color palettes
 
-Edit now exposes 48 presets: twelve color families with Light, Soft, Classic and Deep shades. Original colors restores the source palette. Presets recolor existing vector paints in memory; no SVG variants are generated. Existing preset IDs remain available.
+Edit now exposes 60 presets: fifteen color families with Light, Soft, Classic and Deep shades. Original colors restores the source palette. Presets recolor existing vector paints in memory; no SVG variants are generated. Existing preset IDs remain available.
 
 For traced artwork, presets recolor regions larger than 0.03% of the asset's area, including contrasting large structures such as nuclei. Smaller regions retain their original paints even when they share a color with a larger region. Area is estimated from each path's bounding box and transform; this is a size heuristic, not organelle recognition. Neutral dark outlines, bright highlights and alpha values remain intact. Large regions use distinct shades of the selected palette. Procedural structures theme both body and accent roles while retaining their outline colors. Curvature edits retain the selected colors.
 
 Validation covers palette uniqueness, contrasting colors, alpha preservation, exact original restoration, undo, project reload, and membrane curvature after recoloring. [Visual examples and recording](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/asset-region-palettes-20260905/index.html).
+
+The palette now opens in a wider pop-out, including White, Gray and Charcoal rows and the exact source palette. New SVGs can declare explicit color roles; see [the generation handoff](GENERATION-HANDOFF.md).

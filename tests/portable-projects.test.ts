@@ -104,3 +104,15 @@ describe("portable OpenSketch projects", () => {
     }
   });
 });
+
+it("round-trips supported asset color roles and rejects unknown roles", () => {
+  const project = structuredClone(fixture);
+  const first = (project.objects.objects as Record<string, unknown>[])[0];
+  first.assetColorRole = "secondary";
+  const restored = migrateProject(JSON.parse(serializeProject(project)));
+  expect((restored.objects.objects as Record<string, unknown>[])[0].assetColorRole).toBe(
+    "secondary"
+  );
+  first.assetColorRole = "anything";
+  expect(() => migrateProject(JSON.parse(serializeProject(project)))).toThrow(/assetColorRole/);
+});

@@ -469,7 +469,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
       if (sidebarRef.current?.contains(target)) return;
       if (
         target.closest(
-          ".ui-select-menu, .color-palette-popover, .asset-variant-menu, " +
+          ".ui-select-menu, .color-palette-popover, .asset-palette-popover, .asset-variant-menu, " +
             ".selection-quick-toolbar, .selection-toolbar-menu"
         )
       ) {
@@ -493,7 +493,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
       }
       if (
         target.closest(
-          ".ui-select-menu, .color-palette-popover, .asset-variant-menu, " +
+          ".ui-select-menu, .color-palette-popover, .asset-palette-popover, .asset-variant-menu, " +
             ".selection-quick-toolbar, .selection-toolbar-menu"
         )
       ) {

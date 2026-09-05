@@ -187,6 +187,7 @@ FabricObject.customProperties = [
   "familyId",
   "provenance",
   "originalPalette",
+  "assetColorRole",
   "originalFill",
   "originalStroke",
   "effectBaseFill",
@@ -220,6 +221,7 @@ const RESTORABLE_GROUP_PROPERTIES = [
   "familyId",
   "provenance",
   "originalPalette",
+  "assetColorRole",
   "originalFill",
   "originalStroke",
   "effectBaseFill",
@@ -1037,16 +1039,22 @@ function applyPresetColors(
   object: FabricObject,
   mapping: Map<string, string>,
   presetId: string,
-  minimumRegionArea = 0
+  minimumRegionArea = 0,
+  explicitMapping: Map<string, string> = mapping
 ): void {
   const mapped = (color: string) => mapping.get(normalizedPresetColor(color)) ?? color;
-  const mappedGradient = (source: Record<string, unknown>) => {
+  const mappedGradient = (source: Record<string, unknown>, explicit = false) => {
     const colorStops = Array.isArray(source.colorStops)
       ? source.colorStops.map((stop) => {
           const record = stop as Record<string, unknown>;
           return {
             ...record,
-            color: typeof record.color === "string" ? mapped(record.color) : record.color
+            color:
+              typeof record.color === "string"
+                ? explicit
+                  ? (explicitMapping.get(normalizedPresetColor(record.color)) ?? record.color)
+                  : mapped(record.color)
+                : record.color
           };
         })
       : [];
@@ -1056,10 +1064,15 @@ function applyPresetColors(
     if (!(current instanceof Group)) {
       const [a, b, c, d] = current.calcTransformMatrix();
       const area = current.width * current.height * Math.abs(a * d - b * c);
-      if (area < minimumRegionArea) return;
+      if (["detail", "outline", "highlight"].includes(current.assetColorRole ?? "")) return;
+      if (!current.assetColorRole && area < minimumRegionArea) return;
     }
     if (current.originalFill) {
-      const color = mapped(current.originalFill);
+      const color =
+        current.assetColorRole === "primary" || current.assetColorRole === "secondary"
+          ? (explicitMapping.get(normalizedPresetColor(current.originalFill)) ??
+            current.originalFill)
+          : mapped(current.originalFill);
       current.set("fill", color);
       current.effectBaseFill = color;
     }
@@ -1069,7 +1082,13 @@ function applyPresetColors(
       current.effectBaseStroke = color;
     }
     if (current.originalGradientFill) {
-      current.set("fill", mappedGradient(current.originalGradientFill));
+      current.set(
+        "fill",
+        mappedGradient(
+          current.originalGradientFill,
+          current.assetColorRole === "primary" || current.assetColorRole === "secondary"
+        )
+      );
       current.effectBaseGradientFill = structuredClone(current.originalGradientFill);
     }
     if (current.originalGradientStroke) {
@@ -1111,7 +1130,13 @@ function recolorAsset(
   // Bounding-box area is an approximation for traced SVG regions.
   const minimumRegionArea = object.width * object.height * Math.abs(a * d - b * c) * 0.0003;
   restoreOriginalColors(object);
-  applyPresetColors(object, mapping, preset.id, minimumRegionArea);
+  applyPresetColors(
+    object,
+    mapping,
+    preset.id,
+    minimumRegionArea,
+    presetColorMap(originalPaints(object), profile, preset, true)
+  );
 }
 
 function withLogicalViewport<T>(canvas: Canvas, settings: CanvasSettings, operation: () => T): T {

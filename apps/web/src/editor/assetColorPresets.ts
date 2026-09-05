@@ -61,6 +61,9 @@ const BASE_PRESETS: AssetColorPreset[] = [
 
 export const ASSET_PALETTE_SHADES = ["Light", "Soft", "Classic", "Deep"] as const;
 const extraFamilies: [string, string, string[]][] = [
+  ["white", "White", ["#656565", "#b4b4b4", "#e5e5e5", "#ffffff", "#ffffff"]],
+  ["gray", "Gray", ["#252525", "#595959", "#909090", "#c2c2c2", "#eeeeee"]],
+  ["charcoal", "Charcoal", ["#101010", "#292929", "#454545", "#686868", "#aaaaaa"]],
   ["orange", "Orange", ["#55301d", "#99532a", "#cf8650", "#e9bb91", "#fae9d9"]],
   ["teal", "Teal", ["#153e40", "#287c7e", "#51aeb0", "#a0d8d6", "#e0f3ef"]],
   ["cyan", "Cyan", ["#183d50", "#237b9b", "#49b1cc", "#a0dce7", "#e0f5f8"]],
@@ -84,7 +87,10 @@ const FAMILY_ORDER = [
   "purple",
   "pink",
   "brown",
-  "slate"
+  "slate",
+  "white",
+  "gray",
+  "charcoal"
 ];
 export const ASSET_COLOR_PRESETS: AssetColorPreset[] = [...BASE_PRESETS]
   .sort((a, b) => FAMILY_ORDER.indexOf(a.id) - FAMILY_ORDER.indexOf(b.id))
@@ -156,7 +162,8 @@ function shadeAt(ramp: string[], position: number): string {
 export function presetColorMap(
   sourceColors: string[],
   profile: AssetColorProfile,
-  preset: AssetColorPreset
+  preset: AssetColorPreset,
+  includeNeutralExtremes = false
 ): Map<string, string> {
   const unique = [
     ...new Map(sourceColors.map((color) => [normalizedPresetColor(color), color])).values()
@@ -165,7 +172,8 @@ export function presetColorMap(
   for (const color of unique) {
     const m = colorMetrics(color);
     // Preserve neutral extremes; large colored regions share the chosen ramp.
-    if (!m.alpha || m.luminance < 0.12 || m.luminance > 0.96) continue;
+    if (!m.alpha || (!includeNeutralExtremes && (m.luminance < 0.12 || m.luminance > 0.96)))
+      continue;
 
     const mapped = shadeAt(preset.ramps[profile], m.luminance);
     const [r, g, b] = new Color(mapped).getSource();

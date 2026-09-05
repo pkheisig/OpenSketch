@@ -1,3 +1,4 @@
+import { isAssetColorRole } from "./assetColorRoles";
 import { validBrushSpec } from "./scientificBrush";
 import { DEFAULT_CANVAS } from "./presets";
 import {
@@ -198,6 +199,7 @@ const SCENE_PROPERTIES = new Set([
   "assetSaturation",
   "assetBrightness",
   "assetColorPreset",
+  "assetColorRole",
   "recognizedGroups",
   "defaultElementStyle",
   "semanticMetadata",
@@ -320,6 +322,7 @@ const SCENE_STRING_PROPERTIES = new Set([
   "familyId",
   "assetTint",
   "assetColorPreset",
+  "assetColorRole",
   "type"
 ]);
 
@@ -1075,6 +1078,7 @@ function validateCustomProperties(
     "assetSaturation",
     "assetBrightness",
     "assetColorPreset",
+    "assetColorRole",
     "recognizedGroups",
     "semanticMetadata",
     "semanticRelations",
@@ -1085,7 +1089,9 @@ function validateCustomProperties(
   ]);
   assertKnownKeys(value, path, allowed);
   for (const [key, item] of Object.entries(value)) {
-    if (
+    if (key === "assetColorRole") {
+      if (!isAssetColorRole(item)) fail(`${path}.assetColorRole`, "is invalid");
+    } else if (
       ["name", "OpenSketchType", "assetId", "familyId", "assetTint", "assetColorPreset"].includes(
         key
       )
@@ -1461,6 +1467,8 @@ function validateSceneObject(
         assertFiniteNumber(item, `${path}.${key}`, { min: 1, max: 1_000 });
     } else if (key === "crossOrigin") {
       if (item !== null) assertString(item, `${path}.${key}`, { maxLength: 64 });
+    } else if (key === "assetColorRole") {
+      if (!isAssetColorRole(item)) fail(`${path}.assetColorRole`, "is invalid");
     } else if (SCENE_STRING_PROPERTIES.has(key)) {
       if (["objectId", "assetId", "familyId"].includes(key)) {
         assertNonEmptyString(item, `${path}.${key}`, PORTABLE_PROJECT_LIMITS.maxObjectIdLength);

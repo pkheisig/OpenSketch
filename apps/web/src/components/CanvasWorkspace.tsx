@@ -381,7 +381,7 @@ export function CanvasWorkspace() {
         target instanceof Element &&
         (target.closest(".canvas-controls") ||
           target.closest(".ui-select-menu") ||
-          target.closest(".color-palette-popover"))
+          target.closest(".color-palette-popover, .asset-palette-popover"))
       ) {
         return;
       }
