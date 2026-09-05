@@ -41,7 +41,7 @@ export function AssetColorPresets({ object }: { object: FabricObject }) {
         ))}
       </div>
       <p className="section-note">
-        Changes the main color family. Contrasting details and neutral outlines stay distinct.
+        Themes larger regions together. Tiny details and neutral outlines retain their colors.
       </p>
     </div>
   );

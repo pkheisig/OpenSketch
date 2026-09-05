@@ -152,51 +152,21 @@ function shadeAt(ramp: string[], position: number): string {
   return interpolateHex(ramp[index], ramp[Math.min(index + 1, ramp.length - 1)], scaled - index);
 }
 
-/** Color families are inferred from original paints, not anatomical labels. */
+/** Map colors independently of hue; the renderer protects small regions. */
 export function presetColorMap(
   sourceColors: string[],
   profile: AssetColorProfile,
-  preset: AssetColorPreset,
-  weights: Map<string, number> = new Map()
+  preset: AssetColorPreset
 ): Map<string, string> {
   const unique = [
     ...new Map(sourceColors.map((color) => [normalizedPresetColor(color), color])).values()
   ];
-  const hue = (color: string) => {
-    const [r, g, b] = new Color(color).getSource();
-    const max = Math.max(r, g, b),
-      min = Math.min(r, g, b),
-      delta = max - min;
-    if (!delta) return 0;
-    return (
-      ((max === r ? (g - b) / delta : max === g ? (b - r) / delta + 2 : (r - g) / delta + 4) * 60 +
-        360) %
-      360
-    );
-  };
-  const distance = (a: number, b: number) => Math.min(Math.abs(a - b), 360 - Math.abs(a - b));
-  const chromatic = unique.filter((color) => {
-    const m = colorMetrics(color);
-    return m.alpha > 0 && m.saturation >= 0.12 && m.luminance > 0.12 && m.luminance < 0.96;
-  });
-  const dominant = chromatic.reduce<string | undefined>((best, color) => {
-    const score = (candidate: string) =>
-      chromatic.reduce(
-        (sum, paint) =>
-          sum +
-          (distance(hue(candidate), hue(paint)) <= 35
-            ? (weights.get(normalizedPresetColor(paint)) ?? 1) * colorMetrics(paint).alpha
-            : 0),
-        0
-      );
-    return !best || score(color) > score(best) ? color : best;
-  }, undefined);
   const result = new Map<string, string>();
   for (const color of unique) {
     const m = colorMetrics(color);
-    // Keep neutral outlines/highlights and contrasting organelle color families.
+    // Preserve neutral extremes; large colored regions share the chosen ramp.
     if (!m.alpha || m.luminance < 0.12 || m.luminance > 0.96) continue;
-    if (dominant && (m.saturation < 0.12 || distance(hue(color), hue(dominant)) > 40)) continue;
+
     const mapped = shadeAt(preset.ramps[profile], m.luminance);
     const [r, g, b] = new Color(mapped).getSource();
     result.set(

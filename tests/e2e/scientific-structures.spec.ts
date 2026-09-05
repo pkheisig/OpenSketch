@@ -315,6 +315,9 @@ test("organized asset palettes preserve details, restore originals and survive r
   );
   const red = await paints();
   expect(red.some((p, i) => p !== original[i])).toBe(true);
+  // The purple nucleus is large enough to theme; tiny regions sharing its paint remain.
+  expect(red.some((p, i) => original[i] === "#a263d2" && p !== original[i])).toBe(true);
+  expect(red.some((p, i) => original[i] === "#a263d2" && p === original[i])).toBe(true);
   expect(red.some((p, i) => p === original[i] && p !== "null")).toBe(true);
   await page.waitForTimeout(700);
   await page.screenshot({ path: testInfo.outputPath("red.png") });
@@ -366,7 +369,7 @@ test("membrane palette survives bending and restores original semantic colors", 
   );
   const themed = await state(page);
   expect(themed.spec.fill).not.toBe(before.spec.fill);
-  expect(themed.spec.accent).toBe(before.spec.accent);
+  expect(themed.spec.accent).not.toBe(before.spec.accent);
   await page.getByRole("slider", { name: "Structure curvature", exact: true }).focus();
   for (let i = 0; i < 18; i++) await page.keyboard.press("ArrowRight");
   expect((await state(page)).spec.fill).toBe(themed.spec.fill);

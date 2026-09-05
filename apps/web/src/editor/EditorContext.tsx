@@ -1036,7 +1036,8 @@ function originalPaints(object: FabricObject): string[] {
 function applyPresetColors(
   object: FabricObject,
   mapping: Map<string, string>,
-  presetId: string
+  presetId: string,
+  minimumRegionArea = 0
 ): void {
   const mapped = (color: string) => mapping.get(normalizedPresetColor(color)) ?? color;
   const mappedGradient = (source: Record<string, unknown>) => {
@@ -1052,6 +1053,11 @@ function applyPresetColors(
     return new Gradient({ ...structuredClone(source), colorStops } as never);
   };
   const walk = (current: FabricObject) => {
+    if (!(current instanceof Group)) {
+      const [a, b, c, d] = current.calcTransformMatrix();
+      const area = current.width * current.height * Math.abs(a * d - b * c);
+      if (area < minimumRegionArea) return;
+    }
     if (current.originalFill) {
       const color = mapped(current.originalFill);
       current.set("fill", color);
@@ -1093,31 +1099,19 @@ function recolorAsset(
     updateBrushObject(object, {
       ...spec,
       fill: preset.ramps[profile][3],
-      accent: original["scientific:accent"],
+      accent: preset.ramps[profile][2],
       stroke: original["scientific:stroke"]
     });
     object.assetColorPreset = preset.id;
     return;
   }
-  const weights = new Map<string, number>();
-  const walk = (part: FabricObject) => {
-    if (part instanceof Group) {
-      part.getObjects().forEach(walk);
-      return;
-    }
-    if (part.originalFill) {
-      const key = normalizedPresetColor(part.originalFill);
-      weights.set(
-        key,
-        (weights.get(key) ?? 0) +
-          Math.max(1, part.width * part.height * Math.abs(part.scaleX * part.scaleY))
-      );
-    }
-  };
-  walk(object);
-  const mapping = presetColorMap(originalPaints(object), profile, preset, weights);
+  const mapping = presetColorMap(originalPaints(object), profile, preset);
+  const [a, b, c, d] = object.calcTransformMatrix();
+  // Compare each region to the asset, independent of zoom, scale and rotation.
+  // Bounding-box area is an approximation for traced SVG regions.
+  const minimumRegionArea = object.width * object.height * Math.abs(a * d - b * c) * 0.0003;
   restoreOriginalColors(object);
-  applyPresetColors(object, mapping, preset.id);
+  applyPresetColors(object, mapping, preset.id, minimumRegionArea);
 }
 
 function withLogicalViewport<T>(canvas: Canvas, settings: CanvasSettings, operation: () => T): T {

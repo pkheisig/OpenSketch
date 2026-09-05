@@ -28,9 +28,9 @@ describe("asset color presets", () => {
     const sources = ["#3c1b62", "#8055a7", "#c8a9e1", "#f1e7f8"];
     const mapping = presetColorMap(sources, "cell", green);
 
-    expect(mapping.size).toBe(3);
-    expect(new Set(mapping.values()).size).toBe(3);
-    expect(mapping.has(normalizedPresetColor(sources[3]))).toBe(false);
+    expect(mapping.size).toBe(4);
+    expect(new Set(mapping.values()).size).toBe(4);
+    expect(mapping.has(normalizedPresetColor(sources[3]))).toBe(true);
   });
 
   it("preserves extreme neutral equipment materials while recoloring accents", () => {
@@ -48,7 +48,7 @@ describe("asset color presets", () => {
     for (const id of ["green", "blue", "red", "purple", "gold"])
       expect(ASSET_COLOR_PRESETS.some((p) => p.id === id)).toBe(true);
   });
-  it("preserves contrasting organelles, neutral outlines, transparency and shade ordering", () => {
+  it("themes contrasting large-region hues while preserving neutral extremes and alpha", () => {
     const sources = [
       "#70bda2",
       "#a7dfca",
@@ -57,16 +57,15 @@ describe("asset color presets", () => {
       "#ffffff",
       "rgba(112,189,162,0.5)"
     ];
-    const weights = new Map([[normalizedPresetColor(sources[0]), 100]]);
     const map = presetColorMap(
       sources,
       "cell",
-      ASSET_COLOR_PRESETS.find((p) => p.id === "red")!,
-      weights
+      ASSET_COLOR_PRESETS.find((p) => p.id === "red")!
     );
     expect(map.has(normalizedPresetColor(sources[0]))).toBe(true);
     expect(map.has(normalizedPresetColor(sources[1]))).toBe(true);
-    for (const color of sources.slice(2, 5))
+    expect(map.has(normalizedPresetColor(sources[2]))).toBe(true);
+    for (const color of sources.slice(3, 5))
       expect(map.has(normalizedPresetColor(color))).toBe(false);
     expect(map.get(normalizedPresetColor(sources[5]))).toMatch(/0.5\)$/);
     expect(map.get(normalizedPresetColor(sources[0]))).not.toBe(
