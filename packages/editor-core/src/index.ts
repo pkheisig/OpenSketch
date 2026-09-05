@@ -10,3 +10,5 @@ export * from "./scientificBrush";
 export * from "./scientificBrushGeometry";
 
 export * from "./assetColorRoles";
+
+export * from "./assetCatalog";

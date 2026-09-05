@@ -1,0 +1,4927 @@
+{
+  "version": 1,
+  "sourceCommit": "1cd92c357b626811a95b33d1f058e73a5e4b3c89",
+  "uniqueArtworkCount": 311,
+  "completedConceptCount": 317,
+  "note": "Concept IDs are search references, not duplicate assets or claims of biological equivalence. Uncommitted artwork is not included.",
+  "assets": [
+    {
+      "canonicalId": "opensketch-generated-t-lymphocyte",
+      "title": "T lymphocyte",
+      "sourceSha256": "dbf3e04ce14b7ea35782bfdc86d576a14cab362fee1a7c6d2f200accacec57a7",
+      "sourceConceptIds": [
+        "t-lymphocyte",
+        "regulatory-t-cell",
+        "b-lymphocyte"
+      ],
+      "sourcePaths": [
+        "svg/t-lymphocyte-bioart-traced.svg"
+      ],
+      "keywords": [
+        "T lymphocyte",
+        "1. Immune and blood cells",
+        "regulatory T cell",
+        "B lymphocyte",
+        "lymphoid cell",
+        "immune cell",
+        "immunology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-activated-t-lymphocyte",
+      "title": "activated T lymphocyte",
+      "sourceSha256": "985d78c27c64e9f5827b9fab2a1aac044edad955666a45a064a872f56952c07d",
+      "sourceConceptIds": [
+        "activated-t-lymphocyte"
+      ],
+      "sourcePaths": [
+        "svg/activated-t-lymphocyte-bioart-traced.svg"
+      ],
+      "keywords": [
+        "activated T lymphocyte",
+        "1. Immune and blood cells",
+        "lymphoid cell",
+        "immune cell",
+        "immunology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-natural-killer-cell",
+      "title": "natural killer cell",
+      "sourceSha256": "8893b7b16be26e38a98166d3ea1afaf4e6d795e9949cfe9359e5cb23bd34d386",
+      "sourceConceptIds": [
+        "natural-killer-cell"
+      ],
+      "sourcePaths": [
+        "svg/natural-killer-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "natural killer cell",
+        "1. Immune and blood cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-plasma-cell",
+      "title": "plasma cell",
+      "sourceSha256": "493b1099af70d52fe7bb0542c4b6255447eb76b25446701b8d9632742b74273e",
+      "sourceConceptIds": [
+        "plasma-cell"
+      ],
+      "sourcePaths": [
+        "svg/plasma-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "plasma cell",
+        "1. Immune and blood cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-monocyte",
+      "title": "monocyte",
+      "sourceSha256": "437b77465024ea8fbd2768a444c0b9636dbb98b25a8c2887fc7d94d0cd6519fa",
+      "sourceConceptIds": [
+        "monocyte"
+      ],
+      "sourcePaths": [
+        "svg/monocyte-bioart-traced.svg"
+      ],
+      "keywords": [
+        "monocyte",
+        "1. Immune and blood cells",
+        "white blood cell",
+        "immune cell",
+        "immunology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-macrophage",
+      "title": "macrophage",
+      "sourceSha256": "b18345122dfe56a04b4c167e802028f17ae9b0d0759267c84bf289e53e8c54a0",
+      "sourceConceptIds": [
+        "macrophage"
+      ],
+      "sourcePaths": [
+        "svg/macrophage-bioart-traced.svg"
+      ],
+      "keywords": [
+        "macrophage",
+        "1. Immune and blood cells",
+        "white blood cell",
+        "immune cell",
+        "immunology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-dendritic-cell",
+      "title": "dendritic cell",
+      "sourceSha256": "eefb9bd07446910014243a9e4e9a2d9fac864bdd71741957d8779c7257fd5c0d",
+      "sourceConceptIds": [
+        "dendritic-cell"
+      ],
+      "sourcePaths": [
+        "svg/dendritic-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "dendritic cell",
+        "1. Immune and blood cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-plasmacytoid-dendritic-cell",
+      "title": "plasmacytoid dendritic cell",
+      "sourceSha256": "045d8359424d2dfd3311670c4bfa3d1545b0177b20f8d986e9efb9daf742d934",
+      "sourceConceptIds": [
+        "plasmacytoid-dendritic-cell"
+      ],
+      "sourcePaths": [
+        "svg/plasmacytoid-dendritic-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "plasmacytoid dendritic cell",
+        "1. Immune and blood cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-neutrophil",
+      "title": "neutrophil",
+      "sourceSha256": "cd488a9f79ed8446bc7aaaa4dff68fe431ac32e741aabafc8c6bcd3780eafc23",
+      "sourceConceptIds": [
+        "neutrophil"
+      ],
+      "sourcePaths": [
+        "svg/neutrophil-bioart-traced.svg"
+      ],
+      "keywords": [
+        "neutrophil",
+        "1. Immune and blood cells",
+        "white blood cell",
+        "immune cell",
+        "immunology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-eosinophil",
+      "title": "eosinophil",
+      "sourceSha256": "17c0cd36e548f0a8d5a502cc13e792f8a182c647a193181a8ea1b543aed71700",
+      "sourceConceptIds": [
+        "eosinophil"
+      ],
+      "sourcePaths": [
+        "svg/eosinophil-bioart-traced.svg"
+      ],
+      "keywords": [
+        "eosinophil",
+        "1. Immune and blood cells",
+        "white blood cell",
+        "immune cell",
+        "immunology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-basophil",
+      "title": "basophil",
+      "sourceSha256": "2203bed8beb444dd321a26a416550fe87d60d003fcc56157247739ae756d5738",
+      "sourceConceptIds": [
+        "basophil"
+      ],
+      "sourcePaths": [
+        "svg/basophil-bioart-traced.svg"
+      ],
+      "keywords": [
+        "basophil",
+        "1. Immune and blood cells",
+        "white blood cell",
+        "immune cell",
+        "immunology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-mast-cell",
+      "title": "mast cell",
+      "sourceSha256": "3afee4cc7e44bbd4f203c7379340b25cc66cb3349787b2567d6141ea5d579068",
+      "sourceConceptIds": [
+        "mast-cell"
+      ],
+      "sourcePaths": [
+        "svg/mast-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "mast cell",
+        "1. Immune and blood cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-erythrocyte",
+      "title": "erythrocyte",
+      "sourceSha256": "35a6b35ef922a4ee7258d3288769f74377e603850d7cb27347704453cea706b1",
+      "sourceConceptIds": [
+        "erythrocyte"
+      ],
+      "sourcePaths": [
+        "svg/erythrocyte-bioart-traced.svg"
+      ],
+      "keywords": [
+        "erythrocyte",
+        "1. Immune and blood cells",
+        "red blood cell",
+        "RBC",
+        "blood cell"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-platelet",
+      "title": "platelet",
+      "sourceSha256": "c459537566b51b5b9cd811dee67168d917717a6656667659224090f41f822f2b",
+      "sourceConceptIds": [
+        "platelet"
+      ],
+      "sourcePaths": [
+        "svg/platelet-bioart-traced.svg"
+      ],
+      "keywords": [
+        "platelet",
+        "1. Immune and blood cells",
+        "thrombocyte",
+        "blood",
+        "clotting"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-megakaryocyte",
+      "title": "megakaryocyte",
+      "sourceSha256": "cd69bd1e331422cc2883dc241ec92e923d2c7ee0491d362467144e584c88dc1e",
+      "sourceConceptIds": [
+        "megakaryocyte"
+      ],
+      "sourcePaths": [
+        "svg/megakaryocyte-bioart-traced.svg"
+      ],
+      "keywords": [
+        "megakaryocyte",
+        "1. Immune and blood cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-hematopoietic-stem-progenitor-cell",
+      "title": "hematopoietic stem/progenitor cell",
+      "sourceSha256": "00b557bc7175fdb51901b39aed30aee495bf6e00e6f0f86809b04883c4f19cc2",
+      "sourceConceptIds": [
+        "hematopoietic-stem-progenitor-cell"
+      ],
+      "sourcePaths": [
+        "svg/hematopoietic-stem-progenitor-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "hematopoietic stem/progenitor cell",
+        "1. Immune and blood cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-generic-epithelial-cell",
+      "title": "generic epithelial cell",
+      "sourceSha256": "69c4488f14d6c26f5fd02d854331de0cdd55bd99f94e681d140106a5d2ee24ad",
+      "sourceConceptIds": [
+        "generic-epithelial-cell"
+      ],
+      "sourcePaths": [
+        "svg/generic-epithelial-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "generic epithelial cell",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-columnar-epithelial-cell",
+      "title": "columnar epithelial cell",
+      "sourceSha256": "19edaa6964e41e3d0eeb084e58682253fe66f0affd0b2c9b6c31e7c2c814efe8",
+      "sourceConceptIds": [
+        "columnar-epithelial-cell"
+      ],
+      "sourcePaths": [
+        "svg/columnar-epithelial-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "columnar epithelial cell",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-ciliated-epithelial-cell",
+      "title": "ciliated epithelial cell",
+      "sourceSha256": "892d56007a0c58dc48bba312a559a515e8c6421cb78109bdd9319a3645b3121c",
+      "sourceConceptIds": [
+        "ciliated-epithelial-cell"
+      ],
+      "sourcePaths": [
+        "svg/ciliated-epithelial-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "ciliated epithelial cell",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-goblet-cell",
+      "title": "goblet cell",
+      "sourceSha256": "f7b95bc6a21764f79e53e6d7708a84e01d8272420f848f8a763cc4c3a2235058",
+      "sourceConceptIds": [
+        "goblet-cell"
+      ],
+      "sourcePaths": [
+        "svg/goblet-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "goblet cell",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-keratinocyte",
+      "title": "keratinocyte",
+      "sourceSha256": "a52c3eda2a0a878a523e2aca91de64d690ebff87d390f752d586ecf89594e9f1",
+      "sourceConceptIds": [
+        "keratinocyte"
+      ],
+      "sourcePaths": [
+        "svg/keratinocyte-bioart-traced.svg"
+      ],
+      "keywords": [
+        "keratinocyte",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-melanocyte",
+      "title": "melanocyte",
+      "sourceSha256": "61bdb9e0b101420bda81251cd92335d6b8b98d1f0fe6c1b8007b20987ba2bf42",
+      "sourceConceptIds": [
+        "melanocyte"
+      ],
+      "sourcePaths": [
+        "svg/melanocyte-bioart-traced.svg"
+      ],
+      "keywords": [
+        "melanocyte",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-endothelial-cell",
+      "title": "endothelial cell",
+      "sourceSha256": "ee3d08800ae0a1cae3c1aa588d5bc2e0f1876b62017255a4cc42abc4fb794dd0",
+      "sourceConceptIds": [
+        "endothelial-cell"
+      ],
+      "sourcePaths": [
+        "svg/endothelial-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "endothelial cell",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-fibroblast",
+      "title": "fibroblast",
+      "sourceSha256": "baec4c21037d9152e4dda44b19f56853bff8a909c811d5378a12bd8e0ddda2d4",
+      "sourceConceptIds": [
+        "fibroblast"
+      ],
+      "sourcePaths": [
+        "svg/fibroblast-bioart-traced.svg"
+      ],
+      "keywords": [
+        "fibroblast",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-adipocyte",
+      "title": "adipocyte",
+      "sourceSha256": "b2f214d6a8a4678bda7a8f8b2731488c4ebda46b2305862dfa2ab9731d5e19e0",
+      "sourceConceptIds": [
+        "adipocyte"
+      ],
+      "sourcePaths": [
+        "svg/adipocyte-bioart-traced.svg"
+      ],
+      "keywords": [
+        "adipocyte",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-chondrocyte",
+      "title": "chondrocyte",
+      "sourceSha256": "63961a2c259c490192b2e03ebecb46f120c1306802435c052ce79ef1f856538c",
+      "sourceConceptIds": [
+        "chondrocyte"
+      ],
+      "sourcePaths": [
+        "svg/chondrocyte-bioart-traced.svg"
+      ],
+      "keywords": [
+        "chondrocyte",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-osteoblast",
+      "title": "osteoblast",
+      "sourceSha256": "d7ed8b517c8336b9095264fc739cbf00d0e0a8205e372e916702ac14c9c5e30c",
+      "sourceConceptIds": [
+        "osteoblast"
+      ],
+      "sourcePaths": [
+        "svg/osteoblast-bioart-traced.svg"
+      ],
+      "keywords": [
+        "osteoblast",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-osteoclast",
+      "title": "osteoclast",
+      "sourceSha256": "840d986cf6289c3ff6514f5cf856544d522241ada5ef53fab345f494deef0eda",
+      "sourceConceptIds": [
+        "osteoclast"
+      ],
+      "sourcePaths": [
+        "svg/osteoclast-bioart-traced.svg"
+      ],
+      "keywords": [
+        "osteoclast",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-osteocyte",
+      "title": "osteocyte",
+      "sourceSha256": "37031b9a7fe3b39a373b7efe89a37cab753280fe326dbf3c0ab5b590a79d8e98",
+      "sourceConceptIds": [
+        "osteocyte"
+      ],
+      "sourcePaths": [
+        "svg/osteocyte-bioart-traced.svg"
+      ],
+      "keywords": [
+        "osteocyte",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-skeletal-muscle-fiber",
+      "title": "skeletal muscle fiber",
+      "sourceSha256": "093b9f70a11b8a93771f88fb1b96907c6866dfd390d5b62836405b71a06c0e22",
+      "sourceConceptIds": [
+        "skeletal-muscle-fiber"
+      ],
+      "sourcePaths": [
+        "svg/skeletal-muscle-fiber-bioart-traced.svg"
+      ],
+      "keywords": [
+        "skeletal muscle fiber",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cardiomyocyte",
+      "title": "cardiomyocyte",
+      "sourceSha256": "da789e71901a2d1b2a056f3e19921ddadd98c326a011f368ba3393b57b237b97",
+      "sourceConceptIds": [
+        "cardiomyocyte"
+      ],
+      "sourcePaths": [
+        "svg/cardiomyocyte-bioart-traced.svg"
+      ],
+      "keywords": [
+        "cardiomyocyte",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-smooth-muscle-cell",
+      "title": "smooth muscle cell",
+      "sourceSha256": "b11f49f7f2a7e034fe762def724a5bbb31731c71b6bc51f172443c993f4c19f5",
+      "sourceConceptIds": [
+        "smooth-muscle-cell"
+      ],
+      "sourcePaths": [
+        "svg/smooth-muscle-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "smooth muscle cell",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-neuron",
+      "title": "neuron",
+      "sourceSha256": "1167c112379f1b203e625d52aef89a6b1625eb8f20c461563c39b4cc226b2d02",
+      "sourceConceptIds": [
+        "neuron"
+      ],
+      "sourcePaths": [
+        "svg/neuron-bioart-traced.svg"
+      ],
+      "keywords": [
+        "neuron",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-astrocyte",
+      "title": "astrocyte",
+      "sourceSha256": "d5487c7bfdb9e7752c65d8ec3e1b7fce2895837bcf5323e5ee8971fc3f94cd5d",
+      "sourceConceptIds": [
+        "astrocyte"
+      ],
+      "sourcePaths": [
+        "svg/astrocyte-bioart-traced.svg"
+      ],
+      "keywords": [
+        "astrocyte",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-oligodendrocyte",
+      "title": "oligodendrocyte",
+      "sourceSha256": "0446b4863b6b4cb9e450242da45407a5ce40ebbf3c1e11e77164643fd909f324",
+      "sourceConceptIds": [
+        "oligodendrocyte"
+      ],
+      "sourcePaths": [
+        "svg/oligodendrocyte-bioart-traced.svg"
+      ],
+      "keywords": [
+        "oligodendrocyte",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-microglial-cell",
+      "title": "microglial cell",
+      "sourceSha256": "20f09b62f31d98c3e9c5ef22db68b7ced275cdc761a20ecc4abab345c12ff9f7",
+      "sourceConceptIds": [
+        "microglial-cell"
+      ],
+      "sourcePaths": [
+        "svg/microglial-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "microglial cell",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-schwann-cell",
+      "title": "Schwann cell",
+      "sourceSha256": "769bb22c33e89aa6c9e9543e39e3c21d69ee07542da892b1ae71900b0e5782a4",
+      "sourceConceptIds": [
+        "schwann-cell"
+      ],
+      "sourcePaths": [
+        "svg/schwann-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "Schwann cell",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-hepatocyte",
+      "title": "hepatocyte",
+      "sourceSha256": "cd5659eb8cb9d108f80fa30779976c74a1daab70df562cdfc6758b95e21ab956",
+      "sourceConceptIds": [
+        "hepatocyte"
+      ],
+      "sourcePaths": [
+        "svg/hepatocyte-bioart-traced.svg"
+      ],
+      "keywords": [
+        "hepatocyte",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-pancreatic-beta-cell",
+      "title": "pancreatic beta cell",
+      "sourceSha256": "9b9ce1522d8289904509c12cdc357195e14238559392145c9298502e5f149a05",
+      "sourceConceptIds": [
+        "pancreatic-beta-cell"
+      ],
+      "sourcePaths": [
+        "svg/pancreatic-beta-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "pancreatic beta cell",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-acinar-cell",
+      "title": "acinar cell",
+      "sourceSha256": "857cc084e02fae796453d585f4b2f23e0e64f142c7ae0ef2457af9cf95f4cbd0",
+      "sourceConceptIds": [
+        "acinar-cell"
+      ],
+      "sourcePaths": [
+        "svg/acinar-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "acinar cell",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-podocyte",
+      "title": "podocyte",
+      "sourceSha256": "aa1d57c9b21600add90eb0698a7e18291256967f412493012aae3a802b58ef06",
+      "sourceConceptIds": [
+        "podocyte"
+      ],
+      "sourcePaths": [
+        "svg/podocyte-bioart-traced.svg"
+      ],
+      "keywords": [
+        "podocyte",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-renal-tubular-epithelial-cell",
+      "title": "renal tubular epithelial cell",
+      "sourceSha256": "5a24cd6eaa28d90cacce8740a086488890b6a249f285d514a1c1c973d6dd269b",
+      "sourceConceptIds": [
+        "renal-tubular-epithelial-cell"
+      ],
+      "sourcePaths": [
+        "svg/renal-tubular-epithelial-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "renal tubular epithelial cell",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-sperm-cell",
+      "title": "sperm cell",
+      "sourceSha256": "255e20dbf36b221cabbec33e876fa278a0856f0e10f3510e3b1e4be424270e8e",
+      "sourceConceptIds": [
+        "sperm-cell"
+      ],
+      "sourcePaths": [
+        "svg/sperm-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "sperm cell",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-oocyte",
+      "title": "oocyte",
+      "sourceSha256": "047017c6e324fc05730ecc05c48ca194ef69e3b1bdec3dd10086c646a2bf7dbd",
+      "sourceConceptIds": [
+        "oocyte"
+      ],
+      "sourcePaths": [
+        "svg/oocyte-bioart-traced.svg"
+      ],
+      "keywords": [
+        "oocyte",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-trophoblast",
+      "title": "trophoblast",
+      "sourceSha256": "67794f31cb8a8ed5deda3fb9f0f57bdb2175479ab2bf125239aae0da2ed6e040",
+      "sourceConceptIds": [
+        "trophoblast"
+      ],
+      "sourcePaths": [
+        "svg/trophoblast-bioart-traced.svg"
+      ],
+      "keywords": [
+        "trophoblast",
+        "2. General and specialized mammalian cells"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-generic-stem-cell",
+      "title": "generic stem cell",
+      "sourceSha256": "107a764f90c1aaed350f50c15fdb899c6b1352561373cd15f1b3f964825b6ffe",
+      "sourceConceptIds": [
+        "generic-stem-cell",
+        "induced-pluripotent-stem-cell"
+      ],
+      "sourcePaths": [
+        "svg/generic-stem-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "generic stem cell",
+        "2. General and specialized mammalian cells",
+        "induced pluripotent stem cell"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-generic-cancer-cell",
+      "title": "generic cancer cell",
+      "sourceSha256": "13fc9b27a3322ae4256301a01a4fa415e20c292946bcc6022435eeb781b07d13",
+      "sourceConceptIds": [
+        "generic-cancer-cell",
+        "cancer-stem-like-cell"
+      ],
+      "sourcePaths": [
+        "svg/generic-cancer-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "generic cancer cell",
+        "2. General and specialized mammalian cells",
+        "cancer stem-like cell"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-multinucleated-giant-cell",
+      "title": "multinucleated giant cell",
+      "sourceSha256": "96fd818ee05d23298c5e4e82682a145dd6252ac0ebd7a97d488387fed23dd441",
+      "sourceConceptIds": [
+        "multinucleated-giant-cell",
+        "multinucleated-syncytium"
+      ],
+      "sourcePaths": [
+        "svg/multinucleated-giant-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "multinucleated giant cell",
+        "2. General and specialized mammalian cells",
+        "multinucleated syncytium"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-mitotic-cell",
+      "title": "mitotic cell",
+      "sourceSha256": "f6528c0190cca03475f157394a0d7e1e35a4ed47682907db42cddecb33b3424a",
+      "sourceConceptIds": [
+        "mitotic-cell"
+      ],
+      "sourcePaths": [
+        "svg/mitotic-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "mitotic cell",
+        "3. Cell states and morphology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cytokinetic-cell",
+      "title": "cytokinetic cell",
+      "sourceSha256": "0b401c56fceb9f7f3675302a2ef44e25637581cc9d91c777bf3b64f2bf1f7423",
+      "sourceConceptIds": [
+        "cytokinetic-cell"
+      ],
+      "sourcePaths": [
+        "svg/cytokinetic-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "cytokinetic cell",
+        "3. Cell states and morphology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-apoptotic-cell",
+      "title": "apoptotic cell",
+      "sourceSha256": "1a1755f421b7d2f8ff589343ebad71395d5310689fab86a170cad5c2e70ed985",
+      "sourceConceptIds": [
+        "apoptotic-cell"
+      ],
+      "sourcePaths": [
+        "svg/apoptotic-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "apoptotic cell",
+        "3. Cell states and morphology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-necrotic-cell",
+      "title": "necrotic cell",
+      "sourceSha256": "e7082d3f2754542460984e517418d82588b37ab812f82c062be499a772663e48",
+      "sourceConceptIds": [
+        "necrotic-cell"
+      ],
+      "sourcePaths": [
+        "svg/necrotic-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "necrotic cell",
+        "3. Cell states and morphology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-senescent-cell",
+      "title": "senescent cell",
+      "sourceSha256": "c26912b20c61594abae11875ffa1e546982cb85e4e3afba28ebb037367287efc",
+      "sourceConceptIds": [
+        "senescent-cell"
+      ],
+      "sourcePaths": [
+        "svg/senescent-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "senescent cell",
+        "3. Cell states and morphology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-polarized-migrating-cell",
+      "title": "polarized migrating cell",
+      "sourceSha256": "12bbeb6027a0ab465a6c55ec4e51d9cff3b81500c68ec0a21bf4835df5498ff5",
+      "sourceConceptIds": [
+        "polarized-migrating-cell"
+      ],
+      "sourcePaths": [
+        "svg/polarized-migrating-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "polarized migrating cell",
+        "3. Cell states and morphology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-adherent-spread-cell",
+      "title": "adherent spread cell",
+      "sourceSha256": "893940b648ff86e6fb7506ff12c384a2dc5a0512dc70f98ff24a660e7c330aad",
+      "sourceConceptIds": [
+        "adherent-spread-cell"
+      ],
+      "sourcePaths": [
+        "svg/adherent-spread-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "adherent spread cell",
+        "3. Cell states and morphology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-rounded-suspension-cell",
+      "title": "rounded suspension cell",
+      "sourceSha256": "63eda1701f8fde0e0ce0c520a37c8c2bcf12d3dbfe92bace6df75fbae56fa7c3",
+      "sourceConceptIds": [
+        "rounded-suspension-cell"
+      ],
+      "sourcePaths": [
+        "svg/rounded-suspension-cell-bioart-traced.svg"
+      ],
+      "keywords": [
+        "rounded suspension cell",
+        "3. Cell states and morphology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cell-with-membrane-blebs",
+      "title": "cell with membrane blebs",
+      "sourceSha256": "29331471d24b294e27c7e4ec688760bcc1f3e5eec9b41d52e6381200e2e0e0ff",
+      "sourceConceptIds": [
+        "cell-with-membrane-blebs"
+      ],
+      "sourcePaths": [
+        "svg/cell-with-membrane-blebs-bioart-traced.svg"
+      ],
+      "keywords": [
+        "cell with membrane blebs",
+        "3. Cell states and morphology",
+        "lipid bilayer",
+        "phospholipid",
+        "cell boundary"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-phagocytic-cell-engulfing-a-particle",
+      "title": "phagocytic cell engulfing a particle",
+      "sourceSha256": "31b684e05cf26c933bb72e5bb0eea34cf9985351bea7c3b73b436ed004e67b50",
+      "sourceConceptIds": [
+        "phagocytic-cell-engulfing-a-particle"
+      ],
+      "sourcePaths": [
+        "svg/phagocytic-cell-engulfing-a-particle-bioart-traced.svg"
+      ],
+      "keywords": [
+        "phagocytic cell engulfing a particle",
+        "3. Cell states and morphology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cell-spheroid",
+      "title": "cell spheroid",
+      "sourceSha256": "6f0e64c855de1050639b744429eabc939f5524ea1d6b9096a7c511a606d62314",
+      "sourceConceptIds": [
+        "cell-spheroid"
+      ],
+      "sourcePaths": [
+        "svg/cell-spheroid-bioart-traced.svg"
+      ],
+      "keywords": [
+        "cell spheroid",
+        "3. Cell states and morphology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-organoid",
+      "title": "organoid",
+      "sourceSha256": "7d1e0377a2f318a631da29163695fe9284b368b67d01cf6edbf280a08334fccf",
+      "sourceConceptIds": [
+        "organoid"
+      ],
+      "sourcePaths": [
+        "svg/organoid-bioart-traced.svg"
+      ],
+      "keywords": [
+        "organoid",
+        "3. Cell states and morphology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-nucleus",
+      "title": "nucleus",
+      "sourceSha256": "c50f642c709519cef1c63cd5f89650c68fb6df4a002d0860dd10223f3e03fbaa",
+      "sourceConceptIds": [
+        "nucleus"
+      ],
+      "sourcePaths": [
+        "svg/nucleus-bioart-traced.svg"
+      ],
+      "keywords": [
+        "nucleus",
+        "4. Organelles and subcellular structures",
+        "cell component",
+        "organelle"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-nucleolus",
+      "title": "nucleolus",
+      "sourceSha256": "71baca38cc0949f7e67033806dc44704698c01dc7802a5536853d3f228ca7bdd",
+      "sourceConceptIds": [
+        "nucleolus"
+      ],
+      "sourcePaths": [
+        "svg/nucleolus-bioart-traced.svg"
+      ],
+      "keywords": [
+        "nucleolus",
+        "4. Organelles and subcellular structures",
+        "cell component",
+        "organelle"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-nuclear-envelope",
+      "title": "nuclear envelope",
+      "sourceSha256": "af9125632d1fe8b1061356880ca8ed59ff201abea2ceb0dc904d7c6fcb3a6c78",
+      "sourceConceptIds": [
+        "nuclear-envelope"
+      ],
+      "sourcePaths": [
+        "svg/nuclear-envelope-bioart-traced.svg"
+      ],
+      "keywords": [
+        "nuclear envelope",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-nuclear-pore-complex",
+      "title": "nuclear pore complex",
+      "sourceSha256": "e92daf2f9948cc6fb7f80f154de0ba1d5c2533d286f6d6de8d147581cebfb082",
+      "sourceConceptIds": [
+        "nuclear-pore-complex"
+      ],
+      "sourcePaths": [
+        "svg/nuclear-pore-complex-bioart-traced.svg"
+      ],
+      "keywords": [
+        "nuclear pore complex",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-mitochondrion",
+      "title": "mitochondrion",
+      "sourceSha256": "dac23bc596d4513138c89e7d3a9437f6778e5bd7d616595c4c56ba17d4485ebd",
+      "sourceConceptIds": [
+        "mitochondrion"
+      ],
+      "sourcePaths": [
+        "svg/mitochondrion-bioart-traced.svg"
+      ],
+      "keywords": [
+        "mitochondrion",
+        "4. Organelles and subcellular structures",
+        "mitochondria",
+        "organelle"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-golgi-apparatus",
+      "title": "Golgi apparatus",
+      "sourceSha256": "e47cbebbc4b40404a27d587af30d8ba89d115cb96343c2ff3d3a851a031e93ed",
+      "sourceConceptIds": [
+        "golgi-apparatus"
+      ],
+      "sourcePaths": [
+        "svg/golgi-apparatus-bioart-traced.svg"
+      ],
+      "keywords": [
+        "Golgi apparatus",
+        "4. Organelles and subcellular structures",
+        "cell component",
+        "organelle"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-rough-endoplasmic-reticulum",
+      "title": "rough endoplasmic reticulum",
+      "sourceSha256": "4315fb9b9361c1c6633133991d983c9e5441c2f193d617d71f115e3122f67516",
+      "sourceConceptIds": [
+        "rough-endoplasmic-reticulum"
+      ],
+      "sourcePaths": [
+        "svg/rough-endoplasmic-reticulum-bioart-traced.svg"
+      ],
+      "keywords": [
+        "rough endoplasmic reticulum",
+        "4. Organelles and subcellular structures",
+        "ER",
+        "organelle"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-smooth-endoplasmic-reticulum",
+      "title": "smooth endoplasmic reticulum",
+      "sourceSha256": "1394763a81ff2b9d5d7946a175a9feccfacb2bcc3be74be5df280dcb964aff74",
+      "sourceConceptIds": [
+        "smooth-endoplasmic-reticulum"
+      ],
+      "sourcePaths": [
+        "svg/smooth-endoplasmic-reticulum-bioart-traced.svg"
+      ],
+      "keywords": [
+        "smooth endoplasmic reticulum",
+        "4. Organelles and subcellular structures",
+        "ER",
+        "organelle"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-lysosome",
+      "title": "lysosome",
+      "sourceSha256": "9e6fe149447a592707a0ac2c440d78367d7b88a880c147c467b8ba454477c81f",
+      "sourceConceptIds": [
+        "lysosome"
+      ],
+      "sourcePaths": [
+        "svg/lysosome-bioart-traced.svg"
+      ],
+      "keywords": [
+        "lysosome",
+        "4. Organelles and subcellular structures",
+        "cell component",
+        "organelle"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-early-endosome",
+      "title": "early endosome",
+      "sourceSha256": "b4442f29190de72c2d75190af1ef82607f3d726a87db70f0071d34e2d587d1b3",
+      "sourceConceptIds": [
+        "early-endosome"
+      ],
+      "sourcePaths": [
+        "svg/early-endosome-bioart-traced.svg"
+      ],
+      "keywords": [
+        "early endosome",
+        "4. Organelles and subcellular structures",
+        "cell component",
+        "organelle"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-late-endosome",
+      "title": "late endosome",
+      "sourceSha256": "f8d30f4d48158806976153c797b082e32188f4ae2c19797df175ee3906a2b606",
+      "sourceConceptIds": [
+        "late-endosome"
+      ],
+      "sourcePaths": [
+        "svg/late-endosome-bioart-traced.svg"
+      ],
+      "keywords": [
+        "late endosome",
+        "4. Organelles and subcellular structures",
+        "cell component",
+        "organelle"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-peroxisome",
+      "title": "peroxisome",
+      "sourceSha256": "5461dce9ff9001ee42d2e5c5840a268fee28183538bd3e82b2823bf8b50bc6a8",
+      "sourceConceptIds": [
+        "peroxisome"
+      ],
+      "sourcePaths": [
+        "svg/peroxisome-bioart-traced.svg"
+      ],
+      "keywords": [
+        "peroxisome",
+        "4. Organelles and subcellular structures",
+        "cell component",
+        "organelle"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-autophagosome",
+      "title": "autophagosome",
+      "sourceSha256": "56cbe6df3fc005702de4ec3b3f106d696d25a631b03b253fe78d19419c65bdd0",
+      "sourceConceptIds": [
+        "autophagosome"
+      ],
+      "sourcePaths": [
+        "svg/autophagosome-bioart-traced.svg"
+      ],
+      "keywords": [
+        "autophagosome",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-phagosome",
+      "title": "phagosome",
+      "sourceSha256": "4c793515d2ec2c06742ce003c09c04e6e690baacc0d32f8bd0af8b6c2eb80646",
+      "sourceConceptIds": [
+        "phagosome"
+      ],
+      "sourcePaths": [
+        "svg/phagosome-bioart-traced.svg"
+      ],
+      "keywords": [
+        "phagosome",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-transport-vesicle",
+      "title": "transport vesicle",
+      "sourceSha256": "de738cae96576f9a15453ed45020f9a49be27e36b74ba7f28f31ed12dddd52c1",
+      "sourceConceptIds": [
+        "transport-vesicle"
+      ],
+      "sourcePaths": [
+        "svg/transport-vesicle-bioart-traced.svg"
+      ],
+      "keywords": [
+        "transport vesicle",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-secretory-vesicle",
+      "title": "secretory vesicle",
+      "sourceSha256": "6897be5f01ef1829631a650a59dc1902093914bd1069485377213f7d405da800",
+      "sourceConceptIds": [
+        "secretory-vesicle"
+      ],
+      "sourcePaths": [
+        "svg/secretory-vesicle-bioart-traced.svg"
+      ],
+      "keywords": [
+        "secretory vesicle",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-exosome",
+      "title": "exosome",
+      "sourceSha256": "acbd00e55b84a17d13b3f7c66160b76bed79fd724e937966e002822fb48e760a",
+      "sourceConceptIds": [
+        "exosome",
+        "extracellular-vesicle"
+      ],
+      "sourcePaths": [
+        "svg/exosome-bioart-traced.svg"
+      ],
+      "keywords": [
+        "exosome",
+        "4. Organelles and subcellular structures",
+        "extracellular vesicle"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-ribosome",
+      "title": "ribosome",
+      "sourceSha256": "9a6a60259020afed593b2b1e81d7f2f292194a0e3a64ecb795e5756fc3f1e37b",
+      "sourceConceptIds": [
+        "ribosome"
+      ],
+      "sourcePaths": [
+        "svg/ribosome-bioart-traced.svg"
+      ],
+      "keywords": [
+        "ribosome",
+        "4. Organelles and subcellular structures",
+        "cell component",
+        "organelle"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-proteasome",
+      "title": "proteasome",
+      "sourceSha256": "a3bc77597b783ef52a047be736c76954397bcd8b046601a4af2ca50bf6ff1f49",
+      "sourceConceptIds": [
+        "proteasome"
+      ],
+      "sourcePaths": [
+        "svg/proteasome-bioart-traced.svg"
+      ],
+      "keywords": [
+        "proteasome",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-centrosome",
+      "title": "centrosome",
+      "sourceSha256": "241c10acfcc8d185737c80740dd0095b216ef3880bef6a95642b19c760f10c85",
+      "sourceConceptIds": [
+        "centrosome"
+      ],
+      "sourcePaths": [
+        "svg/centrosome-bioart-traced.svg"
+      ],
+      "keywords": [
+        "centrosome",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-centriole-pair",
+      "title": "centriole pair",
+      "sourceSha256": "9dfd0734cb79ec37b279e10a84bd34235def75a24d7b385326487482712a8bb7",
+      "sourceConceptIds": [
+        "centriole-pair"
+      ],
+      "sourcePaths": [
+        "svg/centriole-pair-bioart-traced.svg"
+      ],
+      "keywords": [
+        "centriole pair",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-mitotic-spindle",
+      "title": "mitotic spindle",
+      "sourceSha256": "c29b0fc3c22e986778f121655d366733835aa634d1b47687894bb611e8f326ed",
+      "sourceConceptIds": [
+        "mitotic-spindle"
+      ],
+      "sourcePaths": [
+        "svg/mitotic-spindle-bioart-traced.svg"
+      ],
+      "keywords": [
+        "mitotic spindle",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-microtubule",
+      "title": "microtubule",
+      "sourceSha256": "a2dbb4f54cbb88081cc1cc299b7936835353934ac72d384b6ca69279608addf8",
+      "sourceConceptIds": [
+        "microtubule"
+      ],
+      "sourcePaths": [
+        "svg/microtubule-bioart-traced.svg"
+      ],
+      "keywords": [
+        "microtubule",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-actin-filament",
+      "title": "actin filament",
+      "sourceSha256": "ad2a422e5e5e0d13f3cea7f15e922071e5f1e4118b7e4eed50b431c796993621",
+      "sourceConceptIds": [
+        "actin-filament"
+      ],
+      "sourcePaths": [
+        "svg/actin-filament-bioart-traced.svg"
+      ],
+      "keywords": [
+        "actin filament",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-intermediate-filament",
+      "title": "intermediate filament",
+      "sourceSha256": "cd28c611facc37a564f3d21365d5999337215aa5c96db67176f89e4ae119edd2",
+      "sourceConceptIds": [
+        "intermediate-filament"
+      ],
+      "sourcePaths": [
+        "svg/intermediate-filament-bioart-traced.svg"
+      ],
+      "keywords": [
+        "intermediate filament",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cilium",
+      "title": "cilium",
+      "sourceSha256": "fc1e0cc0626414d6cfd1107eeb334b92fe6bbc134644fc533315b0cf30b7165c",
+      "sourceConceptIds": [
+        "cilium"
+      ],
+      "sourcePaths": [
+        "svg/cilium-bioart-traced.svg"
+      ],
+      "keywords": [
+        "cilium",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-primary-cilium",
+      "title": "primary cilium",
+      "sourceSha256": "8ef19c201589f9112495bdcd7d7e3b199edc907ce3e7e548c658b549e9537552",
+      "sourceConceptIds": [
+        "primary-cilium"
+      ],
+      "sourcePaths": [
+        "svg/primary-cilium-bioart-traced.svg"
+      ],
+      "keywords": [
+        "primary cilium",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-motile-cilium-bundle",
+      "title": "motile cilium bundle",
+      "sourceSha256": "92f2190fecf46984eb1a989e8c6847c53ad66f5a88a6ae8bf1815f91b23e5bcf",
+      "sourceConceptIds": [
+        "motile-cilium-bundle"
+      ],
+      "sourcePaths": [
+        "svg/motile-cilium-bundle-bioart-traced.svg"
+      ],
+      "keywords": [
+        "motile cilium bundle",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-eukaryotic-flagellum",
+      "title": "eukaryotic flagellum",
+      "sourceSha256": "a4a4ea7c661e73cfdb354f3e033a67b216e932514f43ccf9ef0ed7190c1ba80d",
+      "sourceConceptIds": [
+        "eukaryotic-flagellum"
+      ],
+      "sourcePaths": [
+        "svg/eukaryotic-flagellum-bioart-traced.svg"
+      ],
+      "keywords": [
+        "eukaryotic flagellum",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-lipid-droplet",
+      "title": "lipid droplet",
+      "sourceSha256": "6ce4dffe87964f046644fed79fae91ee502aa0e9a478d4696fc5d7bb01a37546",
+      "sourceConceptIds": [
+        "lipid-droplet"
+      ],
+      "sourcePaths": [
+        "svg/lipid-droplet-bioart-traced.svg"
+      ],
+      "keywords": [
+        "lipid droplet",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-glycogen-granule",
+      "title": "glycogen granule",
+      "sourceSha256": "f133dea7937f1a1097199beb1777f9a75142a80e73f7f97341b1c96f0e83a902",
+      "sourceConceptIds": [
+        "glycogen-granule"
+      ],
+      "sourcePaths": [
+        "svg/glycogen-granule-bioart-traced.svg"
+      ],
+      "keywords": [
+        "glycogen granule",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-stress-granule",
+      "title": "stress granule",
+      "sourceSha256": "e287b81652b92cfc1a30cc3860385d2eaf50e1f8e57af20884bc53b96b459dd2",
+      "sourceConceptIds": [
+        "stress-granule"
+      ],
+      "sourcePaths": [
+        "svg/stress-granule-bioart-traced.svg"
+      ],
+      "keywords": [
+        "stress granule",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-p-body",
+      "title": "P-body",
+      "sourceSha256": "32a79a7433839cba89967bb8249de7ab842a2240cf8db4566e934b3ec23f413b",
+      "sourceConceptIds": [
+        "p-body"
+      ],
+      "sourcePaths": [
+        "svg/p-body-bioart-traced.svg"
+      ],
+      "keywords": [
+        "P-body",
+        "4. Organelles and subcellular structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-plasma-membrane-segment",
+      "title": "plasma membrane segment",
+      "sourceSha256": "e55ee067d834fc4c701bdee8abe14035762ee67027ec726fd89ac248e72b5c4b",
+      "sourceConceptIds": [
+        "plasma-membrane-segment"
+      ],
+      "sourcePaths": [
+        "svg/plasma-membrane-segment-bioart-traced.svg"
+      ],
+      "keywords": [
+        "plasma membrane segment",
+        "5. Membranes, junctions, and cell-surface structures",
+        "lipid bilayer",
+        "phospholipid",
+        "cell boundary"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-lipid-bilayer-cross-section",
+      "title": "lipid bilayer cross-section",
+      "sourceSha256": "44682ece25191c3192f57b56f4a8d01d8a859471e4669e20ba98e75a4d8a310a",
+      "sourceConceptIds": [
+        "lipid-bilayer-cross-section"
+      ],
+      "sourcePaths": [
+        "svg/lipid-bilayer-cross-section-bioart-traced.svg"
+      ],
+      "keywords": [
+        "lipid bilayer cross-section",
+        "5. Membranes, junctions, and cell-surface structures",
+        "lipid bilayer",
+        "phospholipid",
+        "cell boundary"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-membrane-raft",
+      "title": "membrane raft",
+      "sourceSha256": "c5fd6b823bdc34dd0d4f55fe9044d56a4ba8d6e4707e15e95fff708c794a67bb",
+      "sourceConceptIds": [
+        "membrane-raft"
+      ],
+      "sourcePaths": [
+        "svg/membrane-raft-bioart-traced.svg"
+      ],
+      "keywords": [
+        "membrane raft",
+        "5. Membranes, junctions, and cell-surface structures",
+        "lipid bilayer",
+        "phospholipid",
+        "cell boundary"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-clathrin-coated-pit",
+      "title": "clathrin-coated pit",
+      "sourceSha256": "a343c9699dd2eb68e721f3a30842e30e648e00b147ad8478f5c192b9ca1ad64f",
+      "sourceConceptIds": [
+        "clathrin-coated-pit"
+      ],
+      "sourcePaths": [
+        "svg/clathrin-coated-pit-bioart-traced.svg"
+      ],
+      "keywords": [
+        "clathrin-coated pit",
+        "5. Membranes, junctions, and cell-surface structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-clathrin-coated-vesicle",
+      "title": "clathrin-coated vesicle",
+      "sourceSha256": "64741c03c4c94238293857fc068223cfe83eff5c0d982dc1595a93c77c928763",
+      "sourceConceptIds": [
+        "clathrin-coated-vesicle"
+      ],
+      "sourcePaths": [
+        "svg/clathrin-coated-vesicle-bioart-traced.svg"
+      ],
+      "keywords": [
+        "clathrin-coated vesicle",
+        "5. Membranes, junctions, and cell-surface structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-caveola",
+      "title": "caveola",
+      "sourceSha256": "a08ab85c4b45c4a27b2813355a6a1a8cc74bf5a1659506d55f78580d9d33c04d",
+      "sourceConceptIds": [
+        "caveola"
+      ],
+      "sourcePaths": [
+        "svg/caveola-bioart-traced.svg"
+      ],
+      "keywords": [
+        "caveola",
+        "5. Membranes, junctions, and cell-surface structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-tight-junction",
+      "title": "tight junction",
+      "sourceSha256": "8df3c866f4215b23ed127b5ee0dc5c099e998732939e1fa65c340259d4cf1c2a",
+      "sourceConceptIds": [
+        "tight-junction"
+      ],
+      "sourcePaths": [
+        "svg/tight-junction-bioart-traced.svg"
+      ],
+      "keywords": [
+        "tight junction",
+        "5. Membranes, junctions, and cell-surface structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-adherens-junction",
+      "title": "adherens junction",
+      "sourceSha256": "94a5bf6923a3ee9add8e7a9e24fadbcb94ce518d884860851ac0d56c21372cfe",
+      "sourceConceptIds": [
+        "adherens-junction"
+      ],
+      "sourcePaths": [
+        "svg/adherens-junction-bioart-traced.svg"
+      ],
+      "keywords": [
+        "adherens junction",
+        "5. Membranes, junctions, and cell-surface structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-desmosome",
+      "title": "desmosome",
+      "sourceSha256": "16967bd263ea645968cc65120b8fe4aca5910184821192ea204ed12107f21d76",
+      "sourceConceptIds": [
+        "desmosome"
+      ],
+      "sourcePaths": [
+        "svg/desmosome-bioart-traced.svg"
+      ],
+      "keywords": [
+        "desmosome",
+        "5. Membranes, junctions, and cell-surface structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-hemidesmosome",
+      "title": "hemidesmosome",
+      "sourceSha256": "501aecfbaceee16dfe51a1f3c32c6b436ce9fe644cdd17a93d891b03b03bb928",
+      "sourceConceptIds": [
+        "hemidesmosome"
+      ],
+      "sourcePaths": [
+        "svg/hemidesmosome-bioart-traced.svg"
+      ],
+      "keywords": [
+        "hemidesmosome",
+        "5. Membranes, junctions, and cell-surface structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-gap-junction",
+      "title": "gap junction",
+      "sourceSha256": "03ddb5c91136c9de5a777e70d833bb6e091229c3e478e962794a34ec2062dad6",
+      "sourceConceptIds": [
+        "gap-junction"
+      ],
+      "sourcePaths": [
+        "svg/gap-junction-bioart-traced.svg"
+      ],
+      "keywords": [
+        "gap junction",
+        "5. Membranes, junctions, and cell-surface structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-focal-adhesion",
+      "title": "focal adhesion",
+      "sourceSha256": "9eec54287c09ea6bf479d922ae08f82906099e6905b86fa90dd7a5a424ae7973",
+      "sourceConceptIds": [
+        "focal-adhesion"
+      ],
+      "sourcePaths": [
+        "svg/focal-adhesion-bioart-traced.svg"
+      ],
+      "keywords": [
+        "focal adhesion",
+        "5. Membranes, junctions, and cell-surface structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-immunological-synapse",
+      "title": "immunological synapse",
+      "sourceSha256": "933d5873faee2cec4fad7344fe8cbf7fa150d505d05e96eee0f7fa40aed61482",
+      "sourceConceptIds": [
+        "immunological-synapse"
+      ],
+      "sourcePaths": [
+        "svg/immunological-synapse-bioart-traced.svg"
+      ],
+      "keywords": [
+        "immunological synapse",
+        "5. Membranes, junctions, and cell-surface structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-neuronal-synapse",
+      "title": "neuronal synapse",
+      "sourceSha256": "748119c761d2485c01b517d0acf28c45148fdb95c6d9a396f43bc319a53127eb",
+      "sourceConceptIds": [
+        "neuronal-synapse"
+      ],
+      "sourcePaths": [
+        "svg/neuronal-synapse-bioart-traced.svg"
+      ],
+      "keywords": [
+        "neuronal synapse",
+        "5. Membranes, junctions, and cell-surface structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-neuromuscular-junction",
+      "title": "neuromuscular junction",
+      "sourceSha256": "1afaa93361a9eeddcca433b109bfeb2a63bc5969240e0d04bc4d52fbf034eee4",
+      "sourceConceptIds": [
+        "neuromuscular-junction"
+      ],
+      "sourcePaths": [
+        "svg/neuromuscular-junction-bioart-traced.svg"
+      ],
+      "keywords": [
+        "neuromuscular junction",
+        "5. Membranes, junctions, and cell-surface structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-filopodium",
+      "title": "filopodium",
+      "sourceSha256": "3412dbd471905ea3a16192771c8801deaea75cb0822ff344163bc0b647289ef4",
+      "sourceConceptIds": [
+        "filopodium"
+      ],
+      "sourcePaths": [
+        "svg/filopodium-bioart-traced.svg"
+      ],
+      "keywords": [
+        "filopodium",
+        "5. Membranes, junctions, and cell-surface structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-lamellipodium",
+      "title": "lamellipodium",
+      "sourceSha256": "33b2cb93e19c8c4f4dff1d803943832fce6a459ba316e62f54e145eca68e6571",
+      "sourceConceptIds": [
+        "lamellipodium"
+      ],
+      "sourcePaths": [
+        "svg/lamellipodium-bioart-traced.svg"
+      ],
+      "keywords": [
+        "lamellipodium",
+        "5. Membranes, junctions, and cell-surface structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-microvilli",
+      "title": "microvilli",
+      "sourceSha256": "401219172a1526b0b9906ca961077c049232d7fd480a76cd71e47073a5c1facb",
+      "sourceConceptIds": [
+        "microvilli"
+      ],
+      "sourcePaths": [
+        "svg/microvilli-bioart-traced.svg"
+      ],
+      "keywords": [
+        "microvilli",
+        "5. Membranes, junctions, and cell-surface structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-stereocilia",
+      "title": "stereocilia",
+      "sourceSha256": "a5659a4596dcf284625a70dd80113511b42bbafabf7624082074d0f833bbd3f9",
+      "sourceConceptIds": [
+        "stereocilia"
+      ],
+      "sourcePaths": [
+        "svg/stereocilia-bioart-traced.svg"
+      ],
+      "keywords": [
+        "stereocilia",
+        "5. Membranes, junctions, and cell-surface structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-igg-antibody",
+      "title": "generic IgG antibody",
+      "sourceSha256": "ecb25705d3924de58191193d85f3dc1f8709f210e04a521455b1c03a3c2ae5d6",
+      "sourceConceptIds": [
+        "igg-antibody"
+      ],
+      "sourcePaths": [
+        "svg/igg-antibody-bioart-traced.svg"
+      ],
+      "keywords": [
+        "generic IgG antibody",
+        "6. Distinct immune recognition and antibody structures",
+        "igg-antibody",
+        "antibody",
+        "immunoglobulin",
+        "binding protein"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-igm-pentamer",
+      "title": "IgM pentamer",
+      "sourceSha256": "1aedf1a32b1b354768d8243d0f8286b433c8e92aa03d019b4ee1abba58ad3e51",
+      "sourceConceptIds": [
+        "igm-pentamer"
+      ],
+      "sourcePaths": [
+        "svg/igm-pentamer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "IgM pentamer",
+        "6. Distinct immune recognition and antibody structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-secretory-iga-dimer",
+      "title": "secretory IgA dimer",
+      "sourceSha256": "02840873089ec1f5cd04f2548e1c207a33f780548d34c943cc77292e7aa5a578",
+      "sourceConceptIds": [
+        "secretory-iga-dimer"
+      ],
+      "sourcePaths": [
+        "svg/secretory-iga-dimer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "secretory IgA dimer",
+        "6. Distinct immune recognition and antibody structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-antibody-fab-fragment",
+      "title": "antibody Fab fragment",
+      "sourceSha256": "9f1d09dddf3551576486fdc5f50e9cae74524caeb9ce2ce57639aafd76ea6c99",
+      "sourceConceptIds": [
+        "antibody-fab-fragment"
+      ],
+      "sourcePaths": [
+        "svg/antibody-fab-fragment-bioart-traced.svg"
+      ],
+      "keywords": [
+        "antibody Fab fragment",
+        "6. Distinct immune recognition and antibody structures",
+        "antibody",
+        "immunoglobulin",
+        "binding protein"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-antibody-fc-fragment",
+      "title": "antibody Fc fragment",
+      "sourceSha256": "3f3eedf612033d0c7caf9728bee660719c1869e005d967ad978232994fb1eaf3",
+      "sourceConceptIds": [
+        "antibody-fc-fragment"
+      ],
+      "sourcePaths": [
+        "svg/antibody-fc-fragment-bioart-traced.svg"
+      ],
+      "keywords": [
+        "antibody Fc fragment",
+        "6. Distinct immune recognition and antibody structures",
+        "antibody",
+        "immunoglobulin",
+        "binding protein"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-bispecific-antibody",
+      "title": "bispecific antibody",
+      "sourceSha256": "6c0524d8041388a5c66c23af3ed0745a0fc295a8302cb8692897ede9385ccd79",
+      "sourceConceptIds": [
+        "bispecific-antibody"
+      ],
+      "sourcePaths": [
+        "svg/bispecific-antibody-bioart-traced.svg"
+      ],
+      "keywords": [
+        "bispecific antibody",
+        "6. Distinct immune recognition and antibody structures",
+        "antibody",
+        "immunoglobulin",
+        "binding protein"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-antibody-drug-conjugate",
+      "title": "antibody-drug conjugate",
+      "sourceSha256": "3e5fead05af9206d83fc781a5d1bb43f19ccf22d3eb6f65076d84ccd42db1aa8",
+      "sourceConceptIds": [
+        "antibody-drug-conjugate"
+      ],
+      "sourcePaths": [
+        "svg/antibody-drug-conjugate-bioart-traced.svg"
+      ],
+      "keywords": [
+        "antibody-drug conjugate",
+        "6. Distinct immune recognition and antibody structures",
+        "antibody",
+        "immunoglobulin",
+        "binding protein"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-nanobody-vhh",
+      "title": "nanobody / VHH",
+      "sourceSha256": "a66096cb5ab8fed032b39ddc14e510c34866830e1ee81fdfec108a7331b82a23",
+      "sourceConceptIds": [
+        "nanobody-vhh"
+      ],
+      "sourcePaths": [
+        "svg/nanobody-vhh-bioart-traced.svg"
+      ],
+      "keywords": [
+        "nanobody / VHH",
+        "6. Distinct immune recognition and antibody structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-t-cell-receptor-alpha-beta-heterodimer",
+      "title": "T-cell receptor alpha-beta heterodimer",
+      "sourceSha256": "0af9bca50919e60ee6dd0e5a096bcae9202e4c57d732a9761a939a09f5b9df2a",
+      "sourceConceptIds": [
+        "t-cell-receptor-alpha-beta-heterodimer"
+      ],
+      "sourcePaths": [
+        "svg/t-cell-receptor-alpha-beta-heterodimer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "T-cell receptor alpha-beta heterodimer",
+        "6. Distinct immune recognition and antibody structures",
+        "protein",
+        "binding",
+        "signaling"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cd4-receptor",
+      "title": "CD4 receptor",
+      "sourceSha256": "2d016baa1f5a780e1dc6e24bb970334e6de2f52082f1bdfea79c5ae1f86f54a0",
+      "sourceConceptIds": [
+        "cd4-receptor"
+      ],
+      "sourcePaths": [
+        "svg/cd4-receptor-bioart-traced.svg"
+      ],
+      "keywords": [
+        "CD4 receptor",
+        "6. Distinct immune recognition and antibody structures",
+        "protein",
+        "binding",
+        "signaling"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cd8-receptor",
+      "title": "CD8 alpha-beta receptor",
+      "sourceSha256": "530406f6f592915ee8618c08723ad47a6552e7f84e6ac1c38a80a8603a674d0e",
+      "sourceConceptIds": [
+        "cd8-receptor"
+      ],
+      "sourcePaths": [
+        "svg/cd8-receptor-bioart-traced.svg"
+      ],
+      "keywords": [
+        "CD8 alpha-beta receptor",
+        "6. Distinct immune recognition and antibody structures",
+        "cd8-receptor",
+        "protein",
+        "binding",
+        "signaling"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-b-cell-receptor",
+      "title": "B-cell receptor",
+      "sourceSha256": "b5016c85a614126aa2c274cd3fc2f9abdcfe3c4bf52e3fc36939fcb650291c95",
+      "sourceConceptIds": [
+        "b-cell-receptor"
+      ],
+      "sourcePaths": [
+        "svg/b-cell-receptor-bioart-traced.svg"
+      ],
+      "keywords": [
+        "B-cell receptor",
+        "6. Distinct immune recognition and antibody structures",
+        "protein",
+        "binding",
+        "signaling"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-mhc-class-i",
+      "title": "MHC class I",
+      "sourceSha256": "50dfac59cbba608308da9469ad3aba350f65d0a582124e3795402f8d9c53dc81",
+      "sourceConceptIds": [
+        "mhc-class-i"
+      ],
+      "sourcePaths": [
+        "svg/mhc-class-i-bioart-traced.svg"
+      ],
+      "keywords": [
+        "MHC class I",
+        "6. Distinct immune recognition and antibody structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-mhc-class-ii",
+      "title": "MHC class II",
+      "sourceSha256": "f28a49635c4cb91a5c7af56706e327a6aa9894cc74b1d1b1057ae2af7c43678f",
+      "sourceConceptIds": [
+        "mhc-class-ii"
+      ],
+      "sourcePaths": [
+        "svg/mhc-class-ii-bioart-traced.svg"
+      ],
+      "keywords": [
+        "MHC class II",
+        "6. Distinct immune recognition and antibody structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-peptide-mhc-class-i-complex",
+      "title": "peptide-MHC class I complex",
+      "sourceSha256": "2014b9d7d2c6479251b08ba63c727359c44c5091cf552e22623ad2e97a2ab072",
+      "sourceConceptIds": [
+        "peptide-mhc-class-i-complex"
+      ],
+      "sourcePaths": [
+        "svg/peptide-mhc-class-i-complex-bioart-traced.svg"
+      ],
+      "keywords": [
+        "peptide-MHC class I complex",
+        "6. Distinct immune recognition and antibody structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-peptide-mhc-class-ii-complex",
+      "title": "peptide-MHC class II complex",
+      "sourceSha256": "6c93d05f1aa3198e9a1bdd73fb72c6da85b22438240f9ddfc97c4c214396866d",
+      "sourceConceptIds": [
+        "peptide-mhc-class-ii-complex"
+      ],
+      "sourcePaths": [
+        "svg/peptide-mhc-class-ii-complex-bioart-traced.svg"
+      ],
+      "keywords": [
+        "peptide-MHC class II complex",
+        "6. Distinct immune recognition and antibody structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-mhc-i-tetramer",
+      "title": "MHC-I tetramer",
+      "sourceSha256": "add7d7fc622db50d1908bed57b6080a7c0fcd965b24e6c0747d2378e4fa2b42f",
+      "sourceConceptIds": [
+        "mhc-i-tetramer"
+      ],
+      "sourcePaths": [
+        "svg/mhc-i-tetramer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "MHC-I tetramer",
+        "6. Distinct immune recognition and antibody structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-mhc-ii-tetramer",
+      "title": "MHC-II tetramer",
+      "sourceSha256": "0532c2a83be5372ca265faa87d77a6521717ae333e671905805998418b35acaf",
+      "sourceConceptIds": [
+        "mhc-ii-tetramer"
+      ],
+      "sourcePaths": [
+        "svg/mhc-ii-tetramer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "MHC-II tetramer",
+        "6. Distinct immune recognition and antibody structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-streptavidin-tetramer",
+      "title": "streptavidin tetramer",
+      "sourceSha256": "9298083b7e45faf24688ca638c93904b2ad774cc19f7f0e5fa26e346ce89f1ee",
+      "sourceConceptIds": [
+        "streptavidin-tetramer"
+      ],
+      "sourcePaths": [
+        "svg/streptavidin-tetramer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "streptavidin tetramer",
+        "6. Distinct immune recognition and antibody structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-single-pass-immunoglobulin-like-receptor",
+      "title": "single-pass immunoglobulin-like receptor",
+      "sourceSha256": "ec2b9b27e4d9c4601e90066488c304d39ea10d68323d13d7b609c57106cf50e6",
+      "sourceConceptIds": [
+        "single-pass-immunoglobulin-like-receptor"
+      ],
+      "sourcePaths": [
+        "svg/single-pass-immunoglobulin-like-receptor-bioart-traced.svg"
+      ],
+      "keywords": [
+        "single-pass immunoglobulin-like receptor",
+        "7. Receptor and membrane-protein archetypes",
+        "protein",
+        "binding",
+        "signaling",
+        "antibody",
+        "immunoglobulin",
+        "binding protein"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-multi-domain-immunoglobulin-like-receptor",
+      "title": "multi-domain immunoglobulin-like receptor",
+      "sourceSha256": "158964ff0eeeaf6977a201871dd632c7cae7f8a8390d11113d93ec5ca3ee379b",
+      "sourceConceptIds": [
+        "multi-domain-immunoglobulin-like-receptor"
+      ],
+      "sourcePaths": [
+        "svg/multi-domain-immunoglobulin-like-receptor-bioart-traced.svg"
+      ],
+      "keywords": [
+        "multi-domain immunoglobulin-like receptor",
+        "7. Receptor and membrane-protein archetypes",
+        "protein",
+        "binding",
+        "signaling",
+        "antibody",
+        "immunoglobulin",
+        "binding protein"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-homodimeric-cytokine-receptor",
+      "title": "homodimeric cytokine receptor",
+      "sourceSha256": "72c89c7be3c9b9dd87e9a7b5687fec22b48351810ad7ddfe2f188059941c9b3e",
+      "sourceConceptIds": [
+        "homodimeric-cytokine-receptor"
+      ],
+      "sourcePaths": [
+        "svg/homodimeric-cytokine-receptor-bioart-traced.svg"
+      ],
+      "keywords": [
+        "homodimeric cytokine receptor",
+        "7. Receptor and membrane-protein archetypes",
+        "protein",
+        "binding",
+        "signaling"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-heterodimeric-cytokine-receptor",
+      "title": "heterodimeric cytokine receptor",
+      "sourceSha256": "dc21a945051cc193375e3918e4c7a78a1dc1765fb7450becea958ea2234593de",
+      "sourceConceptIds": [
+        "heterodimeric-cytokine-receptor"
+      ],
+      "sourcePaths": [
+        "svg/heterodimeric-cytokine-receptor-bioart-traced.svg"
+      ],
+      "keywords": [
+        "heterodimeric cytokine receptor",
+        "7. Receptor and membrane-protein archetypes",
+        "protein",
+        "binding",
+        "signaling"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-receptor-tyrosine-kinase-dimer",
+      "title": "receptor tyrosine kinase dimer",
+      "sourceSha256": "e1f2582a4607c874493c8bfc567c02c0f9dafa5dc9a60a7edb24266219bf5a13",
+      "sourceConceptIds": [
+        "receptor-tyrosine-kinase-dimer"
+      ],
+      "sourcePaths": [
+        "svg/receptor-tyrosine-kinase-dimer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "receptor tyrosine kinase dimer",
+        "7. Receptor and membrane-protein archetypes",
+        "protein",
+        "binding",
+        "signaling"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-receptor-serine-threonine-kinase",
+      "title": "receptor serine/threonine kinase",
+      "sourceSha256": "c38d603f7247315008b8b00f99131c866d4c44ef2d53da5d0e462e719b7494ea",
+      "sourceConceptIds": [
+        "receptor-serine-threonine-kinase"
+      ],
+      "sourcePaths": [
+        "svg/receptor-serine-threonine-kinase-bioart-traced.svg"
+      ],
+      "keywords": [
+        "receptor serine/threonine kinase",
+        "7. Receptor and membrane-protein archetypes",
+        "protein",
+        "binding",
+        "signaling"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-seven-transmembrane-gpcr",
+      "title": "seven-transmembrane GPCR",
+      "sourceSha256": "12ab1052800cb20e4c4ab3c0282f544d88b43299c6b21175d80585700d071f05",
+      "sourceConceptIds": [
+        "seven-transmembrane-gpcr"
+      ],
+      "sourcePaths": [
+        "svg/seven-transmembrane-gpcr-bioart-traced.svg"
+      ],
+      "keywords": [
+        "seven-transmembrane GPCR",
+        "7. Receptor and membrane-protein archetypes"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-ligand-gated-ion-channel",
+      "title": "ligand-gated ion channel",
+      "sourceSha256": "91cf6c9c1ff57adb918d706278cb14139a4b655c967e2dc08334dd4da26b94b2",
+      "sourceConceptIds": [
+        "ligand-gated-ion-channel"
+      ],
+      "sourcePaths": [
+        "svg/ligand-gated-ion-channel-bioart-traced.svg"
+      ],
+      "keywords": [
+        "ligand-gated ion channel",
+        "7. Receptor and membrane-protein archetypes",
+        "protein",
+        "binding",
+        "signaling"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-aquaporin-channel",
+      "title": "aquaporin channel",
+      "sourceSha256": "e9c090a347bbc6034ec5a791d7b09c14eaed864838f2b8de21050c0870eb3046",
+      "sourceConceptIds": [
+        "aquaporin-channel"
+      ],
+      "sourcePaths": [
+        "svg/aquaporin-channel-bioart-traced.svg"
+      ],
+      "keywords": [
+        "aquaporin channel",
+        "7. Receptor and membrane-protein archetypes",
+        "protein",
+        "binding",
+        "signaling"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-integrin-alpha-beta-heterodimer",
+      "title": "integrin alpha-beta heterodimer",
+      "sourceSha256": "f894608cbb0b1e5ca861245da5323c2591e00cab636c148c4d51e265162555a1",
+      "sourceConceptIds": [
+        "integrin-alpha-beta-heterodimer"
+      ],
+      "sourcePaths": [
+        "svg/integrin-alpha-beta-heterodimer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "integrin alpha-beta heterodimer",
+        "7. Receptor and membrane-protein archetypes"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cadherin",
+      "title": "cadherin",
+      "sourceSha256": "4ffd7907291aa2d6d9c4ed39822147250358823793cd365cf7a97671f34d746d",
+      "sourceConceptIds": [
+        "cadherin"
+      ],
+      "sourcePaths": [
+        "svg/cadherin-bioart-traced.svg"
+      ],
+      "keywords": [
+        "cadherin",
+        "7. Receptor and membrane-protein archetypes"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-selectin",
+      "title": "selectin",
+      "sourceSha256": "f625a543d1b59021b1a92caba769c7dea7efaff9fe4f1ed05b39dd4d14b9faae",
+      "sourceConceptIds": [
+        "selectin"
+      ],
+      "sourcePaths": [
+        "svg/selectin-bioart-traced.svg"
+      ],
+      "keywords": [
+        "selectin",
+        "7. Receptor and membrane-protein archetypes"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-toll-like-receptor-dimer",
+      "title": "toll-like receptor dimer",
+      "sourceSha256": "1822e1e74252cbba6b10bf60cfb5fef37fe3c555f17c8ccf4c60e7406c570fb4",
+      "sourceConceptIds": [
+        "toll-like-receptor-dimer"
+      ],
+      "sourcePaths": [
+        "svg/toll-like-receptor-dimer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "toll-like receptor dimer",
+        "7. Receptor and membrane-protein archetypes",
+        "protein",
+        "binding",
+        "signaling"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-tnf-receptor-family-trimeric-complex",
+      "title": "TNF-receptor-family trimeric complex",
+      "sourceSha256": "7fea1101fc79e4f9395a48e6cb33fece8e477f1c3644abec9363a1aa2ef19096",
+      "sourceConceptIds": [
+        "tnf-receptor-family-trimeric-complex"
+      ],
+      "sourcePaths": [
+        "svg/tnf-receptor-family-trimeric-complex-bioart-traced.svg"
+      ],
+      "keywords": [
+        "TNF-receptor-family trimeric complex",
+        "7. Receptor and membrane-protein archetypes",
+        "protein",
+        "binding",
+        "signaling"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-gpi-anchored-protein",
+      "title": "GPI-anchored protein",
+      "sourceSha256": "e1636c5e52a845285b68878dbea4807506290ef94978c8cd543eafec9c8fabdc",
+      "sourceConceptIds": [
+        "gpi-anchored-protein"
+      ],
+      "sourcePaths": [
+        "svg/gpi-anchored-protein-bioart-traced.svg"
+      ],
+      "keywords": [
+        "GPI-anchored protein",
+        "7. Receptor and membrane-protein archetypes"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-generic-globular-protein",
+      "title": "generic globular protein",
+      "sourceSha256": "b66e166e9c7dde03b16a2ffc1558cb2edc902fba31208428f79d1d7bc73aa512",
+      "sourceConceptIds": [
+        "generic-globular-protein"
+      ],
+      "sourcePaths": [
+        "svg/generic-globular-protein-bioart-traced.svg"
+      ],
+      "keywords": [
+        "generic globular protein",
+        "8. Distinct protein and macromolecular machinery"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-generic-enzyme",
+      "title": "generic enzyme",
+      "sourceSha256": "67f01b11c11b83e39a65e8248cd2cff87607c564dd4e457c391fff0b962e5bd0",
+      "sourceConceptIds": [
+        "generic-enzyme"
+      ],
+      "sourcePaths": [
+        "svg/generic-enzyme-bioart-traced.svg"
+      ],
+      "keywords": [
+        "generic enzyme",
+        "8. Distinct protein and macromolecular machinery"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-enzyme-substrate-complex",
+      "title": "enzyme-substrate complex",
+      "sourceSha256": "63c7786e46c8f8d2f8cd114cb4eb0bc9e85b1e7ee78fab8d0d0a5e87130c4568",
+      "sourceConceptIds": [
+        "enzyme-substrate-complex"
+      ],
+      "sourcePaths": [
+        "svg/enzyme-substrate-complex-bioart-traced.svg"
+      ],
+      "keywords": [
+        "enzyme-substrate complex",
+        "8. Distinct protein and macromolecular machinery"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-protein-homodimer",
+      "title": "protein homodimer",
+      "sourceSha256": "8a2719ee2d29690fd66c5e179318055634a746ebea8867d849848344d7b91b6a",
+      "sourceConceptIds": [
+        "protein-homodimer"
+      ],
+      "sourcePaths": [
+        "svg/protein-homodimer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "protein homodimer",
+        "8. Distinct protein and macromolecular machinery"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-protein-heterodimer",
+      "title": "protein heterodimer",
+      "sourceSha256": "9830f484cde2e7305ef5ce0e7f1a2b5ebd8176b145c1b8ad58037cf7998b5472",
+      "sourceConceptIds": [
+        "protein-heterodimer"
+      ],
+      "sourcePaths": [
+        "svg/protein-heterodimer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "protein heterodimer",
+        "8. Distinct protein and macromolecular machinery"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-tetrameric-protein-complex",
+      "title": "tetrameric protein complex",
+      "sourceSha256": "8422918d789a0e770fba4f8a71967382548f73b10deefcc23157fd12f1090658",
+      "sourceConceptIds": [
+        "tetrameric-protein-complex"
+      ],
+      "sourcePaths": [
+        "svg/tetrameric-protein-complex-bioart-traced.svg"
+      ],
+      "keywords": [
+        "tetrameric protein complex",
+        "8. Distinct protein and macromolecular machinery"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-ring-shaped-protein-complex",
+      "title": "ring-shaped protein complex",
+      "sourceSha256": "bb992e297c98a62940bd56e24fb047de0e5b5116010f9fc4c5d168a1b6048ac8",
+      "sourceConceptIds": [
+        "ring-shaped-protein-complex"
+      ],
+      "sourcePaths": [
+        "svg/ring-shaped-protein-complex-bioart-traced.svg"
+      ],
+      "keywords": [
+        "ring-shaped protein complex",
+        "8. Distinct protein and macromolecular machinery"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-coiled-coil-protein",
+      "title": "coiled-coil protein",
+      "sourceSha256": "6e60d8b964a290b347a3c0d2d6e3d5f1808db22effff075eb0c5e75619f7dadd",
+      "sourceConceptIds": [
+        "coiled-coil-protein"
+      ],
+      "sourcePaths": [
+        "svg/coiled-coil-protein-bioart-traced.svg"
+      ],
+      "keywords": [
+        "coiled-coil protein",
+        "8. Distinct protein and macromolecular machinery"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-intrinsically-disordered-protein",
+      "title": "intrinsically disordered protein",
+      "sourceSha256": "167b1cae77bbefb6e0e9c2a070d173a2751bb614c8bfb307a6c01bb87f240bdd",
+      "sourceConceptIds": [
+        "intrinsically-disordered-protein"
+      ],
+      "sourcePaths": [
+        "svg/intrinsically-disordered-protein-bioart-traced.svg"
+      ],
+      "keywords": [
+        "intrinsically disordered protein",
+        "8. Distinct protein and macromolecular machinery"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-transmembrane-protein",
+      "title": "transmembrane protein",
+      "sourceSha256": "95577a76114deaeabe5ff14938190384b19ae930fe0eb5fff31e578628e8d4cd",
+      "sourceConceptIds": [
+        "transmembrane-protein"
+      ],
+      "sourcePaths": [
+        "svg/transmembrane-protein-bioart-traced.svg"
+      ],
+      "keywords": [
+        "transmembrane protein",
+        "8. Distinct protein and macromolecular machinery"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-atp-synthase",
+      "title": "ATP synthase",
+      "sourceSha256": "c90c227aeb351b377aa9142f3f499e07bf969540ceb47433b14b86ac4eef2842",
+      "sourceConceptIds": [
+        "atp-synthase"
+      ],
+      "sourcePaths": [
+        "svg/atp-synthase-bioart-traced.svg"
+      ],
+      "keywords": [
+        "ATP synthase",
+        "8. Distinct protein and macromolecular machinery"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-collagen-triple-helix",
+      "title": "collagen triple helix",
+      "sourceSha256": "9796aeec6a6f57a679589fd5a40de20a727c1ca4b545ed74be68283a8c5c45b5",
+      "sourceConceptIds": [
+        "collagen-triple-helix"
+      ],
+      "sourcePaths": [
+        "svg/collagen-triple-helix-bioart-traced.svg"
+      ],
+      "keywords": [
+        "collagen triple helix",
+        "8. Distinct protein and macromolecular machinery"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-collagen-fibril",
+      "title": "collagen fibril",
+      "sourceSha256": "ea1db82fd74165609405d9bb5e81f0d822697971873bddb377f2d4418d2fd764",
+      "sourceConceptIds": [
+        "collagen-fibril"
+      ],
+      "sourcePaths": [
+        "svg/collagen-fibril-bioart-traced.svg"
+      ],
+      "keywords": [
+        "collagen fibril",
+        "8. Distinct protein and macromolecular machinery"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-clathrin-triskelion",
+      "title": "clathrin triskelion",
+      "sourceSha256": "7c8ae7395c8496af39b18d2e90e698ec998a7d04b49155c2e855d44eb5558a9e",
+      "sourceConceptIds": [
+        "clathrin-triskelion"
+      ],
+      "sourcePaths": [
+        "svg/clathrin-triskelion-bioart-traced.svg"
+      ],
+      "keywords": [
+        "clathrin triskelion",
+        "8. Distinct protein and macromolecular machinery"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-ubiquitin",
+      "title": "ubiquitin",
+      "sourceSha256": "158715cdd9c8e403ede7700940a5eb53f3f1b44793d584b80969e543388600a5",
+      "sourceConceptIds": [
+        "ubiquitin"
+      ],
+      "sourcePaths": [
+        "svg/ubiquitin-bioart-traced.svg"
+      ],
+      "keywords": [
+        "ubiquitin",
+        "8. Distinct protein and macromolecular machinery"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-ubiquitinated-protein",
+      "title": "ubiquitinated protein",
+      "sourceSha256": "7e310e199e387e0cba42b2c2147becbd7ed2bf6938d8f8f342216fbb0ac4ee3b",
+      "sourceConceptIds": [
+        "ubiquitinated-protein"
+      ],
+      "sourcePaths": [
+        "svg/ubiquitinated-protein-bioart-traced.svg"
+      ],
+      "keywords": [
+        "ubiquitinated protein",
+        "8. Distinct protein and macromolecular machinery"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-nucleosome",
+      "title": "nucleosome",
+      "sourceSha256": "6c53d44fa05afcb2bb4be8a105c6b20979f37357c676ed6d3cedc1ea6361eb5b",
+      "sourceConceptIds": [
+        "nucleosome"
+      ],
+      "sourcePaths": [
+        "svg/nucleosome-bioart-traced.svg"
+      ],
+      "keywords": [
+        "nucleosome",
+        "8. Distinct protein and macromolecular machinery"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-histone-octamer",
+      "title": "histone octamer",
+      "sourceSha256": "ed65912cb4f0c99bb2decc5beb568c429fbecebebf306f9f714052eb3d2d411f",
+      "sourceConceptIds": [
+        "histone-octamer"
+      ],
+      "sourcePaths": [
+        "svg/histone-octamer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "histone octamer",
+        "8. Distinct protein and macromolecular machinery"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-laboratory-mouse",
+      "title": "laboratory mouse",
+      "sourceSha256": "b2fbb4a8ac7ba68cd51dbe3f73bbfd39acb834208b926f68c9604daaa9f64093",
+      "sourceConceptIds": [
+        "laboratory-mouse"
+      ],
+      "sourcePaths": [
+        "svg/laboratory-mouse-bioart-traced.svg"
+      ],
+      "keywords": [
+        "laboratory mouse",
+        "18. Model organisms and laboratory animals"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-micropipette",
+      "title": "micropipette",
+      "sourceSha256": "6fa66042954603ffb72adf82f4d23ac76839ac9e59dfe7000085a0b9d1908871",
+      "sourceConceptIds": [
+        "micropipette"
+      ],
+      "sourcePaths": [
+        "svg/micropipette-bioart-traced.svg"
+      ],
+      "keywords": [
+        "micropipette",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-multichannel-micropipette",
+      "title": "multichannel micropipette",
+      "sourceSha256": "9e45204c83d699539b356cdc16d1830072df1a0900007bbddde61bcee230babe",
+      "sourceConceptIds": [
+        "multichannel-micropipette"
+      ],
+      "sourcePaths": [
+        "svg/multichannel-micropipette-bioart-traced.svg"
+      ],
+      "keywords": [
+        "multichannel micropipette",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-electronic-pipette",
+      "title": "electronic pipette",
+      "sourceSha256": "eb54ffb957653831e8e92972e0a175f7161925884504560d37f841e1c824ba4b",
+      "sourceConceptIds": [
+        "electronic-pipette"
+      ],
+      "sourcePaths": [
+        "svg/electronic-pipette-bioart-traced.svg"
+      ],
+      "keywords": [
+        "electronic pipette",
+        "19. Basic laboratory glassware and plasticware",
+        "liquid handling",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-pipette-tip",
+      "title": "pipette tip",
+      "sourceSha256": "5d2cfa160a23d02a6bf9b1e5cde269f43d5809e6b60324e024f086b94d533059",
+      "sourceConceptIds": [
+        "pipette-tip"
+      ],
+      "sourcePaths": [
+        "svg/pipette-tip-bioart-traced.svg"
+      ],
+      "keywords": [
+        "pipette tip",
+        "19. Basic laboratory glassware and plasticware",
+        "liquid handling",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-filtered-pipette-tip",
+      "title": "filtered pipette tip",
+      "sourceSha256": "4c8a4c79ac5efd08b259759e032e86ea4f2ecc162652ba907ccc99eae2afb256",
+      "sourceConceptIds": [
+        "filtered-pipette-tip"
+      ],
+      "sourcePaths": [
+        "svg/filtered-pipette-tip-bioart-traced.svg"
+      ],
+      "keywords": [
+        "filtered pipette tip",
+        "19. Basic laboratory glassware and plasticware",
+        "liquid handling",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-serological-pipette",
+      "title": "serological pipette",
+      "sourceSha256": "ef747128170b7761852825bddb151326ebc630758accb72e7e7bd08a5a5d50dc",
+      "sourceConceptIds": [
+        "serological-pipette"
+      ],
+      "sourcePaths": [
+        "svg/serological-pipette-bioart-traced.svg"
+      ],
+      "keywords": [
+        "serological pipette",
+        "19. Basic laboratory glassware and plasticware",
+        "liquid handling",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-pasteur-pipette",
+      "title": "Pasteur pipette",
+      "sourceSha256": "095d4f11f5cea476b2f7d52dbf6049d12486de3487259067ff60c893a83cfbe7",
+      "sourceConceptIds": [
+        "pasteur-pipette"
+      ],
+      "sourcePaths": [
+        "svg/pasteur-pipette-bioart-traced.svg"
+      ],
+      "keywords": [
+        "Pasteur pipette",
+        "19. Basic laboratory glassware and plasticware",
+        "liquid handling",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-microcentrifuge-tube",
+      "title": "microcentrifuge tube",
+      "sourceSha256": "24f33ef45287308c9b14eab7a64a0005ff64a1063eedc6702b3ab80b474dc852",
+      "sourceConceptIds": [
+        "microcentrifuge-tube"
+      ],
+      "sourcePaths": [
+        "svg/microcentrifuge-tube-bioart-traced.svg"
+      ],
+      "keywords": [
+        "microcentrifuge tube",
+        "19. Basic laboratory glassware and plasticware",
+        "labware",
+        "laboratory",
+        "container"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-screw-cap-microtube",
+      "title": "screw-cap microtube",
+      "sourceSha256": "03899b70bd19a8ff5e0d329a204d0826c7e26fa3a7db7e15db7695b84a940f17",
+      "sourceConceptIds": [
+        "screw-cap-microtube"
+      ],
+      "sourcePaths": [
+        "svg/screw-cap-microtube-bioart-traced.svg"
+      ],
+      "keywords": [
+        "screw-cap microtube",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-pcr-tube",
+      "title": "PCR tube",
+      "sourceSha256": "cd42cf671d6e4f8ed41903f2d10cecab8ba9f4410b1bce516379ea71c2cc2a78",
+      "sourceConceptIds": [
+        "pcr-tube"
+      ],
+      "sourcePaths": [
+        "svg/pcr-tube-bioart-traced.svg"
+      ],
+      "keywords": [
+        "PCR tube",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-pcr-strip",
+      "title": "PCR strip",
+      "sourceSha256": "bc3d5c73821e08bbba82515a5f02090c3565553015f5caae9132d78c378cc204",
+      "sourceConceptIds": [
+        "pcr-strip"
+      ],
+      "sourcePaths": [
+        "svg/pcr-strip-bioart-traced.svg"
+      ],
+      "keywords": [
+        "PCR strip",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cryovial",
+      "title": "cryovial",
+      "sourceSha256": "ea0d806acc2321c5f97130dc9b7c6f5631c472b12db24c6084552824ac7945c1",
+      "sourceConceptIds": [
+        "cryovial"
+      ],
+      "sourcePaths": [
+        "svg/cryovial-bioart-traced.svg"
+      ],
+      "keywords": [
+        "cryovial",
+        "19. Basic laboratory glassware and plasticware",
+        "labware",
+        "laboratory",
+        "container"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-15-ml-conical-tube",
+      "title": "15 mL conical tube",
+      "sourceSha256": "39ec8ccd584270fdd3348822c04ef8e03e500e54f187562e5427e8d1e44a4dd0",
+      "sourceConceptIds": [
+        "15-ml-conical-tube"
+      ],
+      "sourcePaths": [
+        "svg/15-ml-conical-tube-bioart-traced.svg"
+      ],
+      "keywords": [
+        "15 mL conical tube",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-50-ml-conical-tube",
+      "title": "50 mL conical tube",
+      "sourceSha256": "635ac84434e0cc30ba6bd257fcc832d566f0f562110b145fa09ff7a550c8858b",
+      "sourceConceptIds": [
+        "50-ml-conical-tube"
+      ],
+      "sourcePaths": [
+        "svg/50-ml-conical-tube-bioart-traced.svg"
+      ],
+      "keywords": [
+        "50 mL conical tube",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-blood-collection-tube",
+      "title": "blood collection tube",
+      "sourceSha256": "5b3fc2cbcbd34cfe5fd80a5462649689cb05abc2a4e0cdb83eaf5dc48a1155ed",
+      "sourceConceptIds": [
+        "blood-collection-tube"
+      ],
+      "sourcePaths": [
+        "svg/blood-collection-tube-bioart-traced.svg"
+      ],
+      "keywords": [
+        "blood collection tube",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-reagent-vial",
+      "title": "reagent vial",
+      "sourceSha256": "e4feee94997474be516f8b4da49277b6a35acd4512e57f967ec685fde55de78f",
+      "sourceConceptIds": [
+        "reagent-vial"
+      ],
+      "sourcePaths": [
+        "svg/reagent-vial-bioart-traced.svg"
+      ],
+      "keywords": [
+        "reagent vial",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-glass-ampoule",
+      "title": "glass ampoule",
+      "sourceSha256": "11153c4b6a25e42341a6c3c005fca2c04698c4df67a8c58ae846bc091be9c63d",
+      "sourceConceptIds": [
+        "glass-ampoule"
+      ],
+      "sourcePaths": [
+        "svg/glass-ampoule-bioart-traced.svg"
+      ],
+      "keywords": [
+        "glass ampoule",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-glass-beaker",
+      "title": "glass beaker",
+      "sourceSha256": "7c2585686f2d436b75e95a4bca47f60f307b18ea1a6e949e35694a6c9838179c",
+      "sourceConceptIds": [
+        "glass-beaker"
+      ],
+      "sourcePaths": [
+        "svg/glass-beaker-bioart-traced.svg"
+      ],
+      "keywords": [
+        "glass beaker",
+        "19. Basic laboratory glassware and plasticware",
+        "labware",
+        "laboratory",
+        "container"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-graduated-cylinder",
+      "title": "graduated cylinder",
+      "sourceSha256": "8302c5f71a57db279274606a3970b579260f00b124e6ce21457aee5165131026",
+      "sourceConceptIds": [
+        "graduated-cylinder"
+      ],
+      "sourcePaths": [
+        "svg/graduated-cylinder-bioart-traced.svg"
+      ],
+      "keywords": [
+        "graduated cylinder",
+        "19. Basic laboratory glassware and plasticware",
+        "labware",
+        "laboratory",
+        "container"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-erlenmeyer-flask",
+      "title": "Erlenmeyer flask",
+      "sourceSha256": "8c3c4bfcdf606ad8a26d999f09946c7781e83ff779a5971a481523a142988142",
+      "sourceConceptIds": [
+        "erlenmeyer-flask"
+      ],
+      "sourcePaths": [
+        "svg/erlenmeyer-flask-bioart-traced.svg"
+      ],
+      "keywords": [
+        "Erlenmeyer flask",
+        "19. Basic laboratory glassware and plasticware",
+        "labware",
+        "laboratory",
+        "container"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-volumetric-flask",
+      "title": "volumetric flask",
+      "sourceSha256": "519104d8e62d40e9bacd9f02bd7022934153d86941c36ad8d395a8cd29f4b202",
+      "sourceConceptIds": [
+        "volumetric-flask"
+      ],
+      "sourcePaths": [
+        "svg/volumetric-flask-bioart-traced.svg"
+      ],
+      "keywords": [
+        "volumetric flask",
+        "19. Basic laboratory glassware and plasticware",
+        "labware",
+        "laboratory",
+        "container"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-round-bottom-flask",
+      "title": "round-bottom flask",
+      "sourceSha256": "e63aa48b45196375683468326819b83ce98b442dc2df58aa9128018aa21bd68f",
+      "sourceConceptIds": [
+        "round-bottom-flask"
+      ],
+      "sourcePaths": [
+        "svg/round-bottom-flask-bioart-traced.svg"
+      ],
+      "keywords": [
+        "round-bottom flask",
+        "19. Basic laboratory glassware and plasticware",
+        "labware",
+        "laboratory",
+        "container"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-separatory-funnel",
+      "title": "separatory funnel",
+      "sourceSha256": "5b331bfbca4f1bcf9b86b767c27cdb8b7a3059fb6c993951076486afa5e57d08",
+      "sourceConceptIds": [
+        "separatory-funnel"
+      ],
+      "sourcePaths": [
+        "svg/separatory-funnel-bioart-traced.svg"
+      ],
+      "keywords": [
+        "separatory funnel",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-b-chner-funnel",
+      "title": "Büchner funnel",
+      "sourceSha256": "4b9c6ce697858cfde5c995d6733beb36a7e2fdd4d4b7b8c9bf061e1f5a2ef4a6",
+      "sourceConceptIds": [
+        "b-chner-funnel"
+      ],
+      "sourcePaths": [
+        "svg/b-chner-funnel-bioart-traced.svg"
+      ],
+      "keywords": [
+        "Büchner funnel",
+        "19. Basic laboratory glassware and plasticware",
+        "b-chner-funnel"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-reagent-bottle",
+      "title": "reagent bottle",
+      "sourceSha256": "aa28589929e60735301a36477fe97f1cd8967cc2ed61fc55ce383e354c54b0c6",
+      "sourceConceptIds": [
+        "reagent-bottle"
+      ],
+      "sourcePaths": [
+        "svg/reagent-bottle-bioart-traced.svg"
+      ],
+      "keywords": [
+        "reagent bottle",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-media-bottle",
+      "title": "media bottle",
+      "sourceSha256": "fb03efdf83f1d46755f973309f25aeec7650ca20608a6e9ff4a0d4ded3a47656",
+      "sourceConceptIds": [
+        "media-bottle"
+      ],
+      "sourcePaths": [
+        "svg/media-bottle-bioart-traced.svg"
+      ],
+      "keywords": [
+        "media bottle",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-wash-bottle",
+      "title": "wash bottle",
+      "sourceSha256": "1cf7a43b25ff1c71b35a67b56928d04da1a2adb4a47ca2e18ba5384790797b3e",
+      "sourceConceptIds": [
+        "wash-bottle"
+      ],
+      "sourcePaths": [
+        "svg/wash-bottle-bioart-traced.svg"
+      ],
+      "keywords": [
+        "wash bottle",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cuvette",
+      "title": "cuvette",
+      "sourceSha256": "e49062ea0611a6f4b412eeaabcf9886d181b2847e944ca5da877f73453013c2d",
+      "sourceConceptIds": [
+        "cuvette"
+      ],
+      "sourcePaths": [
+        "svg/cuvette-bioart-traced.svg"
+      ],
+      "keywords": [
+        "cuvette",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-quartz-cuvette",
+      "title": "quartz cuvette",
+      "sourceSha256": "deca1150187afd4407dd1dbba8b59dd56841ecb7d62b1e8fe34a61590e18254e",
+      "sourceConceptIds": [
+        "quartz-cuvette"
+      ],
+      "sourcePaths": [
+        "svg/quartz-cuvette-bioart-traced.svg"
+      ],
+      "keywords": [
+        "quartz cuvette",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-microscope-slide",
+      "title": "microscope slide",
+      "sourceSha256": "23ac754169fc767620d8d6fbf304b82e6ff063cc879bf03595bc243f90bdc2e6",
+      "sourceConceptIds": [
+        "microscope-slide"
+      ],
+      "sourcePaths": [
+        "svg/microscope-slide-bioart-traced.svg"
+      ],
+      "keywords": [
+        "microscope slide",
+        "19. Basic laboratory glassware and plasticware",
+        "instrument",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-coverslip",
+      "title": "coverslip",
+      "sourceSha256": "ea5ae16e137a290d4c328059d8d083e86917fe42db6e4288a6fef596706bb42c",
+      "sourceConceptIds": [
+        "coverslip"
+      ],
+      "sourcePaths": [
+        "svg/coverslip-bioart-traced.svg"
+      ],
+      "keywords": [
+        "coverslip",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-petri-dish",
+      "title": "Petri dish",
+      "sourceSha256": "9b365ac9788da6984fb101bfb401431a796afb583e071fad6f90a6f097a72ff1",
+      "sourceConceptIds": [
+        "petri-dish"
+      ],
+      "sourcePaths": [
+        "svg/petri-dish-bioart-traced.svg"
+      ],
+      "keywords": [
+        "Petri dish",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cell-culture-dish",
+      "title": "cell culture dish",
+      "sourceSha256": "97fb39eb888aa7aa64c5bcd62c4f421d8a7a2f452c18f8254035f7bc32bc545e",
+      "sourceConceptIds": [
+        "cell-culture-dish"
+      ],
+      "sourcePaths": [
+        "svg/cell-culture-dish-bioart-traced.svg"
+      ],
+      "keywords": [
+        "cell culture dish",
+        "19. Basic laboratory glassware and plasticware",
+        "labware",
+        "laboratory",
+        "container"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cell-culture-flask",
+      "title": "cell culture flask",
+      "sourceSha256": "bcda39b7a0a7a8e0d32d585bfd390f8937be41e3195bdf20d9506aa265e2cfba",
+      "sourceConceptIds": [
+        "cell-culture-flask"
+      ],
+      "sourcePaths": [
+        "svg/cell-culture-flask-bioart-traced.svg"
+      ],
+      "keywords": [
+        "cell culture flask",
+        "19. Basic laboratory glassware and plasticware",
+        "labware",
+        "laboratory",
+        "container"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-spinner-flask",
+      "title": "spinner flask",
+      "sourceSha256": "9ded357085c7468c6e59faf4839a1aa947ce036c3eb658b67a5111e5a5742a0d",
+      "sourceConceptIds": [
+        "spinner-flask"
+      ],
+      "sourcePaths": [
+        "svg/spinner-flask-bioart-traced.svg"
+      ],
+      "keywords": [
+        "spinner flask",
+        "19. Basic laboratory glassware and plasticware",
+        "labware",
+        "laboratory",
+        "container"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-roller-bottle",
+      "title": "roller bottle",
+      "sourceSha256": "abfb3659a89140439cc82dc181e490156bac2706aae407973c43891a94d4bbc6",
+      "sourceConceptIds": [
+        "roller-bottle"
+      ],
+      "sourcePaths": [
+        "svg/roller-bottle-bioart-traced.svg"
+      ],
+      "keywords": [
+        "roller bottle",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-6-well-plate",
+      "title": "6-well plate",
+      "sourceSha256": "0dca1a3c4b0136ac2cf504440740d3dca1447e33eeaf28aa4d87df7927f9ae16",
+      "sourceConceptIds": [
+        "6-well-plate"
+      ],
+      "sourcePaths": [
+        "svg/6-well-plate-bioart-traced.svg"
+      ],
+      "keywords": [
+        "6-well plate",
+        "19. Basic laboratory glassware and plasticware",
+        "labware",
+        "laboratory",
+        "container"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-12-well-plate",
+      "title": "12-well plate",
+      "sourceSha256": "ac5c662fe9c364ddb5e7b11f8b072a20a9251c0e44ba307bc424d53de6e17959",
+      "sourceConceptIds": [
+        "12-well-plate"
+      ],
+      "sourcePaths": [
+        "svg/12-well-plate-bioart-traced.svg"
+      ],
+      "keywords": [
+        "12-well plate",
+        "19. Basic laboratory glassware and plasticware",
+        "labware",
+        "laboratory",
+        "container"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-24-well-plate",
+      "title": "24-well plate",
+      "sourceSha256": "adf967313d91f6ceab950f1922560ab30d7fea6542559ca1aa96f4538fe8fd2c",
+      "sourceConceptIds": [
+        "24-well-plate"
+      ],
+      "sourcePaths": [
+        "svg/24-well-plate-bioart-traced.svg"
+      ],
+      "keywords": [
+        "24-well plate",
+        "19. Basic laboratory glassware and plasticware",
+        "labware",
+        "laboratory",
+        "container"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-reservoir-tray",
+      "title": "reservoir tray",
+      "sourceSha256": "df3287e7e77c40c3de81a3750c12e80c9d7cdb7ede7c51bc2f933934cc8b6450",
+      "sourceConceptIds": [
+        "reservoir-tray"
+      ],
+      "sourcePaths": [
+        "svg/reservoir-tray-bioart-traced.svg"
+      ],
+      "keywords": [
+        "reservoir tray",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-syringe",
+      "title": "syringe",
+      "sourceSha256": "55051134ef0c9a9a4842e389b0a9e69029b2ede37aaa46c9b76eec6a58bd19aa",
+      "sourceConceptIds": [
+        "syringe"
+      ],
+      "sourcePaths": [
+        "svg/syringe-bioart-traced.svg"
+      ],
+      "keywords": [
+        "syringe",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-syringe-filter",
+      "title": "syringe filter",
+      "sourceSha256": "1e17603228072c18eaf0326342b5e3690180fb5d7da386dd1326fb7e30b06e69",
+      "sourceConceptIds": [
+        "syringe-filter"
+      ],
+      "sourcePaths": [
+        "svg/syringe-filter-bioart-traced.svg"
+      ],
+      "keywords": [
+        "syringe filter",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-bottle-top-filter",
+      "title": "bottle-top filter",
+      "sourceSha256": "361f777ef6235b7273fb91baad2543519cdae06bf5cb2f496db3fcecd6b454fd",
+      "sourceConceptIds": [
+        "bottle-top-filter"
+      ],
+      "sourcePaths": [
+        "svg/bottle-top-filter-bioart-traced.svg"
+      ],
+      "keywords": [
+        "bottle-top filter",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-vacuum-filtration-unit",
+      "title": "vacuum filtration unit",
+      "sourceSha256": "b45accbe05212d7f92dd7f0ed9cb4cf3268524ce7d824cd7f6a916e87039424c",
+      "sourceConceptIds": [
+        "vacuum-filtration-unit"
+      ],
+      "sourcePaths": [
+        "svg/vacuum-filtration-unit-bioart-traced.svg"
+      ],
+      "keywords": [
+        "vacuum filtration unit",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cell-strainer",
+      "title": "cell strainer",
+      "sourceSha256": "f1179b21ff5952922b2becb36946864bcbc3174c6adf3b56369980e07cc734ad",
+      "sourceConceptIds": [
+        "cell-strainer"
+      ],
+      "sourcePaths": [
+        "svg/cell-strainer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "cell strainer",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-transwell-insert",
+      "title": "Transwell insert",
+      "sourceSha256": "0c638976a0207cb0510138e498d5342bd79c840402294190559dc1522ba3479a",
+      "sourceConceptIds": [
+        "transwell-insert"
+      ],
+      "sourcePaths": [
+        "svg/transwell-insert-bioart-traced.svg"
+      ],
+      "keywords": [
+        "Transwell insert",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-dialysis-cassette",
+      "title": "dialysis cassette",
+      "sourceSha256": "fab383ad8b0a3c44be4a454b818783fc16b20ef3fcbd83286cfc932d8ccbae76",
+      "sourceConceptIds": [
+        "dialysis-cassette"
+      ],
+      "sourcePaths": [
+        "svg/dialysis-cassette-bioart-traced.svg"
+      ],
+      "keywords": [
+        "dialysis cassette",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-dialysis-tubing",
+      "title": "dialysis tubing",
+      "sourceSha256": "1cc138bf75af189f51886b22bf7d095c15094efd92e56d0d1ce1a41507f38449",
+      "sourceConceptIds": [
+        "dialysis-tubing"
+      ],
+      "sourcePaths": [
+        "svg/dialysis-tubing-bioart-traced.svg"
+      ],
+      "keywords": [
+        "dialysis tubing",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-magnetic-separation-column",
+      "title": "magnetic separation column",
+      "sourceSha256": "fc5918e28e56d26e7b7b13ceb56c3347734d98e7894324e31e7570d7c38bbd89",
+      "sourceConceptIds": [
+        "magnetic-separation-column"
+      ],
+      "sourcePaths": [
+        "svg/magnetic-separation-column-bioart-traced.svg"
+      ],
+      "keywords": [
+        "magnetic separation column",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cryobox",
+      "title": "cryobox",
+      "sourceSha256": "3b3c910cf9c648f24e33fd71cec2336c598b98c26ff257409e501e167d5bfb4c",
+      "sourceConceptIds": [
+        "cryobox"
+      ],
+      "sourcePaths": [
+        "svg/cryobox-bioart-traced.svg"
+      ],
+      "keywords": [
+        "cryobox",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-freezer-rack",
+      "title": "freezer rack",
+      "sourceSha256": "16d490a449cbc9b9dc8af8862fb6767b2dd642dac187d7ae777f29f4c0e2ca8b",
+      "sourceConceptIds": [
+        "freezer-rack"
+      ],
+      "sourcePaths": [
+        "svg/freezer-rack-bioart-traced.svg"
+      ],
+      "keywords": [
+        "freezer rack",
+        "19. Basic laboratory glassware and plasticware"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-class-ii-biosafety-cabinet",
+      "title": "Class II biosafety cabinet",
+      "sourceSha256": "0f3fc0a585ffe75caab8f60dd7e8c0a00686ecb7f0cd30e56b3e12a75bd8e507",
+      "sourceConceptIds": [
+        "class-ii-biosafety-cabinet"
+      ],
+      "sourcePaths": [
+        "svg/class-ii-biosafety-cabinet-bioart-traced.svg"
+      ],
+      "keywords": [
+        "Class II biosafety cabinet",
+        "20. Cell culture and sterile-work equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-laminar-flow-hood",
+      "title": "laminar-flow hood",
+      "sourceSha256": "5cb6b049cac58a191a61814e485bed41328092baf2c71723de21ef05bc9e8814",
+      "sourceConceptIds": [
+        "laminar-flow-hood"
+      ],
+      "sourcePaths": [
+        "svg/laminar-flow-hood-bioart-traced.svg"
+      ],
+      "keywords": [
+        "laminar-flow hood",
+        "20. Cell culture and sterile-work equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-co2-incubator",
+      "title": "CO2 incubator",
+      "sourceSha256": "4037adfffb2fcce3ed1c8de93ab02cb46f01bada307bde50b8f1c28cf1b7a724",
+      "sourceConceptIds": [
+        "co2-incubator"
+      ],
+      "sourcePaths": [
+        "svg/co2-incubator-bioart-traced.svg"
+      ],
+      "keywords": [
+        "CO2 incubator",
+        "20. Cell culture and sterile-work equipment",
+        "instrument",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-standard-laboratory-incubator",
+      "title": "standard laboratory incubator",
+      "sourceSha256": "931b43f0f752b49c8e15ac0bac071282e6e64391a43298801a5f84423cca1a00",
+      "sourceConceptIds": [
+        "standard-laboratory-incubator"
+      ],
+      "sourcePaths": [
+        "svg/standard-laboratory-incubator-bioart-traced.svg"
+      ],
+      "keywords": [
+        "standard laboratory incubator",
+        "20. Cell culture and sterile-work equipment",
+        "instrument",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-hypoxia-chamber",
+      "title": "hypoxia chamber",
+      "sourceSha256": "07bc5ddea51c769509c2de16337a2c418a337afe9906ae279a89ccae61b020d3",
+      "sourceConceptIds": [
+        "hypoxia-chamber"
+      ],
+      "sourcePaths": [
+        "svg/hypoxia-chamber-bioart-traced.svg"
+      ],
+      "keywords": [
+        "hypoxia chamber",
+        "20. Cell culture and sterile-work equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cell-culture-roller-apparatus",
+      "title": "cell-culture roller apparatus",
+      "sourceSha256": "74546067d339ab8ec76b3040aff1df61b843e1c4b2f1ab9a64417349ae25a7ea",
+      "sourceConceptIds": [
+        "cell-culture-roller-apparatus"
+      ],
+      "sourcePaths": [
+        "svg/cell-culture-roller-apparatus-bioart-traced.svg"
+      ],
+      "keywords": [
+        "cell-culture roller apparatus",
+        "20. Cell culture and sterile-work equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-orbital-shaker-incubator",
+      "title": "orbital shaker incubator",
+      "sourceSha256": "8c22f5398db05f91308790c801e9f3b06623f2503328bfcfdeb1cbf30d9ee70e",
+      "sourceConceptIds": [
+        "orbital-shaker-incubator"
+      ],
+      "sourcePaths": [
+        "svg/orbital-shaker-incubator-bioart-traced.svg"
+      ],
+      "keywords": [
+        "orbital shaker incubator",
+        "20. Cell culture and sterile-work equipment",
+        "instrument",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-water-bath",
+      "title": "water bath",
+      "sourceSha256": "2bbe9e77953cd92852bd4f231896db2859287dd4d13f11069ff9431eb4c85073",
+      "sourceConceptIds": [
+        "water-bath"
+      ],
+      "sourcePaths": [
+        "svg/water-bath-bioart-traced.svg"
+      ],
+      "keywords": [
+        "water bath",
+        "20. Cell culture and sterile-work equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-bead-bath",
+      "title": "bead bath",
+      "sourceSha256": "d48aa24721035a3a8659cc0f8504269f9895f6b992c5a9f01cf665765b6e8364",
+      "sourceConceptIds": [
+        "bead-bath"
+      ],
+      "sourcePaths": [
+        "svg/bead-bath-bioart-traced.svg"
+      ],
+      "keywords": [
+        "bead bath",
+        "20. Cell culture and sterile-work equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-aspirator-bottle-system",
+      "title": "aspirator bottle system",
+      "sourceSha256": "1c6720ebeed59a9cda98c94a804d14e37cc8fded1057443aaa4f8b35380839d5",
+      "sourceConceptIds": [
+        "aspirator-bottle-system"
+      ],
+      "sourcePaths": [
+        "svg/aspirator-bottle-system-bioart-traced.svg"
+      ],
+      "keywords": [
+        "aspirator bottle system",
+        "20. Cell culture and sterile-work equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-vacuum-pump",
+      "title": "vacuum pump",
+      "sourceSha256": "0f71930186b5866cf531f929d8f6b6e48786f2c840dda646cf2d472f4a56d086",
+      "sourceConceptIds": [
+        "vacuum-pump"
+      ],
+      "sourcePaths": [
+        "svg/vacuum-pump-bioart-traced.svg"
+      ],
+      "keywords": [
+        "vacuum pump",
+        "20. Cell culture and sterile-work equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-automated-cell-counter",
+      "title": "automated cell counter",
+      "sourceSha256": "6d1fedb5f2d1415601bb0ea4cd713005fbdc582007c4ed901ec9db6c3a584611",
+      "sourceConceptIds": [
+        "automated-cell-counter"
+      ],
+      "sourcePaths": [
+        "svg/automated-cell-counter-bioart-traced.svg"
+      ],
+      "keywords": [
+        "automated cell counter",
+        "20. Cell culture and sterile-work equipment",
+        "instrument",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-manual-cell-counter",
+      "title": "manual cell counter",
+      "sourceSha256": "650ca5113e970f2b65b053cd60cdcf0be7524c8d6462ae0d1485b0a91004261c",
+      "sourceConceptIds": [
+        "manual-cell-counter"
+      ],
+      "sourcePaths": [
+        "svg/manual-cell-counter-bioart-traced.svg"
+      ],
+      "keywords": [
+        "manual cell counter",
+        "20. Cell culture and sterile-work equipment",
+        "instrument",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-wave-bioreactor-bag",
+      "title": "wave bioreactor bag",
+      "sourceSha256": "499b9b8e9ff3974055aa58d6ed79750a71b3a8913d088781dfea5032f15ec6ab",
+      "sourceConceptIds": [
+        "wave-bioreactor-bag"
+      ],
+      "sourcePaths": [
+        "svg/wave-bioreactor-bag-bioart-traced.svg"
+      ],
+      "keywords": [
+        "wave bioreactor bag",
+        "20. Cell culture and sterile-work equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-microcentrifuge",
+      "title": "microcentrifuge",
+      "sourceSha256": "ad2581a056af8666095d29af96566c3530a47e5e2f22c08245346b442f6d359d",
+      "sourceConceptIds": [
+        "microcentrifuge"
+      ],
+      "sourcePaths": [
+        "svg/microcentrifuge-bioart-traced.svg"
+      ],
+      "keywords": [
+        "microcentrifuge",
+        "21. Centrifugation, mixing, and general bench equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-benchtop-centrifuge",
+      "title": "benchtop centrifuge",
+      "sourceSha256": "7dd5a4256669f78f7548fa0f308f21ca750a7e8e08e8ee33987e02773131fa3d",
+      "sourceConceptIds": [
+        "benchtop-centrifuge"
+      ],
+      "sourcePaths": [
+        "svg/benchtop-centrifuge-bioart-traced.svg"
+      ],
+      "keywords": [
+        "benchtop centrifuge",
+        "21. Centrifugation, mixing, and general bench equipment",
+        "instrument",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-refrigerated-floor-centrifuge",
+      "title": "refrigerated floor centrifuge",
+      "sourceSha256": "9ba294570f07ae61b7b2d3b771f07e9547b547e962bcde27fef6d0e32e06b606",
+      "sourceConceptIds": [
+        "refrigerated-floor-centrifuge"
+      ],
+      "sourcePaths": [
+        "svg/refrigerated-floor-centrifuge-bioart-traced.svg"
+      ],
+      "keywords": [
+        "refrigerated floor centrifuge",
+        "21. Centrifugation, mixing, and general bench equipment",
+        "instrument",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-ultracentrifuge",
+      "title": "ultracentrifuge",
+      "sourceSha256": "bb66774d61ea3f96d40762482760168aaccbea39567bbe7502a75215a82cabbf",
+      "sourceConceptIds": [
+        "ultracentrifuge"
+      ],
+      "sourcePaths": [
+        "svg/ultracentrifuge-bioart-traced.svg"
+      ],
+      "keywords": [
+        "ultracentrifuge",
+        "21. Centrifugation, mixing, and general bench equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-fixed-angle-rotor",
+      "title": "fixed-angle rotor",
+      "sourceSha256": "e2de12aed683cd72fb8d325efac4247c10d896698687f276a22b24b4c0be4522",
+      "sourceConceptIds": [
+        "fixed-angle-rotor"
+      ],
+      "sourcePaths": [
+        "svg/fixed-angle-rotor-bioart-traced.svg"
+      ],
+      "keywords": [
+        "fixed-angle rotor",
+        "21. Centrifugation, mixing, and general bench equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-swinging-bucket-rotor",
+      "title": "swinging-bucket rotor",
+      "sourceSha256": "a3f03104d6e10a8650b7675b2c1a92beae9c362c0b15f58d60da9c8d9e193e15",
+      "sourceConceptIds": [
+        "swinging-bucket-rotor"
+      ],
+      "sourcePaths": [
+        "svg/swinging-bucket-rotor-bioart-traced.svg"
+      ],
+      "keywords": [
+        "swinging-bucket rotor",
+        "21. Centrifugation, mixing, and general bench equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-vortex-mixer",
+      "title": "vortex mixer",
+      "sourceSha256": "ca786c01dee9dc2ced1c47f47509ca982fc3b7a4e3987490f73ec3800bcccee5",
+      "sourceConceptIds": [
+        "vortex-mixer"
+      ],
+      "sourcePaths": [
+        "svg/vortex-mixer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "vortex mixer",
+        "21. Centrifugation, mixing, and general bench equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-orbital-shaker",
+      "title": "orbital shaker",
+      "sourceSha256": "a650f6bfdb84544e04cae2ef5dd0c27c29169bcaebd4151180b21ae7c936555e",
+      "sourceConceptIds": [
+        "orbital-shaker"
+      ],
+      "sourcePaths": [
+        "svg/orbital-shaker-bioart-traced.svg"
+      ],
+      "keywords": [
+        "orbital shaker",
+        "21. Centrifugation, mixing, and general bench equipment",
+        "instrument",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-rocking-platform",
+      "title": "rocking platform",
+      "sourceSha256": "3bcf48c544f1f37d48e68145674f7e5b6801b602a43d250bd699e372325b9db0",
+      "sourceConceptIds": [
+        "rocking-platform"
+      ],
+      "sourcePaths": [
+        "svg/rocking-platform-bioart-traced.svg"
+      ],
+      "keywords": [
+        "rocking platform",
+        "21. Centrifugation, mixing, and general bench equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-tube-rotator",
+      "title": "tube rotator",
+      "sourceSha256": "bea61f23e9e141be04642f3509efb31246a54f0a0938ec4dfb514667afea3574",
+      "sourceConceptIds": [
+        "tube-rotator"
+      ],
+      "sourcePaths": [
+        "svg/tube-rotator-bioart-traced.svg"
+      ],
+      "keywords": [
+        "tube rotator",
+        "21. Centrifugation, mixing, and general bench equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-magnetic-stirrer-hotplate",
+      "title": "magnetic stirrer hotplate",
+      "sourceSha256": "cfdb10367d94bd8386ec7e18a2f42006f013ed44c1891136747367a934050a6e",
+      "sourceConceptIds": [
+        "magnetic-stirrer-hotplate"
+      ],
+      "sourcePaths": [
+        "svg/magnetic-stirrer-hotplate-bioart-traced.svg"
+      ],
+      "keywords": [
+        "magnetic stirrer hotplate",
+        "21. Centrifugation, mixing, and general bench equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-overhead-stirrer",
+      "title": "overhead stirrer",
+      "sourceSha256": "0af3e7931d9654386e42daeeb7c116ac786fb3855f63710c625f697104096eb4",
+      "sourceConceptIds": [
+        "overhead-stirrer"
+      ],
+      "sourcePaths": [
+        "svg/overhead-stirrer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "overhead stirrer",
+        "21. Centrifugation, mixing, and general bench equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-sonicator-probe",
+      "title": "sonicator probe",
+      "sourceSha256": "7230d51cff8c601b28eafb9daa30c65e7166f287fd401e9fe69b4c903c64a8c0",
+      "sourceConceptIds": [
+        "sonicator-probe"
+      ],
+      "sourcePaths": [
+        "svg/sonicator-probe-bioart-traced.svg"
+      ],
+      "keywords": [
+        "sonicator probe",
+        "21. Centrifugation, mixing, and general bench equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-ultrasonic-bath",
+      "title": "ultrasonic bath",
+      "sourceSha256": "73a38f3c442345f6f8a29143fc56d9ab54b15316e6209362c83fc302abc2e46d",
+      "sourceConceptIds": [
+        "ultrasonic-bath"
+      ],
+      "sourcePaths": [
+        "svg/ultrasonic-bath-bioart-traced.svg"
+      ],
+      "keywords": [
+        "ultrasonic bath",
+        "21. Centrifugation, mixing, and general bench equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-homogenizer",
+      "title": "homogenizer",
+      "sourceSha256": "4412f9aa092d0146d0a17ba0116482f34c928bc026d47b9b5bdc7006ec866b1b",
+      "sourceConceptIds": [
+        "homogenizer"
+      ],
+      "sourcePaths": [
+        "svg/homogenizer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "homogenizer",
+        "21. Centrifugation, mixing, and general bench equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-bead-mill",
+      "title": "bead mill",
+      "sourceSha256": "787149be5ae230761bd74c28464394b257b13f913bc1c0e76e7b3bdf8fecfd64",
+      "sourceConceptIds": [
+        "bead-mill"
+      ],
+      "sourcePaths": [
+        "svg/bead-mill-bioart-traced.svg"
+      ],
+      "keywords": [
+        "bead mill",
+        "21. Centrifugation, mixing, and general bench equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-mortar-and-pestle",
+      "title": "mortar and pestle",
+      "sourceSha256": "9da5930f250f882d3dd1add19c691c1bde4f589eb2266ea7181c469415c93d6f",
+      "sourceConceptIds": [
+        "mortar-and-pestle"
+      ],
+      "sourcePaths": [
+        "svg/mortar-and-pestle-bioart-traced.svg"
+      ],
+      "keywords": [
+        "mortar and pestle",
+        "21. Centrifugation, mixing, and general bench equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-analytical-balance",
+      "title": "analytical balance",
+      "sourceSha256": "48f2ee60a125093d16cfdb8b3da507589312289eaae44c640dc4e7c2cd785b0b",
+      "sourceConceptIds": [
+        "analytical-balance"
+      ],
+      "sourcePaths": [
+        "svg/analytical-balance-bioart-traced.svg"
+      ],
+      "keywords": [
+        "analytical balance",
+        "21. Centrifugation, mixing, and general bench equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-ph-meter",
+      "title": "pH meter",
+      "sourceSha256": "c290365bbd8e985e1aa87b16fb5d00fa357edda39230ff66a0872f3ae08e38f3",
+      "sourceConceptIds": [
+        "ph-meter"
+      ],
+      "sourcePaths": [
+        "svg/ph-meter-bioart-traced.svg"
+      ],
+      "keywords": [
+        "pH meter",
+        "21. Centrifugation, mixing, and general bench equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-laboratory-timer",
+      "title": "laboratory timer",
+      "sourceSha256": "3963beab41c333b59450668926285619259d77433dcbe5d11f1bee0590db319c",
+      "sourceConceptIds": [
+        "laboratory-timer"
+      ],
+      "sourcePaths": [
+        "svg/laboratory-timer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "laboratory timer",
+        "21. Centrifugation, mixing, and general bench equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-thermal-cycler",
+      "title": "thermal cycler",
+      "sourceSha256": "0b5512d6055e11514a2a94ca6e966951d5e28f6e0b2b7a5ceb7ae4de2543727e",
+      "sourceConceptIds": [
+        "thermal-cycler"
+      ],
+      "sourcePaths": [
+        "svg/thermal-cycler-bioart-traced.svg"
+      ],
+      "keywords": [
+        "thermal cycler",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-qpcr-instrument",
+      "title": "qPCR instrument",
+      "sourceSha256": "96c1bf43ce5d509249f72c2d3f18a20725d90c8d84adae620ddcccb1d41f4eab",
+      "sourceConceptIds": [
+        "qpcr-instrument"
+      ],
+      "sourcePaths": [
+        "svg/qpcr-instrument-bioart-traced.svg"
+      ],
+      "keywords": [
+        "qPCR instrument",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-digital-pcr-instrument",
+      "title": "digital PCR instrument",
+      "sourceSha256": "33715d4953725620c9e123bbbaea4b00719effae1651d6511c75f4f3d17fd381",
+      "sourceConceptIds": [
+        "digital-pcr-instrument"
+      ],
+      "sourcePaths": [
+        "svg/digital-pcr-instrument-bioart-traced.svg"
+      ],
+      "keywords": [
+        "digital PCR instrument",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-gel-electrophoresis-chamber",
+      "title": "gel electrophoresis chamber",
+      "sourceSha256": "09c8b8b7c6097ce6d458bde3e2ac6e186c5e617c1535a1abf33701aa2e728cfe",
+      "sourceConceptIds": [
+        "gel-electrophoresis-chamber"
+      ],
+      "sourcePaths": [
+        "svg/gel-electrophoresis-chamber-bioart-traced.svg"
+      ],
+      "keywords": [
+        "gel electrophoresis chamber",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-agarose-gel-tray",
+      "title": "agarose gel tray",
+      "sourceSha256": "0edbe636720cea9df7c111cf29c44f2cdd8643775e05065c4f35342b95ba6854",
+      "sourceConceptIds": [
+        "agarose-gel-tray"
+      ],
+      "sourcePaths": [
+        "svg/agarose-gel-tray-bioart-traced.svg"
+      ],
+      "keywords": [
+        "agarose gel tray",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-page-gel-cassette",
+      "title": "PAGE gel cassette",
+      "sourceSha256": "31e5080cc2c85e2a12e208e3a9ee230bbb71314458c9732e6ab61ad104895195",
+      "sourceConceptIds": [
+        "page-gel-cassette"
+      ],
+      "sourcePaths": [
+        "svg/page-gel-cassette-bioart-traced.svg"
+      ],
+      "keywords": [
+        "PAGE gel cassette",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-electrophoresis-power-supply",
+      "title": "electrophoresis power supply",
+      "sourceSha256": "fd871f9424a25264560f4ee741d1f305cb6b82a181b16239acb4f1f6655abdae",
+      "sourceConceptIds": [
+        "electrophoresis-power-supply"
+      ],
+      "sourcePaths": [
+        "svg/electrophoresis-power-supply-bioart-traced.svg"
+      ],
+      "keywords": [
+        "electrophoresis power supply",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-western-blot-transfer-tank",
+      "title": "western blot transfer tank",
+      "sourceSha256": "7c7687104d59d225b319e73badc14116fb5937727615d3581ca41f46098d6895",
+      "sourceConceptIds": [
+        "western-blot-transfer-tank"
+      ],
+      "sourcePaths": [
+        "svg/western-blot-transfer-tank-bioart-traced.svg"
+      ],
+      "keywords": [
+        "western blot transfer tank",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-semi-dry-blot-transfer-apparatus",
+      "title": "semi-dry blot transfer apparatus",
+      "sourceSha256": "be7162c852ab9dae3ae5fee938dff0217d951a423c33d12bc85583a98b2f4698",
+      "sourceConceptIds": [
+        "semi-dry-blot-transfer-apparatus"
+      ],
+      "sourcePaths": [
+        "svg/semi-dry-blot-transfer-apparatus-bioart-traced.svg"
+      ],
+      "keywords": [
+        "semi-dry blot transfer apparatus",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-gel-documentation-system",
+      "title": "gel documentation system",
+      "sourceSha256": "9fb621795a38c9a42d07dedd83bc97caf56fc3609c1402024ea26d536ae5275a",
+      "sourceConceptIds": [
+        "gel-documentation-system"
+      ],
+      "sourcePaths": [
+        "svg/gel-documentation-system-bioart-traced.svg"
+      ],
+      "keywords": [
+        "gel documentation system",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-uv-transilluminator",
+      "title": "UV transilluminator",
+      "sourceSha256": "db0d0a3a10f5a83ba2f29e48d6420c694ceb8b7fde438c583371c7f4a54342ad",
+      "sourceConceptIds": [
+        "uv-transilluminator"
+      ],
+      "sourcePaths": [
+        "svg/uv-transilluminator-bioart-traced.svg"
+      ],
+      "keywords": [
+        "UV transilluminator",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-blue-light-transilluminator",
+      "title": "blue-light transilluminator",
+      "sourceSha256": "8102acd780482a1a493aa41ef24bd8e2f085181916cfae05176c5deabacff7d9",
+      "sourceConceptIds": [
+        "blue-light-transilluminator"
+      ],
+      "sourcePaths": [
+        "svg/blue-light-transilluminator-bioart-traced.svg"
+      ],
+      "keywords": [
+        "blue-light transilluminator",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-nucleic-acid-extraction-column",
+      "title": "nucleic-acid extraction column",
+      "sourceSha256": "f1df5b161d75336c388fd31bb77f2a479ff4de8b2e53cb46512d6cd8c61cdf5d",
+      "sourceConceptIds": [
+        "nucleic-acid-extraction-column"
+      ],
+      "sourcePaths": [
+        "svg/nucleic-acid-extraction-column-bioart-traced.svg"
+      ],
+      "keywords": [
+        "nucleic-acid extraction column",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-magnetic-bead-extraction-plate",
+      "title": "magnetic-bead extraction plate",
+      "sourceSha256": "a7ced3f510c6eb068914ff6f52c4e8e40211f03a2ae39bb58bc2b4baf5bb0940",
+      "sourceConceptIds": [
+        "magnetic-bead-extraction-plate"
+      ],
+      "sourcePaths": [
+        "svg/magnetic-bead-extraction-plate-bioart-traced.svg"
+      ],
+      "keywords": [
+        "magnetic-bead extraction plate",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-automated-nucleic-acid-extractor",
+      "title": "automated nucleic-acid extractor",
+      "sourceSha256": "4630f70cdbcd43f48e72d1564386a16810816e197c7d6a51a26fe6df289812b7",
+      "sourceConceptIds": [
+        "automated-nucleic-acid-extractor"
+      ],
+      "sourcePaths": [
+        "svg/automated-nucleic-acid-extractor-bioart-traced.svg"
+      ],
+      "keywords": [
+        "automated nucleic-acid extractor",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-sanger-sequencer-capillary-electrophoresis-instrument",
+      "title": "Sanger sequencer / capillary electrophoresis instrument",
+      "sourceSha256": "69d9f171dc321fc44bcac61330c8969faf638a35a2424e5e8d8d4bf11edc306e",
+      "sourceConceptIds": [
+        "sanger-sequencer-capillary-electrophoresis-instrument"
+      ],
+      "sourcePaths": [
+        "svg/sanger-sequencer-capillary-electrophoresis-instrument-bioart-traced.svg"
+      ],
+      "keywords": [
+        "Sanger sequencer / capillary electrophoresis instrument",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-benchtop-next-generation-sequencer",
+      "title": "benchtop next-generation sequencer",
+      "sourceSha256": "3db3e1b014fd6b15dcaff52391581f02923f1ab0bc4dc4bb63e478c94f005ed5",
+      "sourceConceptIds": [
+        "benchtop-next-generation-sequencer"
+      ],
+      "sourcePaths": [
+        "svg/benchtop-next-generation-sequencer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "benchtop next-generation sequencer",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-high-throughput-sequencing-instrument",
+      "title": "high-throughput sequencing instrument",
+      "sourceSha256": "dd02103a8fd250e28800ad43a29c27f3cf4dee91a7b8e07322c3e336d92072cb",
+      "sourceConceptIds": [
+        "high-throughput-sequencing-instrument"
+      ],
+      "sourcePaths": [
+        "svg/high-throughput-sequencing-instrument-bioart-traced.svg"
+      ],
+      "keywords": [
+        "high-throughput sequencing instrument",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-nanopore-sequencing-device",
+      "title": "nanopore sequencing device",
+      "sourceSha256": "6d8cc91e94377753633c1918a18a34272e2b2a7c6301d2130a47f5f508901aef",
+      "sourceConceptIds": [
+        "nanopore-sequencing-device"
+      ],
+      "sourcePaths": [
+        "svg/nanopore-sequencing-device-bioart-traced.svg"
+      ],
+      "keywords": [
+        "nanopore sequencing device",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-microarray-slide",
+      "title": "microarray slide",
+      "sourceSha256": "d61040fcc5576162784523f799a1a950616ce0bb086d57242ed793045440929d",
+      "sourceConceptIds": [
+        "microarray-slide"
+      ],
+      "sourcePaths": [
+        "svg/microarray-slide-bioart-traced.svg"
+      ],
+      "keywords": [
+        "microarray slide",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-microarray-scanner",
+      "title": "microarray scanner",
+      "sourceSha256": "c4c4cbcfae77055829d717a3163df1d61f9fc1ac2bf57f139209e27298fe12cf",
+      "sourceConceptIds": [
+        "microarray-scanner"
+      ],
+      "sourcePaths": [
+        "svg/microarray-scanner-bioart-traced.svg"
+      ],
+      "keywords": [
+        "microarray scanner",
+        "22. Molecular biology and genomics equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-spectrophotometer",
+      "title": "spectrophotometer",
+      "sourceSha256": "45f3800b3df176cde8eb2a3a315e223ab026ffdc5b5fc3306e40b57fab862bee",
+      "sourceConceptIds": [
+        "spectrophotometer"
+      ],
+      "sourcePaths": [
+        "svg/spectrophotometer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "spectrophotometer",
+        "23. Protein, biochemistry, and analytical equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-nanodrop-style-microvolume-spectrophotometer",
+      "title": "NanoDrop-style microvolume spectrophotometer",
+      "sourceSha256": "049544323bf70d0418fb8004fbe8319f86889b5c8d197f37f34d94879823db2e",
+      "sourceConceptIds": [
+        "nanodrop-style-microvolume-spectrophotometer"
+      ],
+      "sourcePaths": [
+        "svg/nanodrop-style-microvolume-spectrophotometer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "NanoDrop-style microvolume spectrophotometer",
+        "23. Protein, biochemistry, and analytical equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-fluorescence-plate-reader",
+      "title": "fluorescence plate reader",
+      "sourceSha256": "80d91130e6a3a7c1c910965ad9ec439d99e69b1d8e057dd0b0881d65a22dcb67",
+      "sourceConceptIds": [
+        "fluorescence-plate-reader"
+      ],
+      "sourcePaths": [
+        "svg/fluorescence-plate-reader-bioart-traced.svg"
+      ],
+      "keywords": [
+        "fluorescence plate reader",
+        "23. Protein, biochemistry, and analytical equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-multimode-plate-reader",
+      "title": "multimode plate reader",
+      "sourceSha256": "04a436b3090d9f66b47cf0cf3743a7762e42225dcfdcf1d1a820cd1c80f4eb17",
+      "sourceConceptIds": [
+        "multimode-plate-reader"
+      ],
+      "sourcePaths": [
+        "svg/multimode-plate-reader-bioart-traced.svg"
+      ],
+      "keywords": [
+        "multimode plate reader",
+        "23. Protein, biochemistry, and analytical equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-luminometer",
+      "title": "luminometer",
+      "sourceSha256": "379e46a92ab67b4bb2e16b13d3ed7537724dbb37b5c019ba7ad193e25be6da5f",
+      "sourceConceptIds": [
+        "luminometer"
+      ],
+      "sourcePaths": [
+        "svg/luminometer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "luminometer",
+        "23. Protein, biochemistry, and analytical equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-upright-light-microscope",
+      "title": "upright light microscope",
+      "sourceSha256": "4b00227fd549477a27ab6ed6ce1d761d451726c8baf2090f6b87228a13ef8def",
+      "sourceConceptIds": [
+        "upright-light-microscope"
+      ],
+      "sourcePaths": [
+        "svg/upright-light-microscope-bioart-traced.svg"
+      ],
+      "keywords": [
+        "upright light microscope",
+        "24. Microscopy and imaging",
+        "instrument",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-inverted-microscope",
+      "title": "inverted microscope",
+      "sourceSha256": "63783653dac5504e8b1891af21277e98acd114112c8a7ab545db5bf49200397d",
+      "sourceConceptIds": [
+        "inverted-microscope"
+      ],
+      "sourcePaths": [
+        "svg/inverted-microscope-bioart-traced.svg"
+      ],
+      "keywords": [
+        "inverted microscope",
+        "24. Microscopy and imaging",
+        "instrument",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-microscope-objective",
+      "title": "microscope objective",
+      "sourceSha256": "00b2381f04373ecd15b56652a42d2e3a8f640d0a75dabd394588a7419da208fe",
+      "sourceConceptIds": [
+        "microscope-objective"
+      ],
+      "sourcePaths": [
+        "svg/microscope-objective-bioart-traced.svg"
+      ],
+      "keywords": [
+        "microscope objective",
+        "24. Microscopy and imaging",
+        "instrument",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-immersion-oil-bottle",
+      "title": "immersion-oil bottle",
+      "sourceSha256": "765a581e14dfba5d5e21e60d0a35c530d1a9ce067a403902118542402753749f",
+      "sourceConceptIds": [
+        "immersion-oil-bottle"
+      ],
+      "sourcePaths": [
+        "svg/immersion-oil-bottle-bioart-traced.svg"
+      ],
+      "keywords": [
+        "immersion-oil bottle",
+        "24. Microscopy and imaging"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-microscope-camera",
+      "title": "microscope camera",
+      "sourceSha256": "c5453fd82d66bf71f460a277fd40e63e366a2784e370cc2fb72e17371d56c032",
+      "sourceConceptIds": [
+        "microscope-camera"
+      ],
+      "sourcePaths": [
+        "svg/microscope-camera-bioart-traced.svg"
+      ],
+      "keywords": [
+        "microscope camera",
+        "24. Microscopy and imaging",
+        "instrument",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-live-cell-imaging-incubator",
+      "title": "live-cell imaging incubator",
+      "sourceSha256": "47444af89cdf0ab48471d1148096e773087bca5af5bced4428b1d087208f802c",
+      "sourceConceptIds": [
+        "live-cell-imaging-incubator"
+      ],
+      "sourcePaths": [
+        "svg/live-cell-imaging-incubator-bioart-traced.svg"
+      ],
+      "keywords": [
+        "live-cell imaging incubator",
+        "24. Microscopy and imaging",
+        "instrument",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-whole-slide-scanner",
+      "title": "whole-slide scanner",
+      "sourceSha256": "3c8ac9ffef9cf695052f3c69caa36191ec3d039139e7b5af47a5126310bc0019",
+      "sourceConceptIds": [
+        "whole-slide-scanner"
+      ],
+      "sourcePaths": [
+        "svg/whole-slide-scanner-bioart-traced.svg"
+      ],
+      "keywords": [
+        "whole-slide scanner",
+        "24. Microscopy and imaging"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-benchtop-flow-cytometer",
+      "title": "benchtop flow cytometer",
+      "sourceSha256": "d32d96dd7aa8145f0006aa913f9b34cd1c56425e972859f33db6d70c40a71d54",
+      "sourceConceptIds": [
+        "benchtop-flow-cytometer"
+      ],
+      "sourcePaths": [
+        "svg/benchtop-flow-cytometer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "benchtop flow cytometer",
+        "25. Flow cytometry and cell sorting",
+        "instrument",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-spectral-flow-cytometer",
+      "title": "spectral flow cytometer",
+      "sourceSha256": "a0658ad7e73206b62492098d427aac68c1644cf8cb7969dca2f19b887f26cf44",
+      "sourceConceptIds": [
+        "spectral-flow-cytometer"
+      ],
+      "sourcePaths": [
+        "svg/spectral-flow-cytometer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "spectral flow cytometer",
+        "25. Flow cytometry and cell sorting",
+        "instrument",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-fluorescence-activated-cell-sorter",
+      "title": "fluorescence-activated cell sorter",
+      "sourceSha256": "0ad4fe0a5e723d50c6198de959b89ea18210404267883d4a6fc900a2a66e2bbe",
+      "sourceConceptIds": [
+        "fluorescence-activated-cell-sorter"
+      ],
+      "sourcePaths": [
+        "svg/fluorescence-activated-cell-sorter-bioart-traced.svg"
+      ],
+      "keywords": [
+        "fluorescence-activated cell sorter",
+        "25. Flow cytometry and cell sorting"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-imaging-flow-cytometer",
+      "title": "imaging flow cytometer",
+      "sourceSha256": "f2282688b6927542d65b7bcb4442aab226e923b8d660849eb80eab35c6692cd3",
+      "sourceConceptIds": [
+        "imaging-flow-cytometer"
+      ],
+      "sourcePaths": [
+        "svg/imaging-flow-cytometer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "imaging flow cytometer",
+        "25. Flow cytometry and cell sorting",
+        "instrument",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cytometry-sample-tube",
+      "title": "cytometry sample tube",
+      "sourceSha256": "5f57d828d25b0d4f9e70cde2582ee3ff6aa9f113ecdce1536199756af7dcb965",
+      "sourceConceptIds": [
+        "cytometry-sample-tube"
+      ],
+      "sourcePaths": [
+        "svg/cytometry-sample-tube-bioart-traced.svg"
+      ],
+      "keywords": [
+        "cytometry sample tube",
+        "25. Flow cytometry and cell sorting"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cytometry-bead-standard",
+      "title": "cytometry bead standard",
+      "sourceSha256": "f57ba1e1064ac2609aeb4c713359e577659c37973ea0d58e33ac99949bf0f56e",
+      "sourceConceptIds": [
+        "cytometry-bead-standard"
+      ],
+      "sourcePaths": [
+        "svg/cytometry-bead-standard-bioart-traced.svg"
+      ],
+      "keywords": [
+        "cytometry bead standard",
+        "25. Flow cytometry and cell sorting"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-sheath-fluid-container",
+      "title": "sheath-fluid container",
+      "sourceSha256": "18bc5a5ad48ff542368dce8fe5abb35b93b11040b8cb6f0fe17380e7193164a8",
+      "sourceConceptIds": [
+        "sheath-fluid-container"
+      ],
+      "sourcePaths": [
+        "svg/sheath-fluid-container-bioart-traced.svg"
+      ],
+      "keywords": [
+        "sheath-fluid container",
+        "25. Flow cytometry and cell sorting"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cell-sort-collection-tube-rack",
+      "title": "cell-sort collection tube rack",
+      "sourceSha256": "7171417153bf029052898cc0d2f06d8e2b5d8c0c2e31409e65d82e1688e87eb9",
+      "sourceConceptIds": [
+        "cell-sort-collection-tube-rack"
+      ],
+      "sourcePaths": [
+        "svg/cell-sort-collection-tube-rack-bioart-traced.svg"
+      ],
+      "keywords": [
+        "cell-sort collection tube rack",
+        "25. Flow cytometry and cell sorting"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cell-pellet-in-tube",
+      "title": "cell pellet in tube",
+      "sourceSha256": "2fdca46a01723adca98ba7f992e63541cf5112559325a2cf60616e237765bf84",
+      "sourceConceptIds": [
+        "cell-pellet-in-tube"
+      ],
+      "sourcePaths": [
+        "svg/cell-pellet-in-tube-bioart-traced.svg"
+      ],
+      "keywords": [
+        "cell pellet in tube",
+        "39. Common experimental states and readout primitives"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-confluent-cell-monolayer",
+      "title": "confluent cell monolayer",
+      "sourceSha256": "54e95f1ac1f4d7e6ebd8ca0cabcf818dd960d595759c70ada91f2664e71021d0",
+      "sourceConceptIds": [
+        "confluent-cell-monolayer"
+      ],
+      "sourcePaths": [
+        "svg/confluent-cell-monolayer-bioart-traced.svg"
+      ],
+      "keywords": [
+        "confluent cell monolayer",
+        "39. Common experimental states and readout primitives"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-isolated-adherent-cell-colony",
+      "title": "isolated adherent cell colony",
+      "sourceSha256": "9182681646f268f5f64d3916abbaacbdc2d824f1deb9a9330436e7c957f6b740",
+      "sourceConceptIds": [
+        "isolated-adherent-cell-colony"
+      ],
+      "sourcePaths": [
+        "svg/isolated-adherent-cell-colony-bioart-traced.svg"
+      ],
+      "keywords": [
+        "isolated adherent cell colony",
+        "39. Common experimental states and readout primitives"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-bacterial-colony-on-agar",
+      "title": "bacterial colony on agar",
+      "sourceSha256": "895edd340077048ef6ad363c1c920604d7e00df31a5786212c0dbddcfc7a1a9e",
+      "sourceConceptIds": [
+        "bacterial-colony-on-agar"
+      ],
+      "sourcePaths": [
+        "svg/bacterial-colony-on-agar-bioart-traced.svg"
+      ],
+      "keywords": [
+        "bacterial colony on agar",
+        "39. Common experimental states and readout primitives"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-streaked-agar-plate",
+      "title": "streaked agar plate",
+      "sourceSha256": "fd378048e0bf1226a9a10fe4c5ce45d48bd3258d4baf4ad67d43f0ca53f9c4b5",
+      "sourceConceptIds": [
+        "streaked-agar-plate"
+      ],
+      "sourcePaths": [
+        "svg/streaked-agar-plate-bioart-traced.svg"
+      ],
+      "keywords": [
+        "streaked agar plate",
+        "39. Common experimental states and readout primitives"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-plaque-assay-plate",
+      "title": "plaque-assay plate",
+      "sourceSha256": "0de8711bd34f3b10281f49dcf32718be9433ad5e0be41024b833b29ddc3a7590",
+      "sourceConceptIds": [
+        "plaque-assay-plate"
+      ],
+      "sourcePaths": [
+        "svg/plaque-assay-plate-bioart-traced.svg"
+      ],
+      "keywords": [
+        "plaque-assay plate",
+        "39. Common experimental states and readout primitives"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-isolated-axon",
+      "title": "isolated axon",
+      "sourceSha256": "af146b15607a24c983c8c57c84607f37027f71ce98d479c5a4d1101b583fd1a4",
+      "sourceConceptIds": [
+        "isolated-axon"
+      ],
+      "sourcePaths": [
+        "svg/isolated-axon-bioart-traced.svg"
+      ],
+      "keywords": [
+        "isolated axon",
+        "40. Additional neuroscience primitives"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-dendritic-arbor-segment",
+      "title": "dendritic arbor segment",
+      "sourceSha256": "7a8171a577077a012ad05d0b6a6c22cc80af77e863324bbf15b76dfa3d82e043",
+      "sourceConceptIds": [
+        "dendritic-arbor-segment"
+      ],
+      "sourcePaths": [
+        "svg/dendritic-arbor-segment-bioart-traced.svg"
+      ],
+      "keywords": [
+        "dendritic arbor segment",
+        "40. Additional neuroscience primitives"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-myelin-sheath",
+      "title": "myelin sheath",
+      "sourceSha256": "58072163e491781e0a9dbaf319005843b3db0d0f564c59116d3117757339a543",
+      "sourceConceptIds": [
+        "myelin-sheath"
+      ],
+      "sourcePaths": [
+        "svg/myelin-sheath-bioart-traced.svg"
+      ],
+      "keywords": [
+        "myelin sheath",
+        "40. Additional neuroscience primitives"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-node-of-ranvier",
+      "title": "node of Ranvier",
+      "sourceSha256": "8ef8766ddc880f45c8609ca723c66616e19e5d4ba0b9d93bdc5a0deb3bdbb031",
+      "sourceConceptIds": [
+        "node-of-ranvier"
+      ],
+      "sourcePaths": [
+        "svg/node-of-ranvier-bioart-traced.svg"
+      ],
+      "keywords": [
+        "node of Ranvier",
+        "40. Additional neuroscience primitives"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-synaptic-vesicle",
+      "title": "synaptic vesicle",
+      "sourceSha256": "151e2b5a8add815d3e4c65c28c5e9ef8905e1c216b9e5ca936410c43b58efb4c",
+      "sourceConceptIds": [
+        "synaptic-vesicle"
+      ],
+      "sourcePaths": [
+        "svg/synaptic-vesicle-bioart-traced.svg"
+      ],
+      "keywords": [
+        "synaptic vesicle",
+        "40. Additional neuroscience primitives"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-neuronal-growth-cone",
+      "title": "neuronal growth cone",
+      "sourceSha256": "dd9b7a29c43baaa24f5f3d47070ce3d2b4a577cc08c29f5a8bb49ea4912c4fa3",
+      "sourceConceptIds": [
+        "neuronal-growth-cone"
+      ],
+      "sourcePaths": [
+        "svg/neuronal-growth-cone-bioart-traced.svg"
+      ],
+      "keywords": [
+        "neuronal growth cone",
+        "40. Additional neuroscience primitives"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-blood-brain-barrier-neurovascular-unit",
+      "title": "blood-brain barrier neurovascular unit",
+      "sourceSha256": "a3131e004e8e36b1966804af0c35149fbfac770a1e335d6e4f320e84c0670f36",
+      "sourceConceptIds": [
+        "blood-brain-barrier-neurovascular-unit"
+      ],
+      "sourcePaths": [
+        "svg/blood-brain-barrier-neurovascular-unit-bioart-traced.svg"
+      ],
+      "keywords": [
+        "blood-brain barrier neurovascular unit",
+        "40. Additional neuroscience primitives"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-neutrophil-extracellular-trap-net",
+      "title": "neutrophil extracellular trap (NET)",
+      "sourceSha256": "837395a605cd5ec59091cbec6ca4579a540632f22ac17a09b74bdd7ec41fd03f",
+      "sourceConceptIds": [
+        "neutrophil-extracellular-trap-net"
+      ],
+      "sourcePaths": [
+        "svg/neutrophil-extracellular-trap-net-bioart-traced.svg"
+      ],
+      "keywords": [
+        "neutrophil extracellular trap (NET)",
+        "41. Additional immune and pathology structures",
+        "white blood cell",
+        "immune cell",
+        "immunology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-apoptotic-body",
+      "title": "apoptotic body",
+      "sourceSha256": "2220a5abb2ad22b9b45f0c3ae5d479643900e6dca7d7df44bd3d10a74782a2b0",
+      "sourceConceptIds": [
+        "apoptotic-body"
+      ],
+      "sourcePaths": [
+        "svg/apoptotic-body-bioart-traced.svg"
+      ],
+      "keywords": [
+        "apoptotic body",
+        "41. Additional immune and pathology structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-antigen-antibody-immune-complex",
+      "title": "antigen-antibody immune complex",
+      "sourceSha256": "376fc3adbc691ca0c41804845244cc8ea6b664b5837ee27f61486724053078ed",
+      "sourceConceptIds": [
+        "antigen-antibody-immune-complex"
+      ],
+      "sourcePaths": [
+        "svg/antigen-antibody-immune-complex-bioart-traced.svg"
+      ],
+      "keywords": [
+        "antigen-antibody immune complex",
+        "41. Additional immune and pathology structures",
+        "antibody",
+        "immunoglobulin",
+        "binding protein"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-granuloma",
+      "title": "granuloma",
+      "sourceSha256": "6b29f00a5362edb179de13de6164dfff7ad4ba32ae4a53781693c6d3bafc041f",
+      "sourceConceptIds": [
+        "granuloma"
+      ],
+      "sourcePaths": [
+        "svg/granuloma-bioart-traced.svg"
+      ],
+      "keywords": [
+        "granuloma",
+        "41. Additional immune and pathology structures"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-microplate-shaker",
+      "title": "microplate shaker",
+      "sourceSha256": "f1a31bbd92aee83d5563063262a6bd19e3bda1a18cce2b6133b21059c4f121d0",
+      "sourceConceptIds": [
+        "microplate-shaker"
+      ],
+      "sourcePaths": [
+        "svg/microplate-shaker-bioart-traced.svg"
+      ],
+      "keywords": [
+        "microplate shaker",
+        "42. Laboratory automation and fluid handling",
+        "instrument",
+        "laboratory",
+        "lab equipment"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-syringe-pump",
+      "title": "syringe pump",
+      "sourceSha256": "57c1719a86da9b8a940eb40e7476977987ef4962501fba99387f28bb4ceaa668",
+      "sourceConceptIds": [
+        "syringe-pump"
+      ],
+      "sourcePaths": [
+        "svg/syringe-pump-bioart-traced.svg"
+      ],
+      "keywords": [
+        "syringe pump",
+        "42. Laboratory automation and fluid handling"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-peristaltic-pump",
+      "title": "peristaltic pump",
+      "sourceSha256": "dc7654c188b0fb76a904eef6605a68d9b9cb0df6864e89bd226f4115d7bc7e7a",
+      "sourceConceptIds": [
+        "peristaltic-pump"
+      ],
+      "sourcePaths": [
+        "svg/peristaltic-pump-bioart-traced.svg"
+      ],
+      "keywords": [
+        "peristaltic pump",
+        "42. Laboratory automation and fluid handling"
+      ]
+    }
+  ]
+}

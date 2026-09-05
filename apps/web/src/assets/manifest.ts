@@ -1,4 +1,9 @@
-import { ASSET_CATEGORY_ORDER, type AssetManifest } from "@workspace/editor-core";
+import {
+  ASSET_CATEGORY_ORDER,
+  assertUniqueAssetCatalog,
+  enrichAssetKeywords,
+  type AssetManifest
+} from "@workspace/editor-core";
 import { SCIENTIFIC_STRUCTURE_FAMILIES, FIXED_MEMBRANE_FAMILIES } from "./scientificStructures";
 import generatedArtwork from "../generated/opensketch-generated-manifest.json";
 import manifest from "../generated/nih-bioart-manifest.json";
@@ -13,6 +18,7 @@ export function resolveBundledAssetPath(path: string, baseUrl = import.meta.env.
 
 const resolveFamily = (family: AssetManifest["families"][number]) => ({
   ...family,
+  keywords: enrichAssetKeywords(family),
   variants: family.variants.map((variant) => ({
     ...variant,
     assetPath: resolveBundledAssetPath(variant.assetPath),
@@ -31,6 +37,8 @@ export const assetManifest: AssetManifest = {
     ...(generatedArtwork as AssetManifest).families
   ].map(resolveFamily)
 };
+
+assertUniqueAssetCatalog(assetManifest.families);
 
 /** Retained solely for resolving assets already referenced by older figures. */
 export const bundledAssetManifest: AssetManifest = {

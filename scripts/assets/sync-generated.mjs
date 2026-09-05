@@ -1,3 +1,4 @@
+import { canonicalArtworkGroups } from "./canonical-artwork.mjs";
 import process from "node:process";
 import console from "node:console";
 /** Import only committed, reviewed artwork. Never reads the production agent's working files. */
@@ -13,7 +14,9 @@ const read = (path) =>
   execFileSync("git", ["show", `${commit}:${base}${path}`], { maxBuffer: 100 * 1024 * 1024 });
 const digest = (data) => createHash("sha256").update(data).digest("hex");
 const progress = JSON.parse(read("inventory-progress.json"));
-const groups = new Map();
+const previousSnapshot = JSON.parse(
+  await readFile("docs/opensketch-generated-snapshot.json", "utf8")
+);
 for (const [id, entry] of Object.entries(progress.assets)) {
   if (entry.status !== "complete") continue;
   if (
@@ -22,9 +25,6 @@ for (const [id, entry] of Object.entries(progress.assets)) {
     !entry.png_sha256
   )
     throw new Error(`Unreviewed asset: ${id}`);
-  const group = groups.get(entry.svg) ?? [];
-  group.push({ id, ...entry });
-  groups.set(entry.svg, group);
 }
 const categories = {
   1: "Immunology & blood",
@@ -65,14 +65,21 @@ const derivatives = JSON.parse(
 if (derivatives.sourceCommit !== commit) throw new Error("Derivative commit mismatch.");
 const families = [],
   receipts = [];
-for (const [path, entries] of groups) {
-  const entry = entries.find((e) => path.endsWith(`/${e.id}-bioart-traced.svg`)) ?? entries[0];
+for (const { canonical: entry, entries } of canonicalArtworkGroups(
+  progress.assets,
+  previousSnapshot.assets
+)) {
+  const path = entry.svg;
   if (!entry.visual_review && entry.provenance !== "Approved batches 01/02")
     throw new Error(`Missing canonical review: ${entry.id}`);
   const svg = read(path),
     png = read(entry.png);
-  for (const alias of entries)
-    if (digest(svg) !== alias.svg_sha256) throw new Error(`SVG checksum mismatch: ${alias.id}`);
+  for (const alias of entries) {
+    if (digest(read(alias.svg)) !== alias.svg_sha256 || digest(svg) !== alias.svg_sha256)
+      throw new Error(`SVG checksum mismatch: ${alias.id}`);
+    if (digest(read(alias.png)) !== alias.png_sha256)
+      throw new Error(`PNG checksum mismatch: ${alias.id}`);
+  }
   if (digest(png) !== entry.png_sha256) throw new Error(`PNG checksum mismatch: ${entry.id}`);
   if (/<image\b|<script\b|<foreignObject\b|(?:href|src)\s*=\s*["']https?:/i.test(svg.toString()))
     throw new Error(`Unexpected SVG content: ${entry.id}`);
