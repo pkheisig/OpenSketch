@@ -39,7 +39,8 @@ function makeCanvas(objects: FabricObject[] = [], activeObjects: FabricObject[] 
 function makeAdapter(
   canvas: Canvas,
   setSelection = vi.fn(),
-  replaceAssetVariant = vi.fn(async () => true)
+  replaceAssetVariant = vi.fn(async () => true),
+  exportPdf = vi.fn(async () => undefined)
 ) {
   const commit = vi.fn();
   const restore = vi.fn(async () => undefined);
@@ -76,7 +77,7 @@ function makeAdapter(
     replaceAssetVariant,
     exportSvg: vi.fn(),
     exportCredits: vi.fn(),
-    exportPdf: vi.fn(async () => undefined),
+    exportPdf,
     exportPng: vi.fn(async () => undefined)
   });
   return Object.assign(adapter, {
@@ -89,6 +90,32 @@ function makeAdapter(
 }
 
 describe("semantic editor adapter", () => {
+  it("reports cancellation after asynchronous export preparation", async () => {
+    let release!: () => void;
+    const pending = new Promise<void>((resolve) => {
+      release = resolve;
+    });
+    const exportPdf = vi.fn(async () => pending);
+    const adapter = makeAdapter(
+      makeCanvas(),
+      vi.fn(),
+      vi.fn(async () => true),
+      exportPdf
+    );
+    const controller = new AbortController();
+    const execution = adapter.execute(
+      "export_figure",
+      { format: "pdf" },
+      { signal: controller.signal }
+    );
+
+    controller.abort();
+    release();
+
+    await expect(execution).rejects.toMatchObject({ code: "EXECUTION_ABORTED" });
+    expect(exportPdf).toHaveBeenCalledOnce();
+  });
+
   it("updates project metadata through the editor persistence pathways", async () => {
     const adapter = makeAdapter(makeCanvas());
 

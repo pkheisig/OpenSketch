@@ -10,7 +10,11 @@ import {
   type SemanticCommandDefinition,
   type SemanticCommandFailure,
   type SemanticCommandResult,
-  type SemanticEditorAdapter
+  type SemanticEditorAdapter,
+  type SemanticExecutionOptions,
+  SEMANTIC_EXECUTION_ABORTED,
+  SemanticExecutionAborted,
+  throwIfSemanticExecutionAborted
 } from "./semanticTypes";
 
 export interface SemanticCapabilities {
@@ -27,7 +31,8 @@ export interface SemanticRuntime {
   getCapabilities(): SemanticCapabilities;
   execute<T = unknown>(
     name: string,
-    input?: Record<string, unknown>
+    input?: Record<string, unknown>,
+    options?: SemanticExecutionOptions
   ): Promise<SemanticCommandResult<T>>;
 }
 
@@ -59,7 +64,11 @@ function schemaTypeMatches(type: string, value: unknown): boolean {
   return true;
 }
 
-function validateSchema(value: unknown, schema: JsonSchema, path = "input"): string | undefined {
+export function validateSemanticInput(
+  value: unknown,
+  schema: JsonSchema,
+  path = "input"
+): string | undefined {
   if (schema.type && !schemaTypeMatches(schema.type, value)) {
     return `${path} must be a ${schema.type}.`;
   }
@@ -86,7 +95,7 @@ function validateSchema(value: unknown, schema: JsonSchema, path = "input"): str
       return `${path} allows at most ${schema.maxItems} item(s).`;
     if (schema.items) {
       for (let index = 0; index < value.length; index += 1) {
-        const error = validateSchema(value[index], schema.items, `${path}[${index}]`);
+        const error = validateSemanticInput(value[index], schema.items, `${path}[${index}]`);
         if (error) return error;
       }
     }
@@ -102,13 +111,15 @@ function validateSchema(value: unknown, schema: JsonSchema, path = "input"): str
     }
     for (const [key, child] of Object.entries(properties)) {
       if (Object.hasOwn(value, key)) {
-        const error = validateSchema(value[key], child, `${path}.${key}`);
+        const error = validateSemanticInput(value[key], child, `${path}.${key}`);
         if (error) return error;
       }
     }
   }
   if (schema.oneOf) {
-    const matches = schema.oneOf.filter((candidate) => !validateSchema(value, candidate, path));
+    const matches = schema.oneOf.filter(
+      (candidate) => !validateSemanticInput(value, candidate, path)
+    );
     if (matches.length !== 1) return `${path} does not match exactly one supported schema.`;
   }
   return undefined;
@@ -221,12 +232,14 @@ export function createSemanticRuntime(adapter: SemanticEditorAdapter): SemanticR
   const executeInternal = async <T = unknown>(
     name: string,
     input: Record<string, unknown>,
-    inBatch = false
+    inBatch = false,
+    options: SemanticExecutionOptions = {}
   ): Promise<SemanticCommandResult<T>> => {
+    throwIfSemanticExecutionAborted(options.signal);
     const definition = definitionFor(name);
     if (!definition)
       return failure("UNKNOWN_COMMAND", `Semantic command "${name}" is not registered.`);
-    const inputError = validateSchema(input, definition.inputSchema);
+    const inputError = validateSemanticInput(input, definition.inputSchema);
     if (inputError) return failure("INVALID_INPUT", inputError);
     if (definition.requires.includes("canvas") && !adapter.isCanvasReady()) {
       return failure(
@@ -263,21 +276,21 @@ export function createSemanticRuntime(adapter: SemanticEditorAdapter): SemanticR
       return success({ object } as T);
     }
     if (name === "search_assets") {
-      return success(
-        (await adapter.searchAssets({
-          query: typeof input.query === "string" ? input.query : "",
-          category: typeof input.category === "string" ? input.category : undefined,
-          limit: typeof input.limit === "number" ? input.limit : 25
-        })) as T
-      );
+      const result = await adapter.searchAssets({
+        query: typeof input.query === "string" ? input.query : "",
+        category: typeof input.category === "string" ? input.category : undefined,
+        limit: typeof input.limit === "number" ? input.limit : 25
+      });
+      throwIfSemanticExecutionAborted(options.signal);
+      return success(result as T);
     }
     if (name === "inspect_asset") {
-      return success(
-        (await adapter.inspectAsset({
-          familyId: String(input.familyId),
-          variantId: typeof input.variantId === "string" ? input.variantId : undefined
-        })) as T
-      );
+      const result = await adapter.inspectAsset({
+        familyId: String(input.familyId),
+        variantId: typeof input.variantId === "string" ? input.variantId : undefined
+      });
+      throwIfSemanticExecutionAborted(options.signal);
+      return success(result as T);
     }
     if (name === "inspect_provenance") {
       return success(adapter.inspectProvenance() as T);
@@ -287,17 +300,18 @@ export function createSemanticRuntime(adapter: SemanticEditorAdapter): SemanticR
     }
     if (name === "batch") {
       if (inBatch) return failure("NESTED_BATCH", "Semantic batches cannot contain another batch.");
-      return executeBatch(input);
+      return executeBatch(input, options);
     }
     try {
-      return adapterResult<T>(await adapter.execute(name as SemanticCommandName, input));
+      return adapterResult<T>(await adapter.execute(name as SemanticCommandName, input, options));
     } catch (error) {
       return asFailure(error);
     }
   };
 
   const executeBatch = async <T = unknown>(
-    input: Record<string, unknown>
+    input: Record<string, unknown>,
+    options: SemanticExecutionOptions
   ): Promise<SemanticCommandResult<T>> => {
     const operations = input.operations;
     if (!Array.isArray(operations))
@@ -309,6 +323,15 @@ export function createSemanticRuntime(adapter: SemanticEditorAdapter): SemanticR
     try {
       await adapter.runTransaction(async () => {
         for (const rawOperation of operations as unknown[]) {
+          try {
+            throwIfSemanticExecutionAborted(options.signal);
+          } catch (error) {
+            batchFailure = failure(
+              SEMANTIC_EXECUTION_ABORTED,
+              error instanceof Error ? error.message : String(error)
+            );
+            throw error;
+          }
           if (
             !isRecord(rawOperation) ||
             typeof rawOperation.command !== "string" ||
@@ -344,13 +367,13 @@ export function createSemanticRuntime(adapter: SemanticEditorAdapter): SemanticR
               : resolvedInput;
           const commandDefinition = definitionFor(command);
           const commandInputError = commandDefinition
-            ? validateSchema(commandInput, commandDefinition.inputSchema)
+            ? validateSemanticInput(commandInput, commandDefinition.inputSchema)
             : undefined;
           if (commandInputError) {
             batchFailure = failure("INVALID_INPUT", commandInputError);
             throw new SemanticInputError("BATCH_ABORTED", commandInputError);
           }
-          const result = await executeInternal(command, commandInput, true);
+          const result = await executeInternal(command, commandInput, true, options);
           completed.push({
             command,
             as: typeof rawOperation.as === "string" ? rawOperation.as : undefined,
@@ -418,9 +441,23 @@ export function createSemanticRuntime(adapter: SemanticEditorAdapter): SemanticR
         )
       };
     },
-    execute: <T = unknown>(name: string, input: Record<string, unknown> = {}) => {
+    execute: <T = unknown>(
+      name: string,
+      input: Record<string, unknown> = {},
+      options: SemanticExecutionOptions = {}
+    ) => {
+      if (options.signal?.aborted) {
+        return Promise.resolve(
+          failure(SEMANTIC_EXECUTION_ABORTED, new SemanticExecutionAborted().message)
+        );
+      }
       const scheduled = executionTail
-        .then(() => executeInternal<T>(name, input))
+        .then(() => {
+          if (options.signal?.aborted) {
+            return failure(SEMANTIC_EXECUTION_ABORTED, new SemanticExecutionAborted().message);
+          }
+          return executeInternal<T>(name, input, false, options);
+        })
         .catch((error) => asFailure(error));
       executionTail = scheduled.then(
         () => undefined,

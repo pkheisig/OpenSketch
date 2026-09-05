@@ -2,21 +2,66 @@ import { expect, test } from "@playwright/test";
 
 test("registers a safe figure workflow through the browser model context", async ({ page }) => {
   await page.addInitScript(() => {
-    const tools: unknown[] = [];
+    const tools: Array<{ name: string }> = [];
     Object.defineProperty(document, "modelContext", {
       configurable: true,
       value: {
-        registerTool(tool: unknown) {
+        registerTool(tool: { name: string }, options?: { signal?: AbortSignal }) {
           tools.push(tool);
+          options?.signal?.addEventListener(
+            "abort",
+            () => {
+              const index = tools.indexOf(tool);
+              if (index >= 0) tools.splice(index, 1);
+            },
+            { once: true }
+          );
         }
       }
     });
-    (window as typeof window & { __webmcpTools?: unknown[] }).__webmcpTools = tools;
+    (
+      window as typeof window & {
+        __webmcpTools?: Array<{ name: string }>;
+        __webmcpStaleTool?: { execute: (input: Record<string, unknown>) => Promise<unknown> };
+      }
+    ).__webmcpTools = tools;
   });
 
   await page.goto("./?webmcpDemo=1");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await expect
+    .poll(async () =>
+      page.evaluate(() =>
+        (
+          (window as typeof window & { __webmcpTools?: Array<{ name: string }> }).__webmcpTools ??
+          []
+        ).map((tool) => tool.name)
+      )
+    )
+    .toEqual(
+      expect.arrayContaining(["list_projects", "inspect_project", "create_project", "open_project"])
+    );
+  const coldStart = await page.evaluate(async () => {
+    const tools =
+      (
+        window as typeof window & {
+          __webmcpTools?: Array<{
+            name: string;
+            execute: (input: Record<string, unknown>) => Promise<unknown>;
+          }>;
+          __webmcpStaleTool?: { execute: (input: Record<string, unknown>) => Promise<unknown> };
+        }
+      ).__webmcpTools ?? [];
+    const list = tools.find((tool) => tool.name === "list_projects");
+    const create = tools.find((tool) => tool.name === "create_project");
+    if (!list || !create) throw new Error("Missing cold-start project lifecycle tools.");
+    (window as typeof window & { __webmcpStaleTool?: typeof list }).__webmcpStaleTool = list;
+    const listed = await list.execute({});
+    const created = await create.execute({ name: "Cold-start figure" });
+    return { listed, created };
+  });
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  expect(coldStart.listed).toMatchObject({ ok: true, data: { context: "project-library" } });
+  expect(coldStart.created).toMatchObject({ ok: true, data: { created: true } });
 
   await expect
     .poll(async () =>
@@ -35,6 +80,27 @@ test("registers a safe figure workflow through the browser model context", async
         "insert_asset"
       ])
     );
+
+  await expect
+    .poll(async () =>
+      page.evaluate(() => {
+        const tool = (window as typeof window & { __webmcpStaleTool?: { name?: string } })
+          .__webmcpStaleTool;
+        return tool?.name ?? null;
+      })
+    )
+    .toBe("list_projects");
+  await expect(
+    page.evaluate(async () => {
+      const tool = (
+        window as typeof window & {
+          __webmcpStaleTool?: { execute: (input: Record<string, unknown>) => Promise<unknown> };
+        }
+      ).__webmcpStaleTool;
+      if (!tool) throw new Error("Missing retained cold-start tool.");
+      return tool.execute({});
+    })
+  ).resolves.toMatchObject({ ok: false, error: { code: "EXECUTION_ABORTED" } });
 
   const initialWorkflow = await page.evaluate(async () => {
     const tools =
@@ -254,6 +320,66 @@ test("registers a safe figure workflow through the browser model context", async
   const download = await downloadPromise;
   expect(exportResult).toMatchObject({ ok: true, data: { format: "credits", started: true } });
   expect(download.suggestedFilename()).toMatch(/credits|provenance/i);
+
+  const transition = await page.evaluate(async (projectId: string) => {
+    const tools =
+      (
+        window as typeof window & {
+          __webmcpTools?: Array<{
+            name: string;
+            execute: (input: Record<string, unknown>) => Promise<unknown>;
+          }>;
+          __webmcpStaleTool?: { execute: (input: Record<string, unknown>) => Promise<unknown> };
+        }
+      ).__webmcpTools ?? [];
+    const exit = tools.find((tool) => tool.name === "return_to_project_library");
+    const staleEditorTool = tools.find((tool) => tool.name === "inspect_scene");
+    if (!exit || !staleEditorTool) throw new Error("Missing editor lifecycle tools.");
+    const result = await exit.execute({});
+    (window as typeof window & { __webmcpStaleTool?: typeof staleEditorTool }).__webmcpStaleTool =
+      staleEditorTool;
+    return { result, projectId };
+  }, coldStart.created.data.projectId);
+  expect(transition.result).toMatchObject({
+    ok: true,
+    data: { requested: true }
+  });
+  await expect(page.locator(".home-shell")).toBeVisible();
+  await expect(
+    page.evaluate(async () => {
+      const tool = (
+        window as typeof window & {
+          __webmcpStaleTool?: { execute: (input: Record<string, unknown>) => Promise<unknown> };
+        }
+      ).__webmcpStaleTool;
+      if (!tool) throw new Error("Missing retained editor tool.");
+      return tool.execute({ maxObjects: 1 });
+    })
+  ).resolves.toMatchObject({ ok: false, error: { code: "EXECUTION_ABORTED" } });
+  await expect
+    .poll(async () =>
+      page.evaluate(() =>
+        (
+          (window as typeof window & { __webmcpTools?: Array<{ name: string }> }).__webmcpTools ??
+          []
+        ).map((tool) => tool.name)
+      )
+    )
+    .toEqual(expect.arrayContaining(["list_projects", "open_project"]));
+  const reopened = await page.evaluate(async (projectId: string) => {
+    const tool = (
+      window as typeof window & {
+        __webmcpTools?: Array<{
+          name: string;
+          execute: (input: Record<string, unknown>) => Promise<unknown>;
+        }>;
+      }
+    ).__webmcpTools?.find((candidate) => candidate.name === "open_project");
+    if (!tool) throw new Error("Missing project open tool after return.");
+    return tool.execute({ projectId });
+  }, transition.projectId);
+  expect(reopened).toMatchObject({ ok: true, data: { opened: true } });
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
 });
 
 test("executes compound composition and analysis through registered WebMCP callbacks", async ({

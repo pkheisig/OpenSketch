@@ -65,7 +65,11 @@ describe("WebMCP adapter", () => {
       true
     );
     await tools.find((tool) => tool.name === "inspect_scene")!.execute({ maxObjects: 3 });
-    expect(current.execute).toHaveBeenCalledWith("inspect_scene", { maxObjects: 3 });
+    expect(current.execute).toHaveBeenCalledWith(
+      "inspect_scene",
+      { maxObjects: 3 },
+      { signal: expect.objectContaining({ aborted: false }) }
+    );
     await expect(
       tools.find((tool) => tool.name === "inspect_scene")!.execute(null)
     ).resolves.toMatchObject({
@@ -162,5 +166,51 @@ describe("WebMCP adapter", () => {
   it("only detects a real registerTool implementation", () => {
     expect(detectModelContext({ modelContext: { registerTool: true } })).toBeNull();
     expect(detectModelContext({ modelContext: { registerTool: vi.fn() } })).not.toBeNull();
+  });
+
+  it("propagates host cancellation and fences tools after registration disposal", async () => {
+    const execute = vi.fn(
+      async (_name: string, _input: Record<string, unknown>, options?: { signal?: AbortSignal }) =>
+        options?.signal?.aborted
+          ? {
+              ok: false as const,
+              runtimeVersion: SEMANTIC_RUNTIME_VERSION,
+              error: { code: "EXECUTION_ABORTED", message: "canceled" },
+              changedObjectIds: [],
+              warnings: []
+            }
+          : {
+              ok: true as const,
+              runtimeVersion: SEMANTIC_RUNTIME_VERSION,
+              data: {},
+              changedObjectIds: [],
+              warnings: []
+            }
+    );
+    const current = { ...runtime(), execute };
+    const tools: WebMcpTool[] = [];
+    const adapter = createWebMcpAdapter({
+      runtime: current,
+      documentLike: {
+        modelContext: { registerTool: (tool: WebMcpTool) => tools.push(tool) }
+      }
+    });
+    await adapter.sync();
+    const tool = tools.find((candidate) => candidate.name === "inspect_scene")!;
+    const hostAbort = new AbortController();
+    hostAbort.abort();
+    await expect(tool.execute({}, { signal: hostAbort.signal })).resolves.toMatchObject({
+      ok: false,
+      error: { code: "EXECUTION_ABORTED" }
+    });
+    expect(execute.mock.calls[0]?.[2]).toMatchObject({
+      signal: expect.objectContaining({ aborted: true })
+    });
+
+    adapter.dispose();
+    await expect(tool.execute({})).resolves.toMatchObject({
+      ok: false,
+      error: { code: "EXECUTION_ABORTED" }
+    });
   });
 });

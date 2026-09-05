@@ -7,7 +7,8 @@ const guidePath = resolve(import.meta.dirname, "../docs/webmcp.md");
 
 test("the WebMCP guide lists exactly the public semantic commands", () => {
   const guide = readFileSync(guidePath, "utf8");
-  const documentedCommands = [...guide.matchAll(/^\|\s*`([^`]+)`\s*\|/gm)].map(
+  const editorCatalogue = guide.slice(guide.indexOf("## Public command catalogue"));
+  const documentedCommands = [...editorCatalogue.matchAll(/^\|\s*`([^`]+)`\s*\|/gm)].map(
     ([, command]) => command
   );
 
