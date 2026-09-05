@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of the blood-brain barrier neurovascular unit, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A compact transverse cutaway of ONE brain capillary, circular lumen lined by a thin continuous peach endothelial layer with small lavender flattened nuclei and two tight-junction seams. Thin cream basement membrane outside endothelium. One small ochre pericyte with oval nucleus embedded against the outer endothelial wall within that basement membrane, tapering processes hugging the vessel. Outside this, broad blue astrocyte endfeet closely surround the capillary, continuous with two short branched blue processes joining a small blue astrocyte soma above-right with purple nucleus. A short lavender neuronal process beside the astrocyte is intrinsic to the neurovascular unit. Empty lumen, no red cells, no pathogens, no particles. Clearly layered endothelium-inside, pericyte intermediate, astrocyte endfeet-outside. All cells and processes fully contained in frame; surrounding empty area fully transparent. Smooth controlled anatomical schematic, not photorealism or fuzzy texture; ratios and layer thickness are schematic.",
+  "style_refinement": "Preserve the scientific cutaway arrangement and every component exactly. Refine only the illustration finish: remove mottled granular texture from blue astrocyte, peach endothelial cells, gold pericyte and lavender nuclei. Use clean smooth soft gradients, crisp thin darker outlines and restrained broad highlights, matching polished NIH BioArt vector-friendly scientific artwork. Keep fibrous cream basement membrane as a few smooth curved strands, not dense grain. Keep lumen empty, all cells complete, all process tips inside the frame, and generous transparent padding. No text. Real transparent alpha PNG.",
+  "cell_boundary_correction": "Correct one boundary only: the lavender neuronal process at lower right currently merges into the blue astrocyte process. These are DIFFERENT cells and must never fuse. Make the lavender process entirely lavender, with its own closed thin dark-purple outline and rounded upper tip. End the nearby blue astrocyte branch in its own closed rounded blue tip. Leave a narrow transparent gap between those two tips. Keep the capillary, blue endfeet, cream basement membrane, gold pericyte, endothelial cells and all their nuclei unchanged. Remove checkerboard and output real transparent alpha PNG. Preserve full composition and smooth style.",
+  "background_extraction": "Remove the background. Output a transparent PNG with an alpha channel.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-13dcf8b4-f08d-4a38-90a2-4c1252ee4e2c.png",
+  "archetype": "Schematic transverse brain capillary neurovascular unit showing endothelial lining, junction seams, basement membrane, pericyte, external astrocyte endfeet and separate neuronal process. Layer thicknesses, cell counts and junction size are illustrative, not anatomical measurements.",
+  "scientific_reference": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4292164/",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "blood-brain-barrier-neurovascular-unit",
+  "name": "blood-brain barrier neurovascular unit",
+  "original": "originals/inventory/blood-brain-barrier-neurovascular-unit/generated.png",
+  "original_sha256": "c76e63d94e400258218d4e17bcfe19aa16aa78f5efb895a28b4420df54a91d6d"
+}

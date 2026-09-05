@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a Transwell cell-culture insert, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One transparent cylindrical hanging culture insert in three-quarter view. Short open cylindrical clear wall with smooth pale blue rim, three small evenly spaced integral hanging support tabs at rim, a flat pale translucent microporous membrane stretched across the circular bottom. Side walls are solid clear plastic, NOT mesh. Gentle blue-gray outlines and soft broad highlights, subtle stippling confined to bottom membrane. No outer well, no plate, no cells, no liquid. Complete isolated object, real transparent alpha PNG.",
+  "style_refinement": "Refine this complete Transwell culture insert as a smooth biomedical illustration. Preserve the three rim support tabs and porous bottom membrane. Make the cylindrical solid plastic walls uniformly faint pale blue with broad soft highlights, sufficiently visible to read as one continuous wall, no irregular transparent holes or mottled patches. Keep the top clearly open. Smooth clean outlines and gentle pseudo-3D shading, no texture on the solid side wall. No text, background, glow or shadow. Transparent PNG with alpha channel.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-4d0a1c5a-c4fc-4b4d-b723-527950bae8c0.png",
+  "archetype": "Hanging culture insert with three support tabs, solid translucent cylindrical wall and microporous bottom membrane. Pores exaggerated for illustration, no quantitative pore size. Revised source gives continuous wall rather than trace-threshold gaps.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "transwell-insert",
+  "name": "Transwell insert",
+  "original": "originals/inventory/transwell-insert/generated-v2.png",
+  "original_sha256": "9edc77c0661e4b40feefa03df185fd4df5c553efb2573e4c6301c6adf2b05ae6"
+}

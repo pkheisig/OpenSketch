@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a bottle-top laboratory vacuum filter, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One disposable bottle-top filter funnel assembly without receiving bottle. Broad clear cylindrical upper reservoir with open rim, gently tapering lower section terminating in a wide blue circular membrane housing. A pale white filter membrane sits flat inside bottom housing. Under housing a short blue female threaded bottle-neck collar with visible opening. One small blue side hose barb projects from below membrane on collar. Smooth illustrated clear plastic and blue fittings, restrained highlights, no graduations or text. No bottle, tube, liquid, cap or bench. Complete isolated transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-42e4e772-f5af-4bd7-8015-d619ecca535b.png",
+  "archetype": "Bottle-top vacuum filter funnel with membrane, bottle-neck collar and downstream side vacuum barb. No receiving bottle or pore-size specification.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "bottle-top-filter",
+  "name": "bottle-top filter",
+  "original": "originals/inventory/bottle-top-filter/generated.png",
+  "original_sha256": "9e635aba05cb11752edb7f38ba34fd4866d67de9c41a0a3f6890c466c4597b93"
+}

@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an orbital shaker, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Compact benchtop orbital shaker in three-quarter view, low rectangular off-white housing with navy lower base, four rubber feet, raised rectangular black non-slip flat platform with low silver guard rail around its edges on four small posts. Empty platform, no flasks or tubes. Front blank display and one navy dial, two small round buttons. Horizontal level platform, no tilt, no incubator lid or chamber. Clean matte surfaces, crisp outlines and restrained gradient highlights, matching off-white/navy laboratory equipment collection. Real transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-bbc2b0fe-bdf4-4a52-aa97-286f644e091b.png",
+  "archetype": "Low benchtop orbital shaker with empty horizontal guarded platform and blank controls. No speed, orbit diameter or operating-state claim.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "orbital-shaker",
+  "name": "orbital shaker",
+  "original": "originals/inventory/orbital-shaker/generated.png",
+  "original_sha256": "976e01d73e29e42935b4981e19e824fb02dbd10d46af9b98ad87dd6e8d3e5877"
+}

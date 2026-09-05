@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a Toll-like receptor dimer, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Generic TLR dimer schematic: TWO large curved horseshoe-shaped extracellular leucine-rich-repeat domains, left teal and right lavender, each a thick smooth crescent with fine regular transverse ridge grooves, arranged side by side with their C-terminal lower inner ends close together. Their upper outer ends remain free. Each crescent lower inner end continues down into its OWN short vertical membrane-spanning helix, two aligned helices total, followed below by one compact rounded intracellular TIR domain per chain. Two TIR domains close together below anchors, same respective chain colors. No ligand, no membrane slab, no extra receptor or adaptor. Clean matte surfaces, crisp colored outlines, gentle gradients and broad restrained highlights, no atomic granules. True transparent alpha PNG. Simplified architectural dimer without named subtype or ligand-state claim.",
+  "style_refinement": "Preserve receptor topology exactly: two curved repeat ectodomains, two aligned membrane helices and two lower globular TIR domains. Refine surface finish into clean NIH BioArt: remove granular wet highlights, smooth repeat ridges and globular domains, thin dark teal/purple outlines, matte broad soft gradients. Keep fold grooves but no cauliflower lumps. No text or new objects, generous transparent padding, real transparent alpha PNG.",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-4927dcc7-8378-4054-9925-57e510a8b905.png",
+  "archetype": "Generic Toll-like receptor dimer schematic with paired curved repeat ectodomains, separate membrane anchors and intracellular TIR domains. Repeat count and proportions illustrative; no named subtype, ligand or activation state implied.",
+  "scientific_reference": "https://pdb101.rcsb.org/motm/143",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "toll-like-receptor-dimer",
+  "name": "toll-like receptor dimer",
+  "original": "originals/inventory/toll-like-receptor-dimer/generated.png",
+  "original_sha256": "39ba90f656a9f9944ef60bc3042c84aa4409c73ea16b433cbfb3fba3490e92c2"
+}

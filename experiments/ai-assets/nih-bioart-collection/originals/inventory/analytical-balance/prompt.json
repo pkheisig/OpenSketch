@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an analytical laboratory balance, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One analytical balance in three-quarter view, off-white low base with dark navy front control panel and completely blank pale blue display, three small unlabeled buttons. Above base a clear rectangular glass draft shield with thin blue-gray corner posts, closed sliding side door with small handle, clear top panel. Inside, one small empty round silver weighing pan centered on a short pedestal. Complete glass enclosure, smooth clean contours, restrained highlights and soft gradients. Small leveling feet. No sample, weights, numbers, branding, cables or bench. Transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-f4424924-d9ba-4c7e-bcfb-0102f5968401.png",
+  "archetype": "Analytical balance with glass draft enclosure, empty pan and blank display. No measurement, calibration or precision claim.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "analytical-balance",
+  "name": "analytical balance",
+  "original": "originals/inventory/analytical-balance/generated.png",
+  "original_sha256": "494dcb6cba28ef668c40d892096c189c53ee182a868a8f2c307529d41d2fcc72"
+}

@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a laboratory syringe, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A single empty transparent plastic 10 mL-style syringe without a needle, diagonal from upper left plunger thumb pad to lower right small Luer-lock outlet. Clear cylindrical barrel with integral two finger flanges, white plunger rod with flat thumb pad, black rubber piston visible inside barrel near middle, transparent narrow nozzle and locking collar. Smooth illustrative clear plastic, restrained blue-gray outlines and soft pale cyan highlights. No graduations, numbers or branding. Entire plunger and nozzle inside frame. True transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-6bbf6bcc-18e8-482d-8647-0a21d82859bb.png",
+  "archetype": "Empty plastic syringe with barrel, plunger, piston, finger flange and Luer-style outlet, without needle or volume calibration.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "syringe",
+  "name": "syringe",
+  "original": "originals/inventory/syringe/generated.png",
+  "original_sha256": "d1ed5f4e901278393df5cfc082aeede3119d3976b69ad7ba80213c3c7d60d0ce"
+}

@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a streaked agar plate, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A single round clear Petri dish viewed from elevated three-quarter angle, pale amber agar surface. On the agar, cream bacterial growth appears as a dense irregular patch near upper left transitioning into thinner curving streaks across part of the surface and a few separated small round cream colonies toward lower right. Show a schematic observed culture appearance, not instructional steps. No quadrant dividing lines, arrows, numbered zones, loop, hand or tools. No species-specific colors or labels. Dish fully contained; no separate lid. Smooth scientific illustration, restrained glass highlights, soft creamy colony depth and crisp clean contours. Real transparent alpha PNG.",
+  "style_refinement": "Match clean polished NIH BioArt illustration rather than a photograph. Preserve the dish, amber agar and overall bacterial streak pattern. Replace tiny wet granular texture with smooth simplified ivory growth ribbons in dense areas and clean rounded separate colonies in sparse areas. Use crisp thin outlines, broad soft gradients and restrained highlights. No labels or tools, no changes to composition, complete dish with generous transparent padding. Real alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-5b70f34f-bc1b-49b4-9545-74908ac29145.png",
+  "archetype": "Generic streaked agar dish with dense cream growth and separated colonies. Schematic appearance; no species, quantitative colony count or procedural inference.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "streaked-agar-plate",
+  "name": "streaked agar plate",
+  "original": "originals/inventory/streaked-agar-plate/generated.png",
+  "original_sha256": "fb36ab7da20a090fb639051a45511f2d7a0542c8d09701a2e811c5dcd3a2a8f6"
+}

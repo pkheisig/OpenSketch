@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a cell-culture roller apparatus, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Compact benchtop two-tier roller bottle rack in three-quarter view, off-white metal frame with navy motor housing on right and blank small control display with one dial. Two horizontal clear cylindrical roller bottles on each tier, four bottles total, each supported on paired parallel black rubber rollers. Bottles have closed bases, blue screw caps facing front right and shallow pale pink culture medium along lower side. Show enough supporting rollers to make mechanism recognizable. All cylinders parallel and horizontal, not upright tubes. Clean smooth scientific illustration, restrained glass highlights, no logos, no writing. Complete standalone machine on four short rubber feet. Transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-db7946a0-5229-4710-b2a8-c4010252e6ba.png",
+  "archetype": "Two-tier roller apparatus with four horizontal capped culture bottles, supporting rollers and integral motor/control housing. Representative rack, no speed or culture performance claim.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "cell-culture-roller-apparatus",
+  "name": "cell-culture roller apparatus",
+  "original": "originals/inventory/cell-culture-roller-apparatus/generated.png",
+  "original_sha256": "e9931885fa03128e9a4d8ae33399a809c9f09c8848e03339274155be78c96fda"
+}

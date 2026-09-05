@@ -1,0 +1,12 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a Transwell cell-culture insert, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One transparent cylindrical hanging culture insert in three-quarter view. Short open cylindrical clear wall with smooth pale blue rim, three small evenly spaced integral hanging support tabs at rim, a flat pale translucent microporous membrane stretched across the circular bottom. Side walls are solid clear plastic, NOT mesh. Gentle blue-gray outlines and soft broad highlights, subtle stippling confined to bottom membrane. No outer well, no plate, no cells, no liquid. Complete isolated object, real transparent alpha PNG.",
+  "generated_source": "originals/inventory/transwell-insert/generated.png",
+  "archetype": "Hanging culture insert with three support tabs, solid clear cylindrical wall and microporous bottom membrane. Pores exaggerated for illustration, no quantitative pore size.",
+  "svg_source": "originals/inventory/transwell-insert/insert-translucent-vector.svg",
+  "vector_refinement": "Editable pale-blue translucent wall underlay restores faint material omitted at tracing alpha threshold; traced rim and membrane retained.",
+  "id": "transwell-insert",
+  "name": "Transwell insert",
+  "original": "originals/inventory/transwell-insert/generated.png",
+  "original_sha256": "bd3cd39f8adf5cf623c51160c82d45667684bc46dc20401d61dda1c9c2d5cbc6"
+}

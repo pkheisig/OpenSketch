@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an aquaporin channel tetramer, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A compact squat membrane-protein tetramer in elevated three-quarter view with FOUR equal teal subunits arranged in a 2 by 2 square. Each subunit is a smooth softly lobed vertical bundle and has its OWN small dark narrow water-pore opening in its top center. Exactly FOUR separate openings, one per subunit, all visible. The four subunits pack closely together with narrow seams; do not draw a large common central hole. Shallow curved helical groove details on the outer side walls imply folded membrane protein, not cartoon plumbing or metal barrels. Smooth matte teal/cyan shading, dark teal clean outlines, soft broad highlights, no granulated molecular surface or atomic beads. No membrane, water molecules, ligand, arrows, or labels. Real transparent PNG. Schematic quaternary architecture rather than atomic model.",
+  "style_refinement": "Refine this aquaporin tetramer into clean NIH BioArt scientific illustration. Preserve four equal subunits in 2 by 2 arrangement and one pore in EACH. Reduce surface complexity: replace cauliflower-like lumps and tangled tubes with broad smooth teal softly lobed surfaces and just a few shallow helical grooves. Narrow each of the four dark pore openings to about one quarter its current width, so these look like narrow molecular water channels, not hollow barrels. Keep four subunit seams and no large common central hole. Matte teal/cyan, crisp dark teal contours, soft subtle highlights, no metallic gloss. Complete isolated object, generous padding, transparent alpha PNG, no text or unrelated objects.",
+  "background_extraction": [
+    "Remove the background. Output a transparent PNG with an alpha channel.",
+    "Make the background transparent. Remove the checkerboard. Preserve the illustration."
+  ],
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-7621e234-b8a4-41a4-abde-69a9337e7958.png",
+  "archetype": "Aquaporin tetramer schematic with four subunits and an individual water pathway in each subunit. Pore sizes, external grooves and geometry are illustrative, not atomic coordinates or permeability measurements.",
+  "scientific_reference": "https://pdb101.rcsb.org/motm/173",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "aquaporin-channel",
+  "name": "aquaporin channel",
+  "original": "originals/inventory/aquaporin-channel/generated.png",
+  "original_sha256": "cc75e544c9623fc279e0bbaafcf0e0678cddc60e03d9188d866610d1a7998c5f"
+}

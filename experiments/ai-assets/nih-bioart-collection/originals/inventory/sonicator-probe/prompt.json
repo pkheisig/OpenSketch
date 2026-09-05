@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a laboratory probe sonicator, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One upright ultrasonic probe assembly: dark navy cylindrical transducer housing with narrow cooling slots near top, short integral blue cable connector at top capped with no external cable, silver titanium stepped horn narrowing downward to a long straight slim polished probe with a flat small tip. Clean continuous coaxial connection from housing through horn to probe tip. Smooth matte blue plastic and restrained silver highlights. No vessel, liquid, stand, controller, sound waves, labels or numbers. True transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-fcfc3159-2cd6-4a15-a9dd-31a9b6ac15fb.png",
+  "archetype": "Ultrasonic transducer and stepped probe assembly, isolated without controller or vessel. No operating parameters or manufacturer identity.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "sonicator-probe",
+  "name": "sonicator probe",
+  "original": "originals/inventory/sonicator-probe/generated.png",
+  "original_sha256": "9751863c7b8c642ab16ab1def283d2c7bd8638ab0a31d22482020edcc9faa407"
+}

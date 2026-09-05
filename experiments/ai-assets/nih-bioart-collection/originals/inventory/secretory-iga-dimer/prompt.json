@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a secretory IgA dimer, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Exactly TWO blue Y-shaped IgA antibody units arranged horizontally tail-to-tail, one Y opens toward left and one Y opens toward right. Their Fc ends meet centrally at a small magenta J-chain, and four total outward Fab arms extend to upper-left, lower-left, upper-right and lower-right. Each Fab arm comprises two paired smooth domains along blue heavy-chain strand with lighter-blue outer light-chain strand. Paired Fc domains form each central stalk, connected to Fab with short flexible hinge segments. A lavender secretory component of FIVE linked rounded domains curves closely along one side of the central Fc/J core like a protective partial arc; it is attached only centrally, not around the outward Fab tips. Small magenta J-chain distinct from lavender secretory component. Four binding tips total. Smooth matte protein shapes, thin crisp outlines, broad subtle highlights, no cauliflower texture. No antigen, membrane, labels, extra antibodies or extra chains. Real transparent alpha PNG. Schematic dimer architecture, not coordinate model.",
+  "style_refinement": "Keep the two IgA units, four outward Fab arms and central small magenta J-chain. Correct lavender secretory component to EXACTLY FIVE rounded linked domains in one continuous partial arc across the central Fc assembly, not six. Place two domains above the center, one at left side, and two below, closely contacting the central blue Fc domains. Remove the small extra lavender bump at the upper-right end of the arc. Smooth all surfaces to matte NIH BioArt gradients with crisp outlines and restrained highlights. Keep complete object, generous transparent padding, no text, no extra chains or antigen. Output real transparent alpha PNG.",
+  "background_extraction": [
+    "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+    "Remove the background. Output a transparent PNG with an alpha channel."
+  ],
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-31253804-88f0-4873-8da2-ea9d0bf4f4a5.png",
+  "archetype": "Secretory IgA dimer schematic with two IgA units, four Fab arms, central J-chain and five-lobed secretory-component arc with terminal contact extension. Simplified domains and Fab orientation, not atomic coordinates.",
+  "scientific_reference": "https://pdb101.rcsb.org/motm/272",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "secretory-iga-dimer",
+  "name": "secretory IgA dimer",
+  "original": "originals/inventory/secretory-iga-dimer/generated.png",
+  "original_sha256": "8dc83eae0a34eeb73b28884eb8f58ce588366deaa4e8422b83d5d1e46b74a373"
+}

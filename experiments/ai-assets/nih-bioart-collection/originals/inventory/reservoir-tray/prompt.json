@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a multichannel pipetting reagent reservoir tray, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One elongated rectangular white plastic single-trough reagent reservoir in three-quarter view, broad flared upper rim, two sloping interior sides converging to a narrow V-shaped bottom channel running lengthwise. One small pouring spout at a short corner. Empty with no liquid, clear interior depth visible. Smooth matte off-white plastic with pale cyan interior shading, crisp blue-gray outlines and restrained highlights. No wells, tubes, pipettes, lid, markings or bench. Transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-e9692cc4-fb50-421a-875a-b41a247ca93f.png",
+  "archetype": "Single-trough pipetting reservoir with sloping sides, low channel and pouring corner; empty and uncalibrated.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "reservoir-tray",
+  "name": "reservoir tray",
+  "original": "originals/inventory/reservoir-tray/generated.png",
+  "original_sha256": "3a314a418d1eeac1ac4378a202dbc90f94b887163f3bb2b9fecb12a92ef37e87"
+}

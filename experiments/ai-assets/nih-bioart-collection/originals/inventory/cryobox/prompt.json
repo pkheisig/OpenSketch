@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a cryogenic vial storage box, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One square blue laboratory cryobox in elevated three-quarter view with its attached translucent hinged lid open backward. Inside is a clean regular grid of narrow white dividers forming EIGHT rows by EIGHT columns of empty square vial compartments. Low blue outer walls with a small front latch. Lid is a simple clear pale blue square panel with smooth rim, fully inside frame. No vials, ice, frost, labels, row letters, numbers or bench. Smooth matte plastic, crisp blue-gray outlines and soft gradients. Transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-caf12b76-cd23-4e2c-93c9-dcf80175b45b.png",
+  "archetype": "Empty divided cryovial storage box with open hinged lid. Compartment grid is an illustrative storage configuration, no product capacity specification.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "cryobox",
+  "name": "cryobox",
+  "original": "originals/inventory/cryobox/generated.png",
+  "original_sha256": "7474801da624f9553115b65188f2b7e94ad450e64f36d29248a726a65e83a42d"
+}

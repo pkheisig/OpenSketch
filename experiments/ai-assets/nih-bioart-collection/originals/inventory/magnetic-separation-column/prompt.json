@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a magnetic cell-separation column, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One upright disposable gravity-flow magnetic cell separation column: broad open clear cylindrical top reservoir with pale blue rim, tapering shoulder leading to a narrower straight clear cartridge body; inside cartridge a short gray porous ferromagnetic matrix bed clearly visible near lower half between pale retaining frit disks; at bottom a short narrow tapered outlet nozzle. Smooth clear plastic with fine blue-gray outlines, small blue collar at reservoir base, restrained highlights. Empty reservoir with no liquid, no cells, no magnet stand, no tubes, no plunger, no labels or numbers. Complete centered transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-04cc2434-8b31-414a-b731-3b760aa2e108.png",
+  "archetype": "Gravity-flow magnetic separation column with reservoir, retained ferromagnetic matrix and outlet. Enlarged porous matrix is a schematic visualization, not a specific commercial design or pore-size claim.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "magnetic-separation-column",
+  "name": "magnetic separation column",
+  "original": "originals/inventory/magnetic-separation-column/generated.png",
+  "original_sha256": "02c602462fc382c1d4c23b77902a2823e64d5c47c54274fa7e73ce3f868fa1c2"
+}

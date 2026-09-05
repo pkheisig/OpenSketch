@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an integrin alpha-beta heterodimer, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A generic integrin in an extended schematic conformation, two different noncovalently associated protein chains. Teal alpha chain on left with a broad rounded propeller-like head dome, then an upper thigh domain and two elongated calf domains forming its leg. Lavender beta chain on right with smaller globular beta-I head fitting beside alpha head, a small angled hybrid domain, then a thinner segmented leg with small EGF-like domains and a basal tail domain. Two legs descend separately into exactly TWO short vertical membrane-spanning helical segments aligned at same height, each continues into a short cytoplasmic tail. No lipid membrane, no bound ligand, no antibody-like Y arms, no central third stalk, no disulfide bridge between chains. Smooth matte surfaces with restrained fold grooves, crisp colored outlines and soft highlights. Complete isolated receptor, real alpha transparent PNG. Schematic domain architecture, no exact atom or affinity-state claim.",
+  "style_refinement": "Refine this integrin schematic. Keep two chains and two anchors. Smooth all cauliflower bumps into clean rounded domains with subtle fold lines, matte teal alpha chain and lavender beta chain, crisp outlines and restrained gradients. On the right lavender chain, between the angled hybrid domain beneath its head and the elongated basal domain above its anchor, show FOUR small linked EGF-like domains instead of the current three. Keep left chain three large leg domains. Keep associated headpiece, separate legs and exactly two aligned membrane-spanning helices plus two short free tails. No pores carved through heads; heads should be solid globular forms with shallow fold depressions. No membrane or ligands, no text, real transparent PNG.",
+  "domain_correction": "One specific correction: on the right purple chain there are currently THREE small oval beads between the angled upper domain and the large bottom domain. Replace those three small oval beads with FOUR smaller oval beads in the same vertical space. Count four: first, second, third, fourth. All four must be clearly visible and connected in series. Keep the large angled upper domain and large bottom domain separate from these four. Change nothing else. Preserve teal left chain, paired heads, two anchors, two tails and same smooth biomedical style. Remove checkerboard, real transparent alpha PNG.",
+  "background_extraction": "Remove the background. Output a transparent PNG with an alpha channel.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-64c0ba00-413b-4785-a10b-dfc5e692db8b.png",
+  "archetype": "Extended integrin alpha/beta domain schematic with associated headpiece, distinct legs, four small beta EGF-like repeats and separate transmembrane helices and tails. Simplified headpiece folds and domain shapes; no coordinate-derived geometry or affinity-state inference.",
+  "scientific_reference": "https://www.rcsb.org/structure/3IJE",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "integrin-alpha-beta-heterodimer",
+  "name": "integrin alpha-beta heterodimer",
+  "original": "originals/inventory/integrin-alpha-beta-heterodimer/generated.png",
+  "original_sha256": "56c03d4853a949283d91f037a531ed2cfeabba1f360d0d3c004747dd537d6988"
+}

@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an ultrasonic laboratory bath, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One compact rectangular stainless-steel ultrasonic cleaner in three-quarter view, open recessed rounded rectangular tank with shallow pale blue water, a wire mesh basket seated inside with two small handles resting on the rim. Off-white lower casing with navy front control panel, two round blue knobs and a small blank pale display. Small dark rubber feet. Smooth clean scientific illustration, restrained metallic highlights, blue-gray outlines, no labels, digits, sound waves, bubbles or objects in the basket. No lid, cables or bench. Transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-758ea78f-5ed1-4055-8ba9-7a83c38f508c.png",
+  "archetype": "Benchtop ultrasonic bath with empty immersed mesh basket and blank display; no temperature, frequency or time specification.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "ultrasonic-bath",
+  "name": "ultrasonic bath",
+  "original": "originals/inventory/ultrasonic-bath/generated.png",
+  "original_sha256": "3471866be70f9edb391556ce43ef8e078f3899a7e4450c4ae36e486b75e0008e"
+}

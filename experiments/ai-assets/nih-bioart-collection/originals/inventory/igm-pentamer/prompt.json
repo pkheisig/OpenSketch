@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an IgM pentamer, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Elevated top view of exactly FIVE blue immunoglobulin units assembled into one asymmetric radial complex. Their five paired Fc stalks meet near the center; each unit bifurcates outward into exactly TWO Fab arms, giving TEN total outward antigen-binding tips. Arrange five units roughly at 12, 2, 4, 8 and 10 oclock, leaving a broader gap at 6 oclock. A small magenta folded J-chain bridges the central Fc tailpiece region adjacent to that bottom gap; it is much smaller than an antibody and is not a sixth antibody. Each Fab arm shows two smooth domains along each of its paired strands, outer lighter-blue light-chain strip and darker-blue heavy chain. IgM Fc portions are substantial domain stacks, no long IgG-style hinge cords. Use clean rounded folded protein shapes, crisp blue outlines, soft matte gradients, minimal texture. No secretory component, no antigen, no labels, no membrane. Complete all ten tips inside frame with generous padding. Real transparent alpha PNG. Schematic full pentamer, not a coordinate model.",
+  "style_refinement": "Keep exactly five blue antibody units, ten outward Fab arms, lighter blue outer light chains and one small magenta J chain near the broader bottom gap. Refine into smooth NIH BioArt illustration: replace all cauliflower granules with clean rounded folded domains, crisp thin blue outlines, subtle matte gradients, broad soft highlights. Bring the five inner paired Fc ends into close contact as a compact connected central core while keeping the wider gap near the magenta J chain; do not leave the five units disconnected. Preserve substantial Fc domain stacks rather than thin hinge strings. All ten outward tips must remain fully visible inside generous padding. No text, no sixth antibody, no secretory component, no antigen, real transparent alpha PNG.",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-fe245d9a-fd6b-4a4f-adb7-e4d8b4b821d9.png",
+  "archetype": "IgM pentamer schematic with five immunoglobulin units, ten outward Fab arms, compact Fc core and one small J-chain near the wider gap. Domain shapes and radial Fab placement are schematic, not coordinate-derived; no secretory component included.",
+  "scientific_reference": "https://www.rcsb.org/structure/8AE0",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "igm-pentamer",
+  "name": "IgM pentamer",
+  "original": "originals/inventory/igm-pentamer/generated.png",
+  "original_sha256": "fc46ac40076fc3f805428447c955d33afb89d22bd67e53ed9d4216443b075971"
+}
