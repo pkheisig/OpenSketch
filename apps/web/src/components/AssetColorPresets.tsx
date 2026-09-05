@@ -1,17 +1,18 @@
-import { ASSET_COLOR_PRESETS, ASSET_PALETTE_SHADES } from "@/editor/assetColorPresets";
+import { ASSET_COLOR_PRESETS } from "@/editor/assetColorPresets";
 import { useEditorFields } from "@/editor/editorHooks";
 import { type FabricObject } from "fabric";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 export function AssetColorPresets({ object }: { object: FabricObject }) {
-  const editor = useEditorFields(["applyColorPreset", "resetColors", "selection"]);
+  const editor = useEditorFields(["applyColorPreset", "resetColors", "selection", "setObject"]);
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ left: 0, top: 0, maxHeight: 640 });
   const trigger = useRef<HTMLButtonElement>(null);
   const popup = useRef<HTMLDivElement>(null);
   const close = useRef<HTMLButtonElement>(null);
-  const families = [...new Set(ASSET_COLOR_PRESETS.map((p) => p.family))];
+  const presets = ASSET_COLOR_PRESETS.filter((p) => p.shade === "Classic");
+  const selectedFamily = ASSET_COLOR_PRESETS.find((p) => p.id === object.assetColorPreset)?.family;
   useEffect(() => {
     if (!open) return;
     const place = () => {
@@ -90,31 +91,39 @@ export function AssetColorPresets({ object }: { object: FabricObject }) {
                 ×
               </button>
             </header>
-            <div className="asset-palette-grid">
-              <span />
-              {ASSET_PALETTE_SHADES.map((shade) => (
-                <span className="asset-palette-heading" key={shade}>
-                  {shade}
-                </span>
+            <div className="asset-family-grid">
+              {presets.map((p) => (
+                <button
+                  key={p.id}
+                  aria-label={p.family}
+                  title={p.family}
+                  aria-pressed={selectedFamily === p.family}
+                  onClick={() => editor.applyColorPreset(p.id)}
+                >
+                  <span style={{ background: p.id === "white" ? "#ffffff" : p.ramps.cell[2] }} />
+                  {p.family}
+                </button>
               ))}
-              {families.map((family) => (
-                <div className="asset-palette-row" key={family}>
-                  <span>{family}</span>
-                  {ASSET_COLOR_PRESETS.filter((p) => p.family === family).map((p) => (
-                    <button
-                      key={p.id}
-                      aria-label={p.label}
-                      title={p.label}
-                      aria-pressed={object.assetColorPreset === p.id}
-                      style={{ background: p.ramps.cell[3], borderColor: p.ramps.cell[1] }}
-                      onClick={() => editor.applyColorPreset(p.id)}
-                    >
-                      <span style={{ background: p.ramps.cell[2] }} />
-                      <span style={{ background: p.ramps.cell[1] }} />
-                    </button>
-                  ))}
-                </div>
-              ))}
+            </div>
+            <div className="asset-adjustments">
+              {(["assetSaturation", "assetBrightness"] as const).map((key) => {
+                const label = key === "assetSaturation" ? "Saturation" : "Brightness";
+                return (
+                  <label key={key}>
+                    {label}
+                    <output>{Math.round((object[key] ?? 0) * 100)}%</output>
+                    <input
+                      type="range"
+                      aria-label={label}
+                      min={-100}
+                      max={100}
+                      step={1}
+                      value={Math.round((object[key] ?? 0) * 100)}
+                      onChange={(e) => editor.setObject({ [key]: Number(e.target.value) / 100 })}
+                    />
+                  </label>
+                );
+              })}
             </div>
             <p className="section-note">
               Themes larger regions together. Tiny details and neutral outlines retain their colors.

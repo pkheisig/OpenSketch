@@ -45,6 +45,10 @@ async function palette(page: Page, name: string) {
   if (!(await page.getByRole("dialog", { name: "Choose asset palette" }).isVisible()))
     await page.getByRole("button", { name: "Choose palette…", exact: true }).click();
   await page.getByRole("button", { name, exact: true }).click();
+  await expect(page.getByRole("button", { name, exact: true })).toHaveAttribute(
+    "aria-pressed",
+    "true"
+  );
 }
 async function choose(page: Page, name: string, x: number, y: number) {
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
@@ -312,10 +316,10 @@ test("organized asset palettes preserve details, restore originals and survive r
       return walk(o);
     });
   const original = await paints();
-  await expect(page.locator(".asset-palette-row button")).toHaveCount(60);
+  await expect(page.locator(".asset-family-grid button")).toHaveCount(15);
   await page.screenshot({ path: testInfo.outputPath("original.png") });
-  await palette(page, "Red classic");
-  await expect(page.getByRole("button", { name: "Red classic", exact: true })).toHaveAttribute(
+  await palette(page, "Red");
+  await expect(page.getByRole("button", { name: "Red", exact: true })).toHaveAttribute(
     "aria-pressed",
     "true"
   );
@@ -327,8 +331,8 @@ test("organized asset palettes preserve details, restore originals and survive r
   expect(red.some((p, i) => p === original[i] && p !== "null")).toBe(true);
   await page.waitForTimeout(700);
   await page.screenshot({ path: testInfo.outputPath("red.png") });
-  await palette(page, "Blue soft");
-  await expect(page.getByRole("button", { name: "Blue soft", exact: true })).toHaveAttribute(
+  await palette(page, "Blue");
+  await expect(page.getByRole("button", { name: "Blue", exact: true })).toHaveAttribute(
     "aria-pressed",
     "true"
   );
@@ -341,7 +345,7 @@ test("organized asset palettes preserve details, restore originals and survive r
   await page.getByRole("button", { name: "Choose palette…", exact: true }).click();
   await page.getByRole("button", { name: "Restore to Default", exact: true }).click();
   expect(await paints()).toEqual(original);
-  await palette(page, "Red classic");
+  await palette(page, "Red");
   await expect.poll(paints).toEqual(red);
   await expect(page.locator('[data-save-state="saved"]')).toBeVisible({ timeout: 15000 });
   await page.reload();
@@ -351,7 +355,7 @@ test("organized asset palettes preserve details, restore originals and survive r
   await page.keyboard.press("ControlOrMeta+a");
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await page.getByRole("button", { name: "Choose palette…", exact: true }).click();
-  await expect(page.getByRole("button", { name: "Red classic", exact: true })).toHaveAttribute(
+  await expect(page.getByRole("button", { name: "Red", exact: true })).toHaveAttribute(
     "aria-pressed",
     "true"
   );
@@ -371,8 +375,8 @@ test("membrane palette survives bending and restores original semantic colors", 
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await page.getByRole("button", { name: "Choose palette…", exact: true }).click();
   const before = await state(page);
-  await palette(page, "Blue deep");
-  await expect(page.getByRole("button", { name: "Blue deep", exact: true })).toHaveAttribute(
+  await palette(page, "Blue");
+  await expect(page.getByRole("button", { name: "Blue", exact: true })).toHaveAttribute(
     "aria-pressed",
     "true"
   );
@@ -390,7 +394,7 @@ test("membrane palette survives bending and restores original semantic colors", 
   await page.locator(".upper-canvas").click({ position: bent.controls.brushPoint1 });
   await page.getByRole("button", { name: "Edit", exact: true }).click();
   await page.getByRole("button", { name: "Choose palette…", exact: true }).click();
-  await expect(page.getByRole("button", { name: "Blue deep", exact: true })).toHaveAttribute(
+  await expect(page.getByRole("button", { name: "Blue", exact: true })).toHaveAttribute(
     "aria-pressed",
     "true"
   );
@@ -424,7 +428,9 @@ test("explicit color roles theme white bodies, preserve details and restore defa
       return walk(o);
     });
   const original = await roles();
-  await palette(page, "Blue classic");
+  await palette(page, "Blue");
+  await page.getByRole("slider", { name: "Brightness", exact: true }).focus();
+  for (let i = 0; i < 10; i++) await page.keyboard.press("ArrowRight");
   await expect
     .poll(async () =>
       (await roles()).filter((p) => p.role === "primary").every((p) => p.fill !== "#ffffff")
@@ -506,7 +512,7 @@ for (const title of ["laboratory mouse", "micropipette"]) {
         });
       const original = await paints();
       await expect(page.locator(".asset-native-preview")).toHaveCount(0);
-      await palette(page, "Blue classic");
+      await palette(page, "Blue");
       await expect.poll(paints).not.toEqual(original);
       await page.keyboard.press("Escape");
       await expect(page.locator('[data-save-state="saved"]')).toBeVisible({ timeout: 15000 });
@@ -522,3 +528,44 @@ for (const title of ["laboratory mouse", "micropipette"]) {
     }
   );
 }
+
+test("continuous color sliders persist, preserve family choice and reset without accumulating", async ({
+  page
+}) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await observeCanvas(page);
+  await choose(page, "Lipid bilayer", 480, 330);
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  const original = await state(page);
+  await palette(page, "Green");
+  const green = await state(page);
+  const brightness = page.getByRole("slider", { name: "Brightness", exact: true });
+  await brightness.focus();
+  for (let i = 0; i < 20; i++) await page.keyboard.press("ArrowRight");
+  const brighter = await state(page);
+  expect(brighter.spec.fill).not.toBe(green.spec.fill);
+  for (let i = 0; i < 20; i++) await page.keyboard.press("ArrowLeft");
+  expect((await state(page)).spec.fill).toBe(green.spec.fill);
+  await page.getByRole("slider", { name: "Saturation", exact: true }).focus();
+  for (let i = 0; i < 10; i++) await page.keyboard.press("ArrowLeft");
+  await palette(page, "Blue");
+  await expect(page.getByRole("slider", { name: "Saturation", exact: true })).toHaveValue("-10");
+  await page.keyboard.press("Escape");
+  const themed = await state(page);
+  await expect(page.locator('[data-save-state="saved"]')).toBeVisible({ timeout: 15000 });
+  await page.reload();
+  await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await observeCanvas(page);
+  await page.locator(".upper-canvas").click({ position: themed.controls.brushPoint1 });
+  await page.getByRole("button", { name: "Edit", exact: true }).click();
+  await page.getByRole("button", { name: "Choose palette…", exact: true }).click();
+  await expect(page.getByRole("slider", { name: "Saturation", exact: true })).toHaveValue("-10");
+  expect((await state(page)).spec.fill).toBe(themed.spec.fill);
+  await page.getByRole("button", { name: "Restore to Default", exact: true }).click();
+  expect((await state(page)).spec.fill).toBe(original.spec.fill);
+  await page.getByRole("button", { name: "Choose palette…", exact: true }).click();
+  await expect(page.getByRole("slider", { name: "Saturation", exact: true })).toHaveValue("0");
+  await expect(brightness).toHaveValue("0");
+});

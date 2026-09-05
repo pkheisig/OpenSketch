@@ -23,6 +23,7 @@ import {
   FabricImage,
   FabricObject,
   Gradient,
+  Color,
   Group,
   IText,
   Path,
@@ -77,6 +78,7 @@ import {
 import { connectorStrokeLineCap } from "@/editor/connectorGeometry";
 import {
   ASSET_COLOR_PRESETS,
+  adjustedAssetColor,
   colorProfileForFamily,
   normalizedPresetColor,
   presetColorMap
@@ -986,6 +988,10 @@ function restoreOriginalColors(object: FabricObject): void {
       stroke: original["scientific:stroke"]
     });
     object.assetColorPreset = undefined;
+    object.assetSaturation = 0;
+    object.assetBrightness = 0;
+    delete original["adjustment:fill"];
+    delete original["adjustment:accent"];
     return;
   }
   const walk = (current: FabricObject) => {
@@ -1089,11 +1095,16 @@ function applyPresetColors(
           current.assetColorRole === "primary" || current.assetColorRole === "secondary"
         )
       );
-      current.effectBaseGradientFill = structuredClone(current.originalGradientFill);
+      current.effectBaseGradientFill = (current.fill as Gradient<"linear">).toObject() as Record<
+        string,
+        unknown
+      >;
     }
     if (current.originalGradientStroke) {
       current.set("stroke", mappedGradient(current.originalGradientStroke));
-      current.effectBaseGradientStroke = structuredClone(current.originalGradientStroke);
+      current.effectBaseGradientStroke = (
+        current.stroke as Gradient<"linear">
+      ).toObject() as Record<string, unknown>;
     }
     current.dirty = true;
     if (current instanceof Group) current.getObjects().forEach(walk);
@@ -1103,11 +1114,73 @@ function applyPresetColors(
   object.dirty = true;
 }
 
+function adjustAssetColors(object: Group) {
+  const saturation = object.assetSaturation ?? 0,
+    brightness = object.assetBrightness ?? 0;
+  if (isScientificBrush(object)) {
+    object.originalPalette ??= {};
+    for (const role of ["fill", "accent", "stroke"] as const)
+      object.originalPalette["scientific:" + role] ??= object.scientificBrush[role];
+    for (const role of ["fill", "accent"] as const)
+      object.originalPalette["adjustment:" + role] ??= object.scientificBrush[role];
+    updateBrushObject(object, {
+      ...object.scientificBrush,
+      fill: adjustedAssetColor(object.originalPalette["adjustment:fill"], saturation, brightness),
+      accent: adjustedAssetColor(
+        object.originalPalette["adjustment:accent"],
+        saturation,
+        brightness
+      )
+    });
+    return;
+  }
+  const [a, b, c, d] = object.calcTransformMatrix();
+  const cutoff = object.width * object.height * Math.abs(a * d - b * c) * 0.0003;
+  const walk = (part: FabricObject) => {
+    if (part instanceof Group) {
+      part.getObjects().forEach(walk);
+      part.dirty = true;
+      return;
+    }
+    if (["detail", "outline", "highlight"].includes(part.assetColorRole ?? "")) return;
+    const [a, b, c, d] = part.calcTransformMatrix();
+    if (!part.assetColorRole && part.width * part.height * Math.abs(a * d - b * c) < cutoff) return;
+    const adjust = (paint: string, isStroke = false) => {
+      const [r, g, b] = new Color(paint).getSource();
+      const light = (r * 0.2126 + g * 0.7152 + b * 0.0722) / 255;
+      if ((!part.assetColorRole || isStroke) && (light < 0.12 || light > 0.96)) return paint;
+      return adjustedAssetColor(paint, saturation, brightness);
+    };
+    for (const role of ["Fill", "Stroke"] as const) {
+      const key = role === "Fill" ? "fill" : "stroke";
+      const base = part[role === "Fill" ? "effectBaseFill" : "effectBaseStroke"];
+      if (typeof base === "string") part.set(key, adjust(base, key === "stroke"));
+      const gradient =
+        part[role === "Fill" ? "effectBaseGradientFill" : "effectBaseGradientStroke"];
+      if (gradient && Array.isArray(gradient.colorStops))
+        part.set(
+          key,
+          new Gradient({
+            ...structuredClone(gradient),
+            colorStops: gradient.colorStops.map((stop) => {
+              const record = stop as { color: string };
+              return { ...record, color: adjust(record.color, key === "stroke") };
+            })
+          } as never)
+        );
+    }
+    part.dirty = true;
+  };
+  walk(object);
+}
+
 function recolorAsset(
   object: Group,
   profile: ReturnType<typeof colorProfileForFamily>,
   preset: (typeof ASSET_COLOR_PRESETS)[number]
 ) {
+  const saturation = object.assetSaturation ?? 0,
+    brightness = object.assetBrightness ?? 0;
   if (isScientificBrush(object)) {
     const spec = object.scientificBrush;
     object.originalPalette ??= {};
@@ -1122,6 +1195,9 @@ function recolorAsset(
       stroke: original["scientific:stroke"]
     });
     object.assetColorPreset = preset.id;
+    object.originalPalette["adjustment:fill"] = object.scientificBrush.fill;
+    object.originalPalette["adjustment:accent"] = object.scientificBrush.accent;
+    adjustAssetColors(object);
     return;
   }
   const mapping = presetColorMap(originalPaints(object), profile, preset);
@@ -1137,6 +1213,9 @@ function recolorAsset(
     minimumRegionArea,
     presetColorMap(originalPaints(object), profile, preset, true)
   );
+  object.assetSaturation = saturation;
+  object.assetBrightness = brightness;
+  adjustAssetColors(object);
 }
 
 function withLogicalViewport<T>(canvas: Canvas, settings: CanvasSettings, operation: () => T): T {
@@ -3589,7 +3668,19 @@ export function EditorProvider({
       if (!canvas) return;
       const objects = canvas.getActiveObjects();
       objects.forEach((object) => {
-        if (isScientificBrush(object) && Object.hasOwn(properties, "scientificBrush")) {
+        if (
+          object instanceof Group &&
+          ("assetSaturation" in properties || "assetBrightness" in properties)
+        ) {
+          for (const key of ["assetSaturation", "assetBrightness"] as const)
+            if (key in properties) {
+              const value = properties[key];
+              if (typeof value !== "number" || !Number.isFinite(value))
+                throw new Error("Color adjustment must be finite.");
+              object[key] = Math.max(-1, Math.min(1, value));
+            }
+          adjustAssetColors(object);
+        } else if (isScientificBrush(object) && Object.hasOwn(properties, "scientificBrush")) {
           const patch = properties.scientificBrush as FabricObject["scientificBrush"];
           if (
             patch &&
@@ -3598,8 +3689,15 @@ export function EditorProvider({
                 patch[key as "fill" | "accent" | "stroke"] !==
                 object.scientificBrush[key as "fill" | "accent" | "stroke"]
             )
-          )
+          ) {
             object.assetColorPreset = undefined;
+            object.assetSaturation = 0;
+            object.assetBrightness = 0;
+            if (object.originalPalette) {
+              delete object.originalPalette["adjustment:fill"];
+              delete object.originalPalette["adjustment:accent"];
+            }
+          }
           if (properties.scientificBrush === null) detachBrush(object);
           else
             updateBrushObject(

@@ -81,3 +81,14 @@ it("can theme explicit white body roles while protecting untagged highlights", (
     presetColorMap(["#ffffff"], "cell", preset, true).get(normalizedPresetColor("#ffffff"))
   ).not.toBe("#ffffff");
 });
+
+it("adjusts saturation and brightness from a stable base while preserving alpha", async () => {
+  const { adjustedAssetColor } = await import("../apps/web/src/editor/assetColorPresets");
+  expect(adjustedAssetColor("#60a080", 0, 0)).toBe("#60a080");
+  expect(adjustedAssetColor("#60a080", 0, 1)).toBe("#ffffff");
+  expect(adjustedAssetColor("#60a080", 0, -1)).toBe("#000000");
+  const gray = adjustedAssetColor("#60a080", -1, 0);
+  expect(gray.slice(1, 3)).toBe(gray.slice(3, 5));
+  expect(gray.slice(3, 5)).toBe(gray.slice(5, 7));
+  expect(adjustedAssetColor("rgba(96,160,128,0.5)", 0.2, 0.2)).toMatch(/0.5\)$/);
+});

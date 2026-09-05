@@ -184,3 +184,19 @@ export function presetColorMap(
   }
   return result;
 }
+
+/** Adjust an immutable base paint, preserving alpha and avoiding cumulative edits. */
+export function adjustedAssetColor(color: string, saturation: number, brightness: number): string {
+  if (saturation === 0 && brightness === 0) return color;
+  const [r, g, b, alpha] = new Color(color).getSource();
+  const gray = r * 0.2126 + g * 0.7152 + b * 0.0722;
+  const s = 1 + Math.max(-1, Math.min(1, saturation));
+  const v = Math.max(-1, Math.min(1, brightness));
+  const channels = [r, g, b].map((channel) => {
+    const saturated = Math.max(0, Math.min(255, gray + (channel - gray) * s));
+    return Math.round(v >= 0 ? saturated + (255 - saturated) * v : saturated * (1 + v));
+  });
+  return alpha === 1
+    ? "#" + channels.map((c) => c.toString(16).padStart(2, "0")).join("")
+    : `rgba(${channels.join(", ")}, ${alpha})`;
+}

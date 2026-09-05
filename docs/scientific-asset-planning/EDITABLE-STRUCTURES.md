@@ -74,7 +74,7 @@ Validation: 483 unit tests, five Chromium interaction tests, typecheck and produ
 
 ## Asset color palettes
 
-Edit now exposes 60 presets: fifteen color families with Light, Soft, Classic and Deep shades. Restore to Default restores the source palette. Presets recolor existing vector paints in memory; no SVG variants are generated. Existing preset IDs remain available.
+Edit now exposes fifteen color-family swatches with continuous saturation and brightness sliders. Restore to Default restores the source palette. Presets recolor existing vector paints in memory; no SVG variants are generated. Existing preset IDs remain available.
 
 For traced artwork, presets recolor regions larger than 0.03% of the asset's area, including contrasting large structures such as nuclei. Smaller regions retain their original paints even when they share a color with a larger region. Area is estimated from each path's bounding box and transform; this is a size heuristic, not organelle recognition. Neutral dark outlines, bright highlights and alpha values remain intact. Large regions use distinct shades of the selected palette. Procedural structures theme both body and accent roles while retaining their outline colors. Curvature edits retain the selected colors.
 

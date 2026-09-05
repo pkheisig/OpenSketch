@@ -16,7 +16,7 @@ Every painted element in a newly authored SVG must inherit or declare one of the
 
 Group-level roles inherit; a child's explicit role overrides its parent. Large organelles are secondary, never detail merely because their original hue differs. Use separately tagged outline paths when a fill and outline need different behavior. Retain source lightness differences between primary and secondary regions, even if both start gray or white. Pure white primary fills can now be themed; white highlight regions remain white.
 
-Store the intended default paints in the original SVG. A white mouse stays white by default; a gray pipette stays gray. Import captures those paints, Restore to Default restores every source paint exactly. The app supplies fifteen color families with four shades, including white, gray and charcoal. Do not substitute a generic neutral preset for exact default restoration.
+Store the intended default paints in the original SVG. A white mouse stays white by default; a gray pipette stays gray. Import captures those paints, Restore to Default restores every source paint exactly. The app supplies one swatch for each of fifteen color families, including white, gray and charcoal, plus continuous saturation and brightness adjustments. Do not substitute a generic neutral preset for exact default restoration.
 
 Roles survive native project save/reload. A standalone exported SVG preserves the rendered vectors and colors; do not assume it retains the native project metadata. Deliver the source SVG with roles plus an editable native project when component identity must survive.
 
@@ -66,3 +66,5 @@ The synthetic tests/fixtures/asset-color-roles.svg fixture exercises role inheri
 The existing detailed cell, procedural membrane, receptor and grouped receptor–membrane assembly have been exercised in the app. Their component identities survive native save/reload. Mouse and micropipette defaults restore exactly after recoloring and reopening a project. Empty, non-rendering paths in the existing mouse SVG are excluded during import so the resulting scene remains portable; approved source files remain unchanged.
 
 Validation: 489 unit tests, 11 Chromium flows, typecheck and production build passed. The new-authoring checker passed its valid fixture and rejected a malformed fixture. [Screenshots and recording](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/palette-popout-20260905/index.html). This verifies the editor contract and existing references; a future newly generated production batch still needs its own visual acceptance.
+
+Saturation and brightness use immutable base paints, preserve protected details and alpha, and survive native save/reload. Restore to Default resets both adjustments. Historical shade IDs remain readable for old projects; new UI choices use the base family swatches.
