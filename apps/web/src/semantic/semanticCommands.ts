@@ -305,7 +305,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project"],
     inputSchema: {
       type: "object",
@@ -335,7 +335,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project"],
     inputSchema: output({ objectId: objectId() }),
     outputSchema: output({ object: { type: "object" } })
@@ -349,7 +349,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project"],
     inputSchema: emptyObject(),
     outputSchema: output({
@@ -367,7 +367,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project"],
     inputSchema: {
       type: "object",
@@ -391,7 +391,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project"],
     inputSchema: {
       type: "object",
@@ -410,7 +410,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project"],
     inputSchema: emptyObject(),
     outputSchema: output({
@@ -429,7 +429,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -451,7 +451,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -475,7 +475,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -494,7 +494,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: false,
     idempotent: false,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -521,7 +521,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -540,7 +540,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: false,
     idempotent: false,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -563,7 +563,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: false,
     idempotent: false,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -623,7 +623,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: false,
     idempotent: false,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -660,7 +660,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: false,
     idempotent: false,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -689,7 +689,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -708,7 +708,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: false,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -732,7 +732,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -759,7 +759,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -785,7 +785,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -811,7 +811,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -838,7 +838,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -878,7 +878,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: false,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -897,7 +897,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: false,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -920,7 +920,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: false,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -939,7 +939,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -958,7 +958,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -980,7 +980,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: false,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -999,7 +999,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: false,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1018,7 +1018,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1041,7 +1041,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1070,7 +1070,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: false,
     idempotent: false,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1090,7 +1090,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "explicit",
     retryable: false,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1109,7 +1109,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: false,
     idempotent: false,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1129,7 +1129,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: false,
     idempotent: false,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1148,7 +1148,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: false,
     idempotent: false,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: emptyObject(),
     outputSchema: output({ applied: { type: "boolean" } })
@@ -1162,7 +1162,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: false,
     idempotent: false,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: emptyObject(),
     outputSchema: output({ applied: { type: "boolean" } })
@@ -1177,7 +1177,7 @@ const definitions: SemanticCommandDefinition[] = [
     confirmation: "none",
     retryable: false,
     idempotent: false,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1207,7 +1207,7 @@ definitions.push(
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project"],
     inputSchema: {
       type: "object",
@@ -1240,7 +1240,7 @@ definitions.push(
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project"],
     inputSchema: {
       type: "object",
@@ -1259,7 +1259,7 @@ definitions.push(
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project"],
     inputSchema: {
       type: "object",
@@ -1284,7 +1284,7 @@ definitions.push(
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project"],
     inputSchema: {
       type: "object",
@@ -1319,7 +1319,7 @@ definitions.push(
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1347,7 +1347,7 @@ definitions.push(
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1397,7 +1397,7 @@ definitions.push(
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1437,7 +1437,7 @@ definitions.push(
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1465,7 +1465,7 @@ definitions.push(
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1517,7 +1517,7 @@ definitions.push(
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1537,7 +1537,7 @@ definitions.push(
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1564,7 +1564,7 @@ definitions.push(
     confirmation: "none",
     retryable: true,
     idempotent: false,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1599,7 +1599,7 @@ definitions.push(
     confirmation: "none",
     retryable: true,
     idempotent: false,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1644,7 +1644,7 @@ definitions.push(
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1696,7 +1696,7 @@ definitions.push(
     confirmation: "none",
     retryable: true,
     idempotent: false,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1731,7 +1731,7 @@ definitions.push(
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1765,7 +1765,7 @@ definitions.push(
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1796,7 +1796,7 @@ definitions.push(
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1825,7 +1825,7 @@ definitions.push(
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1870,7 +1870,7 @@ definitions.push(
     confirmation: "none",
     retryable: true,
     idempotent: true,
-    cancellable: false,
+    cancellable: true,
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
@@ -1900,6 +1900,22 @@ definitions.push(
   }
 );
 
+definitions.push({
+  name: "return_to_project_library",
+  title: "Return to project library",
+  description:
+    "Durably save the current project and return to the project library through the guarded application path.",
+  version: SEMANTIC_RUNTIME_VERSION,
+  risk: "reversible_mutation",
+  confirmation: "none",
+  retryable: true,
+  idempotent: true,
+  cancellable: true,
+  requires: ["project"],
+  inputSchema: emptyObject(),
+  outputSchema: output({ requested: { type: "boolean" } })
+});
+
 const batchOperationSchema: JsonSchema = {
   type: "object",
   properties: {
@@ -1923,7 +1939,7 @@ definitions.push({
   confirmation: "explicit",
   retryable: false,
   idempotent: false,
-  cancellable: false,
+  cancellable: true,
   requires: ["project", "canvas"],
   inputSchema: {
     type: "object",

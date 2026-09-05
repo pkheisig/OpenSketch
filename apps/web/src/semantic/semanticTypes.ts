@@ -1,5 +1,24 @@
 export const SEMANTIC_RUNTIME_VERSION = "opensketch.semantic.v1" as const;
 
+export interface SemanticExecutionOptions {
+  readonly signal?: AbortSignal;
+}
+
+export const SEMANTIC_EXECUTION_ABORTED = "EXECUTION_ABORTED" as const;
+
+export class SemanticExecutionAborted extends Error {
+  readonly code = SEMANTIC_EXECUTION_ABORTED;
+
+  constructor(message = "The semantic execution was canceled before it completed.") {
+    super(message);
+    this.name = "SemanticExecutionAborted";
+  }
+}
+
+export function throwIfSemanticExecutionAborted(signal?: AbortSignal): void {
+  if (signal?.aborted) throw new SemanticExecutionAborted();
+}
+
 export type SemanticRisk =
   "read_only" | "reversible_mutation" | "sensitive_or_destructive" | "side_effect";
 
@@ -154,7 +173,11 @@ export interface SemanticEditorAdapter {
   searchAssets(options: { query: string; category?: string; limit: number }): Promise<unknown>;
   inspectAsset(options: { familyId: string; variantId?: string }): Promise<unknown>;
   inspectProvenance(): unknown;
-  execute(command: string, input: Record<string, unknown>): Promise<SemanticAdapterResult>;
+  execute(
+    command: string,
+    input: Record<string, unknown>,
+    options?: SemanticExecutionOptions
+  ): Promise<SemanticAdapterResult>;
   runTransaction<T>(operation: () => Promise<T>): Promise<T>;
 }
 

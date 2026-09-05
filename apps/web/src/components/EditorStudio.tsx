@@ -2,6 +2,7 @@ import { lazy, Suspense, useState } from "react";
 import type { ProjectRecord } from "@workspace/editor-core";
 import { EditorProvider } from "@/editor/EditorContext";
 import { CanvasWorkspace } from "@/components/CanvasWorkspace";
+import type { WebMcpRegistry } from "@/semantic/webmcp";
 
 const TopToolbar = lazy(() =>
   import("@/components/TopToolbar").then((module) => ({ default: module.TopToolbar }))
@@ -15,13 +16,15 @@ export function EditorStudio({
   onProjectChange,
   onHome,
   onNavigationGuardChange,
+  webMcpRegistry,
   theme,
   onToggleTheme
 }: {
   project: ProjectRecord;
   onProjectChange: (project: ProjectRecord) => Promise<void>;
-  onHome: () => void;
+  onHome: () => boolean | void;
   onNavigationGuardChange: (guard: (() => boolean) | null) => void;
+  webMcpRegistry: WebMcpRegistry;
   theme: "light" | "dark";
   onToggleTheme: () => void;
 }) {
@@ -42,6 +45,7 @@ export function EditorStudio({
       onProjectChange={onProjectChange}
       onRequestExit={onHome}
       onNavigationGuardChange={onNavigationGuardChange}
+      webMcpRegistry={webMcpRegistry}
     >
       <main className="editor-shell">
         <Suspense fallback={<header className="top-toolbar" aria-hidden="true" />}>

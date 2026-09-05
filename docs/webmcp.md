@@ -22,15 +22,37 @@ The semantic layer has four parts:
    by the application, while exposing bounded scene, asset, and provenance
    inspection.
 4. `webmcp.ts` detects a browser `document.modelContext` with a callable
-   `registerTool` method and registers the available semantic commands as
-   WebMCP tools. `EditorContext.tsx` retries registration briefly because a
-   compatible host may expose the model context after the editor first loads.
+   `registerTool` method and registers the active semantic command context as
+   WebMCP tools. The application owns one shared registry: the landing project
+   library exposes lifecycle commands, while an open editor exposes editor
+   commands. Registration signals fence callbacks from stale contexts, and
+   host `AbortSignal`s are propagated into the runtime queue.
 
 The development-only `semanticIntrospection.ts` hook is separate from the
 WebMCP transport. It is useful for local qualification and is rejected from
 the production bundle by `scripts/check-webmcp-build.mjs`. No raw Fabric
 objects, complete project files, matrices, or unbounded scene snapshots are
 exposed through the semantic surface.
+
+## Project-library lifecycle
+
+The landing state is a first-class WebMCP context. It is available from a true
+cold start, before a user creates or opens a figure. The lifecycle surface is
+bounded and returns safe metadata only; project files, scene objects, upload
+data, thumbnails, and storage handles remain private to the application.
+
+| Command | Purpose |
+| --- | --- |
+| `list_projects` | List bounded active-project metadata, optionally including archived entries |
+| `inspect_project` | Inspect bounded metadata for one opaque project ID |
+| `create_project` | Create, persist, and open a project through the canonical App path |
+| `open_project` | Open a current library entry through the guarded App path |
+
+Only one context is registered at a time. Returning to the library flushes the
+editor save path and is blocked when the existing navigation guard reports
+unsaved or pending work. A project ID resolved from an earlier library snapshot
+is rejected as `STALE_PROJECT_ID` instead of being guessed or opened from raw
+storage.
 
 ## Public command catalogue
 
@@ -99,6 +121,7 @@ registry.
 | `render_scene_preview`    | Report bounded read-only preview capability and scene revision   | Read-only                                    |
 | `analyze_composition`     | Return bounded deterministic geometry/science findings           | Read-only                                    |
 | `validate_figure`         | Validate against a versioned publication profile                 | Read-only                                    |
+| `return_to_project_library` | Durably save and return through the guarded project-library path         | Reversible and retryable                     |
 | `batch`                   | Run up to 32 typed mutations as one atomic history step          | Sensitive/destructive; explicit confirmation |
 
 All current commands use semantic runtime version `opensketch.semantic.v1`.
@@ -115,6 +138,14 @@ normal editor transaction/history boundary, so semantic edits are visible to
 manual editing and ordinary undo/redo. Stale object IDs, unsupported values,
 invalid asset references, and unavailable capabilities fail with structured
 errors before a mutation is applied.
+
+Every registered tool accepts the host execution context. A call canceled
+before it reaches the serialized runtime queue returns `EXECUTION_ABORTED` and
+does not invoke an authority. A queued call canceled while an earlier command
+is running is skipped when its turn arrives. Canceled batch members abort the
+transaction and use the editor rollback path. Disposing or replacing a
+registration also aborts its callbacks, so a tool retained by a host cannot
+mutate a later project context.
 
 `delete_objects` requires `confirmed: true`. `batch` also requires explicit
 confirmation, and its confirmation covers every contained mutation, including
@@ -148,11 +179,14 @@ The hosted app is [OpenSketch on GitHub Pages](https://pkheisig.github.io/OpenSk
 No account or judge credential is required.
 
 1. Open the hosted app in ChatGPT's in-app browser or another compatible
-   browser with WebMCP enabled. Create a **New figure**.
+   browser with WebMCP enabled. Confirm that the landing-state tools are
+   available, then call `list_projects` and either `create_project` or
+   `open_project`. Do not depend on a manual **New figure** click.
 2. Confirm that the host can discover the registered tools. In a local browser
    harness, install a `document.modelContext.registerTool` recorder before
-   navigation and inspect the recorded tool names. The expected names are the
-   catalogue above.
+   navigation and inspect the recorded tool names. The expected landing names
+   are the lifecycle table above; after opening a project they are replaced by
+   the editor catalogue.
 3. Run a bounded read-only check with `inspect_scene` and search the bundled
    library with `search_assets`. Use `inspect_asset` to choose an exact family
    and variant, then insert it with `insert_asset`.

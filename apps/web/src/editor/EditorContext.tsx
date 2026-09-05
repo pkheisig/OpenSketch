@@ -166,7 +166,12 @@ import { createSemanticEditorAdapter } from "@/semantic/semanticEditorAdapter";
 import { inspectSemanticGeometry, perimeterPointForAnchor } from "@/semantic/composition";
 import { installSemanticIntrospection } from "@/semantic/semanticIntrospection";
 import { createSemanticRuntime, type SemanticRuntime } from "@/semantic/semanticRuntime";
-import { createWebMcpAdapter, type WebMcpAdapter } from "@/semantic/webmcp";
+import {
+  type SemanticExecutionOptions,
+  SemanticExecutionAborted,
+  throwIfSemanticExecutionAborted
+} from "@/semantic/semanticTypes";
+import { createWebMcpAdapter, type WebMcpAdapter, type WebMcpRegistry } from "@/semantic/webmcp";
 
 export const PROJECT_NAME_CHANGE_EVENT = "opensketch:project-name-change";
 
@@ -1083,11 +1088,13 @@ export function EditorProvider({
   onProjectChange,
   onRequestExit,
   onNavigationGuardChange,
+  webMcpRegistry,
   children
 }: {
   project: ProjectRecord;
   onProjectChange: (project: ProjectRecord) => Promise<void>;
-  onRequestExit: () => void;
+  onRequestExit: () => boolean | void;
+  webMcpRegistry?: WebMcpRegistry;
   onNavigationGuardChange: (guard: (() => boolean) | null) => void;
   children: ReactNode;
 }) {
@@ -1545,15 +1552,24 @@ export function EditorProvider({
     void enqueuePendingSave().catch(() => undefined);
   }, [enqueuePendingSave]);
 
-  const requestExit = useCallback(() => {
-    if (exitPending.current) return;
-    exitPending.current = true;
-    void flushSave()
-      .then(onRequestExit)
-      .catch(() => {
-        exitPending.current = false;
-      });
-  }, [flushSave, onRequestExit]);
+  const requestExit = useCallback(
+    async (options?: SemanticExecutionOptions): Promise<boolean> => {
+      if (options?.signal?.aborted || exitPending.current) return false;
+      exitPending.current = true;
+      let exited = false;
+      try {
+        await flushSave();
+        if (options?.signal?.aborted) return false;
+        exited = onRequestExit() !== false;
+        return exited;
+      } catch {
+        return false;
+      } finally {
+        if (!exited) exitPending.current = false;
+      }
+    },
+    [flushSave, onRequestExit]
+  );
 
   useEffect(() => {
     const onBeforeUnload = (event: BeforeUnloadEvent) => {
@@ -2425,8 +2441,11 @@ export function EditorProvider({
   );
 
   const applySemanticColorPreset = useCallback(
-    (objectId: string, presetId: string): Promise<void> => {
+    (objectId: string, presetId: string, options?: SemanticExecutionOptions): Promise<void> => {
       if (!canvas) return Promise.reject(new Error("The OpenSketch canvas is not ready."));
+      if (options?.signal?.aborted) {
+        return Promise.reject(new SemanticExecutionAborted());
+      }
       const object = sceneObjectIndex(canvas).get(objectId);
       if (!object) return Promise.reject(new Error(`Scene object "${objectId}" does not exist.`));
       if (!(object instanceof Group) || !object.familyId) {
@@ -2436,6 +2455,7 @@ export function EditorProvider({
       if (!preset)
         return Promise.reject(new Error(`Asset color preset "${presetId}" does not exist.`));
       const operation = loadAssetManifest().then(({ assetManifest }) => {
+        throwIfSemanticExecutionAborted(options?.signal);
         const family = assetManifest.families.find((item) => item.familyId === object.familyId);
         const profile = family ? colorProfileForFamily(family) : undefined;
         if (!profile || sceneObjectIndex(canvas).get(objectId) !== object) {
@@ -2473,7 +2493,10 @@ export function EditorProvider({
   semanticConfigureCanvasAssetsRef.current = configureCanvasAssets;
   const semanticRefreshConnectorsRef = useRef(refreshConnectors);
   semanticRefreshConnectorsRef.current = refreshConnectors;
-  const semanticApplyColorPresetRef = useRef(applySemanticColorPreset);
+  const semanticApplyColorPresetRef =
+    useRef<
+      (objectId: string, presetId: string, options?: SemanticExecutionOptions) => Promise<void>
+    >(applySemanticColorPreset);
   semanticApplyColorPresetRef.current = applySemanticColorPreset;
   const semanticUndoRef = useRef(undo);
   semanticUndoRef.current = undo;
@@ -2486,13 +2509,27 @@ export function EditorProvider({
   const semanticSetProjectDescriptionRef = useRef<(description: string) => void>(() => undefined);
   const semanticExportSvgRef = useRef<EditorContextValue["exportSvg"]>(() => undefined);
   const semanticExportCreditsRef = useRef<EditorContextValue["exportCredits"]>(() => undefined);
-  const semanticExportPdfRef = useRef<EditorContextValue["exportPdf"]>(async () => undefined);
-  const semanticExportPngRef = useRef<EditorContextValue["exportPng"]>(async () => undefined);
+  const semanticExportPdfRef = useRef<
+    (title?: string, description?: string, options?: SemanticExecutionOptions) => Promise<void>
+  >(async () => undefined);
+  const semanticExportPngRef = useRef<
+    (
+      transparent: boolean,
+      dpi: number,
+      background?: string,
+      options?: SemanticExecutionOptions
+    ) => Promise<void>
+  >(async () => undefined);
   const semanticInsertAssetRef = useRef<
-    (family: AssetFamily, variant: AssetVariant, point?: Point) => Promise<string | undefined>
+    (
+      family: AssetFamily,
+      variant: AssetVariant,
+      point?: Point,
+      options?: SemanticExecutionOptions
+    ) => Promise<string | undefined>
   >(async () => undefined);
   const semanticReplaceAssetVariantRef = useRef<
-    (objectId: string, variantId: string) => Promise<boolean>
+    (objectId: string, variantId: string, options?: SemanticExecutionOptions) => Promise<boolean>
   >(async () => false);
   const semanticRuntimeRef = useRef<SemanticRuntime | null>(null);
   if (!semanticRuntimeRef.current) {
@@ -2515,8 +2552,9 @@ export function EditorProvider({
         configureCanvasAssets: (objects) => semanticConfigureCanvasAssetsRef.current(objects),
         refreshConnectors: (changedObjectId) =>
           semanticRefreshConnectorsRef.current(changedObjectId),
-        applyColorPreset: (objectId, presetId) =>
-          semanticApplyColorPresetRef.current(objectId, presetId),
+        requestExit,
+        applyColorPreset: (objectId, presetId, options) =>
+          semanticApplyColorPresetRef.current(objectId, presetId, options),
         undo: () => semanticUndoRef.current(),
         redo: () => semanticRedoRef.current(),
         insertAsset: (...args) => semanticInsertAssetRef.current(...args),
@@ -2533,12 +2571,15 @@ export function EditorProvider({
   useEffect(() => installSemanticIntrospection(semanticRuntime), [semanticRuntime]);
 
   const semanticWebMcpRef = useRef<WebMcpAdapter | null>(null);
-  if (!semanticWebMcpRef.current) {
-    semanticWebMcpRef.current = createWebMcpAdapter({ runtime: semanticRuntime });
-  }
   useEffect(() => {
-    const adapter = semanticWebMcpRef.current;
-    if (!adapter) return undefined;
+    if (webMcpRegistry) {
+      if (!canvasReady) return undefined;
+      void webMcpRegistry.activate(semanticRuntime);
+      return () => webMcpRegistry.deactivate(semanticRuntime);
+    }
+    const adapter =
+      semanticWebMcpRef.current ??
+      (semanticWebMcpRef.current = createWebMcpAdapter({ runtime: semanticRuntime }));
     let disposed = false;
     let retryTimer: ReturnType<typeof setTimeout> | undefined;
     const sync = async () => {
@@ -2560,7 +2601,7 @@ export function EditorProvider({
       if (retryTimer) clearTimeout(retryTimer);
       adapter.dispose();
     };
-  }, [canvasReady, project.id]);
+  }, [canvasReady, project.id, semanticRuntime, webMcpRegistry]);
 
   const setCreationDefaults = useCallback(
     (defaults: CreationDefaults | ((current: CreationDefaults) => CreationDefaults)) => {
@@ -2839,11 +2880,19 @@ export function EditorProvider({
   );
 
   const insertBundledAsset = useCallback(
-    (family: AssetFamily, variant: AssetVariant, point: Point | undefined, select: boolean) => {
+    (
+      family: AssetFamily,
+      variant: AssetVariant,
+      point: Point | undefined,
+      select: boolean,
+      options?: SemanticExecutionOptions
+    ) => {
       const operation = trackPendingEditorWork(
         assetInsertQueue.current.then(async () => {
+          if (options?.signal?.aborted) return undefined;
           if (!semanticCanvasRef.current) return undefined;
           const group = await createBundledAssetGroup(family, variant);
+          if (options?.signal?.aborted) return undefined;
           if (!semanticCanvasRef.current) return undefined;
           const scale = assetInsertionScale(family.title, group.width || 1, group.height || 1);
           group.scale(scale);
@@ -2870,8 +2919,12 @@ export function EditorProvider({
   );
 
   const insertSemanticAsset = useCallback(
-    (family: AssetFamily, variant: AssetVariant, point?: Point) =>
-      insertBundledAsset(family, variant, point, false),
+    (
+      family: AssetFamily,
+      variant: AssetVariant,
+      point?: Point,
+      options?: SemanticExecutionOptions
+    ) => insertBundledAsset(family, variant, point, false, options),
     [insertBundledAsset]
   );
   semanticInsertAssetRef.current = insertSemanticAsset;
@@ -2897,14 +2950,21 @@ export function EditorProvider({
   );
 
   const replaceAssetVariant = useCallback(
-    (objectId: string, variantId: string, selectReplacement = false) => {
+    (
+      objectId: string,
+      variantId: string,
+      selectReplacement = false,
+      options?: SemanticExecutionOptions
+    ) => {
       const operation = trackPendingEditorWork(
         assetInsertQueue.current.then(async () => {
+          if (options?.signal?.aborted) return false;
           if (!semanticCanvasRef.current) return false;
           const initial = sceneObjectIndex(semanticCanvasRef.current).get(objectId);
           if (!(initial instanceof Group) || !initial.familyId || initial.assetId === variantId)
             return false;
           const { assetManifest } = await loadAssetManifest();
+          if (options?.signal?.aborted) return false;
           const currentCanvas = semanticCanvasRef.current;
           if (!currentCanvas) return false;
           const current = sceneObjectIndex(currentCanvas).get(objectId);
@@ -2917,6 +2977,7 @@ export function EditorProvider({
           if (!family || !variant) return false;
 
           const replacement = await createBundledAssetGroup(family, variant);
+          if (options?.signal?.aborted) return false;
           if (
             semanticCanvasRef.current !== currentCanvas ||
             !currentCanvas.getObjects().includes(current)
@@ -2966,7 +3027,8 @@ export function EditorProvider({
     },
     [trackPendingEditorWork]
   );
-  semanticReplaceAssetVariantRef.current = replaceAssetVariant;
+  semanticReplaceAssetVariantRef.current = (objectId, variantId, options) =>
+    replaceAssetVariant(objectId, variantId, false, options);
 
   const setAssetVariant = useCallback(
     (variantId: string) => {
@@ -3922,11 +3984,13 @@ export function EditorProvider({
   const exportPdf = useCallback(
     async (
       title = latestProject.current.name,
-      description = latestProject.current.description ?? ""
+      description = latestProject.current.description ?? "",
+      options?: SemanticExecutionOptions
     ) => {
       if (!canvas) throw new Error("The figure canvas is not ready.");
       await waitForPendingEditorWork();
       await waitForCanvasTextFonts(canvas.getObjects());
+      if (options?.signal?.aborted) return;
       const svg = buildSvg(title, description);
       const blob = await svgToPdfBlob(svg, canvasSettings.width, canvasSettings.height, {
         title,
@@ -3934,6 +3998,7 @@ export function EditorProvider({
         credit: GLOBAL_CREDIT,
         provenance: collectProvenanceManifest(canvas.getObjects())
       });
+      if (options?.signal?.aborted) return;
       downloadBlob(blob, `${safeFilename(title)}.pdf`);
     },
     [buildSvg, canvas, canvasSettings.height, canvasSettings.width, waitForPendingEditorWork]
@@ -3957,8 +4022,14 @@ export function EditorProvider({
   );
 
   const exportPng = useCallback(
-    async (transparent: boolean, dpi: number, background = canvasSettings.background) => {
+    async (
+      transparent: boolean,
+      dpi: number,
+      background = canvasSettings.background,
+      options?: SemanticExecutionOptions
+    ) => {
       if (!canvas) return;
+      if (options?.signal?.aborted) return;
       const resource = calculatePngExportResource(
         canvasSettings.width,
         canvasSettings.height,
@@ -3984,6 +4055,7 @@ export function EditorProvider({
       const blob = await setPngDpi(await response.blob(), dpi, {
         provenance: collectProvenanceManifest(canvas.getObjects())
       });
+      if (options?.signal?.aborted) return;
       downloadBlob(blob, `${safeFilename(latestProject.current.name)}-${dpi}dpi.png`);
     },
     [canvas, canvasSettings]
