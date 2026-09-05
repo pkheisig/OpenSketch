@@ -33,6 +33,7 @@ const hostServicesSource = await readFile(
 );
 const editorCoreVersion = sourceConstant(editorCoreSource, "EDITOR_CORE_VERSION");
 const projectFormatVersion = Number(sourceConstant(formatSource, "OpenSketch_FORMAT_VERSION"));
+const applicationVersion = sourceConstant(hostServicesSource, "OPENSKETCH_APPLICATION_VERSION");
 const applicationContractVersion = sourceConstant(
   hostServicesSource,
   "OPENSKETCH_APPLICATION_CONTRACT_VERSION"
@@ -53,6 +54,7 @@ const sourceStatusSha256 = hashText(sourceStatus);
 if (editorCoreVersion !== editorCorePackage.version) {
   throw new Error("editor-core package and source versions differ.");
 }
+if (applicationVersion !== version) throw new Error("web package and source versions differ.");
 if (!Number.isInteger(projectFormatVersion)) throw new Error("The editor-core project format is invalid.");
 
 if (!/^[0-9a-f]{40}$/.test(sourceSha)) throw new Error("The release source SHA is invalid.");

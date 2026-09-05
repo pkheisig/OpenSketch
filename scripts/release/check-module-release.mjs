@@ -19,6 +19,7 @@ const formatSource = await readFile(join(repositoryRoot, "packages/editor-core/s
 const hostServicesSource = await readFile(join(repositoryRoot, "apps/web/src/application/hostServices.ts"), "utf8");
 const errors = [];
 const sourceContracts = {
+  version: sourceConstant(hostServicesSource, "OPENSKETCH_APPLICATION_VERSION"),
   application: sourceConstant(hostServicesSource, "OPENSKETCH_APPLICATION_CONTRACT_VERSION"),
   openSuite: sourceConstant(hostServicesSource, "OPENSKETCH_OPEN_SUITE_CONTRACT_VERSION"),
   react: sourceConstant(hostServicesSource, "OPENSKETCH_REACT_VERSION_RANGE"),
@@ -28,6 +29,7 @@ const sourceContracts = {
 if (moduleManifest.schemaVersion !== 1) errors.push("module manifest schemaVersion must equal 1");
 if (moduleManifest.id !== "opensketch") errors.push("module manifest id must be opensketch");
 if (moduleManifest.version !== packageJson.version) errors.push("module version differs from package version");
+if (sourceContracts.version !== packageJson.version) errors.push("runtime module version differs from package version");
 if (!/^[0-9a-f]{40}$/.test(moduleManifest.sourceSha || "")) errors.push("sourceSha must be a 40-character SHA");
 if (releaseAttestation.sourceSha !== moduleManifest.sourceSha) errors.push("attestation source SHA differs");
 if (releaseAttestation.dirty !== false) errors.push("release attestation must record a clean source tree");
@@ -169,14 +171,6 @@ for (const moduleFile of moduleFiles) {
   }
 }
 const moduleSource = moduleJavaScript.join("\n");
-const runtimeManifestMatch = moduleSource.match(
-  /id:\s*["']opensketch["'],\s*displayName:\s*["']OpenSketch["'],\s*version:\s*["']([^"']+)["']/
-);
-if (!runtimeManifestMatch) {
-  errors.push("bundled runtime manifest is missing its versioned OpenSketch identity");
-} else if (runtimeManifestMatch[1] !== packageJson.version) {
-  errors.push("bundled runtime manifest version differs from package version");
-}
 const externalReactSpecifiers = new Set();
 for (const match of moduleSource.matchAll(/\bfrom\s+["']((?:react|react-dom)(?:\/[^"']+)?)['"]/g)) {
   externalReactSpecifiers.add(match[1]);
