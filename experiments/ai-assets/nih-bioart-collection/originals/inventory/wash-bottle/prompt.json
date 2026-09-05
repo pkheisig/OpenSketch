@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a wash bottle, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One flexible translucent milky-white cylindrical laboratory squeeze wash bottle, rounded shoulder and blue screw cap. One slender white dispensing tube passes through cap, rises vertically, then bends smoothly outward and downward to a fine open nozzle extending to upper right. Show the same tube faintly continuing inside the bottle to near its bottom as a dip tube. No liquid stream or droplets. Thin grey-blue outlines, subtle clean gradients, broad smooth highlights, matte illustrated polyethylene. Complete entire nozzle and base well inside canvas. True transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-3be9b31d-e15e-4b94-bba1-136faf8a1519.png",
+  "archetype": "Laboratory squeeze wash bottle with integral bent dispensing nozzle and internal dip tube; generic unlabeled vessel.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "wash-bottle",
+  "name": "wash bottle",
+  "original": "originals/inventory/wash-bottle/generated.png",
+  "original_sha256": "cf5190f0e57203a34d52a6350fa33bf3a1e5a5c5017e80ae486f9ccc5d130970"
+}

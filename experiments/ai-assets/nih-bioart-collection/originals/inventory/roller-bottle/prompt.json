@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a roller bottle, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One clear long cylindrical cell-culture roller bottle lying horizontally, elevated three-quarter view, gently rounded shoulder and short neck at right with a seated navy blue ribbed screw cap, broad closed circular base at left. Long smooth cylindrical growth surface, two subtle circumferential molded support rings near ends. A shallow pool of pink culture medium extends along the lowest side, with a level horizontal liquid surface. No roller rack, no motor, no visible cells, no graduations. Thin blue-grey outlines, smooth broad highlights and clean biomedical labware shading. Complete bottle and cap with generous margin. True transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-2555635c-2e34-4f05-af6f-ac757a375508.png",
+  "archetype": "Horizontal cylindrical roller culture bottle with end rings and shallow medium pool; rack omitted, dimensions and liquid depth illustrative.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "roller-bottle",
+  "name": "roller bottle",
+  "original": "originals/inventory/roller-bottle/generated.png",
+  "original_sha256": "7824577970e485767dac87e7eecc42e2cb593f5ca9700b0494f49236a6742056"
+}

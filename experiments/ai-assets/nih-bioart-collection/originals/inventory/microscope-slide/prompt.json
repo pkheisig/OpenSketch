@@ -1,0 +1,12 @@
+{
+  "tool": "built-in image_gen",
+  "svg_source": "originals/inventory/microscope-slide/slide-translucent-vector.svg",
+  "vector_refinement": "Added editable translucent glass surface path beneath traced edges, sampled original interior alpha approximately 0.24; preserves faint glass rather than discarding it at trace alpha threshold.",
+  "generation": "Create a single isolated scientific illustration of a microscope slide, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One standard thin rectangular clear glass microscope slide, landscape orientation in elevated three-quarter perspective. About three times as long as wide, smooth straight ground edges, very thin thickness visible along front edge. A blank frosted glass writing area occupies one short end, integral frosted glass rather than a paper label. Remaining glass completely empty, no specimen, no coverslip. Subtle pale blue glass edge highlights, fine grey-blue outlines, restrained clean pseudo-3D shading matching biomedical labware illustrations. Entire four corners visible, no shadow plane. True transparent alpha PNG.",
+  "generated_source": "originals/inventory/microscope-slide/generated.png",
+  "archetype": "Empty rectangular glass microscope slide with integral frosted end, no specimen or coverslip.",
+  "id": "microscope-slide",
+  "name": "microscope slide",
+  "original": "originals/inventory/microscope-slide/generated.png",
+  "original_sha256": "cf3e201c634cd079f56a2149f168b0eb1a514aba4f7022b238e93d462ee12281"
+}

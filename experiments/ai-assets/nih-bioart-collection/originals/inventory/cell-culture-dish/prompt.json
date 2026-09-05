@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a cell culture dish, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One clear circular tissue-culture dish in elevated three-quarter view, low straight cylindrical wall, a thin seated transparent vented lid with a subtle small vent spacer at its rim, and a thin shallow layer of translucent salmon-pink liquid medium covering flat bottom. No cells visible at this illustration scale, no colonies. Distinguish lid and base with clean nested rims. Fine grey-blue outlines, soft pink color, broad restrained highlights and polished smooth biomedical labware style. Complete entire dish, no extra objects. True transparent alpha PNG.",
+  "style_reference": "png/petri-dish-bioart-transparent.png",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-07814812-2789-4daf-8f38-c99fcccfe21d.png",
+  "archetype": "Vented tissue-culture dish with pink medium. Small rim spacer schematic; surface treatment and medium composition cannot be inferred from appearance.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "cell-culture-dish",
+  "name": "cell culture dish",
+  "original": "originals/inventory/cell-culture-dish/generated.png",
+  "original_sha256": "f801065933675bd24f7548d16f4583264f2f8e6f19914b4feabc836ce31d88b4"
+}

@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a horizontal laminar-flow clean bench, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A compact benchtop horizontal laminar-flow hood, elevated three-quarter front view. Off-white rectangular outer housing with navy lower trim, fully open front, transparent glass side panels, a large fine rectangular HEPA filter face covering the back wall, empty smooth stainless work surface, slim overhead light under top canopy. Small blank dark control panel on upper right, no writing. Four short feet. No sliding sash and no front intake grille; this is horizontal clean bench architecture. No arrows or airflow graphics. Smooth matte professional biomedical equipment illustration, crisp grey outlines, subtle pale blue glass highlights. Entire cabinet and feet visible. True transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-baf30ec1-0753-4aa2-9285-240b62997ab8.png",
+  "archetype": "Horizontal laminar-flow clean bench with rear filter face, open front and glass side panels. Distinct from Class II biosafety cabinet; illustration does not establish containment or certification.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "laminar-flow-hood",
+  "name": "laminar-flow hood",
+  "original": "originals/inventory/laminar-flow-hood/generated.png",
+  "original_sha256": "0f540cfb3465febd62d38b20f542e9cd42eec6fd24e0cb7df1ee032afdbebdaa"
+}

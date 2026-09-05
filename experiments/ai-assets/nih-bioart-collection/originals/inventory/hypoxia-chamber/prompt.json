@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a modular hypoxia incubation chamber, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One compact transparent cylindrical modular incubation chamber, elevated three-quarter view, clear domed lid sealed to a flat circular navy base with a pale gasket and three evenly spaced metal toggle clamps around rim. Two small separate gas ports with short white fittings on lid, inlet and outlet, no tubing attached. Empty clear interior with one low perforated circular support rack. Crisp grey-blue outlines, smooth clear plastic highlights and soft depth, professional BioArt equipment palette. Entire lid, clamps and base visible. No gas cylinder or other equipment. True transparent alpha PNG.",
+  "lid_correction": "Correct only the central circular opening in the lid: remove the raised open ring and replace it with a continuous smooth sealed transparent dome surface. The ONLY lid penetrations must be the two existing small white gas fittings. Preserve the two fittings, three clamps, gasket, support rack, navy base, complete silhouette and style. No open central hole or extra port. Transparent alpha PNG.",
+  "background_extraction": "Remove the background. Output a transparent PNG with an alpha channel.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-fde9ec37-f427-4720-908b-b6663fadd531.png",
+  "archetype": "Modular hypoxia incubation chamber with sealed clear dome, gasket, clamps and two gas fittings. Gas lines omitted; illustration does not assert a maintained oxygen level or provide operating instructions.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "hypoxia-chamber",
+  "name": "hypoxia chamber",
+  "original": "originals/inventory/hypoxia-chamber/generated.png",
+  "original_sha256": "81c3582ac85136cc1e0cc3edca53ae3c80f51a19c66592ffeb0cd26b43b8eff3"
+}

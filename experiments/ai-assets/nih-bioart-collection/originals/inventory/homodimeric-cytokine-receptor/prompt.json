@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a homodimeric cytokine receptor, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A representative two-chain cytokine receptor homodimer, two identical teal chains side by side, each with TWO smooth elongated extracellular fibronectin-like domain lobes joined end-to-end at a gentle elbow. Upper domains angle inward and contact each other; lower domains descend into two separate slender stalks, each into ONE short transmembrane alpha helix at exactly the same vertical height, followed by one flexible cytoplasmic tail. Identical domain arrangement and length on both chains, same teal coloration with subtle shading difference for depth. Keep chains distinguishable and the lower stalks separated. No membrane slab, no ligand, no kinase domains, no JAK partners. Broad smooth domains with 2-3 shallow fold grooves each, fine dark teal outlines, matte gradients and restrained cyan highlights. Architecture glyph, not a named receptor structure. True transparent PNG alpha.",
+  "style_refinement": "Keep exactly the same two-chain receptor architecture, four extracellular domains, two separate stalks, two aligned membrane helices and two tails. Smooth the four large extracellular domains into polished matte rounded forms with only two broad shallow grooves per domain, removing all the small bumpy cauliflower-like surface texture and bright point highlights. Keep thin crisp teal outlines and restrained soft cyan depth highlights, matching clean NIH BioArt. Preserve complete padding and transparent background; no extra components.",
+  "background_extraction": "Remove the background. Output a transparent PNG with an alpha channel.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-3614d0e2-141f-4aec-9eb0-1a1b81f3651f.png",
+  "archetype": "Representative two-domain cytokine receptor homodimer architecture with two single-pass anchors. Domain counts and dimer orientation are one schematic archetype, not universal cytokine-receptor architecture or a named sequence.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "homodimeric-cytokine-receptor",
+  "name": "homodimeric cytokine receptor",
+  "original": "originals/inventory/homodimeric-cytokine-receptor/generated.png",
+  "original_sha256": "7cea9542a688e2b02523e1ed70d39bd15aa607cd9255d63ff88fe3e7fa425b10"
+}

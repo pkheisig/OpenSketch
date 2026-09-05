@@ -1,0 +1,8 @@
+{
+  "tool": "built-in image_gen",
+  "svg_source": "originals/inventory/coverslip/coverslip-translucent-vector.svg",
+  "vector_refinement": "Rebuilt four editable paths from the generated glass silhouette with a translucent highlight gradient. Automatic alpha-threshold tracing discarded most of the glass and hardened its reflection.",
+  "generation": "Create a single isolated scientific illustration of a microscope coverslip, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One very thin square clear glass coverslip floating alone in elevated three-quarter perspective, all four corners visible. Extremely fine pale blue-grey glass edges, subtle broad pale cyan reflected highlight crossing the face, delicate slight visible thickness along two front edges. Plain clear glass, no frosted area, no specimen, no microscope slide beneath, no stack. Consistent polished biomedical labware illustration. Transparent alpha PNG, with glass face partially translucent and the entire surrounding background fully transparent.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-4f0b71b1-256e-468b-8237-2bccd97284e3.png",
+  "archetype": "Single plain square glass microscope coverslip. Thickness exaggerated for legibility, no specimen or slide."
+}

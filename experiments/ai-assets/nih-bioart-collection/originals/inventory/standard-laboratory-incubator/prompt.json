@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a standard laboratory incubator, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A compact benchtop rectangular incubator in elevated three-quarter front view, off-white metal housing and navy lower trim. Single thick insulated door swung open to the left, showing empty stainless chamber with two perforated shelves. No inner glass door, no humidity tray. A small blank dark digital control screen and two unlabeled round buttons above chamber. Black door gasket and simple navy handle, four short feet. Smooth matte surfaces, crisp grey outlines and restrained blue-grey depth highlights consistent with equipment collection. Complete door, cabinet and feet. True transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-d8bea4a5-d91a-42c6-9652-3d794638765d.png",
+  "archetype": "Benchtop fan-assisted laboratory incubator with single insulated door and two perforated shelves. Blank controls, no operating temperature or specific manufacturer.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "standard-laboratory-incubator",
+  "name": "standard laboratory incubator",
+  "original": "originals/inventory/standard-laboratory-incubator/generated.png",
+  "original_sha256": "1a96a4867a3d711ed3ccb171420298365af9aff4bf1229d53866f9daf0f4a2d2"
+}

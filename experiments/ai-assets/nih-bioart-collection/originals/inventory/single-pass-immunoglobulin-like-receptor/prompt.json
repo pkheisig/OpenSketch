@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Scientific textbook illustration for an editable biomedical diagram library: one isolated generic cell-surface receptor protein with a single extracellular Ig-like domain. Show one lavender rounded domain with three broad fold grooves, a slender stalk below, one short helical transmembrane segment and one short curved intracellular peptide segment. No cell membrane or surrounding objects. Match NIH BioArt-style smooth outlined forms, polished purple/lilac gradients and subtle highlights. Complete molecular glyph centered with generous transparent padding. Transparent PNG alpha background. No words, letters, labels, arrows, borders or cast shadows. This is a simplified protein architecture illustration, not an atomic coordinate model.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-c147aca9-0474-4822-b7e1-fe66d02b6d42.png",
+  "archetype": "Generic single Ig-like extracellular domain, one membrane-spanning helix and intracellular tail. Fold grooves schematic, not complete strand topology or named protein.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "single-pass-immunoglobulin-like-receptor",
+  "name": "single-pass immunoglobulin-like receptor",
+  "original": "originals/inventory/single-pass-immunoglobulin-like-receptor/generated.png",
+  "original_sha256": "bc452d6651ed7bc9302bafa526ab2a6109752704be3b19638c145ec6efcb6e03"
+}

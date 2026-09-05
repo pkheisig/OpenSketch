@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a Petri dish, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One shallow circular clear Petri dish with a clear fitted lid seated on top, elevated three-quarter view. Thin transparent cylindrical walls with two distinct nested rim edges for lid and base. Inside is one level layer of pale amber agar, no colonies or marks. Fine grey-blue glass/plastic outlines, warm amber center, subtle soft white highlights and pseudo-3D depth, smooth biomedical illustration. Entire round rim visible, no detached lid or extra dish. True transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-fc87c563-596a-4a85-aaf9-bff37a5b3dbc.png",
+  "archetype": "Closed clear Petri dish with amber agar, no colonies or experimental results. Lid and base represented by nested rims.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "petri-dish",
+  "name": "Petri dish",
+  "original": "originals/inventory/petri-dish/generated.png",
+  "original_sha256": "f574c4bd5bf9a292f023217bd8439c9cdee4d6dd455698d68b0c39bd6d28f8c0"
+}

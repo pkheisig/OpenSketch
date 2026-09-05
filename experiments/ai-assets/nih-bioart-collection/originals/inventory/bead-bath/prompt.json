@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a laboratory bead bath, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Use the supplied water bath as housing and style reference: compact off-white benchtop body, navy front panel with blank display and knob, open rear-hinged steel lid with complete navy handle, short feet. Replace ALL water inside the recessed steel tank with a dry bed of many small smooth silver-grey metallic thermal beads, rounded flattened irregular oval pellets of slightly varied orientations, packed below rim. Beads are clearly solid, matte metallic with small broad highlights, not glass balls or liquid bubbles. No liquid surface, no water reflections, no tubes or bottles inserted, no scattered beads outside tank. Keep the same clean equipment line weight, smooth restrained steel gradients and professional navy accents. Entire handle, lid, body and feet complete with generous genuine alpha transparent padding.",
+  "style_reference": "png/water-bath-bioart-transparent.png",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-08045da3-cc69-4691-a5b5-2837d98a618e.png",
+  "archetype": "Representative dry thermal bead bath with packed metallic pellets, open hinged lid and blank controls. Bead size, material, capacity and temperature unspecified.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "bead-bath",
+  "name": "bead bath",
+  "original": "originals/inventory/bead-bath/generated.png",
+  "original_sha256": "b0caab2e5782d6883db5ccff4c4a2c5e756f0ebc775d581e38f027c82768ad09"
+}

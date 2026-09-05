@@ -1,0 +1,7 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Scientific textbook illustration for an editable biomedical diagram library: one isolated generic multi-domain immunoglobulin-like cell-surface receptor. Use supplied single-domain receptor as the visual style reference. Show a single continuous chain with THREE separate lavender Ig-like folded oval domains stacked end-to-end, short flexible linkers between each. Each domain has broad smooth beta-sandwich-inspired grooves, not atom balls. Below lowest domain one thin stalk, exactly ONE short transmembrane alpha helix, then one short curved intracellular peptide segment. Slight gentle bend in domain column. Match NIH BioArt-style smooth outlined forms, polished purple/lilac gradients and subtle highlights. Complete molecular glyph centered with generous transparent padding. Transparent PNG alpha background. No words, labels, arrows, membrane slab, ligands, partners, borders or cast shadows. A representative three-domain architecture, not a named protein or atomic model.",
+  "style_reference": "png/single-pass-immunoglobulin-like-receptor-bioart-transparent.png",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-594e164b-fac0-447b-a04d-93a99c03d033.png",
+  "archetype": "Generic three Ig-like extracellular domain architecture on a single membrane-spanning chain. Three is a representative domain count, not a universal receptor or named protein."
+}

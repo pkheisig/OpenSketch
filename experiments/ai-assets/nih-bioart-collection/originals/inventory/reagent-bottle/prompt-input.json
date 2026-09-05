@@ -1,0 +1,6 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a reagent bottle, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A single upright amber glass laboratory reagent bottle with broad cylindrical body, rounded shoulders, narrow neck and tightly seated black ribbed screw cap. Elevated three-quarter view, subtle amber translucency with broad smooth highlights, grey-brown crisp thin outlines, softly shaded base. No writing patch, no label, no visible contents, no extra objects. Refined matte biomedical equipment illustration rather than photographic product shot. True transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-27d64dd8-6f4c-4d7f-8872-33d1eab5b910.png",
+  "archetype": "Amber glass reagent bottle with black screw cap; unlabeled generic vessel, no chemical identity or capacity."
+}

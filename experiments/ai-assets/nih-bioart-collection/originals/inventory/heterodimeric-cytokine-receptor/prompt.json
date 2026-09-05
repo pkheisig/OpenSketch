@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a heterodimeric cytokine receptor, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Use the supplied homodimer illustration as a style reference. Create a representative asymmetric two-chain cytokine receptor: LEFT teal chain with two elongated smooth extracellular domains; RIGHT lavender chain with three shorter rounded extracellular domains, total extracellular height similar. Their uppermost domains contact, each chain bends gently at domain joints toward its own separate stalk, ONE short transmembrane helix each at exactly the same vertical height, then one flexible cytoplasmic tail each. Distinct shapes as well as colors communicate unlike chains. Broad clean smooth lobes with shallow grooves, crisp colored outlines, soft matte highlights. No ligand, membrane slab, kinases or partners. Representative architecture, not a named receptor. True transparent alpha PNG.",
+  "style_reference": "png/homodimeric-cytokine-receptor-bioart-transparent.png",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-d83fdb66-0d54-402f-bdaa-0d42c4900734.png",
+  "archetype": "Representative unlike cytokine receptor chains with two versus three extracellular domain glyphs and two single-pass anchors. Counts and colors distinguish schematic chains, not a specific receptor sequence or universal heterodimer.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "heterodimeric-cytokine-receptor",
+  "name": "heterodimeric cytokine receptor",
+  "original": "originals/inventory/heterodimeric-cytokine-receptor/generated.png",
+  "original_sha256": "b26e66d5c93482c4f05cc39697480160dab67afe92d6fa05ed30407306667a16"
+}

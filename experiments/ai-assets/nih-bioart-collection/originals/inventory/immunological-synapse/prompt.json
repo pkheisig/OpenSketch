@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an immunological synapse, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One two-cell contact complex: a small round lavender T lymphocyte at left with large round purple nucleus and thin cytoplasmic rim, contacting a larger peach antigen-presenting cell at right with indented darker peach nucleus and several small vesicles. Both full cells visible, slightly flattened facing surfaces separated by a very narrow pale cleft. At the contact ONLY show a small central cluster of short paired purple and gold receptor-ligand bridges, with slightly taller teal adhesion bridges on either side. No detached magnification inset, no orbiting molecules, no whole tissue. Receptor glyphs are simple schematic bridges, no detailed claims of molecular stoichiometry. Subtle denser lavender cytoplasm next to T-cell contact. Polished smooth matte cell rendering, thin crisp outlines, broad gentle gradients, restrained small internal components, no photoreal grain. Complete pair centered with generous real transparent padding.",
+  "style_refinement": "Refine this same two-cell immunological synapse into smooth matte NIH BioArt style. Preserve complete cell silhouettes, their nuclei and organelles, purple/gold short central receptor-ligand bridges and flanking teal adhesion bridges at the contact. Remove ALL bumpy wet tissue texture, frosted noise and mottling from nuclei, cytoplasm and membranes. Use clean smooth lavender T-cell and peach antigen-presenting cell with broad subtle gradients and thin crisp purple/brown outlines. Smooth solid nuclei with gentle shading; clean outlined vesicles. Replace grainy lavender dots clustered inside contact with a simple smooth darker lavender cytoplasmic crescent. No glow, no shadows, no extra features or labels. Keep every projection tip complete, centered with generous transparent padding.",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "background_retry": "Remove the background. Output a transparent PNG with an alpha channel.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-d100d57f-21e7-4fe7-8d0b-74e1d0f7f02d.png",
+  "archetype": "T lymphocyte and antigen-presenting cell contact, with central recognition and flanking adhesion glyphs. Molecular sizes, counts and identities are schematic; not a resolved synapse ultrastructure.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "immunological-synapse",
+  "name": "immunological synapse",
+  "original": "originals/inventory/immunological-synapse/generated.png",
+  "original_sha256": "743c572a5b6660cba4b029f5afff14adbc0fb61b44b7af3026f7c3018ff66fc1"
+}

@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a compact laboratory diaphragm vacuum pump, matching the established NIH BioArt reference visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Three-quarter view, off-white rectangular motor housing, navy blue lower chassis, four small rubber feet, compact twin diaphragm heads on top with a short connecting tube, two clearly distinct short hose-barb ports, small blank rocker switch. Oil-free benchtop diaphragm pump, not a rotary oil pump. No attached tubing, bottles, gauges, logos or writing. Polished restrained scientific illustration, matte smooth surfaces rather than photographic noise. Output transparent-background PNG with real alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-57272975-6327-41f0-9843-c5f24acad4de.png",
+  "archetype": "Compact oil-free twin-head laboratory diaphragm vacuum pump, with two hose-barb ports and power switch. Representative housing; no performance claim.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "vacuum-pump",
+  "name": "vacuum pump",
+  "original": "originals/inventory/vacuum-pump/generated.png",
+  "original_sha256": "4a7be587fded7a58e632d7290c5f8de9cbdbe3bc0ac808093d6b99e8a7a380c9"
+}
