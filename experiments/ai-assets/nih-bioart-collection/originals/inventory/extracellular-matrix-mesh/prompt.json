@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an extracellular matrix mesh, matching NIH BioArt visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. One irregular oval patch of extracellular matrix, open and airy with transparent spaces: several thicker softly striated coral collagen fibers crossing at oblique angles, thinner wavy golden elastin fibers weaving among them, and sparse small teal bottlebrush proteoglycans attached between strands. Fibers interlace into a coherent mesh, not a perfectly regular lattice. No cells, nuclei, vessels, background gel sheet, container, labels, text, arrows, borders, scenery or cast shadows. Smooth polished surfaces with fine colored outlines and restrained depth, crisp edges, no grainy photoreal texture. Show complete mesh patch centered with generous transparent padding, all free fiber ends visible. Transparent RGBA PNG.",
+  "refinement": "Restyle this extracellular matrix mesh as smooth NIH BioArt vector-like scientific illustration. Replace all grain and photographic fibril texture with clean coral strands with only a few smooth longitudinal ridges, golden elastic fibers as smooth slender tubes, teal proteoglycans as crisp small bottlebrush shapes. Preserve the irregular open interwoven mesh. Zoom out so ALL fiber ends are fully inside canvas with at least 10 percent padding. No glow, no opaque gel background. Transparent RGBA PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-c3e68b6e-8b23-4c04-a6cc-e6cc248969c5.png",
+  "archetype": "Extracellular matrix mesh schematic combining collagen bundles, elastic fibers and proteoglycan bottlebrushes. Relative dimensions, attachments and molecular packing illustrative; no tissue-specific composition or calibrated fibril periodicity.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "extracellular-matrix-mesh",
+  "name": "extracellular matrix mesh",
+  "original": "originals/inventory/extracellular-matrix-mesh/generated.png",
+  "original_sha256": "75762854ee9abdb8d0d7357dffaa04408e4aa95aa62e071393f343b6b34cb733"
+}

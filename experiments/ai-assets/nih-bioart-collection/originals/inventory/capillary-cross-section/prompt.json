@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a capillary cross-section, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Show a transverse cut section of a continuous blood capillary: a small round lumen enclosed by a single very thin teal endothelial cell layer, with two localized flattened violet endothelial nuclei bulging slightly into the lumen, and an extremely thin rose basement membrane outside. One red erythrocyte in cross-section within the lumen, nearly filling its width, seen as a dumbbell-like biconcave profile with a thin middle and thicker rounded ends. Pale translucent blue plasma within lumen. NO smooth muscle layers, no thick arterial wall, no cilia, no second endothelial layer. Slight pseudo3D bevel for legibility but predominantly transverse view. Smooth matte crisp biomedical forms and gentle gradients. Transparent PNG alpha outside complete circular vessel.",
+  "refinement": "Preserve this transverse capillary structure and red dumbbell-shaped erythrocyte profile. Remove every floating bubble and oval particle from the blue lumen, leaving plain pale blue plasma. Smooth all rough photographic texture into matte vector-like colors with crisp thin outlines and broad subtle gradients. Keep the two violet endothelial nuclei and thin teal wall with rose outer basement membrane. No new structures or labels. Transparent PNG alpha outside the vessel.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-a3b275ea-bd7b-4931-bac9-adb9562e5e46.png",
+  "archetype": "Schematic transverse continuous capillary with thin endothelial wall, two visible nuclei, outer basement membrane and an erythrocyte profile. Wall seam positions and shading schematic; no smooth muscle layer.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "capillary-cross-section",
+  "name": "capillary cross-section",
+  "original": "originals/inventory/capillary-cross-section/generated.png",
+  "original_sha256": "8cd7ad544f2b98c40d9821e70a2ba2ebf013bdc87f9f3a38ee7ed544e6fa508f"
+}

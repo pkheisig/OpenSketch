@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a basement membrane, matching NIH BioArt visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. One thin sheet-like molecular extracellular matrix patch in three-quarter oblique view, gently curved with an irregular rounded perimeter. Two closely apposed interwoven fine networks: violet collagen-IV cords forming irregular polygonal loops, and teal laminin cross-shaped molecules joined into a second fine mesh. A few small gold linking nodules and sparse short coral proteoglycan brushes between the networks. The whole patch looks like a thin flexible porous mat, not thick ropes, not a cell membrane bilayer, not a cloth weave. Transparent holes between strands, no opaque backing sheet. No cells, nuclei, tissue block, labels, text, arrows, borders, scenery, unrelated objects or cast shadows. Smooth vector-like illustrated cords, fine dark outlines, restrained soft depth, no photographic grain. Complete object centered with generous transparent padding. Transparent RGBA PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-5a7769a2-edfb-4692-8d29-28bad1afd469.png",
+  "archetype": "Basement membrane molecular network schematic: collagen-IV and laminin networks with linking components and proteoglycans. Two-network sheet architecture is illustrative; lattice regularity, molecular domains, attachments and scale are not atomistic or tissue-specific.",
+  "references": [
+    "https://pubmed.ncbi.nlm.nih.gov/22493504/"
+  ]
+}

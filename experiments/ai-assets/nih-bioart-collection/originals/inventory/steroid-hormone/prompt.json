@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a generic steroid hormone, matching NIH BioArt visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. A GROUP-LEVEL steroid nucleus symbol, not a named molecule or atomic formula. Exactly THREE fused six-sided amber tiles and ONE fused five-sided amber tile in the characteristic angular steroid arrangement. Tile edges shared: first hexagon lower-left fused to second hexagon lower-middle; third hexagon upper-middle fused to second; pentagon upper-right fused to third. Filled smooth orange-gold ring faces with fine warm brown outlines and subtle pseudo3D bevel highlights, no vertices-as-atom spheres, no internal double bonds. Two small coral polar-group knobs attached at opposite ends of the fused-ring nucleus. No long hydrocarbon side chain. Complete centered object with generous transparent padding, no text, labels, arrows, borders, scenery, unrelated objects or cast shadows. Transparent RGBA PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-45114360-90b5-4aa7-8748-14a33b06a645.png",
+  "archetype": "Generic steroid hormone group-level symbol: three fused six-member ring tiles and one five-member ring tile, with symbolic polar-group accents. No named hormone, atom count, bond order, stereochemistry or substituent identity implied.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "steroid-hormone",
+  "name": "steroid hormone",
+  "original": "originals/inventory/steroid-hormone/generated.png",
+  "original_sha256": "72310428decc7cd86e015b0c03da83f91c3dfccbed19969893a1fdc24aee1f20"
+}

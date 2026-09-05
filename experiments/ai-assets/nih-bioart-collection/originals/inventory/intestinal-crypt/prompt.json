@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an intestinal crypt, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Show one small-intestinal crypt of Lieberkuhn in longitudinal cutaway: an upright U-shaped epithelial tube with rounded closed basal end and an open mouth at the top. Narrow central lumen continuous to the open top, single layer of coral columnar epithelial cells around it, violet basal nuclei on their outward sides. Teal mucus-filled goblet cells interspersed in upper walls. At rounded bottom, several orange Paneth cells contain conspicuous apical red secretory granules facing lumen, with a few slender purple crypt-base stem cells between them. Thin pale teal basement membrane around outer surface. No villus protrusion, no central blood vessel or lacteal, no arrows. Smooth matte vector-like forms, clean outlines, broad gradients and no fine texture. Transparent PNG alpha outside.",
+  "refinement": "Preserve this entire intestinal crypt cutaway and its three orange Paneth cells with red apical granules alternating with two slender purple crypt-base cells. Smooth all cells to matte vector-like surfaces, thin crisp outlines and restrained gradients, removing wet glare and grain. In each teal goblet cell add one small flattened violet nucleus at its OUTER basal edge next to the teal basement membrane, away from the lumen, leaving pale mucin granules toward lumen. Keep all other nuclei unchanged. Plain pale cream central lumen open at top. Real transparent PNG alpha outside.",
+  "alpha_request": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-b7b420e0-643e-4e2e-bbbe-dece62a182a2.png",
+  "archetype": "Small-intestinal crypt longitudinal cutaway with open apical lumen, goblet cells with basal nuclei, three granule-rich basal Paneth cells and two interspersed crypt-base stem-cell symbols. Cell counts and molecular identities represented schematically.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "intestinal-crypt",
+  "name": "intestinal crypt",
+  "original": "originals/inventory/intestinal-crypt/generated.png",
+  "original_sha256": "5b02b479828413c6b35cd1667e8c6a115d2e1645eb6486ae06e29e8baddccc0c"
+}

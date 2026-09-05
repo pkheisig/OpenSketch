@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of glucose, matching NIH BioArt visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show complete asset centered with generous transparent padding, only requested object and intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or cast shadows. Use a clear heavy-atom ball-and-stick glucopyranose connectivity schematic, hydrogens omitted. Exactly SIX charcoal-gray carbon spheres and SIX coral-red oxygen spheres, twelve spheres total. Six-member ring in oblique flattened hexagon: clockwise from upper right O5 red, right C1 gray, lower right C2 gray, lower left C3 gray, left C4 gray, upper left C5 gray; close ring to O5. C1,C2,C3,C4 each has exactly one peripheral red oxygen connected by one short bond. C5 has one outer gray C6 attached, and C6 has one terminal red oxygen. All single bonds, no text atom symbols, no spare atoms. Spacious unobscured bonds and clean topology, smooth illustrated spheres with soft restrained highlights rather than photoreal rendering. Transparent RGBA PNG, no checkerboard.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-87f9d21e-5200-4c4f-9add-acfbe21aa9d2.png",
+  "archetype": "Glucopyranose heavy-atom connectivity schematic: six carbons and six oxygens, one ring oxygen, four ring hydroxyl oxygens and one hydroxymethyl substituent. Hydrogens omitted. No stereochemical or conformational claim.",
+  "references": [
+    "https://pubchem.ncbi.nlm.nih.gov/compound/5793"
+  ]
+}

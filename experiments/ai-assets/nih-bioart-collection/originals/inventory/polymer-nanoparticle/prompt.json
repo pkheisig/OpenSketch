@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a polymer nanoparticle, matching NIH BioArt visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. Complete asset centered with generous transparent padding; only requested object and intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects or cast shadows. One spherical solid polymer nanosphere with a front-right quarter cutaway. Smooth satin violet outer surface and interior packed with gently entangled lavender and darker-violet polymer chains, short visible curved segments suggesting a continuous dense polymer matrix. No lipid heads, no membrane bilayer, no water cavity, no molecular cargo. The cut rim is crisp and shows the solid matrix extends through the entire sphere. Subtle native-looking gradients and soft highlights, clean dark-purple outlines. Not grainy, not furry, not a porous sponge. Transparent RGBA PNG.",
+  "refinement": "Preserve this polymer nanosphere cutaway and violet palette, but replace all grainy photographic texture with smooth satin gradient fills and crisp clean biomedical illustration outlines. Smooth the cut rim, retain packed curved polymer chains. No new parts. Transparent PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-d1d14812-d512-48ba-b664-f1639907b459.png",
+  "archetype": "Solid polymer nanosphere cutaway. Visible entangled-chain segments represent a dense polymer matrix; chain lengths, chemistry and packing are symbolic. No cargo or hollow lumen.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "polymer-nanoparticle",
+  "name": "polymer nanoparticle",
+  "original": "originals/inventory/polymer-nanoparticle/generated.png",
+  "original_sha256": "8c8ffee501486adafdc9b22cdf18bc5540b9cbbe2dee2116cdf5dd37ec9cb71b"
+}

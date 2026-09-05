@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an RNA lipid nanoparticle, matching NIH BioArt visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. Complete asset centered with generous transparent padding, only requested object and intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects or cast shadows. One spherical ionizable-lipid nanoparticle in front-right quarter cutaway. Outer surface teal polar lipid heads with a sparse brush of short violet wavy PEG chains attached at several surface points. Cutaway shows a densely packed golden lipid-rich interior with a folded orange RNA strand in irregular small aqueous pockets, not one large hollow water cavity. Short gold lipid tails and small teal heads surround portions of the orange RNA inside; disordered packing, not concentric rings. Exterior shell thin, interior packed and heterogeneous. No cell organelles, nucleus, ribosomes, or free floating RNA outside. Smooth illustrated satin surfaces, crisp dark teal outlines, restrained soft depth. Transparent RGBA PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-28a178c4-36c3-477e-9edf-0f10ab139ea8.png",
+  "archetype": "RNA-loaded ionizable lipid nanoparticle cutaway. PEG-decorated surface, heterogeneous lipid-rich interior and RNA-containing aqueous pockets. Visible RNA segments, lipid packing and cargo count are symbolic; not a universal LNP morphology or a named formulation.",
+  "references": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC10723131/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC9674992/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "lipid-nanoparticle",
+  "name": "lipid nanoparticle",
+  "original": "originals/inventory/lipid-nanoparticle/generated.png",
+  "original_sha256": "4a80886aedf1797b2cec6c69cfc1c918147db30ea06057030908a6fb63ca0f31"
+}

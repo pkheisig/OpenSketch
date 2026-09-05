@@ -1,0 +1,25 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a liposome, matching NIH BioArt visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. Complete asset centered with generous transparent padding, only requested object and intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects or cast shadows. ONE unilamellar spherical liposome with a wide front-right quarter cutaway exposing a large pale-blue empty aqueous cavity. Its thin shell is a phospholipid BILAYER: teal small round polar heads on the exterior, a band of paired golden hydrophobic tails facing each other within the shell, and a SECOND teal head layer facing the inner aqueous cavity. Clearly show this teal-gold-teal sandwich along the cut rim. Outer surface softly curved and covered with small teal heads. Cavity takes most of the sphere, no cargo, no internal organelles, no RNA. Smooth matte surfaces, fine dark outlines, soft highlights, crisp cutaway. Transparent RGBA PNG.",
+  "refinements": [
+    "Correct only the gold membrane band along the cutaway rim. It must contain TWO opposing sets of short golden tails: tails from the outer teal heads point inward only halfway across the band, tails from the inner teal heads point outward only halfway. Show their rounded free tips meeting and interdigitating slightly at a subtle continuous middle seam. No individual gold tail spans the entire membrane or joins two teal heads. Preserve the whole liposome, blue aqueous cavity, teal surfaces, polished BioArt style and transparent background.",
+    "Draw a clear narrow DARK GOLD MIDLINE through the middle of the gold band all around the exposed circular membrane rim. This midline visibly separates an outer row of half-length tails from an inner row of half-length tails. The two rows meet tip-to-tip along this middle line. Currently tails span full band; they MUST be cut into two opposed rows, each attached to its adjacent teal head layer. This is a phospholipid bilayer. Preserve the other details. Transparent alpha PNG, no checkerboard.",
+    "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration."
+  ],
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-7c7eef5a-dfa9-476a-878f-05afe8e6307a.png",
+  "archetype": "Unilamellar liposome cutaway: aqueous lumen, inner and outer polar head layers, opposing hydrophobic tails meeting at a highlighted midplane. Packing, leaflet thickness and lipid counts symbolic.",
+  "references": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC5224599/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "liposome",
+  "name": "liposome",
+  "original": "originals/inventory/liposome/generated.png",
+  "original_sha256": "f2b07642dd9cf4ce9fa7b125c228e94e78588857abe5d604c49f641ce8b3723c"
+}

@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a spherical micelle, matching NIH BioArt visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. Complete asset centered with generous transparent padding, only requested object and intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects or cast shadows. One spherical single-layer detergent micelle shown with a neat front-right quarter cutaway exposing its hydrophobic core. Small smooth teal round polar heads coat the outer spherical surface in ONE layer, each attached to one slender golden hydrocarbon tail pointing INWARD into a dense golden core. In the cut face, clearly show one radial layer of teal heads on outer circumference and gold tails filling all the way inward; no empty aqueous cavity, no inner teal head layer, no bilayer, no RNA cargo. Smooth matte illustrated forms, fine darker teal outlines, gently shaded gold interior and crisp cutaway edge. Transparent RGBA PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-40aa13c3-3f63-424d-9d40-7ab4ac2c9392.png",
+  "archetype": "Spherical detergent micelle cutaway: one polar head surface, inward hydrophobic tails and no aqueous lumen. Packing and aggregation number are schematic.",
+  "references": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC5224599/"
+  ]
+}

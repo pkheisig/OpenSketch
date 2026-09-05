@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a renal glomerulus, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One renal corpuscle in oblique cutaway: a tangled but connected tuft of coral red capillary loops partly covered by pale teal podocytes with violet nuclei and delicate embracing foot processes. Thin rose Bowman capsule surrounds tuft with clear pale urinary space between. At upper left vascular pole show exactly TWO red arterioles entering/exiting together: wider afferent and narrower efferent, both attached to capillary tuft and both red, never one blue vein. Opposite at lower right urinary pole, capsule urinary space continues into one short gold proximal tubule segment with cuboidal epithelium. No entire kidney, no arrows, no floating unrelated cells. Smooth matte vector-like rendering, crisp clean outlines and restrained broad gradients, no grain. Real transparent PNG alpha outside.",
+  "refinement": "Preserve this renal corpuscle anatomy and all connections. Convert all wet-looking rough texture to smooth matte biomedical illustration with thin clean outlines and restrained gradients. Keep two red arterioles at upper left, teal podocytes with smooth violet nuclei and fine embracing foot processes, clear pale urinary space inside thin rose Bowman capsule continuous to gold proximal tubule at lower right. Simplify heavy vessel ridges to sparse smooth lines, no grain. Preserve all cut ends. Real transparent PNG alpha outside.",
+  "alpha_request": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-71d2e94c-5601-49bd-9a5d-6b16ba89c636.png",
+  "archetype": "Renal corpuscle cutaway with red afferent/efferent arterioles, capillary tuft partly covered by teal podocytes, Bowman urinary space and proximal tubule. Foot processes, fenestrae, loops and vessel calibers schematic and exaggerated for recognition; filtration barrier ultrastructure not represented to scale.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "renal-glomerulus",
+  "name": "renal glomerulus",
+  "original": "originals/inventory/renal-glomerulus/generated.png",
+  "original_sha256": "79019479d7d76a17ae53b6e799fd440276cf559ddb8731ad00370b23043c5c85"
+}

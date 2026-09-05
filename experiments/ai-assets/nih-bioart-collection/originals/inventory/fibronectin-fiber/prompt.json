@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a fibronectin fiber, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Depict a short gently curved extracellular fibronectin fibril assembled from several overlapping elongated modular protein chains. Use warm coral and rose chains with linked small smooth oblong folded domains and subtly differentiated violet end-to-end joining regions. Loosely aligned overlapping strands, some slightly splayed at the two ends. This is a mesoscale schematic of assembled fibronectin, not an atomic model or a calibrated domain count. No collagen transverse bands, no DNA helix, no cells. Smooth matte biomedical illustration with thin crisp dark rose outlines, restrained broad gradients, no noisy texture. Real transparent PNG alpha background.",
+  "refinement": "Preserve this complete fibronectin fibril silhouette, overlapping chains and all end domains. Replace the bumpy wet-looking texture with smooth matte coral and rose domains, clean violet connectors, thin crisp outlines and subtle broad gradients. No fine mottling, no glare. Keep all ends uncropped and remove the background completely with true PNG alpha transparency.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-e33f6efc-a5ee-4862-a4a8-794f54b04fbb.png",
+  "archetype": "Mesoscale assembled fibronectin fibril with overlapping modular chains. Domains and joining regions are symbolic, not a calibrated domain count, atomic structure or specific disulfide topology.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "fibronectin-fiber",
+  "name": "fibronectin fiber",
+  "original": "originals/inventory/fibronectin-fiber/generated.png",
+  "original_sha256": "94e5b305d886e0dbc791a71a8d6aaa47bec7dd46a290bc42954911e409f7d354"
+}

@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a nucleotide, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A symbolic adenosine monophosphate building block: one TEAL rounded solid pentagonal ribose sugar at center, one GOLD spherical phosphate group at its left attached through a short slim connector, and one VIOLET purine-base symbol at upper-right attached through a short connector to the sugar. Purine symbol is a fused six-sided and five-sided flat shape with shared edge, shown as two joined polygons with clear internal shared-edge line. One phosphate only. Components are group-level schematic shapes, no atom balls, letters, chemical charges or tiny substituents. Smooth matte pseudo-3D bevels and restrained gradients, crisp dark outlines, coordinated teal/gold/violet palette. True transparent alpha PNG.",
+  "refinement": "Correct only the purple purine base orientation: its FIVE-sided ring must be on the lower-left, nearest the teal sugar, and its SIX-sided ring must be on the upper-right, fused to the pentagon along one shared edge. The connector from the teal sugar must terminate at the purple FIVE-sided ring, not the six-sided ring. Keep one gold phosphate and teal pentagonal sugar unchanged. Smooth matte biomedical finish, transparent PNG alpha, no letters or labels.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-c6d18bce-a0d3-4f07-bdff-615a8842fdc2.png",
+  "archetype": "AMP-like nucleotide group schematic: phosphate, pentose and fused purine symbol connected through five-membered ring. No atomic substituents, charge state or chemical stereochemistry encoded.",
+  "references": [
+    "https://pubchem.ncbi.nlm.nih.gov/compound/6083"
+  ]
+}

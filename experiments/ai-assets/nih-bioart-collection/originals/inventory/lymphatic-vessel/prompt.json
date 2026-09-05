@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a lymphatic vessel, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Show one short collecting lymphatic vessel in longitudinal oblique cutaway. Pale mint green thin wall with elongated violet endothelial nuclei, subtle thin outer smooth-muscle band. Both open ends visible. The front half is cut away to expose ONE bicuspid valve inside: exactly two delicate curved pale green leaflets arise from opposite inner walls at the same axial level, their free tips point together downstream to the right with a small open gap between. Each cusp is attached to vessel wall at its base, not floating. Lumen otherwise empty, no red cells. Smooth matte clean biomedical shapes, crisp green outlines, restrained broad gradients and no fine grain. True transparent PNG alpha outside.",
+  "refinement": "Keep this lymphatic vessel and its two valve leaflets exactly, including their wall attachments and small gap between downstream free tips. Smooth all wet-looking texture into matte pale mint forms with thin clean green outlines, smooth violet nuclei and broad subtle gradients. Simplify the rose outer muscle band to clean smooth curved strips. No extra valve or cells, no texture or glare. Real PNG alpha outside the complete vessel.",
+  "alpha_request": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-af0b27f3-96c0-4f85-abdf-6305d27358c6.png",
+  "archetype": "Collecting lymphatic vessel longitudinal cutaway with one open bicuspid valve and thin outer muscle band. Schematic wall thickness, cell count and leaflet geometry; not an initial blind-ended lymphatic capillary.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "lymphatic-vessel",
+  "name": "lymphatic vessel",
+  "original": "originals/inventory/lymphatic-vessel/generated.png",
+  "original_sha256": "1e4b9f005cb1283b4a1c105c48c73d0ec410a0caa0481a5fdc1a6bac10832a69"
+}

@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a liver lobule, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A single classical hepatic lobule as a short hexagonal tissue prism viewed obliquely from above. ONE open blue central vein at center. Coral hepatocyte plates with small violet nuclei radiate from central vein; fine blue sinusoidal channels lie between plates and connect peripheral blood supply to central vein. At each of the SIX corners show a small portal triad: one larger blue portal venule, one smaller red arteriole, one small green bile duct with cuboidal epithelial wall. No large green tube into central vein; bile ducts separate from blood vessels. Whole prism complete with narrow pale tan connective tissue boundary and visible shallow side face. No entire liver. Smooth matte clean biomedical shapes, thin crisp outlines, broad restrained gradients, no rough texture. Real transparent PNG alpha outside.",
+  "refinement": "Preserve this hexagonal liver lobule geometry exactly: one central vein, SIX corner portal triads each with blue venule, red arteriole and separate green bile duct, radial coral hepatocyte plates and intervening blue sinusoids. Replace grainy wet texture with smooth matte vector-like forms, thin crisp outlines and restrained gradients. Smooth violet nuclei, clean red erythrocytes and sparse violet Kupffer cells. Simplify tan outer connective tissue to a few clean fiber lines. No labels, no anatomy changes. Real transparent PNG alpha outside.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-8c094b74-a71b-47d8-9b25-4c628718da98.png",
+  "archetype": "Classical hepatic lobule schematic with central vein, six corner portal triads, radial hepatocyte plates and blue sinusoids with sparse erythrocyte/Kupffer-cell symbols. Idealized hexagon; plate counts and routing schematic, bile canaliculi omitted, no calibrated lobule size.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "liver-lobule",
+  "name": "liver lobule",
+  "original": "originals/inventory/liver-lobule/generated.png",
+  "original_sha256": "5ffede211d8867478f15a0ac8be005fbe75b132841005ab24b888e8550ec8dfd"
+}

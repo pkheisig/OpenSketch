@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an amino acid, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Specifically a clean simplified heavy-atom ball-and-stick model of ALANINE, neutral connectivity, hydrogens omitted. Exactly SIX atom spheres: THREE gray carbon atoms, ONE blue nitrogen atom and TWO red oxygen atoms. Central gray alpha carbon connects to blue nitrogen at upper-left, gray methyl carbon at lower-left, and gray carboxyl carbon at right. Carboxyl carbon connects to one red oxygen at upper-right by TWO clearly parallel thin sticks (double bond), and one red oxygen at lower-right by ONE stick. No other atoms or bonds. Total five connected atom pairs, with double bond having two sticks. Smooth matte spheres, subtle highlights, crisp outlines, silver gray sticks. Do not label atoms or add letters. True transparent alpha PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-5313c789-c17a-4626-a92c-3b3d608668c2.png",
+  "archetype": "Alanine heavy-atom connectivity archetype: three carbons, one nitrogen, two oxygens. Hydrogens omitted, neutral carboxyl connectivity, no stereochemistry or physiological protonation state implied. Atom colors conventional C gray, N blue, O red.",
+  "references": [
+    "https://pubchem.ncbi.nlm.nih.gov/compound/Alanine"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "amino-acid",
+  "name": "amino acid",
+  "original": "originals/inventory/amino-acid/generated.png",
+  "original_sha256": "67e281a96c7544b1d87fa9078b09d1623adca426e0436b38f73479f0760c4b6d"
+}

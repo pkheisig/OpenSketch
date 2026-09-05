@@ -12361,7 +12361,14 @@
     "dna-protein-complex": {
       "name": "DNA-protein complex",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "transcription-factor-bound-to-dna",
+      "alias_reason": "The existing DNA-bound transcription-factor illustration is a concrete reusable DNA-protein complex. This generic inventory entry specifies no different protein architecture or binding geometry.",
+      "reference": "https://www.rcsb.org/structure/1YSA",
+      "png": "png/transcription-factor-bound-to-dna-bioart-transparent.png",
+      "svg": "svg/transcription-factor-bound-to-dna-bioart-traced.svg",
+      "png_sha256": "ebbc37f44fde8ffdcfb9e4d9ccafe0614cfe30ecb6208882ffcb15bc098ee37e",
+      "svg_sha256": "53058fc3a008e18a10e3ca9d08d4e516a8d7a6be81f2e0bf4513d3cc0342ac55"
     },
     "rna-protein-complex": {
       "name": "RNA-protein complex",
@@ -12378,12 +12385,26 @@
     "viral-rna-genome": {
       "name": "viral RNA genome",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "single-stranded-dna",
+      "alias_reason": "Use the existing symbolic single-stranded nucleic-acid primitive for an unpackaged generic ssRNA viral genome. Viral origin alone has no unique unlabeled geometry; this alias does not represent every viral genome topology. Segmentation and capsid packaging belong to distinct compositions.",
+      "reference": "https://www.ncbi.nlm.nih.gov/books/NBK8174/",
+      "png": "png/single-stranded-dna-bioart-transparent.png",
+      "svg": "svg/single-stranded-dna-bioart-traced.svg",
+      "png_sha256": "c7b2cbe34c39c4c0cbc23911a21d78b6efec8320858c3c807c174105e088ef23",
+      "svg_sha256": "7ac2a50510084d068aa2800226f882e17fc0e5ba084627b2a0ffd93d3779dcf1"
     },
     "viral-dna-genome": {
       "name": "viral DNA genome",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "dna-double-helix",
+      "alias_reason": "Use the existing duplex DNA primitive for a generic unpackaged linear dsDNA viral genome. Viral origin alone does not change visible duplex geometry; this representative alias is not a claim that all viral DNA genomes are linear or double stranded.",
+      "reference": "https://www.ncbi.nlm.nih.gov/books/NBK8174/",
+      "png": "png/dna-double-helix-bioart-transparent.png",
+      "svg": "svg/dna-double-helix-bioart-traced.svg",
+      "png_sha256": "8be270cc560f80f7373375a21818a68ee41f357b1e1f07b3f8ae6a149182fcc3",
+      "svg_sha256": "7e602615f6ab1fd15584c9ae92a7c12e619f59182c8f22e20f6f77e8a57ae586"
     },
     "telomere": {
       "name": "telomere",
@@ -12454,12 +12475,47 @@
     "crispr-cut-site": {
       "name": "CRISPR cut site",
       "category": "9. Nucleic acids and genetics",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "dna-double-strand-break",
+      "alias_reason": "An unlabeled blunt Cas9 DNA cut site has the same visible broken-duplex geometry as the existing double-strand-break primitive. Guide RNA and Cas9 complexes are separate assets; sequence-specific targeting cannot be shown without sequence annotation.",
+      "reference": "https://www.rcsb.org/structure/4OO8",
+      "png": "png/dna-double-strand-break-bioart-transparent.png",
+      "svg": "svg/dna-double-strand-break-bioart-traced.svg",
+      "png_sha256": "a88a3d7596941ba09f834960b227f1c97254c47b7e96d99ceafb718b01bd0a58",
+      "svg_sha256": "53a8939610c518053bc123430bbae1819e6574a273037bd8ff14162738a6f06e"
     },
     "small-globular-cytokine": {
       "name": "small globular cytokine",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/small-globular-cytokine-bioart-transparent.png",
+      "svg": "svg/small-globular-cytokine-bioart-traced.svg",
+      "png_sha256": "776bffa33cd03b9e574eed1ec96af5d058b94a81956857836575566238e86b71",
+      "svg_sha256": "2537b75457efa4d168530ee5c5d592dca9fb3ea01f770e31b39e28e3232e3ee7",
+      "original_sha256": "e3a2be78aa303a1cb8cd5c64c5306aa078936aedbb06436c038561adb3ead5b4",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        359,
+        326,
+        326,
+        319
+      ],
+      "svg_paths": 25162,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/small-globular-cytokine/prompt.json",
+      "qa": "qa/inventory/small-globular-cytokine",
+      "visual_review": "Reviewed PNG and editable SVG on light and dark backgrounds. Compact coral helical surface retained, transparent padding clean, no detached loops or labels. Symbolic cytokine archetype, not an exact atomic structure.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/small-globular-cytokine/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/small-globular-cytokine/inspection.webm"
+      }
     },
     "chemokine": {
       "name": "chemokine",
@@ -12563,247 +12619,1619 @@
     "cyclic-peptide": {
       "name": "cyclic peptide",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cyclic-peptide-bioart-transparent.png",
+      "svg": "svg/cyclic-peptide-bioart-traced.svg",
+      "png_sha256": "2d10b32a468a28a125024fa02c31acb6ee99435318286f048da39000134fe18b",
+      "svg_sha256": "47ff82171279c2ff05d9415ae4c8e658a81b0661da18f940b370165096838de3",
+      "original_sha256": "42629b586b7a90333e1923dbd4a098d4ea0ad98b90604992e96e70c421a1a878",
+      "png_dimensions": [
+        1826,
+        1826
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        278,
+        328,
+        293,
+        364
+      ],
+      "svg_paths": 8035,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cyclic-peptide/prompt.json",
+      "qa": "qa/inventory/cyclic-peptide",
+      "visual_review": "Inspected PNG/SVG on light/dark: eight residues in one closed ring, eight connectors, no free ends, transparent center. Smooth shading retained. Generic residue-level cyclic peptide, not an atom model.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cyclic-peptide/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cyclic-peptide/inspection.webm"
+      }
     },
     "amino-acid": {
       "name": "amino acid",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/amino-acid-bioart-transparent.png",
+      "svg": "svg/amino-acid-bioart-traced.svg",
+      "png_sha256": "57c1b6eb5d1873b186ce121f4cd2efe1cb7d7723dccc8e4369fbf5f1be2ccb69",
+      "svg_sha256": "dfe6a018d02736db03c39aa8e65017987e5ebd35ff3141b79dcee9d25fd40074",
+      "original_sha256": "67e281a96c7544b1d87fa9078b09d1623adca426e0436b38f73479f0760c4b6d",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        366,
+        584,
+        321,
+        589
+      ],
+      "svg_paths": 6332,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/amino-acid/prompt.json",
+      "qa": "qa/inventory/amino-acid",
+      "visual_review": "Inspected PNG/SVG: six heavy-atom spheres, C-alpha bonded to N, methyl and carboxyl carbon; carbonyl double bond and single oxygen bond retained. Transparent margins. Hydrogens, stereochemistry and physiological ionization omitted.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/amino-acid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/amino-acid/inspection.webm"
+      }
     },
     "nucleotide": {
       "name": "nucleotide",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/nucleotide-bioart-transparent.png",
+      "svg": "svg/nucleotide-bioart-traced.svg",
+      "png_sha256": "f5e64d2bd493ed9bb6e2e6a96ca47457989934d853c3d1df5aed840b0b4e6b4c",
+      "svg_sha256": "c2ca07d320500c59a0d741014fadfe637e4883ef96ef064b222d1c7eb182e024",
+      "original_sha256": "40badf870dbe9f97f9a0a117deb88b29e3ac079c8ea77ab0bab1ca52555fdea7",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        340,
+        584,
+        361,
+        617
+      ],
+      "svg_paths": 5210,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/nucleotide/prompt.json",
+      "qa": "qa/inventory/nucleotide",
+      "visual_review": "Inspected light/dark PNG/SVG: one gold phosphate, teal pentose and fused purple five/six-ring base symbol, sugar attached through five-ring symbol. Alpha and shading preserved; group schematic without atomic substituents.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nucleotide/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nucleotide/inspection.webm"
+      }
     },
     "atp": {
       "name": "ATP",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/atp-bioart-transparent.png",
+      "svg": "svg/atp-bioart-traced.svg",
+      "png_sha256": "6ba4d0f09b929c8668ed5e34fc12d3c0b47e71531508540853e11478836eaaeb",
+      "svg_sha256": "4d612e3c3c4aeb7a154919bbca49080e9180b2d86b21d07fbb83d8069dc46b23",
+      "original_sha256": "6ac5d7ccc67564ba0ccb43cfa49b67acedb3e6f548aef227ea0d7ad8a8062526",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        372,
+        739,
+        353,
+        589
+      ],
+      "svg_paths": 3783,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/atp/prompt.json",
+      "qa": "qa/inventory/atp",
+      "visual_review": "Inspected PNG/SVG on light/dark: exactly three connected phosphate groups, pentose and fused purine symbol preserved. No background glow in composites. Group schematic, not atom-level chemistry.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/atp/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/atp/inspection.webm"
+      }
     },
     "adp": {
       "name": "ADP",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/adp-bioart-transparent.png",
+      "svg": "svg/adp-bioart-traced.svg",
+      "png_sha256": "bec879d434e63cecf6447d7e53ee031eca0c91a80537ff0acb6a0a75bcbb5bdc",
+      "svg_sha256": "b976cf9a858432b3c3cf4ff828d3f36827ddc7b1e423c9f27f1d169df0e63662",
+      "original_sha256": "80742e4075cec0f7c1243da83d9e85a4bad54502853f5b4acf0a20a107cc21bf",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        372,
+        620,
+        383,
+        621
+      ],
+      "svg_paths": 4619,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/adp/prompt.json",
+      "qa": "qa/inventory/adp",
+      "visual_review": "Inspected light/dark PNG/SVG: exactly two phosphates, matching teal ribose and violet adenine symbol; all connections and alpha preserved. Group-level schematic without chemical charges.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adp/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adp/inspection.webm"
+      }
     },
     "glucose": {
       "name": "glucose",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/glucose-bioart-transparent.png",
+      "svg": "svg/glucose-bioart-traced.svg",
+      "png_sha256": "faba8992b11abb324371ac4ab7597593c33119e1fa6f962c1d7dc9ed7950e493",
+      "svg_sha256": "3a345cc1da1941839fc161e66f760e7129862b74d257567f0ee6b87dc8449520",
+      "original_sha256": "d0906c044d579b9b9379f2374114121d3528fd1c453fd2b625e4092b6499c4f7",
+      "png_dimensions": [
+        1772,
+        1772
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        297,
+        272,
+        281,
+        305
+      ],
+      "svg_paths": 7616,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/glucose/prompt.json",
+      "qa": "qa/inventory/glucose",
+      "visual_review": "Verified six carbon and six oxygen spheres, six-member ring with one oxygen, hydroxymethyl side branch, intact bonds and clean transparent padding. SVG matches PNG on both backgrounds; connectivity schematic without stereochemical claims.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/glucose/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/glucose/inspection.webm"
+      }
     },
     "glycogen-polymer": {
       "name": "glycogen polymer",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/glycogen-polymer-bioart-transparent.png",
+      "svg": "svg/glycogen-polymer-bioart-traced.svg",
+      "png_sha256": "9fad50aa2863fa1851f93aad61176b77859780d23c2d6bd03f408df4e9218535",
+      "svg_sha256": "01c7d294dc1c756f16a60d1f4264dbbcbca43d37d74efe38a15503a684d905b2",
+      "original_sha256": "0ebf7eadfaec4f3007f1f674d7c637f2f1c776ce989dffa93825460a3fa5c8fd",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        468,
+        594,
+        327,
+        617
+      ],
+      "svg_paths": 4650,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/glycogen-polymer/prompt.json",
+      "qa": "qa/inventory/glycogen-polymer",
+      "visual_review": "Both composites show one connected acyclic gold branching polymer rooted at violet core, no stray fragments or clipping, transparent negative space retained. SVG preserves the bead-and-link architecture. Residue-level symbolic topology.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/glycogen-polymer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/glycogen-polymer/inspection.webm"
+      }
     },
     "cholesterol": {
       "name": "cholesterol",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cholesterol-bioart-transparent.png",
+      "svg": "svg/cholesterol-bioart-traced.svg",
+      "png_sha256": "0c7a35c1593522c0ee27d9e13dd4a99a5a574aa73b7cfffb422265198325e4a6",
+      "svg_sha256": "8a5f35bc82b83ae0663717cc7a2c27815ae3d0280de91a3af1baec70ad8c4f41",
+      "original_sha256": "98408340b7ead91b4b5cfaae05260e1053111a25ee4ad86d7d0b1522b021cd8d",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        376,
+        580,
+        343,
+        589
+      ],
+      "svg_paths": 2626,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cholesterol/prompt.json",
+      "qa": "qa/inventory/cholesterol",
+      "visual_review": "Compared to coordinate-derived PubChem guide: three fused hexagons and one pentagon, two angular methyls, eight-carbon branched side chain, ring double bond and hydroxyl oxygen retained. SVG closely matches PNG with clean alpha. Stereochemical encodings omitted.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cholesterol/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cholesterol/inspection.webm"
+      }
     },
     "phospholipid": {
       "name": "phospholipid",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/phospholipid-bioart-transparent.png",
+      "svg": "svg/phospholipid-bioart-traced.svg",
+      "png_sha256": "a2076893166207cb59c6e49da7ef380ca0ec4fccd46cd376822dcbae333e3cd2",
+      "svg_sha256": "f8574ad392de7467957dcbbf2eef6556d59baf9d420adbc108161d55ba7113de",
+      "original_sha256": "ae2151231b5ae4dbe331066a1244b3a21d64c8f9ca220e1c02637dae49ed77e4",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        608,
+        339,
+        577,
+        347
+      ],
+      "svg_paths": 6103,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/phospholipid/prompt.json",
+      "qa": "qa/inventory/phospholipid",
+      "visual_review": "Reviewed two connected golden tails and one teal polar head. Bend retained, no extra molecules, SVG matches PNG and both have clean alpha and generous padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/phospholipid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/phospholipid/inspection.webm"
+      }
     },
     "triglyceride": {
       "name": "triglyceride",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/triglyceride-bioart-transparent.png",
+      "svg": "svg/triglyceride-bioart-traced.svg",
+      "png_sha256": "944a034c477742a573730c8f772116707db88a2c69a0630160b936b895beb0a6",
+      "svg_sha256": "f0f9aa538bfbd03c84c1439ebb4f6dd832d2620073640f6061963c5bc46e8df3",
+      "original_sha256": "c59066e0c44adb47a054ce1a44df89e8838a2e2494c0f96cbe950e81e2a78b7a",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        588,
+        327,
+        579
+      ],
+      "svg_paths": 10803,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/triglyceride/prompt.json",
+      "qa": "qa/inventory/triglyceride",
+      "visual_review": "Three ester-linked tails attached to one glycerol backbone, central tail bent, no fourth tail or phosphate head. PNG and SVG match on light/dark backgrounds with clean alpha.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/triglyceride/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/triglyceride/inspection.webm"
+      }
     },
     "steroid-hormone": {
       "name": "steroid hormone",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/steroid-hormone-bioart-transparent.png",
+      "svg": "svg/steroid-hormone-bioart-traced.svg",
+      "png_sha256": "8d83b09f69528a6e427e1957a35d464131cc6c11f3a0b53c5d043a9e3b47775b",
+      "svg_sha256": "6130b9075dc2e04bfe439e3f5c32607c4ed0b7aecba0003a2da56c9d43941003",
+      "original_sha256": "72310428decc7cd86e015b0c03da83f91c3dfccbed19969893a1fdc24aee1f20",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        371,
+        584,
+        375,
+        563
+      ],
+      "svg_paths": 8539,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/steroid-hormone/prompt.json",
+      "qa": "qa/inventory/steroid-hormone",
+      "visual_review": "Verified three fused hexagonal tiles and one pentagonal tile in steroid arrangement, two symbolic polar accents. SVG retains shape and shading, clean alpha. Group-level generic hormone symbol, not atomic formula.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/steroid-hormone/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/steroid-hormone/inspection.webm"
+      }
     },
     "small-molecule-drug": {
       "name": "small-molecule drug",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/small-molecule-drug-bioart-transparent.png",
+      "svg": "svg/small-molecule-drug-bioart-traced.svg",
+      "png_sha256": "0a8ab7e9806a620c2181351b19e38a4232d94df1335b680ea091c9f5eb0a010d",
+      "svg_sha256": "27197d312e4caa2fe7639fba539da03dcedfeaddb4af53313da7638beb1851d4",
+      "original_sha256": "116a9b2d7e2b0bf9a5f70aa4d920b5ca5c30ac41c284e9da0f46de1f18fb42fa",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        393,
+        586,
+        371,
+        589
+      ],
+      "svg_paths": 7382,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/small-molecule-drug/prompt.json",
+      "qa": "qa/inventory/small-molecule-drug",
+      "visual_review": "Two connected ring-group tiles with polar accents retained in SVG, same compact silhouette and smooth gradients as PNG. Clean alpha. Generic pharmacophore symbol with no named drug or atomistic claims.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/small-molecule-drug/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/small-molecule-drug/inspection.webm"
+      }
     },
     "fluorescent-dye": {
       "name": "fluorescent dye",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/fluorescent-dye-bioart-transparent.png",
+      "svg": "svg/fluorescent-dye-bioart-traced.svg",
+      "png_sha256": "30d90f1c154b46dde40f94389c9c5ea1b1c8245f32c9c9552173243c5d59dbde",
+      "svg_sha256": "0f2461974a0e70541e84cd80f6223135c1b7ce0c054e859e3ea9f66fb8234464",
+      "original_sha256": "c779c081cdf3cd4401d76fbacc09946981808d3365b1542311b50ceb8d4a136b",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        601,
+        317,
+        613
+      ],
+      "svg_paths": 8306,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/fluorescent-dye/prompt.json",
+      "qa": "qa/inventory/fluorescent-dye",
+      "visual_review": "Three linked aromatic ring groups and terminal polar accents clearly retained in SVG. Clean transparent margins and no glow in composites. Generic fluorophore symbol, not a named chemical or specified emission spectrum.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fluorescent-dye/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fluorescent-dye/inspection.webm"
+      }
     },
     "fluorophore-conjugated-antibody": {
       "name": "fluorophore-conjugated antibody",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/fluorophore-conjugated-antibody-bioart-transparent.png",
+      "svg": "svg/fluorophore-conjugated-antibody-bioart-traced.svg",
+      "png_sha256": "aba2b2255fdb2c2252d0865155b0a1eb35a2f705f60d7d4aa8cd6e287e8b321e",
+      "svg_sha256": "de3cce7ec7f483b3d85fcd2c4e5bd58a44b4def9849336164e0fed8dff17ae50",
+      "original_sha256": "9b5021d7b6cfe07bd45d3b7ae426f2e46f3fe2bdfea02be9017f6fb5637e97ea",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        262,
+        349,
+        364,
+        359
+      ],
+      "svg_paths": 11072,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/fluorophore-conjugated-antibody/prompt.json",
+      "qa": "qa/inventory/fluorophore-conjugated-antibody",
+      "visual_review": "IgG domain layout preserved from approved template, exactly three green attached tags with unobstructed binding tips. SVG matches PNG with complete silhouette and clean alpha on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fluorophore-conjugated-antibody/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fluorophore-conjugated-antibody/inspection.webm"
+      }
     },
     "biotin": {
       "name": "biotin",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/biotin-bioart-transparent.png",
+      "svg": "svg/biotin-bioart-traced.svg",
+      "png_sha256": "46997581fa2644d78a4eee57754007b94faf00a242e96bbc7f6dccfaefe15833",
+      "svg_sha256": "4769bea037e0d3b6535b342256abae3966b07cb0d2e9bb640910134cf2102798",
+      "original_sha256": "9ecc2d972d98891b0f6de4902496bad79617aa5692be512ad7f6cfd5e8af8602",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        292,
+        303,
+        285,
+        275
+      ],
+      "svg_paths": 2924,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/biotin/prompt.json",
+      "qa": "qa/inventory/biotin",
+      "visual_review": "Verified two fused pentagons, sulfur, two nitrogens, three oxygens, both carbonyl double bonds and four methylene units before terminal carboxyl. SVG retains all connectivity with clean alpha; stereochemistry omitted.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/biotin/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/biotin/inspection.webm"
+      }
     },
     "biotinylated-protein": {
       "name": "biotinylated protein",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/biotinylated-protein-bioart-transparent.png",
+      "svg": "svg/biotinylated-protein-bioart-traced.svg",
+      "png_sha256": "ffc56e091ec0a0dd921b4077658be120194e2e65aade31c5e7c6985abcf80d6e",
+      "svg_sha256": "ae51ca29ea4b5339da8082868439e3d88a0f984bd3f46f45f755ca5546a0ac26",
+      "original_sha256": "8c4dee5cfdb8e38ff5c8e7f13a6be2caa241a4fc3a189dc61f03f73492696e5a",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        274,
+        321,
+        275
+      ],
+      "svg_paths": 4939,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/biotinylated-protein/prompt.json",
+      "qa": "qa/inventory/biotinylated-protein",
+      "visual_review": "Approved protein silhouette retained with one attached violet spacer and fused-pentagon biotin symbol. SVG preserves contours and tag on both backgrounds, clean alpha. Biotin tag is explicitly group-level, not atomic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/biotinylated-protein/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/biotinylated-protein/inspection.webm"
+      }
     },
     "peg-linker": {
       "name": "PEG linker",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/peg-linker-bioart-transparent.png",
+      "svg": "svg/peg-linker-bioart-traced.svg",
+      "png_sha256": "566cb435a4fccbee88d2c705fcc98bee2946223d7fa3781038b2a8278e3ab1e5",
+      "svg_sha256": "b4e669da6f720671a7c59693638a6a20ef322771ba7496ab2f5b895a8287434c",
+      "original_sha256": "fdca6607efa5789d1249653ebc1c5abf079995d410d6fde51c2c5c4b2c27c210",
+      "png_dimensions": [
+        3040,
+        3040
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        454,
+        1233,
+        451,
+        1198
+      ],
+      "svg_paths": 6089,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/peg-linker/prompt.json",
+      "qa": "qa/inventory/peg-linker",
+      "visual_review": "Verified 13 beads: two gold terminal groups, eight lavender carbon units and three red ether oxygens. Every red-red interval contains two lavender units. SVG matches PNG and transparent padding is clean.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/peg-linker/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/peg-linker/inspection.webm"
+      }
     },
     "lipid-nanoparticle": {
       "name": "lipid nanoparticle",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/lipid-nanoparticle-bioart-transparent.png",
+      "svg": "svg/lipid-nanoparticle-bioart-traced.svg",
+      "png_sha256": "0c07d2731781100a24df73bb4f9ca9e64b68c65b5841851d72cf168c10cf1bf5",
+      "svg_sha256": "da017724db2911b6a2f624644088aa77647deb155da313655e79a74c27f089e6",
+      "original_sha256": "4a80886aedf1797b2cec6c69cfc1c918147db30ea06057030908a6fb63ca0f31",
+      "png_dimensions": [
+        1777,
+        1777
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        254,
+        284,
+        284,
+        292
+      ],
+      "svg_paths": 32495,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/lipid-nanoparticle/prompt.json",
+      "qa": "qa/inventory/lipid-nanoparticle",
+      "visual_review": "Reviewed heterogeneous packed core with orange RNA segments and violet PEG chains, distinct from hollow liposome. SVG retains surface and cutaway detail, clean alpha and full padding on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lipid-nanoparticle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lipid-nanoparticle/inspection.webm"
+      }
     },
     "micelle": {
       "name": "micelle",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/micelle-bioart-transparent.png",
+      "svg": "svg/micelle-bioart-traced.svg",
+      "png_sha256": "78e952387a6f28637e48f663e569153c2e46932d54241089d90dd33e72952608",
+      "svg_sha256": "aac3d59a635cb624323dcbc55292ed8e19a2fd3d027086cfe7f200cc5986ee7d",
+      "original_sha256": "537f32b0d0b2dbf4457b4627feed961244486274b149f215e77aaec7921231c2",
+      "png_dimensions": [
+        1798,
+        1798
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        351,
+        305,
+        351,
+        339
+      ],
+      "svg_paths": 38488,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/micelle/prompt.json",
+      "qa": "qa/inventory/micelle",
+      "visual_review": "Single outer teal head layer and solid inward-tail core remain clear in cutaway. No bilayer or aqueous lumen. SVG matches PNG on both backgrounds with clean alpha.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/micelle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/micelle/inspection.webm"
+      }
     },
     "liposome": {
       "name": "liposome",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/liposome-bioart-transparent.png",
+      "svg": "svg/liposome-bioart-traced.svg",
+      "png_sha256": "d5e1892a37d73e3813c8f81b47d85c37385c50ad964e773a9275d4c7ae127d3e",
+      "svg_sha256": "a79a4bd148777bad181f732c598bf7683295258a1c59c37f9f823bd347f49a85",
+      "original_sha256": "f2b07642dd9cf4ce9fa7b125c228e94e78588857abe5d604c49f641ce8b3723c",
+      "png_dimensions": [
+        1834,
+        1834
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        262,
+        330,
+        315,
+        347
+      ],
+      "svg_paths": 29043,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/liposome/prompt.json",
+      "qa": "qa/inventory/liposome",
+      "visual_review": "Reviewed inner and outer teal head layers, opposing gold tails separated at midplane, aqueous cavity, complete silhouette and clean alpha. SVG preserves membrane detail and cavity highlights on light and dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/liposome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/liposome/inspection.webm"
+      }
     },
     "polymer-nanoparticle": {
       "name": "polymer nanoparticle",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/polymer-nanoparticle-bioart-transparent.png",
+      "svg": "svg/polymer-nanoparticle-bioart-traced.svg",
+      "png_sha256": "2b42426d9690723a012d7128ea02fe5135cd6c27ad5657a3d112ed2d5086e49d",
+      "svg_sha256": "150faf55f953dbdfc153fdeacedb628f17bb6c63fe41404b00fb882f8d5e0b07",
+      "original_sha256": "8c8ffee501486adafdc9b22cdf18bc5540b9cbbe2dee2116cdf5dd37ec9cb71b",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        251,
+        271,
+        251
+      ],
+      "svg_paths": 23449,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/polymer-nanoparticle/prompt.json",
+      "qa": "qa/inventory/polymer-nanoparticle",
+      "visual_review": "Solid violet nanosphere and entangled polymer cutaway retained. Smooth outer gradients and internal chain shapes closely match PNG in editable SVG; clean transparent padding on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/polymer-nanoparticle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/polymer-nanoparticle/inspection.webm"
+      }
     },
     "gold-nanoparticle": {
       "name": "gold nanoparticle",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/gold-nanoparticle-bioart-transparent.png",
+      "svg": "svg/gold-nanoparticle-bioart-traced.svg",
+      "png_sha256": "61970344a55bd12fc700f063a9398c7ec5af44dd776d7a79bab723b3789b73d7",
+      "svg_sha256": "3e5c228de735a7b4558dd58fc5d30c22248cb2d3c333a2d709f737d8da32afc6",
+      "original_sha256": "3c162a65966a15c3ee16af7ad011d47c411d6875f4b01678e56a84bc5a01ac1b",
+      "png_dimensions": [
+        1776,
+        1776
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        254,
+        331,
+        284,
+        294
+      ],
+      "svg_paths": 10226,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/gold-nanoparticle/prompt.json",
+      "qa": "qa/inventory/gold-nanoparticle",
+      "visual_review": "Faceted gold silhouette and satin shading retained in SVG. No detached elements, clean transparency and comparable appearance on light/dark backgrounds. Facets symbolic, not indexed crystal faces.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gold-nanoparticle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gold-nanoparticle/inspection.webm"
+      }
     },
     "quantum-dot": {
       "name": "quantum dot",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/quantum-dot-bioart-transparent.png",
+      "svg": "svg/quantum-dot-bioart-traced.svg",
+      "png_sha256": "116d9072d5e71217293a5449e8514e3b83933a39c81f8e5a6f01dbcc03c5a8d3",
+      "svg_sha256": "257cdabb8269578a7f90e23c2396e551460e945d4db1256b0bef93da6292cf47",
+      "original_sha256": "c23f5aac2865986a5d21d2406ed53cdd3de5bc33dbf86830d33a0269579a48d7",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        276,
+        269,
+        251
+      ],
+      "svg_paths": 19175,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/quantum-dot/prompt.json",
+      "qa": "qa/inventory/quantum-dot",
+      "visual_review": "Core-shell-ligand archetype retained in SVG on both backgrounds, clean alpha, no clipping. Colors and coating granularity symbolic. Structural reference: https://pmc.ncbi.nlm.nih.gov/articles/PMC8596122/",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/quantum-dot/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/quantum-dot/inspection.webm"
+      }
     },
     "magnetic-bead": {
       "name": "magnetic bead",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/magnetic-bead-bioart-transparent.png",
+      "svg": "svg/magnetic-bead-bioart-traced.svg",
+      "png_sha256": "b6db12229990acbfbe99a8761249c48ae3b5efc65d6dd485ba5f6413b71e46d2",
+      "svg_sha256": "c43fc964e97b00214df72a75223bba33a6a5ff73d8b5f22f04eeac2949537d54",
+      "original_sha256": "ddf667210bafc7d931e30a1c62aca7bc7f0d216340ed1754f589f7f256c755ea",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        372,
+        577,
+        321,
+        599
+      ],
+      "svg_paths": 13496,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/magnetic-bead/prompt.json",
+      "qa": "qa/inventory/magnetic-bead",
+      "visual_review": "Brown polymer bead cutaway with distributed charcoal inclusions preserved. SVG has minor gradient banding but retains clear shape and all material details; no background halo in either composite.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/magnetic-bead/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/magnetic-bead/inspection.webm"
+      }
     },
     "fluorescent-bead": {
       "name": "fluorescent bead",
       "category": "10. Biochemical and molecular archetypes",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/fluorescent-bead-bioart-transparent.png",
+      "svg": "svg/fluorescent-bead-bioart-traced.svg",
+      "png_sha256": "7f6208344f177a4ea423880d6e3d2c5580d3a57460b910162da468fe05fa64b8",
+      "svg_sha256": "277a2e746683888f5a3e5e0061b980c5c625127130fd5f4a0c6c57c9d92a751c",
+      "original_sha256": "c77273bc6c2b285202da6215bb66af0b0bacefe1c695f73f198ea285c73a0cc3",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        271,
+        297,
+        285
+      ],
+      "svg_paths": 20034,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/fluorescent-bead/prompt.json",
+      "qa": "qa/inventory/fluorescent-bead",
+      "visual_review": "Emerald bead, solid cut faces and distributed dye dots remain clear in SVG. Minor surface gradient banding acceptable; full silhouette and true transparency on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fluorescent-bead/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fluorescent-bead/inspection.webm"
+      }
     },
     "extracellular-matrix-mesh": {
       "name": "extracellular matrix mesh",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/extracellular-matrix-mesh-bioart-transparent.png",
+      "svg": "svg/extracellular-matrix-mesh-bioart-traced.svg",
+      "png_sha256": "b18d55d42663c749b3037a8af7edd1fa16979c16b2d332fb76001166717b1bff",
+      "svg_sha256": "6380b15533558cbe8175ea532131ca2ab488686b0bc9297a4fb0ea421f36653c",
+      "original_sha256": "75762854ee9abdb8d0d7357dffaa04408e4aa95aa62e071393f343b6b34cb733",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        325,
+        563
+      ],
+      "svg_paths": 25189,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/extracellular-matrix-mesh/prompt.json",
+      "qa": "qa/inventory/extracellular-matrix-mesh",
+      "visual_review": "Coral collagen, gold elastic fibers and teal proteoglycan brushes retained in open mesh. All ends visible, no background sheet; SVG closely matches PNG with clean transparent interstices.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/extracellular-matrix-mesh/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/extracellular-matrix-mesh/inspection.webm"
+      }
     },
     "basement-membrane": {
       "name": "basement membrane",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/basement-membrane-bioart-transparent.png",
+      "svg": "svg/basement-membrane-bioart-traced.svg",
+      "png_sha256": "d1153500ee540246bce19d21b22c8249c40a1b4e64250760ff9a655a821202fb",
+      "svg_sha256": "fbbd0913457c1ac40d7f1b4408131aeef25600b7444325689eaba4558d29aaa6",
+      "original_sha256": "14ee78717b33c7d3298b48b1478f3ed6fd17d060d19fbc0c9f21a3d77d9d2bc1",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        324,
+        584,
+        319,
+        563
+      ],
+      "svg_paths": 22231,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/basement-membrane/prompt.json",
+      "qa": "qa/inventory/basement-membrane",
+      "visual_review": "Thin sheet-like two-network mesh, linking nodules and proteoglycan brushes retained. SVG preserves open pores, fine edges and clean transparency on light/dark backgrounds. Molecular topology schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/basement-membrane/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/basement-membrane/inspection.webm"
+      }
     },
     "collagen-bundle": {
       "name": "collagen bundle",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/collagen-bundle-bioart-transparent.png",
+      "svg": "svg/collagen-bundle-bioart-traced.svg",
+      "png_sha256": "66a117312ae2336b6069fd8352028c607bafc7de0199b23afe5c209f946d82e8",
+      "svg_sha256": "94d14150be2eba531b14f7b09ee24b8957c6b128b9cd1f069a59fcc23a6b2934",
+      "original_sha256": "7bc99576e5ac5c6211aebd61725bcba46c9e893ccfc48e0b244f445bf5422677",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        366,
+        584,
+        357,
+        619
+      ],
+      "svg_paths": 21145,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/collagen-bundle/prompt.json",
+      "qa": "qa/inventory/collagen-bundle",
+      "visual_review": "Seven banded fibrils form a complete curved bundle. Editable SVG preserves the PNG contours, cross sections and banding on light and dark backgrounds with transparent padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/collagen-bundle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/collagen-bundle/inspection.webm"
+      }
     },
     "elastin-fiber": {
       "name": "elastin fiber",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/elastin-fiber-bioart-transparent.png",
+      "svg": "svg/elastin-fiber-bioart-traced.svg",
+      "png_sha256": "58a60ec7df9d3d48b6c6c7afe90dd8b519de19ed8a9a78c23f52eaddb026150c",
+      "svg_sha256": "0d7339f9acbad5694535c096ea735d8402cc5e2e378960e00778d01a34725142",
+      "original_sha256": "92b5c68919577a546e047a3aaf8cfff048b3ae844503c1510a5b4ffcd38721be",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        580,
+        323,
+        619
+      ],
+      "svg_paths": 14616,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/elastin-fiber/prompt.json",
+      "qa": "qa/inventory/elastin-fiber",
+      "visual_review": "Complete three-ended branching elastic fiber with peripheral sheath. SVG preserves smooth core, strand boundaries and cut ends; transparent gaps and padding verified on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/elastin-fiber/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/elastin-fiber/inspection.webm"
+      }
     },
     "fibronectin-fiber": {
       "name": "fibronectin fiber",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/fibronectin-fiber-bioart-transparent.png",
+      "svg": "svg/fibronectin-fiber-bioart-traced.svg",
+      "png_sha256": "f374c092ff056c86e83efbf70edbd9bf0dd8f3c2d232f7c177e4203494944e56",
+      "svg_sha256": "f6d99dd6f15530d7d45e4ee6da6456726496fd8f1f8a47dde5d3909cef3bb5a3",
+      "original_sha256": "94e5b305d886e0dbc791a71a8d6aaa47bec7dd46a290bc42954911e409f7d354",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        344,
+        573,
+        327,
+        563
+      ],
+      "svg_paths": 6750,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/fibronectin-fiber/prompt.json",
+      "qa": "qa/inventory/fibronectin-fiber",
+      "visual_review": "Overlapping modular chains and splayed ends remain clear in SVG. Smooth coral domains and violet joins match the PNG on both backgrounds; all tips are intact with clean alpha.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fibronectin-fiber/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fibronectin-fiber/inspection.webm"
+      }
     },
     "fibrin-clot": {
       "name": "fibrin clot",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/fibrin-clot-bioart-transparent.png",
+      "svg": "svg/fibrin-clot-bioart-traced.svg",
+      "png_sha256": "1f9415f3e45d660f81c89ffc7a200ed00ab21b7efe5c8fa7b8cc41420d81fb04",
+      "svg_sha256": "1ae48876c40e4206c1df3c47cd62a14c0cae1ce77da6b636a7f82fcb9c7b544c",
+      "original_sha256": "ff7cc2c98d4e488fc80c9c8c2a810f17d0bf59aace54e596ee1274e638852b02",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        366,
+        570,
+        355,
+        575
+      ],
+      "svg_paths": 12633,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/fibrin-clot/prompt.json",
+      "qa": "qa/inventory/fibrin-clot",
+      "visual_review": "Corrected broad webbed junctions to thin fibrin strands. PNG and SVG retain open pores, branching connections and all ends; transparency verified on light and dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fibrin-clot/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fibrin-clot/inspection.webm"
+      }
     },
     "blood-clot-with-platelets-and-fibrin": {
       "name": "blood clot with platelets and fibrin",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/blood-clot-with-platelets-and-fibrin-bioart-transparent.png",
+      "svg": "svg/blood-clot-with-platelets-and-fibrin-bioart-traced.svg",
+      "png_sha256": "3bf94c8f01b56da497b85f64b146897e8ab75fd41928cdf426585e42632120f3",
+      "svg_sha256": "9ee2ee36bab34d2489b4cf45979e74b457169de81b16ecf2a0e4150510dbe153",
+      "original_sha256": "33c290bf4fa6a7dc734f6d371359814f4a9e911a6bb1d0b166d7b4a765d1872e",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        516,
+        563,
+        459,
+        585
+      ],
+      "svg_paths": 19549,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/blood-clot-with-platelets-and-fibrin/prompt.json",
+      "qa": "qa/inventory/blood-clot-with-platelets-and-fibrin",
+      "visual_review": "Smooth biconcave red cells, smaller violet platelets with pseudopods, and thin fibrin network retained in SVG. Complete silhouette and open gaps verified on light and dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/blood-clot-with-platelets-and-fibrin/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/blood-clot-with-platelets-and-fibrin/inspection.webm"
+      }
     },
     "epithelial-sheet": {
       "name": "epithelial sheet",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/epithelial-sheet-bioart-transparent.png",
+      "svg": "svg/epithelial-sheet-bioart-traced.svg",
+      "png_sha256": "ca0e2abae5953eafca7876189513ce8324d6b194cd0018f260c525d1a524d43d",
+      "svg_sha256": "969ed25a0119cbda760e9976094d68d5cbdf5c326c9fefb2bc5632803cc69a6c",
+      "original_sha256": "5cd97cc62b44a53ddb4b739dced28adfb9fee0c67aae80f2d4de5576dcf6e52c",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        337,
+        580,
+        337,
+        617
+      ],
+      "svg_paths": 17783,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/epithelial-sheet/prompt.json",
+      "qa": "qa/inventory/epithelial-sheet",
+      "visual_review": "Twelve cuboidal cells in one layer, corrected single nucleus in corner cell, intact basal membrane. SVG matches the PNG cell boundaries and organelles with transparent padding on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/epithelial-sheet/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/epithelial-sheet/inspection.webm"
+      }
     },
     "endothelial-monolayer": {
       "name": "endothelial monolayer",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/endothelial-monolayer-bioart-transparent.png",
+      "svg": "svg/endothelial-monolayer-bioart-traced.svg",
+      "png_sha256": "15a03c3e1ab8b742a2625a5c878961b7033480e8e97182f962bfcf903b95260b",
+      "svg_sha256": "f6df04aaef21398add7380aa4626f26e38c23c9abea8be1e4bcf86a46f5280cb",
+      "original_sha256": "2d9d04732fb66ae1247419bc686778193ea5934f0f16c1d8f75812611bbb04d9",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        338,
+        584,
+        341,
+        627
+      ],
+      "svg_paths": 24234,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/endothelial-monolayer/prompt.json",
+      "qa": "qa/inventory/endothelial-monolayer",
+      "visual_review": "Ten flat aligned cells with one elongated nucleus each and thin basal lamina. PNG/SVG contours and nuclei match on both backgrounds, with no visible background or clipped cells.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/endothelial-monolayer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/endothelial-monolayer/inspection.webm"
+      }
     },
     "capillary-cross-section": {
       "name": "capillary cross-section",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/capillary-cross-section-bioart-transparent.png",
+      "svg": "svg/capillary-cross-section-bioart-traced.svg",
+      "png_sha256": "33b747009b89eb92d6ceb22175e16723eaca0a9151fe051cebc2b5b3a57934a8",
+      "svg_sha256": "bfaef3f7149dea25926588514373eb4713cead517c676aaae0f1ae1e7223f3fc",
+      "original_sha256": "8cd7ad544f2b98c40d9821e70a2ba2ebf013bdc87f9f3a38ee7ed544e6fa508f",
+      "png_dimensions": [
+        1833,
+        1833
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        319,
+        316,
+        314,
+        372
+      ],
+      "svg_paths": 17349,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/capillary-cross-section/prompt.json",
+      "qa": "qa/inventory/capillary-cross-section",
+      "visual_review": "Thin endothelial wall and basal membrane encircle a red biconcave erythrocyte profile. Removed floating lumen artifacts. SVG preserves layers and nuclei; mild gradient banding is acceptable at asset scale, clean alpha on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/capillary-cross-section/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/capillary-cross-section/inspection.webm"
+      }
     },
     "small-blood-vessel": {
       "name": "small blood vessel",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/small-blood-vessel-bioart-transparent.png",
+      "svg": "svg/small-blood-vessel-bioart-traced.svg",
+      "png_sha256": "598ff6fad2b6d3d5be81792f61243ecd5495740e96472a7c5bd51eb1c2fe6c08",
+      "svg_sha256": "d6392bf04d8ecd631d709650a63648a1ec786b7f52660154d5262a9a7095f8a3",
+      "original_sha256": "4cdd261989b8b7f4dd019c2628e6b0445f3fbba1c1af8303d85392e240dcdced",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        338,
+        584,
+        323,
+        589
+      ],
+      "svg_paths": 12906,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/small-blood-vessel/prompt.json",
+      "qa": "qa/inventory/small-blood-vessel",
+      "visual_review": "Both open ends, cutaway, three erythrocytes and connected pericyte processes preserved in SVG. Thin wall and nuclei remain clear with clean transparent padding on light and dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/small-blood-vessel/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/small-blood-vessel/inspection.webm"
+      }
     },
     "artery-cross-section": {
       "name": "artery cross-section",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/artery-cross-section-bioart-transparent.png",
+      "svg": "svg/artery-cross-section-bioart-traced.svg",
+      "png_sha256": "3b158d97ce5d7dcaa6f20e48683d2989ff4237926069ecb39e76794f4982f522",
+      "svg_sha256": "e9a7f13c9ff2535015f986965a36dec2d8a3c268a73ac81f76ce81ee6da18a12",
+      "original_sha256": "f7dd32fc8e5805edf824a7426f723f5bdc2c1fd547c72d4fecae7d59557875e2",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        251,
+        281,
+        251
+      ],
+      "svg_paths": 26987,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/artery-cross-section/prompt.json",
+      "qa": "qa/inventory/artery-cross-section",
+      "visual_review": "Concentric intima, gold elastic lamina, thick muscle media and thinner adventitia remain distinct. SVG retains nuclei and fiber contours. Open lumen and exterior alpha verified on light and dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/artery-cross-section/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/artery-cross-section/inspection.webm"
+      }
     },
     "vein-cross-section": {
       "name": "vein cross-section",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/vein-cross-section-bioart-transparent.png",
+      "svg": "svg/vein-cross-section-bioart-traced.svg",
+      "png_sha256": "fa665b521a4f207f714cee7e6888e905c2fc7eebc6411a1b77083777b84c22e3",
+      "svg_sha256": "26e11ff318ace54002f86bdf53333f8e48c6e2f8fe7ff2f7217b9ada6e675669",
+      "original_sha256": "650e0f88d3a536020643451fa56d7fcb409d8515969fdf777307744c2fbba0cb",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        362,
+        577,
+        321,
+        563
+      ],
+      "svg_paths": 17601,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/vein-cross-section/prompt.json",
+      "qa": "qa/inventory/vein-cross-section",
+      "visual_review": "Large irregular lumen with thin teal intima, coral media and thicker tan adventitia preserved in SVG. Both lumen and exterior are cleanly transparent on light and dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/vein-cross-section/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/vein-cross-section/inspection.webm"
+      }
     },
     "lymphatic-vessel": {
       "name": "lymphatic vessel",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/lymphatic-vessel-bioart-transparent.png",
+      "svg": "svg/lymphatic-vessel-bioart-traced.svg",
+      "png_sha256": "4235aa3551bcb25c9e35e8f4bfa05ff09ab26933b993284fb4bf29b2eb118dfa",
+      "svg_sha256": "d3b4dd14f737a57f5c635f206ec0265470959d08b88d64c254f20a75bcb40c78",
+      "original_sha256": "1e4b9f005cb1283b4a1c105c48c73d0ec410a0caa0481a5fdc1a6bac10832a69",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        334,
+        580,
+        353,
+        563
+      ],
+      "svg_paths": 9765,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/lymphatic-vessel/prompt.json",
+      "qa": "qa/inventory/lymphatic-vessel",
+      "visual_review": "Two attached valve leaflets with visible free-tip gap, complete vessel ends and thin outer band preserved in SVG. Smooth surfaces and transparent exterior verified on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lymphatic-vessel/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lymphatic-vessel/inspection.webm"
+      }
     },
     "intestinal-villus": {
       "name": "intestinal villus",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/intestinal-villus-bioart-transparent.png",
+      "svg": "svg/intestinal-villus-bioart-traced.svg",
+      "png_sha256": "ad8bdb72bf6dd50e28547a2bc73ba4495bde825a7794991f7fb2b311ef210486",
+      "svg_sha256": "16df0938c69da0663db3a1796ab81c8034d24f112fc32c86c8ac73fb760dab79",
+      "original_sha256": "b456ccc49c1a78e4c08aed91cebf5c4f8ebd39fe4b2a3f5ca95bb2025c09346d",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        322,
+        589,
+        307
+      ],
+      "svg_paths": 20756,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/intestinal-villus/prompt.json",
+      "qa": "qa/inventory/intestinal-villus",
+      "visual_review": "Complete villus tip, brush border, goblet cells, separate green lacteal and red-blue vessel network preserved in SVG. Flat cut base visible and transparency clean on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/intestinal-villus/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/intestinal-villus/inspection.webm"
+      }
     },
     "intestinal-crypt": {
       "name": "intestinal crypt",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/intestinal-crypt-bioart-transparent.png",
+      "svg": "svg/intestinal-crypt-bioart-traced.svg",
+      "png_sha256": "6989721b0845ffb42797a4b897535ab2d489982ca9b8076366292cdf3cdd3c4a",
+      "svg_sha256": "2c33ea807e7dccca88a9d2366f0d12ff18ef3a1c0d1063009a0b61bc4758077e",
+      "original_sha256": "5b02b479828413c6b35cd1667e8c6a115d2e1645eb6486ae06e29e8baddccc0c",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        315,
+        577,
+        370
+      ],
+      "svg_paths": 12314,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/intestinal-crypt/prompt.json",
+      "qa": "qa/inventory/intestinal-crypt",
+      "visual_review": "Open crypt lumen, closed basal end, goblet basal nuclei and alternating basal Paneth/stem-cell symbols retained. SVG matches cell outlines and granules with clean exterior alpha on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/intestinal-crypt/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/intestinal-crypt/inspection.webm"
+      }
     },
     "alveolus": {
       "name": "alveolus",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/alveolus-bioart-transparent.png",
+      "svg": "svg/alveolus-bioart-traced.svg",
+      "png_sha256": "b4cc3684d66de08e0cb8d67fcff9dee620cd6cc15e1ffa0efe83885405ea3180",
+      "svg_sha256": "9b85896cfdd47ed0a7c5308461774a389e7d35957ddd7125def81f8c0e78b422",
+      "original_sha256": "9d77e3b601e30f4074db8534f40a53876537b531762d437184ab66ee7663508b",
+      "png_dimensions": [
+        1828,
+        1828
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        378,
+        321,
+        315,
+        368
+      ],
+      "svg_paths": 18205,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/alveolus/prompt.json",
+      "qa": "qa/inventory/alveolus",
+      "visual_review": "Corrected cuboidal type-II cells, separate macrophage, empty airspace and exterior capillaries preserved. SVG slightly accentuates wall-cell boundaries but remains comparable. Complete neck and exterior transparency verified.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/alveolus/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/alveolus/inspection.webm"
+      }
     },
     "renal-glomerulus": {
       "name": "renal glomerulus",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/renal-glomerulus-bioart-transparent.png",
+      "svg": "svg/renal-glomerulus-bioart-traced.svg",
+      "png_sha256": "4cda51332ace8884b303b34ce38d58b73f60f393e262ecd48a6f2ab187b38296",
+      "svg_sha256": "79668e743dfa57e6aa17b68c1c43c1b1d7d5fc25252f38c99579a67bde862134",
+      "original_sha256": "79019479d7d76a17ae53b6e799fd440276cf559ddb8731ad00370b23043c5c85",
+      "png_dimensions": [
+        1780,
+        1780
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        268,
+        271,
+        269,
+        272
+      ],
+      "svg_paths": 22153,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/renal-glomerulus/prompt.json",
+      "qa": "qa/inventory/renal-glomerulus",
+      "visual_review": "Two red arterioles, capillary tuft with podocytes, urinary space and proximal tubule outlet retained in SVG. Full vessel ends and capsule visible; no exterior background on either composite.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/renal-glomerulus/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/renal-glomerulus/inspection.webm"
+      }
     },
     "nephron": {
       "name": "nephron",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/nephron-bioart-transparent.png",
+      "svg": "svg/nephron-bioart-traced.svg",
+      "png_sha256": "206c8b2137549abc8eaf6192bc60dc2894d43f70096067cb8aa63e03874b3fe4",
+      "svg_sha256": "591f9217a81038f68380330ff05e4e6d1e67154254d83bb684bc52c98f0c07de",
+      "original_sha256": "dc532d6da18580e2cce6829a618407d59cfffa554480221894ebff4440150c76",
+      "png_dimensions": [
+        1840,
+        1840
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        320,
+        348,
+        291,
+        354
+      ],
+      "svg_paths": 6602,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/nephron/prompt.json",
+      "qa": "qa/inventory/nephron",
+      "visual_review": "Continuous capsule-to-proximal-to-Henle-to-distal-to-collecting route verified, no false branches or closed loops. SVG preserves tube connections and all cut ends, transparent gaps on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nephron/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nephron/inspection.webm"
+      }
     },
     "liver-lobule": {
       "name": "liver lobule",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/liver-lobule-bioart-transparent.png",
+      "svg": "svg/liver-lobule-bioart-traced.svg",
+      "png_sha256": "d92863e4760c00e2049dba05ff13ddf670968be6474abe5668254e2021c4fb54",
+      "svg_sha256": "0e746aeabc55d3cbbff4a46bfc64719f04ef9a83ee0e64dffd128d1684a739f5",
+      "original_sha256": "5ffede211d8867478f15a0ac8be005fbe75b132841005ab24b888e8550ec8dfd",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        307,
+        327,
+        292,
+        319
+      ],
+      "svg_paths": 32244,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/liver-lobule/prompt.json",
+      "qa": "qa/inventory/liver-lobule",
+      "visual_review": "Verified one central vein and six portal triads, each with blue/red/green components. SVG preserves radial plates, sinusoidal channels and full prism edges with clean alpha on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/liver-lobule/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/liver-lobule/inspection.webm"
+      }
     },
     "pancreatic-islet": {
       "name": "pancreatic islet",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/pancreatic-islet-bioart-transparent.png",
+      "svg": "svg/pancreatic-islet-bioart-traced.svg",
+      "png_sha256": "1a3f1b72a2532333fd7d58ed8c407ba9e1274e852e86fa137958fa602d350d78",
+      "svg_sha256": "d98d6393238d13516d8dd9ae08f2412d1b264b3d29f672313923db7e6abbae0e",
+      "original_sha256": "ed0e08551113088dea41f742b49d9086ae9ed5a0923b1149213995a81b79f1f6",
+      "png_dimensions": [
+        1828,
+        1828
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        261,
+        334,
+        317,
+        372
+      ],
+      "svg_paths": 32474,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/pancreatic-islet/prompt.json",
+      "qa": "qa/inventory/pancreatic-islet",
+      "visual_review": "Intermingled endocrine-cell colors, distinct cell boundaries, granules and intervening capillaries retained in SVG. Complete cluster and two cut vascular ends with clean alpha verified on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pancreatic-islet/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pancreatic-islet/inspection.webm"
+      }
     },
     "hair-follicle": {
       "name": "hair follicle",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/hair-follicle-bioart-transparent.png",
+      "svg": "svg/hair-follicle-bioart-traced.svg",
+      "png_sha256": "0abe81e5bfd1955444a20dec9fbd73f4491144a30c4c3a284743dd87767918f2",
+      "svg_sha256": "4864809c3928c66ac3e03aa538b8a84a66240f1433b9d2ffe97956739b6bcb09",
+      "original_sha256": "5feadff6b2631251c4b1abe914eaa2ab25630319d4f150bb49ab760e34156e08",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        316,
+        593,
+        321
+      ],
+      "svg_paths": 10030,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/hair-follicle/prompt.json",
+      "qa": "qa/inventory/hair-follicle",
+      "visual_review": "Complete shaft tip, bulb, matrix and papilla, gland duct and muscle attachment retained in SVG. Fine outlines and basal vessel ends remain visible with transparent padding on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hair-follicle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hair-follicle/inspection.webm"
+      }
     },
     "skin-cross-section": {
       "name": "skin cross-section",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/skin-cross-section-bioart-transparent.png",
+      "svg": "svg/skin-cross-section-bioart-traced.svg",
+      "png_sha256": "a33a20ef6bfc5272813365f399c0fe7038be2b9da95640f5c7909bd75b01c36e",
+      "svg_sha256": "4aa4df3eedfca868d8ec345ad7371a7badb75d8fffe7d8b5989cdb9b7b883ae1",
+      "original_sha256": "d80f265d3a29ef19ba5ba9776b513df10f017e9cd00ae0641efbbc90b9f40351",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        313,
+        579,
+        307
+      ],
+      "svg_paths": 34237,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/skin-cross-section/prompt.json",
+      "qa": "qa/inventory/skin-cross-section",
+      "visual_review": "Epidermal, dermal and fat layers, separate sweat duct, follicle and vessels remain clear in SVG. Full hair tips and block edges intact; no visible exterior background on both composites.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/skin-cross-section/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/skin-cross-section/inspection.webm"
+      }
     },
     "skeletal-muscle-fascicle": {
       "name": "skeletal muscle fascicle",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/skeletal-muscle-fascicle-bioart-transparent.png",
+      "svg": "svg/skeletal-muscle-fascicle-bioart-traced.svg",
+      "png_sha256": "f0e0e33b237bcd6c1300e5f8dc3d75fa2cd0703f457a315e4b6730f92202092c",
+      "svg_sha256": "ff0a39063d7a5f016e56573446dad85f56eb6d26915f9b60d451d7a46ba64436",
+      "original_sha256": "e02eff18cc925959f8aa524150fca4e8fa2f27a919c49ae1af8bb887f49dc55d",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        370,
+        580,
+        341,
+        578
+      ],
+      "svg_paths": 43291,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/skeletal-muscle-fascicle/prompt.json",
+      "qa": "qa/inventory/skeletal-muscle-fascicle",
+      "visual_review": "Striations, peripheral nuclei, fiber cross-sections and connective tissue sheaths remain distinct in SVG. Complete fascicle and vessel ends, clean alpha on both backgrounds; detailed texture retains comparable appearance.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/skeletal-muscle-fascicle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/skeletal-muscle-fascicle/inspection.webm"
+      }
     },
     "peripheral-nerve-bundle": {
       "name": "peripheral nerve bundle",

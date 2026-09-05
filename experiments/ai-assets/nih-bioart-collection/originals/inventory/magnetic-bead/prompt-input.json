@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a magnetic separation bead, matching NIH BioArt visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. Complete asset centered with generous transparent padding, only requested object and intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects or cast shadows. One smooth spherical brown polymer microsphere with a front-right quarter cutaway revealing numerous small dark charcoal iron-oxide inclusions evenly embedded throughout a solid warm tan polymer matrix. Exterior smooth warm brown with fine dark outline, no attached antibodies or other ligands. Cut face clearly solid tan material dotted with many small charcoal inclusions, no hollow cavity. Restrained satin gradients and soft highlights, clean biomedical illustration. No magnet, field lines, plus/minus signs, letters or other objects. Transparent RGBA PNG.",
+  "refinements": [
+    "Convert the current photorealistic surface into clean NIH BioArt vector-like illustration. Smooth satin brown exterior, smooth flat tan cutaway matrix, charcoal inclusions rendered as smooth round dots with one soft highlight each. Remove ALL grain, pores, rocky texture and photographic detail. Fine dark brown outlines, gentle gradients. Preserve cutaway shape and distributed inclusions. Transparent RGBA PNG.",
+    "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration."
+  ],
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-51f3b304-8d82-49dc-b24a-e8f769f9a911.png",
+  "archetype": "Magnetic polymer separation bead cutaway with distributed iron-oxide inclusions. Inclusion dimensions and loading are exaggerated symbolic details, not a manufacturer's product or measured microstructure."
+}

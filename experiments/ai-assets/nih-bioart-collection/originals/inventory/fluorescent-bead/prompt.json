@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a fluorescent polymer bead, matching NIH BioArt visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. Complete asset centered with generous transparent padding, only requested object and intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects or cast shadows. One round smooth emerald-green fluorescent microsphere shown with a front-right quarter cutaway. The cut face is solid pale mint-green polymer uniformly embedded with tiny vivid green dye dots. No hollow cavity, no lipid membrane, no large central core, no magnetic black inclusions. Smooth satin outer emerald surface with one soft pale highlight; cut rim crisp; dye dots small clean circles with restrained bright centers. No glow cloud, no emitted rays or starbursts, no photographic texture. Clean scientific vector-like illustration with subtle smooth gradients. Transparent RGBA PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-1fce60bc-d4a0-4884-bcb9-947902a9043e.png",
+  "archetype": "Dye-loaded fluorescent polymer microsphere cutaway. Green dots symbolize distributed fluorophores in a solid matrix; their size, concentration and color are schematic, not measured emission or bead calibration.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "fluorescent-bead",
+  "name": "fluorescent bead",
+  "original": "originals/inventory/fluorescent-bead/generated.png",
+  "original_sha256": "c77273bc6c2b285202da6215bb66af0b0bacefe1c695f73f198ea285c73a0cc3"
+}

@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of biotin, matching NIH BioArt visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. Use attached PubChem biotin structure for exact heavy-atom connectivity. Render black skeletal bonds as smooth violet tubes, with implicit carbon corners. Replace N letters by exactly TWO small blue nitrogen spheres, S by ONE golden sulfur sphere, O letters by exactly THREE coral-red oxygen spheres. Omit all H atoms and letters, all wedges and dashed hydrogen bonds. Keep the two fused FIVE-membered rings and their shared bond, the ureido carbonyl double bond to oxygen on right, and the four-methylene side chain leading upper-left to terminal carboxyl carbon with one double-bond oxygen and one single-bond oxygen. No extra rings or atoms, no text or labels. Complete asset centered with generous transparent padding, no arrows, borders, scenery, unrelated objects or cast shadows. Smooth satin gradients, crisp outlines and modest highlights. Transparent RGBA PNG.",
+  "alpha_refinement": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-158740ca-feb1-4af1-ab97-efb15a154cf6.png",
+  "archetype": "Biotin heavy-atom skeletal connectivity: fused five-member sulfur and ureido rings, two nitrogens, three oxygens, four-methylene valeric-acid side chain. Hydrogens and stereochemical encoding omitted; not a stereochemical model.",
+  "references": [
+    "https://pubchem.ncbi.nlm.nih.gov/compound/171548"
+  ],
+  "layout_reference": "originals/inventory/biotin/pubchem-structure-reference.png"
+}

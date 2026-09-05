@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an alveolus, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Show ONE pulmonary alveolus as a delicate rounded cup in cutaway, with a short open neck to the alveolar duct at upper left. Extremely thin pale pink type-I epithelial wall with flattened violet nuclei; two small cuboidal teal type-II cells embedded in wall and protruding into air space. A fine red-blue capillary network wraps the EXTERIOR of the alveolar wall, a few red erythrocytes visible inside cutaway capillary segments. Large mostly empty air space, not filled with cells. One small violet alveolar macrophage rests on inner lower wall. No entire lung, no multiple grape-like alveolar cluster, no arrows. Smooth matte vector-like illustration, crisp thin outlines, subtle broad gradients and no grain. Transparent PNG alpha outside.",
+  "refinement": "Correct both teal type-II pneumocytes: make them compact cuboidal epithelial cells embedded in and continuous with the pink alveolar wall, with a smooth violet nucleus and only a few very short apical microvilli on the exposed air-facing edge. Remove their long finger projections and round immune-cell-like appearance. Keep the separate violet macrophage at bottom. Preserve exterior capillary network, red cells, open air space and complete cutaway neck. Smooth every surface to matte vector-like forms with clean outlines and restrained broad gradients, no grain or wet glare. True PNG alpha outside.",
+  "refinement_2": "Keep this illustration. Remove the tiny finger-like projections from both small cuboidal type-II cells entirely; use smooth exposed apical faces. Recolor only those two cuboidal cell cytoplasms pale teal so they remain distinct from the pink type-I wall, retaining their violet nuclei and wall attachments. Preserve all other anatomy. Remove checkerboard background and output a transparent PNG with real alpha.",
+  "alpha_request": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-17fd5702-081b-484e-b0bb-05373ccfcf73.png",
+  "archetype": "Single alveolar cutaway with thin type-I wall, two cuboidal type-II cells, exterior capillaries and one macrophage. Cell counts and vascular routing schematic, type-II microvilli omitted. Red-blue vessel colors are symbolic, not quantitative oxygenation.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "alveolus",
+  "name": "alveolus",
+  "original": "originals/inventory/alveolus/generated.png",
+  "original_sha256": "9d77e3b601e30f4074db8534f40a53876537b531762d437184ab66ee7663508b"
+}

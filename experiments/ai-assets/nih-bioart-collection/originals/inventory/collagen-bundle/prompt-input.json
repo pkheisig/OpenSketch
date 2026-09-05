@@ -1,0 +1,7 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a collagen bundle, matching NIH BioArt visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. Use supplied collagen fibril as architectural reference only. Show a coherent gently curved bundle of about seven distinct parallel golden-tan collagen fibrils grouped lengthwise. Each fibril has repeated subtle light/dark transverse banding and a few longitudinal ridges. Several fibrils separate slightly at the near left cut end so their circular solid cut faces are individually visible. Opposite end complete, gently splayed but not frayed into hairs. No sheath, no muscle red stripes, no cells, no labels, text, arrows, borders, scenery or cast shadows. Smooth vector-like satin surfaces with warm-brown fine outlines, no grain. Complete bundle centered diagonally with generous transparent padding. Transparent RGBA PNG.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-86d4632d-6a28-4e8b-a597-944bb6cd5754.png",
+  "style_reference": "png/collagen-fibril-bioart-transparent.png",
+  "archetype": "Bundle of parallel banded collagen fibrils. Seven near-end fibrils visible, rear ends partly occluded. Banding and cross-section dots are schematic, not calibrated D-period spacing or molecular counts."
+}

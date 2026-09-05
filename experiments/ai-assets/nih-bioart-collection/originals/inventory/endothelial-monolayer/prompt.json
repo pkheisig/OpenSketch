@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an endothelial monolayer, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Depict an isolated oblique top-view patch of continuous vascular endothelium, about ten very thin flattened elongated polygonal cells tightly apposed in one layer. Pale teal cytoplasm with crisp darker teal cell boundaries and one smooth elongated violet nucleus per cell, slightly bulging above otherwise flat surfaces. All long cell axes generally aligned diagonally. Very thin rose basal lamina visible at the lower edge only. No pores, no tall cuboidal cells, no vessel tube, no red blood cells, no cilia or microvilli. Complete patch, all cells intact. Smooth matte vector-like forms, broad subtle gradients, no photographic texture. True transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-eda2e4b0-508c-4b4f-996b-f3d8f2c1227c.png",
+  "archetype": "Continuous vascular endothelial monolayer with ten aligned flattened cells, one elongated nucleus each, and thin basal lamina. Generic morphology; molecular junctions and organelles omitted.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "endothelial-monolayer",
+  "name": "endothelial monolayer",
+  "original": "originals/inventory/endothelial-monolayer/generated.png",
+  "original_sha256": "2d9d04732fb66ae1247419bc686778193ea5934f0f16c1d8f75812611bbb04d9"
+}

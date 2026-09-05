@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a fibrin clot, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Depict a small three-dimensional irregular porous clot composed ONLY of interconnected branching golden amber fibrin fibers. Multiple connected strands of slightly varied thickness form an open irregular mesh, clear branch points, open transparent pores, no regular woven grid. Entire rounded patch complete with all fiber ends visible. No cells, platelets, blood vessel or background. Smooth matte vector-like biomedical illustration with crisp fine darker amber outlines, broad subtle gradients and restrained highlights. Real transparent PNG alpha.",
+  "refinement": "Refine this into a clean biomedical illustration of a fibrin network. Replace all broad triangular webbed membranes at junctions with slender round cylindrical fibers meeting at narrow branch points. The clot consists of fine connected thread-like fibrin strands, not sheets or bone trabeculae. Preserve the irregular three-dimensional open mesh and complete silhouette. Smooth matte amber fibers, thin dark amber outlines and subtle broad highlights, no rough texture or metallic glare. Every pore and all exterior background must be fully transparent PNG alpha.",
+  "alpha_request": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-31b08843-9a35-4475-a06e-c8b4a3329cdc.png",
+  "archetype": "Open three-dimensional fibrin fiber network without cells. Fiber thickness, branch spacing and overall patch size are schematic.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "fibrin-clot",
+  "name": "fibrin clot",
+  "original": "originals/inventory/fibrin-clot/generated.png",
+  "original_sha256": "ff7cc2c98d4e488fc80c9c8c2a810f17d0bf59aace54e596ee1274e638852b02"
+}

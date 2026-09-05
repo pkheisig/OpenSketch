@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a nephron, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Clear schematic layout of ONE nephron with one unbranched continuous tubule route: upper left small pink Bowman capsule enclosing red glomerular tuft with two short red arterioles; urinary pole connects to a GOLD proximal convoluted tubule with three simple bends beside capsule; gold tube then descends downward as a slender loop limb, makes ONE U-turn at bottom and ascends as a TEAL limb; teal ascending limb reaches upper right, becomes a short VIOLET distal convoluted tubule with two bends returning near glomerulus, then connects via a short segment into the side of ONE vertical coral collecting duct at far right. Collecting duct has open cut ends top and bottom. No duplicate nephrons, no tubule branching or closed loops, no extraneous capillary web. Tube route easy to follow with no overlapping tangles. Smooth matte shapes, thin crisp outlines and broad gradients, no texture. Transparent PNG alpha.",
+  "refinement": "Preserve the single continuous nephron route and one bottom U-turn. Remove all three short unused side stubs from the vertical coral collecting duct, leaving a smooth straight duct with only the one violet nephron connection. Extend the upper violet distal tubule leftward in a broad hairpin so its leftmost bend comes close to the right side of the pink glomerular capsule, then returns across the top to join collecting duct at right; maintain a visible gap from the gold proximal tubule, no crossing or branching. Gold proximal segment and teal ascending limb remain connected as before. Smooth matte colors, crisp thin outlines, restrained gradients, transparent PNG alpha outside.",
+  "alpha_request": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-5b6570e5-361c-4e0a-8af8-c8f1b2408101.png",
+  "archetype": "Single nephron route with glomerulus, proximal convolution, one Henle loop, distal segment returning near corpuscle and connection to collecting duct. Mesoscale schematic; thin/thick limb subsegments, juxtaglomerular apparatus, peritubular vessels and epithelial ultrastructure omitted. Collecting duct included for context although shared by multiple nephrons anatomically.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "nephron",
+  "name": "nephron",
+  "original": "originals/inventory/nephron/generated.png",
+  "original_sha256": "dc532d6da18580e2cce6829a618407d59cfffa554480221894ebff4440150c76"
+}

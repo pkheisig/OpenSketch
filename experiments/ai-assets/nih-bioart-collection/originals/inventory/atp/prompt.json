@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of ATP, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Use the attached approved nucleotide as the exact visual template. Preserve its teal pentagonal ribose and violet fused five/six-ring purine symbol connected through the five-ring part. Extend the gold phosphate chain leftwards to EXACTLY THREE gold spherical phosphate groups total in a single unbranched chain. Sugar connects to nearest phosphate, that phosphate to middle, middle to terminal phosphate. All three spheres same size and shade, short connectors. Keep the entire longer molecule centered with generous padding. Group-level schematic, no atom letters or chemical charges. True transparent alpha PNG.",
+  "reference_image": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-c6d18bce-a0d3-4f07-bdff-615a8842fdc2.png",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-0f81acb1-5e39-482a-8b49-4381810cc7f3.png",
+  "archetype": "ATP group-level schematic with three linked phosphate spheres, ribose and adenine symbol. No atomic substituents, charge state or bond energies encoded.",
+  "references": [
+    "https://pubchem.ncbi.nlm.nih.gov/compound/5957"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "atp",
+  "name": "ATP",
+  "original": "originals/inventory/atp/generated.png",
+  "original_sha256": "6ac5d7ccc67564ba0ccb43cfa49b67acedb3e6f548aef227ea0d7ad8a8062526"
+}
