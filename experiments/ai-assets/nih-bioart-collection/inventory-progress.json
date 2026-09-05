@@ -6882,22 +6882,113 @@
     "generic-cancer-cell": {
       "name": "generic cancer cell",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/generic-cancer-cell-bioart-transparent.png",
+      "svg": "svg/generic-cancer-cell-bioart-traced.svg",
+      "png_sha256": "1272df8ddafd720a64b3409e6e60aa9489035824c1d55a085bad127224524760",
+      "svg_sha256": "13fc9b27a3322ae4256301a01a4fa415e20c292946bcc6022435eeb781b07d13",
+      "original_sha256": "132a49f1348a766d4015e0adc63529e537d5759712b3372328379f692874288e",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        251,
+        251,
+        251
+      ],
+      "svg_paths": 22861,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/generic-cancer-cell/prompt.json",
+      "qa": "qa/inventory/generic-cancer-cell",
+      "visual_review": "Complete isolated atypical-cell schematic with irregular nucleus, two nucleoli and short membrane blebs. No visible background residue on white or dark composites. SVG preserves morphology and color with slight gradient banding; this is not diagnostic of a tumor subtype.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-cancer-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-cancer-cell/inspection.webm"
+      }
     },
     "cancer-stem-like-cell": {
       "name": "cancer stem-like cell",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "generic-cancer-cell",
+      "alias_reason": "Shared unlabeled malignant-cell schematic: stem-like function is not assigned an invented unique organelle or universal cell shape. Tumor-initiating populations are experimentally defined using context-dependent markers and functional assays; reuse is an illustration-design inference, not morphological equivalence across all cancers.",
+      "reference": "https://pubmed.ncbi.nlm.nih.gov/12629218/",
+      "png": "png/generic-cancer-cell-bioart-transparent.png",
+      "svg": "svg/generic-cancer-cell-bioart-traced.svg",
+      "png_sha256": "1272df8ddafd720a64b3409e6e60aa9489035824c1d55a085bad127224524760",
+      "svg_sha256": "13fc9b27a3322ae4256301a01a4fa415e20c292946bcc6022435eeb781b07d13"
     },
     "multinucleated-giant-cell": {
       "name": "multinucleated giant cell",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/multinucleated-giant-cell-bioart-transparent.png",
+      "svg": "svg/multinucleated-giant-cell-bioart-traced.svg",
+      "png_sha256": "79d63712d42c4b3072d362d53e8483e6b6f6b6b1aac73b90dded2358acecaf4c",
+      "svg_sha256": "96fd818ee05d23298c5e4e82682a145dd6252ac0ebd7a97d488387fed23dd441",
+      "original_sha256": "db56baa6143bd9c4f4c7faac617297274ab6bb29173b022085cbc4570e38e7b8",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        360,
+        575,
+        339,
+        575
+      ],
+      "svg_paths": 21420,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/multinucleated-giant-cell/prompt.json",
+      "qa": "qa/inventory/multinucleated-giant-cell",
+      "visual_review": "Seven separate nuclei within one shared continuous cell body; all short pseudopods complete. White and dark browser composites show clean transparency with no purple glow. SVG retains nuclei, small organelles and perimeter; count and arrangement are schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/multinucleated-giant-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/multinucleated-giant-cell/inspection.webm"
+      }
     },
     "mitotic-cell": {
       "name": "mitotic cell",
       "category": "3. Cell states and morphology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/mitotic-cell-bioart-transparent.png",
+      "svg": "svg/mitotic-cell-bioart-traced.svg",
+      "png_sha256": "4cca09a67c19ba8f32a340d1e6848d51394a168868f476b52b13082859395475",
+      "svg_sha256": "f6528c0190cca03475f157394a0d7e1e35a4ed47682907db42cddecb33b3424a",
+      "original_sha256": "9cfa7223beeb712841dbe664c5960bfc8bb93a6a3e064e3c6f11628ad6046c76",
+      "png_dimensions": [
+        1805,
+        1805
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        292,
+        258,
+        292,
+        288
+      ],
+      "svg_paths": 28353,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/mitotic-cell/prompt.json",
+      "qa": "qa/inventory/mitotic-cell",
+      "visual_review": "Metaphase schematic with five visible duplicated chromosomes at the central plate, bipolar spindle and no nuclear envelope. Reduced chromosome count is explicitly documented. Complete perimeter and clean light/dark transparency. SVG preserves thin spindle fibers and centromere attachments with mild gradient banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mitotic-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mitotic-cell/inspection.webm"
+      }
     },
     "cytokinetic-cell": {
       "name": "cytokinetic cell",
