@@ -134,6 +134,9 @@ try {
 }
 const moduleTypes = await readFile(join(releaseRoot, "module/opensketch-module.d.ts"), "utf8");
 for (const service of [
+  'export type CanvasUnit = "px" | "mm" | "in";',
+  "export interface CanvasSettings {",
+  "canvas: CanvasSettings;",
   "projects: ProjectRepository;",
   "importedMedia: ImportedMediaRepository;",
   "templates: AssetTemplateRepository;",
@@ -166,6 +169,14 @@ for (const moduleFile of moduleFiles) {
   }
 }
 const moduleSource = moduleJavaScript.join("\n");
+const runtimeManifestMatch = moduleSource.match(
+  /id:\s*["']opensketch["'],\s*displayName:\s*["']OpenSketch["'],\s*version:\s*["']([^"']+)["']/
+);
+if (!runtimeManifestMatch) {
+  errors.push("bundled runtime manifest is missing its versioned OpenSketch identity");
+} else if (runtimeManifestMatch[1] !== packageJson.version) {
+  errors.push("bundled runtime manifest version differs from package version");
+}
 const externalReactSpecifiers = new Set();
 for (const match of moduleSource.matchAll(/\bfrom\s+["']((?:react|react-dom)(?:\/[^"']+)?)['"]/g)) {
   externalReactSpecifiers.add(match[1]);

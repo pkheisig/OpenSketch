@@ -1,5 +1,6 @@
 import { createElement, useState, type Dispatch, type SetStateAction } from "react";
 import { EDITOR_CORE_VERSION, OpenSketch_FORMAT_VERSION } from "@workspace/editor-core";
+import appPackage from "../../package.json";
 import { App } from "@/app/App";
 import type {
   OpenSketchApplicationContext,
@@ -21,7 +22,7 @@ export const OPENSKETCH_MODULE_MANIFEST: OpenSketchModuleManifest = {
   schemaVersion: 1,
   id: "opensketch",
   displayName: "OpenSketch",
-  version: "0.1.0",
+  version: appPackage.version,
   contractVersion: OPENSKETCH_APPLICATION_CONTRACT_VERSION,
   entry: "OpenSketchApplication",
   stylesheetEntry: "./module/opensketch-module.css",

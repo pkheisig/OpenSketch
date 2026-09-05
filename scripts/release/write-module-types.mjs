@@ -15,6 +15,19 @@ export interface RenderHandle {
 
 export type Theme = "light" | "dark";
 
+export type CanvasUnit = "px" | "mm" | "in";
+
+export interface CanvasSettings {
+  width: number;
+  height: number;
+  unit: CanvasUnit;
+  dpi: number;
+  background: string;
+  transparent: boolean;
+  grid: boolean;
+  doubleClickCreatesText: boolean;
+}
+
 export interface ProjectRecord {
   format: "OpenSketch";
   formatVersion: number;
@@ -23,7 +36,7 @@ export interface ProjectRecord {
   name: string;
   createdAt: string;
   updatedAt: string;
-  canvas: Record<string, unknown>;
+  canvas: CanvasSettings;
   objects: Record<string, unknown>;
   uploads: ImportedMediaRecord[];
   usedAssetIds: string[];
