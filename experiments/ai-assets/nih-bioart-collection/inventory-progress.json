@@ -6672,17 +6672,101 @@
     "podocyte": {
       "name": "podocyte",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/podocyte-bioart-transparent.png",
+      "svg": "svg/podocyte-bioart-traced.svg",
+      "png_sha256": "4330cefd42c04f007ca04ecb8d36e41b21b5546f28f7110056a6715f92d78090",
+      "svg_sha256": "aa1d57c9b21600add90eb0698a7e18291256967f412493012aae3a802b58ef06",
+      "original_sha256": "fecf9b5e9d02dfeeddb12d10c14cd5412205be641b9569e71d6bf52d8dbc2554",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        326,
+        578,
+        327,
+        579
+      ],
+      "svg_paths": 11318,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/podocyte/prompt.json",
+      "qa": "qa/inventory/podocyte",
+      "visual_review": "Single-cell schematic retains broad primary branches and many short narrow foot processes with open gaps. PNG and editable path SVG preserve complete silhouette and intrinsic organelles on white/dark backgrounds with transparent padding. Neighboring cells and basement membrane omitted; process arrangement schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/podocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/podocyte/inspection.webm"
+      }
     },
     "renal-tubular-epithelial-cell": {
       "name": "renal tubular epithelial cell",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/renal-tubular-epithelial-cell-bioart-transparent.png",
+      "svg": "svg/renal-tubular-epithelial-cell-bioart-traced.svg",
+      "png_sha256": "9a7c184d31487d060c647ccbf4bd849c161003862665966c4af2592da4b31548",
+      "svg_sha256": "5a24cd6eaa28d90cacce8740a086488890b6a249f285d514a1c1c973d6dd269b",
+      "original_sha256": "68d0b789dcc31f238368bdd1ec03214ba308bd4c0aa3cf5602314c913c15a7ca",
+      "png_dimensions": [
+        2018,
+        2018
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        288,
+        463,
+        370,
+        484
+      ],
+      "svg_paths": 22568,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/renal-tubular-epithelial-cell/prompt.json",
+      "qa": "qa/inventory/renal-tubular-epithelial-cell",
+      "visual_review": "Representative proximal tubular cell: cuboidal body, short apical brush border, central nucleus and basal mitochondria among infoldings. PNG and editable path SVG retain complete outline and polarized details on white/dark backgrounds with transparent padding. Not intended to represent every nephron segment.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/renal-tubular-epithelial-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/renal-tubular-epithelial-cell/inspection.webm"
+      }
     },
     "sperm-cell": {
       "name": "sperm cell",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/sperm-cell-bioart-transparent.png",
+      "svg": "svg/sperm-cell-bioart-traced.svg",
+      "png_sha256": "e4ef8b86243081a190cf4d1e364b5c482bf16660074a165e6854fc57e677bd7a",
+      "svg_sha256": "255e20dbf36b221cabbec33e876fa278a0856f0e10f3510e3b1e4be424270e8e",
+      "original_sha256": "d71bcf95c53b1b3dff5486113c18b09c6297fb029f818634b07e6bb1febf7025",
+      "png_dimensions": [
+        2903,
+        2903
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        442,
+        1160,
+        441,
+        1148
+      ],
+      "svg_paths": 2622,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/sperm-cell/prompt.json",
+      "qa": "qa/inventory/sperm-cell",
+      "visual_review": "Complete spermatozoon with acrosomal cap, condensed nuclear head, mitochondrial midpiece and one continuous unbranched tapering flagellum. PNG and path SVG preserve the full tail and colored components on white/dark backgrounds with transparent padding; schematic proportions.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sperm-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sperm-cell/inspection.webm"
+      }
     },
     "oocyte": {
       "name": "oocyte",

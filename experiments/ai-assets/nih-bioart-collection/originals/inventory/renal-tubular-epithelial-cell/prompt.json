@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a renal tubular epithelial cell, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. Use a representative proximal tubular epithelial cell in side cutaway: one cuboidal cell with pale peach cytoplasm, a dense short apical brush border of microvilli at the top, one round violet nucleus near the center, numerous elongated pink mitochondria aligned among deep basal membrane infoldings at the bottom, a few lavender ER stacks and small apical endocytic vesicles. Distinct apical and basal polarity, microvilli short and densely packed, not long motile cilia. Only one cell, no tubule ring, lumen, basement membrane, neighboring cells, blood vessel or urine droplets. Matte smooth filled forms, thin crisp plum/coral outlines, restrained gradients, no photorealistic grain or glossy plastic. Complete cell including microvilli and basal folds centered with generous true transparent padding; no text, labels, arrows, borders, scenery, unrelated objects, cast shadows, glow or checkerboard.",
+  "style_refinement": "Redraw renal tubular epithelial cell image 1 in the clean matte NIH BioArt style of epithelial cell image 2. Image 2 is style reference only. Correct proportions: make the main cell body cuboidal, approximately as wide as tall. Shorten the apical microvilli to a dense brush border about 10 percent of the body height. Show basal membrane infoldings extending into the lower quarter of the cell, not long dangling fingers. Keep one central violet nucleus, numerous elongated pink mitochondria between basal folds, a few lavender ER stacks and small apical vesicles. Smooth peach filled forms, thin crisp plum/coral outlines, restrained gradients. Remove grain, mottled nuclear texture, glossy plastic and glow. Complete single cell with all tips visible, generous transparent padding, no neighboring cells, basement membrane, ducts, text, labels, arrows, shadows or checkerboard.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "archetype": "Representative proximal tubular epithelial cell, not every renal tubular segment.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-80eddd5a-1db5-43c2-9607-c7c99006f249.png",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "renal-tubular-epithelial-cell",
+  "name": "renal tubular epithelial cell",
+  "original": "originals/inventory/renal-tubular-epithelial-cell/generated.png",
+  "original_sha256": "68d0b789dcc31f238368bdd1ec03214ba308bd4c0aa3cf5602314c913c15a7ca"
+}
