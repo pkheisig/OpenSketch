@@ -1,8 +1,8 @@
 # Inventory production progress
 
-60 of 768 unique inventory names covered across 770 checklist entries.
+63 of 768 unique inventory names covered across 770 checklist entries.
 
-These cover 56 distinct PNG/SVG pairs and 4 explicit archetype aliases. Alias reasons are recorded in the ledger.
+These cover 59 distinct PNG/SVG pairs and 4 explicit archetype aliases. Alias reasons are recorded in the ledger.
 The inventory files currently contain 770 checklist rows; their prose count is stale. Two exact repeated names share a single asset. The existing ten approved pairs are preserved. Completion requires a saved PNG, editable SVG, file validation, and visual review.
 
 Production remains on the experimental branch. Each asset is generated as a transparent PNG, then traced and reviewed on light and dark backgrounds. Completed assets are pushed periodically. The full inventory is still in progress.
@@ -64,6 +64,9 @@ Production remains on the experimental branch. Each asset is generated as a tran
 | cancer stem-like cell | [PNG](png/generic-cancer-cell-bioart-transparent.png) | [SVG](svg/generic-cancer-cell-bioart-traced.svg) | Reuses generic-cancer-cell: [rationale](https://pubmed.ncbi.nlm.nih.gov/12629218/) |
 | multinucleated giant cell | [PNG](png/multinucleated-giant-cell-bioart-transparent.png) | [SVG](svg/multinucleated-giant-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/multinucleated-giant-cell/comparison.png) |
 | mitotic cell | [PNG](png/mitotic-cell-bioart-transparent.png) | [SVG](svg/mitotic-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mitotic-cell/comparison.png) |
+| cytokinetic cell | [PNG](png/cytokinetic-cell-bioart-transparent.png) | [SVG](svg/cytokinetic-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cytokinetic-cell/comparison.png) |
+| apoptotic cell | [PNG](png/apoptotic-cell-bioart-transparent.png) | [SVG](svg/apoptotic-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/apoptotic-cell/comparison.png) |
+| necrotic cell | [PNG](png/necrotic-cell-bioart-transparent.png) | [SVG](svg/necrotic-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/necrotic-cell/comparison.png) |
 | mitochondrion | [PNG](png/mitochondrion-bioart-transparent.png) | [SVG](svg/mitochondrion-bioart-traced.svg) | Approved earlier batch |
 | generic IgG antibody | [PNG](png/igg-antibody-bioart-transparent.png) | [SVG](svg/igg-antibody-bioart-traced.svg) | Approved earlier batch |
 | CD8 alpha-beta receptor | [PNG](png/cd8-receptor-bioart-transparent.png) | [SVG](svg/cd8-receptor-bioart-traced.svg) | Approved earlier batch |

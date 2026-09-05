@@ -6993,17 +6993,101 @@
     "cytokinetic-cell": {
       "name": "cytokinetic cell",
       "category": "3. Cell states and morphology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cytokinetic-cell-bioart-transparent.png",
+      "svg": "svg/cytokinetic-cell-bioart-traced.svg",
+      "png_sha256": "f6a21c46327a7a4e8399d5aaa619a8039e20c6d73882e21dea3af997d3199bfd",
+      "svg_sha256": "0b401c56fceb9f7f3675302a2ef44e25637581cc9d91c777bf3b64f2bf1f7423",
+      "original_sha256": "1d16057ab304d7ff3930bf7a11ee6655aeeaf923aefd8afb367fac99e6a5d658",
+      "png_dimensions": [
+        2484,
+        2484
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        357,
+        807,
+        387,
+        839
+      ],
+      "svg_paths": 19259,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cytokinetic-cell/prompt.json",
+      "qa": "qa/inventory/cytokinetic-cell",
+      "visual_review": "Two daughter lobes remain joined by a narrow membrane-covered bridge with a central midbody and spindle remnants. One reformed nucleus per lobe. Complete silhouette and clean white/dark transparency; SVG retains connecting bridge and fine fibers with slight gradient banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cytokinetic-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cytokinetic-cell/inspection.webm"
+      }
     },
     "apoptotic-cell": {
       "name": "apoptotic cell",
       "category": "3. Cell states and morphology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/apoptotic-cell-bioart-transparent.png",
+      "svg": "svg/apoptotic-cell-bioart-traced.svg",
+      "png_sha256": "87226761956a90f7053f0da99add064bf6d5b285c8058379c643972837a8989d",
+      "svg_sha256": "1a1755f421b7d2f8ff589343ebad71395d5310689fab86a170cad5c2e70ed985",
+      "original_sha256": "d2fde58b09306411af816682b54ceb0faeb8101757b7b67384ee0dd614c2504d",
+      "png_dimensions": [
+        1825,
+        1825
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        304,
+        325,
+        279,
+        333
+      ],
+      "svg_paths": 9556,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/apoptotic-cell/prompt.json",
+      "qa": "qa/inventory/apoptotic-cell",
+      "visual_review": "Attached membrane blebs and three irregular condensed chromatin fragments remain clear in PNG and SVG. Complete silhouette, no normal nucleoli inside fragments, no visible background residue on light/dark composites. SVG preserves contours with mild gradient banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/apoptotic-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/apoptotic-cell/inspection.webm"
+      }
     },
     "necrotic-cell": {
       "name": "necrotic cell",
       "category": "3. Cell states and morphology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/necrotic-cell-bioart-transparent.png",
+      "svg": "svg/necrotic-cell-bioart-traced.svg",
+      "png_sha256": "bab2cd873b30f7ca2af866fa7ad723a91bcab1c7218ea4bb0d955a052749f10b",
+      "svg_sha256": "e7082d3f2754542460984e517418d82588b37ab812f82c062be499a772663e48",
+      "original_sha256": "f2155b130a30804b47d97e8edcabd1ccfe261832a497c96e99a490a4ab7007e8",
+      "png_dimensions": [
+        1877,
+        1877
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        268,
+        374,
+        316,
+        367
+      ],
+      "svg_paths": 24452,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/necrotic-cell/prompt.json",
+      "qa": "qa/inventory/necrotic-cell",
+      "visual_review": "Swollen cell with pale vacuoles, sparse mitochondrial cristae, fading nuclear material and a clear local plasma-membrane rupture. Complete asset and clean alpha including the rupture on white/dark. SVG retains damage morphology and organelle layout, with slightly stronger outlines and mild gradient banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/necrotic-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/necrotic-cell/inspection.webm"
+      }
     },
     "senescent-cell": {
       "name": "senescent cell",
