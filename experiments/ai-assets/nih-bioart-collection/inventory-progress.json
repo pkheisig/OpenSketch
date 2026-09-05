@@ -6771,22 +6771,113 @@
     "oocyte": {
       "name": "oocyte",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/oocyte-bioart-transparent.png",
+      "svg": "svg/oocyte-bioart-traced.svg",
+      "png_sha256": "1adce908189d1034db808c25ffddd0198df7d89e2e8b4841465840f290acbfdb",
+      "svg_sha256": "047017c6e324fc05730ecc05c48ca194ef69e3b1bdec3dd10086c646a2bf7dbd",
+      "original_sha256": "f1bcb5584d96ef3a13b0bfba069f8c8033a4112e94874b70459754744c1dcdef",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        267,
+        313,
+        291
+      ],
+      "svg_paths": 20929,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/oocyte/prompt.json",
+      "qa": "qa/inventory/oocyte",
+      "visual_review": "Immature primary oocyte schematic with intact germinal vesicle, nucleolus, cortical granules and zona pellucida. PNG and editable path SVG preserve circular outline and internal detail on white/dark backgrounds with transparent padding. No polar body or mature meiotic-stage claim; organelle sizes schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/oocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/oocyte/inspection.webm"
+      }
     },
     "trophoblast": {
       "name": "trophoblast",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/trophoblast-bioart-transparent.png",
+      "svg": "svg/trophoblast-bioart-traced.svg",
+      "png_sha256": "4064b0d79a957f9fdb74cee98795ddbe2b115e3714879e274172a339666cb7bd",
+      "svg_sha256": "67794f31cb8a8ed5deda3fb9f0f57bdb2175479ab2bf125239aae0da2ed6e040",
+      "original_sha256": "37cf2948126a4635383100cfc9244eb14aae94716578837b55da521508a6c431",
+      "png_dimensions": [
+        1819,
+        1819
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        300,
+        312,
+        306,
+        324
+      ],
+      "svg_paths": 19102,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/trophoblast/prompt.json",
+      "qa": "qa/inventory/trophoblast",
+      "visual_review": "Complete mononuclear cytotrophoblast schematic, gently polygonal epithelial outline, one nucleus and intrinsic organelles. Transparent on light and dark backgrounds. SVG preserves component layout and saturated palette, with mild gradient banding at close view.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/trophoblast/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/trophoblast/inspection.webm"
+      }
     },
     "generic-stem-cell": {
       "name": "generic stem cell",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/generic-stem-cell-bioart-transparent.png",
+      "svg": "svg/generic-stem-cell-bioart-traced.svg",
+      "png_sha256": "6baa6f14700a026b4c8278f21b4d64aeec60d59f3785348e93ae4008350fe3e2",
+      "svg_sha256": "107a764f90c1aaed350f50c15fdb899c6b1352561373cd15f1b3f964825b6ffe",
+      "original_sha256": "ede4a25b04861912c72f392c2c324d0ad57cab19c9b6ed8764f4ebf1b19be1e0",
+      "png_dimensions": [
+        1801,
+        1801
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        257,
+        299,
+        295,
+        352
+      ],
+      "svg_paths": 12306,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/generic-stem-cell/prompt.json",
+      "qa": "qa/inventory/generic-stem-cell",
+      "visual_review": "Complete undifferentiated cell schematic, large nucleus with two nucleoli and sparse peripheral organelles. Clean transparency on white and dark. SVG preserves outlines and organelles with slight gradient banding; morphology is illustrative, not diagnostic of stemness.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-stem-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-stem-cell/inspection.webm"
+      }
     },
     "induced-pluripotent-stem-cell": {
       "name": "induced pluripotent stem cell",
       "category": "2. General and specialized mammalian cells",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "generic-stem-cell",
+      "alias_reason": "Deliberate shared undifferentiated-cell schematic for an unlabeled single iPSC. Reprogrammed human iPS cells resemble embryonic stem cells morphologically; reprogramming history has no unique intrinsic icon. This is schematic reuse, not a claim that all generic stem cells are pluripotent or that morphology proves identity.",
+      "reference": "https://pubmed.ncbi.nlm.nih.gov/18035408/",
+      "png": "png/generic-stem-cell-bioart-transparent.png",
+      "svg": "svg/generic-stem-cell-bioart-traced.svg",
+      "png_sha256": "6baa6f14700a026b4c8278f21b4d64aeec60d59f3785348e93ae4008350fe3e2",
+      "svg_sha256": "107a764f90c1aaed350f50c15fdb899c6b1352561373cd15f1b3f964825b6ffe"
     },
     "generic-cancer-cell": {
       "name": "generic cancer cell",

@@ -1,8 +1,8 @@
 # Inventory production progress
 
-52 of 768 unique inventory names covered across 770 checklist entries.
+56 of 768 unique inventory names covered across 770 checklist entries.
 
-These cover 50 distinct PNG/SVG pairs and 2 explicit archetype aliases. Alias reasons are recorded in the ledger.
+These cover 53 distinct PNG/SVG pairs and 3 explicit archetype aliases. Alias reasons are recorded in the ledger.
 The inventory files currently contain 770 checklist rows; their prose count is stale. Two exact repeated names share a single asset. The existing ten approved pairs are preserved. Completion requires a saved PNG, editable SVG, file validation, and visual review.
 
 Production remains on the experimental branch. Each asset is generated as a transparent PNG, then traced and reviewed on light and dark backgrounds. Completed assets are pushed periodically. The full inventory is still in progress.
@@ -56,6 +56,10 @@ Production remains on the experimental branch. Each asset is generated as a tran
 | podocyte | [PNG](png/podocyte-bioart-transparent.png) | [SVG](svg/podocyte-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/podocyte/comparison.png) |
 | renal tubular epithelial cell | [PNG](png/renal-tubular-epithelial-cell-bioart-transparent.png) | [SVG](svg/renal-tubular-epithelial-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/renal-tubular-epithelial-cell/comparison.png) |
 | sperm cell | [PNG](png/sperm-cell-bioart-transparent.png) | [SVG](svg/sperm-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sperm-cell/comparison.png) |
+| oocyte | [PNG](png/oocyte-bioart-transparent.png) | [SVG](svg/oocyte-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/oocyte/comparison.png) |
+| trophoblast | [PNG](png/trophoblast-bioart-transparent.png) | [SVG](svg/trophoblast-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/trophoblast/comparison.png) |
+| generic stem cell | [PNG](png/generic-stem-cell-bioart-transparent.png) | [SVG](svg/generic-stem-cell-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-stem-cell/comparison.png) |
+| induced pluripotent stem cell | [PNG](png/generic-stem-cell-bioart-transparent.png) | [SVG](svg/generic-stem-cell-bioart-traced.svg) | Reuses generic-stem-cell: [rationale](https://pubmed.ncbi.nlm.nih.gov/18035408/) |
 | mitochondrion | [PNG](png/mitochondrion-bioart-transparent.png) | [SVG](svg/mitochondrion-bioart-traced.svg) | Approved earlier batch |
 | generic IgG antibody | [PNG](png/igg-antibody-bioart-transparent.png) | [SVG](svg/igg-antibody-bioart-traced.svg) | Approved earlier batch |
 | CD8 alpha-beta receptor | [PNG](png/cd8-receptor-bioart-transparent.png) | [SVG](svg/cd8-receptor-bioart-traced.svg) | Approved earlier batch |
