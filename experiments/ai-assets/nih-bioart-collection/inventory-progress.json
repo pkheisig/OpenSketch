@@ -7873,12 +7873,47 @@
     "exosome": {
       "name": "exosome",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/exosome-bioart-transparent.png",
+      "svg": "svg/exosome-bioart-traced.svg",
+      "png_sha256": "6f607951c85ecd1783648522518eadcb22c026289ba2127e3bef31fee72f544e",
+      "svg_sha256": "acbd00e55b84a17d13b3f7c66160b76bed79fd724e937966e002822fb48e760a",
+      "original_sha256": "9806a1000fb6b566c986385763d200601ecdeae44fbfe33e7771d5576e4ab7c4",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        265,
+        274,
+        251
+      ],
+      "svg_paths": 24807,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/exosome/prompt.json",
+      "qa": "qa/inventory/exosome",
+      "visual_review": "Complete single-vesicle cutaway with smooth teal shell, visible bilayer rim, illustrative RNA and protein cargo. SVG retains components and shading with slightly stronger fine outlines. Transparent padding and protein loop openings verified on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/exosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/exosome/inspection.webm"
+      }
     },
     "extracellular-vesicle": {
       "name": "extracellular vesicle",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "exosome",
+      "alias_reason": "Reuse the small extracellular-vesicle archetype under the inventory selection rule. The exosome drawing has no morphology that proves endosomal origin; generic EV use does not assert that all EVs share its size or illustrative cargo. Exosome naming requires appropriate biological context.",
+      "reference": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10850029/",
+      "png": "png/exosome-bioart-transparent.png",
+      "svg": "svg/exosome-bioart-traced.svg",
+      "png_sha256": "6f607951c85ecd1783648522518eadcb22c026289ba2127e3bef31fee72f544e",
+      "svg_sha256": "acbd00e55b84a17d13b3f7c66160b76bed79fd724e937966e002822fb48e760a"
     },
     "ribosome": {
       "name": "ribosome",
