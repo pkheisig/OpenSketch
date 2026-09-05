@@ -8743,17 +8743,101 @@
     "hemidesmosome": {
       "name": "hemidesmosome",
       "category": "5. Membranes, junctions, and cell-surface structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/hemidesmosome-bioart-transparent.png",
+      "svg": "svg/hemidesmosome-bioart-traced.svg",
+      "png_sha256": "605a881a7bbab3b164366ca0c5e08e7b389cfd41f78b3208e9bff4c61fd5639b",
+      "svg_sha256": "501aecfbaceee16dfe51a1f3c32c6b436ce9fe644cdd17a93d891b03b03bb928",
+      "original_sha256": "7c0f9fd7459af59e7dc3417c1f45ffcf1bcbeb8f20de79090482b49213cd5129",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        289,
+        327,
+        278,
+        319
+      ],
+      "svg_paths": 16059,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/hemidesmosome/prompt.json",
+      "qa": "qa/inventory/hemidesmosome",
+      "visual_review": "Inspected PNG and SVG on white and dark backgrounds: single membrane, cytoplasmic plaque and complete keratin ends above, corrected slim paired integrin stalks with composite heads contacting an extracellular mesh below, separate collagen-XVII-like rod. Fine matrix strands survive SVG conversion; no clipped ends or visible background haze, mild contour strengthening only.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hemidesmosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hemidesmosome/inspection.webm"
+      }
     },
     "gap-junction": {
       "name": "gap junction",
       "category": "5. Membranes, junctions, and cell-surface structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/gap-junction-bioart-transparent.png",
+      "svg": "svg/gap-junction-bioart-traced.svg",
+      "png_sha256": "920a353fe7be7c08543cc44d877d491beb24e105f4f468ced2e80dbecc6d73ea",
+      "svg_sha256": "03ddb5c91136c9de5a777e70d833bb6e091229c3e478e962794a34ec2062dad6",
+      "original_sha256": "909911a7970a6405b41c903a16623f8e07a6830c8f04b3ad303b1db15019c930",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        588,
+        327,
+        593
+      ],
+      "svg_paths": 18371,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/gap-junction/prompt.json",
+      "qa": "qa/inventory/gap-junction",
+      "visual_review": "Inspected PNG and editable SVG on light and dark backgrounds: three docked channel pairs, two separate membrane patches, continuous exposed left pore and complete padded silhouette preserved. SVG retains gradients with slightly stronger contours. No visible checkerboard, glow or background remains.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gap-junction/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gap-junction/inspection.webm"
+      }
     },
     "focal-adhesion": {
       "name": "focal adhesion",
       "category": "5. Membranes, junctions, and cell-surface structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/focal-adhesion-bioart-transparent.png",
+      "svg": "svg/focal-adhesion-bioart-traced.svg",
+      "png_sha256": "e1cce8d4d2b950381c20b9636b2112e099e5ec16e18698644b56d1c39064eb27",
+      "svg_sha256": "9eec54287c09ea6bf479d922ae08f82906099e6905b86fa90dd7a5a424ae7973",
+      "original_sha256": "2c0677fa9b9110c0969e8fc84f9fb38596432131168abecfc48d86ed8b55aaf6",
+      "png_dimensions": [
+        2049,
+        2049
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        293,
+        494,
+        307,
+        487
+      ],
+      "svg_paths": 18490,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/focal-adhesion/prompt.json",
+      "qa": "qa/inventory/focal-adhesion",
+      "visual_review": "Inspected light/dark PNG and SVG comparison: full actin and extracellular strand ends preserved, integrin heads remain below membrane with adaptor connection above. SVG maintains polished forms and color separation with slightly stronger outlines. Real transparency, no checkerboard or visible stray background.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/focal-adhesion/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/focal-adhesion/inspection.webm"
+      }
     },
     "immunological-synapse": {
       "name": "immunological synapse",

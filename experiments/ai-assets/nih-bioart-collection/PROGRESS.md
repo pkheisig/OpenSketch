@@ -1,8 +1,8 @@
 # Inventory production progress
 
-114 of 768 unique inventory names covered across 770 checklist entries.
+117 of 768 unique inventory names covered across 770 checklist entries.
 
-These cover 108 distinct PNG/SVG pairs and 6 explicit archetype aliases. Alias reasons are recorded in the ledger.
+These cover 111 distinct PNG/SVG pairs and 6 explicit archetype aliases. Alias reasons are recorded in the ledger.
 The inventory files currently contain 770 checklist rows; their prose count is stale. Two exact repeated names share a single asset. The existing ten approved pairs are preserved. Completion requires a saved PNG, editable SVG, file validation, and visual review.
 
 Production remains on the experimental branch. Each asset is generated as a transparent PNG, then traced and reviewed on light and dark backgrounds. Completed assets are pushed periodically. The full inventory is still in progress.
@@ -119,6 +119,9 @@ Production remains on the experimental branch. Each asset is generated as a tran
 | tight junction | [PNG](png/tight-junction-bioart-transparent.png) | [SVG](svg/tight-junction-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tight-junction/comparison.png) |
 | adherens junction | [PNG](png/adherens-junction-bioart-transparent.png) | [SVG](svg/adherens-junction-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adherens-junction/comparison.png) |
 | desmosome | [PNG](png/desmosome-bioart-transparent.png) | [SVG](svg/desmosome-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/desmosome/comparison.png) |
+| hemidesmosome | [PNG](png/hemidesmosome-bioart-transparent.png) | [SVG](svg/hemidesmosome-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hemidesmosome/comparison.png) |
+| gap junction | [PNG](png/gap-junction-bioart-transparent.png) | [SVG](svg/gap-junction-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gap-junction/comparison.png) |
+| focal adhesion | [PNG](png/focal-adhesion-bioart-transparent.png) | [SVG](svg/focal-adhesion-bioart-traced.svg) | [View](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/focal-adhesion/comparison.png) |
 | generic IgG antibody | [PNG](png/igg-antibody-bioart-transparent.png) | [SVG](svg/igg-antibody-bioart-traced.svg) | Approved earlier batch |
 | CD8 alpha-beta receptor | [PNG](png/cd8-receptor-bioart-transparent.png) | [SVG](svg/cd8-receptor-bioart-traced.svg) | Approved earlier batch |
 | ATP synthase | [PNG](png/atp-synthase-bioart-transparent.png) | [SVG](svg/atp-synthase-bioart-traced.svg) | Approved earlier batch |

@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a gap junction, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Two small parallel HORIZONTAL lavender plasma-membrane patches, one above the other, separated by a very narrow extracellular gap. Three teal gap-junction channels dock across the gap: each is a pair of coaxial connexon hemichannels, one embedded in each membrane, their ends touching at the extracellular midline to form a continuous pore connecting cytoplasm above the top membrane to cytoplasm below the lower membrane. The left-front channel is longitudinally cut away to expose the continuous central open lumen through BOTH membranes; the other two intact channels show a sixfold ring of smooth subunit lobes around their cytoplasmic opening. A narrow docking seam at the middle distinguishes paired hemichannels. No proteins terminate in the gap or block the pore. Each membrane is a simplified bilayer with two lavender head rows around a smooth violet core at the cut edge, no individual lipid tail detail. No cargo spheres, scaffolds, cytoskeleton, whole cells or extra objects. Smooth matte forms, thin crisp outlines, subtle depth and restrained gradients.",
+  "style_refinement": "Refine image 1 into the polished biomedical vector-like style of image 2, using image 2 for rendering style only. Preserve three docked gap-junction channels across two distinct horizontal membranes, with the left channel cut away to show a continuous open pore from top cytoplasmic opening to bottom cytoplasmic opening. Preserve six subunit lobes around each intact opening. Bring the membrane patches a little closer together so their extracellular gap is about half one membrane's thickness, centered on the hemichannel docking seam; keep both bilayers separate. Smooth all surfaces into matte filled forms, thin crisp outlines, restrained gradients and small highlights. No granular textures, glowing backgrounds or extra components. Complete object with generous transparent padding, no text, labels or cast shadows.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-dad730bd-b92d-4502-8be4-a4833e537f5d.png",
+  "archetype": "Schematic gap junction with three paired connexon channels across two opposing plasma membranes; the left channel is cut away to expose the continuous pore. Subunit shapes, membrane spacing and scale are illustrative, not an atomic structure.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "gap-junction",
+  "name": "gap junction",
+  "original": "originals/inventory/gap-junction/generated.png",
+  "original_sha256": "909911a7970a6405b41c903a16623f8e07a6830c8f04b3ad303b1db15019c930"
+}
