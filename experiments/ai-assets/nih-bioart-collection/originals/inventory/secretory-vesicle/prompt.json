@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a secretory vesicle, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Use a conventional regulated dense-core secretory granule archetype. One rounded single-membrane vesicle in three-quarter cutaway, smooth coral-pink outer membrane and one thin bilayer at the cut rim. Inside is one large compact rounded dark-rose condensed protein core separated from the membrane by a narrow pale peach aqueous halo. Core has subtle fine granular texture rendered as small tidy tonal forms, not a crystal, nucleus or cluster of multiple vesicles. A few tiny peripheral protein dots may be present in the pale halo. No surface spikes or big receptors, no attached Golgi or cell, no fusion pore, no secretion arrows, no cargo outside. Smooth matte fills, fine crisp burgundy outlines, restrained gradients and highlights, no photorealistic grain. Complete isolated vesicle with generous transparent padding.",
+  "style_refinement": "Refine image 1 to match image 2's clean biomedical illustration style; image 2 is style only. Preserve one complete dense-core secretory vesicle cutaway with single coral bilayer, pale peach halo and one compact dark-rose protein core. Simplify the core into a smoothly rounded dense mass with subtle small tonal granules, not a raspberry of large globules. Remove photorealistic grain, wet texture and strong gloss from shell and core. Smooth matte coral/rose fills, thin crisp burgundy outlines, gentle gradients and restrained highlights. Keep the pale halo visibly separating core from membrane, with only a few tiny dots. No extra membranes, core nucleus, vesicles, cell, labels or objects. Full isolated granule with generous transparent padding.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-e6b066d8-1740-415f-8479-a0868e4f2e55.png",
+  "archetype": "Conventional regulated dense-core secretory granule, not every secretory-vesicle type. Condensed cargo core and pale peripheral halo; cargo identity, core texture and relative dimensions schematic.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "secretory-vesicle",
+  "name": "secretory vesicle",
+  "original": "originals/inventory/secretory-vesicle/generated.png",
+  "original_sha256": "67e86b8432d2efadc3163b3ea3dd754011ab96dee35043984f405542148a2a3f"
+}

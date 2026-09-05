@@ -7807,12 +7807,68 @@
     "transport-vesicle": {
       "name": "transport vesicle",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/transport-vesicle-bioart-transparent.png",
+      "svg": "svg/transport-vesicle-bioart-traced.svg",
+      "png_sha256": "7ac04a1c5760bd914aa342722f681e5c525bc27d98ec53994a377026c34084a8",
+      "svg_sha256": "de738cae96576f9a15453ed45020f9a49be27e36b74ba7f28f31ed12dddd52c1",
+      "original_sha256": "58e93bf616587ba113e25e2e6ad69c91ffda1153e156494e9540f2ea4e659cf1",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        304,
+        272,
+        282,
+        283
+      ],
+      "svg_paths": 22513,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/transport-vesicle/prompt.json",
+      "qa": "qa/inventory/transport-vesicle",
+      "visual_review": "PNG/SVG light/dark comparison reviewed: complete uncoated single-membrane vesicle, three soluble cargo shapes and three membrane protein symbols. Clean alpha and padding; SVG retains bilayer rim and cargo with minor quantization. Generic schematic, no specific trafficking route or molecular identity implied.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/transport-vesicle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/transport-vesicle/inspection.webm"
+      }
     },
     "secretory-vesicle": {
       "name": "secretory vesicle",
       "category": "4. Organelles and subcellular structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/secretory-vesicle-bioart-transparent.png",
+      "svg": "svg/secretory-vesicle-bioart-traced.svg",
+      "png_sha256": "be2331793082faaf2902991d17e7be6eb09b2f7eb1bbdd9c2c30d3256d5763e9",
+      "svg_sha256": "6897be5f01ef1829631a650a59dc1902093914bd1069485377213f7d405da800",
+      "original_sha256": "67e86b8432d2efadc3163b3ea3dd754011ab96dee35043984f405542148a2a3f",
+      "png_dimensions": [
+        1834,
+        1834
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        336,
+        333,
+        314,
+        356
+      ],
+      "svg_paths": 29294,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/secretory-vesicle/prompt.json",
+      "qa": "qa/inventory/secretory-vesicle",
+      "visual_review": "Complete dense-core granule with intact single membrane, condensed granular cargo and peripheral halo. SVG preserves silhouette, membrane detail and core texture; modest gradient banding remains comparable to PNG. Transparent on light and dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/secretory-vesicle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/secretory-vesicle/inspection.webm"
+      }
     },
     "exosome": {
       "name": "exosome",
