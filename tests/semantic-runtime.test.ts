@@ -108,7 +108,7 @@ describe("semantic command contracts", () => {
     expect(SEMANTIC_COMMANDS.every((command) => command.version === SEMANTIC_RUNTIME_VERSION)).toBe(
       true
     );
-    expect(SEMANTIC_COMMANDS.every((command) => command.cancellable === false)).toBe(true);
+    expect(SEMANTIC_COMMANDS.every((command) => command.cancellable === true)).toBe(true);
     expect(() => JSON.stringify(SEMANTIC_COMMANDS)).not.toThrow();
     for (const command of SEMANTIC_COMMANDS) {
       expect(command.inputSchema.type).toBe("object");
@@ -355,5 +355,62 @@ describe("semantic runtime", () => {
     release();
     await Promise.all([batch, next]);
     expect(entered).toEqual(["set_asset_color_preset", "create_shape"]);
+  });
+
+  it("returns cancellation for pre-aborted and queued executions without dispatching them", async () => {
+    const adapter = fakeAdapter();
+    const runtime = createSemanticRuntime(adapter);
+    let releaseFirst: (() => void) | undefined;
+    let enteredFirst: (() => void) | undefined;
+    const firstEntered = new Promise<void>((resolve) => {
+      enteredFirst = resolve;
+    });
+    const firstRelease = new Promise<void>((resolve) => {
+      releaseFirst = resolve;
+    });
+    let first = true;
+    const execute = adapter.execute;
+    adapter.execute = async (command, input, options) => {
+      if (first) {
+        first = false;
+        enteredFirst?.();
+        await firstRelease;
+      }
+      if (options?.signal?.aborted) {
+        return {
+          data: undefined,
+          changedObjectIds: [],
+          warnings: []
+        };
+      }
+      return execute(command, input, options);
+    };
+
+    const firstExecution = runtime.execute("create_shape", { kind: "rectangle" });
+    await firstEntered;
+    const controller = new AbortController();
+    const queuedExecution = runtime.execute(
+      "create_shape",
+      { kind: "rectangle" },
+      { signal: controller.signal }
+    );
+    controller.abort();
+    releaseFirst?.();
+
+    expect((await firstExecution).ok).toBe(true);
+    expect(await queuedExecution).toMatchObject({
+      ok: false,
+      error: { code: "EXECUTION_ABORTED" }
+    });
+    const alreadyCanceled = new AbortController();
+    alreadyCanceled.abort();
+    expect(
+      await runtime.execute(
+        "create_shape",
+        { kind: "rectangle" },
+        { signal: alreadyCanceled.signal }
+      )
+    ).toMatchObject({ ok: false, error: { code: "EXECUTION_ABORTED" } });
+    expect(adapter.calls).toEqual(["create_shape"]);
   });
 });

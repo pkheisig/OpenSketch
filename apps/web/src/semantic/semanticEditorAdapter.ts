@@ -30,9 +30,11 @@ import {
   type SemanticAdapterResult,
   type SemanticBounds,
   type SemanticEditorAdapter,
+  type SemanticExecutionOptions,
   type SemanticObjectDescriptor,
   type SemanticSceneSnapshot,
-  type SemanticStyleSummary
+  type SemanticStyleSummary,
+  throwIfSemanticExecutionAborted
 } from "./semanticTypes";
 import { createShapeObject } from "@/editor/creationObjects";
 import { type CreationDefaults, type ShapeKind } from "@/editor/creation";
@@ -115,19 +117,38 @@ export interface SemanticEditorAdapterDependencies {
   prepareElementStyle: (object: FabricObject) => void;
   configureCanvasAssets: (objects: FabricObject[]) => void;
   refreshConnectors: (changedObjectId?: string) => void;
-  applyColorPreset: (objectId: string, presetId: string) => Promise<void>;
+  requestExit?: (options?: SemanticExecutionOptions) => Promise<boolean>;
+  applyColorPreset: (
+    objectId: string,
+    presetId: string,
+    options?: SemanticExecutionOptions
+  ) => Promise<void>;
   undo: () => Promise<boolean>;
   redo: () => Promise<boolean>;
   insertAsset: (
     family: AssetFamily,
     variant: AssetVariant,
-    point?: SemanticPointInput
+    point?: SemanticPointInput,
+    options?: SemanticExecutionOptions
   ) => Promise<string | undefined>;
-  replaceAssetVariant: (objectId: string, variantId: string) => Promise<boolean>;
+  replaceAssetVariant: (
+    objectId: string,
+    variantId: string,
+    options?: SemanticExecutionOptions
+  ) => Promise<boolean>;
   exportSvg: (title?: string, description?: string) => void;
   exportCredits: (title?: string, description?: string) => void;
-  exportPdf: (title?: string, description?: string) => Promise<void>;
-  exportPng: (transparent: boolean, dpi: number, background?: string) => Promise<void>;
+  exportPdf: (
+    title?: string,
+    description?: string,
+    options?: SemanticExecutionOptions
+  ) => Promise<void>;
+  exportPng: (
+    transparent: boolean,
+    dpi: number,
+    background?: string,
+    options?: SemanticExecutionOptions
+  ) => Promise<void>;
 }
 
 type SemanticPointInput = { x: number; y: number };
@@ -871,7 +892,8 @@ export function createSemanticEditorAdapter(
   const createBoundConnector = async (
     input: Record<string, unknown>,
     commitAfter: boolean,
-    allowLabelEndpoints = false
+    allowLabelEndpoints = false,
+    options: SemanticExecutionOptions = {}
   ): Promise<{
     objectId: string;
     fromPortId: string;
@@ -880,6 +902,7 @@ export function createSemanticEditorAdapter(
     fromObjectId: string;
     toObjectId: string;
   }> => {
+    throwIfSemanticExecutionAborted(options.signal);
     const canvas = canvasOrThrow();
     const fromObjectId = input.fromObjectId;
     const toObjectId = input.toObjectId;
@@ -999,8 +1022,20 @@ export function createSemanticEditorAdapter(
 
   const execute = async (
     command: string,
-    input: Record<string, unknown>
+    input: Record<string, unknown>,
+    options: SemanticExecutionOptions = {}
   ): Promise<SemanticAdapterResult> => {
+    throwIfSemanticExecutionAborted(options.signal);
+    if (command === "return_to_project_library") {
+      const requested = dependencies.requestExit ? await dependencies.requestExit(options) : false;
+      if (!requested) {
+        throw new SemanticAdapterError(
+          "PROJECT_EXIT_BLOCKED",
+          "Project changes could not be durably saved; resolve the save problem before leaving."
+        );
+      }
+      return { data: { requested: true }, changedObjectIds: [] };
+    }
     const canvas = canvasOrThrow();
     const assetManifest = await dependencies.getAssetManifest();
     if (command === "set_project_metadata") {
@@ -2179,7 +2214,8 @@ export function createSemanticEditorAdapter(
               routeType: "straight"
             },
             false,
-            true
+            true,
+            options
           );
           leaderObjectId = leader.objectId;
           const [leaderObject] = resolveObjects(canvas, [leaderObjectId]);
@@ -2489,7 +2525,7 @@ export function createSemanticEditorAdapter(
       return { data: result, changedObjectIds: [] };
     }
     if (command === "create_bound_connector") {
-      const result = await createBoundConnector(input, true);
+      const result = await createBoundConnector(input, true, false, options);
       return {
         data: result,
         changedObjectIds: [result.objectId, result.fromObjectId, result.toObjectId]
@@ -2501,9 +2537,15 @@ export function createSemanticEditorAdapter(
       const pairs = ids
         .slice(0, closed ? ids.length : ids.length - 1)
         .map((id, index) => ({ fromObjectId: id, toObjectId: ids[(index + 1) % ids.length] }));
+      const snapshot = dependencies.serialize();
       const results = [];
-      for (const pair of pairs)
-        results.push(await createBoundConnector({ ...input, ...pair }, false));
+      try {
+        for (const pair of pairs)
+          results.push(await createBoundConnector({ ...input, ...pair }, false, false, options));
+      } catch (error) {
+        await dependencies.restore(snapshot);
+        throw error;
+      }
       canvas.requestRenderAll();
       commitSemantic("Semantic connect sequence");
       return {
@@ -2640,14 +2682,14 @@ export function createSemanticEditorAdapter(
       }
     }
     if (command === "repair_layout") {
-      const planResult = await execute("plan_layout", input);
+      const planResult = await execute("plan_layout", input, options);
       const plan = (planResult.data as { plan: SemanticLayoutPlan }).plan;
       if (plan.status !== "feasible")
         throw new SemanticAdapterError(
           "INFEASIBLE_LAYOUT",
           "No feasible repair layout is available."
         );
-      const applied = await execute("apply_layout_plan", { planId: plan.id });
+      const applied = await execute("apply_layout_plan", { planId: plan.id }, options);
       return {
         data: { planId: plan.id, objectIds: (applied.data as { objectIds: string[] }).objectIds },
         changedObjectIds: applied.changedObjectIds
@@ -2684,10 +2726,13 @@ export function createSemanticEditorAdapter(
       const objectId = await dependencies.insertAsset(
         family,
         variant,
-        locationFromInput(canvas, dependencies.getCanvasSettings(), input)
+        locationFromInput(canvas, dependencies.getCanvasSettings(), input),
+        options
       );
-      if (!objectId)
+      if (!objectId) {
+        throwIfSemanticExecutionAborted(options.signal);
         throw new SemanticAdapterError("INSERT_FAILED", `Could not insert asset "${variantId}".`);
+      }
       return { data: { objectId, familyId, variantId }, changedObjectIds: [objectId] };
     }
     if (command === "replace_asset_variant") {
@@ -2709,7 +2754,8 @@ export function createSemanticEditorAdapter(
           `Asset variant "${variantId}" is not available for scene object "${objectId}".`
         );
       }
-      const replaced = await dependencies.replaceAssetVariant(objectId, variantId);
+      const replaced = await dependencies.replaceAssetVariant(objectId, variantId, options);
+      if (!replaced) throwIfSemanticExecutionAborted(options.signal);
       return {
         data: { objectId, variantId },
         changedObjectIds: replaced ? [objectId] : []
@@ -3248,7 +3294,7 @@ export function createSemanticEditorAdapter(
       const objectId = input.objectId as string;
       const presetId = input.presetId as string;
       resolveObjects(canvas, [objectId]);
-      await dependencies.applyColorPreset(objectId, presetId);
+      await dependencies.applyColorPreset(objectId, presetId, options);
       commitSemantic("Semantic color preset");
       return { data: { objectId, presetId }, changedObjectIds: [objectId] };
     }
@@ -3258,14 +3304,18 @@ export function createSemanticEditorAdapter(
       const description = typeof input.description === "string" ? input.description : undefined;
       if (format === "svg") dependencies.exportSvg(title, description);
       else if (format === "credits") dependencies.exportCredits(title, description);
-      else if (format === "pdf") await dependencies.exportPdf(title, description);
-      else {
+      else if (format === "pdf") {
+        await dependencies.exportPdf(title, description, options);
+        throwIfSemanticExecutionAborted(options.signal);
+      } else {
         const settings = dependencies.getCanvasSettings();
         await dependencies.exportPng(
           input.transparent === true,
           typeof input.dpi === "number" ? input.dpi : settings.dpi,
-          typeof input.background === "string" ? input.background : settings.background
+          typeof input.background === "string" ? input.background : settings.background,
+          options
         );
+        throwIfSemanticExecutionAborted(options.signal);
       }
       return { data: { format, started: true } };
     }
@@ -3428,6 +3478,7 @@ export function createSemanticEditorAdapter(
         );
       }
       const clones = await Promise.all(objects.map((object) => object.clone()));
+      throwIfSemanticExecutionAborted(options.signal);
       dependencies.configureCanvasAssets(clones);
       assignFreshCloneIds(clones);
       clones.forEach((clone) => {

@@ -9,6 +9,9 @@ import type {
   OpenSketchHostServices,
   OpenSketchLifecycleState
 } from "@/application/hostServices";
+import { createProjectLifecycleRuntime } from "@/semantic/projectLifecycle";
+import { SemanticExecutionAborted, type SemanticExecutionOptions } from "@/semantic/semanticTypes";
+import { createWebMcpRegistry, type WebMcpRegistry, type WebMcpRuntime } from "@/semantic/webmcp";
 
 const EditorStudio = lazy(() =>
   import("@/components/EditorStudio").then((module) => ({ default: module.EditorStudio }))
@@ -45,9 +48,16 @@ export function App({
   const [error, setError] = useState("");
   const [updateReady, setUpdateReady] = useState(() => services.pwa.isUpdateReady());
   const refreshRevision = useRef(0);
+  const projectsRef = useRef<readonly ProjectRecord[]>([]);
+  const foldersRef = useRef<readonly ProjectFolderRecord[]>([]);
   const historySyncRevision = useRef(0);
   const historyIndex = useRef<number | null>(null);
   const historyNavigationGuard = useRef<(() => boolean) | null>(null);
+  const webMcpRegistryRef = useRef<WebMcpRegistry | null>(null);
+  const lifecycleRuntimeRef = useRef<WebMcpRuntime | null>(null);
+  if (!webMcpRegistryRef.current) webMcpRegistryRef.current = createWebMcpRegistry();
+  projectsRef.current = projects;
+  foldersRef.current = folders;
 
   const toggleTheme = useCallback(() => {
     setTheme((current) => {
@@ -216,7 +226,7 @@ export function App({
   }, [current?.id, refresh, services]);
 
   const openProject = useCallback(
-    (project: ProjectRecord) => {
+    (project: ProjectRecord): boolean => {
       let loaded: ProjectRecord;
       try {
         const result = normalizeProjectForLoad(project);
@@ -227,36 +237,89 @@ export function App({
         }
       } catch (reason) {
         setError(projectLoadError(project, reason));
-        return;
+        return false;
       }
       historySyncRevision.current += 1;
       setCurrent(loaded);
-      if (services.navigation.currentProjectId() === loaded.id) return;
+      if (services.navigation.currentProjectId() === loaded.id) return true;
 
       services.navigation.pushProject(loaded.id);
       historyIndex.current = services.navigation.entryIndex() ?? historyIndex.current;
+      return true;
     },
     [services]
   );
 
-  const returnToProjects = useCallback(() => {
+  const returnToProjects = useCallback((): boolean => {
+    if (services.navigation.currentProjectId() && historyNavigationGuard.current?.()) {
+      services.navigation.notifyNavigationBlocked?.();
+      return false;
+    }
     if (services.navigation.currentProjectId()) {
       services.navigation.back();
-      return;
+      return true;
     }
     setCurrent(null);
     void refresh();
+    return true;
   }, [refresh, services]);
 
-  const newProject = async () => {
-    try {
-      const project = services.projects.create();
-      await services.projects.save(project);
-      openProject(project);
-      await refresh();
-    } catch (reason) {
-      setError(String(reason));
-    }
+  const newProject = useCallback(
+    async (
+      name?: string,
+      options: SemanticExecutionOptions = {}
+    ): Promise<ProjectRecord | null> => {
+      let project: ProjectRecord | undefined;
+      try {
+        if (options.signal?.aborted) return null;
+        project = services.projects.create(name);
+        await services.projects.save(project);
+        if (options.signal?.aborted) {
+          await services.projects.delete(project.id);
+          return null;
+        }
+        if (!openProject(project)) {
+          await services.projects.delete(project.id);
+          return null;
+        }
+        await refresh();
+        return project;
+      } catch (reason) {
+        if (reason instanceof SemanticExecutionAborted || options.signal?.aborted) {
+          if (project) await services.projects.delete(project.id).catch(() => undefined);
+          return null;
+        }
+        setError(String(reason));
+        return null;
+      }
+    },
+    [openProject, refresh, services]
+  );
+
+  if (!lifecycleRuntimeRef.current) {
+    lifecycleRuntimeRef.current = createProjectLifecycleRuntime({
+      getProjects: () => projectsRef.current,
+      getFolders: () => foldersRef.current,
+      createProject: (name, options) => newProject(name, options),
+      openProject
+    });
+  }
+
+  useEffect(() => {
+    const runtime = lifecycleRuntimeRef.current;
+    const registry = webMcpRegistryRef.current;
+    if (!runtime || !registry || loading || current) return undefined;
+    void registry.activate(runtime);
+    return () => registry.deactivate(runtime);
+  }, [current, loading]);
+
+  useEffect(() => {
+    const registry = webMcpRegistryRef.current;
+    return () => registry?.dispose();
+  }, []);
+
+  const onNewProject = () => {
+    void newProject();
   };
 
   const updateProject = useCallback(
@@ -311,6 +374,7 @@ export function App({
             onNavigationGuardChange={setHistoryNavigationGuard}
             onLifecycleStateChange={(state) => onLifecycleStateChange?.(state)}
             services={services}
+            webMcpRegistry={webMcpRegistryRef.current!}
             theme={theme}
             onToggleTheme={toggleTheme}
           />
@@ -321,7 +385,7 @@ export function App({
           folders={folders}
           theme={theme}
           onToggleTheme={toggleTheme}
-          onNew={() => void newProject()}
+          onNew={onNewProject}
           onNewFolder={(name) => {
             services.projects
               .createFolder(name)

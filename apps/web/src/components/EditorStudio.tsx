@@ -4,6 +4,7 @@ import type { ProjectSaveState } from "@/editor/projectSaveState";
 import { EditorProvider } from "@/editor/EditorContext";
 import { CanvasWorkspace } from "@/components/CanvasWorkspace";
 import { OpenSketchHostProvider, type OpenSketchHostServices } from "@/application/hostServices";
+import type { WebMcpRegistry } from "@/semantic/webmcp";
 
 const TopToolbar = lazy(() =>
   import("@/components/TopToolbar").then((module) => ({ default: module.TopToolbar }))
@@ -19,15 +20,17 @@ export function EditorStudio({
   onNavigationGuardChange,
   onLifecycleStateChange,
   services,
+  webMcpRegistry,
   theme,
   onToggleTheme
 }: {
   project: ProjectRecord;
   onProjectChange: (project: ProjectRecord) => Promise<void>;
-  onHome: () => void;
+  onHome: () => boolean | void;
   onNavigationGuardChange: (guard: (() => boolean) | null) => void;
   onLifecycleStateChange: (state: { dirty?: boolean; busy?: boolean }) => void;
   services: OpenSketchHostServices;
+  webMcpRegistry: WebMcpRegistry;
   theme: "light" | "dark";
   onToggleTheme: () => void;
 }) {
@@ -49,6 +52,7 @@ export function EditorStudio({
         onProjectChange={onProjectChange}
         onRequestExit={onHome}
         onNavigationGuardChange={onNavigationGuardChange}
+        webMcpRegistry={webMcpRegistry}
         onSaveStateChange={(state: ProjectSaveState) =>
           onLifecycleStateChange({ dirty: state.phase !== "saved", busy: state.phase === "saving" })
         }
