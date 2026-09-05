@@ -8677,12 +8677,68 @@
     "adherens-junction": {
       "name": "adherens junction",
       "category": "5. Membranes, junctions, and cell-surface structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/adherens-junction-bioart-transparent.png",
+      "svg": "svg/adherens-junction-bioart-traced.svg",
+      "png_sha256": "fc1118a14bcd0e03921e2d6e6f2c2e4defe13c1f929cff63ca37a8953ff590c5",
+      "svg_sha256": "94a5bf6923a3ee9add8e7a9e24fadbcb94ce518d884860851ac0d56c21372cfe",
+      "original_sha256": "5fc0d9d47ecc2aaff211e433bdc0131ba38414c0ea99d5218d5337e1ba43a3b9",
+      "png_dimensions": [
+        1790,
+        1790
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        282,
+        261,
+        294,
+        256
+      ],
+      "svg_paths": 15977,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/adherens-junction/prompt.json",
+      "qa": "qa/inventory/adherens-junction",
+      "visual_review": "Inspected PNG and SVG on light and dark backgrounds: three opposed teal/blue cadherin pairs with corrected five-domain chains, central terminal overlap, separate membrane panels and cytoplasmic scaffolds attached to orange actin. Smooth core bands and complete transparent silhouette preserved. SVG retains fine stems, domain separations and depth with minor contour strengthening.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adherens-junction/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adherens-junction/inspection.webm"
+      }
     },
     "desmosome": {
       "name": "desmosome",
       "category": "5. Membranes, junctions, and cell-surface structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/desmosome-bioart-transparent.png",
+      "svg": "svg/desmosome-bioart-traced.svg",
+      "png_sha256": "25f4d6ee50f00a175eeeb166405644d55d56a268bb21883055946dc1608e444c",
+      "svg_sha256": "16967bd263ea645968cc65120b8fe4aca5910184821192ea204ed12107f21d76",
+      "original_sha256": "6467b765fd2e7af235ded57cdaff8e516f6f4ac9baaa96e8d9e66200c91a487d",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        584,
+        338,
+        591
+      ],
+      "svg_paths": 25002,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/desmosome/prompt.json",
+      "qa": "qa/inventory/desmosome",
+      "visual_review": "Inspected PNG and SVG on light and dark backgrounds: paired dense cytoplasmic plaques, keratin filament bundles, separate membrane bands and three cadherin contact glyphs preserved. Complete cut filament ends have transparent padding. No visible background glow in composites; SVG preserves strands, plaque lobes and depth with slight contour strengthening.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/desmosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/desmosome/inspection.webm"
+      }
     },
     "hemidesmosome": {
       "name": "hemidesmosome",
