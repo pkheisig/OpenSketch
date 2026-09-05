@@ -9,14 +9,20 @@ import type {
   OpenSketchModuleManifest,
   RenderHandle
 } from "@/application/hostServices";
-import { OpenSketchHostProvider } from "@/application/hostServices";
+import {
+  OPENSKETCH_APPLICATION_CONTRACT_VERSION,
+  OPENSKETCH_OPEN_SUITE_CONTRACT_VERSION,
+  OPENSKETCH_REACT_DOM_VERSION_RANGE,
+  OPENSKETCH_REACT_VERSION_RANGE,
+  OpenSketchHostProvider
+} from "@/application/hostServices";
 
 export const OPENSKETCH_MODULE_MANIFEST: OpenSketchModuleManifest = {
   schemaVersion: 1,
   id: "opensketch",
   displayName: "OpenSketch",
   version: "0.1.0",
-  contractVersion: "1.0.0",
+  contractVersion: OPENSKETCH_APPLICATION_CONTRACT_VERSION,
   entry: "OpenSketchApplication",
   stylesheetEntry: "./module/opensketch-module.css",
   assetManifestEntry: "./assets/manifest.json",
@@ -26,13 +32,13 @@ export const OPENSKETCH_MODULE_MANIFEST: OpenSketchModuleManifest = {
     projectFormatVersion: OpenSketch_FORMAT_VERSION
   },
   compatibility: {
-    openSuiteContractVersion: "0.1.0-bootstrap",
-    react: "^19.0.0",
-    "react-dom": "^19.0.0"
+    openSuiteContractVersion: OPENSKETCH_OPEN_SUITE_CONTRACT_VERSION,
+    react: OPENSKETCH_REACT_VERSION_RANGE,
+    "react-dom": OPENSKETCH_REACT_DOM_VERSION_RANGE
   },
   peerDependencies: {
-    react: "^19.0.0",
-    "react-dom": "^19.0.0"
+    react: OPENSKETCH_REACT_VERSION_RANGE,
+    "react-dom": OPENSKETCH_REACT_DOM_VERSION_RANGE
   },
   capabilities: [
     "project-library",

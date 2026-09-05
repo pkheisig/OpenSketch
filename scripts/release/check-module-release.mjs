@@ -14,13 +14,24 @@ const packageManifest = await readJson(join(releaseRoot, "package.json"));
 const editorCorePackage = await readJson(join(repositoryRoot, "packages/editor-core/package.json"));
 const editorCoreSource = await readFile(join(repositoryRoot, "packages/editor-core/src/index.ts"), "utf8");
 const formatSource = await readFile(join(repositoryRoot, "packages/editor-core/src/types.ts"), "utf8");
+const hostServicesSource = await readFile(join(repositoryRoot, "apps/web/src/application/hostServices.ts"), "utf8");
 const errors = [];
+const sourceContracts = {
+  application: sourceConstant(hostServicesSource, "OPENSKETCH_APPLICATION_CONTRACT_VERSION"),
+  openSuite: sourceConstant(hostServicesSource, "OPENSKETCH_OPEN_SUITE_CONTRACT_VERSION"),
+  react: sourceConstant(hostServicesSource, "OPENSKETCH_REACT_VERSION_RANGE"),
+  reactDom: sourceConstant(hostServicesSource, "OPENSKETCH_REACT_DOM_VERSION_RANGE")
+};
 
 if (moduleManifest.schemaVersion !== 1) errors.push("module manifest schemaVersion must equal 1");
 if (moduleManifest.id !== "opensketch") errors.push("module manifest id must be opensketch");
 if (moduleManifest.version !== packageJson.version) errors.push("module version differs from package version");
 if (!/^[0-9a-f]{40}$/.test(moduleManifest.sourceSha || "")) errors.push("sourceSha must be a 40-character SHA");
 if (releaseAttestation.sourceSha !== moduleManifest.sourceSha) errors.push("attestation source SHA differs");
+if (releaseAttestation.dirty !== false) errors.push("release attestation must record a clean source tree");
+if (releaseAttestation.releaseArtifactsAreImmutable !== true) {
+  errors.push("release artifacts must be attested as immutable");
+}
 if (releaseAttestation.mutableRefsAllowed !== false) errors.push("mutable refs must be rejected");
 for (const field of ["entry", "stylesheetEntry", "assetManifestEntry"]) {
   if (!isSafeReleasePath(moduleManifest[field])) errors.push(`${field} must be a safe relative release path`);
@@ -37,6 +48,29 @@ if (moduleManifest.editorCore?.version !== sourceConstant(editorCoreSource, "EDI
 if (moduleManifest.editorCore?.projectFormatVersion !== Number(sourceConstant(formatSource, "OpenSketch_FORMAT_VERSION"))) {
   errors.push("release project format differs from editor-core source");
 }
+if (moduleManifest.applicationContractVersion !== sourceContracts.application) {
+  errors.push("release application contract differs from source");
+}
+if (moduleManifest.openSuiteContractVersion !== sourceContracts.openSuite) {
+  errors.push("release OpenSuite contract differs from source");
+}
+for (const [name, expected] of Object.entries({
+  react: sourceContracts.react,
+  "react-dom": sourceContracts.reactDom
+})) {
+  if (moduleManifest.peerDependencies?.[name] !== expected) {
+    errors.push(`release ${name} peer range differs from source`);
+  }
+  if (moduleManifest.compatibility?.[name] !== expected) {
+    errors.push(`release ${name} compatibility range differs from source`);
+  }
+}
+if (moduleManifest.compatibility?.moduleContractVersion !== sourceContracts.application) {
+  errors.push("release module contract differs from source");
+}
+if (moduleManifest.compatibility?.openSuiteContractVersion !== sourceContracts.openSuite) {
+  errors.push("release compatibility OpenSuite contract differs from source");
+}
 if (moduleManifest.lazyLoading?.fullAssetLibraryIsNotAppShell !== true) {
   errors.push("full asset library must remain outside the app shell");
 }
@@ -50,11 +84,34 @@ const assetManifest = await readJson(join(releaseRoot, moduleManifest.assetManif
 if (!Array.isArray(assetManifest.families) || assetManifest.families.length === 0) {
   errors.push("asset manifest has no families");
 }
+for (const family of assetManifest.families || []) {
+  for (const variant of family.variants || []) {
+    for (const field of ["assetPath", "thumbnailPath"]) {
+      if (typeof variant[field] !== "string" || variant[field].startsWith("/")) {
+        errors.push(`release asset manifest contains a server-root-absolute ${field}`);
+      }
+    }
+  }
+}
 if (packageManifest.exports?.["."] !== moduleManifest.entry) {
   errors.push("package main export must match the release entry");
 }
-if (packageManifest.peerDependencies?.react !== "^19.0.0") {
-  errors.push("React must remain an external peer dependency");
+for (const [name, expected] of Object.entries({
+  react: sourceContracts.react,
+  "react-dom": sourceContracts.reactDom
+})) {
+  if (packageManifest.peerDependencies?.[name] !== expected) {
+    errors.push(`${name} must remain an external peer dependency`);
+  }
+}
+const sbom = await readJson(join(releaseRoot, "sbom.cdx.json"));
+if (sbom.bomFormat !== "CycloneDX" || sbom.specVersion !== "1.5") {
+  errors.push("release SBOM must be CycloneDX 1.5");
+}
+for (const name of ["@workspace/editor-core", "react", "react-dom"]) {
+  if (!sbom.components?.some((component) => component.name === name)) {
+    errors.push(`release SBOM is missing ${name}`);
+  }
 }
 if (packageManifest.types !== "./module/opensketch-module.d.ts") {
   errors.push("package must publish the module TypeScript declaration");

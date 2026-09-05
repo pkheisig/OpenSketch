@@ -21,8 +21,28 @@ const editorCoreSource = await readFile(
   "utf8"
 );
 const formatSource = await readFile(join(repositoryRoot, "packages/editor-core/src/types.ts"), "utf8");
+const hostServicesSource = await readFile(
+  join(repositoryRoot, "apps/web/src/application/hostServices.ts"),
+  "utf8"
+);
 const editorCoreVersion = sourceConstant(editorCoreSource, "EDITOR_CORE_VERSION");
 const projectFormatVersion = Number(sourceConstant(formatSource, "OpenSketch_FORMAT_VERSION"));
+const applicationContractVersion = sourceConstant(
+  hostServicesSource,
+  "OPENSKETCH_APPLICATION_CONTRACT_VERSION"
+);
+const openSuiteContractVersion = sourceConstant(
+  hostServicesSource,
+  "OPENSKETCH_OPEN_SUITE_CONTRACT_VERSION"
+);
+const reactVersionRange = sourceConstant(hostServicesSource, "OPENSKETCH_REACT_VERSION_RANGE");
+const reactDomVersionRange = sourceConstant(
+  hostServicesSource,
+  "OPENSKETCH_REACT_DOM_VERSION_RANGE"
+);
+const sourceStatus = runGit(["status", "--porcelain", "--untracked-files=all"]);
+const dirty = !isCleanGit(sourceStatus);
+const sourceStatusSha256 = hashText(sourceStatus);
 
 if (editorCoreVersion !== editorCorePackage.version) {
   throw new Error("editor-core package and source versions differ.");
@@ -30,7 +50,7 @@ if (editorCoreVersion !== editorCorePackage.version) {
 if (!Number.isInteger(projectFormatVersion)) throw new Error("The editor-core project format is invalid.");
 
 if (!/^[0-9a-f]{40}$/.test(sourceSha)) throw new Error("The release source SHA is invalid.");
-if (!process.env.OPENSKETCH_ALLOW_DIRTY_RELEASE && !isCleanGit()) {
+if (!process.env.OPENSKETCH_ALLOW_DIRTY_RELEASE && dirty) {
   throw new Error("Refusing to assemble a release from a dirty worktree.");
 }
 
@@ -68,8 +88,38 @@ if (typesResult.status !== 0) throw new Error("Could not assemble TypeScript dec
 const moduleEntry = `module/opensketch-module.js`;
 const moduleStylesheet = `module/opensketch-module.css`;
 const assetManifestPath = `assets/manifest.json`;
+const sbomPath = "sbom.cdx.json";
 const moduleFiles = await filesUnder(join(releaseRoot, "module"));
-const artifactFiles = [moduleEntry, moduleStylesheet, assetManifestPath, "THIRD_PARTY_NOTICES.txt"];
+const peerDependencies = {
+  react: reactVersionRange,
+  "react-dom": reactDomVersionRange
+};
+const sbom = {
+  bomFormat: "CycloneDX",
+  specVersion: "1.5",
+  version: 1,
+  metadata: {
+    component: {
+      type: "application",
+      name: "@opensketch/application-module",
+      version
+    }
+  },
+  components: [
+    { type: "library", name: "@workspace/editor-core", version: editorCoreVersion },
+    { type: "library", name: "react", version: reactVersionRange, scope: "required" },
+    { type: "library", name: "react-dom", version: reactDomVersionRange, scope: "required" }
+  ]
+};
+await writeJson(join(releaseRoot, sbomPath), sbom);
+
+const artifactFiles = [
+  moduleEntry,
+  moduleStylesheet,
+  assetManifestPath,
+  sbomPath,
+  "THIRD_PARTY_NOTICES.txt"
+];
 const artifactHashes = {};
 for (const file of artifactFiles) artifactHashes[file] = await sha256(join(releaseRoot, file));
 
@@ -79,8 +129,8 @@ const moduleManifest = {
   displayName: "OpenSketch",
   version,
   sourceSha,
-  applicationContractVersion: "1.0.0",
-  openSuiteContractVersion: "0.1.0-bootstrap",
+  applicationContractVersion,
+  openSuiteContractVersion,
   entry: `./${moduleEntry}`,
   stylesheetEntry: `./${moduleStylesheet}`,
   assetManifestEntry: `./${assetManifestPath}`,
@@ -89,14 +139,13 @@ const moduleManifest = {
     version: editorCoreVersion,
     projectFormatVersion
   },
-  peerDependencies: {
-    react: "^19.0.0",
-    "react-dom": "^19.0.0"
-  },
+  peerDependencies,
   compatibility: {
     projectFormatVersion,
-    moduleContractVersion: "1.0.0",
-    openSuiteContractVersion: "0.1.0-bootstrap"
+    moduleContractVersion: applicationContractVersion,
+    openSuiteContractVersion,
+    react: reactVersionRange,
+    "react-dom": reactDomVersionRange
   },
   lazyLoading: {
     moduleEntry: `./${moduleEntry}`,
@@ -123,7 +172,14 @@ const packageManifest = {
     "./assets/manifest.json": `./${assetManifestPath}`
   },
   peerDependencies: moduleManifest.peerDependencies,
-  files: ["module", "assets", "pwa", "module-manifest.json", "THIRD_PARTY_NOTICES.txt"]
+  files: [
+    "module",
+    "assets",
+    "pwa",
+    "module-manifest.json",
+    "sbom.cdx.json",
+    "THIRD_PARTY_NOTICES.txt"
+  ]
 };
 await writeJson(join(releaseRoot, "package.json"), packageManifest);
 
@@ -136,7 +192,9 @@ await writeJson(join(releaseRoot, "release-attestation.json"), {
   moduleManifestSha256,
   editorCoreVersion,
   projectFormatVersion,
-  releaseArtifactsAreImmutable: true,
+  dirty,
+  sourceStatusSha256,
+  releaseArtifactsAreImmutable: !dirty,
   mutableRefsAllowed: false,
   generatedBy: "scripts/release/assemble-module-release.mjs"
 });
@@ -156,14 +214,10 @@ function runGit(args) {
   return result.stdout.trim();
 }
 
-function isCleanGit() {
+function isCleanGit(status = runGit(["status", "--porcelain", "--untracked-files=all"])) {
   const result = spawnSync("git", ["diff", "--quiet"], { cwd: repositoryRoot });
   const cached = spawnSync("git", ["diff", "--cached", "--quiet"], { cwd: repositoryRoot });
-  const status = spawnSync("git", ["status", "--porcelain", "--untracked-files=all"], {
-    cwd: repositoryRoot,
-    encoding: "utf8"
-  });
-  return result.status === 0 && cached.status === 0 && status.status === 0 && !status.stdout.trim();
+  return result.status === 0 && cached.status === 0 && !status.trim();
 }
 
 function sourceConstant(source, name) {
@@ -171,6 +225,10 @@ function sourceConstant(source, name) {
   if (!match) throw new Error(`Could not read ${name} from editor-core source.`);
   const value = match[1].trim().replace(/\s+as const$/, "");
   return value.replace(/^(["'])(.*)\1$/, "$2");
+}
+
+function hashText(value) {
+  return createHash("sha256").update(value, "utf8").digest("hex");
 }
 
 async function exists(path) {
