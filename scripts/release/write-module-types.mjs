@@ -13,9 +13,250 @@ export interface RenderHandle {
   setSuspended?(suspended: boolean): void;
 }
 
+export type Theme = "light" | "dark";
+
+export interface ProjectRecord {
+  format: "OpenSketch";
+  formatVersion: number;
+  version: 1;
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  canvas: Record<string, unknown>;
+  objects: Record<string, unknown>;
+  uploads: ImportedMediaRecord[];
+  usedAssetIds: string[];
+  description?: string;
+  thumbnail?: string;
+  folderId?: string;
+  archivedAt?: string;
+}
+
+export interface ProjectFolderRecord {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ImportedMediaRecord {
+  id: string;
+  name: string;
+  mimeType: string;
+  dataUrl: string;
+}
+
+export interface ImportedMediaLibraryRecord extends ImportedMediaRecord {
+  createdAt: string;
+  updatedAt: string;
+  contentHash: string;
+}
+
+export interface AssetVariant {
+  id: string;
+  label?: string;
+  assetPath: string;
+  thumbnailPath: string;
+  commonsSha1?: string;
+  sourceFileId?: number;
+  localSha256?: string;
+  width?: number;
+  height?: number;
+}
+
+export type AssetLicense =
+  | "Public Domain"
+  | "CC0-1.0"
+  | "CC-BY-3.0"
+  | "CC-BY-4.0"
+  | "CC-BY-SA-3.0"
+  | "CC-BY-SA-4.0"
+  | "MIT"
+  | "BSD-3-Clause";
+
+export interface AssetFamily {
+  familyId: string;
+  bioartEntryId: number;
+  title: string;
+  description: string;
+  category: string;
+  keywords: string[];
+  author: string;
+  credit: string;
+  license: AssetLicense;
+  licenseUrl?: string;
+  sourceName?: string;
+  nihSourcePage?: string;
+  sourcePage?: string;
+  commonsPage?: string;
+  defaultVariantId: string;
+  variants: AssetVariant[];
+}
+
+export interface AssetManifest {
+  version: 1;
+  generatedAt: string;
+  source: string;
+  families: AssetFamily[];
+}
+
+export interface AssetTemplate {
+  id: string;
+  name: string;
+  object: Record<string, unknown>;
+  thumbnail: string;
+  createdAt: string;
+  updatedAt: string;
+  schemaVersion: 1;
+}
+
+export interface ProjectLoadResult {
+  project: ProjectRecord;
+  identityRepaired: boolean;
+  identityWarnings: string[];
+}
+
+export type OfflineAssetPackState = "unavailable" | "not-ready" | "preparing" | "ready" | "error";
+
+export interface OfflineAssetPackStatus {
+  state: OfflineAssetPackState;
+  version: string;
+  total: number;
+  completed: number;
+  sourceCount: number;
+  previewCount: number;
+  message?: string;
+}
+
+export interface ProjectRepository {
+  list(): Promise<ProjectRecord[]>;
+  get(id: string): Promise<ProjectRecord | undefined>;
+  save(project: ProjectRecord): Promise<void>;
+  saveThumbnail(projectId: string, projectRevision: string, thumbnail: string): Promise<ProjectRecord | undefined>;
+  create(name?: string): ProjectRecord;
+  delete(id: string): Promise<void>;
+  duplicate(project: ProjectRecord): Promise<ProjectRecord>;
+  moveToFolder(project: ProjectRecord, folderId?: string): Promise<void>;
+  listFolders(): Promise<ProjectFolderRecord[]>;
+  createFolder(name: string): Promise<ProjectFolderRecord>;
+  saveFolder(folder: ProjectFolderRecord): Promise<void>;
+  deleteFolder(folderId: string): Promise<void>;
+}
+
+export interface ImportedMediaRepository {
+  list(): Promise<ImportedMediaLibraryRecord[]>;
+  get(id: string): Promise<ImportedMediaLibraryRecord | undefined>;
+  save(media: ImportedMediaRecord, timestamp?: string): Promise<ImportedMediaLibraryRecord>;
+  remember(imports: ImportedMediaRecord[], timestamp: string): Promise<void>;
+  delete(id: string): Promise<void>;
+}
+
+export interface AssetTemplateRepository {
+  list(): Promise<AssetTemplate[]>;
+  get(id: string): Promise<AssetTemplate | undefined>;
+  save(template: AssetTemplate): Promise<AssetTemplate>;
+  delete(id: string): Promise<void>;
+}
+
+export interface ProjectFileService {
+  readProject(file: File): Promise<ProjectLoadResult>;
+  downloadProject(project: ProjectRecord): void | Promise<void>;
+  saveProject?(project: ProjectRecord): Promise<boolean>;
+}
+
+export interface ExportArtifact {
+  blob: Blob;
+  filename: string;
+  kind: "svg" | "pdf" | "png" | "credits" | "project";
+}
+
+export interface ExportDeliveryService {
+  deliver(artifact: ExportArtifact): void | Promise<void>;
+}
+
+export interface AssetService {
+  getManifest(): Promise<AssetManifest>;
+  getVersion(): Promise<string>;
+  loadText(path: string): Promise<string>;
+  loadBlob(path: string): Promise<Blob>;
+  resolveVariant(family: AssetFamily, variant: AssetVariant): AssetVariant;
+  getOfflineStatus?(): Promise<OfflineAssetPackStatus>;
+  prepareOffline?(): Promise<OfflineAssetPackStatus>;
+  onOfflineStatusChange?(listener: (status: OfflineAssetPackStatus) => void): () => void;
+  cancelOfflinePreparation?(): void;
+}
+
+export interface PreferenceService {
+  get(key: string): string | null;
+  set(key: string, value: string): void;
+  remove(key: string): void;
+  storage: {
+    getItem(key: string): string | null;
+    setItem(key: string, value: string): void;
+  };
+  theme: {
+    get(): Theme;
+    set(theme: Theme): void;
+    apply(theme: Theme): void;
+  };
+}
+
+export interface NavigationService {
+  currentProjectId(): string | null;
+  entryIndex(): number | null;
+  ensureEntryIndex(): void;
+  pushProject(projectId: string): void;
+  back(): void;
+  forward(): void;
+  go(delta: number): void;
+  notifyNavigationBlocked?(): void;
+  subscribe(listener: () => void): () => void;
+}
+
+export interface DialogService {
+  confirm(message: string): boolean | Promise<boolean>;
+  prompt(message: string, defaultValue?: string): string | null | Promise<string | null>;
+  alert?(message: string): void | Promise<void>;
+}
+
+export interface ClipboardService {
+  write(items: ClipboardItems): Promise<void>;
+  read?(): Promise<ClipboardItems>;
+}
+
+export interface PwaService {
+  isUpdateReady(): boolean;
+  onUpdateReady(listener: () => void): () => void;
+  applyUpdate(): void | Promise<void>;
+}
+
+export interface FontService {
+  available(): boolean;
+  ready(): Promise<void>;
+  load(descriptor: string, text?: string): Promise<void>;
+}
+
+export interface ClockService {
+  now(): string;
+  randomUUID(): string;
+}
+
 export interface OpenSketchHostServices {
   render(container: HTMLElement, node: ReactNode): RenderHandle;
-  [service: string]: unknown;
+  projects: ProjectRepository;
+  importedMedia: ImportedMediaRepository;
+  templates: AssetTemplateRepository;
+  files: ProjectFileService;
+  exports: ExportDeliveryService;
+  assets: AssetService;
+  preferences: PreferenceService;
+  navigation: NavigationService;
+  dialogs: DialogService;
+  clipboard: ClipboardService;
+  pwa: PwaService;
+  fonts: FontService;
+  clock: ClockService;
 }
 
 export interface OpenSketchApplicationContext {

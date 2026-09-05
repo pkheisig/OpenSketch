@@ -1,5 +1,3 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
 import { createOpenSketchModule } from "@opensketch/application-module";
 
 // This fixture intentionally imports the packed package name rather than any
@@ -15,9 +13,4 @@ const container = document.getElementById("opensketch-module");
 if (!container) throw new Error("Missing module mount container.");
 
 const module = createOpenSketchModule(window.openSketchHostServices);
-createRoot(container).render(
-  <StrictMode>
-    <div data-module-mounted="true" />
-  </StrictMode>
-);
 module.mount(container, { routePrefix: "/consumer/opensketch/" });

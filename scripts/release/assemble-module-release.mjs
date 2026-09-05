@@ -16,6 +16,18 @@ const editorCorePackage = JSON.parse(
 );
 const version = appPackage.version;
 const sourceSha = runGit(["rev-parse", "HEAD"]);
+const editorCoreSource = await readFile(
+  join(repositoryRoot, "packages/editor-core/src/index.ts"),
+  "utf8"
+);
+const formatSource = await readFile(join(repositoryRoot, "packages/editor-core/src/types.ts"), "utf8");
+const editorCoreVersion = sourceConstant(editorCoreSource, "EDITOR_CORE_VERSION");
+const projectFormatVersion = Number(sourceConstant(formatSource, "OpenSketch_FORMAT_VERSION"));
+
+if (editorCoreVersion !== editorCorePackage.version) {
+  throw new Error("editor-core package and source versions differ.");
+}
+if (!Number.isInteger(projectFormatVersion)) throw new Error("The editor-core project format is invalid.");
 
 if (!/^[0-9a-f]{40}$/.test(sourceSha)) throw new Error("The release source SHA is invalid.");
 if (!process.env.OPENSKETCH_ALLOW_DIRTY_RELEASE && !isCleanGit()) {
@@ -74,15 +86,15 @@ const moduleManifest = {
   assetManifestEntry: `./${assetManifestPath}`,
   editorCore: {
     packageName: "@workspace/editor-core",
-    version: editorCorePackage.version,
-    projectFormatVersion: 1
+    version: editorCoreVersion,
+    projectFormatVersion
   },
   peerDependencies: {
     react: "^19.0.0",
     "react-dom": "^19.0.0"
   },
   compatibility: {
-    projectFormatVersion: 1,
+    projectFormatVersion,
     moduleContractVersion: "1.0.0",
     openSuiteContractVersion: "0.1.0-bootstrap"
   },
@@ -122,8 +134,8 @@ await writeJson(join(releaseRoot, "release-attestation.json"), {
   version,
   sourceSha,
   moduleManifestSha256,
-  editorCoreVersion: editorCorePackage.version,
-  projectFormatVersion: 1,
+  editorCoreVersion,
+  projectFormatVersion,
   releaseArtifactsAreImmutable: true,
   mutableRefsAllowed: false,
   generatedBy: "scripts/release/assemble-module-release.mjs"
@@ -147,7 +159,18 @@ function runGit(args) {
 function isCleanGit() {
   const result = spawnSync("git", ["diff", "--quiet"], { cwd: repositoryRoot });
   const cached = spawnSync("git", ["diff", "--cached", "--quiet"], { cwd: repositoryRoot });
-  return result.status === 0 && cached.status === 0;
+  const status = spawnSync("git", ["status", "--porcelain", "--untracked-files=all"], {
+    cwd: repositoryRoot,
+    encoding: "utf8"
+  });
+  return result.status === 0 && cached.status === 0 && status.status === 0 && !status.stdout.trim();
+}
+
+function sourceConstant(source, name) {
+  const match = source.match(new RegExp(`export const ${name} = ([^;]+);`));
+  if (!match) throw new Error(`Could not read ${name} from editor-core source.`);
+  const value = match[1].trim().replace(/\s+as const$/, "");
+  return value.replace(/^(["'])(.*)\1$/, "$2");
 }
 
 async function exists(path) {
