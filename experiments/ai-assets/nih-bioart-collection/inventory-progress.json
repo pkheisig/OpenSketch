@@ -8479,17 +8479,101 @@
     "lipid-bilayer-cross-section": {
       "name": "lipid bilayer cross-section",
       "category": "5. Membranes, junctions, and cell-surface structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/lipid-bilayer-cross-section-bioart-transparent.png",
+      "svg": "svg/lipid-bilayer-cross-section-bioart-traced.svg",
+      "png_sha256": "708f5a05c7e835748fca448697695cf50b029e388ad3e34005718908b5c34f7d",
+      "svg_sha256": "44682ece25191c3192f57b56f4a8d01d8a859471e4669e20ba98e75a4d8a310a",
+      "original_sha256": "b2d24a197bf03742f7c542249d57259ac2a2c7065d1f47729c47da1300887b77",
+      "png_dimensions": [
+        3040,
+        3040
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        475,
+        1190,
+        476,
+        1182
+      ],
+      "svg_paths": 12450,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/lipid-bilayer-cross-section/prompt.json",
+      "qa": "qa/inventory/lipid-bilayer-cross-section",
+      "visual_review": "Inspected PNG and SVG on white and dark backgrounds: two opposing rows of twelve lipid heads, two inward-facing tails per head, distinct leaflet endpoints, no extra components. SVG preserves round head gradients with slightly darker contours and minor banding. Complete transparent strip with padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lipid-bilayer-cross-section/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lipid-bilayer-cross-section/inspection.webm"
+      }
     },
     "membrane-raft": {
       "name": "membrane raft",
       "category": "5. Membranes, junctions, and cell-surface structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/membrane-raft-bioart-transparent.png",
+      "svg": "svg/membrane-raft-bioart-traced.svg",
+      "png_sha256": "a9d57fe3d38a803f8369865294e6a109dd009f42661118695593188f59e1c59a",
+      "svg_sha256": "c5fd6b823bdc34dd0d4f55fe9044d56a4ba8d6e4707e15e95fff708c794a67bb",
+      "original_sha256": "62c4f6df97c8e3e9aeac303a3317bfe56ad6f1cd175d7f63a918a90991411ba2",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        578,
+        339,
+        589
+      ],
+      "svg_paths": 19382,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/membrane-raft/prompt.json",
+      "qa": "qa/inventory/membrane-raft",
+      "visual_review": "Inspected PNG and SVG on light and dark backgrounds: teal domain remains continuous with the lavender bilayer, opposing leaflet tails and seven front-face cholesterol symbols retained. No protruding cholesterol above the top surface, no rendered glow in the alpha composite. SVG preserves packed head groups and shading with minor banding; generous transparent padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/membrane-raft/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/membrane-raft/inspection.webm"
+      }
     },
     "clathrin-coated-pit": {
       "name": "clathrin-coated pit",
       "category": "5. Membranes, junctions, and cell-surface structures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/clathrin-coated-pit-bioart-transparent.png",
+      "svg": "svg/clathrin-coated-pit-bioart-traced.svg",
+      "png_sha256": "19936ebc79099d6924da787cbfb98f0532e2da0a0fba167b54e61a028cc39d8e",
+      "svg_sha256": "a343c9699dd2eb68e721f3a30842e30e648e00b147ad8478f5c192b9ca1ad64f",
+      "original_sha256": "1bce835bbd8a62a7e4ab3a327c61ec5db0294fcf9c592e3101dcf3bd199b5c1c",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        328,
+        581
+      ],
+      "svg_paths": 21683,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/clathrin-coated-pit/prompt.json",
+      "qa": "qa/inventory/clathrin-coated-pit",
+      "visual_review": "Inspected PNG and SVG on light and dark backgrounds: open U-shaped membrane continuous with both shoulders, corrected opposing leaflets, three receptor-bound luminal cargo spheres, teal coat on the outer cytoplasmic side. Alpha composite removes preview glow and preserves open lattice spaces. SVG keeps structure, shading and complete silhouette with minor contour strengthening.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/clathrin-coated-pit/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/clathrin-coated-pit/inspection.webm"
+      }
     },
     "clathrin-coated-vesicle": {
       "name": "clathrin-coated vesicle",
