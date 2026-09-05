@@ -1,4 +1,5 @@
 import { createElement, useState, type Dispatch, type SetStateAction } from "react";
+import { EDITOR_CORE_VERSION, OpenSketch_FORMAT_VERSION } from "@workspace/editor-core";
 import { App } from "@/app/App";
 import type {
   OpenSketchApplicationContext,
@@ -8,20 +9,39 @@ import type {
   OpenSketchModuleManifest,
   RenderHandle
 } from "@/application/hostServices";
-import { OpenSketchHostProvider } from "@/application/hostServices";
+import {
+  OPENSKETCH_APPLICATION_CONTRACT_VERSION,
+  OPENSKETCH_APPLICATION_VERSION,
+  OPENSKETCH_OPEN_SUITE_CONTRACT_VERSION,
+  OPENSKETCH_REACT_DOM_VERSION_RANGE,
+  OPENSKETCH_REACT_VERSION_RANGE,
+  OpenSketchHostProvider
+} from "@/application/hostServices";
+import { OPENSUITE_UI_CONTRACT_VERSION } from "@/application/uiContract";
 
 export const OPENSKETCH_MODULE_MANIFEST: OpenSketchModuleManifest = {
+  schemaVersion: 1,
   id: "opensketch",
   displayName: "OpenSketch",
-  version: "0.1.0",
-  contractVersion: "1.0.0",
-  uiContractVersion: "0.1.0-bootstrap",
+  version: OPENSKETCH_APPLICATION_VERSION,
+  contractVersion: OPENSKETCH_APPLICATION_CONTRACT_VERSION,
+  uiContractVersion: OPENSUITE_UI_CONTRACT_VERSION,
   entry: "OpenSketchApplication",
-  stylesheetEntry: "./styles/app.css",
+  stylesheetEntry: "./module/opensketch-module.css",
   assetManifestEntry: "./assets/manifest.json",
+  editorCore: {
+    packageName: "@workspace/editor-core",
+    version: EDITOR_CORE_VERSION,
+    projectFormatVersion: OpenSketch_FORMAT_VERSION
+  },
+  compatibility: {
+    openSuiteContractVersion: OPENSKETCH_OPEN_SUITE_CONTRACT_VERSION,
+    react: OPENSKETCH_REACT_VERSION_RANGE,
+    "react-dom": OPENSKETCH_REACT_DOM_VERSION_RANGE
+  },
   peerDependencies: {
-    react: "^19.0.0",
-    "react-dom": "^19.0.0"
+    react: OPENSKETCH_REACT_VERSION_RANGE,
+    "react-dom": OPENSKETCH_REACT_DOM_VERSION_RANGE
   },
   capabilities: [
     "project-library",

@@ -29,11 +29,24 @@ function hostFixture() {
 describe("OpenSketch application module", () => {
   it("publishes a versioned identity without owning a page root", () => {
     expect(OPENSKETCH_MODULE_MANIFEST).toMatchObject({
+      schemaVersion: 1,
       id: "opensketch",
       displayName: "OpenSketch",
       contractVersion: "1.0.0",
       uiContractVersion: "0.1.0-bootstrap",
-      entry: "OpenSketchApplication"
+      entry: "OpenSketchApplication",
+      stylesheetEntry: "./module/opensketch-module.css",
+      assetManifestEntry: "./assets/manifest.json",
+      editorCore: {
+        packageName: "@workspace/editor-core",
+        version: "0.1.0",
+        projectFormatVersion: 1
+      },
+      compatibility: {
+        openSuiteContractVersion: "0.1.0-bootstrap",
+        react: "^19.0.0",
+        "react-dom": "^19.0.0"
+      }
     });
     expect(OPENSKETCH_MODULE_MANIFEST).not.toHaveProperty("rootId");
   });

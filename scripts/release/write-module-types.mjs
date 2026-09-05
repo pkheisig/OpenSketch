@@ -1,40 +1,152 @@
-import {
-  Fragment,
-  createContext,
-  createElement,
-  useContext,
-  useState,
-  type ReactNode
-} from "react";
-import type {
-  AssetFamily,
-  AssetManifest,
-  AssetVariant,
-  ImportedMediaRecord,
-  ProjectFolderRecord,
-  ProjectRecord
-} from "@workspace/editor-core";
-import type { AssetTemplate } from "@/editor/assetTemplates";
-import type { ProjectLoadResult } from "@/persistence/portable";
-import type { OfflineAssetPackStatus } from "@/assets/offlineAssetPack";
+/* global process */
+
+import { mkdir, writeFile } from "node:fs/promises";
+import { dirname, resolve } from "node:path";
+
+const output = process.argv[2];
+if (!output) throw new Error("Usage: write-module-types.mjs <output-path>");
+
+const declaration = `import type { ComponentType, ReactNode } from "react";
+
+export interface RenderHandle {
+  unmount(): void | Promise<void>;
+  setSuspended?(suspended: boolean): void;
+}
 
 export type Theme = "light" | "dark";
 
-export const OPENSKETCH_APPLICATION_VERSION = "0.1.0" as const;
-export const OPENSKETCH_APPLICATION_CONTRACT_VERSION = "1.0.0" as const;
-export const OPENSKETCH_OPEN_SUITE_CONTRACT_VERSION = "0.1.0-bootstrap" as const;
-export const OPENSKETCH_REACT_VERSION_RANGE = "^19.0.0" as const;
-export const OPENSKETCH_REACT_DOM_VERSION_RANGE = "^19.0.0" as const;
+export type CanvasUnit = "px" | "mm" | "in";
+
+export interface CanvasSettings {
+  width: number;
+  height: number;
+  unit: CanvasUnit;
+  dpi: number;
+  background: string;
+  transparent: boolean;
+  grid: boolean;
+  doubleClickCreatesText: boolean;
+}
+
+export interface ProjectRecord {
+  format: "OpenSketch";
+  formatVersion: number;
+  version: 1;
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  canvas: CanvasSettings;
+  objects: Record<string, unknown>;
+  uploads: ImportedMediaRecord[];
+  usedAssetIds: string[];
+  description?: string;
+  thumbnail?: string;
+  folderId?: string;
+  archivedAt?: string;
+}
+
+export interface ProjectFolderRecord {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ImportedMediaRecord {
+  id: string;
+  name: string;
+  mimeType: string;
+  dataUrl: string;
+}
+
+export interface ImportedMediaLibraryRecord extends ImportedMediaRecord {
+  createdAt: string;
+  updatedAt: string;
+  contentHash: string;
+}
+
+export interface AssetVariant {
+  id: string;
+  label?: string;
+  assetPath: string;
+  thumbnailPath: string;
+  commonsSha1?: string;
+  sourceFileId?: number;
+  localSha256?: string;
+  width?: number;
+  height?: number;
+}
+
+export type AssetLicense =
+  | "Public Domain"
+  | "CC0-1.0"
+  | "CC-BY-3.0"
+  | "CC-BY-4.0"
+  | "CC-BY-SA-3.0"
+  | "CC-BY-SA-4.0"
+  | "MIT"
+  | "BSD-3-Clause";
+
+export interface AssetFamily {
+  familyId: string;
+  bioartEntryId: number;
+  title: string;
+  description: string;
+  category: string;
+  keywords: string[];
+  author: string;
+  credit: string;
+  license: AssetLicense;
+  licenseUrl?: string;
+  sourceName?: string;
+  nihSourcePage?: string;
+  sourcePage?: string;
+  commonsPage?: string;
+  defaultVariantId: string;
+  variants: AssetVariant[];
+}
+
+export interface AssetManifest {
+  version: 1;
+  generatedAt: string;
+  source: string;
+  families: AssetFamily[];
+}
+
+export interface AssetTemplate {
+  id: string;
+  name: string;
+  object: Record<string, unknown>;
+  thumbnail: string;
+  createdAt: string;
+  updatedAt: string;
+  schemaVersion: 1;
+}
+
+export interface ProjectLoadResult {
+  project: ProjectRecord;
+  identityRepaired: boolean;
+  identityWarnings: string[];
+}
+
+export type OfflineAssetPackState = "unavailable" | "not-ready" | "preparing" | "ready" | "error";
+
+export interface OfflineAssetPackStatus {
+  state: OfflineAssetPackState;
+  version: string;
+  total: number;
+  completed: number;
+  sourceCount: number;
+  previewCount: number;
+  message?: string;
+}
 
 export interface ProjectRepository {
   list(): Promise<ProjectRecord[]>;
   get(id: string): Promise<ProjectRecord | undefined>;
   save(project: ProjectRecord): Promise<void>;
-  saveThumbnail(
-    projectId: string,
-    projectRevision: string,
-    thumbnail: string
-  ): Promise<ProjectRecord | undefined>;
+  saveThumbnail(projectId: string, projectRevision: string, thumbnail: string): Promise<ProjectRecord | undefined>;
   create(name?: string): ProjectRecord;
   delete(id: string): Promise<void>;
   duplicate(project: ProjectRecord): Promise<ProjectRecord>;
@@ -51,12 +163,6 @@ export interface ImportedMediaRepository {
   save(media: ImportedMediaRecord, timestamp?: string): Promise<ImportedMediaLibraryRecord>;
   remember(imports: ImportedMediaRecord[], timestamp: string): Promise<void>;
   delete(id: string): Promise<void>;
-}
-
-export interface ImportedMediaLibraryRecord extends ImportedMediaRecord {
-  createdAt: string;
-  updatedAt: string;
-  contentHash: string;
 }
 
 export interface AssetTemplateRepository {
@@ -149,13 +255,7 @@ export interface ClockService {
   randomUUID(): string;
 }
 
-export interface RenderHandle {
-  unmount(): void | Promise<void>;
-  setSuspended?(suspended: boolean): void;
-}
-
 export interface OpenSketchHostServices {
-  /** The host owns ReactDOM; the application module only supplies a node. */
   render(container: HTMLElement, node: ReactNode): RenderHandle;
   projects: ProjectRepository;
   importedMedia: ImportedMediaRepository;
@@ -232,54 +332,17 @@ export interface OpenSketchModuleManifest {
     "react-dom": string;
   };
   uiContractVersion: "0.1.0-bootstrap";
-  peerDependencies: {
-    react: string;
-    "react-dom": string;
-  };
+  peerDependencies: { react: string; "react-dom": string };
   capabilities: readonly string[];
 }
 
-const HostServicesContext = createContext<OpenSketchHostServices | null>(null);
-const OpenSketchPortalRootContext = createContext<HTMLElement | null>(null);
+export declare const OPENSKETCH_MODULE_MANIFEST: OpenSketchModuleManifest;
+export declare const OpenSketchApplication: ComponentType<unknown>;
+export declare function createOpenSketchModule(
+  services: OpenSketchHostServices
+): OpenSketchApplicationModule;
+`;
 
-export function OpenSketchHostProvider({
-  services,
-  children
-}: {
-  services: OpenSketchHostServices;
-  children?: ReactNode;
-}) {
-  return createElement(HostServicesContext.Provider, { value: services }, children);
-}
-
-export function useOpenSketchHostServices(): OpenSketchHostServices {
-  const services = useContext(HostServicesContext);
-  if (!services) throw new Error("OpenSketch host services are not available.");
-  return services;
-}
-
-export function OpenSketchPortalRoot({
-  children,
-  portalRootId
-}: {
-  children?: ReactNode;
-  portalRootId?: string;
-}) {
-  const [root, setRoot] = useState<HTMLDivElement | null>(null);
-  const hostRoot =
-    portalRootId && typeof document !== "undefined" ? document.getElementById(portalRootId) : null;
-  return createElement(
-    OpenSketchPortalRootContext.Provider,
-    { value: hostRoot ?? root },
-    createElement(
-      Fragment,
-      null,
-      createElement("div", { className: "opensketch-portal-root", ref: setRoot }),
-      children
-    )
-  );
-}
-
-export function useOpenSketchPortalRoot(): HTMLElement | null {
-  return useContext(OpenSketchPortalRootContext);
-}
+const outputPath = resolve(output);
+await mkdir(dirname(outputPath), { recursive: true });
+await writeFile(outputPath, declaration, "utf8");

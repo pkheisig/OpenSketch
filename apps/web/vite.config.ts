@@ -4,8 +4,47 @@ import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import { normalizePublicBase, publicAssetPattern, publicPath } from "./src/deploymentBase";
 
-export default defineConfig(() => {
+export default defineConfig(({ mode }) => {
+  const moduleBuild = mode === "module";
+  const releasePwaBuild = mode === "release-pwa";
   const publicBase = normalizePublicBase(process.env.VITE_PUBLIC_BASE);
+
+  if (moduleBuild) {
+    return {
+      base: "./",
+      // The separately versioned release asset pack must not be copied into
+      // the application module's JavaScript/CSS bundle.
+      publicDir: false,
+      plugins: [react()],
+      resolve: {
+        alias: {
+          "@": fileURLToPath(new URL("./src", import.meta.url))
+        }
+      },
+      build: {
+        outDir: "../../dist/module",
+        emptyOutDir: true,
+        sourcemap: true,
+        lib: {
+          entry: fileURLToPath(new URL("./src/application/moduleEntry.tsx", import.meta.url)),
+          formats: ["es"],
+          fileName: () => "opensketch-module.js",
+          cssFileName: "opensketch-module"
+        },
+        rollupOptions: {
+          external: [/^react(?:\/|$)/, /^react-dom(?:\/|$)/],
+          output: {
+            assetFileNames: (assetInfo) =>
+              assetInfo.name?.endsWith(".css")
+                ? "opensketch-module.css"
+                : "assets/[name]-[hash][extname]",
+            chunkFileNames: "chunks/[name]-[hash].js",
+            entryFileNames: "opensketch-module.js"
+          }
+        }
+      }
+    };
+  }
 
   return {
     base: publicBase,
@@ -115,7 +154,7 @@ export default defineConfig(() => {
       }
     },
     build: {
-      outDir: "../../dist",
+      outDir: releasePwaBuild ? "../../dist/release-pwa" : "../../dist",
       emptyOutDir: true,
       sourcemap: false,
       rollupOptions: {

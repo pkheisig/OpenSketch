@@ -1,0 +1,11 @@
+{
+  "name": "opensketch-module-consumer-fixture",
+  "private": true,
+  "type": "module",
+  "description": "External consumer fixture for the packaged OpenSketch application module.",
+  "dependencies": {
+    "@opensketch/application-module": "file:../../dist/releases/opensketch/0.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  }
+}
