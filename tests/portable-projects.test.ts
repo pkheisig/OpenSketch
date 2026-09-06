@@ -97,7 +97,14 @@ describe("portable OpenSketch projects", () => {
           id: "import-1",
           name: "pixel.png",
           mimeType: "image/png",
-          dataUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB"
+          dataUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAB",
+          sourceResource: {
+            format: "tiff",
+            name: "pixel-source.tiff",
+            mimeType: "image/tiff",
+            byteLength: 128,
+            sha256: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+          }
         }
       ]
     };

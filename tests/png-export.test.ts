@@ -8,9 +8,19 @@ import {
   setPngDpi
 } from "../apps/web/src/export/png";
 import { PROVENANCE_METADATA_KEY } from "../apps/web/src/export/provenance";
+import { setJpegDpi } from "../apps/web/src/export/jpeg";
 
 const ONE_PIXEL_PNG =
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
+
+function blobBytes(blob: Blob): Promise<Uint8Array> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(new Uint8Array(reader.result as ArrayBuffer));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsArrayBuffer(blob);
+  });
+}
 
 describe("PNG export metadata", () => {
   it("writes the selected physical resolution", async () => {
@@ -79,6 +89,18 @@ describe("PNG export metadata", () => {
   });
 });
 
+describe("JPEG export metadata", () => {
+  it("writes a JFIF density segment when the browser encoder omits one", async () => {
+    const source = new Uint8Array([0xff, 0xd8, 0xff, 0xd9]);
+    const output = await blobBytes(await setJpegDpi(new Blob([source]), 300));
+    expect([...output.subarray(0, 2)]).toEqual([0xff, 0xd8]);
+    expect([...output.subarray(2, 9)]).toEqual([0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46, 0x49]);
+    expect(output[13]).toBe(1);
+    expect(new DataView(output.buffer).getUint16(14)).toBe(300);
+    expect(new DataView(output.buffer).getUint16(16)).toBe(300);
+  });
+});
+
 describe("PNG export resource limits", () => {
   it("calculates finite raster dimensions and the scale used by Fabric", () => {
     expect(calculatePngExportResource(1920, 1080, 300, 1200)).toEqual({
@@ -100,7 +122,7 @@ describe("PNG export resource limits", () => {
 
   it("rejects a raster that exceeds the pixel budget even below the dimension limit", () => {
     expect(() => calculatePngExportResource(8_001, 8_000, 300, 300)).toThrow(
-      "PNG export at 300 DPI would create 8001 × 8000 pixels"
+      "Raster export at 300 DPI would create 8001 × 8000 pixels"
     );
   });
 
@@ -134,13 +156,13 @@ describe("PNG export resource limits", () => {
 
   it("fails closed for non-finite and non-positive export inputs", () => {
     expect(() => calculatePngExportResource(1920, 1080, 0, 300)).toThrow(
-      "PNG export dimensions are invalid"
+      "Raster export dimensions are invalid"
     );
     expect(() => calculatePngExportResource(1920, 1080, 300, Number.POSITIVE_INFINITY)).toThrow(
-      "PNG export dimensions are invalid"
+      "Raster export dimensions are invalid"
     );
     expect(() => calculatePngExportResource(Number.POSITIVE_INFINITY, 1080, 300, 300)).toThrow(
-      "PNG export dimensions are invalid"
+      "Raster export dimensions are invalid"
     );
   });
 });

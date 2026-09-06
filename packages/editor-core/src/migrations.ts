@@ -11,6 +11,7 @@ import {
   type ConnectorPathShape,
   type ConnectorRouting,
   type ImportedMediaRecord,
+  type ImportedMediaSourceResource,
   isAssetStyle,
   isProjectKind,
   type PortableProject
@@ -1805,7 +1806,7 @@ function validateUploads(value: unknown, context: ValidationContext): ImportedMe
   return value.map((media, index) => {
     const path = `imported media[${index}]`;
     if (!isRecord(media)) fail(path, "is invalid");
-    assertKnownKeys(media, path, new Set(["id", "name", "mimeType", "dataUrl"]));
+    assertKnownKeys(media, path, new Set(["id", "name", "mimeType", "dataUrl", "sourceResource"]));
     assertNonEmptyString(media.id, `${path}.id`, PORTABLE_PROJECT_LIMITS.maxObjectIdLength);
     if (ids.has(media.id)) fail(`${path}.id`, "is duplicated");
     ids.add(media.id);
@@ -1817,7 +1818,51 @@ function validateUploads(value: unknown, context: ValidationContext): ImportedMe
     const mimeType = media.mimeType.toLowerCase();
     if (!isSupportedImageMimeType(mimeType)) fail(`${path}.mimeType`, "is unsupported");
     validateDataUrl(media.dataUrl, `${path}.dataUrl`, context, mimeType);
-    return { id: media.id, name: media.name, mimeType, dataUrl: media.dataUrl };
+    let sourceResource: ImportedMediaSourceResource | undefined;
+    if (media.sourceResource !== undefined) {
+      const sourcePath = `${path}.sourceResource`;
+      if (!isRecord(media.sourceResource)) fail(sourcePath, "is invalid");
+      assertKnownKeys(
+        media.sourceResource,
+        sourcePath,
+        new Set(["format", "name", "mimeType", "byteLength", "sha256"])
+      );
+      assertNonEmptyString(media.sourceResource.format, `${sourcePath}.format`, 64);
+      assertString(media.sourceResource.name, `${sourcePath}.name`, {
+        maxLength: PORTABLE_PROJECT_LIMITS.maxObjectNameLength,
+        nonEmpty: true
+      });
+      assertString(media.sourceResource.mimeType, `${sourcePath}.mimeType`, {
+        maxLength: 128,
+        nonEmpty: true
+      });
+      assertFiniteNumber(media.sourceResource.byteLength, `${sourcePath}.byteLength`, {
+        min: 1,
+        max: PORTABLE_PROJECT_LIMITS.maxDataUrlBytes,
+        integer: true
+      });
+      assertString(media.sourceResource.sha256, `${sourcePath}.sha256`, {
+        maxLength: 64,
+        nonEmpty: true
+      });
+      if (!/^[0-9a-f]{64}$/i.test(media.sourceResource.sha256)) {
+        fail(`${sourcePath}.sha256`, "is invalid");
+      }
+      sourceResource = {
+        format: media.sourceResource.format,
+        name: media.sourceResource.name,
+        mimeType: media.sourceResource.mimeType,
+        byteLength: media.sourceResource.byteLength,
+        sha256: media.sourceResource.sha256.toLowerCase()
+      };
+    }
+    return {
+      id: media.id,
+      name: media.name,
+      mimeType,
+      dataUrl: media.dataUrl,
+      ...(sourceResource ? { sourceResource } : {})
+    };
   });
 }
 
@@ -1841,7 +1886,11 @@ export function migrateProject(input: unknown): PortableProject {
   if (!isRecord(input)) throw new Error("This file is not an OpenSketch project.");
   const project = input;
   if (project.format !== "OpenSketch") throw new Error("The project marker is missing or invalid.");
-  if (project.formatVersion !== 1 && project.formatVersion !== OpenSketch_FORMAT_VERSION) {
+  if (
+    project.formatVersion !== 1 &&
+    project.formatVersion !== 2 &&
+    project.formatVersion !== OpenSketch_FORMAT_VERSION
+  ) {
     throw new Error(
       `Project version ${String(project.formatVersion)} is not supported by this release.`
     );

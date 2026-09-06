@@ -169,6 +169,18 @@ export interface SemanticEditorAdapterDependencies {
     background?: string,
     options?: SemanticExecutionOptions
   ) => Promise<void>;
+  exportDocument: (
+    format: "svg" | "pdf" | "png" | "jpeg" | "webp" | "tiff" | "bmp",
+    options?: {
+      title?: string;
+      description?: string;
+      transparent?: boolean;
+      dpi?: number;
+      background?: string;
+      quality?: number;
+      signal?: AbortSignal;
+    }
+  ) => Promise<unknown>;
 }
 
 type SemanticPointInput = { x: number; y: number };
@@ -3566,22 +3578,22 @@ export function createSemanticEditorAdapter(
       return { data: { objectId, presetId }, changedObjectIds: [objectId] };
     }
     if (command === "export_figure") {
-      const format = input.format as "svg" | "pdf" | "png" | "credits";
+      const format = input.format as
+        "svg" | "pdf" | "png" | "jpeg" | "webp" | "tiff" | "bmp" | "credits";
       const title = typeof input.title === "string" ? input.title : undefined;
       const description = typeof input.description === "string" ? input.description : undefined;
-      if (format === "svg") dependencies.exportSvg(title, description);
-      else if (format === "credits") dependencies.exportCredits(title, description);
-      else if (format === "pdf") {
-        await dependencies.exportPdf(title, description, options);
-        throwIfSemanticExecutionAborted(options.signal);
-      } else {
+      if (format === "credits") dependencies.exportCredits(title, description);
+      else {
         const settings = dependencies.getCanvasSettings();
-        await dependencies.exportPng(
-          input.transparent === true,
-          typeof input.dpi === "number" ? input.dpi : settings.dpi,
-          typeof input.background === "string" ? input.background : settings.background,
-          options
-        );
+        await dependencies.exportDocument(format, {
+          title,
+          description,
+          transparent: input.transparent === true,
+          dpi: typeof input.dpi === "number" ? input.dpi : settings.dpi,
+          background: typeof input.background === "string" ? input.background : settings.background,
+          quality: typeof input.quality === "number" ? input.quality : undefined,
+          signal: options.signal
+        });
         throwIfSemanticExecutionAborted(options.signal);
       }
       return { data: { format, started: true } };

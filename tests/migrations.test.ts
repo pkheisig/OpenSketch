@@ -172,7 +172,7 @@ describe("project migrations", () => {
   it("accepts the current format", () => {
     const migrated = migrateProject(project);
     expect(migrated.name).toBe("Figure");
-    expect(migrated.formatVersion).toBe(2);
+    expect(migrated.formatVersion).toBe(3);
     expect(migrated.kind).toBe("diagram");
     expect(migrated.layout).toBeUndefined();
   });

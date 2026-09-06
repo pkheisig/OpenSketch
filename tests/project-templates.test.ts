@@ -255,7 +255,7 @@ describe("project template storage", () => {
     const upgraded = new OpenSketchDatabase(databaseName);
     await upgraded.open();
     await expect(upgraded.projects.get("legacy-project")).resolves.toMatchObject({
-      formatVersion: 2,
+      formatVersion: 3,
       kind: "diagram",
       revision: 0
     });
