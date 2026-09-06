@@ -280,6 +280,17 @@ describe("strict interchange probing", () => {
     expect(report.diagnostics[0]?.code).toBe("signature_unrecognized");
   });
 
+  it("reports normalized raster imports as appearance snapshots", () => {
+    for (const format of ["bmp", "gif", "tiff"] as const) {
+      const report = createFidelityReport({
+        source: { name: `figure.${format}`, mimeType: `image/${format}`, byteLength: 1 },
+        probe: { format, diagnostics: [] }
+      });
+      expect(report.status).toBe("appearance-snapshot");
+      expect(report.flattenedCount).toBe(1);
+    }
+  });
+
   it("builds one accept list for all registered import formats", () => {
     const accept = importAcceptAttribute();
     expect(accept).toContain("image/tiff");

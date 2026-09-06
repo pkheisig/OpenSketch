@@ -121,6 +121,7 @@ export function encodeBmpRgba(raster: RgbaRaster): Uint8Array {
   setU32(view, 58, 0x0000ff00);
   setU32(view, 62, 0x000000ff);
   setU32(view, 66, 0xff000000);
+  setU32(view, 70, 0x73524742);
   for (let y = 0; y < raster.height; y += 1) {
     const sourceRow = raster.height - 1 - y;
     const sourceOffset = sourceRow * rowBytes;

@@ -4927,10 +4927,12 @@ export function EditorProvider({
       const transparent = options.transparent === true && format !== "jpeg";
       canvas.backgroundColor = transparent ? "" : (options.background ?? canvasSettings.background);
       let blob: Blob;
+      let outputDimensions = { width: resource.width, height: resource.height };
       try {
         const exportCanvas = withLogicalViewport(canvas, canvasSettings, () =>
           canvas.toCanvasElement(resource.scale)
         );
+        outputDimensions = { width: exportCanvas.width, height: exportCanvas.height };
         if (format === "bmp" || format === "tiff") {
           const context = exportCanvas.getContext("2d");
           if (!context) throw new Error("The browser canvas is unavailable.");
@@ -4982,8 +4984,8 @@ export function EditorProvider({
         blob,
         filename,
         format,
-        width: resource.width,
-        height: resource.height,
+        width: outputDimensions.width,
+        height: outputDimensions.height,
         ...(format === "png" || format === "jpeg" || format === "tiff" || format === "bmp"
           ? { physicalResolution: { x: dpi, y: dpi, unit: "dpi" as const } }
           : {}),

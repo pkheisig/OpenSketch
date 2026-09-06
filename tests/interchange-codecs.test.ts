@@ -161,10 +161,12 @@ function fileLike(bytes: Uint8Array, name: string, type: string): File {
 
 describe("loss-aware raster codecs", () => {
   it("round-trips RGBA pixels through the BMP adapter", () => {
-    const decoded = decodeBmpRgba(encodeBmpRgba(raster));
+    const encoded = encodeBmpRgba(raster);
+    const decoded = decodeBmpRgba(encoded);
     expect(decoded.width).toBe(raster.width);
     expect(decoded.height).toBe(raster.height);
     expect([...decoded.data]).toEqual([...raster.data]);
+    expect(new DataView(encoded.buffer).getUint32(70, true)).toBe(0x73524742);
   });
 
   it("round-trips RGBA pixels and resolution through the TIFF adapter", async () => {

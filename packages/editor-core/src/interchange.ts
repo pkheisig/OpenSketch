@@ -733,7 +733,6 @@ export function fidelityForFormat(format: InterchangeFormat | undefined): Interc
   if (!format) return "unsupported/refused";
   if (format === "svg") return "native-editable";
   if (format === "avif" || format === "heif" || format === "pdf") return "unsupported/refused";
-  if (format === "tiff" || format === "bmp" || format === "gif") return "editable-with-losses";
   return "appearance-snapshot";
 }
 
