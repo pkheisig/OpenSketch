@@ -1827,10 +1827,12 @@ export function EditorProvider({
     )?.trim();
     if (!name) return;
     const snapshot = captureDocumentSnapshot();
+    const objects = JSON.parse(snapshot.scene) as Record<string, unknown>;
     const projectSnapshot = toPortableProject({
       ...latestProject.current,
       canvas: snapshot.canvasSettings,
-      objects: JSON.parse(snapshot.scene),
+      objects,
+      usedAssetIds: assetIdsFromSnapshot(objects),
       thumbnail: undefined
     });
     const now = services.clock.now();

@@ -1,6 +1,12 @@
+import Dexie from "../apps/web/node_modules/dexie";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { DEFAULT_CANVAS, type ProjectTemplateRecord } from "../packages/editor-core/src";
 import {
+  DEFAULT_CANVAS,
+  remintProjectIdentity,
+  type ProjectTemplateRecord
+} from "../packages/editor-core/src";
+import {
+  OpenSketchDatabase,
   createProject,
   db,
   listProjectTemplates,
@@ -51,6 +57,85 @@ describe("project template storage", () => {
     });
   });
 
+  it("ignores one invalid template without hiding valid templates", async () => {
+    await saveProjectTemplate(template("figure"));
+    await db.projectTemplates.put({ ...template("diagram"), schemaVersion: 2 } as never);
+
+    expect(await listProjectTemplates()).toEqual([expect.objectContaining({ kind: "figure" })]);
+  });
+
+  it("remints connector, semantic, and recognition references together", () => {
+    const binding = (fromObjectId: string, toObjectId: string) => ({
+      fromObjectId,
+      fromAnchor: "center",
+      toObjectId,
+      toAnchor: "center",
+      startArrowhead: "none",
+      endArrowhead: "triangle",
+      lineStyle: "solid",
+      curvature: 0
+    });
+    const source = {
+      ...template().project,
+      objects: {
+        version: "7.0.0",
+        objects: [
+          {
+            type: "Rect",
+            objectId: "source",
+            connector: binding("source", "target"),
+            recognizedGroups: [
+              {
+                objectId: "recognition",
+                memberObjectIds: ["source", "target"],
+                properties: {}
+              }
+            ],
+            semanticMetadata: {
+              allowedOverlapObjectIds: ["target"],
+              layoutConstraint: { contentObjectId: "source", labelObjectId: "target" }
+            },
+            semanticRelations: [
+              {
+                id: "relation",
+                sourceObjectId: "source",
+                targetObjectId: "target",
+                mediatorObjectIds: ["target"]
+              }
+            ]
+          },
+          { type: "Rect", objectId: "target" }
+        ]
+      }
+    };
+    const reminted = remintProjectIdentity(source) as typeof source;
+    const [remintedSource, remintedTarget] = reminted.objects.objects;
+    const recognition = remintedSource.recognizedGroups?.[0];
+
+    expect(remintedSource.objectId).not.toBe("source");
+    expect(remintedTarget.objectId).not.toBe("target");
+    expect(remintedSource.connector).toEqual(
+      binding(remintedSource.objectId, remintedTarget.objectId)
+    );
+    expect(remintedSource.semanticMetadata?.allowedOverlapObjectIds).toEqual([
+      remintedTarget.objectId
+    ]);
+    expect(remintedSource.semanticMetadata?.layoutConstraint).toEqual({
+      contentObjectId: remintedSource.objectId,
+      labelObjectId: remintedTarget.objectId
+    });
+    expect(remintedSource.semanticRelations?.[0]).toMatchObject({
+      sourceObjectId: remintedSource.objectId,
+      targetObjectId: remintedTarget.objectId,
+      mediatorObjectIds: [remintedTarget.objectId]
+    });
+    expect(recognition?.objectId).not.toBe("recognition");
+    expect(recognition?.memberObjectIds).toEqual([
+      remintedSource.objectId,
+      remintedTarget.objectId
+    ]);
+  });
+
   it("instantiates fresh project and scene identities from a template", async () => {
     const saved = await saveProjectTemplate(template());
     const first = createProject(undefined, { kind: "diagram", template: saved });
@@ -85,5 +170,42 @@ describe("project template storage", () => {
     await expect(saveProjectTemplate(template())).rejects.toThrow(/storage is full/i);
     expect(await db.projectTemplates.get("template-diagram")).toBeUndefined();
     put.mockRestore();
+  });
+
+  it("migrates legacy v1 projects when opening the v6 database", async () => {
+    const databaseName = `OpenSketch-migration-${crypto.randomUUID()}`;
+    const legacy = new Dexie(databaseName);
+    legacy.version(5).stores({
+      projects: "id, updatedAt, name, archivedAt, folderId",
+      folders: "id, updatedAt, name",
+      imports: "id, updatedAt, name, mimeType, contentHash",
+      templates: "id, updatedAt, name",
+      templateMigrations: "id"
+    });
+    await legacy.open();
+    await legacy.table("projects").put({
+      format: "OpenSketch",
+      formatVersion: 1,
+      version: 1,
+      id: "legacy-project",
+      name: "Legacy",
+      createdAt: "2026-08-01T00:00:00.000Z",
+      updatedAt: "2026-08-01T00:00:00.000Z",
+      revision: 0,
+      canvas: DEFAULT_CANVAS,
+      objects: { version: "7.0.0", objects: [] },
+      uploads: [],
+      usedAssetIds: []
+    });
+    await legacy.close();
+
+    const upgraded = new OpenSketchDatabase(databaseName);
+    await upgraded.open();
+    await expect(upgraded.projects.get("legacy-project")).resolves.toMatchObject({
+      formatVersion: 2,
+      kind: "diagram",
+      revision: 0
+    });
+    await upgraded.delete();
   });
 });

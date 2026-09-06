@@ -57,8 +57,8 @@ export class OpenSketchDatabase extends Dexie {
   projectTemplates!: EntityTable<ProjectTemplateRecord, "id">;
   projectTemplateMigrations!: EntityTable<ProjectTemplateMigrationRecord, "id">;
 
-  constructor() {
-    super("OpenSketch");
+  constructor(databaseName = "OpenSketch") {
+    super(databaseName);
     this.version(1).stores({
       projects: "id, updatedAt, name"
     });
@@ -393,7 +393,15 @@ export async function listProjectTemplates(): Promise<ProjectTemplateRecord[]> {
     .projectTemplates.orderBy("updatedAt")
     .reverse()
     .toArray();
-  return templates.map(normalizeProjectTemplate);
+  const normalized: ProjectTemplateRecord[] = [];
+  for (const template of templates) {
+    try {
+      normalized.push(normalizeProjectTemplate(template));
+    } catch {
+      // A single corrupt or newer template must not hide the valid project library.
+    }
+  }
+  return normalized;
 }
 
 export async function getProjectTemplate(id: string): Promise<ProjectTemplateRecord | undefined> {
