@@ -91,6 +91,19 @@ describe("strict interchange probing", () => {
     expect(probeIsUsable(probe)).toBe(false);
   });
 
+  it("accepts SVG files with a bounded DOCTYPE prolog", () => {
+    const bytes = new TextEncoder().encode(
+      '<!DOCTYPE svg [<!ENTITY sample "bounded > entity">]><svg xmlns="http://www.w3.org/2000/svg" />'
+    );
+    const probe = probeInterchangeBytes(bytes, {
+      mimeType: "image/svg+xml",
+      name: "legacy.svg"
+    });
+
+    expect(probe.format).toBe("svg");
+    expect(probeIsUsable(probe)).toBe(true);
+  });
+
   it("detects BMP, TIFF, GIF animation, and modern container signatures", () => {
     const bmp = new Uint8Array(26);
     bmp.set([0x42, 0x4d], 0);

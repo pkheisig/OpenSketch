@@ -535,7 +535,62 @@ function probeTiff(bytes: Uint8Array):
 
 function probeSvg(bytes: Uint8Array): boolean {
   const text = new TextDecoder().decode(bytes.slice(0, Math.min(bytes.length, 16_384)));
-  return /^\s*(?:<\?xml[^>]*>\s*)?(?:<!--[^]*?-->\s*)*<svg(?:\s|>)/i.test(text);
+  let offset = 0;
+  let allowXmlDeclaration = true;
+  let doctypeSeen = false;
+
+  const skipWhitespace = () => {
+    while (offset < text.length && /\s/.test(text[offset] ?? "")) offset += 1;
+  };
+
+  while (offset < text.length) {
+    skipWhitespace();
+    if (text.slice(offset, offset + 5).toLowerCase() === "<?xml") {
+      if (!allowXmlDeclaration) return false;
+      const end = text.indexOf("?>", offset + 5);
+      if (end < 0) return false;
+      offset = end + 2;
+      allowXmlDeclaration = false;
+      continue;
+    }
+    if (text.slice(offset, offset + 4) === "<!--") {
+      const end = text.indexOf("-->", offset + 4);
+      if (end < 0) return false;
+      offset = end + 3;
+      allowXmlDeclaration = false;
+      continue;
+    }
+    if (text.slice(offset, offset + 9).toLowerCase() === "<!doctype") {
+      if (doctypeSeen || !/^<!doctype\s+svg(?:\s|\[|>)/i.test(text.slice(offset))) return false;
+      let quote: '"' | "'" | undefined;
+      let subsetDepth = 0;
+      let end = -1;
+      for (let index = offset + 9; index < text.length; index += 1) {
+        const character = text[index];
+        if (quote) {
+          if (character === quote) quote = undefined;
+        } else if (character === '"' || character === "'") {
+          quote = character;
+        } else if (character === "[") {
+          subsetDepth += 1;
+        } else if (character === "]" && subsetDepth > 0) {
+          subsetDepth -= 1;
+        } else if (character === ">" && subsetDepth === 0) {
+          end = index;
+          break;
+        }
+      }
+      if (end < 0) return false;
+      offset = end + 1;
+      doctypeSeen = true;
+      allowXmlDeclaration = false;
+      continue;
+    }
+    break;
+  }
+
+  skipWhitespace();
+  return /^<svg(?:\s|>)/i.test(text.slice(offset));
 }
 
 function probeFtyp(bytes: Uint8Array): InterchangeFormat | undefined {

@@ -223,7 +223,7 @@ function scaleTiffSample(value: number, bitsPerSample: number, floatingPoint: bo
 
 function scaleTiffPaletteSample(value: number): number {
   if (!Number.isFinite(value)) return 0;
-  return Math.max(0, Math.min(255, Math.round(value > 255 ? (value / 65535) * 255 : value)));
+  return Math.max(0, Math.min(255, Math.round((value / 65535) * 255)));
 }
 
 export async function decodeTiffRgba(bytes: Uint8Array): Promise<RgbaRaster> {
@@ -232,6 +232,12 @@ export async function decodeTiffRgba(bytes: Uint8Array): Promise<RgbaRaster> {
     const input = bytes.slice().buffer;
     const metadataPage = decode(input, { pages: [0], ignoreImageData: true })[0];
     if (!metadataPage) throw new Error("The TIFF contains no image pages.");
+    assertRasterDimensions(metadataPage.width, metadataPage.height);
+    if (metadataPage.sampleFormat !== 1 && !(metadataPage.bitsPerSample === 32 && metadataPage.sampleFormat === 3)) {
+      throw new Error(
+        "Only unsigned integer TIFF samples and 32-bit floating-point TIFF samples have a deterministic display mapping."
+      );
+    }
     const metadataBytesPerSample = metadataPage.bitsPerSample / 8;
     const estimatedBytes =
       metadataPage.width * metadataPage.height * metadataPage.components * metadataBytesPerSample;
@@ -240,11 +246,6 @@ export async function decodeTiffRgba(bytes: Uint8Array): Promise<RgbaRaster> {
       estimatedBytes > PORTABLE_PROJECT_LIMITS.maxTotalRasterArea * 4
     ) {
       throw new Error("The TIFF decoded pixel payload exceeds the supported memory budget.");
-    }
-    if (metadataPage.bitsPerSample === 32 && metadataPage.sampleFormat !== 3) {
-      throw new Error(
-        "Only 32-bit floating-point TIFF samples have a deterministic display mapping."
-      );
     }
     const pages = decode(input, { pages: [0] });
     const page = pages[0];
@@ -411,8 +412,13 @@ async function blobFromRgba(
   });
 }
 
-async function decodeViaBrowser(file: Blob, signal?: AbortSignal): Promise<RgbaRaster> {
+async function decodeViaBrowser(
+  file: Blob,
+  expectedDimensions: { width: number; height: number },
+  signal?: AbortSignal
+): Promise<RgbaRaster> {
   checkAbort(signal);
+  assertRasterDimensions(expectedDimensions.width, expectedDimensions.height);
   if (typeof createImageBitmap === "function") {
     const bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
     try {
@@ -601,7 +607,13 @@ export async function prepareStrictInterchangeImport(
         }
       );
     }
-    const raster = await decodeViaBrowser(file, options.signal);
+    if (!probe.dimensions) {
+      throw new InterchangeImportError(
+        "The raster dimensions could not be verified before decoding.",
+        { code: "header_malformed", probe }
+      );
+    }
+    const raster = await decodeViaBrowser(file, probe.dimensions, options.signal);
     if (probe.animated && options.allowAnimatedFirstFrame) {
       substitutions.push("animated GIF reduced to first frame");
       fidelityDiagnostics.push({
@@ -615,7 +627,13 @@ export async function prepareStrictInterchangeImport(
   } else if (format === "svg") {
     normalizedMimeType = "image/svg+xml";
   } else if (format === "jpeg") {
-    const raster = await decodeViaBrowser(file, options.signal);
+    if (!probe.dimensions) {
+      throw new InterchangeImportError(
+        "The raster dimensions could not be verified before decoding.",
+        { code: "header_malformed", probe }
+      );
+    }
+    const raster = await decodeViaBrowser(file, probe.dimensions, options.signal);
     physicalResolution = raster.physicalResolution;
     normalized = await blobFromRgba(raster, "image/png");
     normalizedMimeType = "image/png";
