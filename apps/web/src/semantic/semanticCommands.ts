@@ -197,6 +197,7 @@ const propertiesSchema: JsonSchema = {
 const assetFamilyId = (): JsonSchema => ({ type: "string", minLength: 1, maxLength: 200 });
 const assetVariantId = (): JsonSchema => ({ type: "string", minLength: 1, maxLength: 200 });
 const assetLimit = (): JsonSchema => integer(1, 100);
+const PPTX_MAX_BASE64_LENGTH = Math.ceil((PORTABLE_PROJECT_LIMITS.maxDataUrlBytes * 4) / 3) + 4;
 const exportFormat = {
   type: "string",
   enum: [...INTERCHANGE_EXPORT_REGISTRY.map((adapter) => adapter.format), "credits"]
@@ -1210,7 +1211,7 @@ const definitions: SemanticCommandDefinition[] = [
     name: "export_figure",
     title: "Export figure",
     description:
-      "Export the current figure through the shared interchange pipeline as SVG, PDF, PNG, JPEG, WebP, TIFF, BMP, or provenance credits.",
+      "Export the current figure through the shared interchange pipeline as SVG, PDF, PNG, JPEG, WebP, TIFF, BMP, PPTX, or provenance credits.",
     version: SEMANTIC_RUNTIME_VERSION,
     risk: "side_effect",
     confirmation: "none",
@@ -1233,6 +1234,64 @@ const definitions: SemanticCommandDefinition[] = [
       additionalProperties: false
     },
     outputSchema: output({ format: exportFormat, started: { type: "boolean" } })
+  },
+  {
+    name: "probe_pptx",
+    title: "Probe PPTX",
+    description:
+      "Read-only bounded PPTX package probe returning slide identities, exact EMU geometry, and safety diagnostics.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "read_only",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: true,
+    requires: ["project"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        sourceBase64: { type: "string", minLength: 1, maxLength: PPTX_MAX_BASE64_LENGTH },
+        sourceName: { type: "string", minLength: 1, maxLength: 512 }
+      },
+      required: ["sourceBase64", "sourceName"],
+      additionalProperties: false
+    },
+    outputSchema: output({
+      format: { type: "string", enum: ["pptx"] },
+      widthEmu: integer(1),
+      heightEmu: integer(1),
+      slides: { type: "array", maxItems: 100 },
+      diagnostics: { type: "array", maxItems: 4_096 }
+    })
+  },
+  {
+    name: "import_pptx",
+    title: "Import PPTX slides",
+    description:
+      "Import explicitly selected PPTX slides into the open canvas as appearance snapshots and return the shared fidelity report.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: false,
+    idempotent: false,
+    cancellable: true,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        sourceBase64: { type: "string", minLength: 1, maxLength: PPTX_MAX_BASE64_LENGTH },
+        sourceName: { type: "string", minLength: 1, maxLength: 512 },
+        slideIndices: { type: "array", minItems: 1, maxItems: 100, items: integer(0, 99) },
+        point: point()
+      },
+      required: ["sourceBase64", "sourceName", "slideIndices"],
+      additionalProperties: false
+    },
+    outputSchema: output({
+      format: { type: "string", enum: ["pptx"] },
+      importedSlides: integer(1, 100),
+      fidelity: { type: "object", additionalProperties: true }
+    })
   }
 ];
 

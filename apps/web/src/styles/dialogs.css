@@ -201,6 +201,89 @@
   border-color: var(--shell-border);
 }
 
+.opensketch-app .pptx-slide-chooser {
+  width: min(720px, 100%);
+}
+
+.opensketch-app .pptx-slide-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  max-height: min(56vh, 520px);
+  gap: 10px;
+  margin: 18px 0;
+  overflow: auto;
+  padding: 2px;
+}
+
+.opensketch-app .pptx-slide-option {
+  display: grid;
+  position: relative;
+  gap: 7px;
+  padding: 8px;
+  border: 1px solid var(--shell-border);
+  border-radius: 6px;
+  background: var(--shell-bg);
+  cursor: pointer;
+}
+
+.opensketch-app .pptx-slide-option.selected {
+  border-color: var(--shell-accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--shell-accent) 22%, transparent);
+}
+
+.opensketch-app .pptx-slide-option input {
+  position: absolute;
+  z-index: 1;
+  top: 12px;
+  left: 12px;
+}
+
+.opensketch-app .pptx-slide-thumbnail {
+  display: grid;
+  min-height: 86px;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid var(--shell-border);
+  background: #fff;
+}
+
+.opensketch-app .pptx-slide-thumbnail img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 86px;
+  object-fit: contain;
+}
+
+.opensketch-app .pptx-slide-label {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.opensketch-app .pptx-slide-label strong,
+.opensketch-app .pptx-slide-label small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.opensketch-app .pptx-slide-label strong {
+  color: var(--shell-text);
+  font-size: 11px;
+}
+
+.opensketch-app .pptx-slide-label small {
+  color: var(--shell-muted);
+  font-size: 10px;
+}
+
+.opensketch-app .pptx-slide-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
 .opensketch-app .export-summary {
   display: flex;
   justify-content: space-between;

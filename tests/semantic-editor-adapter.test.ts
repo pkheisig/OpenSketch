@@ -6,6 +6,7 @@ import {
   type FabricObject
 } from "../apps/web/node_modules/fabric";
 import { describe, expect, it, vi } from "vitest";
+import type { InterchangeFidelityReport } from "@workspace/editor-core";
 import { DEFAULT_CREATION_DEFAULTS } from "../apps/web/src/editor/creation";
 import { createSemanticEditorAdapter } from "../apps/web/src/semantic/semanticEditorAdapter";
 import { assetManifest } from "../apps/web/src/assets/manifest";
@@ -41,7 +42,21 @@ function makeAdapter(
   canvas: Canvas,
   setSelection = vi.fn(),
   replaceAssetVariant = vi.fn(async () => true),
-  exportPdf = vi.fn(async () => undefined)
+  exportPdf = vi.fn(async () => undefined),
+  importPptx = vi.fn(async () => ({
+    fidelity: {
+      format: "pptx",
+      status: "appearance-snapshot",
+      sourceName: "fixture.pptx",
+      sourceMimeType: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      sourceBytes: 0,
+      mappedCount: 0,
+      flattenedCount: 1,
+      refusedCount: 0,
+      substitutions: [],
+      diagnostics: []
+    } satisfies InterchangeFidelityReport
+  }))
 ) {
   const commit = vi.fn();
   const restore = vi.fn(async () => undefined);
@@ -81,6 +96,7 @@ function makeAdapter(
     exportCredits: vi.fn(),
     exportPdf,
     exportPng: vi.fn(async () => undefined),
+    importPptx,
     exportDocument: vi.fn(async (format, options) => {
       if (format === "pdf")
         await exportPdf(options?.title, options?.description, { signal: options?.signal });

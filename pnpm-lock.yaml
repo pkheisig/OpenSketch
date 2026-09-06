@@ -52,6 +52,9 @@ importers:
       fake-indexeddb:
         specifier: ^6.2.4
         version: 6.2.5
+      fflate:
+        specifier: 0.8.3
+        version: 0.8.3
       globals:
         specifier: ^16.3.0
         version: 16.5.0
@@ -142,6 +145,9 @@ importers:
       fabric:
         specifier: ^7.0.0
         version: 7.4.0(supports-color@7.2.0)
+      fflate:
+        specifier: 0.8.3
+        version: 0.8.3
       jspdf:
         specifier: 4.2.1
         version: 4.2.1

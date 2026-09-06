@@ -63,10 +63,7 @@ import {
   rasterLimitMessage
 } from "@workspace/editor-core";
 import { sanitizeImportedSvg } from "@/assets/browserSanitizer";
-import {
-  importDecisionMessage,
-  prepareInterchangeFile
-} from "@/interchange/registry";
+import { importDecisionMessage, prepareInterchangeFile } from "@/interchange/registry";
 import {
   encodeBmpRgba,
   encodeTiffRgba,
@@ -74,6 +71,12 @@ import {
   sha256Hex,
   type RgbaRaster
 } from "@/interchange/formatCodecs";
+import {
+  PPTX_EMU_PER_INCH,
+  PPTX_MIME_TYPE,
+  svgDataUrlForPptx,
+  svgForPptxCanvas
+} from "@/interchange/pptxShared";
 import { calculatePngExportResource, setPngDpi } from "@/export/png";
 import { setJpegDpi } from "@/export/jpeg";
 import {
@@ -310,7 +313,7 @@ const svgStringCache = new Map<string, string>();
 
 export type ExportDocumentFormat = Extract<
   InterchangeFormat,
-  "svg" | "pdf" | "png" | "jpeg" | "webp" | "tiff" | "bmp"
+  "svg" | "pdf" | "png" | "jpeg" | "webp" | "tiff" | "bmp" | "pptx"
 >;
 
 export interface ExportDocumentOptions {
@@ -325,7 +328,10 @@ export interface ExportDocumentOptions {
 
 export type InterchangeImportResult = ImportedMediaRecord & {
   fidelity: InterchangeFidelityReport;
+  importedObjectIds: string[];
 };
+
+type PlacedImportedMedia = ImportedMediaRecord & { objectId?: string };
 
 async function exportFidelityReport(args: {
   blob: Blob;
@@ -335,8 +341,10 @@ async function exportFidelityReport(args: {
   height: number;
   physicalResolution?: { x: number; y: number; unit: "dpi" | "dpcm" | "unknown" };
   status: "native-editable" | "appearance-snapshot" | "editable-with-losses";
+  mappedCount?: number;
   flattenedCount?: number;
   substitutions?: string[];
+  dimensions?: { width: number; height: number };
 }): Promise<InterchangeFidelityReport> {
   const checksum = await sha256Hex(new Uint8Array(await args.blob.arrayBuffer()));
   return createFidelityReport({
@@ -348,13 +356,13 @@ async function exportFidelityReport(args: {
     },
     probe: {
       format: args.format,
-      dimensions: { width: args.width, height: args.height },
+      dimensions: args.dimensions ?? { width: args.width, height: args.height },
       ...(args.physicalResolution ? { physicalResolution: args.physicalResolution } : {}),
       diagnostics: []
     },
     checksum,
     status: args.status,
-    mappedCount: 1,
+    mappedCount: args.mappedCount ?? 1,
     flattenedCount: args.flattenedCount ?? 0,
     refusedCount: 0,
     substitutions: args.substitutions
@@ -681,7 +689,11 @@ export interface EditorContextValue {
   addTemplate: (template: AssetTemplate, point?: Point) => Promise<void>;
   setAssetVariant: (variantId: string) => Promise<void>;
   addImportedMedia: (media: ImportedMediaRecord, point?: Point) => Promise<void>;
-  importMedia: (file: File, point?: Point) => Promise<InterchangeImportResult>;
+  importMedia: (
+    file: File,
+    point?: Point,
+    options?: { pptxSlideIndices?: readonly number[]; signal?: AbortSignal }
+  ) => Promise<InterchangeImportResult>;
   deleteSelection: () => void;
   duplicateSelection: () => Promise<void>;
   saveSelectionAsTemplate: () => Promise<void>;
@@ -3005,6 +3017,9 @@ export function EditorProvider({
       options?: ExportDocumentOptions
     ) => Promise<InterchangeFidelityReport | undefined>
   >(async () => undefined);
+  const semanticImportMediaRef = useRef<EditorContextValue["importMedia"]>(async () => {
+    throw new Error("The semantic import surface is not ready.");
+  });
   const semanticInsertAssetRef = useRef<
     (
       family: AssetFamily,
@@ -3049,7 +3064,15 @@ export function EditorProvider({
         exportCredits: (...args) => semanticExportCreditsRef.current(...args),
         exportPdf: (...args) => semanticExportPdfRef.current(...args),
         exportPng: (...args) => semanticExportPngRef.current(...args),
-        exportDocument: (...args) => semanticExportDocumentRef.current(...args)
+        exportDocument: (...args) => semanticExportDocumentRef.current(...args),
+        importPptx: async (bytes, sourceName, slideIndices, point, options) => {
+          const file = new File([bytes], sourceName, { type: PPTX_MIME_TYPE });
+          const result = await semanticImportMediaRef.current(file, point, {
+            pptxSlideIndices: slideIndices,
+            signal: options?.signal
+          });
+          return { fidelity: result.fidelity, changedObjectIds: result.importedObjectIds };
+        }
       })
     );
   }
@@ -3581,7 +3604,11 @@ export function EditorProvider({
   );
 
   const placeImportedMedia = useCallback(
-    async (media: ImportedMediaRecord, point?: Point, knownInspection?: RasterInspection) => {
+    async (
+      media: ImportedMediaRecord,
+      point?: Point,
+      knownInspection?: RasterInspection
+    ): Promise<PlacedImportedMedia> => {
       const existingMedia = projectMediaTotals(
         latestProject.current.uploads,
         canvas,
@@ -3637,8 +3664,8 @@ export function EditorProvider({
           }
         ]
       };
-      addObject(object, stored.name, "import", point);
-      return stored;
+      const added = addObject(object, stored.name, "import", point);
+      return { ...stored, ...(added?.objectId ? { objectId: added.objectId } : {}) };
     },
     [addObject, canvas, services]
   );
@@ -3657,19 +3684,26 @@ export function EditorProvider({
   );
 
   const importMedia = useCallback(
-    (file: File, point?: Point) => {
+    (
+      file: File,
+      point?: Point,
+      importOptions?: { pptxSlideIndices?: readonly number[]; signal?: AbortSignal }
+    ) => {
       const operation = trackPendingEditorWork(
         importQueue.current.then(async () => {
           let prepared: Awaited<ReturnType<typeof prepareInterchangeFile>> | undefined;
           let allowAnimatedFirstFrame = false;
           let allowFirstPage = false;
           let allowLossyBitDepth = false;
+          let pptxSlideIndices: readonly number[] | undefined = importOptions?.pptxSlideIndices;
           while (!prepared) {
             try {
               prepared = await prepareInterchangeFile(file, {
                 allowAnimatedFirstFrame,
                 allowFirstPage,
-                allowLossyBitDepth
+                allowLossyBitDepth,
+                pptxSlideIndices,
+                signal: importOptions?.signal
               });
             } catch (reason) {
               if (
@@ -3678,10 +3712,42 @@ export function EditorProvider({
                 !(
                   reason.code === "animated_requires_choice" ||
                   reason.code === "multipage_requires_choice" ||
-                  reason.code === "lossy_depth_requires_choice"
+                  reason.code === "lossy_depth_requires_choice" ||
+                  reason.code === "pptx_slides_require_choice"
                 )
               ) {
                 throw reason;
+              }
+              if (reason.code === "pptx_slides_require_choice") {
+                const maximum = reason.slideIndices?.length ?? reason.probe.pageCount ?? 0;
+                const value = await services.dialogs.prompt(
+                  importDecisionMessage(reason.probe),
+                  "1"
+                );
+                if (value === null) throw reason;
+                const selected = [
+                  ...new Set(
+                    value
+                      .split(",")
+                      .map((part) => Number(part.trim()) - 1)
+                      .filter(
+                        (index) => Number.isSafeInteger(index) && index >= 0 && index < maximum
+                      )
+                  )
+                ];
+                if (selected.length === 0) {
+                  throw new InterchangeImportError(
+                    `Enter one or more slide numbers from 1 to ${maximum}.`,
+                    {
+                      code: "pptx_slides_require_choice",
+                      probe: reason.probe,
+                      report: reason.report,
+                      slideIndices: reason.slideIndices
+                    }
+                  );
+                }
+                pptxSlideIndices = selected;
+                continue;
               }
               const accepted = await services.dialogs.confirm(
                 reason.code === "lossy_depth_requires_choice"
@@ -3711,50 +3777,86 @@ export function EditorProvider({
               });
             }
           }
-          const inferredMimeType = prepared.normalizedMimeType;
-          const importId = services.clock.randomUUID();
-          let dataUrl = await new Promise<string>((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(String(reader.result));
-            reader.onerror = () => reject(reader.error ?? new Error("Unable to read the image."));
-            reader.readAsDataURL(new Blob([prepared.normalized], { type: inferredMimeType }));
-          });
-          if (inferredMimeType === "image/svg+xml") {
-            const source = sanitizeImportedSvg(
-              await prepared.normalized.text(),
-              `import-${importId}`
-            );
-            dataUrl = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(source)))}`;
-          }
-          const rasterInspection =
-            inferredMimeType === "image/svg+xml"
-              ? undefined
-              : await inspectRasterBlob(
-                  new Blob([prepared.normalized], { type: inferredMimeType })
-                );
-          if (rasterInspection) {
-            const limitMessage = rasterLimitMessage(rasterInspection);
-            if (limitMessage) throw new Error(limitMessage);
-          }
-          const media: ImportedMediaRecord = {
-            id: importId,
-            name: file.name,
-            mimeType: inferredMimeType,
-            dataUrl,
-            ...(prepared.source.sha256
-              ? {
-                  sourceResource: {
-                    format: prepared.probe.format ?? prepared.fidelity.format,
-                    name: prepared.source.name,
-                    mimeType: prepared.source.mimeType,
-                    byteLength: prepared.source.byteLength,
-                    sha256: prepared.source.sha256
+          const slideSources =
+            prepared.probe.format === "pptx" && prepared.slides?.length
+              ? prepared.slides.map((slide) => ({
+                  blob: new Blob(
+                    [
+                      svgForPptxCanvas(
+                        slide.svg,
+                        ((prepared.probe.dimensions?.width ?? 0) / PPTX_EMU_PER_INCH) * 96,
+                        ((prepared.probe.dimensions?.height ?? 0) / PPTX_EMU_PER_INCH) * 96
+                      )
+                    ],
+                    { type: "image/svg+xml" }
+                  ),
+                  name: `${file.name} — slide ${slide.index + 1}`
+                }))
+              : [{ blob: prepared.normalized, name: file.name }];
+          let firstStored: PlacedImportedMedia | undefined;
+          const importedObjectIds: string[] = [];
+          for (const [slideIndex, slideSource] of slideSources.entries()) {
+            throwIfSemanticExecutionAborted(importOptions?.signal);
+            const inferredMimeType =
+              prepared.probe.format === "pptx" ? "image/svg+xml" : prepared.normalizedMimeType;
+            const importId = services.clock.randomUUID();
+            let dataUrl = await new Promise<string>((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = () => resolve(String(reader.result));
+              reader.onerror = () => reject(reader.error ?? new Error("Unable to read the image."));
+              reader.readAsDataURL(new Blob([slideSource.blob], { type: inferredMimeType }));
+            });
+            if (inferredMimeType === "image/svg+xml") {
+              const source = sanitizeImportedSvg(
+                await slideSource.blob.text(),
+                `import-${importId}`
+              );
+              dataUrl = svgDataUrlForPptx(source);
+            }
+            const rasterInspection =
+              inferredMimeType === "image/svg+xml"
+                ? undefined
+                : await inspectRasterBlob(new Blob([slideSource.blob], { type: inferredMimeType }));
+            if (rasterInspection) {
+              const limitMessage = rasterLimitMessage(rasterInspection);
+              if (limitMessage) throw new Error(limitMessage);
+            }
+            const media: ImportedMediaRecord = {
+              id: importId,
+              name: slideSource.name,
+              mimeType: inferredMimeType,
+              dataUrl,
+              ...(prepared.source.sha256
+                ? {
+                    sourceResource: {
+                      format: prepared.probe.format ?? prepared.fidelity.format,
+                      name: prepared.source.name,
+                      mimeType: prepared.source.mimeType,
+                      byteLength: prepared.source.byteLength,
+                      sha256: prepared.source.sha256,
+                      ...(prepared.probe.format === "pptx"
+                        ? {
+                            slideIndex: prepared.slides?.[slideIndex]?.index,
+                            slideStableId: prepared.slides?.[slideIndex]?.stableId
+                          }
+                        : {})
+                    }
                   }
-                }
-              : {})
-          };
-          const stored = await placeImportedMedia(media, point, rasterInspection);
-          return { ...stored, fidelity: prepared.fidelity };
+                : {})
+            };
+            const placementPoint =
+              slideSources.length > 1 && point
+                ? {
+                    x: point.x + Math.min(slideIndex, 8) * 24,
+                    y: point.y + Math.min(slideIndex, 8) * 24
+                  }
+                : point;
+            const stored = await placeImportedMedia(media, placementPoint, rasterInspection);
+            if (stored.objectId) importedObjectIds.push(stored.objectId);
+            firstStored ??= stored;
+          }
+          if (!firstStored) throw new Error("The PPTX did not contain a selectable slide.");
+          return { ...firstStored, fidelity: prepared.fidelity, importedObjectIds };
         })
       );
       importQueue.current = operation.then(() => undefined).catch(() => undefined);
@@ -3762,6 +3864,7 @@ export function EditorProvider({
     },
     [placeImportedMedia, services, trackPendingEditorWork]
   );
+  semanticImportMediaRef.current = importMedia;
 
   const selectParentAsset = useCallback(() => {
     if (!canvas) return;
@@ -4909,6 +5012,39 @@ export function EditorProvider({
           flattenedCount: 1
         });
         await services.exports.deliver({ blob, filename, kind: format, fidelity });
+        return fidelity;
+      }
+      if (format === "pptx") {
+        if (!canvas) throw new Error("The figure canvas is not ready.");
+        const { exportPptx } = await import("@/interchange/pptx");
+        await waitForPendingEditorWork();
+        await waitForCanvasTextFonts(canvas.getObjects(), services.fonts);
+        if (options.signal?.aborted) return;
+        const result = await exportPptx({
+          svg: buildSvg(title, description),
+          width: canvasSettings.width,
+          height: canvasSettings.height,
+          dpi: canvasSettings.dpi,
+          title,
+          description,
+          signal: options.signal
+        });
+        if (options.signal?.aborted) return;
+        const filename = `${safeFilename(title)}.pptx`;
+        const fidelity = await exportFidelityReport({
+          blob: result.blob,
+          filename,
+          format,
+          width: canvasSettings.width,
+          height: canvasSettings.height,
+          physicalResolution: { x: canvasSettings.dpi, y: canvasSettings.dpi, unit: "dpi" },
+          status: "appearance-snapshot",
+          mappedCount: 0,
+          flattenedCount: 1,
+          dimensions: { width: result.widthEmu, height: result.heightEmu },
+          substitutions: result.report.substitutions
+        });
+        await services.exports.deliver({ blob: result.blob, filename, kind: format, fidelity });
         return fidelity;
       }
       if (!canvas) throw new Error("The figure canvas is not ready.");

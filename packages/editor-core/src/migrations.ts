@@ -1801,7 +1801,15 @@ function validateUploads(value: unknown, context: ValidationContext): ImportedMe
       assertKnownKeys(
         media.sourceResource,
         sourcePath,
-        new Set(["format", "name", "mimeType", "byteLength", "sha256"])
+        new Set([
+          "format",
+          "name",
+          "mimeType",
+          "byteLength",
+          "sha256",
+          "slideIndex",
+          "slideStableId"
+        ])
       );
       assertNonEmptyString(media.sourceResource.format, `${sourcePath}.format`, 64);
       assertString(media.sourceResource.name, `${sourcePath}.name`, {
@@ -1824,12 +1832,31 @@ function validateUploads(value: unknown, context: ValidationContext): ImportedMe
       if (!/^[0-9a-f]{64}$/i.test(media.sourceResource.sha256)) {
         fail(`${sourcePath}.sha256`, "is invalid");
       }
+      if (media.sourceResource.slideIndex !== undefined) {
+        assertFiniteNumber(media.sourceResource.slideIndex, `${sourcePath}.slideIndex`, {
+          min: 0,
+          max: 99,
+          integer: true
+        });
+      }
+      if (media.sourceResource.slideStableId !== undefined) {
+        assertString(media.sourceResource.slideStableId, `${sourcePath}.slideStableId`, {
+          maxLength: PORTABLE_PROJECT_LIMITS.maxObjectIdLength,
+          nonEmpty: true
+        });
+      }
       sourceResource = {
         format: media.sourceResource.format,
         name: media.sourceResource.name,
         mimeType: media.sourceResource.mimeType,
         byteLength: media.sourceResource.byteLength,
-        sha256: media.sourceResource.sha256.toLowerCase()
+        sha256: media.sourceResource.sha256.toLowerCase(),
+        ...(media.sourceResource.slideIndex === undefined
+          ? {}
+          : { slideIndex: media.sourceResource.slideIndex }),
+        ...(media.sourceResource.slideStableId === undefined
+          ? {}
+          : { slideStableId: media.sourceResource.slideStableId })
       };
     }
     return {

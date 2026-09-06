@@ -101,7 +101,9 @@ registry.
 | `ungroup_objects`         | Ungroup one existing manual group                                | Reversible                                   |
 | `undo`                    | Undo the most recent editor history step                         | Reversible                                   |
 | `redo`                    | Redo the next editor history step                                | Reversible                                   |
-| `export_figure`           | Start the existing SVG, PDF, PNG, or credits download            | Local side effect                            |
+| `export_figure`           | Start the existing SVG, PDF, PNG, PPTX, or credits download      | Local side effect                            |
+| `probe_pptx`              | Read a bounded PPTX package and its slide diagnostics             | Read-only                                    |
+| `import_pptx`             | Import explicitly selected PPTX slides as snapshots              | Reversible                                   |
 | `find_objects`            | Find bounded objects by semantic role, stage, asset, or relation | Read-only                                    |
 | `inspect_geometry`        | Inspect visual, layout, selection geometry, hulls, and ports     | Read-only                                    |
 | `inspect_relations`       | Inspect the bounded semantic relation graph                      | Read-only                                    |

@@ -101,7 +101,7 @@ export interface ProjectFileService {
 export interface ExportArtifact {
   blob: Blob;
   filename: string;
-  kind: "svg" | "pdf" | "png" | "jpeg" | "webp" | "tiff" | "bmp" | "credits" | "project";
+  kind: "svg" | "pdf" | "png" | "jpeg" | "webp" | "tiff" | "bmp" | "pptx" | "credits" | "project";
   fidelity?: InterchangeFidelityReport;
 }
 

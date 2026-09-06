@@ -10,6 +10,7 @@ export const INTERCHANGE_FORMAT_IDS = [
   "gif",
   "avif",
   "heif",
+  "pptx",
   "pdf"
 ] as const;
 
@@ -201,6 +202,14 @@ export const INTERCHANGE_FORMATS: readonly InterchangeFormatDefinition[] = [
     mimeTypes: ["application/pdf"],
     extensions: ["pdf"],
     importable: false,
+    exportable: true
+  },
+  {
+    id: "pptx",
+    label: "PowerPoint (.pptx)",
+    mimeTypes: ["application/vnd.openxmlformats-officedocument.presentationml.presentation"],
+    extensions: ["pptx"],
+    importable: true,
     exportable: true
   }
 ] as const;
@@ -644,9 +653,19 @@ export function probeInterchangeBytes(
 ): InterchangeProbe {
   const declaredMimeType = normalizeMimeType(source.mimeType);
   const extension = source.name?.toLowerCase().split(".").at(-1) || undefined;
-  const signature = formatFromSignature(bytes);
+  let signature = formatFromSignature(bytes);
   const declaredFormat = formatForMimeType(declaredMimeType);
   const extensionFormat = formatForExtension(extension);
+  // ZIP is only a container signature. Treat it as a PPTX candidate when the
+  // caller's declared type/name says PPTX; the web adapter must still validate
+  // the complete OOXML package before extraction.
+  if (
+    !signature.format &&
+    sameBytes(bytes, 0, [0x50, 0x4b, 0x03, 0x04]) &&
+    (declaredFormat === "pptx" || extensionFormat === "pptx")
+  ) {
+    signature = { format: "pptx", signature: "zip" };
+  }
   const diagnostics: InterchangeDiagnostic[] = [];
   if (!signature.format) {
     diagnostics.push({

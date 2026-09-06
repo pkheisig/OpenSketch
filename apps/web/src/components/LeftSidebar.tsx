@@ -43,6 +43,9 @@ import {
 } from "@workspace/editor-core";
 import { AssetPreviewImage } from "@/components/AssetPreviewImage";
 import { interchangeFileAccept } from "@/interchange/registry";
+import type { PptxRenderedSlide } from "@/interchange/pptx";
+import { PPTX_MAX_PACKAGE_BYTES } from "@/interchange/pptxShared";
+import { PptxSlideChooser } from "@/components/PptxSlideChooser";
 import { MotionCollapse } from "@/components/MotionCollapse";
 import { MotionPresence } from "@/components/MotionPresence";
 import { useEditorFields } from "@/editor/editorHooks";
@@ -1846,6 +1849,9 @@ function ImportsPanel() {
   const input = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
   const [imports, setImports] = useState<ImportedMediaLibraryRecord[]>([]);
+  const [pptxChooser, setPptxChooser] = useState<
+    { file: File; slides: readonly PptxRenderedSlide[] } | undefined
+  >();
   useEffect(() => {
     let active = true;
     const refresh = () => {
@@ -1866,8 +1872,8 @@ function ImportsPanel() {
         <span>
           <ImagePlus size={24} />
         </span>
-        <strong>Import an image</strong>
-        <small>SVG, PNG, JPEG, WebP, TIFF, BMP, GIF, or modern raster</small>
+        <strong>Import media or slides</strong>
+        <small>SVG, PNG, JPEG, WebP, TIFF, BMP, GIF, or PowerPoint (.pptx)</small>
       </button>
       <input
         ref={input}
@@ -1878,11 +1884,44 @@ function ImportsPanel() {
           const file = event.target.files?.[0];
           if (file) {
             setError("");
-            void editor.importMedia(file).catch((reason) => setError(userErrorMessage(reason)));
+            const isPptx =
+              file.name.toLowerCase().endsWith(".pptx") ||
+              file.type ===
+                "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+            void (async () => {
+              if (!isPptx) {
+                await editor.importMedia(file);
+                return;
+              }
+              if (file.size > PPTX_MAX_PACKAGE_BYTES) {
+                throw new Error("PPTX packages must be 25 MB or smaller.");
+              }
+              const { parsePptxPackage } = await import("@/interchange/pptx");
+              const parsed = parsePptxPackage(new Uint8Array(await file.arrayBuffer()));
+              if (parsed.slides.length > 1) {
+                setPptxChooser({ file, slides: parsed.slides });
+                return;
+              }
+              await editor.importMedia(file, undefined, { pptxSlideIndices: [0] });
+            })().catch((reason) => setError(userErrorMessage(reason)));
           }
           event.currentTarget.value = "";
         }}
       />
+      {pptxChooser ? (
+        <PptxSlideChooser
+          fileName={pptxChooser.file.name}
+          slides={pptxChooser.slides}
+          onCancel={() => setPptxChooser(undefined)}
+          onConfirm={(slideIndices) => {
+            const choice = pptxChooser;
+            setPptxChooser(undefined);
+            void editor
+              .importMedia(choice.file, undefined, { pptxSlideIndices: slideIndices })
+              .catch((reason) => setError(userErrorMessage(reason)));
+          }}
+        />
+      ) : null}
       {error ? (
         <p className="panel-error" role="alert">
           {error}

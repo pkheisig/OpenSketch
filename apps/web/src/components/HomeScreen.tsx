@@ -28,6 +28,9 @@ import {
 } from "@workspace/editor-core";
 import type { ProjectTemplateRecord } from "@workspace/editor-core";
 import { MotionPresence } from "@/components/MotionPresence";
+import { PptxSlideChooser } from "@/components/PptxSlideChooser";
+import type { PptxRenderedSlide } from "@/interchange/pptx";
+import { PPTX_MAX_PACKAGE_BYTES } from "@/interchange/pptxShared";
 import { Logo } from "./Logo";
 import { useModalDialog } from "./useModalDialog";
 import { useOpenSketchHostServices } from "@/application/hostServices";
@@ -54,7 +57,8 @@ export function HomeScreen({
   onRenameFolder,
   onDeleteFolder,
   onRename,
-  onImport
+  onImport,
+  onImportError
 }: {
   projects: ProjectRecord[];
   folders: ProjectFolderRecord[];
@@ -75,7 +79,8 @@ export function HomeScreen({
   onRenameFolder: (folder: ProjectFolderRecord) => void;
   onDeleteFolder: (folder: ProjectFolderRecord) => void;
   onRename: (project: ProjectRecord) => void;
-  onImport: (file: File) => void;
+  onImport: (file: File, pptxSlideIndices?: readonly number[]) => void;
+  onImportError?: (reason: unknown) => void;
 }) {
   const services = useOpenSketchHostServices();
   const input = useRef<HTMLInputElement>(null);
@@ -91,6 +96,9 @@ export function HomeScreen({
   const [dropTarget, setDropTarget] = useState<string>();
   const [newProjectOpen, setNewProjectOpen] = useState(false);
   const [selectedKind, setSelectedKind] = useState<ProjectKind | null>(null);
+  const [pptxChooser, setPptxChooser] = useState<
+    { file: File; slides: readonly PptxRenderedSlide[] } | undefined
+  >();
   const aboutRef = useModalDialog(about, () => setAbout(false));
   const activeProjects = useMemo(
     () =>
@@ -191,10 +199,31 @@ export function HomeScreen({
             ref={input}
             hidden
             type="file"
-            accept=".OpenSketch,application/json"
+            accept=".OpenSketch,application/json,.pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation"
             onChange={(event) => {
               const file = event.target.files?.[0];
-              if (file) onImport(file);
+              if (file) {
+                const isPptx =
+                  file.name.toLowerCase().endsWith(".pptx") ||
+                  file.type ===
+                    "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+                if (!isPptx) {
+                  onImport(file);
+                } else {
+                  void (async () => {
+                    if (file.size > PPTX_MAX_PACKAGE_BYTES) {
+                      throw new Error("PPTX packages must be 25 MB or smaller.");
+                    }
+                    const { parsePptxPackage } = await import("@/interchange/pptx");
+                    const parsed = parsePptxPackage(new Uint8Array(await file.arrayBuffer()));
+                    if (parsed.slides.length > 1) {
+                      setPptxChooser({ file, slides: parsed.slides });
+                    } else {
+                      onImport(file, [0]);
+                    }
+                  })().catch((reason) => onImportError?.(reason));
+                }
+              }
               event.currentTarget.value = "";
             }}
           />
@@ -496,6 +525,19 @@ export function HomeScreen({
           About
         </button>
       </footer>
+
+      {pptxChooser ? (
+        <PptxSlideChooser
+          fileName={pptxChooser.file.name}
+          slides={pptxChooser.slides}
+          onCancel={() => setPptxChooser(undefined)}
+          onConfirm={(slideIndices) => {
+            const choice = pptxChooser;
+            setPptxChooser(undefined);
+            onImport(choice.file, slideIndices);
+          }}
+        />
+      ) : null}
 
       {about && (
         <div className="dialog-backdrop" role="presentation" onMouseDown={() => setAbout(false)}>

@@ -6,37 +6,21 @@ import {
   probeInterchangeBytes,
   probeIsUsable,
   type InterchangeDiagnostic,
-  type InterchangeFidelityReport,
   type InterchangeFormat,
   type InterchangeImportPreparation,
   type InterchangePhysicalResolution,
-  type InterchangeProbe,
   type InterchangeSourceResource
 } from "@workspace/editor-core";
+import { InterchangeImportError } from "./errors";
+import type { PptxImportPreparation } from "./pptx";
 
+export { InterchangeImportError } from "./errors";
 export interface RgbaRaster {
   width: number;
   height: number;
   data: Uint8Array;
   physicalResolution?: InterchangePhysicalResolution;
   sourceBitDepth?: number;
-}
-
-export class InterchangeImportError extends Error {
-  readonly code: string;
-  readonly probe?: InterchangeProbe;
-  readonly report?: InterchangeFidelityReport;
-
-  constructor(
-    message: string,
-    options: { code: string; probe?: InterchangeProbe; report?: InterchangeFidelityReport }
-  ) {
-    super(message);
-    this.name = "InterchangeImportError";
-    this.code = options.code;
-    this.probe = options.probe;
-    this.report = options.report;
-  }
 }
 
 function checkAbort(signal?: AbortSignal): void {
@@ -455,12 +439,15 @@ export async function prepareStrictInterchangeImport(
     allowAnimatedFirstFrame?: boolean;
     allowFirstPage?: boolean;
     allowLossyBitDepth?: boolean;
+    pptxSlideIndices?: readonly number[];
   } = {}
 ): Promise<
   InterchangeImportPreparation & {
     normalized: Blob;
     normalizedMimeType: string;
     requiresDecision: boolean;
+    slides?: PptxImportPreparation["slides"];
+    selectedSlideIndices?: readonly number[];
   }
 > {
   checkAbort(options.signal);
@@ -478,6 +465,42 @@ export async function prepareStrictInterchangeImport(
     byteLength: file.size
   };
   let probe = probeInterchangeBytes(boundedProbe, sourceDetails);
+  if (file.name.toLowerCase().endsWith(".pptm") || file.type.includes("macroenabled")) {
+    const report = createFidelityReport({
+      source: {
+        name: file.name,
+        mimeType: file.type || "application/vnd.ms-powerpoint.presentation.macroEnabled.main+xml",
+        byteLength: file.size,
+        bytes: boundedProbe
+      },
+      probe: {
+        ...probe,
+        diagnostics: [
+          {
+            code: "pptx_macro_refused",
+            severity: "error",
+            message:
+              "Macro-enabled .pptm packages are refused; executable content is never imported."
+          }
+        ]
+      },
+      status: "unsupported/refused",
+      mappedCount: 0,
+      flattenedCount: 0,
+      refusedCount: 1
+    });
+    throw new InterchangeImportError(
+      "Macro-enabled .pptm packages are refused; executable content is never imported.",
+      { code: "pptx_macro_refused", probe, report }
+    );
+  }
+  if (probe.format === "pptx") {
+    const { preparePptxImport } = await import("./pptx");
+    return preparePptxImport(file, {
+      signal: options.signal,
+      selectedSlideIndices: options.pptxSlideIndices
+    });
+  }
   let fullBytes: Uint8Array | undefined;
   if (
     file.size > probeByteLength &&
