@@ -287,6 +287,86 @@ function rewriteMetadata(
       warningKeys
     );
   }
+  if (isRecord(value.semanticMetadata)) {
+    const metadata = value.semanticMetadata;
+    if (Array.isArray(metadata.allowedOverlapObjectIds)) {
+      metadata.allowedOverlapObjectIds = metadata.allowedOverlapObjectIds.map((id) => {
+        const holder: JsonRecord = { fromObjectId: id };
+        rewriteBinding(
+          holder,
+          owner,
+          `${path}.semanticMetadata.allowedOverlapObjectIds`,
+          candidatesById,
+          warnings,
+          warningKeys
+        );
+        return holder.fromObjectId;
+      });
+    }
+    if (isRecord(metadata.layoutConstraint)) {
+      const constraint = metadata.layoutConstraint;
+      for (const key of ["contentObjectId", "labelObjectId"]) {
+        const holder: JsonRecord = { fromObjectId: constraint[key] };
+        rewriteBinding(
+          holder,
+          owner,
+          `${path}.semanticMetadata.layoutConstraint.${key}`,
+          candidatesById,
+          warnings,
+          warningKeys
+        );
+        constraint[key] = holder.fromObjectId;
+      }
+    }
+  }
+  if (Array.isArray(value.semanticRelations)) {
+    value.semanticRelations = value.semanticRelations.map((relation) => {
+      if (!isRecord(relation)) return relation;
+      const next = { ...relation };
+      for (const key of ["sourceObjectId", "targetObjectId"]) {
+        const holder: JsonRecord = { fromObjectId: next[key] };
+        rewriteBinding(
+          holder,
+          owner,
+          `${path}.semanticRelations.${key}`,
+          candidatesById,
+          warnings,
+          warningKeys
+        );
+        next[key] = holder.fromObjectId;
+      }
+      if (Array.isArray(next.mediatorObjectIds)) {
+        next.mediatorObjectIds = next.mediatorObjectIds.map((id) => {
+          const holder: JsonRecord = { fromObjectId: id };
+          rewriteBinding(
+            holder,
+            owner,
+            `${path}.semanticRelations.mediatorObjectIds`,
+            candidatesById,
+            warnings,
+            warningKeys
+          );
+          return holder.fromObjectId;
+        });
+      }
+      return next;
+    });
+  }
+}
+
+function remapRecognizedGroupIdentity(value: unknown, ids: Map<string, string>): void {
+  if (!Array.isArray(value)) return;
+  value.forEach((group) => {
+    if (!isRecord(group)) return;
+    if (typeof group.objectId === "string")
+      group.objectId = ids.get(group.objectId) ?? group.objectId;
+    remapRecognizedGroupIdentity(
+      group.properties && isRecord(group.properties)
+        ? group.properties.recognizedGroups
+        : undefined,
+      ids
+    );
+  });
 }
 
 export function repairProjectIdentity(input: unknown): ProjectIdentityRepair {
@@ -341,4 +421,58 @@ export function repairProjectIdentity(input: unknown): ProjectIdentityRepair {
     if (node.repairedId) node.record.objectId = node.repairedId;
   });
   return { project, repaired: true, warnings };
+}
+
+/**
+ * Clone a validated portable scene for a template instance. Every scene
+ * object receives a new identity while connector, semantic, and recognition
+ * references remain attached to the corresponding cloned object.
+ */
+export function remintProjectIdentity(input: unknown): unknown {
+  assertSceneBounds(input);
+  const project = structuredClone(input);
+  if (!isRecord(project) || !isRecord(project.objects)) return project;
+
+  const nodes = collectNodes(project.objects);
+  const candidatesById = new Map<string, IdentityNode[]>();
+  nodes.forEach((node) => {
+    if (!node.originalId) return;
+    const candidates = candidatesById.get(node.originalId);
+    if (candidates) candidates.push(node);
+    else candidatesById.set(node.originalId, [node]);
+  });
+  for (const [originalId, candidates] of candidatesById) {
+    if (candidates.length > 1) {
+      throw new Error(`Cannot instantiate a template with duplicate object ID "${originalId}".`);
+    }
+  }
+
+  const usedIds = new Set<string>();
+  const freshId = (): string => {
+    let id = crypto.randomUUID();
+    while (usedIds.has(id)) id = crypto.randomUUID();
+    usedIds.add(id);
+    return id;
+  };
+  const recognitionIds = new Map<string, string>();
+  const collectRecognitionIds = (value: unknown): void => {
+    if (!Array.isArray(value)) return;
+    value.forEach((group) => {
+      if (!isRecord(group)) return;
+      if (typeof group.objectId === "string" && !recognitionIds.has(group.objectId)) {
+        recognitionIds.set(group.objectId, freshId());
+      }
+      if (isRecord(group.properties)) collectRecognitionIds(group.properties.recognizedGroups);
+    });
+  };
+  nodes.forEach((node) => {
+    node.repairedId = freshId();
+    collectRecognitionIds(node.record.recognizedGroups);
+  });
+  nodes.forEach((node) => {
+    if (node.repairedId) node.record.objectId = node.repairedId;
+    rewriteMetadata(node.record, node, node.path, candidatesById, [], new Set());
+    remapRecognizedGroupIdentity(node.record.recognizedGroups, recognitionIds);
+  });
+  return project;
 }

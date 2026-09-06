@@ -90,7 +90,8 @@ test("@smoke stores imported media permanently and pastes SVG, PNG, and JPEG fro
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.locator(".upper-canvas")).toBeVisible();
 
   for (const [index, mimeType] of ["image/svg+xml", "image/png", "image/jpeg"].entries()) {
@@ -114,7 +115,7 @@ test("@smoke stores imported media permanently and pastes SVG, PNG, and JPEG fro
   ).toHaveCount(3);
 
   await page.getByRole("button", { name: "Back to projects" }).click();
-  await expect(page.getByRole("button", { name: "New figure" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "New project" })).toBeVisible();
   await page.reload();
   await expect
     .poll(() =>
@@ -150,7 +151,8 @@ test("accepts image paste while a text input is focused and SVG files dropped fr
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.locator(".upper-canvas")).toBeVisible();
 
   const title = page.getByRole("textbox", { name: "Document title" });

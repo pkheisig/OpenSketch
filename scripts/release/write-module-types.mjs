@@ -30,10 +30,13 @@ export interface CanvasSettings {
   doubleClickCreatesText: boolean;
 }
 
+export type ProjectKind = "diagram" | "figure" | "poster";
+
 export interface ProjectRecord {
   format: "OpenSketch";
   formatVersion: number;
   version: 1;
+  kind: ProjectKind;
   id: string;
   name: string;
   createdAt: string;
@@ -46,6 +49,22 @@ export interface ProjectRecord {
   thumbnail?: string;
   folderId?: string;
   archivedAt?: string;
+}
+
+export interface ProjectTemplateRecord {
+  id: string;
+  name: string;
+  kind: ProjectKind;
+  project: ProjectRecord;
+  thumbnail?: string;
+  createdAt: string;
+  updatedAt: string;
+  schemaVersion: 1;
+}
+
+export interface ProjectCreationOptions {
+  kind?: ProjectKind;
+  template?: ProjectTemplateRecord;
 }
 
 export interface ProjectFolderRecord {
@@ -146,7 +165,7 @@ export interface ProjectRepository {
   get(id: string): Promise<ProjectRecord | undefined>;
   save(project: ProjectRecord): Promise<void>;
   saveThumbnail(projectId: string, projectRevision: string, thumbnail: string): Promise<ProjectRecord | undefined>;
-  create(name?: string): ProjectRecord;
+  create(name?: string, options?: ProjectCreationOptions): ProjectRecord;
   delete(id: string): Promise<void>;
   duplicate(project: ProjectRecord): Promise<ProjectRecord>;
   moveToFolder(project: ProjectRecord, folderId?: string): Promise<void>;
@@ -168,6 +187,13 @@ export interface AssetTemplateRepository {
   list(): Promise<AssetTemplate[]>;
   get(id: string): Promise<AssetTemplate | undefined>;
   save(template: AssetTemplate): Promise<AssetTemplate>;
+  delete(id: string): Promise<void>;
+}
+
+export interface ProjectTemplateRepository {
+  list(): Promise<ProjectTemplateRecord[]>;
+  get(id: string): Promise<ProjectTemplateRecord | undefined>;
+  save(template: ProjectTemplateRecord): Promise<ProjectTemplateRecord>;
   delete(id: string): Promise<void>;
 }
 
@@ -259,6 +285,7 @@ export interface OpenSketchHostServices {
   projects: ProjectRepository;
   importedMedia: ImportedMediaRepository;
   templates: AssetTemplateRepository;
+  projectTemplates: ProjectTemplateRepository;
   files: ProjectFileService;
   exports: ExportDeliveryService;
   assets: AssetService;

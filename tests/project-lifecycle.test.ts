@@ -9,6 +9,7 @@ function project(id: string, archivedAt?: string): ProjectRecord {
   return {
     format: "OpenSketch",
     formatVersion: 7,
+    kind: "diagram",
     id,
     name: `${id} name`,
     description: "bounded description",
@@ -48,7 +49,12 @@ describe("project lifecycle runtime", () => {
       data: { context: "project-library", total: 1, truncated: false }
     });
     expect(listed.ok && listed.data.projects[0]).toEqual(
-      expect.objectContaining({ projectId: "project-1", name: "project-1 name", archived: false })
+      expect.objectContaining({
+        projectId: "project-1",
+        name: "project-1 name",
+        kind: "diagram",
+        archived: false
+      })
     );
     expect(listed.ok && listed.data.projects[0]).not.toHaveProperty("objects");
     expect(await runtime.execute("inspect_project", { projectId: "missing" })).toMatchObject({
@@ -69,12 +75,20 @@ describe("project lifecycle runtime", () => {
     });
 
     await expect(
-      runtime.execute("create_project", { name: "Created figure" })
+      runtime.execute("create_project", {
+        name: "Created figure",
+        kind: "poster",
+        templateId: "template-1"
+      })
     ).resolves.toMatchObject({
       ok: true,
-      data: { created: true, projectId: "created" }
+      data: { created: true, projectId: "created", kind: "diagram" }
     });
-    expect(createProject).toHaveBeenCalledWith("Created figure", {});
+    expect(createProject).toHaveBeenCalledWith(
+      "Created figure",
+      { kind: "poster", templateId: "template-1" },
+      {}
+    );
 
     const openRuntime = createProjectLifecycleRuntime({
       getProjects: () => [created],

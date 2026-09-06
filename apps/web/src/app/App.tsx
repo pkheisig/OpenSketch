@@ -9,7 +9,12 @@ import {
   type ReactNode
 } from "react";
 import { AlertTriangle, X } from "lucide-react";
-import type { ProjectFolderRecord, ProjectRecord } from "@workspace/editor-core";
+import type {
+  ProjectFolderRecord,
+  ProjectKind,
+  ProjectRecord,
+  ProjectTemplateRecord
+} from "@workspace/editor-core";
 import { normalizeProjectForLoad } from "@/persistence/portable";
 import { isProjectThumbnailCurrent } from "@/persistence/thumbnailFormat";
 import { HomeScreen } from "@/components/HomeScreen";
@@ -82,6 +87,7 @@ export function App({
   );
   const [projects, setProjects] = useState<ProjectRecord[]>([]);
   const [folders, setFolders] = useState<ProjectFolderRecord[]>([]);
+  const [projectTemplates, setProjectTemplates] = useState<ProjectTemplateRecord[]>([]);
   const [current, setCurrent] = useState<ProjectRecord | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -119,9 +125,10 @@ export function App({
 
   const refresh = useCallback(async () => {
     const revision = ++refreshRevision.current;
-    const [stored, storedFolders] = await Promise.all([
+    const [stored, storedFolders, storedTemplates] = await Promise.all([
       services.projects.list(),
-      services.projects.listFolders()
+      services.projects.listFolders(),
+      services.projectTemplates.list()
     ]);
     const repairNotices: string[] = [];
     const invalidNotices: string[] = [];
@@ -141,6 +148,7 @@ export function App({
     if (revision !== refreshRevision.current) return normalized;
     setProjects(normalized);
     setFolders(storedFolders);
+    setProjectTemplates(storedTemplates);
     if (repairNotices.length > 0 || invalidNotices.length > 0) {
       setError([...repairNotices, ...invalidNotices].join(" "));
     }
@@ -309,12 +317,28 @@ export function App({
   const newProject = useCallback(
     async (
       name?: string,
+      request: {
+        kind?: ProjectKind;
+        template?: ProjectTemplateRecord;
+        templateId?: string;
+      } = {},
       options: SemanticExecutionOptions = {}
     ): Promise<ProjectRecord | null> => {
       let project: ProjectRecord | undefined;
       try {
         if (options.signal?.aborted) return null;
-        project = services.projects.create(name);
+        let template = request.template;
+        if (request.templateId) {
+          template = await services.projectTemplates.get(request.templateId);
+          if (!template) throw new Error("The selected project template is unavailable.");
+        }
+        if (template && request.kind && template.kind !== request.kind) {
+          throw new Error("The project template does not match the selected project mode.");
+        }
+        project = services.projects.create(name, {
+          ...(request.kind || template?.kind ? { kind: request.kind ?? template?.kind } : {}),
+          ...(template ? { template } : {})
+        });
         await services.projects.save(project);
         if (options.signal?.aborted) {
           await services.projects.delete(project.id);
@@ -342,7 +366,7 @@ export function App({
     lifecycleRuntimeRef.current = createProjectLifecycleRuntime({
       getProjects: () => projectsRef.current,
       getFolders: () => foldersRef.current,
-      createProject: (name, options) => newProject(name, options),
+      createProject: (name, request, options) => newProject(name, request, options),
       openProject
     });
   }
@@ -360,8 +384,8 @@ export function App({
     return () => registry?.dispose();
   }, []);
 
-  const onNewProject = () => {
-    void newProject();
+  const onNewProject = (kind: ProjectKind, template?: ProjectTemplateRecord) => {
+    void newProject(undefined, { kind, template });
   };
 
   const updateProject = useCallback(
@@ -458,6 +482,7 @@ export function App({
           onToggleTheme={toggleTheme}
           showThemeControl={presentation.ownsTheme}
           showBrand={presentation.ownsGlobalChrome}
+          projectTemplates={projectTemplates}
           onNew={onNewProject}
           onNewFolder={(name) => {
             services.projects

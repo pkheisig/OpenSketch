@@ -155,7 +155,8 @@ async function addRectangle(page: Page) {
 
 async function startProject(page: Page) {
   await page.goto("/");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
   const projectId = await page.evaluate(
     () => (history.state as Record<string, unknown> | null)?.OpenSketchProjectId

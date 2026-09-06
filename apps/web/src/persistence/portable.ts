@@ -26,7 +26,7 @@ type DirectoryPickerWindow = Window & {
 
 type ProjectLike = PortableProject | ProjectRecord;
 
-function portableProject(project: ProjectLike): PortableProject {
+export function toPortableProject(project: ProjectLike): PortableProject {
   const media = normalizeProjectMedia(project.objects, project.uploads);
   const portable = {
     ...project,
@@ -48,7 +48,7 @@ function portableProject(project: ProjectLike): PortableProject {
 }
 
 function serializedProject(project: ProjectLike): { value: string; bytes: number } {
-  const value = JSON.stringify(portableProject(project), null, 2);
+  const value = JSON.stringify(toPortableProject(project), null, 2);
   return { value, bytes: new TextEncoder().encode(value).byteLength };
 }
 

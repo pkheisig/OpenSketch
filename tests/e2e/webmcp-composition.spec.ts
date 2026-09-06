@@ -49,7 +49,8 @@ async function installRecorder(page: Page) {
     (window as typeof window & { __webmcpCalls?: string[] }).__webmcpCalls = [];
   });
   await page.goto("./?webmcpDemo=1");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
 }
 

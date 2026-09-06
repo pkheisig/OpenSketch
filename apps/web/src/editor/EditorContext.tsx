@@ -43,8 +43,10 @@ import {
   type CanvasSettings,
   type ConnectorBinding,
   type ImportedMediaRecord,
+  type ProjectTemplateRecord,
   type ProjectRecord,
   type RasterInspection,
+  resolveProjectDefaults,
   imageDataUrlByteLength,
   inspectRasterBlob,
   inspectRasterDataUrl,
@@ -63,7 +65,7 @@ import {
   warmPdfFontFaces
 } from "@/export/pdf";
 import { collectProvenanceManifest, formatProvenanceCredits } from "@/export/provenance";
-import { safeFilename } from "@/persistence/portable";
+import { safeFilename, toPortableProject } from "@/persistence/portable";
 import { createVectorThumbnail } from "@/persistence/projectThumbnail";
 import {
   hasUnsavedProjectRevision,
@@ -552,7 +554,9 @@ export interface EditorContextValue {
   projectSaveError: string;
   reloadProject: () => void;
   saveProjectCopy: () => Promise<void>;
+  saveProjectAsTemplate: () => Promise<void>;
   projectId: string;
+  projectKind: ProjectRecord["kind"];
   canvas: Canvas | null;
   canvasReady: boolean;
   selection: FabricObject[];
@@ -1810,6 +1814,37 @@ export function EditorProvider({
     }
     await refreshThumbnail();
   }, [enqueuePendingSave, flushPendingTitle, refreshThumbnail, waitForPendingEditorWork]);
+
+  const saveProjectAsTemplate = useCallback(async () => {
+    await flushSave();
+    const name = (
+      await Promise.resolve(
+        services.dialogs.prompt(
+          "Save project as template",
+          `${latestProject.current.name} template`
+        )
+      )
+    )?.trim();
+    if (!name) return;
+    const snapshot = captureDocumentSnapshot();
+    const projectSnapshot = toPortableProject({
+      ...latestProject.current,
+      canvas: snapshot.canvasSettings,
+      objects: JSON.parse(snapshot.scene),
+      thumbnail: undefined
+    });
+    const now = services.clock.now();
+    const template: ProjectTemplateRecord = {
+      id: services.clock.randomUUID(),
+      name,
+      kind: latestProject.current.kind,
+      project: projectSnapshot,
+      createdAt: now,
+      updatedAt: now,
+      schemaVersion: 1
+    };
+    await services.projectTemplates.save(template);
+  }, [captureDocumentSnapshot, flushSave, services]);
 
   const retrySave = useCallback(() => {
     if (
@@ -4245,7 +4280,7 @@ export function EditorProvider({
 
   const setProjectName = useCallback(
     (name: string) => {
-      const nextName = name.trim() || "Untitled figure";
+      const nextName = name.trim() || resolveProjectDefaults(latestProject.current.kind).name;
       latestProject.current = {
         ...latestProject.current,
         name: nextName
@@ -4316,7 +4351,8 @@ export function EditorProvider({
       const metadata = `<metadata>${escapeXml(
         JSON.stringify({
           generator: "OpenSketch",
-          formatVersion: 1,
+          formatVersion: 2,
+          kind: latestProject.current.kind,
           title,
           description,
           credit: GLOBAL_CREDIT,
@@ -4639,6 +4675,7 @@ export function EditorProvider({
   const value = useMemo<EditorContextValue>(
     () => ({
       projectId: project.id,
+      projectKind: project.kind,
       canvas,
       canvasReady,
       selection,
@@ -4664,6 +4701,7 @@ export function EditorProvider({
       projectSaveError,
       reloadProject,
       saveProjectCopy,
+      saveProjectAsTemplate,
       retrySave,
       flushSave,
       exportProject,
@@ -4744,6 +4782,7 @@ export function EditorProvider({
       historyState,
       editingGroup,
       projectDescription,
+      project.kind,
       project.id,
       previewZoom,
       placeCreationTool,
@@ -4770,6 +4809,7 @@ export function EditorProvider({
       projectSaveError,
       reloadProject,
       saveProjectCopy,
+      saveProjectAsTemplate,
       retrySave,
       flushSave,
       exportProject,

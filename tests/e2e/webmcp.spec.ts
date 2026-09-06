@@ -515,7 +515,8 @@ test("executes compound composition and analysis through registered WebMCP callb
     (window as typeof window & { __webmcpTools?: unknown[] }).__webmcpTools = tools;
   });
   await page.goto("./?webmcpDemo=1");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
   await expect
     .poll(async () =>
