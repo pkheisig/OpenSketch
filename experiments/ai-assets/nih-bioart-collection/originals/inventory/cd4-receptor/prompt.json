@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a CD4 receptor, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A single CD4 protein domain cartoon, vertical with gentle natural bends. Exactly FOUR extracellular immunoglobulin-like domains arranged end-to-end in one chain from top to bottom. Each domain is a distinct smooth softly lobulated elongated blue oval, connected by short narrow linkers, with subtle alternating teal-blue shades. Below the fourth domain, a short narrow stalk continues into one short darker-blue transmembrane cylindrical segment, followed by a thin short gently curved cytoplasmic tail. No plasma membrane patch, no whole cell, no partner, no ligand, no second chain, no Fc or branches. Four domains clearly countable; the transmembrane segment is slender and much smaller, not a fifth globular domain. Clean matte filled shapes, thin crisp outlines, faint curved internal contour marks, restrained gradients and highlights, no ribbon arrows. Real transparent background.",
+  "style_refinement": "Refine image 1 into image 2's smooth biomedical domain-cartoon style, using image 2 for style only. Preserve exactly FOUR distinct extracellular oval domains in one end-to-end chain, alternating blue and teal, short linkers, a small dark transmembrane helix glyph below the fourth domain and a thin curved cytoplasmic tail. Smooth the four domains into gently lobulated filled ovals with two faint internal contour marks each; remove deep sculpted grooves and grainy texture. Keep thin crisp dark outlines, matte restrained gradients and small highlights. No extra domain, no membrane, no partner or ligand. Complete isolated receptor with generous transparent padding.",
+  "style_reference": "png/igg-antibody-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-288efaca-1424-4998-80a6-da7ee8b0f55a.png",
+  "archetype": "Schematic full-length CD4 topology: four extracellular immunoglobulin-like domains, single transmembrane segment and cytoplasmic tail. Shapes, relative lengths and alternating colors are illustrative; glycosylation and atomic structure omitted.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "cd4-receptor",
+  "name": "CD4 receptor",
+  "original": "originals/inventory/cd4-receptor/generated.png",
+  "original_sha256": "2061daa4d351f6f167defb0e7f83264c51dfa08913142e7ae882985e6b44af2e"
+}

@@ -25,7 +25,6 @@ import {
   type ProjectFolderRecord,
   type ProjectRecord
 } from "@workspace/editor-core";
-import { GLOBAL_CREDIT } from "@/assets/credit";
 import { MotionPresence } from "@/components/MotionPresence";
 import { Logo } from "./Logo";
 import { useModalDialog } from "./useModalDialog";
@@ -414,44 +413,10 @@ export function HomeScreen({
             tabIndex={-1}
             onMouseDown={(event) => event.stopPropagation()}
           >
-            <p>{GLOBAL_CREDIT}</p>
-            <div className="about-sources">
-              <strong>Bundled artwork sources</strong>
-              <ul>
-                <li>
-                  <a href="https://bioart.niaid.nih.gov/" target="_blank" rel="noreferrer">
-                    NIH BioArt Source
-                  </a>{" "}
-                  — public-domain illustrations
-                </li>
-                <li>
-                  <a href="https://scidraw.io/" target="_blank" rel="noreferrer">
-                    SciDraw
-                  </a>{" "}
-                  — CC0 and CC BY 4.0 illustrations
-                </li>
-                <li>
-                  <a href="https://zenodo.org/records/17203578" target="_blank" rel="noreferrer">
-                    Arcadia Science Free organism illustration library
-                  </a>{" "}
-                  — CC0 organism illustrations
-                </li>
-                <li>
-                  <a href="https://bioicons.com/" target="_blank" rel="noreferrer">
-                    BioIcons
-                  </a>{" "}
-                  — editable scientific SVGs under each icon&apos;s stated CC0, CC BY, CC BY-SA,
-                  MIT, or BSD license
-                </li>
-                <li>
-                  <a href="https://smart.servier.com/" target="_blank" rel="noreferrer">
-                    Servier Medical Art
-                  </a>{" "}
-                  — medical illustrations distributed through BioIcons with per-asset attribution
-                  and license metadata
-                </li>
-              </ul>
-            </div>
+            <p>
+              OpenSketch includes original generated artwork and editable scientific structures.
+              Source and license details are available on each asset.
+            </p>
             <p>
               The editor runs locally, uses no account or application backend, and keeps project
               files in your browser&apos;s IndexedDB.

@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a transport vesicle, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One generic uncoated intracellular transport vesicle in three-quarter cutaway. A small spherical single phospholipid-bilayer membrane encloses a mostly clear pale-blue aqueous lumen with three small rounded purple soluble-protein cargo shapes. Smooth blue/cyan exterior with only two or three small understated integral membrane-protein shapes seated in the membrane, no spiky virus-like surface. One thin bilayer at the exposed cut rim. No clathrin coat, dense secretory core, internal vesicles, nucleic acid, cytoplasm, cell, parent organelle, attached neck or trafficking arrows. Smooth matte filled forms, fine crisp dark-teal/indigo outlines, gentle blue gradients and restrained highlights. Complete isolated vesicle with generous transparent padding.",
+  "style_refinement": "Refine image 1 into image 2's clean biomedical illustration style; image 2 is style only. Preserve one complete uncoated transport vesicle with a single bilayer cut rim, pale blue lumen and three small purple protein cargo shapes. Make the outer shell smoothly filled rather than covered with bumpy lipid beads; retain bilayer headgroup/tail detail only at the cut rim. Reduce the three integral membrane protein shapes to modest size, embedded rather than protruding as large handles. Replace photorealistic watery texture and glossy lighting with matte blue/cyan fills, thin crisp indigo outlines and restrained gradients. No additional cargo, organelles, coat, text, arrows or background. Complete isolated vesicle with generous transparent padding.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-99d9f31f-36dd-40f9-9cf2-3de13d0c2b16.png",
+  "archetype": "Generic uncoated intracellular transport vesicle with soluble-protein cargo and illustrative integral membrane proteins. Bilayer and protein shapes simplified; no specific coat, cargo identity or transport route implied.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "transport-vesicle",
+  "name": "transport vesicle",
+  "original": "originals/inventory/transport-vesicle/generated.png",
+  "original_sha256": "58e93bf616587ba113e25e2e6ad69c91ffda1153e156494e9540f2ea4e659cf1"
+}

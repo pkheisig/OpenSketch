@@ -1,3 +1,4 @@
+import { SCIENTIFIC_PRESETS } from "@/editor/scientific/catalog";
 import {
   useEffect,
   useLayoutEffect,
@@ -170,6 +171,7 @@ const ASSET_VARIANT_OPTIONS = [
 ] as const;
 
 const SHAPE_GROUPS = {
+  scientific: SCIENTIFIC_PRESETS.map((preset) => [preset.id, "ellipse", preset.label] as const),
   basic: [
     ["rectangle", "rectangle", "Rectangle"],
     ["rounded-rectangle", "rounded-rectangle", "Rounded rectangle"],
@@ -471,7 +473,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
       if (sidebarRef.current?.contains(target)) return;
       if (
         target.closest(
-          ".ui-select-menu, .color-palette-popover, .asset-variant-menu, " +
+          ".ui-select-menu, .color-palette-popover, .asset-palette-popover, .asset-variant-menu, " +
             ".selection-quick-toolbar, .selection-toolbar-menu"
         )
       ) {
@@ -495,7 +497,7 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
       }
       if (
         target.closest(
-          ".ui-select-menu, .color-palette-popover, .asset-variant-menu, " +
+          ".ui-select-menu, .color-palette-popover, .asset-palette-popover, .asset-variant-menu, " +
             ".selection-quick-toolbar, .selection-toolbar-menu"
         )
       ) {
@@ -703,11 +705,22 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
               >
                 <ShapePresetIcon glyph="hexagon" /> Polygons
               </button>
+              <button
+                ref={(element) => {
+                  primaryFamilyButtonRefs.current.scientific = element;
+                }}
+                className={shapeFamily === "scientific" ? "active" : ""}
+                onPointerEnter={() => setShapeFamily("scientific")}
+                onClick={() => setShapeFamily("scientific")}
+                role="menuitem"
+              >
+                <ShapePresetIcon glyph="ellipse" /> Scientific structures
+              </button>
             </div>
             <MotionPresence open={Boolean(shapeFamily)} exitMs={120}>
               {shapeFamily ? (
                 <div
-                  className="tool-flyout-secondary shape-flyout-grid"
+                  className={`tool-flyout-secondary ${shapeFamily === "scientific" ? "scientific-preset-list" : "shape-flyout-grid"}`}
                   style={{ marginTop: secondaryTop }}
                 >
                   {SHAPE_GROUPS[shapeFamily].map(([kind, glyph, label]) => (
@@ -744,7 +757,19 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
                       aria-label={label}
                       title={label}
                     >
-                      <ShapePresetIcon glyph={glyph} />
+                      <>
+                        {shapeFamily === "scientific" ? (
+                          <img
+                            src={`${import.meta.env.BASE_URL}assets/scientific-structures/${kind}.svg`}
+                            alt=""
+                            width={30}
+                            height={30}
+                          />
+                        ) : (
+                          <ShapePresetIcon glyph={glyph} />
+                        )}
+                      </>
+                      {shapeFamily === "scientific" && <span>{label}</span>}
                     </button>
                   ))}
                 </div>
@@ -885,6 +910,14 @@ function AssetsPanel({
       ),
     [assetManifest.families]
   );
+  useEffect(() => {
+    if (
+      sourceFilter !== ALL_ASSET_FILTER_VALUE &&
+      !assetManifest.families.some((family) => assetSourceFilterLabel(family) === sourceFilter)
+    ) {
+      onSourceFilterChange(ALL_ASSET_FILTER_VALUE);
+    }
+  }, [assetManifest.families, sourceFilter, onSourceFilterChange]);
   const families = useMemo(() => {
     if (category === "Templates") return [];
     const matches = filterAssetFamilies(
@@ -1202,7 +1235,7 @@ function AssetsPanel({
           ref={assetListRef}
           className="asset-list-shell"
           onKeyDown={navigateAssets}
-          aria-label="NIH BioArt illustration families"
+          aria-label="Scientific asset families"
         >
           {assetListHeight > 0 && (
             <List
@@ -1221,10 +1254,7 @@ function AssetsPanel({
         <div className="empty-library">
           <Sparkles size={25} />
           <h3>Asset library ready to sync</h3>
-          <p>
-            Run <code>pnpm assets:sync</code> during development to import the complete
-            public-domain NIH BioArt collection. The app never fetches it at runtime.
-          </p>
+          <p>No OpenSketch assets are available in this build.</p>
         </div>
       ) : (
         <div className="empty-library">
@@ -1398,7 +1428,7 @@ function AssetCard({
   };
   return (
     <article
-      className="asset-card"
+      className={`asset-card${family.editableStructure ? " asset-card-editable" : ""}`}
       draggable
       onDragStart={(event) => {
         onAssetDragStart();
@@ -1467,6 +1497,7 @@ function AssetCard({
         portalRoot ?? document.body
       )}
       <div className="asset-card-copy">
+        {family.editableStructure && <span className="asset-editable-badge">Editable</span>}
         <strong title={family.title}>{family.title}</strong>
         {family.variants.length > 1 ? (
           <AssetVariantPicker family={family} value={variant.id} onChange={onVariant} />

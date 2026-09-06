@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an apoptotic body, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One small rounded irregular membrane-enclosed apoptotic body, represented in a schematic cutaway revealing pale lavender cytoplasmic content. Intact smooth pink-lavender outer membrane surrounds two irregular dense dark-purple chromatin fragments, one small pink mitochondrion with simple cristae, and a few small vesicles. There is no intact central nucleus. Show a raised translucent rear membrane rim and a clean front cutaway edge as an illustration convention; the object itself is an enclosed cellular fragment. No parent cell, no multiple bodies, no membrane rupture, no extracellular debris or phagocyte. Smooth matte biomedical cell cartoon, fine crisp purple outline, subtle depth and gradients, small highlights. Real transparent background.",
+  "style_refinement": "Refine image 1 into image 2's clean polished biomedical cell style. Use image 2 for rendering style only. Preserve the single rounded apoptotic body, intact perimeter, cutaway rim, TWO irregular dense purple chromatin fragments, ONE small pink mitochondrion and a few enclosed vesicles. Smooth granular surfaces into matte filled forms, thin crisp outlines and subtle gradients; chromatin fragments become solid dark-purple lobulated masses with a few faint internal contour marks, no intact nucleus or nucleolus. Remove microscopic glitter and watery reflections. Complete object with generous transparent padding, no extra components, no text or background.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-92f1068c-318d-4b25-aff3-1ed7cdec07f7.png",
+  "archetype": "Representative membrane-enclosed apoptotic body containing two condensed chromatin fragments and an organelle. Contents vary biologically; illustrated contents and proportions are schematic. Cutaway is a viewing convention, not membrane rupture.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "apoptotic-body",
+  "name": "apoptotic body",
+  "original": "originals/inventory/apoptotic-body/generated.png",
+  "original_sha256": "38be66fc46efbd7c58c8a0607a8b869b912f8d2fb4f2d1af1172dd753d94d3e1"
+}

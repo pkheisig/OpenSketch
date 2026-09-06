@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a pancreatic beta cell, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. One plump rounded polygonal endocrine cell in a schematic cutaway, pale turquoise cytoplasm and one round violet nucleus slightly off-center. Numerous small membrane-bounded insulin secretory granules distributed through the cytoplasm, depicted with magenta dense cores, several angular crystalline cores, and narrow pale rims as a conventional ultrastructural schematic. A few pink mitochondria, lavender rough ER stacks and a compact coral Golgi apparatus. Granules much smaller than nucleus and kept inside the cell. No islet cluster, ducts, capillaries, glucose molecules, released insulin or other cells. Matte smooth filled forms, thin crisp teal/plum outlines, restrained gradients, no photorealistic grain or glossy plastic. Complete cell centered with generous true transparent padding; no text, labels, arrows, borders, scenery, unrelated objects, cast shadows, glow or checkerboard.",
+  "style_refinement": "Redraw pancreatic beta cell image 1 in the clean matte NIH BioArt style of epithelial cell image 2. Image 2 is style reference only. Keep one rounded turquoise endocrine cell, violet nucleus, lavender rough ER, compact coral Golgi and a few pink mitochondria. Numerous small insulin granules have simple solid magenta cores, some angular polygonal, with pale narrow rims inside thin membranes. Avoid jewel-like faceted crystal sparkle; cores should be simple flat scientific shapes. Smooth filled forms, thin crisp teal/plum outlines and restrained gradients. Remove photorealistic grain, mottled nuclear texture, glossy plastic and glow. Complete single cell centered with generous transparent padding; no released granules, other cells, ducts, tissue, text, labels, arrows, shadows or checkerboard.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "structure_references": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/4617632/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/9768635/"
+  ],
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-2362b242-748d-4166-b142-c5b0e69a83f2.png",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "pancreatic-beta-cell",
+  "name": "pancreatic beta cell",
+  "original": "originals/inventory/pancreatic-beta-cell/generated.png",
+  "original_sha256": "214c382cf3fe9154cfed2fe5d97cedee06534c787843841db8ce51cb5d5f33dd"
+}

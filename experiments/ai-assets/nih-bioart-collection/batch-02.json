@@ -1,0 +1,246 @@
+{
+  "batch": 2,
+  "inventory_commit": "136ff6073f84c5acea6410c3c0d21b0a941201fb",
+  "frozen_dev": "2aea75a8ccd7956d7addbc60547bf5d884ccf590",
+  "assets": [
+    {
+      "id": "dendritic-cell",
+      "name": "dendritic cell",
+      "category": "Immune and blood cells",
+      "detail": "One stellate dendritic cell, with an irregular pale blue-lavender cell body and 7–10 tapering branched dendritic extensions in different directions, one indented violet nucleus, a few small vesicles and restrained internal organelles. Cell protrusions must remain part of the cell. Recognizably distinct from the rounded macrophage. All intrinsic components visible through an illustrative cytoplasmic cutaway.",
+      "selected_original": "originals/batch-02/dendritic-cell-final.png",
+      "originals": [
+        {
+          "stage": "initial",
+          "file": "originals/batch-02/dendritic-cell-initial.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-d7ab47f5-0991-40ad-b953-79bf3e0c0b7a.png"
+        },
+        {
+          "stage": "style-refined",
+          "file": "originals/batch-02/dendritic-cell-style-refined.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-04fdbf44-b609-4759-b5e8-3475f09df9a4.png"
+        },
+        {
+          "stage": "background-rejected",
+          "file": "originals/batch-02/dendritic-cell-background-rejected.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-ddad2338-5245-4157-b229-bcf18c329cb6.png"
+        },
+        {
+          "stage": "final",
+          "file": "originals/batch-02/dendritic-cell-final.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-98003311-1ae1-4838-99a9-e895207acd96.png"
+        }
+      ],
+      "prompts": {
+        "initial": "Create a single isolated scientific illustration of dendritic cell, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows.\nSTYLE LOCK: use the approved OpenSketch macrophage and mitochondrion PNG illustrations visible in this conversation as the style anchors, and the supplied NIH lab equipment sheet for equipment. They are VISUAL STYLE REFERENCES ONLY. Match their thin dark colored contour lines, matte smooth color areas, minimal graphic surface texture, restrained top-left highlights, softly modeled flat illustration depth. Professional clean drawn biomedical artwork suitable for vector tracing. Avoid glossy plastic, wet surfaces, photorealism, neon edges, dramatic lighting, extraneous tiny speckles. Keep one coherent rendering style across cells, proteins, equipment and animal. Actual TRANSPARENT PNG alpha background, never white or simulated checkerboard. Complete silhouette centered in a square canvas with 15% empty padding on every side.\nSUBJECT: One stellate dendritic cell, with an irregular pale blue-lavender cell body and 7–10 tapering branched dendritic extensions in different directions, one indented violet nucleus, a few small vesicles and restrained internal organelles. Cell protrusions must remain part of the cell. Recognizably distinct from the rounded macrophage. All intrinsic components visible through an illustrative cytoplasmic cutaway.",
+        "style_refinement": "Refine image 1, the dendritic cell, to MATCH THE DRAWING STYLE of image 2, the approved macrophage. Image 2 is ONLY a style reference: do not copy its cell shape or add its components. Keep the dendritic cell's silhouette and intrinsic architecture. Flatten the wet shiny rendering into a clean matte biomedical illustration like image 2: crisp thin dark colored outlines, smooth pastel color masses, gentle gradients, restrained highlights, sparse meaningful internal contours. Remove glossy reflected streaks, microscopic speckle and bumpy photoreal textures. Preserve the existing colors. One stellate dendritic cell, with an irregular pale blue-lavender cell body and 7–10 tapering branched dendritic extensions in different directions, one indented violet nucleus, a few small vesicles and restrained internal organelles. Cell protrusions must remain part of the cell. Recognizably distinct from the rounded macrophage. All intrinsic components visible through an illustrative cytoplasmic cutaway. Keep the entire object. Background must remain genuinely transparent PNG alpha; no white backdrop and NEVER a drawn checkerboard pattern. Output one isolated dendritic cell only, no captions.",
+        "alpha": "Remove the checkerboard background completely from this dendritic cell illustration. Return a true transparent PNG with actual alpha, retaining only the complete illustrated object. Preserve the matte drawing, dark outlines, gentle colors and all meaningful internal structure. All space outside the object and open gaps between components must be fully transparent, not white and not painted squares. Do not add gloss, texture, objects, text or shadows.",
+        "alpha_retry": "Make the background transparent. Remove the checkerboard. Preserve the illustration."
+      }
+    },
+    {
+      "id": "neutrophil",
+      "name": "neutrophil",
+      "category": "Immune and blood cells",
+      "detail": "One round neutrophil with pale lavender cytoplasm, a single segmented dark-purple nucleus comprising four lobes visibly joined by thin chromatin bridges, and many small fine lilac/pink cytoplasmic granules. Gently ruffled rounded membrane, restrained internal detail. No erythrocytes, bacteria, or extracellular objects.",
+      "selected_original": "originals/batch-02/neutrophil-final.png",
+      "originals": [
+        {
+          "stage": "initial",
+          "file": "originals/batch-02/neutrophil-initial.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-c7ebd8f9-fc79-4b1e-bf2b-5d1cf0fc4a8c.png"
+        },
+        {
+          "stage": "style-refined",
+          "file": "originals/batch-02/neutrophil-style-refined.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-1feeefb4-1206-46a9-bb99-887856e55d7c.png"
+        },
+        {
+          "stage": "background-rejected",
+          "file": "originals/batch-02/neutrophil-background-rejected.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-527a866d-061b-406f-8616-b661cfa7a407.png"
+        },
+        {
+          "stage": "final",
+          "file": "originals/batch-02/neutrophil-final.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-2b0885ce-de94-429d-8751-f30188490908.png"
+        }
+      ],
+      "prompts": {
+        "initial": "Create a single isolated scientific illustration of neutrophil, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows.\nSTYLE LOCK: use the approved OpenSketch macrophage and mitochondrion PNG illustrations visible in this conversation as the style anchors, and the supplied NIH lab equipment sheet for equipment. They are VISUAL STYLE REFERENCES ONLY. Match their thin dark colored contour lines, matte smooth color areas, minimal graphic surface texture, restrained top-left highlights, softly modeled flat illustration depth. Professional clean drawn biomedical artwork suitable for vector tracing. Avoid glossy plastic, wet surfaces, photorealism, neon edges, dramatic lighting, extraneous tiny speckles. Keep one coherent rendering style across cells, proteins, equipment and animal. Actual TRANSPARENT PNG alpha background, never white or simulated checkerboard. Complete silhouette centered in a square canvas with 15% empty padding on every side.\nSUBJECT: One round neutrophil with pale lavender cytoplasm, a single segmented dark-purple nucleus comprising four lobes visibly joined by thin chromatin bridges, and many small fine lilac/pink cytoplasmic granules. Gently ruffled rounded membrane, restrained internal detail. No erythrocytes, bacteria, or extracellular objects.",
+        "style_refinement": "Refine image 1, the neutrophil, to MATCH THE DRAWING STYLE of image 2, the approved macrophage. Image 2 is ONLY a style reference: do not copy its cell shape or add its components. Keep the neutrophil's silhouette and intrinsic architecture. Flatten the wet shiny rendering into a clean matte biomedical illustration like image 2: crisp thin dark colored outlines, smooth pastel color masses, gentle gradients, restrained highlights, sparse meaningful internal contours. Remove glossy reflected streaks, microscopic speckle and bumpy photoreal textures. Preserve the existing colors. One round neutrophil with pale lavender cytoplasm, a single segmented dark-purple nucleus comprising four lobes visibly joined by thin chromatin bridges, and many small fine lilac/pink cytoplasmic granules. Gently ruffled rounded membrane, restrained internal detail. No erythrocytes, bacteria, or extracellular objects. Keep the entire object. Background must remain genuinely transparent PNG alpha; no white backdrop and NEVER a drawn checkerboard pattern. Output one isolated neutrophil only, no captions.",
+        "alpha": "Remove the checkerboard background completely from this neutrophil illustration. Return a true transparent PNG with actual alpha, retaining only the complete illustrated object. Preserve the matte drawing, dark outlines, gentle colors and all meaningful internal structure. All space outside the object and open gaps between components must be fully transparent, not white and not painted squares. Do not add gloss, texture, objects, text or shadows.",
+        "alpha_retry": "Make the background transparent. Remove the checkerboard. Preserve the illustration."
+      }
+    },
+    {
+      "id": "igg-antibody",
+      "name": "generic IgG antibody",
+      "category": "Distinct immune recognition and antibody structures",
+      "detail": "One intact Y-shaped IgG antibody, shown as clean domain-level scientific illustration: two long blue-teal heavy chains form both arms and paired Fc stem, one shorter lavender light chain on the outside of each arm, exactly two Fab arms and one Fc stem with flexible hinge. Clear paired globular domains and small intrinsic disulfide links. No attached antigen or cell membrane. Smooth paired-domain protein forms, not an atomic surface or photoreal material.",
+      "selected_original": "originals/batch-02/igg-antibody-final.png",
+      "originals": [
+        {
+          "stage": "initial",
+          "file": "originals/batch-02/igg-antibody-initial.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-5daaca34-ac9c-4e56-99e5-36b5e967bc92.png"
+        },
+        {
+          "stage": "style-refined",
+          "file": "originals/batch-02/igg-antibody-style-refined.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-d5bb3416-30dd-42de-b959-e58da52e3a37.png"
+        },
+        {
+          "stage": "background-rejected",
+          "file": "originals/batch-02/igg-antibody-background-rejected.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-5703d519-96d3-4619-953b-fdc370aec54f.png"
+        },
+        {
+          "stage": "final",
+          "file": "originals/batch-02/igg-antibody-final.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-4f1c1947-4ccf-4d06-94fa-526b6fdf2306.png"
+        }
+      ],
+      "prompts": {
+        "initial": "Create a single isolated scientific illustration of generic IgG antibody, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows.\nSTYLE LOCK: use the approved OpenSketch macrophage and mitochondrion PNG illustrations visible in this conversation as the style anchors, and the supplied NIH lab equipment sheet for equipment. They are VISUAL STYLE REFERENCES ONLY. Match their thin dark colored contour lines, matte smooth color areas, minimal graphic surface texture, restrained top-left highlights, softly modeled flat illustration depth. Professional clean drawn biomedical artwork suitable for vector tracing. Avoid glossy plastic, wet surfaces, photorealism, neon edges, dramatic lighting, extraneous tiny speckles. Keep one coherent rendering style across cells, proteins, equipment and animal. Actual TRANSPARENT PNG alpha background, never white or simulated checkerboard. Complete silhouette centered in a square canvas with 15% empty padding on every side.\nSUBJECT: One intact Y-shaped IgG antibody, shown as clean domain-level scientific illustration: two long blue-teal heavy chains form both arms and paired Fc stem, one shorter lavender light chain on the outside of each arm, exactly two Fab arms and one Fc stem with flexible hinge. Clear paired globular domains and small intrinsic disulfide links. No attached antigen or cell membrane. Smooth paired-domain protein forms, not an atomic surface or photoreal material.",
+        "style_refinement": "Refine image 1, the generic IgG antibody, to MATCH THE DRAWING STYLE of image 2, the approved macrophage. Image 2 is ONLY a style reference: do not copy its cell shape or add its components. Keep the generic IgG antibody's silhouette and intrinsic architecture. Flatten the wet shiny rendering into a clean matte biomedical illustration like image 2: crisp thin dark colored outlines, smooth pastel color masses, gentle gradients, restrained highlights, sparse meaningful internal contours. Remove glossy reflected streaks, microscopic speckle and bumpy photoreal textures. Preserve the existing colors. One intact Y-shaped IgG antibody, shown as clean domain-level scientific illustration: two long blue-teal heavy chains form both arms and paired Fc stem, one shorter lavender light chain on the outside of each arm, exactly two Fab arms and one Fc stem with flexible hinge. Clear paired globular domains and small intrinsic disulfide links. No attached antigen or cell membrane. Smooth paired-domain protein forms, not an atomic surface or photoreal material. Keep the entire object. Background must remain genuinely transparent PNG alpha; no white backdrop and NEVER a drawn checkerboard pattern. Output one isolated generic IgG antibody only, no captions.",
+        "alpha": "Remove the checkerboard background completely from this generic IgG antibody illustration. Return a true transparent PNG with actual alpha, retaining only the complete illustrated object. Preserve the matte drawing, dark outlines, gentle colors and all meaningful internal structure. All space outside the object and open gaps between components must be fully transparent, not white and not painted squares. Do not add gloss, texture, objects, text or shadows. Correct disulfide-link schematics: retain only two short heavy-heavy connectors in the central hinge and one heavy-light connector at the lower paired domains of each Fab arm. Remove the yellow crosslinks between the top variable domains and between the Fc stem domains. Keep all protein domains.",
+        "alpha_retry": "Make the background transparent. Remove the checkerboard. Preserve the illustration."
+      }
+    },
+    {
+      "id": "atp-synthase",
+      "name": "ATP synthase",
+      "category": "Protein complexes",
+      "detail": "One isolated F-type ATP synthase protein complex in an understandable three-quarter view: F1 catalytic head with six alternating blue-teal/lavender globular alpha/beta lobes arranged as a ring; a narrow central rotor stalk descends to a compact peach-colored F0 c-ring rotor; peripheral stator stalk connects the head to the adjacent F0 subunit. Use recognizable mushroom-like architecture and biologically shaped protein subunits. No surrounding lipid membrane patch, ATP labels, arrows, free molecules, or reaction diagram. Illustrative domain architecture, not an atomistic model.",
+      "selected_original": "originals/batch-02/atp-synthase-final.png",
+      "originals": [
+        {
+          "stage": "initial",
+          "file": "originals/batch-02/atp-synthase-initial.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-20d4af28-e376-4ff5-bc01-f400914e1443.png"
+        },
+        {
+          "stage": "style-refined",
+          "file": "originals/batch-02/atp-synthase-style-refined.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-cf18655a-e899-47f9-929a-74c1f16eecc8.png"
+        },
+        {
+          "stage": "background-rejected",
+          "file": "originals/batch-02/atp-synthase-background-rejected.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-5fedce3f-3319-45b8-8398-7d256fc68405.png"
+        },
+        {
+          "stage": "final",
+          "file": "originals/batch-02/atp-synthase-final.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-186dc4da-ace7-4ef9-ab12-5b6717fcee78.png"
+        }
+      ],
+      "prompts": {
+        "initial": "Create a single isolated scientific illustration of ATP synthase, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows.\nSTYLE LOCK: use the approved OpenSketch macrophage and mitochondrion PNG illustrations visible in this conversation as the style anchors, and the supplied NIH lab equipment sheet for equipment. They are VISUAL STYLE REFERENCES ONLY. Match their thin dark colored contour lines, matte smooth color areas, minimal graphic surface texture, restrained top-left highlights, softly modeled flat illustration depth. Professional clean drawn biomedical artwork suitable for vector tracing. Avoid glossy plastic, wet surfaces, photorealism, neon edges, dramatic lighting, extraneous tiny speckles. Keep one coherent rendering style across cells, proteins, equipment and animal. Actual TRANSPARENT PNG alpha background, never white or simulated checkerboard. Complete silhouette centered in a square canvas with 15% empty padding on every side.\nSUBJECT: One isolated F-type ATP synthase protein complex in an understandable three-quarter view: F1 catalytic head with six alternating blue-teal/lavender globular alpha/beta lobes arranged as a ring; a narrow central rotor stalk descends to a compact peach-colored F0 c-ring rotor; peripheral stator stalk connects the head to the adjacent F0 subunit. Use recognizable mushroom-like architecture and biologically shaped protein subunits. No surrounding lipid membrane patch, ATP labels, arrows, free molecules, or reaction diagram. Illustrative domain architecture, not an atomistic model.",
+        "style_refinement": "Refine image 1, the ATP synthase, to MATCH THE DRAWING STYLE of image 2, the approved macrophage. Image 2 is ONLY a style reference: do not copy its cell shape or add its components. Keep the ATP synthase's silhouette and intrinsic architecture. Flatten the wet shiny rendering into a clean matte biomedical illustration like image 2: crisp thin dark colored outlines, smooth pastel color masses, gentle gradients, restrained highlights, sparse meaningful internal contours. Remove glossy reflected streaks, microscopic speckle and bumpy photoreal textures. Preserve the existing colors. One isolated F-type ATP synthase protein complex in an understandable three-quarter view: F1 catalytic head with six alternating blue-teal/lavender globular alpha/beta lobes arranged as a ring; a narrow central rotor stalk descends to a compact peach-colored F0 c-ring rotor; peripheral stator stalk connects the head to the adjacent F0 subunit. Use recognizable mushroom-like architecture and biologically shaped protein subunits. No surrounding lipid membrane patch, ATP labels, arrows, free molecules, or reaction diagram. Illustrative domain architecture, not an atomistic model. Keep the entire object. Background must remain genuinely transparent PNG alpha; no white backdrop and NEVER a drawn checkerboard pattern. Output one isolated ATP synthase only, no captions.",
+        "alpha": "Remove the checkerboard background completely from this ATP synthase illustration. Return a true transparent PNG with actual alpha, retaining only the complete illustrated object. Preserve the matte drawing, dark outlines, gentle colors and all meaningful internal structure. All space outside the object and open gaps between components must be fully transparent, not white and not painted squares. Do not add gloss, texture, objects, text or shadows.",
+        "alpha_retry": "Make the background transparent. Remove the checkerboard. Preserve the illustration."
+      }
+    },
+    {
+      "id": "micropipette",
+      "name": "micropipette",
+      "category": "Lab equipment and consumables",
+      "detail": "One complete modern manual single-channel adjustable micropipette, tilted diagonally from upper left to lower right in three-quarter view. Light cool-gray body, restrained dark navy and teal accents, thumb plunger, finger hook, tip-ejector button and sleeve, slim shaft and one attached translucent pale-blue disposable tip. Volume display blank, no numbers or brand. Entire tip visible, no liquid droplet, hand, stand or other objects.",
+      "selected_original": "originals/batch-02/micropipette-final.png",
+      "originals": [
+        {
+          "stage": "initial",
+          "file": "originals/batch-02/micropipette-initial.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-7cacb5b1-1fd4-4fc1-9e87-6eba33248e3a.png"
+        },
+        {
+          "stage": "style-refined",
+          "file": "originals/batch-02/micropipette-style-refined.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-8c68a643-4e91-4d88-8d64-4e532543d405.png"
+        },
+        {
+          "stage": "final",
+          "file": "originals/batch-02/micropipette-final.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-782e17c9-81af-4bec-9a14-ea5883c550d7.png"
+        }
+      ],
+      "prompts": {
+        "initial": "Create a single isolated scientific illustration of micropipette, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows.\nSTYLE LOCK: use the approved OpenSketch macrophage and mitochondrion PNG illustrations visible in this conversation as the style anchors, and the supplied NIH lab equipment sheet for equipment. They are VISUAL STYLE REFERENCES ONLY. Match their thin dark colored contour lines, matte smooth color areas, minimal graphic surface texture, restrained top-left highlights, softly modeled flat illustration depth. Professional clean drawn biomedical artwork suitable for vector tracing. Avoid glossy plastic, wet surfaces, photorealism, neon edges, dramatic lighting, extraneous tiny speckles. Keep one coherent rendering style across cells, proteins, equipment and animal. Actual TRANSPARENT PNG alpha background, never white or simulated checkerboard. Complete silhouette centered in a square canvas with 15% empty padding on every side.\nSUBJECT: One complete modern manual single-channel adjustable micropipette, tilted diagonally from upper left to lower right in three-quarter view. Light cool-gray body, restrained dark navy and teal accents, thumb plunger, finger hook, tip-ejector button and sleeve, slim shaft and one attached translucent pale-blue disposable tip. Volume display blank, no numbers or brand. Entire tip visible, no liquid droplet, hand, stand or other objects.",
+        "style_refinement": "Refine image 1 (micropipette) to match the matte drawn biomedical style of image 2, which is a STYLE REFERENCE ONLY. Preserve the micropipette's whole shape and intrinsic components; do not add objects from the reference. Crisp thin dark gray contour lines, smooth color masses, restrained soft gradients and subtle highlights, consistent professional NIH BioArt illustration. Reduce plastic reflections and excessive shine; increase clean dark outlines and softly shaded flat surfaces. One complete modern manual single-channel adjustable micropipette, tilted diagonally from upper left to lower right in three-quarter view. Light cool-gray body, restrained dark navy and teal accents, thumb plunger, finger hook, tip-ejector button and sleeve, slim shaft and one attached translucent pale-blue disposable tip. Volume display blank, no numbers or brand. Entire tip visible, no liquid droplet, hand, stand or other objects. Keep actual PNG alpha transparency outside the object. No white background, no simulated checkerboard, no text, numbers, branding, labels or cast shadow. Center the complete object with empty transparent padding.",
+        "alpha": "Make the background transparent. Remove the checkerboard pattern entirely; it is an unwanted background, not part of the micropipette. Keep only the complete micropipette as one isolated cutout. Preserve the matte illustration and thin dark outlines. Return a transparent PNG with an actual alpha channel. Do not draw transparency squares."
+      }
+    },
+    {
+      "id": "microcentrifuge-tube",
+      "name": "microcentrifuge tube",
+      "category": "Lab equipment and consumables",
+      "detail": "One complete 1.5 mL microcentrifuge tube, upright in three-quarter view, open hinged flip cap physically attached to the upper rim; cylindrical upper tube narrowing into a conical bottom. Translucent cool-gray/pale-blue plastic, crisp dark gray contour edges, a small cyan liquid volume in the conical bottom with a plausible horizontal meniscus. Cap interior visible. No graduations, lettering, rack, floating droplets or other objects.",
+      "selected_original": "originals/batch-02/microcentrifuge-tube-final.png",
+      "originals": [
+        {
+          "stage": "initial",
+          "file": "originals/batch-02/microcentrifuge-tube-initial.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-6345e8f6-aeb1-4360-85ef-7afb4f577904.png"
+        },
+        {
+          "stage": "style-refined",
+          "file": "originals/batch-02/microcentrifuge-tube-style-refined.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-8280891f-c12d-4216-9a23-c26b2a175b2f.png"
+        },
+        {
+          "stage": "background-rejected",
+          "file": "originals/batch-02/microcentrifuge-tube-background-rejected.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-01222d69-b476-41e5-964f-4cc4034ed16d.png"
+        },
+        {
+          "stage": "final",
+          "file": "originals/batch-02/microcentrifuge-tube-final.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-0d347a3e-26e8-4032-aae0-0da4f94a85b4.png"
+        }
+      ],
+      "prompts": {
+        "initial": "Create a single isolated scientific illustration of microcentrifuge tube, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows.\nSTYLE LOCK: use the approved OpenSketch macrophage and mitochondrion PNG illustrations visible in this conversation as the style anchors, and the supplied NIH lab equipment sheet for equipment. They are VISUAL STYLE REFERENCES ONLY. Match their thin dark colored contour lines, matte smooth color areas, minimal graphic surface texture, restrained top-left highlights, softly modeled flat illustration depth. Professional clean drawn biomedical artwork suitable for vector tracing. Avoid glossy plastic, wet surfaces, photorealism, neon edges, dramatic lighting, extraneous tiny speckles. Keep one coherent rendering style across cells, proteins, equipment and animal. Actual TRANSPARENT PNG alpha background, never white or simulated checkerboard. Complete silhouette centered in a square canvas with 15% empty padding on every side.\nSUBJECT: One complete 1.5 mL microcentrifuge tube, upright in three-quarter view, open hinged flip cap physically attached to the upper rim; cylindrical upper tube narrowing into a conical bottom. Translucent cool-gray/pale-blue plastic, crisp dark gray contour edges, a small cyan liquid volume in the conical bottom with a plausible horizontal meniscus. Cap interior visible. No graduations, lettering, rack, floating droplets or other objects.",
+        "style_refinement": "Refine image 1 (microcentrifuge tube) to match the matte drawn biomedical style of image 2, which is a STYLE REFERENCE ONLY. Preserve the microcentrifuge tube's whole shape and intrinsic components; do not add objects from the reference. Crisp thin dark gray contour lines, smooth color masses, restrained soft gradients and subtle highlights, consistent professional NIH BioArt illustration. Reduce plastic reflections and excessive shine; increase clean dark outlines and softly shaded flat surfaces. One complete 1.5 mL microcentrifuge tube, upright in three-quarter view, open hinged flip cap physically attached to the upper rim; cylindrical upper tube narrowing into a conical bottom. Translucent cool-gray/pale-blue plastic, crisp dark gray contour edges, a small cyan liquid volume in the conical bottom with a plausible horizontal meniscus. Cap interior visible. No graduations, lettering, rack, floating droplets or other objects. Keep actual PNG alpha transparency outside the object. No white background, no simulated checkerboard, no text, numbers, branding, labels or cast shadow. Center the complete object with empty transparent padding.",
+        "alpha": "Make the background transparent. Remove the checkerboard pattern entirely; it is an unwanted background, not part of the microcentrifuge tube. Keep only the complete microcentrifuge tube as one isolated cutout. Preserve the matte illustration and thin dark outlines. Return a transparent PNG with an actual alpha channel. Do not draw transparency squares.",
+        "alpha_retry": "Remove the background and the entire glow around the object. Transparent PNG cutout, clean silhouette, no shadow."
+      }
+    },
+    {
+      "id": "laboratory-mouse",
+      "name": "laboratory mouse",
+      "category": "Animals",
+      "detail": "One complete adult laboratory mouse, neutral standing side view facing left, warm light-gray coat, rounded ears with muted pink interiors, pointed snout with fine whiskers, small dark eye, four anatomically plausible paws (near paws clear, far paws partly occluded), and one long thin gently curved pink tail fully visible. Clean smooth illustrated fur masses with a few short contour strokes, not photoreal fur, no cute cartoon exaggeration. No cage, food, accessories, floor, scenery or cast shadow.",
+      "selected_original": "originals/batch-02/laboratory-mouse-final.png",
+      "originals": [
+        {
+          "stage": "initial",
+          "file": "originals/batch-02/laboratory-mouse-initial.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-2ff64737-fb0c-4ad5-b8d2-beec0390a0c9.png"
+        },
+        {
+          "stage": "style-refined",
+          "file": "originals/batch-02/laboratory-mouse-style-refined.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-54680d22-f89d-4439-982e-4be737b769c9.png"
+        },
+        {
+          "stage": "background-rejected",
+          "file": "originals/batch-02/laboratory-mouse-background-rejected.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-6bd51f99-00c1-4469-b02d-8d71c455b3ff.png"
+        },
+        {
+          "stage": "final",
+          "file": "originals/batch-02/laboratory-mouse-final.png",
+          "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-e154b8f1-ce0e-4e86-83bc-3f07201892c0.png"
+        }
+      ],
+      "prompts": {
+        "initial": "Create a single isolated scientific illustration of laboratory mouse, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows.\nSTYLE LOCK: use the approved OpenSketch macrophage and mitochondrion PNG illustrations visible in this conversation as the style anchors, and the supplied NIH lab equipment sheet for equipment. They are VISUAL STYLE REFERENCES ONLY. Match their thin dark colored contour lines, matte smooth color areas, minimal graphic surface texture, restrained top-left highlights, softly modeled flat illustration depth. Professional clean drawn biomedical artwork suitable for vector tracing. Avoid glossy plastic, wet surfaces, photorealism, neon edges, dramatic lighting, extraneous tiny speckles. Keep one coherent rendering style across cells, proteins, equipment and animal. Actual TRANSPARENT PNG alpha background, never white or simulated checkerboard. Complete silhouette centered in a square canvas with 15% empty padding on every side.\nSUBJECT: One complete adult laboratory mouse, neutral standing side view facing left, warm light-gray coat, rounded ears with muted pink interiors, pointed snout with fine whiskers, small dark eye, four anatomically plausible paws (near paws clear, far paws partly occluded), and one long thin gently curved pink tail fully visible. Clean smooth illustrated fur masses with a few short contour strokes, not photoreal fur, no cute cartoon exaggeration. No cage, food, accessories, floor, scenery or cast shadow.",
+        "style_refinement": "Refine image 1 (laboratory mouse) to match the matte drawn biomedical style of image 2, which is a STYLE REFERENCE ONLY. Preserve the laboratory mouse's whole shape and intrinsic components; do not add objects from the reference. Crisp thin dark gray contour lines, smooth color masses, restrained soft gradients and subtle highlights, consistent professional NIH BioArt illustration. Replace individual photoreal fur hairs and skin texture with smooth warm-gray shapes and a few sparse fur strokes. Keep four paws, thin whiskers and entire tail. No cute cartoon exaggeration. One complete adult laboratory mouse, neutral standing side view facing left, warm light-gray coat, rounded ears with muted pink interiors, pointed snout with fine whiskers, small dark eye, four anatomically plausible paws (near paws clear, far paws partly occluded), and one long thin gently curved pink tail fully visible. Clean smooth illustrated fur masses with a few short contour strokes, not photoreal fur, no cute cartoon exaggeration. No cage, food, accessories, floor, scenery or cast shadow. Keep actual PNG alpha transparency outside the object. No white background, no simulated checkerboard, no text, numbers, branding, labels or cast shadow. Center the complete object with empty transparent padding.",
+        "alpha": "Make the background transparent. Remove the checkerboard pattern entirely; it is an unwanted background, not part of the laboratory mouse. Keep only the complete laboratory mouse as one isolated cutout. Preserve the matte illustration and thin dark outlines. Return a transparent PNG with an actual alpha channel. Do not draw transparency squares.",
+        "alpha_retry": "Remove the background and the entire glow around the object. Transparent PNG cutout, clean silhouette, no shadow."
+      }
+    }
+  ]
+}

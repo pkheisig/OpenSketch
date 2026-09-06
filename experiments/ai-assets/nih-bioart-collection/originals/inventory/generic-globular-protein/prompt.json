@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a generic globular protein, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One compact folded protein glyph, a rounded asymmetrical teal form about as wide as tall, with five broad softly connected surface lobes forming a single continuous object. Smooth matte filled shape with subtle shading and three faint curved internal contour marks suggesting folds. No defined binding pocket, no attached ligand, no long loops, no chain of separate domains, no ribbon arrows, no atomic spheres, no membrane or other protein. Generic protein archetype, no specific sequence or molecular structure implied. Thin dark teal outline, restrained gradients and small highlights, transparent background.",
+  "style_refinement": "Refine image 1 into image 2's smooth biomedical protein-cartoon style, using image 2 for style only. Keep ONE compact rounded asymmetrical globular protein. Simplify its many small bumpy surface features into five broad smoothly connected lobes and three faint curved internal fold marks. Remove grainy texture and deep grooves that make lobes look like separate subunits. Use matte teal filled forms, thin crisp dark outlines, restrained gradients and small highlights. No defined binding pocket, no ligand, no extra protein or domain chain. Complete isolated object with generous transparent padding.",
+  "style_reference": "png/igg-antibody-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-f611cc96-3c56-435c-b76a-5bb5a8f01a91.png",
+  "archetype": "Generic compact folded globular protein glyph. Surface lobes indicate arbitrary folds, not oligomeric subunits, named domains, sequence or a specific atomic structure.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "generic-globular-protein",
+  "name": "generic globular protein",
+  "original": "originals/inventory/generic-globular-protein/generated.png",
+  "original_sha256": "1a5a907970ef761bb0d9fafd3a8e5ca151cdb550d07e36ab83894cbc9173f093"
+}

@@ -2173,13 +2173,13 @@ test("treats an imported SVG as one atomic canvas object", async ({ page }) => {
   await expect(page.locator(".layers-title small")).toHaveText("1");
 });
 
-test("enters imported SVG vector editing and selects a nested part", async ({ page }) => {
+test("edits broad SVG components without drilling into their descendants", async ({ page }) => {
   await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByRole("tab", { name: "Imports", exact: true }).click();
   await page
     .locator('input[type="file"][accept*="image/svg+xml"]')
-    .setInputFiles("tests/fixtures/nested-groups.svg");
+    .setInputFiles("tests/fixtures/broad-components.svg");
   await expect(page.locator(".layers-title small")).toHaveText("1");
 
   const center = await artboardPoint(page);
@@ -2190,9 +2190,33 @@ test("enters imported SVG vector editing and selects a nested part", async ({ pa
   await page.mouse.click(center.x, center.y);
   await ensureEditorOpen(page);
   await expect(page.locator(".svg-part-context")).toContainText("Inside");
+  await expect(page.locator(".inspector-header h2")).toHaveText("Component: Nucleus");
+  await page.mouse.dblclick(center.x, center.y);
+  await page.mouse.dblclick(center.x, center.y);
+  await expect(vectorBanner).toBeVisible();
+  await expect(page.locator(".inspector-header h2")).toHaveText("Component: Nucleus");
 
+  await page.getByRole("button", { name: "Choose palette…", exact: true }).click();
+  await page.getByRole("button", { name: "Blue", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Blue", exact: true })).toHaveAttribute(
+    "aria-pressed",
+    "true"
+  );
+  await page.keyboard.press("Escape");
   await page.locator(".svg-part-context").getByRole("button", { name: "Done" }).click();
   await expect(vectorBanner).toHaveCount(0);
+  await page.getByRole("button", { name: "Back to projects", exact: true }).click();
+  await page.getByRole("button", { name: "Untitled figure" }).click();
+  const restoredCenter = await artboardPoint(page);
+  await page.mouse.dblclick(restoredCenter.x, restoredCenter.y);
+  await page.mouse.click(restoredCenter.x, restoredCenter.y);
+  await ensureEditorOpen(page);
+  await expect(page.locator(".inspector-header h2")).toHaveText("Component: Nucleus");
+  await page.getByRole("button", { name: "Choose palette…", exact: true }).click();
+  await expect(page.getByRole("button", { name: "Blue", exact: true })).toHaveAttribute(
+    "aria-pressed",
+    "true"
+  );
 });
 
 test("double-clicks through overlapping objects and into grouped children", async ({ page }) => {
@@ -5015,27 +5039,29 @@ test("renders and persists complex NIH illustrations without losing their colors
 test("treats a bundled biological SVG as one atomic canvas object", async ({ page }) => {
   await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
-  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
-  await page.getByRole("button", { name: "Insert T Cell", exact: true }).first().click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T lymphocyte");
+  await page.getByRole("button", { name: "Insert T lymphocyte", exact: true }).first().click();
   await page.getByRole("button", { name: "Edit", exact: true }).click();
-  await expect(page.locator(".inspector-header h2")).toHaveText("T Cell");
+  await expect(page.locator(".inspector-header h2")).toHaveText("T lymphocyte");
   await expect(page.getByRole("button", { name: "Ungroup", exact: true })).toHaveCount(0);
   const center = await artboardPoint(page);
   await page.mouse.dblclick(center.x, center.y);
   await expect(page.getByRole("status").filter({ hasText: "Editing a group" })).toHaveCount(0);
   await expect(page.getByText("Edit individual parts", { exact: true })).toHaveCount(0);
   await ensureLayersOpen(page);
-  await expect(page.locator(".layer-list > button").filter({ hasText: "T Cell" })).toHaveCount(1);
+  await expect(
+    page.locator(".layer-list > button").filter({ hasText: "T lymphocyte" })
+  ).toHaveCount(1);
 
   await page.getByRole("button", { name: "Back to projects" }).click();
   await page.getByRole("button", { name: "Untitled figure" }).click();
   const restoredCenter = await artboardPoint(page);
   await page.mouse.click(restoredCenter.x, restoredCenter.y);
   await page.getByRole("button", { name: "Edit", exact: true }).click();
-  await expect(page.locator(".inspector-header h2")).toHaveText("T Cell");
+  await expect(page.locator(".inspector-header h2")).toHaveText("T lymphocyte");
   await ensureLayersOpen(page);
-  await page.locator(".layer-list > button").filter({ hasText: "T Cell" }).click();
-  await expect(page.locator(".inspector-header h2")).toHaveText("T Cell");
+  await page.locator(".layer-list > button").filter({ hasText: "T lymphocyte" }).click();
+  await expect(page.locator(".inspector-header h2")).toHaveText("T lymphocyte");
 });
 
 test("shows no synthetic style or variant menu for a single-variant biological asset", async ({

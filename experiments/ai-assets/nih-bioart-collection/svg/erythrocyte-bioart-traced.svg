@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" width="2150" height="2150" viewBox="0 0 2150 2150">
+  <defs>
+    <radialGradient id="rim" cx="45%" cy="28%" r="76%">
+      <stop offset="0" stop-color="#ffaaa0" />
+      <stop offset=".45" stop-color="#ff7b73" />
+      <stop offset=".76" stop-color="#ff505b" />
+      <stop offset="1" stop-color="#d51d3e" />
+    </radialGradient>
+    <radialGradient id="depression" cx="49%" cy="44%" r="56%">
+      <stop offset="0" stop-color="#ed4050" />
+      <stop offset=".64" stop-color="#fa4d59" />
+      <stop offset=".86" stop-color="#ff746e" />
+      <stop offset="1" stop-color="#ff9b8e" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <path id="erythrocyte-membrane" d="M -700 0 A 700 287 0 1 0 700 0 A 700 287 0 1 0 -700 0 Z" transform="translate(1110 1068) rotate(-29)" fill="url(#rim)" stroke="#87172e" stroke-width="7" />
+  <path id="erythrocyte-central-depression" d="M -548 -38 A 548 199 0 1 0 548 -38 A 548 199 0 1 0 -548 -38 Z" transform="translate(1110 1068) rotate(-29)" fill="url(#depression)" />
+</svg>

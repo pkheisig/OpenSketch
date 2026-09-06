@@ -1,0 +1,24 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a nuclear pore complex, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Depict a schematic complete nuclear pore complex alone, without membranes, in oblique three-quarter view with vertical central transport axis. A short broad cylindrical scaffold consists of coaxial upper cytoplasmic ring, middle inner ring and lower nuclear ring; eight equivalent radial scaffold sectors around an open central transport channel, not a long tube. Short flexible cytoplasmic filaments project upward/outward from upper ring. Below lower ring, slender filaments form a tapered open nuclear basket, converging onto a smaller distal terminal ring. Clear asymmetry of short upper filaments versus longer lower basket. Coral and rose ring scaffold, violet filaments and basket, fine plum outlines, matte smooth rounded protein-domain forms and restrained gradients. Simplified structural archetype not atomistic detail; no transport cargo, nucleus, membrane or other molecules. Complete object and all filaments centered on transparent background.",
+  "style_refinement": "Refine image 1 using image 2 only as the style reference. Keep a complete isolated nuclear pore complex with coral/rose ring scaffold, open central channel, purple upper filaments and a tapered lower nuclear basket ending at a small terminal ring. Make the main scaffold SHORTER and wider, approximately half as tall as its diameter, not a long barrel. Preserve an eightfold arrangement: eight evenly spaced main sectors around the ring and exactly eight short cytoplasmic filaments, one per sector, visibly separated. Lower basket strands should be smooth thin filaments, not bead chains. Remove granular molecular surface noise and glossy plastic texture; use clean smooth matte filled shapes, thin crisp plum outlines, gentle gradients matching image 2. Simplify internal scaffold detail so the central opening is readable. No membrane, cargo, labels, shadows, or background glow. Complete all filament tips and ample transparent padding.",
+  "symmetry_refinement": "Correct this pore complex to exactly EIGHT radial sectors, like an eight-slice ring seen in perspective. Rebuild its upper ring as eight equally spaced orange wedge-shaped protein sectors: four sectors along the back half of the ellipse, four along the front half. Each orange sector carries exactly ONE short purple wavy cytoplasmic filament, eight filaments total; foreground filaments may overlap the central opening. Do not add small extra orange wedges between sectors. Keep aligned rose middle/lower scaffold rings underneath, a clearly open central channel, and eight thin purple lower basket strands converging on the small distal ring (rear strands can be partly occluded). Preserve smooth coral/violet illustration style and fine outlines, complete object and transparent padding. This is a schematic eightfold assembly, not an atomistic molecular reconstruction. No text, membranes or cargo.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-cfb82b9b-b46f-4a56-aac9-17c28dce0314.png",
+  "structure_references": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC9348906/"
+  ],
+  "archetype": "Simplified nuclear pore complex with eight radial upper sectors and filaments, scaffold rings and a tapered nuclear basket. Six basket strands visible in projection; rear strands occluded. Not an atomistic reconstruction.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "nuclear-pore-complex",
+  "name": "nuclear pore complex",
+  "original": "originals/inventory/nuclear-pore-complex/generated.png",
+  "original_sha256": "b8c38aa754538b50c24764e21ec8a37a9883507fc04785ba98341f3c5ef6121a"
+}

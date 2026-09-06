@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an antibody-drug conjugate, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Edit the supplied corrected IgG-like antibody: preserve the Y shape and domain/hinge organization, recolor BOTH variable-domain tip pairs to the same teal hue so it is a conventional single-specificity antibody. Add FOUR small coral-red drug payload glyphs, each a compact rounded hexagon attached by a short thin gold linker to the OUTER surface of a blue constant domain: one below each Fab arm and one beside each side of the Fc stem. Payloads much smaller than one antibody domain, clearly attached, not floating antigens at binding tips. No extra arms, no bottom Fc disulfide bridge, no labels or chemical formulas. Same smooth matte biomedical domain-cartoon style and restrained gradients. Schematic conjugation sites and drug load, not a named ADC. Transparent PNG background.",
+  "reference": "png/bispecific-antibody-bioart-transparent.png",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-37839fc5-4586-4bae-b6bf-d84ad1f6a802.png",
+  "archetype": "Generic ADC with four attached payload glyphs. Conjugation sites, linker chemistry and load are illustrative; glycans omitted, no particular drug claimed.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "antibody-drug-conjugate",
+  "name": "antibody-drug conjugate",
+  "original": "originals/inventory/antibody-drug-conjugate/generated.png",
+  "original_sha256": "bbc41a38e77eb63fdfaa78dd0c09ae9c352ecfd9eed123690783340fb0da2ec1"
+}

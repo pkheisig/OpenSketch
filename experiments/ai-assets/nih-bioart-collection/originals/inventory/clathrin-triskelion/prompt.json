@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a clathrin triskelion, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One isolated three-legged clathrin triskelion in oblique top view. Exactly THREE long curved bent heavy-chain legs radiate from a small shared central vertex, each with a proximal straight-ish segment, a bend, an extended gently curved distal segment and a small rounded terminal domain. Legs arranged about 120 degrees apart into a three-armed pinwheel, open spaces between, no branches and no fourth leg. Brown-gold heavy chains, with one short pale cream light-chain accent running along each proximal segment near the vertex. Smooth matte protein cartoon, thin crisp dark brown outlines, restrained subtle gradients and highlights. No clathrin cage, vesicle, membrane or extra triskelions. Schematic architecture, not atomic domain counts. Transparent background.",
+  "style_refinement": "Refine this clathrin triskelion into smooth NIH BioArt protein cartoon style. Preserve exactly three bent legs meeting at a central vertex, each with a small terminal domain and one short cream light-chain accent along its proximal segment. Replace all lumpy atomic-surface texture with smooth continuous brown-gold legs of gently varying width, one clear elbow bend each and a smooth compact terminal domain. Thin crisp dark-brown contours, matte filled forms, restrained gradients and highlights. Keep three arms and three terminal domains fully inside frame with generous padding. No cage, membrane or extra components. Transparent background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-a1f77369-87c6-4f72-8690-1320fcc5f8de.png",
+  "archetype": "Clathrin triskelion with three heavy-chain legs and three light-chain accents. Terminal lobes and leg curvature schematic, not domain stoichiometry.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "clathrin-triskelion",
+  "name": "clathrin triskelion",
+  "original": "originals/inventory/clathrin-triskelion/generated.png",
+  "original_sha256": "dfded9114b7454e2cdc40e5037875acb2b453d28953139b08ad904966069f0cc"
+}

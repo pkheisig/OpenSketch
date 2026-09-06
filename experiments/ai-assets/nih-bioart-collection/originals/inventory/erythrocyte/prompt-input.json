@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "svg_source": "originals/inventory/erythrocyte/editable-vector.svg",
+  "vector_method": "Editable contours and radial gradients reconstructed from approved PNG after automatic tracing lost the smooth shading.",
+  "generation": "Create one isolated human erythrocyte, a mature red blood cell, as a transparent-background PNG in the supplied NIH BioArt illustration style. Complete smooth biconcave disk seen in a slightly oblique three-quarter view, with a shallow central depression and thick rounded rim. Saturated warm coral-red, burgundy thin outline and subtle salmon highlights. Clean polished matte scientific illustration with smooth forms and restrained pseudo-3D shading, consistent with the approved collection. No nucleus, no organelles, no hole through the center. Single complete cell centered with generous transparent padding, no other cells, text, labels, arrows, border, scenery, cast shadow, glow or checkerboard.",
+  "style_refinement": "Redraw red blood cell image 1 in the clean matte NIH BioArt illustration style of image 2 (style reference only, do not copy its cell components). Preserve one isolated coral-red erythrocyte in oblique view, but make it a thin biconcave disk with a shallow central depression and rounded rim, not a deep bowl or ring with a hole. Smooth coral/salmon fills, crisp thin burgundy outline, gentle shaded depth; remove photorealistic grain, strong highlights and glow. No nucleus or organelles, no text, no additional objects. Complete centered cell, genuinely transparent background.",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-900eb691-db4f-4e14-911c-40a67113eb49.png"
+}

@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of trophoblast, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Represent ONE mononuclear villous cytotrophoblast, a rounded polygonal epithelial cell seen in a three-quarter cutaway showing one large oval purple nucleus with one nucleolus, warm coral-peach cytoplasm, modest curved endoplasmic reticulum, a small Golgi stack and several small mitochondria. Smooth epithelial perimeter with very sparse short surface projections, no long cilia, no branching processes, no fused neighboring cells. Restrained matte illustrated surfaces, thin crisp colored outlines, smooth vector-like filled forms, subtle gradients, not photographic, no dramatic glossy lighting. Entire cell comfortably within canvas.",
+  "style_refinement": "Refine image 1 into the same illustration style as image 2, using image 2 ONLY as a style reference. Keep image 1's single mononuclear cytotrophoblast and intrinsic components. Simplify the glossy photoreal texture into clean smooth matte filled forms with thin crisp outlines, restrained soft gradients and subtle highlights, at exactly the visual-detail level of image 2. Use a gently polygonal epithelial contour and reduce surface projections. Retain one purple oval nucleus and nucleolus, modest blue endoplasmic reticulum, small green Golgi, a few orange mitochondria. Reduce oversized rough ER to leave ample visible coral cytoplasm. Do not copy image 2's composition or add cells. Complete centered object with generous transparent padding; no text, labels, shadows, scenery, or border.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-bee15a04-c207-4884-ac03-cf3a451e02ac.png",
+  "archetype": "Single mononuclear villous cytotrophoblast, not syncytiotrophoblast.",
+  "structure_references": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC4653227/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "trophoblast",
+  "name": "trophoblast",
+  "original": "originals/inventory/trophoblast/generated.png",
+  "original_sha256": "37cf2948126a4635383100cfc9244eb14aae94716578837b55da521508a6c431"
+}

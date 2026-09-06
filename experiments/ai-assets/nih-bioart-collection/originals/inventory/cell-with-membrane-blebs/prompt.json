@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a cell with membrane blebs, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. ONE rounded generic mammalian cell with four obvious smooth hemispherical membrane blebs of varied size attached by short broad necks to its outer contour. Blebs contain the same cytoplasm and form part of one continuous membrane, not separate cells or detached vesicles. Main body contains one intact violet oval nucleus with one nucleolus, modest blue ER, one small coral Golgi and a few orange mitochondria. Peach cytoplasm and pink membrane. No fragmented chromatin, no rupture, no free debris, no protruding filopodia, no surrounding cells. Illustrate membrane shape without claiming a particular cause of blebbing. Clean smooth matte filled forms, crisp thin colored outlines and subtle restrained gradients. Complete object centered with generous transparent margin.",
+  "style_refinement": "Refine image 1 using image 2 ONLY as style reference. Keep one main cell with one intact purple nucleus. Correct the four blebs: make them smaller smooth hemispherical bulges attached by short broad necks, each about one fifth of main-cell diameter, containing plain shared cytoplasm without mitochondria or ER inside the bulges. Keep the main cell rounded and dominant; this must not resemble four daughter cells connected by stalks. Main body retains modest blue ER, coral Golgi and orange mitochondria. Replace photoreal grain, wet gloss and surrounding color with smooth matte fills, crisp thin colored outlines and subtle gradients matching image 2. Complete isolated cell with generous transparent margin, no fragmented nucleus, debris, text, labels, arrows, border or cast shadow.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-0496d87c-9aac-4e10-a43d-16608c7adbad.png",
+  "archetype": "Membrane-blebbing cell with an intact nucleus. Blebbing cause and viability are deliberately unspecified.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "cell-with-membrane-blebs",
+  "name": "cell with membrane blebs",
+  "original": "originals/inventory/cell-with-membrane-blebs/generated.png",
+  "original_sha256": "3f271e9b38076b5924d19a1d1fd451a4b16c15e55e6d6277d77ceb1101318dcd"
+}

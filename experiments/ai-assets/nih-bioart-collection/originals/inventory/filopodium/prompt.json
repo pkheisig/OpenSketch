@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a filopodium, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One long slender finger-like cell-membrane protrusion with a rounded closed distal tip and a small flared base continuous with a cropped-but-fully-outlined curved patch of parent-cell membrane. Oblique near-horizontal view. A narrow front cutaway in the pale lavender membrane reveals a tightly packed parallel bundle of six thin rose actin filaments extending from the base toward the distal tip. Sparse short gold cross-link bars join adjacent filaments. Tip remains capped by intact membrane; filaments do not project outside. No microtubules, nucleus, organelles, extra fingers or whole cell. Smooth matte NIH BioArt cell-structure style, thin crisp purple outlines, subtle gradients, restrained highlights; actin bundle count illustrative. Transparent background.",
+  "style_refinement": "Refine this filopodium into smooth matte biomedical cartoon style. Keep the exact topology: one slender membrane finger with closed rounded tip, flared small parent-cell membrane base, and front cutaway showing parallel rose actin bundles with sparse gold crosslinks. Replace rough translucent membrane texture with smooth pale lavender fill, subtle broad shading and crisp thin purple outlines. Simplify pearl-like highlights on actin into fine beaded filament contours with restrained depth. No new filaments or objects, no microtubules or labels. Whole object complete, generous transparent padding, no glow.",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-ad860cc5-e80b-4ff7-9878-946bf4eaed9c.png",
+  "archetype": "Single filopodium cutaway with parallel actin bundle, sparse crosslinks and a small parent membrane patch. Filament number and beading are schematic.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "filopodium",
+  "name": "filopodium",
+  "original": "originals/inventory/filopodium/generated.png",
+  "original_sha256": "7ef97d11df2f3e7ab9e51be2f75c968da05fae15cf7b007b0712c52422432da6"
+}

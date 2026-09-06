@@ -1,0 +1,1064 @@
+{
+  "algorithm": "broad-solid-region-v1",
+  "date": "2026-09-05",
+  "scope": "211 current generated SVG derivatives; fresh insertion; Chromium",
+  "note": "Eligibility requires a solid oval or rectangular region, spatial containment, no stranded contour in another compound path, and rendered appearance preservation; it is not anatomical validation. Uncertain assets remain whole. Approved source SVGs are unchanged.",
+  "accepted": 5,
+  "assets": [
+    {
+      "title": "T lymphocyte",
+      "parts": 0,
+      "paths": 617
+    },
+    {
+      "title": "activated T lymphocyte",
+      "parts": 0,
+      "paths": 2552
+    },
+    {
+      "title": "natural killer cell",
+      "parts": 0,
+      "paths": 2034
+    },
+    {
+      "title": "plasma cell",
+      "parts": 0,
+      "paths": 2115
+    },
+    {
+      "title": "monocyte",
+      "parts": 0,
+      "paths": 1354
+    },
+    {
+      "title": "macrophage",
+      "parts": 0,
+      "paths": 1387
+    },
+    {
+      "title": "dendritic cell",
+      "parts": 0,
+      "paths": 954
+    },
+    {
+      "title": "plasmacytoid dendritic cell",
+      "parts": 0,
+      "paths": 2858
+    },
+    {
+      "title": "neutrophil",
+      "parts": 0,
+      "paths": 1004
+    },
+    {
+      "title": "eosinophil",
+      "parts": 0,
+      "paths": 2733
+    },
+    {
+      "title": "basophil",
+      "parts": 0,
+      "paths": 1656
+    },
+    {
+      "title": "mast cell",
+      "parts": 2,
+      "paths": 951
+    },
+    {
+      "title": "erythrocyte",
+      "parts": 0,
+      "paths": 279
+    },
+    {
+      "title": "platelet",
+      "parts": 3,
+      "paths": 672
+    },
+    {
+      "title": "megakaryocyte",
+      "parts": 0,
+      "paths": 1261
+    },
+    {
+      "title": "hematopoietic stem/progenitor cell",
+      "parts": 0,
+      "paths": 667
+    },
+    {
+      "title": "generic epithelial cell",
+      "parts": 0,
+      "paths": 1845
+    },
+    {
+      "title": "columnar epithelial cell",
+      "parts": 0,
+      "paths": 870
+    },
+    {
+      "title": "ciliated epithelial cell",
+      "parts": 0,
+      "paths": 1630
+    },
+    {
+      "title": "goblet cell",
+      "parts": 0,
+      "paths": 1002
+    },
+    {
+      "title": "keratinocyte",
+      "parts": 0,
+      "paths": 1700
+    },
+    {
+      "title": "melanocyte",
+      "parts": 0,
+      "paths": 748
+    },
+    {
+      "title": "endothelial cell",
+      "parts": 0,
+      "paths": 1081
+    },
+    {
+      "title": "fibroblast",
+      "parts": 0,
+      "paths": 1296
+    },
+    {
+      "title": "adipocyte",
+      "parts": 0,
+      "paths": 627
+    },
+    {
+      "title": "chondrocyte",
+      "parts": 0,
+      "paths": 2804
+    },
+    {
+      "title": "osteoblast",
+      "parts": 0,
+      "paths": 2803
+    },
+    {
+      "title": "osteoclast",
+      "parts": 0,
+      "paths": 1640
+    },
+    {
+      "title": "osteocyte",
+      "parts": 0,
+      "paths": 1048
+    },
+    {
+      "title": "skeletal muscle fiber",
+      "parts": 0,
+      "paths": 774
+    },
+    {
+      "title": "cardiomyocyte",
+      "parts": 0,
+      "paths": 711
+    },
+    {
+      "title": "smooth muscle cell",
+      "parts": 0,
+      "paths": 257
+    },
+    {
+      "title": "neuron",
+      "parts": 0,
+      "paths": 478
+    },
+    {
+      "title": "astrocyte",
+      "parts": 0,
+      "paths": 1079
+    },
+    {
+      "title": "oligodendrocyte",
+      "parts": 0,
+      "paths": 513
+    },
+    {
+      "title": "microglial cell",
+      "parts": 0,
+      "paths": 666
+    },
+    {
+      "title": "Schwann cell",
+      "parts": 0,
+      "paths": 854
+    },
+    {
+      "title": "hepatocyte",
+      "parts": 0,
+      "paths": 3147
+    },
+    {
+      "title": "pancreatic beta cell",
+      "parts": 0,
+      "paths": 2198
+    },
+    {
+      "title": "acinar cell",
+      "parts": 0,
+      "paths": 2797
+    },
+    {
+      "title": "podocyte",
+      "parts": 0,
+      "paths": 914
+    },
+    {
+      "title": "renal tubular epithelial cell",
+      "parts": 2,
+      "paths": 1649
+    },
+    {
+      "title": "sperm cell",
+      "parts": 0,
+      "paths": 121
+    },
+    {
+      "title": "oocyte",
+      "parts": 0,
+      "paths": 1560
+    },
+    {
+      "title": "trophoblast",
+      "parts": 0,
+      "paths": 1496
+    },
+    {
+      "title": "generic stem cell",
+      "parts": 2,
+      "paths": 926
+    },
+    {
+      "title": "generic cancer cell",
+      "parts": 0,
+      "paths": 1607
+    },
+    {
+      "title": "multinucleated giant cell",
+      "parts": 0,
+      "paths": 1109
+    },
+    {
+      "title": "mitotic cell",
+      "parts": 0,
+      "paths": 1609
+    },
+    {
+      "title": "cytokinetic cell",
+      "parts": 0,
+      "paths": 940
+    },
+    {
+      "title": "apoptotic cell",
+      "parts": 0,
+      "paths": 936
+    },
+    {
+      "title": "necrotic cell",
+      "parts": 0,
+      "paths": 1538
+    },
+    {
+      "title": "senescent cell",
+      "parts": 0,
+      "paths": 1571
+    },
+    {
+      "title": "polarized migrating cell",
+      "parts": 0,
+      "paths": 1393
+    },
+    {
+      "title": "adherent spread cell",
+      "parts": 0,
+      "paths": 1703
+    },
+    {
+      "title": "rounded suspension cell",
+      "parts": 0,
+      "paths": 1960
+    },
+    {
+      "title": "cell with membrane blebs",
+      "parts": 0,
+      "paths": 1352
+    },
+    {
+      "title": "phagocytic cell engulfing a particle",
+      "parts": 0,
+      "paths": 1542
+    },
+    {
+      "title": "cell spheroid",
+      "parts": 0,
+      "paths": 1211
+    },
+    {
+      "title": "organoid",
+      "parts": 0,
+      "paths": 1441
+    },
+    {
+      "title": "nucleus",
+      "parts": 0,
+      "paths": 2203
+    },
+    {
+      "title": "nucleolus",
+      "parts": 0,
+      "paths": 3267
+    },
+    {
+      "title": "nuclear envelope",
+      "parts": 0,
+      "paths": 1460
+    },
+    {
+      "title": "nuclear pore complex",
+      "parts": 0,
+      "paths": 1635
+    },
+    {
+      "title": "mitochondrion",
+      "parts": 0,
+      "paths": 1466
+    },
+    {
+      "title": "Golgi apparatus",
+      "parts": 0,
+      "paths": 972
+    },
+    {
+      "title": "rough endoplasmic reticulum",
+      "parts": 0,
+      "paths": 1348
+    },
+    {
+      "title": "smooth endoplasmic reticulum",
+      "parts": 0,
+      "paths": 617
+    },
+    {
+      "title": "lysosome",
+      "parts": 0,
+      "paths": 1989
+    },
+    {
+      "title": "early endosome",
+      "parts": 0,
+      "paths": 895
+    },
+    {
+      "title": "late endosome",
+      "parts": 0,
+      "paths": 2621
+    },
+    {
+      "title": "peroxisome",
+      "parts": 0,
+      "paths": 660
+    },
+    {
+      "title": "autophagosome",
+      "parts": 0,
+      "paths": 1039
+    },
+    {
+      "title": "phagosome",
+      "parts": 0,
+      "paths": 1321
+    },
+    {
+      "title": "transport vesicle",
+      "parts": 0,
+      "paths": 2722
+    },
+    {
+      "title": "secretory vesicle",
+      "parts": 0,
+      "paths": 2450
+    },
+    {
+      "title": "exosome",
+      "parts": 0,
+      "paths": 2190
+    },
+    {
+      "title": "ribosome",
+      "parts": 0,
+      "paths": 1000
+    },
+    {
+      "title": "proteasome",
+      "parts": 0,
+      "paths": 636
+    },
+    {
+      "title": "centrosome",
+      "parts": 0,
+      "paths": 1097
+    },
+    {
+      "title": "centriole pair",
+      "parts": 0,
+      "paths": 850
+    },
+    {
+      "title": "mitotic spindle",
+      "parts": 0,
+      "paths": 262
+    },
+    {
+      "title": "microtubule",
+      "parts": 0,
+      "paths": 768
+    },
+    {
+      "title": "actin filament",
+      "parts": 0,
+      "paths": 524
+    },
+    {
+      "title": "intermediate filament",
+      "parts": 0,
+      "paths": 646
+    },
+    {
+      "title": "cilium",
+      "parts": 0,
+      "paths": 538
+    },
+    {
+      "title": "primary cilium",
+      "parts": 0,
+      "paths": 309
+    },
+    {
+      "title": "motile cilium bundle",
+      "parts": 0,
+      "paths": 728
+    },
+    {
+      "title": "eukaryotic flagellum",
+      "parts": 0,
+      "paths": 242
+    },
+    {
+      "title": "lipid droplet",
+      "parts": 0,
+      "paths": 1152
+    },
+    {
+      "title": "glycogen granule",
+      "parts": 0,
+      "paths": 3334
+    },
+    {
+      "title": "stress granule",
+      "parts": 0,
+      "paths": 1555
+    },
+    {
+      "title": "P-body",
+      "parts": 0,
+      "paths": 2870
+    },
+    {
+      "title": "plasma membrane segment",
+      "parts": 0,
+      "paths": 1471
+    },
+    {
+      "title": "lipid bilayer cross-section",
+      "parts": 0,
+      "paths": 600
+    },
+    {
+      "title": "membrane raft",
+      "parts": 0,
+      "paths": 2362
+    },
+    {
+      "title": "clathrin-coated pit",
+      "parts": 0,
+      "paths": 1903
+    },
+    {
+      "title": "clathrin-coated vesicle",
+      "parts": 0,
+      "paths": 1858
+    },
+    {
+      "title": "caveola",
+      "parts": 0,
+      "paths": 2919
+    },
+    {
+      "title": "tight junction",
+      "parts": 0,
+      "paths": 1906
+    },
+    {
+      "title": "adherens junction",
+      "parts": 0,
+      "paths": 1720
+    },
+    {
+      "title": "desmosome",
+      "parts": 0,
+      "paths": 1743
+    },
+    {
+      "title": "hemidesmosome",
+      "parts": 0,
+      "paths": 1199
+    },
+    {
+      "title": "gap junction",
+      "parts": 0,
+      "paths": 1291
+    },
+    {
+      "title": "focal adhesion",
+      "parts": 0,
+      "paths": 1639
+    },
+    {
+      "title": "immunological synapse",
+      "parts": 0,
+      "paths": 978
+    },
+    {
+      "title": "neuronal synapse",
+      "parts": 0,
+      "paths": 769
+    },
+    {
+      "title": "neuromuscular junction",
+      "parts": 0,
+      "paths": 1941
+    },
+    {
+      "title": "filopodium",
+      "parts": 0,
+      "paths": 556
+    },
+    {
+      "title": "lamellipodium",
+      "parts": 0,
+      "paths": 2038
+    },
+    {
+      "title": "microvilli",
+      "parts": 0,
+      "paths": 889
+    },
+    {
+      "title": "stereocilia",
+      "parts": 0,
+      "paths": 551
+    },
+    {
+      "title": "generic IgG antibody",
+      "parts": 0,
+      "paths": 499
+    },
+    {
+      "title": "antibody Fab fragment",
+      "parts": 0,
+      "paths": 237
+    },
+    {
+      "title": "antibody Fc fragment",
+      "parts": 0,
+      "paths": 552
+    },
+    {
+      "title": "bispecific antibody",
+      "parts": 0,
+      "paths": 662
+    },
+    {
+      "title": "antibody-drug conjugate",
+      "parts": 0,
+      "paths": 587
+    },
+    {
+      "title": "nanobody / VHH",
+      "parts": 0,
+      "paths": 405
+    },
+    {
+      "title": "T-cell receptor alpha-beta heterodimer",
+      "parts": 0,
+      "paths": 448
+    },
+    {
+      "title": "CD4 receptor",
+      "parts": 0,
+      "paths": 242
+    },
+    {
+      "title": "CD8 alpha-beta receptor",
+      "parts": 0,
+      "paths": 693
+    },
+    {
+      "title": "B-cell receptor",
+      "parts": 0,
+      "paths": 427
+    },
+    {
+      "title": "MHC class I",
+      "parts": 0,
+      "paths": 592
+    },
+    {
+      "title": "MHC class II",
+      "parts": 0,
+      "paths": 1135
+    },
+    {
+      "title": "peptide-MHC class I complex",
+      "parts": 0,
+      "paths": 979
+    },
+    {
+      "title": "peptide-MHC class II complex",
+      "parts": 0,
+      "paths": 1348
+    },
+    {
+      "title": "streptavidin tetramer",
+      "parts": 0,
+      "paths": 1980
+    },
+    {
+      "title": "single-pass immunoglobulin-like receptor",
+      "parts": 0,
+      "paths": 278
+    },
+    {
+      "title": "multi-domain immunoglobulin-like receptor",
+      "parts": 0,
+      "paths": 348
+    },
+    {
+      "title": "homodimeric cytokine receptor",
+      "parts": 0,
+      "paths": 798
+    },
+    {
+      "title": "heterodimeric cytokine receptor",
+      "parts": 0,
+      "paths": 357
+    },
+    {
+      "title": "receptor tyrosine kinase dimer",
+      "parts": 0,
+      "paths": 531
+    },
+    {
+      "title": "generic globular protein",
+      "parts": 0,
+      "paths": 665
+    },
+    {
+      "title": "generic enzyme",
+      "parts": 0,
+      "paths": 594
+    },
+    {
+      "title": "enzyme-substrate complex",
+      "parts": 0,
+      "paths": 434
+    },
+    {
+      "title": "protein homodimer",
+      "parts": 0,
+      "paths": 393
+    },
+    {
+      "title": "protein heterodimer",
+      "parts": 0,
+      "paths": 192
+    },
+    {
+      "title": "tetrameric protein complex",
+      "parts": 0,
+      "paths": 224
+    },
+    {
+      "title": "ring-shaped protein complex",
+      "parts": 0,
+      "paths": 677
+    },
+    {
+      "title": "coiled-coil protein",
+      "parts": 0,
+      "paths": 359
+    },
+    {
+      "title": "intrinsically disordered protein",
+      "parts": 0,
+      "paths": 1149
+    },
+    {
+      "title": "ATP synthase",
+      "parts": 0,
+      "paths": 760
+    },
+    {
+      "title": "collagen triple helix",
+      "parts": 0,
+      "paths": 516
+    },
+    {
+      "title": "collagen fibril",
+      "parts": 0,
+      "paths": 1914
+    },
+    {
+      "title": "clathrin triskelion",
+      "parts": 0,
+      "paths": 329
+    },
+    {
+      "title": "ubiquitin",
+      "parts": 0,
+      "paths": 844
+    },
+    {
+      "title": "laboratory mouse",
+      "parts": 0,
+      "paths": 745
+    },
+    {
+      "title": "micropipette",
+      "parts": 0,
+      "paths": 222
+    },
+    {
+      "title": "multichannel micropipette",
+      "parts": 0,
+      "paths": 251
+    },
+    {
+      "title": "electronic pipette",
+      "parts": 0,
+      "paths": 128
+    },
+    {
+      "title": "pipette tip",
+      "parts": 0,
+      "paths": 227
+    },
+    {
+      "title": "filtered pipette tip",
+      "parts": 0,
+      "paths": 444
+    },
+    {
+      "title": "serological pipette",
+      "parts": 0,
+      "paths": 169
+    },
+    {
+      "title": "Pasteur pipette",
+      "parts": 0,
+      "paths": 290
+    },
+    {
+      "title": "microcentrifuge tube",
+      "parts": 0,
+      "paths": 502
+    },
+    {
+      "title": "screw-cap microtube",
+      "parts": 0,
+      "paths": 216
+    },
+    {
+      "title": "PCR tube",
+      "parts": 0,
+      "paths": 461
+    },
+    {
+      "title": "PCR strip",
+      "parts": 0,
+      "paths": 625
+    },
+    {
+      "title": "cryovial",
+      "parts": 0,
+      "paths": 281
+    },
+    {
+      "title": "15 mL conical tube",
+      "parts": 0,
+      "paths": 242
+    },
+    {
+      "title": "50 mL conical tube",
+      "parts": 0,
+      "paths": 313
+    },
+    {
+      "title": "blood collection tube",
+      "parts": 0,
+      "paths": 218
+    },
+    {
+      "title": "reagent vial",
+      "parts": 0,
+      "paths": 453
+    },
+    {
+      "title": "glass ampoule",
+      "parts": 0,
+      "paths": 232
+    },
+    {
+      "title": "glass beaker",
+      "parts": 0,
+      "paths": 1087
+    },
+    {
+      "title": "graduated cylinder",
+      "parts": 2,
+      "paths": 420
+    },
+    {
+      "title": "Erlenmeyer flask",
+      "parts": 0,
+      "paths": 443
+    },
+    {
+      "title": "volumetric flask",
+      "parts": 0,
+      "paths": 383
+    },
+    {
+      "title": "round-bottom flask",
+      "parts": 0,
+      "paths": 264
+    },
+    {
+      "title": "separatory funnel",
+      "parts": 0,
+      "paths": 264
+    },
+    {
+      "title": "B\u00fcchner funnel",
+      "parts": 0,
+      "paths": 166
+    },
+    {
+      "title": "reagent bottle",
+      "parts": 0,
+      "paths": 449
+    },
+    {
+      "title": "media bottle",
+      "parts": 0,
+      "paths": 823
+    },
+    {
+      "title": "wash bottle",
+      "parts": 0,
+      "paths": 76
+    },
+    {
+      "title": "cuvette",
+      "parts": 0,
+      "paths": 419
+    },
+    {
+      "title": "quartz cuvette",
+      "parts": 0,
+      "paths": 325
+    },
+    {
+      "title": "microscope slide",
+      "parts": 0,
+      "paths": 266
+    },
+    {
+      "title": "coverslip",
+      "parts": 0,
+      "paths": 159
+    },
+    {
+      "title": "Petri dish",
+      "parts": 0,
+      "paths": 467
+    },
+    {
+      "title": "cell culture dish",
+      "parts": 0,
+      "paths": 367
+    },
+    {
+      "title": "cell culture flask",
+      "parts": 0,
+      "paths": 1133
+    },
+    {
+      "title": "spinner flask",
+      "parts": 0,
+      "paths": 1130
+    },
+    {
+      "title": "roller bottle",
+      "parts": 0,
+      "paths": 533
+    },
+    {
+      "title": "6-well plate",
+      "parts": 0,
+      "paths": 1603
+    },
+    {
+      "title": "12-well plate",
+      "parts": 0,
+      "paths": 1789
+    },
+    {
+      "title": "24-well plate",
+      "parts": 0,
+      "paths": 3093
+    },
+    {
+      "title": "Class II biosafety cabinet",
+      "parts": 0,
+      "paths": 470
+    },
+    {
+      "title": "laminar-flow hood",
+      "parts": 0,
+      "paths": 605
+    },
+    {
+      "title": "CO2 incubator",
+      "parts": 0,
+      "paths": 1073
+    },
+    {
+      "title": "standard laboratory incubator",
+      "parts": 0,
+      "paths": 568
+    },
+    {
+      "title": "hypoxia chamber",
+      "parts": 0,
+      "paths": 1842
+    },
+    {
+      "title": "orbital shaker incubator",
+      "parts": 0,
+      "paths": 1191
+    },
+    {
+      "title": "water bath",
+      "parts": 0,
+      "paths": 504
+    },
+    {
+      "title": "bead bath",
+      "parts": 0,
+      "paths": 950
+    },
+    {
+      "title": "aspirator bottle system",
+      "parts": 0,
+      "paths": 583
+    },
+    {
+      "title": "vacuum pump",
+      "parts": 0,
+      "paths": 492
+    },
+    {
+      "title": "automated cell counter",
+      "parts": 0,
+      "paths": 336
+    },
+    {
+      "title": "manual cell counter",
+      "parts": 0,
+      "paths": 613
+    },
+    {
+      "title": "cell pellet in tube",
+      "parts": 0,
+      "paths": 469
+    },
+    {
+      "title": "confluent cell monolayer",
+      "parts": 0,
+      "paths": 1054
+    },
+    {
+      "title": "isolated adherent cell colony",
+      "parts": 0,
+      "paths": 763
+    },
+    {
+      "title": "isolated axon",
+      "parts": 0,
+      "paths": 529
+    },
+    {
+      "title": "dendritic arbor segment",
+      "parts": 0,
+      "paths": 740
+    },
+    {
+      "title": "myelin sheath",
+      "parts": 0,
+      "paths": 338
+    },
+    {
+      "title": "node of Ranvier",
+      "parts": 0,
+      "paths": 251
+    },
+    {
+      "title": "synaptic vesicle",
+      "parts": 0,
+      "paths": 1375
+    },
+    {
+      "title": "neuronal growth cone",
+      "parts": 0,
+      "paths": 927
+    },
+    {
+      "title": "neutrophil extracellular trap (NET)",
+      "parts": 0,
+      "paths": 1339
+    },
+    {
+      "title": "apoptotic body",
+      "parts": 0,
+      "paths": 702
+    },
+    {
+      "title": "antigen-antibody immune complex",
+      "parts": 0,
+      "paths": 531
+    },
+    {
+      "title": "granuloma",
+      "parts": 0,
+      "paths": 1640
+    }
+  ]
+}

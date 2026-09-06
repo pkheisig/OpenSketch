@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a multichannel micropipette, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Show one manual eight-channel laboratory micropipette in a near-frontal three-quarter view. White ergonomic vertical handle with a blue top plunger, small separate tip-ejector button, a blank dark volume-display window with no numbers, and blue broad lower channel housing. Exactly EIGHT evenly spaced parallel clear pale-blue disposable tapered tips point downward in a straight row, each attached to one nozzle on the same housing. All eight full tips visible, no overlap hiding tips, no liquid droplets, no hands, no rack. Polished smooth vector-like biomedical illustration, matte plastic, fine dark outlines, restrained gradients and small highlights. Transparent background.",
+  "style_review": "Compared with approved micropipette PNG; initial illustration already has matching white/blue forms, fine contours and subtle highlights. No refinement needed.",
+  "background_extraction": "Not needed: generated original RGBA alpha extrema 0..254.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-41d920ae-e666-47cc-9922-45958d53cad7.png",
+  "archetype": "Generic manual eight-channel pipette with exactly eight attached disposable tips; blank display and no brand or calibration markings.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "multichannel-micropipette",
+  "name": "multichannel micropipette",
+  "original": "originals/inventory/multichannel-micropipette/generated.png",
+  "original_sha256": "a745aa4c4a998f570532e059eb4fe44d3e477b6b5e0aec83403ae7ce1dc07e47"
+}

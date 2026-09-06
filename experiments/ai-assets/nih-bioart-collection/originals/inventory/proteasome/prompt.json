@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a proteasome, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Specifically illustrate a 20S proteasome core particle, an upright barrel in three-quarter view showing its top axial opening and side. Exactly four coaxial stacked heptameric protein rings: top alpha ring lavender-purple, second beta ring teal, third beta ring teal, bottom alpha ring lavender-purple. Each ring has seven connected wedge-like organic protein subunits around a central axis; top ring visibly divided into seven sectors with a small central gated opening. All four rows clearly distinguishable; far-side subunits naturally occluded on lower rings. Smooth compact protein surface domains, not lipid bilayer and not separate floating spheres. No regulatory caps, ubiquitin, substrates or released peptides. Restrained matte vector-like gradients, crisp dark colored outlines, subtle soft highlights, no photorealistic grain.",
+  "style_refinement": "Refine image 1 to the smooth matte biomedical illustration style of image 2. Image 2 is style only; do not copy its anatomy. Preserve the proteasome's four stacked protein rings, purple-teal-teal-purple, and central axial opening. Remove mottled granular microtexture and glow; use smooth connected lobed subunits, crisp thin dark colored outlines, restrained gradients and a few soft highlights. Ensure the top ring consists of exactly seven distinct wedge-like subunits around the opening, no extra tiny eighth wedge at the back. Lower rings each have seven subunits with rear units naturally hidden. Keep all four horizontal rows clearly separated, coherent cylindrical barrel, complete object centered with generous transparent padding. No labels, text, substrates, membrane, caps or shadows.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-d8bf663e-cfaf-4870-b5c4-e22246661211.png",
+  "archetype": "Uncapped 20S proteasome core, not the complete 26S regulatory assembly. Four heptameric rings in alpha-beta-beta-alpha order; seven top subunits visible, lower rear subunits occluded. Subunit contours, gating aperture and colors are schematic rather than atomistic.",
+  "structure_references": [
+    "https://rcsb.org/structure/1RYP"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "proteasome",
+  "name": "proteasome",
+  "original": "originals/inventory/proteasome/generated.png",
+  "original_sha256": "b605d631f0f6bba183973efe664e5932adf1f70ca73a543a609a1c179533de2c"
+}

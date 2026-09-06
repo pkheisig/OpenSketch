@@ -1,3 +1,5 @@
+import { isAssetColorRole } from "./assetColorRoles";
+import { validBrushSpec } from "./scientificBrush";
 import { DEFAULT_CANVAS } from "./presets";
 import {
   OpenSketch_FORMAT_VERSION,
@@ -197,10 +199,13 @@ const SCENE_PROPERTIES = new Set([
   "assetSaturation",
   "assetBrightness",
   "assetColorPreset",
+  "assetColorRole",
+  "svgComponent",
   "recognizedGroups",
   "defaultElementStyle",
   "semanticMetadata",
   "semanticRelations",
+  "scientificBrush",
   "particleFieldSpec",
   "semanticConnector"
 ]);
@@ -318,6 +323,8 @@ const SCENE_STRING_PROPERTIES = new Set([
   "familyId",
   "assetTint",
   "assetColorPreset",
+  "assetColorRole",
+  "svgComponent",
   "type"
 ]);
 
@@ -1073,19 +1080,30 @@ function validateCustomProperties(
     "assetSaturation",
     "assetBrightness",
     "assetColorPreset",
+    "assetColorRole",
+    "svgComponent",
     "recognizedGroups",
     "semanticMetadata",
     "semanticRelations",
+    "scientificBrush",
     "particleFieldSpec",
     "semanticConnector",
     "defaultElementStyle"
   ]);
   assertKnownKeys(value, path, allowed);
   for (const [key, item] of Object.entries(value)) {
-    if (
-      ["name", "OpenSketchType", "assetId", "familyId", "assetTint", "assetColorPreset"].includes(
-        key
-      )
+    if (key === "assetColorRole") {
+      if (!isAssetColorRole(item)) fail(`${path}.assetColorRole`, "is invalid");
+    } else if (
+      [
+        "name",
+        "OpenSketchType",
+        "assetId",
+        "familyId",
+        "assetTint",
+        "assetColorPreset",
+        "svgComponent"
+      ].includes(key)
     ) {
       assertString(item, `${path}.${key}`, {
         maxLength: PORTABLE_PROJECT_LIMITS.maxObjectNameLength
@@ -1118,6 +1136,9 @@ function validateCustomProperties(
       validateSemanticMetadata(item, `${path}.${key}`);
     } else if (key === "semanticRelations") {
       validateSemanticRelations(item, `${path}.${key}`);
+    } else if (key === "scientificBrush") {
+      if (!validBrushSpec(item))
+        fail(`${path}.${key}`, "has invalid scientific structure settings");
     } else if (key === "particleFieldSpec") {
       validateParticleFieldSpec(item, `${path}.${key}`);
     } else if (key === "semanticConnector") {
@@ -1455,6 +1476,8 @@ function validateSceneObject(
         assertFiniteNumber(item, `${path}.${key}`, { min: 1, max: 1_000 });
     } else if (key === "crossOrigin") {
       if (item !== null) assertString(item, `${path}.${key}`, { maxLength: 64 });
+    } else if (key === "assetColorRole") {
+      if (!isAssetColorRole(item)) fail(`${path}.assetColorRole`, "is invalid");
     } else if (SCENE_STRING_PROPERTIES.has(key)) {
       if (["objectId", "assetId", "familyId"].includes(key)) {
         assertNonEmptyString(item, `${path}.${key}`, PORTABLE_PROJECT_LIMITS.maxObjectIdLength);
@@ -1474,6 +1497,7 @@ function validateSceneObject(
             "group",
             "shape",
             "text",
+            "scientific-brush",
             "nih-asset",
             "import",
             "upload",
@@ -1568,10 +1592,18 @@ function validateSceneObject(
       validateRecognizedGroups(item, `${path}.${key}`, context);
     } else if (key === "defaultElementStyle") {
       validateStyleSnapshot(item, `${path}.${key}`, context);
+    } else if (key === "scientificBrush") {
+      if (!validBrushSpec(item))
+        fail(`${path}.${key}`, "has invalid scientific structure settings");
     } else if (key === "particleFieldSpec") {
       validateParticleFieldSpec(item, `${path}.${key}`);
     }
   }
+
+  if (value.scientificBrush !== undefined && value.type !== "Group")
+    fail(`${path}.scientificBrush`, "requires a group");
+  if (value.OpenSketchType === "scientific-brush" && !validBrushSpec(value.scientificBrush))
+    fail(`${path}.scientificBrush`, "is required for scientific structures");
 
   if (value.objectId !== undefined) {
     if (typeof value.objectId !== "string") fail(`${path}.objectId`, "is invalid");
@@ -1585,7 +1617,10 @@ function validateSceneObject(
   }
   if (value.OpenSketchType === "connector" && !["Group", "Path"].includes(value.type))
     fail(`${path}.OpenSketchType`, "is invalid for this object type");
-  if (["group", "nih-asset"].includes(String(value.OpenSketchType)) && value.type !== "Group") {
+  if (
+    ["group", "nih-asset", "scientific-brush"].includes(String(value.OpenSketchType)) &&
+    value.type !== "Group"
+  ) {
     fail(`${path}.OpenSketchType`, "is invalid for this object type");
   }
   if (

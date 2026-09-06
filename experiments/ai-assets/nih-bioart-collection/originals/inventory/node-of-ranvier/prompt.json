@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a node of Ranvier, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Use the supplied myelin segment as the visual and color reference. Show one continuous peach axon passing through TWO short pale-blue/lavender layered myelin sleeves on the same axis, with ONE narrow central gap exposing the uninterrupted axon between them. The gap is about one axon diameter long. At each sleeve edge facing the gap, a few nested lamellar terminations are visible, tapering toward axon. Both outer ends and projecting short axon ends are complete. No break or discontinuity in axon at node, no glial cell body or nucleus, no floating channels or impulses. Oblique near-horizontal view. Smooth matte forms, crisp fine outlines, restrained gradients. Lamellar count schematic. Real transparent background.",
+  "reference": "png/myelin-sheath-bioart-transparent.png",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-24acf3da-1ffb-4b17-8cd9-7c095099ff19.png",
+  "archetype": "Node between two short myelin internodes on one continuous axon. Gap width and lamellar count are schematic; molecular nodal organization omitted.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "node-of-ranvier",
+  "name": "node of Ranvier",
+  "original": "originals/inventory/node-of-ranvier/generated.png",
+  "original_sha256": "e3fdc0d3286156fc80c189d139f6242c3de89492649041ed798d6588f651a161"
+}

@@ -4,12 +4,14 @@ import type { AssetFamily } from "@workspace/editor-core";
 export type AssetColorProfile = "cell" | "protein" | "equipment";
 
 export interface AssetColorPreset {
-  id: "green" | "blue" | "purple" | "red" | "gold";
+  id: string;
+  family?: string;
+  shade?: string;
   label: string;
   ramps: Record<AssetColorProfile, string[]>;
 }
 
-export const ASSET_COLOR_PRESETS: AssetColorPreset[] = [
+const BASE_PRESETS: AssetColorPreset[] = [
   {
     id: "green",
     label: "Green",
@@ -57,21 +59,71 @@ export const ASSET_COLOR_PRESETS: AssetColorPreset[] = [
   }
 ];
 
-const SUPPORTED_EQUIPMENT =
-  /\b(plate|dish|flask|beaker|tube|vial|pipette|syringe|bottle|well|rack|microscope|centrifuge|incubator|bioreactor)\b/i;
+export const ASSET_PALETTE_SHADES = ["Light", "Soft", "Classic", "Deep"] as const;
+const extraFamilies: [string, string, string[]][] = [
+  ["white", "White", ["#656565", "#b4b4b4", "#e5e5e5", "#ffffff", "#ffffff"]],
+  ["gray", "Gray", ["#252525", "#595959", "#909090", "#c2c2c2", "#eeeeee"]],
+  ["charcoal", "Charcoal", ["#101010", "#292929", "#454545", "#686868", "#aaaaaa"]],
+  ["orange", "Orange", ["#55301d", "#99532a", "#cf8650", "#e9bb91", "#fae9d9"]],
+  ["teal", "Teal", ["#153e40", "#287c7e", "#51aeb0", "#a0d8d6", "#e0f3ef"]],
+  ["cyan", "Cyan", ["#183d50", "#237b9b", "#49b1cc", "#a0dce7", "#e0f5f8"]],
+  ["indigo", "Indigo", ["#282b54", "#505b99", "#818dca", "#b7c1e9", "#e9ecf9"]],
+  ["pink", "Pink", ["#562b46", "#984d7e", "#c780ab", "#e5b4ce", "#f8e6ef"]],
+  ["brown", "Brown", ["#3c2c23", "#79543d", "#ae8968", "#d7bea3", "#f1e8dc"]],
+  ["slate", "Slate", ["#28343e", "#526879", "#879ba8", "#becdd4", "#edf2f4"]]
+];
+for (const [id, label, ramp] of extraFamilies) {
+  BASE_PRESETS.push({ id, label, ramps: { cell: ramp, protein: ramp, equipment: ramp } });
+}
+const FAMILY_ORDER = [
+  "red",
+  "orange",
+  "gold",
+  "green",
+  "teal",
+  "cyan",
+  "blue",
+  "indigo",
+  "purple",
+  "pink",
+  "brown",
+  "slate",
+  "white",
+  "gray",
+  "charcoal"
+];
+export const ASSET_COLOR_PRESETS: AssetColorPreset[] = [...BASE_PRESETS]
+  .sort((a, b) => FAMILY_ORDER.indexOf(a.id) - FAMILY_ORDER.indexOf(b.id))
+  .flatMap((base) =>
+    ASSET_PALETTE_SHADES.map((shade) => ({
+      ...base,
+      id: shade === "Classic" ? base.id : base.id + "-" + shade.toLowerCase(),
+      label: base.label + " " + shade.toLowerCase(),
+      family: base.label,
+      shade,
+      ramps: Object.fromEntries(
+        Object.entries(base.ramps).map(([profile, ramp]) => [
+          profile,
+          ramp.map((color) =>
+            shade === "Light"
+              ? interpolateHex(color, "#ffffff", 0.32)
+              : shade === "Soft"
+                ? interpolateHex(color, "#ffffff", 0.16)
+                : shade === "Deep"
+                  ? interpolateHex(color, ramp[0], 0.2)
+                  : color
+          )
+        ])
+      ) as Record<AssetColorProfile, string[]>
+    }))
+  );
 
 export function colorProfileForFamily(
   family: Pick<AssetFamily, "category" | "title" | "keywords">
-): AssetColorProfile | undefined {
-  if (family.category === "Cells") return "cell";
-  if (family.category === "Proteins") return "protein";
-  if (
-    family.category === "Equipment" &&
-    SUPPORTED_EQUIPMENT.test(`${family.title} ${family.keywords.join(" ")}`)
-  ) {
-    return "equipment";
-  }
-  return undefined;
+): AssetColorProfile {
+  if (/equipment|labware/i.test(family.category)) return "equipment";
+  if (/protein/i.test(family.category)) return "protein";
+  return "cell";
 }
 
 export function normalizedPresetColor(color: string): string {
@@ -106,31 +158,45 @@ function shadeAt(ramp: string[], position: number): string {
   return interpolateHex(ramp[index], ramp[Math.min(index + 1, ramp.length - 1)], scaled - index);
 }
 
+/** Map colors independently of hue; the renderer protects small regions. */
 export function presetColorMap(
   sourceColors: string[],
   profile: AssetColorProfile,
-  preset: AssetColorPreset
+  preset: AssetColorPreset,
+  includeNeutralExtremes = false
 ): Map<string, string> {
-  const unique = [...new Map(sourceColors.map((color) => [normalizedPresetColor(color), color])).values()];
-  const recolorable = unique
-    .filter((color) => {
-      const metrics = colorMetrics(color);
-      if (metrics.alpha === 0) return false;
-      if (profile !== "equipment") return true;
-      return !(
-        metrics.saturation < 0.08 &&
-        (metrics.luminance < 0.2 || metrics.luminance > 0.94)
-      );
-    })
-    .sort((left, right) => colorMetrics(left).luminance - colorMetrics(right).luminance);
+  const unique = [
+    ...new Map(sourceColors.map((color) => [normalizedPresetColor(color), color])).values()
+  ];
+  const result = new Map<string, string>();
+  for (const color of unique) {
+    const m = colorMetrics(color);
+    // Preserve neutral extremes; large colored regions share the chosen ramp.
+    if (!m.alpha || (!includeNeutralExtremes && (m.luminance < 0.12 || m.luminance > 0.96)))
+      continue;
 
-  return new Map(
-    recolorable.map((color, index) => [
+    const mapped = shadeAt(preset.ramps[profile], m.luminance);
+    const [r, g, b] = new Color(mapped).getSource();
+    result.set(
       normalizedPresetColor(color),
-      shadeAt(
-        preset.ramps[profile],
-        recolorable.length === 1 ? 0.5 : index / (recolorable.length - 1)
-      )
-    ])
-  );
+      m.alpha === 1 ? mapped : `rgba(${r}, ${g}, ${b}, ${m.alpha})`
+    );
+  }
+  return result;
+}
+
+/** Adjust an immutable base paint, preserving alpha and avoiding cumulative edits. */
+export function adjustedAssetColor(color: string, saturation: number, brightness: number): string {
+  if (saturation === 0 && brightness === 0) return color;
+  const [r, g, b, alpha] = new Color(color).getSource();
+  const gray = r * 0.2126 + g * 0.7152 + b * 0.0722;
+  const s = 1 + Math.max(-1, Math.min(1, saturation));
+  const v = Math.max(-1, Math.min(1, brightness));
+  const channels = [r, g, b].map((channel) => {
+    const saturated = Math.max(0, Math.min(255, gray + (channel - gray) * s));
+    return Math.round(v >= 0 ? saturated + (255 - saturated) * v : saturated * (1 + v));
+  });
+  return alpha === 1
+    ? "#" + channels.map((c) => c.toString(16).padStart(2, "0")).join("")
+    : `rgba(${channels.join(", ")}, ${alpha})`;
 }

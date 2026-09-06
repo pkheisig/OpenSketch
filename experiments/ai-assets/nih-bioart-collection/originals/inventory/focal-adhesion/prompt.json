@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a focal adhesion, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A small horizontal lavender plasma membrane patch separates cytoplasm above from extracellular matrix below. Three teal integrin heterodimers span the membrane, each with two slim membrane-spanning legs and a paired globular ligand-binding head BELOW the membrane touching an orange fibronectin strand. Above the membrane, purple elongated talin adaptor glyphs connect short integrin cytoplasmic tails to one diagonal orange actin stress-fiber bundle via a few small vinculin globules. The actin bundle is made of smooth paired bead chains, complete with visible ends. Simplify lipid cut edges to two rows of lavender heads around a smooth violet core; no individual lipid tails. Keep upper actin distinct from lower extracellular fibronectin. No whole cell, basal lamina sheet, hemidesmosome plaque, intermediate filaments, text or floating unrelated parts. A clear oblique sectional view with saturated teal, violet and warm orange, smooth matte surfaces, subtle highlights and crisp outlines.",
+  "style_refinement": "Refine image 1 into the polished biomedical vector-like style of image 2, using image 2 for rendering style only. Preserve the three integrin-mediated connections across the membrane: lower globular heads touching extracellular fibronectin, upper purple talin and small blue vinculin connecting to an orange actin bundle. Shorten the teal cytoplasmic tails ABOVE the membrane so they are short stubs touching purple talin, while keeping the extracellular legs and ligand-binding heads BELOW the membrane. Make the membrane core a smooth violet band without vertical individual tail details, between two lavender head rows. Smooth grainy surfaces into matte filled forms, thin crisp outlines, restrained gradients, small highlights. Zoom out slightly so all filament ends and membrane edges have generous transparent padding. No text, labels, background, cast shadow or new components.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "padding_correction": "Zoom out to include the complete upper-left end of the orange actin bundle, with at least 15 percent transparent padding on every side. Preserve the existing focal adhesion illustration exactly otherwise. Output a transparent PNG with a real alpha channel, no checkerboard.",
+  "final_background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-586f0891-e516-48b4-acc7-e6e320dca43f.png",
+  "archetype": "Schematic integrin-mediated focal adhesion: extracellular ligand strand below one plasma membrane, three integrin glyphs, cytoplasmic adaptor glyphs and an actin stress-fiber bundle above. Protein shapes, adaptor positions and counts are functional schematic symbols, not atomic architecture or complete molecular composition.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "focal-adhesion",
+  "name": "focal adhesion",
+  "original": "originals/inventory/focal-adhesion/generated.png",
+  "original_sha256": "2c0677fa9b9110c0969e8fc84f9fb38596432131168abecfc48d86ed8b55aaf6"
+}

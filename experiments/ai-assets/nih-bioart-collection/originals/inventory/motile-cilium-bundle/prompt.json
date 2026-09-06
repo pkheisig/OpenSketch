@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a motile cilium bundle, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Use the attached approved single-cilium illustration to create one coherent group of SIX separate motile cilia. Each is a slender gently curved teal membrane-covered shaft with a rounded closed tip and its own short golden basal body. Arrange in a compact staggered two-row group with similar lengths and coordinated gentle bend to the right, keeping small clear gaps so each cilium remains distinct. The five rear cilia have intact smooth teal covers; only the foremost cilium has the same narrow longitudinal golden-fiber window as the reference. All six complete tips and bases visible, no fused shafts, no cell body, no apical membrane platform, no floor or scenery. Preserve the reference's smooth contours, soft gradients and colors. Transparent background.",
+  "derived_from": "png/cilium-bioart-transparent.png",
+  "background_extraction": "Not needed: generated PNG is RGBA with alpha extrema 0..255.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-41c2c12f-379d-4eb1-af62-5ef5c016ef97.png",
+  "archetype": "Illustrative group of six motile cilia with coordinated curvature, separate basal bodies and one longitudinal cutaway. Six is a compositional count, not the cilium count of a particular cell type. No surrounding epithelium included; internal architecture simplified as in the source single-cilium asset.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "motile-cilium-bundle",
+  "name": "motile cilium bundle",
+  "original": "originals/inventory/motile-cilium-bundle/generated.png",
+  "original_sha256": "5268e1346c50fc187e9f7ec1a0b17d9fa9f5d215da69cb72d3bf6eb4e47fd809"
+}

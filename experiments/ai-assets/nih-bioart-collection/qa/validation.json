@@ -1,0 +1,175 @@
+{
+  "assets": [
+    {
+      "id": "dendritic-cell",
+      "png": "png/dendritic-cell-bioart-transparent.png",
+      "svg": "svg/dendritic-cell-bioart-traced.svg",
+      "png_dimensions": [
+        1930,
+        1930
+      ],
+      "png_alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        301,
+        394,
+        336,
+        409
+      ],
+      "svg_paths": 450,
+      "svg_embedded_rasters": 0,
+      "original_sha256": "d60bd4a65a9fb849c9e4f844b8acd81f3f438b141359ffcc92802b9a434f3603",
+      "png_sha256": "e4e76eca4b3fb91d2bc4bf3c2595a76c77410e833609f16911d01a6dbae6a26e",
+      "svg_sha256": "eefb9bd07446910014243a9e4e9a2d9fac864bdd71741957d8779c7257fd5c0d"
+    },
+    {
+      "id": "neutrophil",
+      "png": "png/neutrophil-bioart-transparent.png",
+      "svg": "svg/neutrophil-bioart-traced.svg",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "png_alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        260,
+        279,
+        251
+      ],
+      "svg_paths": 370,
+      "svg_embedded_rasters": 0,
+      "original_sha256": "d86e455832ad66c6d81a8e811c9ea3ca64b920213191a7892ad614e965a1b2e5",
+      "png_sha256": "57311b90a821eec7cde2fd13fb40f9ffb70d84354f85be8aa2151bd97d720588",
+      "svg_sha256": "cd488a9f79ed8446bc7aaaa4dff68fe431ac32e741aabafc8c6bcd3780eafc23"
+    },
+    {
+      "id": "igg-antibody",
+      "png": "png/igg-antibody-bioart-transparent.png",
+      "svg": "svg/igg-antibody-bioart-traced.svg",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "png_alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        284,
+        289,
+        251
+      ],
+      "svg_paths": 131,
+      "svg_embedded_rasters": 0,
+      "original_sha256": "d2d4625aa7ddf2635e99b5721a3811f9cec5b5821ddc64c9b0b892d3a9c7f68d",
+      "png_sha256": "0c27d6f5666b89941528559efba4c4054faf2c1787b0eaf24759e8384bbb2ef2",
+      "svg_sha256": "ecb25705d3924de58191193d85f3dc1f8709f210e04a521455b1c03a3c2ae5d6"
+    },
+    {
+      "id": "atp-synthase",
+      "png": "png/atp-synthase-bioart-transparent.png",
+      "svg": "svg/atp-synthase-bioart-traced.svg",
+      "png_dimensions": [
+        1962,
+        1962
+      ],
+      "png_alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        445,
+        288,
+        472,
+        280
+      ],
+      "svg_paths": 248,
+      "svg_embedded_rasters": 0,
+      "original_sha256": "b8a985f4a0efd2735eb7b0d6acdd217133a0fb8095159662588bc55da9bebbb6",
+      "png_sha256": "638f4bffcf8a86d071431465dec461194cb92cca153c9428c56de72a264831b3",
+      "svg_sha256": "c90c227aeb351b377aa9142f3f499e07bf969540ceb47433b14b86ac4eef2842"
+    },
+    {
+      "id": "micropipette",
+      "png": "png/micropipette-bioart-transparent.png",
+      "svg": "svg/micropipette-bioart-traced.svg",
+      "png_dimensions": [
+        1778,
+        1778
+      ],
+      "png_alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        302,
+        264,
+        429,
+        272
+      ],
+      "svg_paths": 83,
+      "svg_embedded_rasters": 0,
+      "original_sha256": "d7b9b266e624f068d83c1a944812ea063128cee88f1fe40ab5c11cadb6798cd3",
+      "png_sha256": "64c5abfcb166e1a3f18d4464d8ea55d136089f857fde99cfe286dab0544cd67a",
+      "svg_sha256": "6fa66042954603ffb72adf82f4d23ac76839ac9e59dfe7000085a0b9d1908871"
+    },
+    {
+      "id": "microcentrifuge-tube",
+      "png": "png/microcentrifuge-tube-bioart-transparent.png",
+      "svg": "svg/microcentrifuge-tube-bioart-traced.svg",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "png_alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        601,
+        339,
+        611,
+        373
+      ],
+      "svg_paths": 2088,
+      "svg_embedded_rasters": 0,
+      "original_sha256": "b114baafd99b239b425ce7dc300b5440a9053d71beab60e0b64028228e244757",
+      "png_sha256": "e5e0c945ed7fa9bc813dff1340f57e8b0f1deebb291454910a6cfb5de3a5ee58",
+      "svg_sha256": "24f33ef45287308c9b14eab7a64a0005ff64a1063eedc6702b3ab80b474dc852"
+    },
+    {
+      "id": "laboratory-mouse",
+      "png": "png/laboratory-mouse-bioart-transparent.png",
+      "svg": "svg/laboratory-mouse-bioart-traced.svg",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "png_alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        307,
+        563
+      ],
+      "svg_paths": 5885,
+      "svg_embedded_rasters": 0,
+      "original_sha256": "0d540c13b9fbcf37dfbcd0ccc16d51956aeb519a55c885533299f73a143f10c5",
+      "png_sha256": "58badc16fb3d4a09b8b88635052e09729a9a8f4d614c3974eccd694e8fe53621",
+      "svg_sha256": "b2fbb4a8ac7ba68cd51dbe3f73bbfd39acb834208b926f68c9604daaa9f64093"
+    }
+  ],
+  "trace_alpha_threshold": 128,
+  "vtracer_version": "0.6.15",
+  "visual_qa": "Inspect comparison screenshots separately; these checks establish file properties."
+}

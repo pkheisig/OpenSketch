@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a columnar epithelial cell, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. Show one tall slender column-shaped epithelial cell, height about 2.5 times width, soft rounded peach-coral membrane in slight three-quarter cutaway view. One oval violet nucleus with a small nucleolus in the basal third, a modest amount of curved ER near nucleus, a small Golgi above it and a few pink mitochondria. Smooth flat apical surface, no cilia or brush border for this generic columnar subtype. No neighboring cells, attached basal slab or tissue. Smooth matte filled shapes, thin coral and purple outlines, restrained gentle depth, no photorealistic grain or plastic shine. Complete cell centered with generous true transparent padding, only intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, cast shadows, glow or checkerboard.",
+  "style_refinement": "Redraw columnar epithelial cell image 1 in the clean smooth matte NIH BioArt style of reference image 2. Image 2 is only a STYLE reference, do not copy its cell shape. Keep one tall peach-coral epithelial cell in a slight three-quarter cutaway, with a violet oval nucleus in the basal third, pink mitochondria, compact lavender endoplasmic reticulum and pink-lavender Golgi above the nucleus. Simplify fine detail into smooth filled forms with thin crisp coral and purple outlines and restrained shading. Remove microscopic grain, glassy shine, exaggerated texture, colored glow and green palette accents. Smooth bare apical surface without cilia. Complete centered cell with generous transparent padding. No additional cells, text, labels, scenery, cast shadow or checkerboard.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-931567b5-708d-430e-9eaa-8d8d61bc8841.png",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "columnar-epithelial-cell",
+  "name": "columnar epithelial cell",
+  "original": "originals/inventory/columnar-epithelial-cell/generated.png",
+  "original_sha256": "5d2c454a5f3824bde5a013f22c84d187466b8d5228a0038689ff2df417b3b144"
+}

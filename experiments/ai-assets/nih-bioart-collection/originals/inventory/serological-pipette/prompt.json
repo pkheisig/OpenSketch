@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a serological pipette, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One empty disposable serological pipette, long straight clear pale-blue cylindrical graduated barrel, slightly narrower short upper mouthpiece with a small white cotton plug visible inside, and a short conical dispensing tip at the opposite end. Diagonal from upper left mouthpiece to lower right outlet, entire length visible. Fine dark-blue graduation ticks at regular intervals down one side of the barrel but NO digits, letters or printed text. One narrow blue identification band near the mouthpiece. Body remains cylindrical for most length, only distal end tapers; no bulb, no handheld pipette body or controller, no liquid or droplets. Smooth transparent plastic, delicate outlines, restrained highlights, polished vector-like biomedical equipment style. Real transparent background.",
+  "style_review": "Initial rendering matches collection clear-plastic equipment palette, fine blue outlines and restrained highlights.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-d0133d22-c4b5-4005-af96-508f38157987.png",
+  "archetype": "Generic serological pipette with long cylindrical barrel, upper cotton plug and short conical outlet. Tick marks are illustrative and unnumbered, not a usable calibrated scale; blue band does not specify volume.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "serological-pipette",
+  "name": "serological pipette",
+  "original": "originals/inventory/serological-pipette/generated.png",
+  "original_sha256": "7f2559d25ef2c971b6d536bc191ed8dafb2f0800f14fe261579725438e91fd22"
+}

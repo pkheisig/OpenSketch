@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a nuclear envelope, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Show one small curved rectangular cutaway patch of nuclear envelope in oblique three-quarter view. Two parallel thin phospholipid bilayer membranes separated by a clearly visible narrow perinuclear gap; cut front edges show each bilayer as two rows of small round headgroups with paired short tails between them. One circular nuclear pore complex traverses both membranes near the center: both membranes curve smoothly together at the pore rim, leaving one central channel. A delicate sparse purple nuclear-lamina mesh hugs the underside of the inner membrane only. No whole nucleus, nucleolus, chromatin or surrounding ER. Palette lavender membranes, plum outlines and coral-pink pore ring; smooth matte shapes, crisp contours, gentle gradients, modest detail, not photorealistic. Complete isolated patch on transparent background.",
+  "style_refinement": "Refine image 1 into image 2's smooth outlined biomedical illustration style; image 2 is style only. Keep isolated nuclear-envelope patch with TWO bilayers, a perinuclear gap and one coral pore complex. Correct pore topology: at the central opening, outer and inner membranes MUST bend toward each other and fuse into a continuous curved U-shaped membrane rim surrounding the pore complex. Reduce the gap to make this connection clearly visible at the front cutaway; the pore is embedded in the merged rim, not a tall free-standing barrel holding separated sheets. Remove the dangling purple proteins between membranes. Retain a sparse nuclear lamina mesh only underneath the lower membrane. Simplify all surfaces to clean lavender fills, thin plum outlines, restrained gradients and small tidy bilayer headgroups. No photorealistic grain, glow, shadow, loose particles, text or background. Entire patch complete, generous transparent padding.",
+  "topology_refinement": "Correct only the nuclear membrane topology in this illustration. At BOTH front-facing sides of the orange pore, draw a continuous lavender phospholipid bilayer bending DOWN from the upper membrane and joining UP from the lower membrane. Each should form a visible smooth C-shaped return bend, enclosing the perinuclear space at the pore edge. There must be NO open gap between upper and lower membranes immediately alongside the pore. The orange pore may be partially hidden behind these connecting curved membrane necks. Lower the orange barrel height to fit the smaller membrane gap. Keep the two bilayers separate away from the pore, sparse lamina under the bottom membrane, clean illustration style, palette, complete patch and empty padding. No new objects, no text. Transparent background.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Not needed: topology refinement returned RGBA with alpha 0..254.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-d0001732-896d-4ff5-ac40-d1a2e2db76cc.png",
+  "archetype": "Schematic nuclear-envelope patch showing two bilayers continuous at the pore rim and a basal nuclear lamina. Pore details and membrane spacing are illustrative.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "nuclear-envelope",
+  "name": "nuclear envelope",
+  "original": "originals/inventory/nuclear-envelope/generated.png",
+  "original_sha256": "84865c59310cabd15216caec660a97283ce4444297be5de753376eabfaa79686"
+}

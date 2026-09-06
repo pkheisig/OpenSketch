@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a sperm cell, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, professional saturated colors. One human spermatozoon, complete from head to tail tip. Small flattened oval head at left with condensed violet nucleus and a smooth pale turquoise acrosomal cap over the anterior half, short narrow neck, compact midpiece with a subtle rose-pink helical mitochondrial sheath, and one very long slender tapering flagellum extending to the right in a gentle S curve. Tail unbranched and smoothly connected to head, much longer than head and midpiece combined. No large round somatic nucleus, no extra organelles floating outside, no egg or other sperm. Matte smooth filled forms, thin crisp indigo/teal outlines, restrained gradients, no photorealistic grain or glossy plastic. Entire asset centered with generous true transparent padding and tail tip completely visible; no text, labels, arrows, borders, scenery, unrelated objects, cast shadows, glow or checkerboard.",
+  "style_refinement": "Redraw sperm cell image 1 in the clean matte NIH BioArt style of epithelial cell image 2. Image 2 is style reference only. Preserve one small flattened oval sperm head with condensed violet nucleus and pale turquoise acrosomal cap, short neck, compact rose mitochondrial midpiece and one very long slender unbranched tail with gentle curves and a tapering tip. Smooth filled forms, thin crisp indigo/teal outlines, restrained gradients. Remove photorealistic grain, mottled nuclear texture, glossy plastic, glow and stray pixels. Complete head-to-tail outline centered with generous transparent padding, no other cells, text, labels, arrows, shadows or checkerboard.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-edcffd57-da6a-4899-99ab-948de2158d81.png",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "sperm-cell",
+  "name": "sperm cell",
+  "original": "originals/inventory/sperm-cell/generated.png",
+  "original_sha256": "d71bcf95c53b1b3dff5486113c18b09c6297fb029f818634b07e6bb1febf7025"
+}

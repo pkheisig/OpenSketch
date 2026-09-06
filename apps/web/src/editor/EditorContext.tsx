@@ -1,5 +1,14 @@
 import { rehydrateProjectScene } from "@workspace/editor-core";
 import { ProjectConflictError } from "@/application/hostServices";
+import { hasSvgComponents, prepareSvgComponents } from "./svgComponents";
+import { assertAssetCapacity } from "./assetCapacity";
+import {
+  isScientificBrush,
+  updateBrushObject,
+  detachBrush,
+  createScientificObject
+} from "@/editor/scientific/objects";
+import { scientificPreset } from "@/editor/scientific/catalog";
 import {
   createContext,
   useCallback,
@@ -17,6 +26,7 @@ import {
   FabricImage,
   FabricObject,
   Gradient,
+  Color,
   Group,
   IText,
   Path,
@@ -71,6 +81,7 @@ import {
 import { connectorStrokeLineCap } from "@/editor/connectorGeometry";
 import {
   ASSET_COLOR_PRESETS,
+  adjustedAssetColor,
   colorProfileForFamily,
   normalizedPresetColor,
   presetColorMap
@@ -178,6 +189,7 @@ import { createWebMcpAdapter, type WebMcpAdapter, type WebMcpRegistry } from "@/
 export const PROJECT_NAME_CHANGE_EVENT = "opensketch:project-name-change";
 
 FabricObject.customProperties = [
+  "scientificBrush",
   "objectId",
   "name",
   "OpenSketchType",
@@ -185,6 +197,8 @@ FabricObject.customProperties = [
   "familyId",
   "provenance",
   "originalPalette",
+  "assetColorRole",
+  "svgComponent",
   "originalFill",
   "originalStroke",
   "effectBaseFill",
@@ -211,12 +225,15 @@ FabricObject.customProperties = [
 ];
 
 const RESTORABLE_GROUP_PROPERTIES = [
+  "scientificBrush",
   "name",
   "OpenSketchType",
   "assetId",
   "familyId",
   "provenance",
   "originalPalette",
+  "assetColorRole",
+  "svgComponent",
   "originalFill",
   "originalStroke",
   "effectBaseFill",
@@ -474,7 +491,7 @@ async function createBundledAssetGroup(
   if (!source) throw new Error(`Could not load ${family.title}.`);
   const result = await loadEditableSvg(source);
   const objects = result.objects.filter((object): object is FabricObject => Boolean(object));
-  const group = groupSvgElements(objects, result.options);
+  const group = await prepareSvgComponents(groupSvgElements(objects, result.options));
   group.assetId = variant.id;
   group.familyId = family.familyId;
   const sourcePage = family.sourcePage ?? family.commonsPage ?? family.nihSourcePage ?? "";
@@ -681,7 +698,7 @@ function configureAtomicSvgAsset(object: FabricObject, editing = false): void {
     part.selectable = editing;
     part.evented = editing;
     part.perPixelTargetFind = false;
-    if (part instanceof Group) configureAtomicSvgAsset(part, editing);
+    if (part instanceof Group) configureAtomicSvgAsset(part, false);
   });
   object.setCoords();
 }
@@ -746,17 +763,7 @@ function svgEditHitObjectsAtLevel(
   objects: FabricObject[],
   point: FabricPoint
 ): FabricObject[] {
-  const directHits = hitObjectsAtLevel(canvas, objects, point);
-  const descendants: FabricObject[] = [];
-  directHits.forEach((object) => {
-    if (!(object instanceof Group) || object.OpenSketchType !== "svg-part") {
-      descendants.push(object);
-      return;
-    }
-    const nestedHits = svgEditHitObjectsAtLevel(canvas, object.getObjects(), point);
-    descendants.push(...(nestedHits.length > 0 ? nestedHits : [object]));
-  });
-  return descendants;
+  return hitObjectsAtLevel(canvas, objects, point);
 }
 
 function deepHitObjects(
@@ -986,6 +993,21 @@ function rememberOriginalColors(object: FabricObject): void {
 }
 
 function restoreOriginalColors(object: FabricObject): void {
+  if (isScientificBrush(object) && object.originalPalette?.["scientific:fill"]) {
+    const original = object.originalPalette;
+    updateBrushObject(object, {
+      ...object.scientificBrush,
+      fill: original["scientific:fill"],
+      accent: original["scientific:accent"],
+      stroke: original["scientific:stroke"]
+    });
+    object.assetColorPreset = undefined;
+    object.assetSaturation = 0;
+    object.assetBrightness = 0;
+    delete original["adjustment:fill"];
+    delete original["adjustment:accent"];
+    return;
+  }
   const walk = (current: FabricObject) => {
     if (current.originalFill !== undefined) {
       current.set("fill", current.originalFill);
@@ -1036,24 +1058,41 @@ function originalPaints(object: FabricObject): string[] {
 function applyPresetColors(
   object: FabricObject,
   mapping: Map<string, string>,
-  presetId: string
+  presetId: string,
+  minimumRegionArea = 0,
+  explicitMapping: Map<string, string> = mapping
 ): void {
   const mapped = (color: string) => mapping.get(normalizedPresetColor(color)) ?? color;
-  const mappedGradient = (source: Record<string, unknown>) => {
+  const mappedGradient = (source: Record<string, unknown>, explicit = false) => {
     const colorStops = Array.isArray(source.colorStops)
       ? source.colorStops.map((stop) => {
           const record = stop as Record<string, unknown>;
           return {
             ...record,
-            color: typeof record.color === "string" ? mapped(record.color) : record.color
+            color:
+              typeof record.color === "string"
+                ? explicit
+                  ? (explicitMapping.get(normalizedPresetColor(record.color)) ?? record.color)
+                  : mapped(record.color)
+                : record.color
           };
         })
       : [];
     return new Gradient({ ...structuredClone(source), colorStops } as never);
   };
   const walk = (current: FabricObject) => {
+    if (!(current instanceof Group)) {
+      const [a, b, c, d] = current.calcTransformMatrix();
+      const area = current.width * current.height * Math.abs(a * d - b * c);
+      if (["detail", "outline", "highlight"].includes(current.assetColorRole ?? "")) return;
+      if (!current.assetColorRole && area < minimumRegionArea) return;
+    }
     if (current.originalFill) {
-      const color = mapped(current.originalFill);
+      const color =
+        current.assetColorRole === "primary" || current.assetColorRole === "secondary"
+          ? (explicitMapping.get(normalizedPresetColor(current.originalFill)) ??
+            current.originalFill)
+          : mapped(current.originalFill);
       current.set("fill", color);
       current.effectBaseFill = color;
     }
@@ -1063,12 +1102,23 @@ function applyPresetColors(
       current.effectBaseStroke = color;
     }
     if (current.originalGradientFill) {
-      current.set("fill", mappedGradient(current.originalGradientFill));
-      current.effectBaseGradientFill = structuredClone(current.originalGradientFill);
+      current.set(
+        "fill",
+        mappedGradient(
+          current.originalGradientFill,
+          current.assetColorRole === "primary" || current.assetColorRole === "secondary"
+        )
+      );
+      current.effectBaseGradientFill = (current.fill as Gradient<"linear">).toObject() as Record<
+        string,
+        unknown
+      >;
     }
     if (current.originalGradientStroke) {
       current.set("stroke", mappedGradient(current.originalGradientStroke));
-      current.effectBaseGradientStroke = structuredClone(current.originalGradientStroke);
+      current.effectBaseGradientStroke = (
+        current.stroke as Gradient<"linear">
+      ).toObject() as Record<string, unknown>;
     }
     current.dirty = true;
     if (current instanceof Group) current.getObjects().forEach(walk);
@@ -1076,6 +1126,110 @@ function applyPresetColors(
   walk(object);
   object.assetColorPreset = presetId;
   object.dirty = true;
+}
+
+function adjustAssetColors(object: Group) {
+  const saturation = object.assetSaturation ?? 0,
+    brightness = object.assetBrightness ?? 0;
+  if (isScientificBrush(object)) {
+    object.originalPalette ??= {};
+    for (const role of ["fill", "accent", "stroke"] as const)
+      object.originalPalette["scientific:" + role] ??= object.scientificBrush[role];
+    for (const role of ["fill", "accent"] as const)
+      object.originalPalette["adjustment:" + role] ??= object.scientificBrush[role];
+    updateBrushObject(object, {
+      ...object.scientificBrush,
+      fill: adjustedAssetColor(object.originalPalette["adjustment:fill"], saturation, brightness),
+      accent: adjustedAssetColor(
+        object.originalPalette["adjustment:accent"],
+        saturation,
+        brightness
+      )
+    });
+    return;
+  }
+  const [a, b, c, d] = object.calcTransformMatrix();
+  const cutoff = object.width * object.height * Math.abs(a * d - b * c) * 0.0003;
+  const walk = (part: FabricObject) => {
+    if (part instanceof Group) {
+      part.getObjects().forEach(walk);
+      part.dirty = true;
+      return;
+    }
+    if (["detail", "outline", "highlight"].includes(part.assetColorRole ?? "")) return;
+    const [a, b, c, d] = part.calcTransformMatrix();
+    if (!part.assetColorRole && part.width * part.height * Math.abs(a * d - b * c) < cutoff) return;
+    const adjust = (paint: string, isStroke = false) => {
+      const [r, g, b] = new Color(paint).getSource();
+      const light = (r * 0.2126 + g * 0.7152 + b * 0.0722) / 255;
+      if ((!part.assetColorRole || isStroke) && (light < 0.12 || light > 0.96)) return paint;
+      return adjustedAssetColor(paint, saturation, brightness);
+    };
+    for (const role of ["Fill", "Stroke"] as const) {
+      const key = role === "Fill" ? "fill" : "stroke";
+      const base = part[role === "Fill" ? "effectBaseFill" : "effectBaseStroke"];
+      if (typeof base === "string") part.set(key, adjust(base, key === "stroke"));
+      const gradient =
+        part[role === "Fill" ? "effectBaseGradientFill" : "effectBaseGradientStroke"];
+      if (gradient && Array.isArray(gradient.colorStops))
+        part.set(
+          key,
+          new Gradient({
+            ...structuredClone(gradient),
+            colorStops: gradient.colorStops.map((stop) => {
+              const record = stop as { color: string };
+              return { ...record, color: adjust(record.color, key === "stroke") };
+            })
+          } as never)
+        );
+    }
+    part.dirty = true;
+  };
+  walk(object);
+}
+
+function recolorAsset(
+  object: Group,
+  profile: ReturnType<typeof colorProfileForFamily>,
+  preset: (typeof ASSET_COLOR_PRESETS)[number]
+) {
+  const saturation = object.assetSaturation ?? 0,
+    brightness = object.assetBrightness ?? 0;
+  if (isScientificBrush(object)) {
+    const spec = object.scientificBrush;
+    object.originalPalette ??= {};
+    for (const role of ["fill", "accent", "stroke"] as const)
+      object.originalPalette["scientific:" + role] ??= spec[role];
+    const original = object.originalPalette;
+    // The procedural renderer knows the body and accent roles.
+    updateBrushObject(object, {
+      ...spec,
+      fill: preset.ramps[profile][3],
+      accent: preset.ramps[profile][2],
+      stroke: original["scientific:stroke"]
+    });
+    object.assetColorPreset = preset.id;
+    object.originalPalette["adjustment:fill"] = object.scientificBrush.fill;
+    object.originalPalette["adjustment:accent"] = object.scientificBrush.accent;
+    adjustAssetColors(object);
+    return;
+  }
+  const mapping = presetColorMap(originalPaints(object), profile, preset);
+  const [a, b, c, d] = object.calcTransformMatrix();
+  // Compare each region to the asset, independent of zoom, scale and rotation.
+  // Bounding-box area is an approximation for traced SVG regions.
+  const minimumRegionArea = object.width * object.height * Math.abs(a * d - b * c) * 0.0003;
+  restoreOriginalColors(object);
+  applyPresetColors(
+    object,
+    mapping,
+    preset.id,
+    minimumRegionArea,
+    presetColorMap(originalPaints(object), profile, preset, true)
+  );
+  object.assetSaturation = saturation;
+  object.assetBrightness = brightness;
+  adjustAssetColors(object);
 }
 
 function withLogicalViewport<T>(canvas: Canvas, settings: CanvasSettings, operation: () => T): T {
@@ -1749,6 +1903,7 @@ export function EditorProvider({
     if (!exitedGroup) return;
     const parentPath = path.slice(0, -1);
     const svgAssetRoot = path[0];
+    if (isAtomicSvgAsset(exitedGroup)) configureAtomicSvgAsset(exitedGroup);
     setEditingGroupPath(parentPath);
     modifierDeepSelection.current = undefined;
     deepSelectionCycle.current = undefined;
@@ -1837,12 +1992,14 @@ export function EditorProvider({
         const directHits = isAtomicSvgAsset(editingGroupPathRef.current[0])
           ? svgEditHitObjectsAtLevel(canvas, currentEditingGroup.getObjects(), scenePoint)
           : hitObjectsAtLevel(canvas, currentEditingGroup.getObjects(), scenePoint);
-        const nestedGroup =
-          directHits.find(isManualGroup) ??
-          (isAtomicSvgAsset(editingGroupPathRef.current[0])
-            ? directHits.find((object) => object instanceof Group)
-            : undefined);
-        if (nestedGroup) {
+        const nestedGroup = isAtomicSvgAsset(currentEditingGroup)
+          ? undefined
+          : directHits.find(
+              (object) =>
+                isManualGroup(object) || (isAtomicSvgAsset(object) && hasSvgComponents(object))
+            );
+        if (nestedGroup instanceof Group) {
+          if (isAtomicSvgAsset(nestedGroup)) configureAtomicSvgAsset(nestedGroup, true);
           setEditingGroupPath([...editingGroupPathRef.current, nestedGroup]);
           canvas.discardActiveObject();
           setSelection([]);
@@ -1867,6 +2024,7 @@ export function EditorProvider({
       const topLevelHits = hitObjectsAtLevel(canvas, canvas.getObjects(), scenePoint);
       const asset = topLevelHits.find(isAtomicSvgAsset);
       if (asset) {
+        if (!hasSvgComponents(asset)) return;
         markSvgParts(asset);
         configureAtomicSvgAsset(asset, true);
         setEditingGroupPath([asset]);
@@ -2536,13 +2694,15 @@ export function EditorProvider({
       const operation = services.assets.getManifest().then((assetManifest) => {
         throwIfSemanticExecutionAborted(options?.signal);
         const family = assetManifest.families.find((item) => item.familyId === object.familyId);
-        const profile = family ? colorProfileForFamily(family) : undefined;
+        const profile = family
+          ? colorProfileForFamily(family)
+          : isScientificBrush(object)
+            ? "cell"
+            : undefined;
         if (!profile || sceneObjectIndex(canvas).get(objectId) !== object) {
           throw new Error(`Asset color preset target "${objectId}" is no longer available.`);
         }
-        const mapping = presetColorMap(originalPaints(object), profile, preset);
-        restoreOriginalColors(object);
-        applyPresetColors(object, mapping, preset.id);
+        recolorAsset(object, profile, preset);
         canvas.requestRenderAll();
       });
       return trackPendingEditorWork(operation);
@@ -2827,8 +2987,14 @@ export function EditorProvider({
       }
       return addObject(
         createShapeObject(kind, creationDefaults),
-        kind === "polygon" ? "hexagon" : kind.replace("-", " "),
-        kind.includes("arrow") ? "connector" : "shape",
+        scientificPreset(kind)?.label ?? (kind === "polygon" ? "hexagon" : kind.replace("-", " ")),
+        scientificPreset(kind)?.form === "parts"
+          ? "group"
+          : scientificPreset(kind)
+            ? "scientific-brush"
+            : kind.includes("arrow")
+              ? "connector"
+              : "shape",
         point,
         options.select !== false
       );
@@ -2971,15 +3137,23 @@ export function EditorProvider({
         assetInsertQueue.current.then(async () => {
           if (options?.signal?.aborted) return undefined;
           if (!semanticCanvasRef.current) return undefined;
-          const group = await createBundledAssetGroup(services.assets, family, variant);
+          const preset = family.editableStructure ? scientificPreset(family.familyId) : undefined;
+          const group = preset
+            ? createScientificObject(preset.id, semanticCreationDefaultsRef.current)!
+            : await createBundledAssetGroup(services.assets, family, variant);
+          if (preset) {
+            group.familyId = family.familyId;
+            rememberOriginalColors(group);
+          }
           if (options?.signal?.aborted) return undefined;
           if (!semanticCanvasRef.current) return undefined;
+          assertAssetCapacity(semanticCanvasRef.current.getObjects(), group);
           const scale = assetInsertionScale(family.title, group.width || 1, group.height || 1);
           group.scale(scale);
           const object = semanticAddObjectRef.current(
             group,
             family.title,
-            "nih-asset",
+            preset ? (preset.form === "parts" ? "group" : "scientific-brush") : "nih-asset",
             point,
             select
           );
@@ -3145,9 +3319,11 @@ export function EditorProvider({
           `import-${stored.id}`
         );
         const result = await loadEditableSvg(source);
-        object = groupSvgElements(
-          result.objects.filter((item): item is FabricObject => Boolean(item)),
-          result.options
+        object = await prepareSvgComponents(
+          groupSvgElements(
+            result.objects.filter((item): item is FabricObject => Boolean(item)),
+            result.options
+          )
         );
       } else {
         object = await FabricImage.fromURL(stored.dataUrl);
@@ -3251,8 +3427,9 @@ export function EditorProvider({
     if (!canvas) return;
     const parent = editableAssetParent(canvas.getActiveObject());
     if (!parent) return;
-    if (editingGroupPathRef.current[0] === parent) {
-      setEditingGroupPath([]);
+    const index = editingGroupPathRef.current.indexOf(parent);
+    if (index >= 0) {
+      setEditingGroupPath(editingGroupPathRef.current.slice(0, index));
       configureAtomicSvgAsset(parent);
     }
     canvas.setActiveObject(parent);
@@ -3638,7 +3815,46 @@ export function EditorProvider({
       if (!canvas) return;
       const objects = canvas.getActiveObjects();
       objects.forEach((object) => {
-        object.set(properties);
+        if (
+          object instanceof Group &&
+          ("assetSaturation" in properties || "assetBrightness" in properties)
+        ) {
+          for (const key of ["assetSaturation", "assetBrightness"] as const)
+            if (key in properties) {
+              const value = properties[key];
+              if (typeof value !== "number" || !Number.isFinite(value))
+                throw new Error("Color adjustment must be finite.");
+              object[key] = Math.max(-1, Math.min(1, value));
+            }
+          adjustAssetColors(object);
+        } else if (isScientificBrush(object) && Object.hasOwn(properties, "scientificBrush")) {
+          const patch = properties.scientificBrush as FabricObject["scientificBrush"];
+          if (
+            patch &&
+            ["fill", "accent", "stroke"].some(
+              (key) =>
+                patch[key as "fill" | "accent" | "stroke"] !==
+                object.scientificBrush[key as "fill" | "accent" | "stroke"]
+            )
+          ) {
+            object.assetColorPreset = undefined;
+            object.assetSaturation = 0;
+            object.assetBrightness = 0;
+            if (object.originalPalette) {
+              delete object.originalPalette["adjustment:fill"];
+              delete object.originalPalette["adjustment:accent"];
+            }
+          }
+          if (properties.scientificBrush === null) detachBrush(object);
+          else
+            updateBrushObject(
+              object,
+              properties.scientificBrush as NonNullable<FabricObject["scientificBrush"]>
+            );
+          configureSelectionControls(object, latestZoom.current);
+        } else {
+          object.set(properties);
+        }
         configureTextObject(object);
         if (
           object instanceof Group &&
@@ -3857,7 +4073,11 @@ export function EditorProvider({
     (presetId: string) => {
       if (!canvas || selection.length !== 1) return;
       const object = selection[0];
-      if (!(object instanceof Group) || !object.familyId) return;
+      if (
+        !(object instanceof Group) ||
+        (!object.familyId && !isScientificBrush(object) && !object.svgComponent)
+      )
+        return;
       const preset = ASSET_COLOR_PRESETS.find((item) => item.id === presetId);
       if (!preset) return;
       void trackPendingEditorWork(
@@ -3865,18 +4085,22 @@ export function EditorProvider({
           .getManifest()
           .then((assetManifest) => {
             const family = assetManifest.families.find((item) => item.familyId === object.familyId);
-            const profile = family ? colorProfileForFamily(family) : undefined;
+            const profile = family
+              ? colorProfileForFamily(family)
+              : isScientificBrush(object) || object.svgComponent
+                ? "cell"
+                : undefined;
             if (
               !profile ||
               !canvas ||
-              !canvas.getObjects().includes(object) ||
-              canvas.getActiveObject() !== object
+              !(canvas.getObjects().includes(object) || editableAssetParent(object)) ||
+              canvas.getActiveObjects().length !== 1 ||
+              canvas.getActiveObjects()[0] !== object
             ) {
               return;
             }
-            const mapping = presetColorMap(originalPaints(object), profile, preset);
-            restoreOriginalColors(object);
-            applyPresetColors(object, mapping, preset.id);
+            recolorAsset(object, profile, preset);
+            refreshParentGroups(object);
             canvas.requestRenderAll();
             setSelection([...canvas.getActiveObjects()]);
             commit("Apply color preset");
@@ -3898,6 +4122,7 @@ export function EditorProvider({
       }
     });
     canvas.requestRenderAll();
+    setSelection([...canvas.getActiveObjects()]);
     commit("Reset colors");
   }, [canvas, commit]);
 
@@ -4272,7 +4497,9 @@ export function EditorProvider({
           event.preventDefault();
           const rootGroup = groupPath[0];
           setEditingGroupPath([]);
-          if (isAtomicSvgAsset(rootGroup)) configureAtomicSvgAsset(rootGroup);
+          groupPath.forEach((group) => {
+            if (isAtomicSvgAsset(group)) configureAtomicSvgAsset(group);
+          });
           modifierDeepSelection.current = undefined;
           deepSelectionCycle.current = undefined;
           canvas.discardActiveObject();

@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a coiled-coil protein, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One short two-stranded alpha-helical coiled coil, exactly two continuous colored helical protein ribbons, teal and blue, wound around a shared long axis into an elongated superhelix. Each ribbon has small regular alpha-helical turns, and their axes wrap gently around each other over about two larger superhelical turns. Ends of both chains complete and rounded, no arrowheads. Oblique diagonal orientation. Scientific ribbon-cartoon abstraction, no DNA bases or rungs, no ladder, no additional strands, no atomic spheres. Smooth matte saturated forms with crisp dark outlines, restrained gradients and highlights, no metallic sheen. Architecture schematic, no named sequence. Transparent background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-700ed9f8-c70f-4836-8296-fb138612a151.png",
+  "style_review": "Two colored ribbon helices with restrained shading; no added refinement needed before vector comparison.",
+  "archetype": "Two alpha-helical chains in a schematic coiled coil. Pitch, turn count and handedness are illustrative, not an atomic or sequence-specific model.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "coiled-coil-protein",
+  "name": "coiled-coil protein",
+  "original": "originals/inventory/coiled-coil-protein/generated.png",
+  "original_sha256": "353931a1fb1d275733dbf8b605fcb9ad86b16fc5c2ba0db0c611005fdb2f61b7"
+}

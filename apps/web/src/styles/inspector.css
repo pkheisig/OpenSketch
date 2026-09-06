@@ -2456,3 +2456,162 @@
   background: var(--shell-focus);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--shell-accent) 15%, transparent);
 }
+
+.scientific-brush-settings {
+  display: grid;
+  gap: 10px;
+}
+
+.scientific-brush-settings button,
+.scientific-brush-settings input[type="number"] {
+  min-height: 30px;
+  padding: 5px 7px;
+  border: 1px solid var(--shell-border);
+  border-radius: 5px;
+  background: var(--shell-card);
+  color: var(--shell-text);
+  font: inherit;
+  font-size: 12px;
+}
+
+.scientific-brush-settings input[type="number"] {
+  width: 100%;
+  min-width: 0;
+}
+
+.scientific-brush-settings button:disabled {
+  opacity: 0.5;
+}
+
+.scientific-brush-colors {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.scientific-brush-colors input[type="color"] {
+  width: 100%;
+  height: 30px;
+  border: 1px solid var(--shell-border);
+  border-radius: 5px;
+  background: var(--shell-card);
+}
+
+.opensketch-app .asset-card.asset-card-editable {
+  border: 2px solid #288578;
+}
+
+.opensketch-app .asset-card.asset-card-editable:hover {
+  border-color: #175f55;
+}
+
+.opensketch-app .asset-editable-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgb(23 108 96 / 90%);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 14px;
+  pointer-events: none;
+}
+
+.opensketch-app .asset-card-editable .asset-source-control {
+  top: 27px;
+}
+
+.asset-palette-actions {
+  display: flex;
+  gap: 8px;
+}
+.asset-palette-actions button {
+  flex: 1;
+  padding: 7px;
+  font-size: 11px;
+  border: 1px solid #d4c5b3;
+  border-radius: 5px;
+  background: transparent;
+  color: inherit;
+}
+.asset-palette-popover {
+  position: fixed;
+  z-index: 10050;
+  box-sizing: border-box;
+  width: min(500px, calc(100vw - 24px));
+  max-height: calc(100vh - 24px);
+  overflow: auto;
+  padding: 16px;
+  border: 1px solid #d4c5b3;
+  border-radius: 9px;
+  background: #fffaf2;
+  box-shadow: 0 12px 36px #302b2533;
+  color: #302b25;
+}
+.asset-palette-popover header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+.asset-palette-popover header button {
+  border: 0;
+  background: transparent;
+  font-size: 22px;
+  width: 30px;
+  height: 30px;
+}
+.asset-palette-popover .section-note {
+  margin: 12px 0 0;
+  font-size: 11px;
+}
+.asset-family-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+}
+.asset-family-grid button {
+  display: grid;
+  gap: 5px;
+  padding: 6px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+.asset-family-grid button > span {
+  height: 30px;
+  border-radius: 5px;
+  box-shadow: inset 0 0 0 1px #0002;
+}
+.asset-family-grid button[aria-pressed="true"] {
+  border-color: #92532c;
+  background: #f1e5d5;
+}
+.asset-family-grid button:focus-visible {
+  outline: 2px solid #92532c;
+}
+.asset-adjustments {
+  display: grid;
+  gap: 16px;
+  margin-top: 20px;
+}
+.asset-adjustments label {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  font-size: 12px;
+}
+.asset-adjustments input {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin: 0;
+}
+.asset-adjustments output {
+  font-variant-numeric: tabular-nums;
+}

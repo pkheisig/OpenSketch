@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of stereocilia, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A small inner-ear hair-cell stereocilia bundle fragment on one smooth pale lavender apical membrane patch. Exactly six slender upright membrane-covered projections arranged as three adjacent pairs of increasing height from left to right, a clear staircase. Rounded tips and narrow tapered bases. Two front projections shown with narrow cutaway windows revealing tightly parallel rose actin core filaments. A few very fine gold oblique tip links connect the top of a shorter projection to the side near the top of its taller neighbor. No microtubule axonemes, basal bodies, kinocilium, whole cell, nucleus or surrounding tissue. Smooth matte biomedical cartoon, fine purple outlines, restrained gradients and highlights, no granular texture. Representative hair-bundle fragment, counts schematic. Real transparent background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-b67be6c8-c0ff-43f6-9508-914c82ac2a52.png",
+  "archetype": "Representative five-stereocilium staircase fragment with two actin cutaways and oblique tip links. Generated count differs from six-projection prompt; exact count is not a biological requirement. No kinocilium or molecular tip-link composition implied.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "stereocilia",
+  "name": "stereocilia",
+  "original": "originals/inventory/stereocilia/generated.png",
+  "original_sha256": "c894d791482b7e768851ecaccbbd7c7f393e342c795b7aafa6d92a069d329bd1"
+}

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+  <g data-component="Cell body" data-color-role="primary">
+    <circle cx="150" cy="150" r="140" fill="#b5dfce" stroke="#315b50" stroke-width="4"/>
+  </g>
+  <g data-component="Nucleus" data-color-role="secondary">
+    <g><circle cx="150" cy="150" r="52" fill="#b4a4d8" stroke="#5c4d7e" stroke-width="4"/>
+      <g><circle cx="150" cy="150" r="12" fill="#6c5898"/><circle cx="168" cy="136" r="4" fill="#e7dff6"/></g>
+    </g>
+  </g>
+</svg>

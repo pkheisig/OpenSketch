@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a resting human platelet, matching the supplied NIH BioArt reference images visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp thin dark-purple outlines, soft restrained pseudo-3D depth, subtle gradients and highlights, and professional saturated lavender and magenta colors. A small anucleate discoid cytoplasmic fragment, oblique cutaway view with pale lavender peripheral zone and central cluster of distinct magenta alpha granules, a few darker small dense granules, two tiny mitochondria, and a delicate peripheral marginal microtubule band. No nucleus, no spiky activated extensions. Smooth matte vector-like illustration, avoid photorealistic grain or glossy plastic. Show the complete asset centered with generous truly transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One platelet only, no background checkerboard.",
+  "style_refinement": "Redraw platelet image 1 in the consistent clean matte NIH BioArt illustration style of macrophage image 2. Image 2 is a style reference ONLY; do not copy its shape or organelles. Keep the platelet as a single flattened oval anucleate fragment, with a pale lavender rim, central magenta alpha granules and dark purple dense granules, two small mitochondria and a delicate peripheral microtubule ring. Use smooth simple filled shapes, fine purple outlines, restrained soft shading and highlights. Remove photorealistic grain, mottled textures, glass-like shine, pearl beads on the ring, and all glow. No nucleus. Center the complete platelet with generous transparent padding. No text, unrelated objects, shadows or checkerboard.",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-479d9336-38b7-40ab-82de-e934d4053350.png",
+  "id": "platelet",
+  "name": "platelet",
+  "original": "originals/inventory/platelet/generated.png",
+  "original_sha256": "99b61467fdb1c3138ca9afedb715a743175bf9d66e73090261d0e960284ef293"
+}

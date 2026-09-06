@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an Erlenmeyer flask, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One empty clear borosilicate Erlenmeyer flask, broad flat circular base, smoothly tapered conical body, narrow cylindrical open neck with thick rolled lip, upright three-quarter view. No stopper, sidearm, spout, handle or liquid. A few unnumbered graduation ticks on front only. Pale blue-gray glass, thin crisp contours, clean broad highlights, restrained gradients and soft pseudo-3D depth. Match the supplied beaker reference's smooth equipment illustration style, no photographic grain or complex refraction. Real transparent background.",
+  "style_reference": "png/glass-beaker-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-31bf08d1-1e45-4a3c-b38a-e41118879335.png",
+  "archetype": "Empty Erlenmeyer flask; unnumbered ticks schematic, not calibrated volume.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "erlenmeyer-flask",
+  "name": "Erlenmeyer flask",
+  "original": "originals/inventory/erlenmeyer-flask/generated.png",
+  "original_sha256": "65d111f5485b45a8d8c3cc21de2e5099e74073bfb8ae33c210fa637a68bc4f72"
+}
