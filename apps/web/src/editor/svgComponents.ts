@@ -1,7 +1,6 @@
 import { Group, Path, Point, util, type FabricObject } from "fabric";
 
 const PREFIX = "Component: ";
-const MAX_COMPONENTS = 8;
 
 /** Persisted groups are the editing boundary; their descendants are never targets. */
 export function hasSvgComponents(group: Group): boolean {

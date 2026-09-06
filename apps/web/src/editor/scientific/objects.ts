@@ -286,6 +286,9 @@ export function detachBrush(group: Group) {
       }
     };
     copyPaints(group, baseline);
+    // Conversion bakes the current appearance into ordinary vector effect bases.
+    group.assetSaturation = 0;
+    group.assetBrightness = 0;
   }
   group.scientificBrush = undefined;
   group.layoutManager.strategy = new FitContentLayout();

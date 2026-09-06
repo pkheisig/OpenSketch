@@ -164,8 +164,12 @@ describe("new flat scientific structures", () => {
   it("preserves original and current paints when converting a recolored brush", () => {
     const object = membrane();
     const original = object.scientificBrush.fill;
+    object.assetBrightness = 25;
+    object.assetSaturation = 30;
     updateBrushObject(object, { ...object.scientificBrush, fill: "#d48e8e" });
     detachBrush(object);
+    expect(object.assetBrightness).toBe(0);
+    expect(object.assetSaturation).toBe(0);
     const leaves: FabricObject[] = [];
     const walk = (part: FabricObject) =>
       part instanceof Group ? part.getObjects().forEach(walk) : leaves.push(part);
