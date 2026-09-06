@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of disposable gloves, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One pair of empty blue nitrile examination gloves arranged side by side with a slight overlap only at rolled cuffs. Each glove has exactly four long fingers and one thumb, relaxed fingers spread enough to read separately, no hands inside. Smooth matte saturated cornflower-blue material with a few soft folds at wrists and finger joints, subtle gradients, crisp navy contours. No powder, packaging, skin, mannequin or symbols. True transparent PNG alpha background.",
+  "refinement": "Correct anatomy of the LEFT glove only: it currently has only four digits. Add its missing thumb projecting diagonally inward/upward into the empty center gap between the gloves, emerging from the left glove palm on its right side below the four finger bases. The left glove must have four long fingers PLUS one shorter thumb, five digits total. Keep the right glove with its existing five digits. Keep both empty cuffs and blue color, smooth the material into clean broad biomedical illustration gradients without photographic grain. Entire pair on transparent background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-b7177bee-22d5-4192-becc-682464856946.png",
+  "archetype": "Pair of empty ambidextrous nitrile gloves, each with four fingers and a thumb; crossed cuffs.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "disposable-gloves",
+  "name": "disposable gloves",
+  "original": "originals/inventory/disposable-gloves/generated.png",
+  "original_sha256": "95add0443f11a4c6c579788648be7a1e5106df27dd333d9baf554f3024d90165"
+}

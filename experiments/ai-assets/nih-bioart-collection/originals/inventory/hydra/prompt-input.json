@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a hydra, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One isolated freshwater Hydra vulgaris polyp. Slender smooth peach-brown tubular body ending in a small flat basal adhesive disk, six long thin gently curving tentacles arranged around a small central raised hypostome at upper end. No bud, no other animal, no substrate. Tentacles complete and separated, subtle intrinsic nematocyst bumps, clean crisp contours, broad soft illustrated gradients, no photographic grain. True transparent PNG alpha.",
+  "refinement": "Keep the complete hydra silhouette, five visible tentacles around its hypostome and basal disk. Smooth the body into a polished biomedical illustration with warm peach broad gradients and clear brown contours. Remove granular photographic body texture and wet glitter. Keep restrained tiny tentacle bumps, no extra structures. Transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-87f7bf71-dcd8-40fb-acb6-00593e214379.png",
+  "archetype": "Solitary Hydra polyp with five visible tentacles, hypostome and basal disk.",
+  "references": [
+    "https://www.mbl.edu/news/how-does-nervous-system-create-behavior-muscle-activity-map-hydra-gives-insight"
+  ]
+}

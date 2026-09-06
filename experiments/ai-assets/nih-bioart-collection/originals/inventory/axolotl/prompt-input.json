@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an axolotl, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One leucistic laboratory axolotl in dorsal three-quarter view, head toward left, full tapering finned tail to right. Pale warm pink smooth skin, small dark eyes, three feathery external gill stalks on EACH side of head, four limbs total with four toes on each forefoot and five on each hindfoot. Slender amphibian body, broad flattened head, no mammal ears, no scales, no scenery. Polished smooth biomedical illustration rather than a photograph, true transparent PNG alpha.",
+  "refinement": "Preserve this axolotl's anatomy, pose, six feathery gill stalks, visible feet and full finned tail. Replace photographic skin pores, wet speckle and fine grain with smooth polished biomedical illustration: broad soft pink gradients, clean crisp darker pink contours, restrained highlights. Keep detailed gill branches but simplify microscopic texture. Keep the far hind limb naturally occluded behind the body. No additions, no text. True transparent background PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-2f49d22c-15d3-426b-a5c4-8ed266571092.png",
+  "archetype": "Leucistic axolotl with far hind limb occluded in three-quarter view.",
+  "references": [
+    "https://assets.vmou.ac.in/MZO06.pdf"
+  ]
+}

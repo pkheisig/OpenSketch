@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a subcutaneous tumor xenograft nodule, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One isolated excised solid tumor nodule used as a reusable preclinical xenograft schematic. Small rounded ovoid soft-tissue mass, gently lobulated contour, pale rose-pink and mauve surface, a few fine red branching surface microvessels intrinsic to the tissue. Intact external surface, no cut face, no skin patch, no animal, no tools, no blood puddle, no pathology labels. Smooth matte biomedical illustration with broad subtle gradients and crisp contours, avoid photographic grain or gore. True transparent PNG alpha.",
+  "refinement": "Preserve this isolated tumor nodule's complete lobulated shape and fine branching red surface vessels. Make it a smooth matte biomedical illustration with broad pale rose and mauve gradients and crisp clean contours. Remove wet photographic sheen, granular tissue texture and tiny mottling. Retain subtle depth between lobules and a few restrained highlights. No new objects or text. True transparent PNG alpha.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "alpha_retry": "Remove the checkerboard background completely. Return an RGBA PNG with zero alpha outside the isolated pink tumor nodule. Preserve the tumor illustration. Background must be transparent, not a drawing of transparency.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-7b257753-6ed2-4b7b-86b1-a646a75f8218.png",
+  "archetype": "Generic excised xenograft nodule for diagram composition. No claim of tumor type or diagnostic histology; host and skin intentionally outside isolated-object scope.",
+  "references": [
+    "https://www.jax.org/research-and-faculty/resources/scientific-research-services/xenograft-and-live-imaging-services"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "subcutaneous-tumor-xenograft-nodule",
+  "name": "subcutaneous tumor xenograft nodule",
+  "original": "originals/inventory/subcutaneous-tumor-xenograft-nodule/generated.png",
+  "original_sha256": "8f9ccf35b92e0dde2d4d088b72dbd8b3fba20ef84f55a9f3bc29fde5cdb215e5"
+}

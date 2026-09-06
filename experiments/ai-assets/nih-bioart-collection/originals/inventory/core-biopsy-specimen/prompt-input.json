@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a core biopsy specimen, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One tiny slender cylindrical soft-tissue core, gently curved and irregular at its two cut ends, shown enlarged diagonally. Pale rose-pink and warm tan tissue with a few subtle longitudinal fiber contours and sparse fine red capillary traces intrinsic to specimen, smooth matte polished biomedical illustration. A cohesive narrow tissue cylinder, no blood pool, needle, container, ruler, cells enlarged separately or surrounding organ. Broad subtle gradients and clean crisp reddish outlines, no photographic wet texture or grain. True transparent PNG alpha background.",
+  "refinement": "Preserve the complete slender curved tissue-core shape and its cut ends. Redraw as smooth NIH BioArt biomedical illustration: muted rose and tan cohesive solid tissue, just a few soft longitudinal fiber bands and two delicate intrinsic capillary traces. Remove all photographic wet texture, granular lumps, yellow fat globules, mottling, harsh specular shine and excessive detail. Cut ends should be solid tissue cross-sections, not a hollow tube. Broad gentle gradients, crisp smooth rose outline, modest highlights. No background, labels or extra objects. Transparent PNG.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-25f5e706-8b62-4f5f-9602-d349dfcb0387.png",
+  "archetype": "Generic enlarged solid soft tissue biopsy core, illustrative fibers and vessel traces, no tissue identity or diagnosis implied.",
+  "references": [
+    "https://ifu.cookmedical.com/data/IFU_PDF/T_QC_REV5.PDF"
+  ]
+}

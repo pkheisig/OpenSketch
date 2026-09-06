@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a medaka fish (Oryzias latipes), matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One adult Japanese rice fish in strict left-facing lateral view. Slender small silver-gold body, large eye high on head, slightly upturned mouth, small dorsal fin placed far posterior, longer anal fin beneath posterior body, small pectoral and pelvic fins, broad rounded-truncate caudal fin. Subtle dark dorsal pigmentation, no zebrafish stripes, no exaggerated ornamental fins. Smooth illustrated scales with restrained detail, crisp outlines and broad gradients, true transparent PNG alpha.",
+  "refinement": "Transform this exact fish into a polished hand-drawn biomedical illustration with smooth simplified forms and crisp dark contours. Preserve the complete fish silhouette and all fin positions and fin rays. Replace photographic sparkling granular scales with simple clean overlapping scale arcs over broad silver-blue and golden gradients. Flat matte surface with restrained highlights, no wet glitter or photographic grain. Preserve large high eye and slightly upturned mouth. Transparent PNG alpha background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-ca6b8679-4f08-483e-9ae6-cf1460d86d52.png",
+  "archetype": "Adult medaka lateral view, posterior dorsal fin and long anal fin.",
+  "references": [
+    "https://shigen.nig.ac.jp/medaka/strain/laboManual.jsp"
+  ]
+}

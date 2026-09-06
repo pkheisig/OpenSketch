@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an infusion pump, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One compact volumetric medical infusion pump in three-quarter view. White housing with teal faceplate, blank dark rectangular screen, simple unlabeled buttons, lower front hinged pump door closed with visible latch, small carry handle on top and rear pole clamp visible at side. No syringe, no IV stand, no patient, no separate tubing or bag. Smooth matte medical device illustration, broad gradients and crisp contours. True transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-95c471b3-bade-4694-b40e-52d09847e031.png",
+  "archetype": "Generic volumetric infusion pump, not a specific manufacturer model.",
+  "references": [
+    "https://catalogs.bbraun.com/en-01/p/PRID00001229/infusomat-space"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "infusion-pump",
+  "name": "infusion pump",
+  "original": "originals/inventory/infusion-pump/generated.png",
+  "original_sha256": "0876fb1eb8f9a0f73b882899b684ce4e2fb985ca347b60ede7f3be045e4bbe50"
+}

@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a Dictyostelium amoeba, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One vegetative Dictyostelium discoideum amoeba, slightly elongated irregular flattened cell with broad lobose leading pseudopod and two small lateral protrusions. Blue-teal cytoplasm with clean darker membrane contour, one round purple nucleus, several smooth small clear vacuoles and a few short oval mitochondria inside. Single cell only, no slug, no fruiting body, no bacteria, no extracellular objects. Smooth matte biomedical cutaway illustration, broad gradients, no photographic texture or random granular noise. True transparent PNG alpha.",
+  "refinement": "Preserve the amoeba silhouette, single purple nucleus, vacuoles and orange mitochondria. Replace all granular sparkling cytoplasm with completely smooth matte pale blue-teal fill with broad soft gradients. Smooth the purple nucleus similarly. Retain clean dark membrane contours and restrained white highlights. Remove scattered tiny colored beads and photographic texture. Professional polished biomedical illustration, true transparent PNG alpha.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-9d90df4f-2087-47d3-b1a1-2e15efde7a5c.png",
+  "archetype": "Schematic vegetative Dictyostelium amoeba. Intrinsic organelles enlarged for recognizability, no species-specific molecular claim.",
+  "references": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC2323390/"
+  ]
+}

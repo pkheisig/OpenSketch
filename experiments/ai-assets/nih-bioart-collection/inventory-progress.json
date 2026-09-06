@@ -25909,37 +25909,212 @@
     "core-biopsy-specimen": {
       "name": "core biopsy specimen",
       "category": "30. Clinical and translational sample collection",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/core-biopsy-specimen-bioart-transparent.png",
+      "svg": "svg/core-biopsy-specimen-bioart-traced.svg",
+      "png_sha256": "d84ae130246e78bf54ade305415da91e7740ac7ecbcdabafb9d667f71acc0407",
+      "svg_sha256": "7258f28255ccc92cf3a4bdc098f97e04817277c7c755facfd9ea402be25c145c",
+      "original_sha256": "fd30d2d8cc6c3903eb39b8f00d339ce8d3dffee58e1a42cc77bb5559fe35692f",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        361,
+        589,
+        349,
+        589
+      ],
+      "svg_paths": 11215,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/core-biopsy-specimen/prompt.json",
+      "qa": "qa/inventory/core-biopsy-specimen",
+      "visual_review": "Viewed corrected PNG/SVG on both backgrounds: cohesive curved solid tissue core with two cut faces, fine fibers and vessel traces retained, comparable shading and clean alpha.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/core-biopsy-specimen/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/core-biopsy-specimen/inspection.webm"
+      }
     },
     "swab": {
       "name": "swab",
       "category": "30. Clinical and translational sample collection",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/swab-bioart-transparent.png",
+      "svg": "svg/swab-bioart-traced.svg",
+      "png_sha256": "95c0299757de5c5293748b0c70e06b4c4de601fd33e2ac46405490a23094508b",
+      "svg_sha256": "af145fb4eff1ecc0649cc9b5166624362b79a94d6ab61f0404a90b4c9340d8be",
+      "original_sha256": "ca4f0c7bea3a46c42c846dd7d508c8d3b1f60c077a79ff6cd5708368c1bc3e0d",
+      "png_dimensions": [
+        1813,
+        1813
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        332,
+        302,
+        343,
+        350
+      ],
+      "svg_paths": 2368,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/swab/prompt.json",
+      "qa": "qa/inventory/swab",
+      "visual_review": "Viewed light/dark PNG/SVG: single flocked tip and continuous straight shaft preserved, complete ends, comparable fiber detail and clean alpha.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/swab/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/swab/inspection.webm"
+      }
     },
     "saliva-collection-tube": {
       "name": "saliva collection tube",
       "category": "30. Clinical and translational sample collection",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/saliva-collection-tube-bioart-transparent.png",
+      "svg": "svg/saliva-collection-tube-bioart-traced.svg",
+      "png_sha256": "f1e360469ddf4c6d042e5fe4baf68d786564f5dc3b64d82c67be872e956a63e8",
+      "svg_sha256": "53d25c41dd21e83523c54cf7873518cd4ef84a629b8f85095983c386c8d87e3b",
+      "original_sha256": "27ff52f5a1dfb8a901c115e795e98e58a81caa8f08206580c8795c561b312f27",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        754,
+        318,
+        577,
+        350
+      ],
+      "svg_paths": 11058,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/saliva-collection-tube/prompt.json",
+      "qa": "qa/inventory/saliva-collection-tube",
+      "visual_review": "Viewed light/dark PNG/SVG: blue cap, nested perforated insert, absorbent swab and lower fluid volume retained, comparable clear-wall shading and clean complete alpha.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/saliva-collection-tube/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/saliva-collection-tube/inspection.webm"
+      }
     },
     "urine-specimen-cup": {
       "name": "urine specimen cup",
       "category": "30. Clinical and translational sample collection",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/urine-specimen-cup-bioart-transparent.png",
+      "svg": "svg/urine-specimen-cup-bioart-traced.svg",
+      "png_sha256": "54d7af14b9a83492418c6923b282c114359ecb5fce6370a91d33fe1f1d909e62",
+      "svg_sha256": "1382a8dc76a127da5cd26d7ff87a1bacb4a760c9ea6b557261dacc799a1c2a22",
+      "original_sha256": "bf0d3268080de4e2a921217136dddfefa07de41b955fedd5a13eb6dde82057b9",
+      "png_dimensions": [
+        1799,
+        1799
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        362,
+        312,
+        344,
+        281
+      ],
+      "svg_paths": 11014,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/urine-specimen-cup/prompt.json",
+      "qa": "qa/inventory/urine-specimen-cup",
+      "visual_review": "Viewed both formats on light/dark: lid ribs, continuous cup walls and yellow fluid meniscus retained, comparable clear plastic shading, complete transparent silhouette.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/urine-specimen-cup/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/urine-specimen-cup/inspection.webm"
+      }
     },
     "stool-collection-tube": {
       "name": "stool collection tube",
       "category": "30. Clinical and translational sample collection",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/stool-collection-tube-bioart-transparent.png",
+      "svg": "svg/stool-collection-tube-bioart-traced.svg",
+      "png_sha256": "86010e897b74f30011c2284881fe123004e3cd52c8f9d704abcb6d207fede5cf",
+      "svg_sha256": "de364713306a53bebae358666a4f3181b60bf251d71896833804c9c89a178bf0",
+      "original_sha256": "785deb0e055fdd644f3d037b43fd6238958b6c04b4e7614ef52af4cd21dc0e9e",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        371,
+        625,
+        371
+      ],
+      "svg_paths": 5767,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/stool-collection-tube/prompt.json",
+      "qa": "qa/inventory/stool-collection-tube",
+      "visual_review": "Viewed both formats on light/dark: intact brown cap with attached stem and concave spoon, complete clear tube, comparable smooth shading and clean alpha.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/stool-collection-tube/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/stool-collection-tube/inspection.webm"
+      }
     },
     "bronchoalveolar-lavage-collection-container": {
       "name": "bronchoalveolar lavage collection container",
       "category": "30. Clinical and translational sample collection",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/bronchoalveolar-lavage-collection-container-bioart-transparent.png",
+      "svg": "svg/bronchoalveolar-lavage-collection-container-bioart-traced.svg",
+      "png_sha256": "9aed0d8a7f98dafdf899e7724aa9afe27df65b548fb8bef00a3e2125f3276dac",
+      "svg_sha256": "5e4a24a49bc72f0ce617a9f4aa90645e0b79e05ab31f1668a4ebc4b2d836af87",
+      "original_sha256": "a3dccb14ef83635483bdf11e9f36d960f7530ec9431b94709496bd490dc03328",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        320,
+        575,
+        331
+      ],
+      "svg_paths": 6991,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/bronchoalveolar-lavage-collection-container/prompt-v3.json",
+      "qa": "qa/inventory/bronchoalveolar-lavage-collection-container",
+      "visual_review": "Viewed final v3 PNG/SVG on both backgrounds: ports and low fluid volume retained, ragged glass holes repaired with editable gradient. SVG glass intentionally more opaque than PNG on dark background; smooth continuous professional silhouette and clear padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bronchoalveolar-lavage-collection-container/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bronchoalveolar-lavage-collection-container/inspection.webm"
+      }
     },
     "tissue-specimen-container": {
       "name": "tissue specimen container",
       "category": "30. Clinical and translational sample collection",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "pathology-specimen-jar",
+      "alias_reason": "The existing visually reviewed pathology specimen jar already depicts the same closed wide-mouth tissue specimen container with intrinsic tissue and fluid; the unnamed container adds no distinct unlabeled morphology.",
+      "reference": "https://www.sarstedt.com/fileadmin/user_upload/Katalog/2023/CAT_20_200_0000_EU_NA_Catalogue_SARSTEDT_2023.pdf",
+      "png": "png/pathology-specimen-jar-bioart-transparent.png",
+      "svg": "svg/pathology-specimen-jar-bioart-traced.svg",
+      "png_sha256": "b5fe869903f60eec0ef8e0a706cbbaba44a3451762d136b52b1a7ff7e03c4214",
+      "svg_sha256": "b08eee588cb17928d197cff9c9e5bebcd2b1a7cc205f7f7f88f7234354c48016"
     },
     "laboratory-refrigerator": {
       "name": "laboratory refrigerator",
@@ -26208,72 +26383,464 @@
     "lab-coat": {
       "name": "lab coat",
       "category": "32. Biosafety, PPE, and laboratory infrastructure",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/lab-coat-bioart-transparent.png",
+      "svg": "svg/lab-coat-bioart-traced.svg",
+      "png_sha256": "cec9ca448a9692025f4022cfb2a9b241deb1113a25902cd50ca401f2356f8467",
+      "svg_sha256": "62e1fd58090ed41347b2d8aab568dd39961295b7b8f0af38b90600dcf83167ca",
+      "original_sha256": "55340ec3604f87acd22e6cca7221e3361d610dc3936b94f0bc94a06231c529de",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        307,
+        563,
+        307
+      ],
+      "svg_paths": 9906,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/lab-coat/prompt.json",
+      "qa": "qa/inventory/lab-coat",
+      "visual_review": "Viewed light/dark PNG/SVG: two sleeves, lapels, five buttons and three pockets retained, complete hem and cuffs, comparable fabric shading and transparent background.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lab-coat/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lab-coat/inspection.webm"
+      }
     },
     "disposable-gloves": {
       "name": "disposable gloves",
       "category": "32. Biosafety, PPE, and laboratory infrastructure",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/disposable-gloves-bioart-transparent.png",
+      "svg": "svg/disposable-gloves-bioart-traced.svg",
+      "png_sha256": "be3f6aaea96712ad743f42c7db70ca10c418948640f6d1280a14b452bb19f3a1",
+      "svg_sha256": "a03eba5524f8430b9ff7782b84d34100727fb31ef9f24a095311d20bd517de43",
+      "original_sha256": "95add0443f11a4c6c579788648be7a1e5106df27dd333d9baf554f3024d90165",
+      "png_dimensions": [
+        1962,
+        1962
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        291,
+        438,
+        298,
+        434
+      ],
+      "svg_paths": 21045,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/disposable-gloves/prompt.json",
+      "qa": "qa/inventory/disposable-gloves",
+      "visual_review": "Viewed corrected PNG/SVG on light/dark: exactly five digits per empty glove, open cuffs and folds preserved, comparable blue shading and clean alpha.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/disposable-gloves/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/disposable-gloves/inspection.webm"
+      }
     },
     "safety-goggles": {
       "name": "safety goggles",
       "category": "32. Biosafety, PPE, and laboratory infrastructure",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/safety-goggles-bioart-transparent.png",
+      "svg": "svg/safety-goggles-bioart-traced.svg",
+      "png_sha256": "48867c6c1fca4c0a85808158d6c8f6dff2a327e3362ae6e1c54a43c3f9c94a5f",
+      "svg_sha256": "250c9cdf7c241f75d8a5476e5d11857f592f81f918f57d1eef20887053ae9019",
+      "original_sha256": "e7e34f90603db142be4fcda505ec75ba87b763fd35fde42caf7f70e0d8a9c8b2",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        360,
+        586,
+        355,
+        627
+      ],
+      "svg_paths": 18398,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/safety-goggles/prompt.json",
+      "qa": "qa/inventory/safety-goggles",
+      "visual_review": "Viewed light/dark comparison: panoramic lens, nose bridge, side vents and complete elastic loop preserved, comparable smooth illustrated lens, true transparent padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/safety-goggles/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/safety-goggles/inspection.webm"
+      }
     },
     "face-shield": {
       "name": "face shield",
       "category": "32. Biosafety, PPE, and laboratory infrastructure",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/face-shield-bioart-transparent.png",
+      "svg": "svg/face-shield-bioart-traced.svg",
+      "png_sha256": "57416d7cd863012c86e51ccd3cb543aa23f4b9c0a7fc8a7b3a6cb525035201b8",
+      "svg_sha256": "b844c54606ec1d1c8da017474198fee1981b6c6eb21aec812156fd1e5e096dd9",
+      "original_sha256": "9ec9f7ac8ac9068a798b6d100db3ada51e935fd7851a274cd54dc0adb2da6d47",
+      "png_dimensions": [
+        1790,
+        1790
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        280,
+        272,
+        290,
+        256
+      ],
+      "svg_paths": 11529,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/face-shield/prompt.json",
+      "qa": "qa/inventory/face-shield",
+      "visual_review": "Viewed light/dark PNG/SVG: full curved visor, forehead band, foam and complete head loop preserved. SVG visor slightly flatter and more opaque, but clean continuous comparable illustration without holes.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/face-shield/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/face-shield/inspection.webm"
+      }
     },
     "surgical-mask": {
       "name": "surgical mask",
       "category": "32. Biosafety, PPE, and laboratory infrastructure",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/surgical-mask-bioart-transparent.png",
+      "svg": "svg/surgical-mask-bioart-traced.svg",
+      "png_sha256": "0c6f5479919314dae6fabea670989d8e457835da8aef4a4430c8519bd4ce4a4e",
+      "svg_sha256": "251530f213e250bacebe868852d383ee4005c28fac3d7af5dd858ebae8b72ba9",
+      "original_sha256": "9313774ce829bec80026561972e5dbdcf2c984106ac71bffda297556680faf4e",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        580,
+        370,
+        563
+      ],
+      "svg_paths": 31386,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/surgical-mask/prompt.json",
+      "qa": "qa/inventory/surgical-mask",
+      "visual_review": "Viewed light/dark PNG/SVG: pleats, seams, nose strip and both ear loops preserved, comparable nonwoven detail and clean alpha with complete shape.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/surgical-mask/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/surgical-mask/inspection.webm"
+      }
     },
     "n95-respirator": {
       "name": "N95 respirator",
       "category": "32. Biosafety, PPE, and laboratory infrastructure",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/n95-respirator-bioart-transparent.png",
+      "svg": "svg/n95-respirator-bioart-traced.svg",
+      "png_sha256": "89525242d550bde4b102f529443c9dc798ea58293d4af8dfb89ad551b7822f9c",
+      "svg_sha256": "82a6c784696c88a4cf118df7345f0d9a6ec49cb04136f42ef896b479bb5dbe61",
+      "original_sha256": "87b7f2d4bbfb933c013b7210dab5290bd56ac764d0fc629b2976c30969959850",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        612,
+        594,
+        319,
+        617
+      ],
+      "svg_paths": 15578,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/n95-respirator/prompt.json",
+      "qa": "qa/inventory/n95-respirator",
+      "visual_review": "Viewed light/dark comparison: cup body, nose clip and two head straps with four attachment points preserved; complete clean silhouette and comparable shading.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/n95-respirator/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/n95-respirator/inspection.webm"
+      }
     },
     "disposable-gown": {
       "name": "disposable gown",
       "category": "32. Biosafety, PPE, and laboratory infrastructure",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/disposable-gown-bioart-transparent.png",
+      "svg": "svg/disposable-gown-bioart-traced.svg",
+      "png_sha256": "fbae0dc7e7ae788b90b0241d343efc40f40d0ab3d87f04b3e40f031cb322850f",
+      "svg_sha256": "890ef5ae62e1488f1384d18c17d60cbda5f569391ff5c5f67d319d393c2a7e84",
+      "original_sha256": "f8003348e7d2cec7fa7e1908f124791a19d6503130ae3504118aaba83b37359c",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        326,
+        577,
+        307
+      ],
+      "svg_paths": 10445,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/disposable-gown/prompt.json",
+      "qa": "qa/inventory/disposable-gown",
+      "visual_review": "Viewed light/dark PNG/SVG: full empty gown, cuffs and two tie ends preserved, grain removed, comparable smooth teal folds and clean alpha.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/disposable-gown/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/disposable-gown/inspection.webm"
+      }
     },
     "biohazard-waste-bin": {
       "name": "biohazard waste bin",
       "category": "32. Biosafety, PPE, and laboratory infrastructure",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/biohazard-waste-bin-bioart-transparent.png",
+      "svg": "svg/biohazard-waste-bin-bioart-traced.svg",
+      "png_sha256": "c3c997cacec405b2d55037cb25b12a6426759e32f03c786ee74f34552429f608",
+      "svg_sha256": "2425b2fe77b8b926673cfe85745aeb60f7e1166226b8fa96c8f1a774b37cd716",
+      "original_sha256": "6b6723689dcc6b9c1aa9d4bd6792d9e1c99f99356ed08bba0f94d3a9f0b0a92a",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        629,
+        364,
+        627,
+        386
+      ],
+      "svg_paths": 10959,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/biohazard-waste-bin/prompt.json",
+      "qa": "qa/inventory/biohazard-waste-bin",
+      "visual_review": "Viewed light/dark PNG/SVG: closed lid, hinge, liner rim and foot pedal preserved, complete silhouette and comparable red gradients, clean alpha.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/biohazard-waste-bin/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/biohazard-waste-bin/inspection.webm"
+      }
     },
     "sharps-container": {
       "name": "sharps container",
       "category": "32. Biosafety, PPE, and laboratory infrastructure",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/sharps-container-bioart-transparent.png",
+      "svg": "svg/sharps-container-bioart-traced.svg",
+      "png_sha256": "8f343c225ca14dc6c3a6baf2586b1b01f7fdd7fcde26cde9427b1f6a10f4ba8b",
+      "svg_sha256": "f803803f29792f3376b81c5408a7ae2f60264b36fccabc6409d8bfdcecdb6d82",
+      "original_sha256": "5c62680d546c080bb925c5e6a513f9ddb3e8719d7da552720c2b1f90f7c6c7e5",
+      "png_dimensions": [
+        1806,
+        1806
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        293,
+        306,
+        324,
+        284
+      ],
+      "svg_paths": 13841,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/sharps-container/prompt.json",
+      "qa": "qa/inventory/sharps-container",
+      "visual_review": "Complete yellow body, restricted red sliding lid and handle preserved in editable paths. Comparable PNG and SVG on light and dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sharps-container/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sharps-container/inspection.webm"
+      }
     },
     "autoclave": {
       "name": "autoclave",
       "category": "32. Biosafety, PPE, and laboratory infrastructure",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/autoclave-bioart-transparent.png",
+      "svg": "svg/autoclave-bioart-traced.svg",
+      "png_sha256": "0602dced67b0e6f09978d44232d1d0b3538d76e8d0463b2f5467f798fe257b06",
+      "svg_sha256": "380babeec22e2436c14006560509392493e4f4aeb674ac0227b518f257588c89",
+      "original_sha256": "59c02f6cda16d7df22ee3942ad2523fc55a67aa6ebc459a90645879c7b032222",
+      "png_dimensions": [
+        1962,
+        1962
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        333,
+        423,
+        281,
+        440
+      ],
+      "svg_paths": 12707,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/autoclave/prompt.json",
+      "qa": "qa/inventory/autoclave",
+      "visual_review": "Pressure door, locking handle, controls and housing retained. Light and dark PNG/SVG comparison passed with minor gradient banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/autoclave/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/autoclave/inspection.webm"
+      }
     },
     "fume-hood": {
       "name": "fume hood",
       "category": "32. Biosafety, PPE, and laboratory infrastructure",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/fume-hood-bioart-transparent.png",
+      "svg": "svg/fume-hood-bioart-traced.svg",
+      "png_sha256": "075a19c0c2ff91954e971ad90ac17bbaf2d61a986f4b97d495102fd65ee36dcd",
+      "svg_sha256": "2db62d3720b1941d6ed809717258bf10cc2d18162a09fa886f0ec06d8204fb3c",
+      "original_sha256": "4301bb4fc5ae325d1db0ab29031b491e0684d1a8c9ad517fd8ef8b08fbc01dab",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        606,
+        328,
+        576,
+        307
+      ],
+      "svg_paths": 7790,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/fume-hood/prompt.json",
+      "qa": "qa/inventory/fume-hood",
+      "visual_review": "Sash, empty chamber, baffles, worktop and duct retained in SVG. No background glow in alpha; light/dark comparison passed.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fume-hood/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fume-hood/inspection.webm"
+      }
     },
     "chemical-storage-cabinet": {
       "name": "chemical storage cabinet",
       "category": "32. Biosafety, PPE, and laboratory infrastructure",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/chemical-storage-cabinet-bioart-transparent.png",
+      "svg": "svg/chemical-storage-cabinet-bioart-traced.svg",
+      "png_sha256": "73920a362c172b5a4d923e0d1ebe0225dbbc25301cd2fb9269f47b1cec498906",
+      "svg_sha256": "595251987b6a0dbf7562c885e0dc040cfb5be5bb201297ea4eb2bca9622fd2f0",
+      "original_sha256": "54d1541add8b33d9c8be44248503e24c18a5036a1f0f211faa69be4b40cf2d3f",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        307,
+        624,
+        355
+      ],
+      "svg_paths": 7871,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/chemical-storage-cabinet/prompt.json",
+      "qa": "qa/inventory/chemical-storage-cabinet",
+      "visual_review": "Two doors, lock, hinges and capped vent retained. Smooth yellow cabinet comparable in light and dark PNG/SVG views.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chemical-storage-cabinet/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chemical-storage-cabinet/inspection.webm"
+      }
     },
     "eyewash-station": {
       "name": "eyewash station",
       "category": "32. Biosafety, PPE, and laboratory infrastructure",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/eyewash-station-bioart-transparent.png",
+      "svg": "svg/eyewash-station-bioart-traced.svg",
+      "png_sha256": "eb3fe0ef5dfb02e49668d7b2de38c4496e7dd808f4522a5e0706445108661de7",
+      "svg_sha256": "473e04c53b00a97461ab4ee7b623a45c3f6e36e360ff551b2005aa0a04fa90c2",
+      "original_sha256": "d87239092fec4ec30dcc4ae3be7639d1db3d61f38c95667ca41fe50e8ae2b341",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        330,
+        564,
+        338
+      ],
+      "svg_paths": 11626,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/eyewash-station/prompt.json",
+      "qa": "qa/inventory/eyewash-station",
+      "visual_review": "Twin spray heads, basin, paddle valve and pedestal remain connected and clear. Transparent PNG/SVG comparison passed.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/eyewash-station/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/eyewash-station/inspection.webm"
+      }
     },
     "emergency-shower": {
       "name": "emergency shower",
       "category": "32. Biosafety, PPE, and laboratory infrastructure",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/emergency-shower-bioart-transparent.png",
+      "svg": "svg/emergency-shower-bioart-traced.svg",
+      "png_sha256": "6c5d8814806e7629d8057ff51131d03e7da3c1ad6c333a0fb062d449a5c25ebc",
+      "svg_sha256": "1140fc339fe05d8bbba0d05ce5070775d4e9ff6559367f2616d4288966c9fb51",
+      "original_sha256": "98bcb80619487ae7cd68633c2e5806192a66169ce6ec886a8049ec9cc8990d8a",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        321,
+        575,
+        324
+      ],
+      "svg_paths": 3391,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/emergency-shower/prompt.json",
+      "qa": "qa/inventory/emergency-shower",
+      "visual_review": "Complete supply pipe, shower head, pull rod and mounting foot remain intact. Transparent PNG/SVG comparison passed.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/emergency-shower/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/emergency-shower/inspection.webm"
+      }
     },
     "antibody-coated-bead": {
       "name": "antibody-coated bead",
@@ -28837,37 +29404,233 @@
     "axolotl": {
       "name": "axolotl",
       "category": "44. Additional visually distinct model organisms",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/axolotl-bioart-transparent.png",
+      "svg": "svg/axolotl-bioart-traced.svg",
+      "png_sha256": "d5c926ac8aac6c51e5195e44853ab44174bbc8f2b9fcf6d1159a9de57d11896b",
+      "svg_sha256": "18771b67f9e0819888ffd657a8d864dd21123028e807af64bfc14d65e020a2e7",
+      "original_sha256": "b2b9cddda2e74a6b654aa0ab410c7ec93a95612a89c3008fd316e71e1adde790",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        342,
+        595,
+        318,
+        615
+      ],
+      "svg_paths": 17139,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/axolotl/prompt.json",
+      "qa": "qa/inventory/axolotl",
+      "visual_review": "Six gill stalks, four-toed visible forefeet, five-toed near hindfoot and complete finned tail retained. Far hind limb occluded. Smoothed PNG and editable SVG comparable on light/dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/axolotl/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/axolotl/inspection.webm"
+      }
     },
     "medaka-fish": {
       "name": "medaka fish",
       "category": "44. Additional visually distinct model organisms",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/medaka-fish-bioart-transparent.png",
+      "svg": "svg/medaka-fish-bioart-traced.svg",
+      "png_sha256": "1550133b7b73da11881409184bd2faebfce0d7dc1c18d6194497bf19d9d9e03f",
+      "svg_sha256": "24b26530e90414689d71cef99cbe592d4a14ed9d40a1a306e4d9f6b1b13ef8b3",
+      "original_sha256": "ad8d434860346b050f05c4d9d6c7ff90e87f68a3cf1757f4eb9f24fb988e42bb",
+      "png_dimensions": [
+        2484,
+        2484
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        383,
+        834,
+        375,
+        837
+      ],
+      "svg_paths": 24121,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/medaka-fish/prompt.json",
+      "qa": "qa/inventory/medaka-fish",
+      "visual_review": "Posterior dorsal fin, long anal fin, eye and complete tail preserved. Fine scale detail retained with comparable PNG/SVG appearance on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/medaka-fish/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/medaka-fish/inspection.webm"
+      }
     },
     "sea-urchin": {
       "name": "sea urchin",
       "category": "44. Additional visually distinct model organisms",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/sea-urchin-bioart-transparent.png",
+      "svg": "svg/sea-urchin-bioart-traced.svg",
+      "png_sha256": "cb2289b4f5591aa021ad7a86912e4a7f65ee7c50d23e8e5cf094ed40a67b9d50",
+      "svg_sha256": "4b450891851781f64b37999487456991aec64404c0bd8df99f957607d33372a5",
+      "original_sha256": "a7f9639029b4cec18651e7cb0aa8b44c616dfebab206f96385ee426aa28d51a5",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        364,
+        578,
+        347,
+        579
+      ],
+      "svg_paths": 36044,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/sea-urchin/prompt.json",
+      "qa": "qa/inventory/sea-urchin",
+      "visual_review": "Complete radial spine silhouette and visible tube feet retained. Editable SVG comparable to PNG against light/dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sea-urchin/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sea-urchin/inspection.webm"
+      }
     },
     "planarian-flatworm": {
       "name": "planarian flatworm",
       "category": "44. Additional visually distinct model organisms",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/planarian-flatworm-bioart-transparent.png",
+      "svg": "svg/planarian-flatworm-bioart-traced.svg",
+      "png_sha256": "1e85bcba2b04ac59706badcf1a3f6bc5e05955760034cd6c3efaa9f9dd020172",
+      "svg_sha256": "e56ca971a8bf6c39cf194150b9d44cc8606e22ae878c85049495c36b595277f1",
+      "original_sha256": "e7c98b8597e65523efeeee5d45926d75ca3a78f5cb76da7e683abe485fc40dba",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        336,
+        577,
+        339
+      ],
+      "svg_paths": 4797,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/planarian-flatworm/prompt.json",
+      "qa": "qa/inventory/planarian-flatworm",
+      "visual_review": "Intact external dorsal silhouette with auricles, two eyespots and tapering tail. Internal gut removed. PNG/SVG comparison passed on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/planarian-flatworm/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/planarian-flatworm/inspection.webm"
+      }
     },
     "hydra": {
       "name": "Hydra",
       "category": "44. Additional visually distinct model organisms",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/hydra-bioart-transparent.png",
+      "svg": "svg/hydra-bioart-traced.svg",
+      "png_sha256": "7569d39eeaff51e384111265150e41befccb92676b8cccf9bad7f164ee3f40ee",
+      "svg_sha256": "af016f1694159b275fb556bed8049dd8653333fd09af9912340fe55ed7692cf6",
+      "original_sha256": "0cb187b47819bcc3ae8337257c5ce77c7116a5ca62e47289a01e4379ab750164",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        596,
+        307,
+        601,
+        325
+      ],
+      "svg_paths": 6608,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/hydra/prompt.json",
+      "qa": "qa/inventory/hydra",
+      "visual_review": "Five visible tentacles remain attached around hypostome; complete body and basal disk. Smoothed PNG and SVG comparable on light/dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hydra/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hydra/inspection.webm"
+      }
     },
     "dictyostelium-amoeba": {
       "name": "Dictyostelium amoeba",
       "category": "44. Additional visually distinct model organisms",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/dictyostelium-amoeba-bioart-transparent.png",
+      "svg": "svg/dictyostelium-amoeba-bioart-traced.svg",
+      "png_sha256": "c4983dab6b5fb45d65a05f8941792876ecde020580a90f8e75be1fc294cffe93",
+      "svg_sha256": "3eda3a50399f7c47d4fb46def92460e8f64589bbbd2fc06f9e8171491253ee21",
+      "original_sha256": "fb00b85963caeebdfd311bf3b6a9c732292f609bce3430097c4e6b00f13d3966",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        356,
+        576,
+        327,
+        563
+      ],
+      "svg_paths": 9192,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/dictyostelium-amoeba/prompt.json",
+      "qa": "qa/inventory/dictyostelium-amoeba",
+      "visual_review": "Lobose single-cell silhouette, one nucleus, vacuoles and four mitochondria retained. Smoothed PNG/SVG comparison passed with clean transparency.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dictyostelium-amoeba/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dictyostelium-amoeba/inspection.webm"
+      }
     },
     "chlamydomonas-cell": {
       "name": "Chlamydomonas cell",
       "category": "44. Additional visually distinct model organisms",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/chlamydomonas-cell-bioart-transparent.png",
+      "svg": "svg/chlamydomonas-cell-bioart-traced.svg",
+      "png_sha256": "92accaa2c87381bcfd163ca78d22eb54348f8c3b44e08eacfa2bb77ce761cdc9",
+      "svg_sha256": "f8631572ebdf6216ce5c1b9b9d5ca71973a0afcee65ffda29934e8f6f3919b52",
+      "original_sha256": "a599eb81cef020d3fe54562aceb26c75b28e4d736ef9243c035b22d3895340f6",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        324,
+        563,
+        329
+      ],
+      "svg_paths": 19016,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/chlamydomonas-cell/prompt.json",
+      "qa": "qa/inventory/chlamydomonas-cell",
+      "visual_review": "Two complete flagella, single cup chloroplast, lateral eyespot, nucleus and pyrenoid retained. PNG/SVG comparison passed on light/dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chlamydomonas-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chlamydomonas-cell/inspection.webm"
+      }
     },
     "glycocalyx": {
       "name": "glycocalyx",
@@ -29082,17 +29845,101 @@
     "infusion-bag": {
       "name": "infusion bag",
       "category": "47. Additional translational and in vivo primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/infusion-bag-bioart-transparent.png",
+      "svg": "svg/infusion-bag-bioart-traced.svg",
+      "png_sha256": "525ddbcbcad0e6f4a404771fb883417d50008acebaa323ef025cdbda4138c84c",
+      "svg_sha256": "e9bec3e2bd8068a7f85b3f4910e31dd75bb8f7225f7df9963f620743591f1b3b",
+      "original_sha256": "a5260f2617e5288128f45574fade0993e32f3e52bb8fa88505dbf538340fae45",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        307,
+        564,
+        379
+      ],
+      "svg_paths": 12303,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/infusion-bag/prompt.json",
+      "qa": "qa/inventory/infusion-bag",
+      "visual_review": "Pouch seam, hanging hole, fluid meniscus and both capped ports retained. Continuous illustrated bag fill without jagged transparency holes. PNG/SVG comparison passed.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/infusion-bag/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/infusion-bag/inspection.webm"
+      }
     },
     "infusion-pump": {
       "name": "infusion pump",
       "category": "47. Additional translational and in vivo primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/infusion-pump-bioart-transparent.png",
+      "svg": "svg/infusion-pump-bioart-traced.svg",
+      "png_sha256": "b45ecb708d06f36cf5aa09797b0e418b1a1019ee85976e90c1e70a55d7c032b0",
+      "svg_sha256": "1baaa859301a9239d7780a568fb80e4d626ce25f2d7132efa988709da2cecd64",
+      "original_sha256": "0876fb1eb8f9a0f73b882899b684ce4e2fb985ca347b60ede7f3be045e4bbe50",
+      "png_dimensions": [
+        1799,
+        1799
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        287,
+        257,
+        351,
+        305
+      ],
+      "svg_paths": 9036,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/infusion-pump/prompt.json",
+      "qa": "qa/inventory/infusion-pump",
+      "visual_review": "Complete housing, closed pump door, screen, handle and pole clamp retained. Minor screen gradient banding; PNG/SVG comparison otherwise comparable on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/infusion-pump/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/infusion-pump/inspection.webm"
+      }
     },
     "subcutaneous-tumor-xenograft-nodule": {
       "name": "subcutaneous tumor xenograft nodule",
       "category": "47. Additional translational and in vivo primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/subcutaneous-tumor-xenograft-nodule-bioart-transparent.png",
+      "svg": "svg/subcutaneous-tumor-xenograft-nodule-bioart-traced.svg",
+      "png_sha256": "733e86b923f1017f29beb44293cb67773386a91481b46914c69a16a5311f2335",
+      "svg_sha256": "e924a9c569d0e3cedcbcff810ee405c5da3f2ca7566330e12b97b0dfa060cac5",
+      "original_sha256": "8f9ccf35b92e0dde2d4d088b72dbd8b3fba20ef84f55a9f3bc29fde5cdb215e5",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        448,
+        602,
+        419,
+        614
+      ],
+      "svg_paths": 24422,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/subcutaneous-tumor-xenograft-nodule/prompt.json",
+      "qa": "qa/inventory/subcutaneous-tumor-xenograft-nodule",
+      "visual_review": "Complete lobulated nodule and intrinsic surface vessels retained. Refined matte shading and transparent background verified in comparable PNG/SVG light/dark views.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/subcutaneous-tumor-xenograft-nodule/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/subcutaneous-tumor-xenograft-nodule/inspection.webm"
+      }
     }
   }
 }

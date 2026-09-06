@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a surgical mask, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One empty disposable light-blue surgical mask with three horizontal pleats, white welded side seams, subtle embedded nose strip along top edge and two complete white elastic ear loops, one on each side. Three-quarter slight angle with gently curved mask body. No face, mannequin, box or packaging. Smooth matte illustrated nonwoven fabric, subtle broad gradients and crisp blue-gray contours, no grain. True transparent PNG alpha background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-15dd96f1-7f9f-4cb8-84dc-93ae5da51987.png",
+  "archetype": "Generic blue pleated surgical mask with two ear loops, no certification claim.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "surgical-mask",
+  "name": "surgical mask",
+  "original": "originals/inventory/surgical-mask/generated.png",
+  "original_sha256": "9313774ce829bec80026561972e5dbdcf2c984106ac71bffda297556680faf4e"
+}

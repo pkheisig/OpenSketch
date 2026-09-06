@@ -1,4 +1,8 @@
-# Continue inventory production
+# Inventory production complete
+
+All 768 unique concrete inventory names across 770 checklist rows are covered by 741 distinct PNG/SVG pairs and 27 documented archetype aliases. The final batch contains 30 new distinct pairs and one alias after the 711-pair checkpoint. No items remain pending. Preserve all outputs; do not restart production unless the user requests additional work. The continuation is to be paused after the final GitHub push is verified.
+
+The workflow below records how this collection was produced.
 
 The user authorized the complete concrete inventory, sequential PNG-first generation, SVG conversion, visual review, and periodic commits/pushes on the existing experimental branch. The active thread continuation is `complete-opensketch-bioart-inventory`. Pause it only once the full inventory is covered and all deliverables are pushed, or if the user cancels.
 

@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a saliva collection tube, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One closed saliva collection tube with blue cap: transparent pale-blue outer round-bottom tube containing an inner suspended perforated insert and a white cylindrical absorbent swab inside that insert, small clear pale-blue saliva volume pooled at bottom below insert. Generic centrifugable swab-based saliva collector, show nested architecture through illustrated clear walls. Three-quarter view, upright slight diagonal. No extra loose swab, funnel, label, scale or person. Smooth continuous illustrated surfaces, broad gradients, crisp outlines, no grain. True transparent PNG alpha background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-45bb06b8-12fb-45c8-af55-ea8080a27adf.png",
+  "archetype": "Generic swab-based saliva collector with nested perforated insert and collected fluid below. Insert suspension geometry illustrative, not exact branded device.",
+  "references": [
+    "https://workflow.sarstedt.com/media/20_156_0300_200_salivette_1021.pdf"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "saliva-collection-tube",
+  "name": "saliva collection tube",
+  "original": "originals/inventory/saliva-collection-tube/generated.png",
+  "original_sha256": "27ff52f5a1dfb8a901c115e795e98e58a81caa8f08206580c8795c561b312f27"
+}

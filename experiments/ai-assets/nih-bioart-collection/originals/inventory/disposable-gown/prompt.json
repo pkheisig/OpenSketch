@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a disposable gown, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One empty light teal disposable isolation gown, front three-quarter view, continuous closed front, round neckline, long sleeves slightly spread with white knitted cuffs, below-knee hem. Two thin integral waist ties visible curving loosely from side seams and ending separately, no pockets or buttons. No person, mannequin or hanger. Smooth illustrated nonwoven material, a few broad soft folds and subtle gradients, crisp teal outline, no grain. Complete garment including cuff and tie ends. True transparent PNG alpha background.",
+  "refinement": "Preserve the exact complete empty gown, cuffs, neckline and two loose waist ties. Remove all grain, photographic fabric weave and noisy texture. Redraw smooth matte teal biomedical illustration with broad simple gradients and crisp outlines, keep just the existing major fabric folds. No extra components, text or mannequin. Transparent background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-40beea46-081e-4529-b690-6e7ca2c0c240.png",
+  "archetype": "Generic closed-front empty disposable gown with knitted cuffs and loose waist ties.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "disposable-gown",
+  "name": "disposable gown",
+  "original": "originals/inventory/disposable-gown/generated.png",
+  "original_sha256": "f8003348e7d2cec7fa7e1908f124791a19d6503130ae3504118aaba83b37359c"
+}

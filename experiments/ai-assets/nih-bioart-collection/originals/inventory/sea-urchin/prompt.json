@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a sea urchin, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One complete purple sea urchin in elevated three-quarter aboral view. Rounded slightly flattened spherical test densely covered with short to medium tapered purple spines radiating in all directions, small tube feet subtly visible between some spines. No face, no eyes, no coral, no water. Polished hand-drawn biomedical illustration, clean distinct spine outlines with broad violet gradients, not a photograph, no microscopic grain. True transparent PNG alpha background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-f2029572-e116-4be6-98a1-d3f596403f42.png",
+  "archetype": "Purple regular sea urchin, aboral view with spines and tube feet.",
+  "references": [
+    "https://www.mbl.edu/news/mbl-march-madness-purple-sea-urchin"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "sea-urchin",
+  "name": "sea urchin",
+  "original": "originals/inventory/sea-urchin/generated.png",
+  "original_sha256": "a7f9639029b4cec18651e7cb0aa8b44c616dfebab206f96385ee426aa28d51a5"
+}

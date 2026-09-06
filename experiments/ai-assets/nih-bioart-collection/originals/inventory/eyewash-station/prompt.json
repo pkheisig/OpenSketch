@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an eyewash station, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One freestanding pedestal emergency eyewash unit, green round shallow basin on brushed gray vertical pipe pedestal with circular mounting foot. Two opposing inward-angled spray heads on U-shaped pipe above basin, attached green dust caps, push paddle at right connected to valve. Dry idle equipment, no water streams. Complete three-quarter view, matte clean biomedical illustration, true transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-b06e70ff-22db-4478-b1ca-c57a777ff412.png",
+  "archetype": "Generic pedestal twin-head eyewash with basin and push paddle.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "eyewash-station",
+  "name": "eyewash station",
+  "original": "originals/inventory/eyewash-station/generated.png",
+  "original_sha256": "d87239092fec4ec30dcc4ae3be7639d1db3d61f38c95667ca41fe50e8ae2b341"
+}

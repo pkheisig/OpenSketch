@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a face shield, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One empty medical face shield, large curved clear pale-blue rectangular visor with rounded bottom corners, attached across top to saturated teal forehead band with dark foam strip and complete navy elastic head loop behind. Three-quarter view, visor extends downward well below band. Smooth continuous opaque pale-blue illustrated visor fill to represent clear plastic, restrained white highlight, crisp contours, no partial alpha inside visor or photographic grain. No face, head, mannequin, lettering or logos. True transparent PNG alpha surrounding background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-a6c951a5-0edc-4a9b-bfd8-4cf9e0a9bfd6.png",
+  "archetype": "Generic empty medical visor with forehead foam and complete elastic strap, no protection-rating claim.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "face-shield",
+  "name": "face shield",
+  "original": "originals/inventory/face-shield/generated.png",
+  "original_sha256": "9ec9f7ac8ac9068a798b6d100db3ada51e935fd7851a274cd54dc0adb2da6d47"
+}

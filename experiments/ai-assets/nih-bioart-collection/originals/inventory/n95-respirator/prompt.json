@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an N95 respirator, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One empty white molded cup-style filtering facepiece respirator, convex dome shaped to nose and chin, small metal nose clip at upper edge, exactly two complete yellow elastic HEAD straps attached at four side attachment points and arcing behind mask. No valve, no ear loops, no person or mannequin. No letters including N95 printed anywhere. Smooth matte illustrated shell with subtle pale-blue gradients, crisp gray-blue outline and minimal texture, no grain. Three-quarter view, entire straps visible. True transparent PNG alpha background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-11f67dda-04a5-4752-9467-29dbd3683e3a.png",
+  "archetype": "Generic cup-style filtering facepiece with two head straps and nose clip; unbranded schematic, no certification markings.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "n95-respirator",
+  "name": "N95 respirator",
+  "original": "originals/inventory/n95-respirator/generated.png",
+  "original_sha256": "87b7f2d4bbfb933c013b7210dab5290bd56ac764d0fc629b2976c30969959850"
+}

@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a laboratory fume hood, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Three-quarter view of a complete white and teal ducted chemical fume hood with attached base cabinet, empty recessed work chamber, rear baffle slots, dark gray worktop, partially raised vertical glass sash with wide lower handle, short exhaust duct outlet on top. No bottles or equipment inside. Glass rendered as smooth pale blue continuous illustrated fill. Matte polished biomedical illustration, true transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-90f0d7a5-ee07-41a3-834c-41a6f778f65f.png",
+  "archetype": "Generic ducted chemical fume hood, empty chamber and raised sash.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "fume-hood",
+  "name": "fume hood",
+  "original": "originals/inventory/fume-hood/generated.png",
+  "original_sha256": "4301bb4fc5ae325d1db0ab29031b491e0684d1a8c9ad517fd8ef8b08fbc01dab"
+}

@@ -1,0 +1,6 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an autoclave, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Compact benchtop laboratory steam autoclave in three-quarter view, smooth white and teal housing, round front pressure chamber door closed with robust locking handle, small blank dark control screen and simple buttons. No interior visible. Illustrated matte finish, broad smooth gradients, true transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-d64607f9-4d07-401e-b579-6445886e1039.png",
+  "archetype": "Generic closed benchtop steam autoclave."
+}
