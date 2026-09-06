@@ -1,5 +1,7 @@
 # OpenSketch 0.1.0
 
+- Corrected full-figure PDF and SVG exports to preserve the document's declared physical size from its stored DPI. Existing exports that were manually rescaled to compensate for the prior oversized PDF behavior may need to be re-exported without that workaround.
+
 - Project persistence now rejects stale cross-tab writers with an explicit
   reload-or-copy recovery path and bounds portable projects to one shared
   serialized-size policy.

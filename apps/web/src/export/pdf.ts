@@ -1,4 +1,9 @@
 import { getPdfFontFamily, TEXT_FONT_REGISTRY } from "@/editor/fonts";
+import {
+  assertPdfPageSize,
+  calculateDocumentPhysicalExtent,
+  type DocumentCanvasSize
+} from "@/export/physicalExtent";
 import { provenanceManifestJson, type ProvenanceManifest } from "@/export/provenance";
 import { PDF_FONT_ASSETS } from "@/export/pdf-font-assets";
 import type { PdfFontStyle, PdfFontWeight } from "@/export/pdf-font-types";
@@ -2116,10 +2121,11 @@ export function buildPdfXmpMetadata(metadata: PdfExportMetadata): string {
 
 export async function svgToPdfBlob(
   svgSource: string,
-  width: number,
-  height: number,
+  documentSize: DocumentCanvasSize,
   metadata: PdfExportMetadata
 ): Promise<Blob> {
+  const physicalExtent = calculateDocumentPhysicalExtent(documentSize);
+  assertPdfPageSize(physicalExtent);
   const [{ jsPDF }] = await Promise.all([import("jspdf"), import("svg2pdf.js")]);
   const parsed = new DOMParser().parseFromString(svgSource, "image/svg+xml");
   if (parsed.querySelector("parsererror")) {
@@ -2129,10 +2135,10 @@ export async function svgToPdfBlob(
   materializePdfTextStyles(svg);
   normalizePdfSvgFontFamilies(svg);
   const pdf = new jsPDF({
-    orientation: width >= height ? "landscape" : "portrait",
-    unit: "px",
-    format: [width, height],
-    hotfixes: ["px_scaling"],
+    orientation:
+      physicalExtent.widthPoints >= physicalExtent.heightPoints ? "landscape" : "portrait",
+    unit: "pt",
+    format: [physicalExtent.widthPoints, physicalExtent.heightPoints],
     compress: true,
     putOnlyUsedFonts: true
   });
@@ -2159,8 +2165,8 @@ export async function svgToPdfBlob(
     await pdf.svg(svg, {
       x: 0,
       y: 0,
-      width,
-      height,
+      width: physicalExtent.widthPoints,
+      height: physicalExtent.heightPoints,
       loadExternalStyleSheets: false
     });
   } catch (error) {

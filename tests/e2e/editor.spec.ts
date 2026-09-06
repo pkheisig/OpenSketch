@@ -739,6 +739,11 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   const svgPath = await svgDownload.path();
   expect(svgPath).not.toBeNull();
   const svg = await readFile(svgPath!, "utf8");
+  const svgRoot = svg.match(/<svg\b[^>]*>/)?.[0];
+  expect(svgRoot).toBeTruthy();
+  expect(svgRoot).toContain('width="162.56mm"');
+  expect(svgRoot).toContain('height="91.44mm"');
+  expect(svgRoot).toContain('viewBox="0 0 1920 1080"');
   const svgMetadata = svgExportMetadata(svg);
   expect(svgMetadata.provenance.version).toBe(1);
   expect(svgMetadata.provenance.assets).toHaveLength(1);
@@ -794,6 +799,8 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   expect(pdfBytes.toString("utf8")).toContain(assetRecord.assetId);
   const pageSize = pdf.getPage(0).getSize();
   expect(pageSize.width).toBeGreaterThan(pageSize.height);
+  expect(pageSize.width).toBeCloseTo(460.8, 1);
+  expect(pageSize.height).toBeCloseTo(259.2, 1);
 
   await page.getByRole("button", { name: "Export" }).click();
   const exportDialog = page.getByRole("dialog", { name: "Export figure" });
@@ -3977,12 +3984,16 @@ test("embeds every selectable editor font face in PDF resources", async ({ page 
     const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1450">${textNodes}</svg>`;
     const moduleUrl = new URL("src/export/pdf.ts", document.baseURI).href;
     const { svgToPdfBlob } = await import(moduleUrl);
-    const blob = await svgToPdfBlob(svg, 900, 1450, {
-      title: "PDF font face matrix",
-      description: "Every selectable OpenSketch text font face",
-      credit: "OpenSketch",
-      provenance: { version: 1, assets: [] }
-    });
+    const blob = await svgToPdfBlob(
+      svg,
+      { width: 900, height: 1450, dpi: 96 },
+      {
+        title: "PDF font face matrix",
+        description: "Every selectable OpenSketch text font face",
+        credit: "OpenSketch",
+        provenance: { version: 1, assets: [] }
+      }
+    );
     return new TextDecoder("latin1").decode(await blob.arrayBuffer());
   }, fonts);
 
@@ -4002,8 +4013,7 @@ test("writes an explicit PDF document author when supplied", async ({ page }) =>
     const { svgToPdfBlob } = await import(moduleUrl);
     const blob = await svgToPdfBlob(
       '<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><rect width="600" height="240" fill="white" /></svg>',
-      600,
-      240,
+      { width: 600, height: 240, dpi: 96 },
       {
         title: "Explicit author",
         description: "PDF author metadata",
@@ -4039,7 +4049,7 @@ test("materializes imported PDF text styles and rejects unsafe glyph coverage", 
     };
     const render = async (svg: string) => {
       try {
-        const blob = await svgToPdfBlob(svg, 600, 240, metadata);
+        const blob = await svgToPdfBlob(svg, { width: 600, height: 240, dpi: 96 }, metadata);
         return { error: null, pdf: new TextDecoder("latin1").decode(await blob.arrayBuffer()) };
       } catch (error) {
         return { error: error instanceof Error ? error.message : String(error), pdf: "" };
@@ -4285,7 +4295,7 @@ test("skips invisible PDF paint during glyph coverage", async ({ page }) => {
     };
     const render = async (svg: string) => {
       try {
-        await svgToPdfBlob(svg, 600, 240, metadata);
+        await svgToPdfBlob(svg, { width: 600, height: 240, dpi: 96 }, metadata);
         return null;
       } catch (error) {
         return error instanceof Error ? error.message : String(error);
@@ -4339,8 +4349,7 @@ test("fetches only the PDF font face used by an SVG text run", async ({ page }) 
     const { svgToPdfBlob } = await import(moduleUrl);
     await svgToPdfBlob(
       `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><text x="12" y="40" font-family="Inter" font-weight="600" font-style="italic">Only one face</text></svg>`,
-      600,
-      240,
+      { width: 600, height: 240, dpi: 96 },
       {
         title: "PDF face loading",
         description: "Only the used PDF face",
@@ -4365,8 +4374,7 @@ test("resolves font styles for each rendered SVG use instance", async ({ page })
         <use href="#label" font-family="Inter" x="12" y="40" />
         <use href="#label" font-family="Lato" font-weight="700" x="12" y="80" />
       </svg>`,
-      600,
-      240,
+      { width: 600, height: 240, dpi: 96 },
       {
         title: "PDF use styles",
         description: "Each rendered SVG use instance keeps its font",
@@ -4398,8 +4406,7 @@ test("preserves per-instance paint for shape and mixed SVG use targets", async (
         <use href="#shape" fill="none" stroke="none" x="132" y="12" />
         <use href="#mixed" fill="green" font-family="Inter" x="192" y="12" />
       </svg>`,
-      600,
-      240,
+      { width: 600, height: 240, dpi: 96 },
       {
         title: "SVG use paint",
         description: "Per-instance shape and mixed target paint",
@@ -4443,8 +4450,7 @@ test("preserves ID-based computed styles for cloned SVG use targets", async ({ p
         <use href="#hidden-shape" fill="red" x="12" y="12" />
         <use href="#transparent-shape" fill="blue" x="72" y="12" />
       </svg>`,
-      600,
-      240,
+      { width: 600, height: 240, dpi: 96 },
       {
         title: "SVG use computed styles",
         description: "ID-based styles remain applied to cloned SVG targets",
@@ -4478,8 +4484,7 @@ test("keeps visible SVG use targets from rendering twice", async ({ page }) => {
         <text id="label" x="12" y="40" font-family="Inter">Visible label</text>
         <use href="#label" font-family="Inter" x="12" y="80" />
       </svg>`,
-      600,
-      240,
+      { width: 600, height: 240, dpi: 96 },
       {
         title: "PDF use target",
         description: "A visible SVG use target renders once per instance",
@@ -4515,8 +4520,7 @@ test("preserves nested SVG use font context and computed size", async ({ page })
         </defs>
         <use href="#wrapper" font-family="Lato" font-size="24px" x="12" y="40" />
       </svg>`,
-      600,
-      240,
+      { width: 600, height: 240, dpi: 96 },
       {
         title: "Nested PDF use styles",
         description: "Nested SVG use instances preserve inherited font context",
@@ -4550,8 +4554,7 @@ test("preserves computed PDF text size from CSS shorthand", async ({ page }) => 
         <style>.label { font: italic 600 24px "Inter"; }</style>
         <text class="label" x="12" y="40">Sized label</text>
       </svg>`,
-      600,
-      240,
+      { width: 600, height: 240, dpi: 96 },
       {
         title: "PDF text size",
         description: "Computed CSS text size remains explicit in PDF output",
@@ -4586,8 +4589,7 @@ test("preserves stylesheet font cascade over inherited SVG presentation attribut
     const { svgToPdfBlob } = await import(moduleUrl);
     const blob = await svgToPdfBlob(
       `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="240"><style>.label { font-family: "Inter"; font-style: normal; font-weight: 400; font-size: 16px; }</style><g font-family="Lato" font-style="italic" font-weight="700" font-size="24px"><text class="label" x="12" y="40">Cascade wins</text></g></svg>`,
-      600,
-      240,
+      { width: 600, height: 240, dpi: 96 },
       {
         title: "PDF font cascade",
         description: "Stylesheet declarations override inherited SVG presentation attributes",
