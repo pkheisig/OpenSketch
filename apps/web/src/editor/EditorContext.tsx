@@ -57,6 +57,11 @@ import {
 import { sanitizeImportedSvg } from "@/assets/browserSanitizer";
 import { calculatePngExportResource, setPngDpi } from "@/export/png";
 import {
+  applyPhysicalSvgViewport,
+  calculateDocumentPhysicalExtent,
+  type DocumentCanvasSize
+} from "@/export/physicalExtent";
+import {
   normalizePdfFontStyle,
   normalizePdfFontWeight,
   svgToPdfBlob,
@@ -4303,6 +4308,12 @@ export function EditorProvider({
   const buildSvg = useCallback(
     (title = latestProject.current.name, description = latestProject.current.description ?? "") => {
       if (!canvas) throw new Error("The figure canvas is not ready.");
+      const documentSize: DocumentCanvasSize = {
+        width: canvasSettings.width,
+        height: canvasSettings.height,
+        dpi: canvasSettings.dpi
+      };
+      const physicalExtent = calculateDocumentPhysicalExtent(documentSize);
       refreshTextMetrics(canvas.getObjects());
       let svg = withLogicalViewport(canvas, canvasSettings, () =>
         canvas.toSVG({
@@ -4312,6 +4323,7 @@ export function EditorProvider({
           viewBox: { x: 0, y: 0, width: canvasSettings.width, height: canvasSettings.height }
         })
       );
+      svg = applyPhysicalSvgViewport(svg, physicalExtent);
       const provenance = collectProvenanceManifest(canvas.getObjects());
       const metadata = `<metadata>${escapeXml(
         JSON.stringify({
@@ -4357,12 +4369,20 @@ export function EditorProvider({
       await waitForCanvasTextFonts(canvas.getObjects(), services.fonts);
       if (options?.signal?.aborted) return;
       const svg = buildSvg(title, description);
-      const blob = await svgToPdfBlob(svg, canvasSettings.width, canvasSettings.height, {
-        title,
-        description,
-        credit: GLOBAL_CREDIT,
-        provenance: collectProvenanceManifest(canvas.getObjects())
-      });
+      const blob = await svgToPdfBlob(
+        svg,
+        {
+          width: canvasSettings.width,
+          height: canvasSettings.height,
+          dpi: canvasSettings.dpi
+        },
+        {
+          title,
+          description,
+          credit: GLOBAL_CREDIT,
+          provenance: collectProvenanceManifest(canvas.getObjects())
+        }
+      );
       if (options?.signal?.aborted) return;
       await services.exports.deliver({
         blob,
@@ -4373,6 +4393,7 @@ export function EditorProvider({
     [
       buildSvg,
       canvas,
+      canvasSettings.dpi,
       canvasSettings.height,
       canvasSettings.width,
       services,
