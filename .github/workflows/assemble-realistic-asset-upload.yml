@@ -22,8 +22,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cat .asset-upload/part-*.txt | base64 --decode > /tmp/opensketch-realistic-assets.zip
-          echo '5b28522e090264631ef8923d70d62f5531adf6c9a04d6d76836fc5e490ebc47e  /tmp/opensketch-realistic-assets.zip' | sha256sum -c -
+          cat .asset-upload/part-*.txt | base64 --decode > /tmp/opensketch-realistic-assets.tar.xz
+          echo '5d235fa4e1cdd94b1e6f44e930e152b3be3ade0e27e470b94cfd77d030deaca7  /tmp/opensketch-realistic-assets.tar.xz' | sha256sum -c -
           target='experiments/ai-assets/nih-bioart-collection/svg/realistic'
           mkdir -p "$target"
           rm -f \
@@ -33,7 +33,7 @@ jobs:
             "$target/t-lymphocyte-realistic.svg" \
             "$target/macrophage-realistic.svg" \
             "$target/antibody-realistic.svg"
-          unzip -j -o /tmp/opensketch-realistic-assets.zip -d "$target"
+          tar -xJf /tmp/opensketch-realistic-assets.tar.xz -C "$target"
           test "$(find "$target" -maxdepth 1 -name '*-realistic.svg' -type f | wc -l)" -eq 3
           if grep -Riq '<image\b' "$target"; then
             echo 'Embedded raster image found in realistic SVG output' >&2
