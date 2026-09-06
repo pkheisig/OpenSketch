@@ -100,6 +100,7 @@ for (const { canonical: entry, entries } of canonicalArtworkGroups(
     variants: [
       {
         id,
+        style: "detailed",
         label: "Original",
         assetPath: `assets/opensketch-generated/${entry.id}.svg`,
         thumbnailPath: `assets/opensketch-generated/${entry.id}.webp`,

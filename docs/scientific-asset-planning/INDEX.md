@@ -1,6 +1,6 @@
 # Planning index
 
-[Guide](README.md) · [Assembly instructions](ASSEMBLY-INSTRUCTIONS.md)
+[Guide](README.md) · [Assembly instructions](ASSEMBLY-INSTRUCTIONS.md) · [Asset styles](ASSET-STYLES.md)
 
 Names below are planning specifications, not 106 new primitive assets. Brainstorms require further source verification.
 

@@ -142,6 +142,12 @@ try {
 const moduleTypes = await readFile(join(releaseRoot, "module/opensketch-module.d.ts"), "utf8");
 for (const service of [
   'export type CanvasUnit = "px" | "mm" | "in";',
+  'export type AssetQualificationState = "approved" | "rejected" | "pending";',
+  "export interface AssetVariantLineage {",
+  'relationship: "simplified-counterpart";',
+  "export interface AssetVariantQualification {",
+  "lineage?: AssetVariantLineage;",
+  "qualification?: AssetVariantQualification;",
   "export interface CanvasSettings {",
   "canvas: CanvasSettings;",
   "projects: ProjectRepository;",

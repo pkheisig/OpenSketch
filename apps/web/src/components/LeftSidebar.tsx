@@ -30,7 +30,11 @@ import {
 import {
   ASSET_CATEGORY_ORDER,
   ASSET_CATEGORY_DEFINITIONS,
+  assetVariantIsEditable,
+  findAssetVariantForStyle,
   filterAssetFamilies,
+  variantsForStyle,
+  type AssetStyle,
   type AssetManifest,
   type AssetFamily,
   type AssetVariant,
@@ -84,6 +88,11 @@ import {
   loadAssetVariantDefaults,
   saveAssetVariantDefault
 } from "@/editor/assetVariantDefaults";
+import {
+  ASSET_STYLE_CHANGED_EVENT,
+  loadAssetStyle,
+  saveAssetStyle
+} from "@/editor/assetStylePreference";
 import { AssetVariantPicker } from "@/components/AssetVariantPicker";
 import { ColorPalettePicker } from "@/components/ColorPalettePicker";
 import { OfflineAssetLibraryCard } from "@/components/OfflineAssetLibraryCard";
@@ -114,6 +123,10 @@ const DEFAULT_CREATION_DEFAULTS_DISCLOSURES: Record<CreationDefaultsSection, boo
   line: true
 };
 const ASSET_CATEGORIES = ["All", ...ASSET_CATEGORY_ORDER];
+const ASSET_STYLE_OPTIONS = [
+  { value: "detailed" as const, label: "Detailed" },
+  { value: "simplified" as const, label: "Simplified" }
+];
 
 function userErrorMessage(reason: unknown): string {
   return reason instanceof Error ? reason.message : String(reason);
@@ -873,6 +886,9 @@ function AssetsPanel({
   const [variants, setVariants] = useState(() =>
     loadAssetVariantDefaults(services.preferences.storage)
   );
+  const [assetStyle, setAssetStyle] = useState<AssetStyle>(() =>
+    loadAssetStyle(services.preferences.storage)
+  );
   const [favorites, setFavorites] = useState<Set<string>>(() =>
     loadAssetFavorites(services.preferences.storage)
   );
@@ -910,18 +926,38 @@ function AssetsPanel({
       category === "Favorites" ? "All" : category
     );
     const filtered = matches.filter((family) => {
+      const selectedStyleVariant = findAssetVariantForStyle(family, assetStyle);
+      if (!selectedStyleVariant) return false;
       const matchesTopic =
         topicFilter === ALL_ASSET_FILTER_VALUE || family.topics?.includes(topicFilter);
+      const isEditable = assetVariantIsEditable(family, selectedStyleVariant);
       const matchesEditability =
         editabilityFilter === ALL_ASSET_FILTER_VALUE ||
-        (editabilityFilter === FIXED_ASSET_FILTER_VALUE && !family.editableStructure) ||
-        (editabilityFilter === EDITABLE_ASSET_FILTER_VALUE && family.editableStructure === true);
+        (editabilityFilter === FIXED_ASSET_FILTER_VALUE && !isEditable) ||
+        (editabilityFilter === EDITABLE_ASSET_FILTER_VALUE && isEditable);
       return matchesTopic && matchesEditability;
     });
     return category === "Favorites"
       ? filtered.filter((family) => favorites.has(family.familyId))
       : filtered;
-  }, [assetManifest.families, category, debouncedQuery, favorites, topicFilter, editabilityFilter]);
+  }, [
+    assetManifest.families,
+    assetStyle,
+    category,
+    debouncedQuery,
+    favorites,
+    topicFilter,
+    editabilityFilter
+  ]);
+  const styleCoverage = useMemo(
+    () => ({
+      available: assetManifest.families.filter((family) =>
+        findAssetVariantForStyle(family, assetStyle)
+      ).length,
+      total: assetManifest.families.length
+    }),
+    [assetManifest.families, assetStyle]
+  );
   const matchingTemplates = useMemo(() => {
     const normalizedQuery = debouncedQuery.trim().toLowerCase();
     return normalizedQuery
@@ -945,6 +981,11 @@ function AssetsPanel({
       setSavedStyles(loadSavedElementStyles(services.preferences.storage));
     window.addEventListener(SAVED_ELEMENT_STYLES_CHANGED_EVENT, updateSavedStyles);
     return () => window.removeEventListener(SAVED_ELEMENT_STYLES_CHANGED_EVENT, updateSavedStyles);
+  }, [services]);
+  useEffect(() => {
+    const updateAssetStyle = () => setAssetStyle(loadAssetStyle(services.preferences.storage));
+    window.addEventListener(ASSET_STYLE_CHANGED_EVENT, updateAssetStyle);
+    return () => window.removeEventListener(ASSET_STYLE_CHANGED_EVENT, updateAssetStyle);
   }, [services]);
   useEffect(() => {
     const updateFavorites = () => setFavorites(loadAssetFavorites(services.preferences.storage));
@@ -997,9 +1038,9 @@ function AssetsPanel({
   }, [families.length]);
   const rows = Math.ceil(families.length / 2);
   const selectedVariant = (family: AssetFamily) =>
-    family.variants.find((variant) => variant.id === variants[family.familyId]) ??
-    family.variants.find((variant) => variant.id === family.defaultVariantId) ??
-    family.variants[0];
+    variantsForStyle(family, assetStyle).find(
+      (variant) => variant.id === variants[family.familyId]
+    ) ?? findAssetVariantForStyle(family, assetStyle)!;
 
   const toggleFavorite = (familyId: string) => {
     const next = new Set(favorites);
@@ -1028,11 +1069,13 @@ function AssetsPanel({
     <div style={style} className="asset-row">
       {families.slice(index * 2, index * 2 + 2).map((family) => {
         const variant = selectedVariant(family);
+        const styleVariants = variantsForStyle(family, assetStyle);
         return (
           <AssetCard
             key={family.familyId}
             family={family}
             variant={variant}
+            variants={styleVariants}
             preferredVariantId={variants[family.familyId]}
             savedStyle={savedStyles[`asset:${variant.id}`]}
             favorite={favorites.has(family.familyId)}
@@ -1112,7 +1155,26 @@ function AssetsPanel({
             ) : null}
           </button>
         ) : null}
+        {category !== "Templates" ? (
+          <UiSelect
+            value={assetStyle}
+            options={ASSET_STYLE_OPTIONS}
+            onChange={(value) => {
+              setAssetStyle(value);
+              saveAssetStyle(value, services.preferences.storage);
+            }}
+            ariaLabel="Asset style"
+            className="asset-style-select"
+          />
+        ) : null}
       </div>
+      {category !== "Templates" &&
+      assetStyle === "simplified" &&
+      styleCoverage.available < styleCoverage.total ? (
+        <span className="asset-style-coverage" role="status" aria-live="polite">
+          Simplified available for {styleCoverage.available} of {styleCoverage.total} families
+        </span>
+      ) : null}
       <OfflineAssetLibraryCard assetManifest={assetManifest} version={offlinePackVersion} />
       <MotionCollapse
         open={filtersOpen && category !== "Templates"}
@@ -1188,11 +1250,14 @@ function AssetsPanel({
             .map((id) => assetManifest.families.find((family) => family.familyId === id))
             .filter((family): family is AssetFamily => Boolean(family))
             .slice(0, 4)
-            .map((family) => (
-              <button key={family.familyId} onClick={() => insert(family, selectedVariant(family))}>
-                {family.title}
-              </button>
-            ))}
+            .map((family) => {
+              const variant = findAssetVariantForStyle(family, assetStyle);
+              return variant ? (
+                <button key={family.familyId} onClick={() => insert(family, variant)}>
+                  {family.title}
+                </button>
+              ) : null;
+            })}
         </div>
       )}
       {category === "Templates" ? (
@@ -1320,6 +1385,7 @@ function TemplateCard({
 function AssetCard({
   family,
   variant,
+  variants,
   preferredVariantId,
   savedStyle,
   favorite,
@@ -1331,6 +1397,7 @@ function AssetCard({
 }: {
   family: AssetFamily;
   variant: AssetVariant;
+  variants: AssetVariant[];
   preferredVariantId?: string;
   savedStyle?: ElementStyleSnapshot;
   favorite: boolean;
@@ -1408,7 +1475,7 @@ function AssetCard({
   }, [sourcePopoverOpen]);
   const onDragStart = (event: DragEvent) => {
     const currentVariant =
-      family.variants.find((candidate) => candidate.id === preferredVariantId) ?? variant;
+      variants.find((candidate) => candidate.id === preferredVariantId) ?? variant;
     setAssetDragPayload(event.dataTransfer, family.familyId, currentVariant.id);
     setAssetDragImage(
       event.dataTransfer,
@@ -1418,7 +1485,7 @@ function AssetCard({
   };
   return (
     <article
-      className={`asset-card${family.editableStructure ? " asset-card-editable" : ""}`}
+      className={`asset-card${assetVariantIsEditable(family, variant) ? " asset-card-editable" : ""}`}
       draggable
       onDragStart={(event) => {
         onAssetDragStart();
@@ -1480,10 +1547,16 @@ function AssetCard({
         portalRoot ?? document.body
       )}
       <div className="asset-card-copy">
-        {family.editableStructure && <span className="asset-editable-badge">Editable</span>}
+        {assetVariantIsEditable(family, variant) && (
+          <span className="asset-editable-badge">Editable</span>
+        )}
         <strong title={family.title}>{family.title}</strong>
-        {family.variants.length > 1 ? (
-          <AssetVariantPicker family={family} value={variant.id} onChange={onVariant} />
+        {variants.length > 1 ? (
+          <AssetVariantPicker
+            family={{ ...family, variants }}
+            value={variant.id}
+            onChange={onVariant}
+          />
         ) : (
           <small>{family.category}</small>
         )}

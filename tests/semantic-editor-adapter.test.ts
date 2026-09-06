@@ -988,6 +988,53 @@ describe("semantic editor adapter", () => {
     expect(adapter.inspectProvenance()).toEqual({ version: 1, assets: [] });
   });
 
+  it("reports style availability and never substitutes Detailed for an unavailable style", async () => {
+    const adapter = makeAdapter(makeCanvas());
+    const searched = (await adapter.searchAssets({
+      query: "cell",
+      style: "simplified",
+      limit: 20
+    })) as {
+      results: Array<{
+        familyId: string;
+        availableStyles: string[];
+        defaultVariantId?: string;
+        variants: Array<{ id: string; style: string }>;
+      }>;
+    };
+    const family = searched.results.find((candidate) => candidate.familyId === "editable-cell");
+    expect(family?.availableStyles).toContain("simplified");
+    expect(family?.defaultVariantId).toBe("editable-cell-simplified");
+    expect(family?.variants).toEqual([
+      expect.objectContaining({
+        id: "editable-cell-simplified",
+        style: "simplified",
+        qualification: expect.objectContaining({ state: "approved" }),
+        lineage: { sourceVariantId: "editable-cell", relationship: "simplified-counterpart" }
+      })
+    ]);
+
+    const inspected = (await adapter.inspectAsset({
+      familyId: "editable-cell",
+      style: "simplified"
+    })) as { family: { selectedStyle: string; selectedVariantId: string } };
+    expect(inspected.family).toMatchObject({
+      selectedStyle: "simplified",
+      selectedVariantId: "editable-cell-simplified"
+    });
+
+    await expect(
+      adapter.inspectAsset({ familyId: "editable-membrane", style: "simplified" })
+    ).rejects.toMatchObject({ code: "ASSET_STYLE_UNAVAILABLE" });
+    await expect(
+      adapter.execute("insert_asset", {
+        familyId: "editable-cell",
+        variantId: "editable-cell",
+        style: "simplified"
+      })
+    ).rejects.toMatchObject({ code: "ASSET_STYLE_MISMATCH" });
+  });
+
   it("inserts assets and reports a same-variant replacement as a no-op", async () => {
     const canvas = makeCanvas();
     const adapter = makeAdapter(

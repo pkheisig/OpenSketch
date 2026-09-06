@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
   assertUniqueAssetCatalog,
-  enrichAssetKeywords
+  assetVariantIsEditable,
+  enrichAssetKeywords,
+  assetStyleOf,
+  findAssetVariantForStyle,
+  variantsForStyle
 } from "../packages/editor-core/src/assetCatalog";
 import { filterAssetFamilies } from "../packages/editor-core/src/search";
 import { assetManifest } from "../apps/web/src/assets/manifest";
@@ -54,5 +58,85 @@ describe("canonical asset catalog", () => {
     expect(groups).toHaveLength(1);
     expect(groups[0].canonical.id).toBe("stable");
     expect(groups[0].entries.map((entry) => entry.id)).toEqual(["newName", "stable"]);
+  });
+
+  it("normalizes legacy variants to Detailed and resolves only the requested style", () => {
+    const family = {
+      ...assetManifest.families.find((candidate) => candidate.familyId === "editable-cell")!,
+      variants: [
+        {
+          id: "cell-detailed",
+          assetPath: "detailed.svg",
+          thumbnailPath: "detailed.svg"
+        },
+        {
+          id: "cell-simplified",
+          style: "simplified" as const,
+          assetPath: "simplified.svg",
+          thumbnailPath: "simplified.svg"
+        }
+      ]
+    };
+
+    expect(assetStyleOf(family.variants[0])).toBe("detailed");
+    expect(variantsForStyle(family, "simplified").map((variant) => variant.id)).toEqual([
+      "cell-simplified"
+    ]);
+    expect(findAssetVariantForStyle(family, "simplified")?.id).toBe("cell-simplified");
+    expect(findAssetVariantForStyle(family, "detailed")?.id).toBe("cell-detailed");
+  });
+
+  it("classifies editability from the selected style-aware variant", () => {
+    const family = assetManifest.families.find(
+      (candidate) => candidate.familyId === "editable-cell"
+    )!;
+    const detailed = findAssetVariantForStyle(family, "detailed")!;
+    const simplified = findAssetVariantForStyle(family, "simplified")!;
+    expect(assetVariantIsEditable(family, detailed)).toBe(true);
+    expect(assetVariantIsEditable(family, simplified)).toBe(false);
+    expect(assetVariantIsEditable({ editableStructure: false }, detailed)).toBe(false);
+  });
+
+  it("publishes only Detailed or Simplified variants with paired scientific fixtures", () => {
+    const styles = new Set(
+      assetManifest.families.flatMap((family) =>
+        family.variants.map((variant) => assetStyleOf(variant))
+      )
+    );
+    expect(styles).toEqual(new Set(["detailed", "simplified"]));
+    expect(
+      ["editable-cell", "editable-protein", "opensketch-generated-lysosome"].every((familyId) =>
+        assetManifest.families
+          .find((family) => family.familyId === familyId)
+          ?.variants.some((variant) => assetStyleOf(variant) === "simplified")
+      )
+    ).toBe(true);
+    expect(
+      assetManifest.families
+        .flatMap((family) => family.variants)
+        .filter((variant) => assetStyleOf(variant) === "simplified")
+        .every((variant) => /^[a-f0-9]{64}$/.test(variant.localSha256 ?? ""))
+    ).toBe(true);
+    const simplifiedVariants = assetManifest.families.flatMap((family) =>
+      family.variants
+        .filter((variant) => assetStyleOf(variant) === "simplified")
+        .map((variant) => ({ family, variant }))
+    );
+    expect(simplifiedVariants).toHaveLength(8);
+    expect(
+      simplifiedVariants.every(
+        ({ family, variant }) =>
+          variant.qualification?.state === "approved" &&
+          variant.qualification?.reviewedAt === "2026-09-06" &&
+          variant.lineage?.relationship === "simplified-counterpart" &&
+          family.variants.some((candidate) => candidate.id === variant.lineage?.sourceVariantId)
+      )
+    ).toBe(true);
+    expect(
+      assetManifest.families
+        .find((family) => family.familyId === "editable-cell")
+        ?.variants.find((variant) => variant.id === "editable-cell-simplified")?.qualification
+        ?.notes
+    ).toContain("T lymphocyte");
   });
 });

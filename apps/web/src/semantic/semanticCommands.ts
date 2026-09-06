@@ -124,6 +124,11 @@ const number = (minimum?: number, maximum?: number): JsonSchema => ({
   ...(maximum === undefined ? {} : { maximum })
 });
 
+const assetStyle = (): JsonSchema => ({
+  type: "string",
+  enum: ["detailed", "simplified"]
+});
+
 const integer = (minimum?: number, maximum?: number): JsonSchema => ({
   ...number(minimum, maximum),
   integer: true
@@ -500,6 +505,7 @@ const definitions: SemanticCommandDefinition[] = [
       properties: {
         query: { type: "string", maxLength: 200 },
         category: { type: "string", maxLength: 100 },
+        style: assetStyle(),
         limit: assetLimit()
       },
       required: ["query"],
@@ -521,7 +527,7 @@ const definitions: SemanticCommandDefinition[] = [
     requires: ["project"],
     inputSchema: {
       type: "object",
-      properties: { familyId: assetFamilyId(), variantId: assetVariantId() },
+      properties: { familyId: assetFamilyId(), variantId: assetVariantId(), style: assetStyle() },
       required: ["familyId"],
       additionalProperties: false
     },
@@ -793,6 +799,7 @@ const definitions: SemanticCommandDefinition[] = [
       properties: {
         familyId: assetFamilyId(),
         variantId: assetVariantId(),
+        style: assetStyle(),
         x: number(),
         y: number()
       },
@@ -802,7 +809,8 @@ const definitions: SemanticCommandDefinition[] = [
     outputSchema: output({
       objectId: objectId(),
       familyId: assetFamilyId(),
-      variantId: assetVariantId()
+      variantId: assetVariantId(),
+      style: assetStyle()
     })
   },
   {
@@ -819,11 +827,11 @@ const definitions: SemanticCommandDefinition[] = [
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
-      properties: { objectId: objectId(), variantId: assetVariantId() },
+      properties: { objectId: objectId(), variantId: assetVariantId(), style: assetStyle() },
       required: ["objectId", "variantId"],
       additionalProperties: false
     },
-    outputSchema: output({ objectId: objectId(), variantId: assetVariantId() })
+    outputSchema: output({ objectId: objectId(), variantId: assetVariantId(), style: assetStyle() })
   },
   {
     name: "move_objects",
