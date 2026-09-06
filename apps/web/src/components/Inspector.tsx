@@ -724,7 +724,7 @@ function svgPartParent(object: FabricObject): FabricGroup | null {
   for (let parent = object.group; parent; parent = parent.group) {
     if (
       parent instanceof FabricGroup &&
-      (parent.OpenSketchType === "nih-asset" ||
+      (parent.OpenSketchType === "library-asset" ||
         parent.OpenSketchType === "import" ||
         parent.OpenSketchType === "upload")
     ) {

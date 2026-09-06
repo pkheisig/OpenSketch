@@ -15,3 +15,5 @@ export * from "./scientificBrushGeometry";
 export * from "./assetColorRoles";
 
 export * from "./assetCatalog";
+
+export { ASSET_CATEGORY_DEFINITIONS } from "./assetTaxonomy";

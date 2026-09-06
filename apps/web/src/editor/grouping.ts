@@ -1,6 +1,6 @@
 import { ActiveSelection, Group, type Canvas, type FabricObject } from "fabric";
 
-const ATOMIC_SVG_TYPES = new Set(["nih-asset", "import", "upload"]);
+const ATOMIC_SVG_TYPES = new Set(["library-asset", "import", "upload"]);
 
 export function isManualGroup(object: FabricObject | undefined): object is Group {
   return (

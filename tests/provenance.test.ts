@@ -19,7 +19,8 @@ describe("export provenance", () => {
   it("recursively collects, deduplicates, and orders nested asset records", () => {
     const shared = {
       sourcePage: "https://example.org/shared",
-      author: "Shared author",
+      author: "OpenSketch",
+      sourceName: "OpenSketch generated",
       license: "CC-BY-4.0",
       licenseUrl: "https://creativecommons.org/licenses/by/4.0/",
       credit: "Shared author / Example"
@@ -29,7 +30,8 @@ describe("export provenance", () => {
       new Group([
         asset("asset-a", "Alpha", {
           sourcePage: "https://example.org/alpha",
-          author: "Alpha author",
+          author: "OpenSketch",
+          sourceName: "OpenSketch generated",
           license: "CC0-1.0",
           spdxId: "CC0-1.0",
           attribution: "Alpha author / Example",
@@ -47,7 +49,8 @@ describe("export provenance", () => {
     expect(first.assets[0]).toMatchObject({
       name: "Alpha",
       source: "https://example.org/alpha",
-      author: "Alpha author",
+      author: "OpenSketch",
+      sourceName: "OpenSketch generated",
       license: "CC0-1.0",
       spdxId: "CC0-1.0",
       attribution: "Alpha author / Example",
@@ -57,6 +60,17 @@ describe("export provenance", () => {
     expect(credits).toContain("SPDX ID: CC0-1.0");
     expect(credits.match(/Attribution: Alpha author \/ Example/g)).toHaveLength(1);
     expect(provenanceManifestJson(first)).toBe(provenanceManifestJson(second));
+  });
+
+  it("excludes records from retired catalog providers", () => {
+    const manifest = collectProvenanceManifest([
+      asset("retired-asset", "Old asset", {
+        author: "Retired provider",
+        sourceName: "Retired collection",
+        license: "CC-BY-4.0"
+      })
+    ]);
+    expect(manifest.assets).toEqual([]);
   });
 
   it("ignores objects without provenance and produces a readable empty fallback", () => {

@@ -7,11 +7,23 @@ import { canonicalArtworkGroups } from "./canonical-artwork.mjs";
 const commit = process.argv[2];
 if (!/^[a-f0-9]{40}$/.test(commit ?? ""))
   throw new Error("Supply a pinned 40-character artwork commit.");
-const base = "experiments/ai-assets/nih-bioart-collection/";
+const inventories = execFileSync(
+  "git",
+  ["ls-tree", "-r", "--name-only", commit, "--", "experiments"],
+  { encoding: "utf8" }
+)
+  .trim()
+  .split("\n")
+  .filter((path) => path.endsWith("/inventory-progress.json"));
+if (inventories.length !== 1) throw new Error("Expected one asset inventory.");
+const base = inventories[0].slice(0, -"inventory-progress.json".length);
 const read = (path: string) =>
   execFileSync("git", ["show", `${commit}:${base}${path}`], { maxBuffer: 100 * 1024 * 1024 });
 const progress = JSON.parse(read("inventory-progress.json").toString());
 const previous = JSON.parse(await readFile("docs/opensketch-generated-snapshot.json", "utf8"));
+const metadata = JSON.parse(
+  await readFile("docs/scientific-asset-planning/curated-metadata.json", "utf8")
+);
 const assets = canonicalArtworkGroups(progress.assets, previous.assets).map(
   ({ canonical, entries, sha256 }) => {
     for (const entry of entries) {
@@ -20,14 +32,13 @@ const assets = canonicalArtworkGroups(progress.assets, previous.assets).map(
     }
     return {
       canonicalId: `opensketch-generated-${canonical.id}`,
-      title: canonical.name,
+      title: metadata.assets[canonical.id].title,
       sourceSha256: sha256,
       sourceConceptIds: entries.map((entry) => entry.id),
-      sourcePaths: [...new Set(entries.map((entry) => entry.svg))],
       keywords: enrichAssetKeywords({
-        title: canonical.name,
-        category: canonical.category,
-        keywords: entries.flatMap((entry) => [entry.name, entry.id, ...(entry.keywords ?? [])])
+        title: metadata.assets[canonical.id].title,
+        category: metadata.assets[canonical.id].category,
+        keywords: metadata.assets[canonical.id].keywords
       })
     };
   }
@@ -37,7 +48,7 @@ const registry = {
   sourceCommit: commit,
   uniqueArtworkCount: assets.length,
   completedConceptCount: assets.reduce((count, asset) => count + asset.sourceConceptIds.length, 0),
-  note: "Concept IDs are search references, not duplicate assets or claims of biological equivalence. Uncommitted artwork is not included.",
+  note: "Concept IDs record generation history only and are not additional search aliases or claims of biological equivalence. Uncommitted artwork is not included.",
   assets
 };
 await writeFile(

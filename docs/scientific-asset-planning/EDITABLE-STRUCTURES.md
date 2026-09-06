@@ -52,7 +52,7 @@ Unit coverage includes legacy shape preservation, new preset geometry, fixed end
 
 The Assets sidebar now exposes only OpenSketch generated artwork and OpenSketch structures (228 cards total). All 17 structural presets carry an **Editable** badge and a teal outline. Here “Editable” means path controls or movable semantic components; it distinguishes them from artwork composed of traced color regions. Clicking or dragging a structure card creates the procedural object, preserving its controls. Search includes the editable keyword.
 
-NIH BioArt, SciDraw, BioIcons, Arcadia and other prior collections are excluded from browsing, search, source filters, recent/favorite results and the offline pack UI. Their files and a separate internal lookup manifest remain for existing project references. The About dialog no longer advertises those sources. Stale source filters reset to All sources.
+Only original OpenSketch collections are shipped. Retired collection files, import pipelines, lookup manifests and UI references have been removed. Topic and editability filters use the current catalog. Saved vector geometry remains in existing projects; no retired library fallback is fetched.
 
 Validation: 478 unit tests, three targeted Chromium flows, typecheck and production build pass. [Sidebar screenshots and recording](https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/editable-sidebar-20260905/index.html).
 

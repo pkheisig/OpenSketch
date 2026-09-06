@@ -73,7 +73,6 @@ export interface AssetVariant {
   label?: string;
   assetPath: string;
   thumbnailPath: string;
-  commonsSha1?: string;
   sourceFileId?: number;
   localSha256?: string;
   width?: number;
@@ -92,19 +91,17 @@ export type AssetLicense =
 
 export interface AssetFamily {
   familyId: string;
-  bioartEntryId: number;
   title: string;
   description: string;
   category: string;
   keywords: string[];
+  topics?: string[];
   author: string;
   credit: string;
   license: AssetLicense;
   licenseUrl?: string;
   sourceName?: string;
-  nihSourcePage?: string;
   sourcePage?: string;
-  commonsPage?: string;
   defaultVariantId: string;
   variants: AssetVariant[];
 }

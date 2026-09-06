@@ -64,7 +64,7 @@ export function styleTarget(object: FabricObject | undefined): FabricObject | un
   if (!object) return undefined;
   for (let parent = object.group; parent; parent = parent.group) {
     if (
-      parent.OpenSketchType === "nih-asset" ||
+      parent.OpenSketchType === "library-asset" ||
       parent.OpenSketchType === "import" ||
       parent.OpenSketchType === "upload"
     ) {
@@ -78,7 +78,7 @@ export function elementStyleKey(object: FabricObject | undefined): string | unde
   const target = styleTarget(object);
   if (!target) return undefined;
   const type = target.OpenSketchType ?? "";
-  if (type === "nih-asset" && target.assetId) return `asset:${target.assetId}`;
+  if (type === "library-asset" && target.assetId) return `asset:${target.assetId}`;
   if ((type === "import" || type === "upload") && target.name) {
     return `import:${target.name.trim().toLowerCase()}`;
   }

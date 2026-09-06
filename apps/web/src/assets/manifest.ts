@@ -6,9 +6,6 @@ import {
 } from "@workspace/editor-core";
 import { SCIENTIFIC_STRUCTURE_FAMILIES, FIXED_MEMBRANE_FAMILIES } from "./scientificStructures";
 import generatedArtwork from "../generated/opensketch-generated-manifest.json";
-import manifest from "../generated/nih-bioart-manifest.json";
-import openAssetsManifest from "../generated/open-assets-manifest.json";
-import { TOP_VIEW_LABWARE_FAMILIES } from "./labware";
 
 export function resolveBundledAssetPath(
   path: string,
@@ -43,26 +40,12 @@ export const assetManifest: AssetManifest = {
 
 assertUniqueAssetCatalog(assetManifest.families);
 
-/** Retained solely for resolving assets already referenced by older figures. */
-export const bundledAssetManifest: AssetManifest = {
-  ...assetManifest,
-  families: [
-    ...assetManifest.families,
-    ...[
-      ...TOP_VIEW_LABWARE_FAMILIES,
-      ...(openAssetsManifest as AssetManifest).families,
-      ...(manifest as AssetManifest).families
-    ].map(resolveFamily)
-  ]
-};
-
+/** The bundled catalog contains only the current OpenSketch collection. */
+export const bundledAssetManifest = assetManifest;
 export const ASSET_OFFLINE_PACK_VERSION = [
-  "opensketch-circular-membranes-v3",
+  "opensketch-curated-v1",
   SCIENTIFIC_STRUCTURE_FAMILIES.length,
-  generatedArtwork.sourceCommit,
-  (manifest as AssetManifest).generatedAt,
-  (openAssetsManifest as AssetManifest).generatedAt,
-  TOP_VIEW_LABWARE_FAMILIES.reduce((total, family) => total + family.variants.length, 0)
+  generatedArtwork.sourceCommit
 ].join(":");
 export const ASSET_PREVIEW_CACHE_VERSION = ASSET_OFFLINE_PACK_VERSION;
 export const ASSET_CATEGORIES = ["All", ...ASSET_CATEGORY_ORDER];

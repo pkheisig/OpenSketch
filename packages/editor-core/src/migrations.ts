@@ -1,3 +1,4 @@
+import { normalizeLibraryAssetTypes } from "./projectMedia";
 import { isAssetColorRole } from "./assetColorRoles";
 import { validBrushSpec } from "./scientificBrush";
 import { DEFAULT_CANVAS } from "./presets";
@@ -1492,13 +1493,19 @@ function validateSceneObject(
       } else if (key === "OpenSketchType") {
         assertString(item, `${path}.${key}`, { maxLength: 64, nonEmpty: true });
         if (
+          !(
+            value.type === "Group" &&
+            typeof value.assetId === "string" &&
+            typeof value.familyId === "string" &&
+            /^[a-z]+-asset$/.test(item)
+          ) &&
           ![
             "connector",
             "group",
             "shape",
             "text",
             "scientific-brush",
-            "nih-asset",
+            "library-asset",
             "import",
             "upload",
             "svg-part",
@@ -1618,7 +1625,7 @@ function validateSceneObject(
   if (value.OpenSketchType === "connector" && !["Group", "Path"].includes(value.type))
     fail(`${path}.OpenSketchType`, "is invalid for this object type");
   if (
-    ["group", "nih-asset", "scientific-brush"].includes(String(value.OpenSketchType)) &&
+    ["group", "library-asset", "scientific-brush"].includes(String(value.OpenSketchType)) &&
     value.type !== "Group"
   ) {
     fail(`${path}.OpenSketchType`, "is invalid for this object type");
@@ -1870,7 +1877,7 @@ export function migrateProject(input: unknown): PortableProject {
     createdAt: project.createdAt,
     updatedAt: project.updatedAt,
     canvas: structuredClone(canvas),
-    objects: structuredClone(scene),
+    objects: normalizeLibraryAssetTypes(structuredClone(scene)),
     uploads: structuredClone(uploads),
     usedAssetIds: structuredClone(usedAssetIds),
     ...(description === undefined ? {} : { description })

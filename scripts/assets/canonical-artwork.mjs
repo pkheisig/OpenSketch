@@ -16,7 +16,7 @@ export function canonicalArtworkGroups(assets, previous = []) {
     const canonical =
       entries.find((entry) => entry.id === previousId) ??
       entries.find(
-        (entry) => !entry.alias_of && entry.svg.endsWith(`/${entry.id}-bioart-traced.svg`)
+        (entry) => !entry.alias_of && entry.svg.split("/").at(-1)?.startsWith(`${entry.id}-`)
       ) ??
       entries.find((entry) => !entry.alias_of) ??
       entries[0];

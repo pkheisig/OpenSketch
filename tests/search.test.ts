@@ -7,16 +7,13 @@ import {
 
 const antibody: AssetFamily = {
   familyId: "nih-bioart-17",
-  bioartEntryId: 17,
   title: "Antibody",
   description: "Immunoglobulin G protein",
-  category: "Proteins",
+  category: "Proteins & complexes",
   keywords: ["antibody", "immunoglobulin", "IgG", "immune"],
   author: "NIAID",
   credit: "Courtesy of NIAID",
   license: "Public Domain",
-  nihSourcePage: "https://bioart.niaid.nih.gov/bioart/17",
-  commonsPage: "https://commons.wikimedia.org/",
   defaultVariantId: "nih-bioart-17-a",
   variants: [
     {
@@ -43,14 +40,12 @@ describe("asset search", () => {
     const tCell: AssetFamily = {
       ...antibody,
       familyId: "nih-bioart-509",
-      bioartEntryId: 509,
       title: "T Cell",
       keywords: ["T Cell", "cell", "lymphocyte"]
     };
     const cd80: AssetFamily = {
       ...antibody,
       familyId: "nih-bioart-68",
-      bioartEntryId: 68,
       title: "CD80",
       keywords: ["CD80", "protein"]
     };
@@ -69,13 +64,13 @@ describe("asset search", () => {
       familyId: "dna",
       title: "DNA Helix",
       description: "Genomic DNA molecule",
-      category: "Nucleic acids & genetics"
+      category: "Nucleic acids"
     };
     const plate = {
       ...antibody,
       familyId: "plate",
       title: "96 Well Plate",
-      category: "Equipment"
+      category: "Labware & consumables"
     };
     const animal = {
       ...antibody,
@@ -88,24 +83,24 @@ describe("asset search", () => {
       cell,
       antibody,
       dna,
-      plate,
-      animal
+      animal,
+      plate
     ]);
   });
 
   it("keeps newly classified asset families in their intended browse positions", () => {
     const families = [
       { ...antibody, familyId: "other", title: "Zebra", category: "Other" },
-      { ...antibody, familyId: "techniques", title: "Stain", category: "Techniques & assays" },
-      { ...antibody, familyId: "components", title: "Nucleus", category: "Cell components" },
-      { ...antibody, familyId: "cancer", title: "Tumor", category: "Cancer & pathology" },
+      { ...antibody, familyId: "techniques", title: "Stain", category: "Experimental assemblies" },
+      { ...antibody, familyId: "components", title: "Nucleus", category: "Cell structures" },
+      { ...antibody, familyId: "cancer", title: "Tumor", category: "Tissues & models" },
       { ...antibody, familyId: "cells", title: "Cell", category: "Cells" }
     ];
 
     expect(filterAssetFamilies(families, "", "All").map((family) => family.familyId)).toEqual([
       "cells",
-      "cancer",
       "components",
+      "cancer",
       "techniques",
       "other"
     ]);
@@ -119,8 +114,8 @@ describe("asset search", () => {
     expect(
       filterAssetFamilies(
         [
-          { ...zebra, familyId: "first", title: "Same", category: "Proteins" },
-          { ...alpha, familyId: "second", title: "Same", category: "Proteins" }
+          { ...zebra, familyId: "first", title: "Same", category: "Proteins & complexes" },
+          { ...alpha, familyId: "second", title: "Same", category: "Proteins & complexes" }
         ],
         "",
         "All"

@@ -35,7 +35,6 @@ function testManifest(variants: AssetVariant[]): AssetManifest {
     families: [
       {
         familyId: "family",
-        bioartEntryId: 1,
         title: "Test family",
         description: "Test",
         category: "Test",

@@ -23,22 +23,3 @@ bundled Noto Serif face for PDF export. Atkinson Hyperlegible and Lato ship
 only 400/700 faces, so editor 600 follows browser nearest-face matching to 700.
 Imported numeric weights outside the editor choices are normalized to the same
 bundled faces before PDF rendering.
-
-The bundled NIAID NIH BioArt illustrations remain in the public domain.
-Per-asset author, source, Commons record, and public-domain status are retained
-in the OpenSketch asset manifest and source lock.
-
-SciDraw illustrations are distributed under either Creative Commons
-Attribution 4.0 International (CC BY 4.0) or Creative Commons Zero 1.0 (CC0),
-as recorded for each asset by SciDraw. OpenSketch retains the primary author,
-source page, DOI when available, and applicable license in its asset manifest
-and exported figure metadata.
-https://scidraw.io/
-https://creativecommons.org/licenses/by/4.0/
-https://creativecommons.org/publicdomain/zero/1.0/
-
-The Arcadia Science Free organism illustration library is dedicated to the
-public domain under CC0 1.0. OpenSketch includes its editable tricolor/stroke
-and silhouette SVG variants.
-https://doi.org/10.5281/zenodo.17203578
-https://doi.org/10.57844/arcadia-4gbv-pzkv

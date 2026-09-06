@@ -9,7 +9,19 @@ import sharp from "sharp";
 const commit = process.argv[2];
 if (!/^[a-f0-9]{40}$/.test(commit ?? ""))
   throw new Error("Supply an immutable 40-character source commit.");
-const base = "experiments/ai-assets/nih-bioart-collection/";
+const inventories = execFileSync(
+  "git",
+  ["ls-tree", "-r", "--name-only", commit, "--", "experiments"],
+  { encoding: "utf8" }
+)
+  .trim()
+  .split("\n")
+  .filter((path) => path.endsWith("/inventory-progress.json"));
+if (inventories.length !== 1) throw new Error("Expected one committed asset inventory.");
+const base = inventories[0].slice(0, -"inventory-progress.json".length);
+const metadata = JSON.parse(
+  await readFile("docs/scientific-asset-planning/curated-metadata.json", "utf8")
+);
 const read = (path) =>
   execFileSync("git", ["show", `${commit}:${base}${path}`], { maxBuffer: 100 * 1024 * 1024 });
 const digest = (data) => createHash("sha256").update(data).digest("hex");
@@ -26,37 +38,6 @@ for (const [id, entry] of Object.entries(progress.assets)) {
   )
     throw new Error(`Unreviewed asset: ${id}`);
 }
-const categories = {
-  1: "Immunology & blood",
-  2: "Cells",
-  3: "Cells",
-  4: "Cell components",
-  5: "Cell components",
-  6: "Proteins",
-  7: "Proteins",
-  8: "Proteins",
-  9: "Nucleic acids & genetics",
-  10: "Molecules",
-  11: "Tissues & histology",
-  12: "Anatomy",
-  13: "Viruses",
-  14: "Bacteria",
-  15: "Fungi & protists",
-  16: "Plants",
-  17: "Cellular processes",
-  18: "Animals",
-  33: "Techniques & assays",
-  35: "Tissues & histology",
-  36: "Cells",
-  38: "Techniques & assays",
-  39: "Techniques & assays",
-  40: "Cell components",
-  41: "Immunology & blood",
-  43: "Techniques & assays",
-  44: "Animals",
-  45: "Cell components",
-  47: "Techniques & assays"
-};
 const folder = "apps/web/public/assets/opensketch-generated";
 await mkdir(folder, { recursive: true });
 const derivatives = JSON.parse(
@@ -97,20 +78,22 @@ for (const { canonical: entry, entries } of canonicalArtworkGroups(
     .resize(192, 192, { fit: "inside", withoutEnlargement: true })
     .webp({ quality: 85 })
     .toFile(`${folder}/${entry.id}.webp`);
-  const aliases = entries.filter((e) => e.id !== entry.id).map((e) => e.name);
+  const curated = metadata.assets[entry.id];
+  if (!curated || !metadata.categoryDefinitions[curated.category])
+    throw new Error(`Missing curated metadata: ${entry.id}`);
   families.push({
     familyId: id,
-    bioartEntryId: 0,
-    title: entry.name,
-    description: `${entry.name}. Original OpenSketch AI-assisted schematic in the ${entry.category.replace(/^\d+\. /, "").toLowerCase()} collection. App derivative traced from the approved PNG master with a bounded 48-color palette. Editable traced color regions; these are not semantic protein or organelle subunits.${aliases.length ? ` Shared schematic also indexed as: ${aliases.join(", ")}.` : ""}`,
-    category: categories[parseInt(entry.category)] ?? "Equipment",
-    keywords: [entry.name, entry.id, ...aliases, entry.category, "OpenSketch generated"],
+    title: curated.title,
+    description: `${curated.title}. Original OpenSketch schematic for ${curated.topics.join(", ")}.`,
+    category: curated.category,
+    topics: curated.topics,
+    keywords: curated.keywords,
     author: "OpenSketch",
     credit: "OpenSketch AI-assisted artwork",
     license: "AGPL-3.0-only",
     licenseUrl: "https://github.com/pkheisig/OpenSketch/blob/" + commit + "/LICENSE",
     sourceName: "OpenSketch generated",
-    sourcePage: `https://github.com/pkheisig/OpenSketch/blob/${commit}/${base}${path}`,
+    sourcePage: `https://github.com/pkheisig/OpenSketch/commit/${commit}`,
     defaultVariantId: id,
     variants: [
       {
@@ -127,7 +110,6 @@ for (const { canonical: entry, entries } of canonicalArtworkGroups(
   receipts.push({
     id: entry.id,
     aliases: entries.map((e) => e.id),
-    source: path,
     sha256: digest(svg),
     visualReview: entry.visual_review ?? entry.provenance,
     qa: entry.qa_urls

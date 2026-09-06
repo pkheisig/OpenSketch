@@ -15,7 +15,6 @@ import {
   ArrowRight,
   Bookmark,
   Edit3,
-  ExternalLink,
   FileInput,
   Heart,
   ImagePlus,
@@ -30,6 +29,7 @@ import {
 } from "lucide-react";
 import {
   ASSET_CATEGORY_ORDER,
+  ASSET_CATEGORY_DEFINITIONS,
   filterAssetFamilies,
   type AssetManifest,
   type AssetFamily,
@@ -103,9 +103,8 @@ type CreationDefaultsSection = "text" | "shape" | "line";
 const CREATION_DEFAULTS_DISCLOSURE_STORAGE_KEY = "OpenSketch:creation-defaults-disclosures";
 const RECENT_ASSETS_STORAGE_KEY = "OpenSketch:recent-assets";
 const ALL_ASSET_FILTER_VALUE = "__all__";
-const SINGLE_VARIANT_FILTER_VALUE = "single";
-const MULTIPLE_VARIANT_FILTER_VALUE = "multiple";
-const NIH_BIOART_SOURCE_LABEL = "NIH BioArt";
+const FIXED_ASSET_FILTER_VALUE = "single";
+const EDITABLE_ASSET_FILTER_VALUE = "multiple";
 const SOURCE_POPOVER_WIDTH = 220;
 const SOURCE_POPOVER_MARGIN = 12;
 const SOURCE_POPOVER_GAP = 8;
@@ -137,21 +136,6 @@ function loadCreationDefaultsDisclosures(
   }
 }
 
-function assetSourceLabel(family: AssetFamily): string {
-  if (family.nihSourcePage) return NIH_BIOART_SOURCE_LABEL;
-  return family.sourceName ?? family.author;
-}
-
-function assetSourceFilterLabel(family: AssetFamily): string {
-  return assetSourceLabel(family) === "BioIcons / Servier Medical Art"
-    ? "BioIcons"
-    : assetSourceLabel(family);
-}
-
-function assetSourcePage(family: AssetFamily): string {
-  return family.sourcePage ?? family.commonsPage ?? family.nihSourcePage ?? "";
-}
-
 function assetFilterOptions(values: string[], allLabel: string) {
   return [
     { value: ALL_ASSET_FILTER_VALUE, label: allLabel },
@@ -164,10 +148,10 @@ function assetFilterOptions(values: string[], allLabel: string) {
   ];
 }
 
-const ASSET_VARIANT_OPTIONS = [
-  { value: ALL_ASSET_FILTER_VALUE, label: "Any variants" },
-  { value: SINGLE_VARIANT_FILTER_VALUE, label: "Single variant" },
-  { value: MULTIPLE_VARIANT_FILTER_VALUE, label: "Multiple variants" }
+const ASSET_EDITABILITY_OPTIONS = [
+  { value: ALL_ASSET_FILTER_VALUE, label: "All assets" },
+  { value: FIXED_ASSET_FILTER_VALUE, label: "Fixed SVG" },
+  { value: EDITABLE_ASSET_FILTER_VALUE, label: "Editable structure" }
 ] as const;
 
 const SHAPE_GROUPS = {
@@ -332,8 +316,8 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
   const [assetCategory, setAssetCategory] = useState("Favorites");
   const [assetSearchFocusRequest, setAssetSearchFocusRequest] = useState(0);
   const [assetFiltersOpen, setAssetFiltersOpen] = useState(false);
-  const [assetSourceFilter, setAssetSourceFilter] = useState(ALL_ASSET_FILTER_VALUE);
-  const [assetVariantFilter, setAssetVariantFilter] = useState(ALL_ASSET_FILTER_VALUE);
+  const [assetTopicFilter, setAssetTopicFilter] = useState(ALL_ASSET_FILTER_VALUE);
+  const [assetEditabilityFilter, setAssetEditabilityFilter] = useState(ALL_ASSET_FILTER_VALUE);
   const [assetCatalog, setAssetCatalog] = useState<AssetManifest | null>(null);
   const [assetPackVersion, setAssetPackVersion] = useState<string | null>(null);
   const sidebarRef = useRef<HTMLElement>(null);
@@ -819,10 +803,10 @@ export function LeftSidebar({ collapsed, onToggle }: { collapsed: boolean; onTog
                     focusRequest={assetSearchFocusRequest}
                     filtersOpen={assetFiltersOpen}
                     onFiltersOpenChange={setAssetFiltersOpen}
-                    sourceFilter={assetSourceFilter}
-                    onSourceFilterChange={setAssetSourceFilter}
-                    variantFilter={assetVariantFilter}
-                    onVariantFilterChange={setAssetVariantFilter}
+                    topicFilter={assetTopicFilter}
+                    onTopicFilterChange={setAssetTopicFilter}
+                    editabilityFilter={assetEditabilityFilter}
+                    onEditabilityFilterChange={setAssetEditabilityFilter}
                     onAssetDragStart={() => {
                       draggedAsset.current = true;
                     }}
@@ -859,10 +843,10 @@ function AssetsPanel({
   focusRequest,
   filtersOpen,
   onFiltersOpenChange,
-  sourceFilter,
-  onSourceFilterChange,
-  variantFilter,
-  onVariantFilterChange,
+  topicFilter,
+  onTopicFilterChange,
+  editabilityFilter,
+  onEditabilityFilterChange,
   onAssetDragStart,
   onAssetDragEnd
 }: {
@@ -875,10 +859,10 @@ function AssetsPanel({
   focusRequest: number;
   filtersOpen: boolean;
   onFiltersOpenChange: (open: boolean) => void;
-  sourceFilter: string;
-  onSourceFilterChange: (value: string) => void;
-  variantFilter: string;
-  onVariantFilterChange: (value: string) => void;
+  topicFilter: string;
+  onTopicFilterChange: (value: string) => void;
+  editabilityFilter: string;
+  onEditabilityFilterChange: (value: string) => void;
   onAssetDragStart: () => void;
   onAssetDragEnd: () => void;
 }) {
@@ -902,22 +886,22 @@ function AssetsPanel({
     loadSavedElementStyles(services.preferences.storage)
   );
   const assetListRef = useRef<HTMLDivElement>(null);
-  const sourceOptions = useMemo(
+  const topicOptions = useMemo(
     () =>
       assetFilterOptions(
-        assetManifest.families.map((family) => assetSourceFilterLabel(family)),
-        "All sources"
+        assetManifest.families.flatMap((family) => family.topics ?? []),
+        "All topics"
       ),
     [assetManifest.families]
   );
   useEffect(() => {
     if (
-      sourceFilter !== ALL_ASSET_FILTER_VALUE &&
-      !assetManifest.families.some((family) => assetSourceFilterLabel(family) === sourceFilter)
+      topicFilter !== ALL_ASSET_FILTER_VALUE &&
+      !assetManifest.families.some((family) => family.topics?.includes(topicFilter))
     ) {
-      onSourceFilterChange(ALL_ASSET_FILTER_VALUE);
+      onTopicFilterChange(ALL_ASSET_FILTER_VALUE);
     }
-  }, [assetManifest.families, sourceFilter, onSourceFilterChange]);
+  }, [assetManifest.families, topicFilter, onTopicFilterChange]);
   const families = useMemo(() => {
     if (category === "Templates") return [];
     const matches = filterAssetFamilies(
@@ -926,25 +910,25 @@ function AssetsPanel({
       category === "Favorites" ? "All" : category
     );
     const filtered = matches.filter((family) => {
-      const matchesSource =
-        sourceFilter === ALL_ASSET_FILTER_VALUE || assetSourceFilterLabel(family) === sourceFilter;
-      const matchesVariants =
-        variantFilter === ALL_ASSET_FILTER_VALUE ||
-        (variantFilter === SINGLE_VARIANT_FILTER_VALUE && family.variants.length === 1) ||
-        (variantFilter === MULTIPLE_VARIANT_FILTER_VALUE && family.variants.length > 1);
-      return matchesSource && matchesVariants;
+      const matchesTopic =
+        topicFilter === ALL_ASSET_FILTER_VALUE || family.topics?.includes(topicFilter);
+      const matchesEditability =
+        editabilityFilter === ALL_ASSET_FILTER_VALUE ||
+        (editabilityFilter === FIXED_ASSET_FILTER_VALUE && !family.editableStructure) ||
+        (editabilityFilter === EDITABLE_ASSET_FILTER_VALUE && family.editableStructure === true);
+      return matchesTopic && matchesEditability;
     });
     return category === "Favorites"
       ? filtered.filter((family) => favorites.has(family.familyId))
       : filtered;
-  }, [assetManifest.families, category, debouncedQuery, favorites, sourceFilter, variantFilter]);
+  }, [assetManifest.families, category, debouncedQuery, favorites, topicFilter, editabilityFilter]);
   const matchingTemplates = useMemo(() => {
     const normalizedQuery = debouncedQuery.trim().toLowerCase();
     return normalizedQuery
       ? templates.filter((template) => template.name.toLowerCase().includes(normalizedQuery))
       : templates;
   }, [debouncedQuery, templates]);
-  const activeFilterCount = [sourceFilter, variantFilter].filter(
+  const activeFilterCount = [topicFilter, editabilityFilter].filter(
     (value) => value !== ALL_ASSET_FILTER_VALUE
   ).length;
   useEffect(() => {
@@ -1143,38 +1127,46 @@ function AssetsPanel({
                 className="asset-filter-clear"
                 aria-label="Clear asset filters"
                 onClick={() => {
-                  onSourceFilterChange(ALL_ASSET_FILTER_VALUE);
-                  onVariantFilterChange(ALL_ASSET_FILTER_VALUE);
+                  onTopicFilterChange(ALL_ASSET_FILTER_VALUE);
+                  onEditabilityFilterChange(ALL_ASSET_FILTER_VALUE);
                 }}
               >
                 Clear
               </button>
             ) : (
-              <span>Source or variants</span>
+              <span>Topic or editability</span>
             )}
           </div>
           <div className="asset-filter-grid">
             <UiSelect
-              value={sourceFilter}
-              options={sourceOptions}
-              onChange={onSourceFilterChange}
-              label="Source"
-              ariaLabel="Filter by source"
+              value={topicFilter}
+              options={topicOptions}
+              onChange={onTopicFilterChange}
+              label="Topic"
+              ariaLabel="Filter by topic"
             />
             <UiSelect
-              value={variantFilter}
-              options={ASSET_VARIANT_OPTIONS}
-              onChange={onVariantFilterChange}
-              label="Variants"
-              ariaLabel="Filter by variants"
+              value={editabilityFilter}
+              options={ASSET_EDITABILITY_OPTIONS}
+              onChange={onEditabilityFilterChange}
+              label="Editability"
+              ariaLabel="Filter by editability"
             />
           </div>
         </div>
       </MotionCollapse>
       <div className="category-strip" role="list" aria-label="Asset categories">
-        {["Favorites", "Templates", ...ASSET_CATEGORIES].map((item) => (
+        {[
+          "Favorites",
+          "Templates",
+          ...ASSET_CATEGORIES.filter(
+            (item) =>
+              item === "All" || assetManifest.families.some((family) => family.category === item)
+          )
+        ].map((item) => (
           <button
             key={item}
+            title={ASSET_CATEGORY_DEFINITIONS[item as keyof typeof ASSET_CATEGORY_DEFINITIONS]}
             className={category === item ? "active" : ""}
             onClick={() => onCategoryChange(item)}
           >
@@ -1349,8 +1341,6 @@ function AssetCard({
   onAssetDragEnd: () => void;
 }) {
   const portalRoot = useOpenSketchPortalRoot();
-  const sourceLabel = assetSourceLabel(family);
-  const sourcePage = assetSourcePage(family);
   const sourceId = `asset-source-${family.familyId}`;
   const sourceTriggerRef = useRef<HTMLButtonElement>(null);
   const sourcePopoverRef = useRef<HTMLDivElement>(null);
@@ -1456,9 +1446,9 @@ function AssetCard({
           ref={sourceTriggerRef}
           type="button"
           className="asset-source-trigger"
-          aria-label={`Show source for ${family.title}`}
+          aria-label={`Show details for ${family.title}`}
           aria-controls={sourceId}
-          title="Show source information"
+          title="Show asset details"
           onMouseEnter={openSourcePopover}
           onMouseLeave={scheduleSourcePopoverClose}
           onFocus={openSourcePopover}
@@ -1481,17 +1471,10 @@ function AssetCard({
             onFocus={openSourcePopover}
             onBlur={scheduleSourcePopoverClose}
           >
-            <span className="asset-source-kicker">Source</span>
-            <strong>{sourceLabel}</strong>
-            {family.sourceName && family.author !== family.sourceName ? (
-              <span>By {family.author}</span>
-            ) : null}
-            <span className="asset-source-license">{family.license}</span>
-            {sourcePage ? (
-              <a href={sourcePage} target="_blank" rel="noreferrer">
-                View source <ExternalLink size={11} aria-hidden="true" />
-              </a>
-            ) : null}
+            <span className="asset-source-kicker">{family.category}</span>
+            <strong>{family.title}</strong>
+            <span>{family.description}</span>
+            <span>{family.keywords.join(" · ")}</span>
           </div>
         </MotionPresence>,
         portalRoot ?? document.body

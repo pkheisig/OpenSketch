@@ -537,7 +537,7 @@ function editableAssetParent(object: FabricObject | undefined): Group | null {
   for (let parent = object?.group; parent; parent = parent.group) {
     if (
       parent instanceof Group &&
-      (parent.OpenSketchType === "nih-asset" ||
+      (parent.OpenSketchType === "library-asset" ||
         parent.OpenSketchType === "import" ||
         parent.OpenSketchType === "upload")
     ) {
@@ -700,7 +700,7 @@ function assetSummary(family: AssetFamily) {
     license: family.license,
     licenseUrl: boundedText(family.licenseUrl, 500),
     sourceName: boundedText(family.sourceName, 200),
-    sourcePage: boundedText(family.sourcePage ?? family.commonsPage ?? family.nihSourcePage, 500),
+    sourcePage: boundedText(family.sourcePage, 500),
     defaultVariantId: family.defaultVariantId,
     variants: family.variants.slice(0, 64).map((variant) => ({
       id: variant.id,

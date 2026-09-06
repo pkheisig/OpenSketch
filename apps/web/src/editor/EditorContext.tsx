@@ -494,11 +494,9 @@ async function createBundledAssetGroup(
   const group = await prepareSvgComponents(groupSvgElements(objects, result.options));
   group.assetId = variant.id;
   group.familyId = family.familyId;
-  const sourcePage = family.sourcePage ?? family.commonsPage ?? family.nihSourcePage ?? "";
+  const sourcePage = family.sourcePage ?? "";
   group.provenance = {
-    ...(family.nihSourcePage ? { nihSourcePage: family.nihSourcePage } : {}),
     sourcePage,
-    ...(family.commonsPage ? { commonsPage: family.commonsPage } : {}),
     ...(family.sourceName ? { sourceName: family.sourceName } : {}),
     ...(family.licenseUrl ? { licenseUrl: family.licenseUrl } : {}),
     credit: family.credit,
@@ -667,7 +665,7 @@ function editableAssetParent(object: FabricObject | undefined): Group | null {
   for (let parent = object?.group; parent; parent = parent.group) {
     if (
       parent instanceof Group &&
-      (parent.OpenSketchType === "nih-asset" ||
+      (parent.OpenSketchType === "library-asset" ||
         parent.OpenSketchType === "import" ||
         parent.OpenSketchType === "upload")
     ) {
@@ -3153,7 +3151,7 @@ export function EditorProvider({
           const object = semanticAddObjectRef.current(
             group,
             family.title,
-            preset ? (preset.form === "parts" ? "group" : "scientific-brush") : "nih-asset",
+            preset ? (preset.form === "parts" ? "group" : "scientific-brush") : "library-asset",
             point,
             select
           );
@@ -3244,7 +3242,7 @@ export function EditorProvider({
           replacement.set({
             objectId: current.objectId,
             name: current.name ?? family.title,
-            OpenSketchType: "nih-asset",
+            OpenSketchType: "library-asset",
             scaleX: scale,
             scaleY: scale,
             angle: current.angle,
@@ -3911,7 +3909,7 @@ export function EditorProvider({
       [key]: captureElementStyle(target)
     };
     persistSavedElementStyles(savedElementStyles.current, services.preferences.storage);
-    if (target.OpenSketchType === "nih-asset" && target.familyId && target.assetId) {
+    if (target.OpenSketchType === "library-asset" && target.familyId && target.assetId) {
       saveAssetVariantDefault(target.familyId, target.assetId, services.preferences.storage);
     }
   }, [canvas, services]);
@@ -3933,7 +3931,7 @@ export function EditorProvider({
       }
       if (object.defaultElementStyle) {
         if (
-          object.OpenSketchType === "nih-asset" ||
+          object.OpenSketchType === "library-asset" ||
           object.OpenSketchType === "import" ||
           object.OpenSketchType === "upload"
         ) {
@@ -4008,7 +4006,7 @@ export function EditorProvider({
         };
         applyShapeDefaults(object);
         changed = true;
-      } else if (type === "nih-asset" || type === "import" || type === "upload") {
+      } else if (type === "library-asset" || type === "import" || type === "upload") {
         restoreOriginalColors(object);
         const restoreOpacity = (target: FabricObject) => {
           target.set("opacity", 1);

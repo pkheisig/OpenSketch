@@ -13,13 +13,13 @@ import {
 describe("reviewed generated artwork app snapshot", () => {
   it("indexes all distinct artwork once and retains intentional aliases", () => {
     expect(manifest.families).toHaveLength(snapshot.distinctAssets);
-    expect(snapshot.completedNames).toBe(217);
-    expect(new Set(manifest.families.map((f) => f.familyId)).size).toBe(211);
+    expect(snapshot.completedNames).toBe(629);
+    expect(new Set(manifest.families.map((f) => f.familyId)).size).toBe(611);
     expect(
       filterAssetFamilies((manifest as AssetManifest).families, "regulatory T cell").map(
         (f) => f.title
       )
-    ).toContain("T lymphocyte");
+    ).not.toContain("T lymphocyte");
   });
   it("ships the recorded bounded SVG derivatives and matching thumbnails", () => {
     for (const family of manifest.families) {
@@ -42,15 +42,14 @@ describe("reviewed generated artwork app snapshot", () => {
   });
 });
 
-it("exposes only OpenSketch collections while preserving legacy lookup data", async () => {
+it("exposes only OpenSketch collections with no retired fallback catalog", async () => {
   const { assetManifest, bundledAssetManifest } = await import("../apps/web/src/assets/manifest");
-  expect(assetManifest.families).toHaveLength(230);
+  expect(assetManifest.families).toHaveLength(630);
   expect(new Set(assetManifest.families.map((f) => f.sourceName))).toEqual(
     new Set(["OpenSketch generated", "OpenSketch structures"])
   );
   expect(assetManifest.families.filter((f) => f.editableStructure)).toHaveLength(17);
-  expect(bundledAssetManifest.families.length).toBeGreaterThan(assetManifest.families.length);
-  expect(bundledAssetManifest.families.some((f) => f.nihSourcePage)).toBe(true);
+  expect(bundledAssetManifest).toBe(assetManifest);
 });
 
 it("offers two fixed circular choices without the Editable badge", async () => {

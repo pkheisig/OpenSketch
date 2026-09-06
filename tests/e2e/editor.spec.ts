@@ -703,13 +703,13 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   await page.keyboard.press("Escape");
 
   await page.getByRole("tab", { name: "Assets", exact: true }).click();
-  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("neuron");
   const singleVariantAsset = page
     .locator(".asset-card")
-    .filter({ has: page.locator("strong").filter({ hasText: /^Cajal-Retzius Cell$/ }) })
+    .filter({ has: page.locator("strong").filter({ hasText: /^neuron$/ }) })
     .first();
   await expect(singleVariantAsset).toBeVisible();
-  await singleVariantAsset.getByRole("button", { name: "Insert Cajal-Retzius Cell" }).click();
+  await singleVariantAsset.getByRole("button", { name: "Insert neuron" }).click();
   await expectLayerCount(page, 3);
   await expect(page.getByText("Asset palette", { exact: true })).toHaveCount(0);
   await expect(page.getByText("Part colors", { exact: true })).toHaveCount(0);
@@ -1438,11 +1438,11 @@ test("copies canvas objects to the system clipboard as PNG and SVG", async ({
   await page.keyboard.press("Backspace");
 
   await page.getByRole("tab", { name: "Assets", exact: true }).click();
-  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
-  await page.getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("neuron");
+  await page.getByRole("button", { name: "Insert neuron", exact: true }).click();
   const point = await renderedArtworkCenter(page);
   await page.mouse.click(point.x, point.y, { button: "right" });
-  const menu = page.getByRole("menu", { name: "Cajal-Retzius Cell actions" });
+  const menu = page.getByRole("menu", { name: "neuron actions" });
   await expect(menu.getByRole("menuitem", { name: "Copy as SVG" })).toBeVisible();
   await expect(menu.getByRole("menuitem", { name: "Copy as PNG" })).toBeVisible();
   await menu.getByRole("menuitem", { name: "Copy as SVG" }).click();
@@ -1531,21 +1531,21 @@ test("keeps family variant previews normalized and drags the selected variant", 
 
   await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
-  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Activated Neutrophil");
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("activated T lymphocyte");
   await expect(page.locator(".asset-card")).toHaveCount(1);
   const card = page
     .locator(".asset-card")
-    .filter({ has: page.locator("strong").filter({ hasText: /^Activated Neutrophil$/ }) });
+    .filter({ has: page.locator("strong").filter({ hasText: /^activated T lymphocyte$/ }) });
   const preview = card.locator(".asset-card-image img");
   const firstBounds = await visibleArtworkBounds(preview);
   const firstSource = await preview.getAttribute("src");
 
-  await card.getByRole("combobox", { name: "Activated Neutrophil variant" }).click();
+  await card.getByRole("combobox", { name: "activated T lymphocyte variant" }).click();
   await page
-    .getByRole("listbox", { name: "Activated Neutrophil variants" })
-    .getByRole("option", { name: "Select Activated Neutrophil variant 2" })
+    .getByRole("listbox", { name: "activated T lymphocyte variants" })
+    .getByRole("option", { name: "Select activated T lymphocyte variant 2" })
     .click({ force: true });
-  await expect(card.getByRole("combobox", { name: "Activated Neutrophil variant" })).toHaveText(
+  await expect(card.getByRole("combobox", { name: "activated T lymphocyte variant" })).toHaveText(
     "Variant 2"
   );
   await expect.poll(() => preview.getAttribute("src")).not.toBe(firstSource);
@@ -1571,11 +1571,11 @@ test("keeps family variant previews normalized and drags the selected variant", 
   await card.dragTo(page.locator(".artboard-stage"));
   await expect(page.locator(".assets-panel")).toBeVisible();
   await page.getByRole("button", { name: "Edit", exact: true }).click();
-  await expect(page.locator(".inspector-header h2")).toHaveText("Activated Neutrophil");
+  await expect(page.locator(".inspector-header h2")).toHaveText("activated T lymphocyte");
   await expect(
     page
       .locator(".inspector-embedded")
-      .getByRole("option", { name: "Select Activated Neutrophil variant 2" })
+      .getByRole("option", { name: "Select activated T lymphocyte variant 2" })
   ).toHaveAttribute("aria-selected", "true");
 });
 
@@ -1730,31 +1730,32 @@ test("promotes a canvas asset variant to the Assets default only when styling is
   );
 });
 
-const bioArtManifest = JSON.parse(
+const generatedManifest = JSON.parse(
   readFileSync(
-    new URL("../../apps/web/src/generated/nih-bioart-manifest.json", import.meta.url),
+    new URL("../../apps/web/src/generated/opensketch-generated-manifest.json", import.meta.url),
     "utf8"
   )
 ) as {
   families: Array<{
     title: string;
+    category: string;
     variants: Array<{ id: string; assetPath: string }>;
   }>;
 };
-const bundledBioArtVariants = bioArtManifest.families.flatMap((family) =>
+const bundledGeneratedVariants = generatedManifest.families.flatMap((family) =>
   family.variants.map((variant) => ({ ...variant, family: family.title }))
 );
-const bioArtShardCount = 12;
-const bundledBioArtShards = Array.from({ length: bioArtShardCount }, (_, shardIndex) =>
-  bundledBioArtVariants.slice(
-    Math.ceil((bundledBioArtVariants.length * shardIndex) / bioArtShardCount),
-    Math.ceil((bundledBioArtVariants.length * (shardIndex + 1)) / bioArtShardCount)
+const generatedShardCount = 12;
+const bundledGeneratedShards = Array.from({ length: generatedShardCount }, (_, shardIndex) =>
+  bundledGeneratedVariants.slice(
+    Math.ceil((bundledGeneratedVariants.length * shardIndex) / generatedShardCount),
+    Math.ceil((bundledGeneratedVariants.length * (shardIndex + 1)) / generatedShardCount)
   )
 );
 
-test.describe("bundled NIH BioArt SVG compatibility", () => {
-  bundledBioArtShards.forEach((variants, shardIndex) => {
-    test(`parses every bundled NIH BioArt variant into editable objects (${shardIndex + 1}/${bioArtShardCount})`, async ({
+test.describe("bundled OpenSketch SVG compatibility", () => {
+  bundledGeneratedShards.forEach((variants, shardIndex) => {
+    test(`parses every bundled OpenSketch variant into editable objects (${shardIndex + 1}/${generatedShardCount})`, async ({
       page,
       browserName
     }) => {
@@ -1949,22 +1950,20 @@ test("offers selection-aware canvas context actions", async ({ page }) => {
 test("adds a selected asset to Favorites from its context menu", async ({ page }) => {
   await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
-  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
-  await page.getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("neuron");
+  await page.getByRole("button", { name: "Insert neuron", exact: true }).click();
   await ensureEditorOpen(page);
 
   const center = await artboardPoint(page);
   await page.mouse.click(center.x, center.y, { button: "right" });
-  const menu = page.getByRole("menu", { name: "Cajal-Retzius Cell actions" });
+  const menu = page.getByRole("menu", { name: "neuron actions" });
   const menuItems = await menu.getByRole("menuitem").allTextContents();
   expect(menuItems.indexOf("Add to favorites")).toBe(menuItems.indexOf("Reset styling") + 1);
   await menu.getByRole("menuitem", { name: "Add to favorites" }).click();
 
   await page.getByRole("tab", { name: "Assets", exact: true }).click();
   await page.getByRole("button", { name: "Favorites", exact: true }).click();
-  await expect(
-    page.getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true })
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Insert neuron", exact: true })).toBeVisible();
 });
 
 test("saves and resets per-element styling for future sidebar shapes", async ({ page }) => {
@@ -2769,26 +2768,7 @@ test("@smoke supports visible and native navigation for new figures", async ({ p
   await expect(aboutDialog.getByText("Biology, drawn openly.", { exact: true })).toHaveCount(0);
   await expect(aboutDialog.getByRole("button", { name: "Copy artwork credit" })).toHaveCount(0);
   await expect(aboutDialog.getByRole("button", { name: "Continue" })).toHaveCount(0);
-  await expect(
-    aboutDialog.getByRole("link", { name: "NIH BioArt Source", exact: true })
-  ).toHaveAttribute("href", "https://bioart.niaid.nih.gov/");
-  await expect(aboutDialog.getByRole("link", { name: "SciDraw", exact: true })).toHaveAttribute(
-    "href",
-    "https://scidraw.io/"
-  );
-  await expect(
-    aboutDialog.getByRole("link", {
-      name: "Arcadia Science Free organism illustration library",
-      exact: true
-    })
-  ).toHaveAttribute("href", "https://zenodo.org/records/17203578");
-  await expect(aboutDialog.getByRole("link", { name: "BioIcons", exact: true })).toHaveAttribute(
-    "href",
-    "https://bioicons.com/"
-  );
-  await expect(
-    aboutDialog.getByRole("link", { name: "Servier Medical Art", exact: true })
-  ).toHaveAttribute("href", "https://smart.servier.com/");
+  await expect(aboutDialog.getByRole("link")).toHaveCount(1);
   const github = aboutDialog.getByRole("link", { name: "GitHub", exact: true });
   await expect(github).toHaveAttribute("href", "https://github.com/pkheisig/OpenSketch");
   await expect(github.locator("svg")).toHaveCount(1);
@@ -3294,8 +3274,8 @@ test("duplicates with modifier-drag and disables snapping while Alt is held", as
 test("preserves an asset's rendered size when duplicating by modifier-drag", async ({ page }) => {
   await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
-  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
-  await page.getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("neuron");
+  await page.getByRole("button", { name: "Insert neuron", exact: true }).click();
   await ensureEditorOpen(page);
 
   const dimensions = page.locator(".field-row.dimensions input");
@@ -3614,7 +3594,7 @@ test("fills the asset sidebar with the merged scientific catalog", async ({ page
     "4c Embryo Style1",
     "4c Embryo Style2",
     "8c Embryo",
-    "Activated Neutrophil",
+    "activated T lymphocyte",
     "Adipocyte 1",
     "Adipocyte 2"
   ]);
@@ -3715,10 +3695,10 @@ test("reveals asset filters and filters catalog metadata", async ({ page }) => {
   expect(filterTransitionProperties).toContain("opacity");
   expect(filterTransitionProperties).toContain("transform");
   expect(filterTransitionProperties).toContain("margin-top");
-  for (const label of ["Filter by source", "Filter by variants"]) {
+  for (const label of ["Filter by topic", "Filter by editability"]) {
     await expect(filterPanel.getByRole("combobox", { name: label })).toBeVisible();
   }
-  await filterPanel.getByRole("combobox", { name: "Filter by source" }).click();
+  await filterPanel.getByRole("combobox", { name: "Filter by topic" }).click();
   await expect(page.getByRole("option", { name: "BioIcons", exact: true })).toBeVisible();
   await expect(
     page.getByRole("option", { name: "BioIcons / Servier Medical Art", exact: true })
@@ -3727,22 +3707,22 @@ test("reveals asset filters and filters catalog metadata", async ({ page }) => {
 
   const search = page.getByPlaceholder("Search cells, proteins, equipment…");
   await search.fill("Neuron with dendritic spines");
-  await selectUiOption(page, "Filter by source", "SciDraw");
+  await selectUiOption(page, "Filter by topic", "immunology");
   const neuron = page.locator(".asset-card").filter({ hasText: "Neuron with dendritic spines" });
   await expect(neuron).toBeVisible();
   await neuron.hover();
   await neuron
     .getByRole("button", { name: "Show source for Neuron with dendritic spines" })
     .hover();
-  await expect(page.locator(".asset-source-popover")).toContainText("SciDraw");
+  await expect(page.locator(".asset-source-popover")).toContainText("immunology");
 
-  await selectUiOption(page, "Filter by source", "BioIcons");
+  await selectUiOption(page, "Filter by topic", "BioIcons");
   await expect(page.getByRole("heading", { name: "No match", exact: true })).toBeVisible();
   await page.getByRole("button", { name: "Clear asset filters" }).click();
   await expect(neuron).toBeVisible();
 
   await search.fill("Eosinophil");
-  await selectUiOption(page, "Filter by variants", "Multiple variants");
+  await selectUiOption(page, "Filter by editability", "Editable structure");
   await expect(page.locator(".asset-card").filter({ hasText: "Eosinophil" }).first()).toBeVisible();
 });
 
@@ -3755,8 +3735,8 @@ test("rapidly scrolls the complete symbols catalog without leaving blank thumbna
   page.on("request", (request) => {
     if (!collectAssetRequests) return;
     const url = request.url();
-    if (/\/assets\/bioicons\/.*\.svg(?:\?|$)/.test(url)) fullBioIconRequests.push(url);
-    if (/\/assets\/bioicons-thumbnails\/.*\.webp(?:\?|$)/.test(url)) {
+    if (/\/assets\/opensketch-generated\/.*\.svg(?:\?|$)/.test(url)) fullBioIconRequests.push(url);
+    if (/\/assets\/opensketch-generated\/.*\.webp(?:\?|$)/.test(url)) {
       bioIconThumbnailRequests.push(url);
     }
   });
@@ -3764,7 +3744,7 @@ test("rapidly scrolls the complete symbols catalog without leaving blank thumbna
   await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
   collectAssetRequests = true;
-  await page.getByRole("button", { name: "Symbols & diagrams", exact: true }).click();
+  await page.getByRole("button", { name: "Instruments", exact: true }).click();
 
   const list = page.locator(".asset-list");
   await expect(list).toBeVisible();
@@ -4774,23 +4754,23 @@ test("shows favorites only in a dedicated asset category", async ({ page }) => {
   await assetsTab.click();
   await expect(page.getByRole("button", { name: "Favorites", exact: true })).toHaveClass(/active/);
   await expect(page.getByRole("heading", { name: "No match" })).toBeVisible();
-  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("CD8 TCell");
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T lymphocyte");
   await expect(page.getByRole("button", { name: "All", exact: true })).toHaveClass(/active/);
 
   const assetTitles = page.locator(".asset-card-copy strong");
-  const cd8 = page.locator(".asset-card").filter({ hasText: "CD8 TCell" }).first();
+  const cd8 = page.locator(".asset-card").filter({ hasText: "T lymphocyte" }).first();
   await cd8.hover();
   await cd8.getByRole("button", { name: "Toggle favorite" }).click();
   await page.getByRole("button", { name: "Clear search" }).click();
-  await expect(assetTitles.first()).not.toHaveText("CD8 TCell");
+  await expect(assetTitles.first()).not.toHaveText("T lymphocyte");
   await expect(page.locator(".asset-results-meta")).toHaveCount(0);
 
   await page.getByRole("button", { name: "Cells", exact: true }).click();
-  await expect(assetTitles.first()).not.toHaveText("CD8 TCell");
+  await expect(assetTitles.first()).not.toHaveText("T lymphocyte");
 
   await favoritesCategory.click();
-  await expect(assetTitles.first()).toHaveText("CD8 TCell");
-  const pinnedCd8 = page.locator(".asset-card").filter({ hasText: "CD8 TCell" }).first();
+  await expect(assetTitles.first()).toHaveText("T lymphocyte");
+  const pinnedCd8 = page.locator(".asset-card").filter({ hasText: "T lymphocyte" }).first();
   await pinnedCd8.hover();
   await pinnedCd8.getByRole("button", { name: "Toggle favorite" }).click();
   await expect(page.getByRole("heading", { name: "No match" })).toBeVisible();
@@ -4801,11 +4781,8 @@ test("preserves an asset search after inserting artwork and reopening Assets", a
   await page.getByRole("button", { name: "New figure" }).click();
 
   const search = page.getByPlaceholder("Search cells, proteins, equipment…");
-  await search.fill("Cajal-Retzius Cell");
-  const matchingAsset = page
-    .locator(".asset-card")
-    .filter({ hasText: "Cajal-Retzius Cell" })
-    .first();
+  await search.fill("neuron");
+  const matchingAsset = page.locator(".asset-card").filter({ hasText: "neuron" }).first();
   await expect(matchingAsset).toBeVisible();
   await matchingAsset.locator(".asset-card-image").click();
   await expect(page.locator(".layers-title small")).toHaveText("1");
@@ -4817,11 +4794,9 @@ test("preserves an asset search after inserting artwork and reopening Assets", a
 
   const reopenedSearch = page.getByPlaceholder("Search cells, proteins, equipment…");
   await expect(reopenedSearch).toBeFocused();
-  await expect(reopenedSearch).toHaveValue("Cajal-Retzius Cell");
+  await expect(reopenedSearch).toHaveValue("neuron");
   await expect(page.getByRole("button", { name: "All", exact: true })).toHaveClass(/active/);
-  await expect(
-    page.locator(".asset-card").filter({ hasText: "Cajal-Retzius Cell" }).first()
-  ).toBeVisible();
+  await expect(page.locator(".asset-card").filter({ hasText: "neuron" }).first()).toBeVisible();
 });
 
 test("preserves asset filters after closing and reopening Assets", async ({ page }) => {
@@ -4830,8 +4805,8 @@ test("preserves asset filters after closing and reopening Assets", async ({ page
 
   const filterToggle = page.getByRole("button", { name: "Toggle asset filters" });
   await filterToggle.click();
-  await selectUiOption(page, "Filter by source", "SciDraw");
-  await selectUiOption(page, "Filter by variants", "Multiple variants");
+  await selectUiOption(page, "Filter by topic", "immunology");
+  await selectUiOption(page, "Filter by editability", "Editable structure");
 
   const assetsTab = page.getByRole("tab", { name: "Assets", exact: true });
   await assetsTab.click();
@@ -4843,11 +4818,11 @@ test("preserves asset filters after closing and reopening Assets", async ({ page
     "aria-expanded",
     "true"
   );
-  await expect(activePanel.getByRole("combobox", { name: "Filter by source" })).toContainText(
-    "SciDraw"
+  await expect(activePanel.getByRole("combobox", { name: "Filter by topic" })).toContainText(
+    "immunology"
   );
-  await expect(activePanel.getByRole("combobox", { name: "Filter by variants" })).toContainText(
-    "Multiple variants"
+  await expect(activePanel.getByRole("combobox", { name: "Filter by editability" })).toContainText(
+    "Editable structure"
   );
 });
 
@@ -4885,61 +4860,31 @@ test("orders the audited taxonomy from cell biology to macroscopic assets", asyn
   await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
 
+  const { ASSET_CATEGORY_ORDER } = await import("../../packages/editor-core/src/assetTaxonomy");
+  const catalog = generatedManifest;
   await expect(page.locator(".category-strip button")).toHaveText([
     "Favorites",
+    "Templates",
     "All",
-    "Cells",
-    "Cancer & pathology",
-    "Immunology & blood",
-    "Cell components",
-    "Proteins",
-    "Molecules",
-    "Nucleic acids & genetics",
-    "Cellular processes",
-    "Tissues & histology",
-    "Equipment",
-    "Techniques & assays",
-    "Bacteria",
-    "Viruses",
-    "Parasites",
-    "Fungi & protists",
-    "Anatomy",
-    "People",
-    "Animals",
-    "Arthropods",
-    "Plants",
-    "Food",
-    "Symbols & diagrams",
-    "Other"
+    ...ASSET_CATEGORY_ORDER.filter((category) =>
+      catalog.families.some((family) => family.category === category)
+    )
   ]);
-
   const search = page.getByPlaceholder("Search cells, proteins, equipment…");
-  await page.getByRole("button", { name: "Cells", exact: true }).click();
-  await search.fill("Activated Neutrophil");
-  await expect(
-    page.locator(".asset-card").filter({ hasText: "Activated Neutrophil" })
-  ).toBeVisible();
-
-  await page.getByRole("button", { name: "Tissues & histology", exact: true }).click();
-  await search.fill("Chicken retina");
-  await expect(page.locator(".asset-card").filter({ hasText: "Chicken retina" })).toBeVisible();
-
-  await page.getByRole("button", { name: "Viruses", exact: true }).click();
-  await search.fill("Bunyavirus");
-  await expect(page.locator(".asset-card").filter({ hasText: "Bunyavirus" })).toBeVisible();
-
-  await page.getByRole("button", { name: "Proteins", exact: true }).click();
-  await search.fill("CD80");
-  await expect(page.locator(".asset-card").filter({ hasText: "CD80" })).toBeVisible();
-
-  await page.getByRole("button", { name: "Animals", exact: true }).click();
-  await search.fill("Tree Dwelling Crab Eating Macaque");
-  await expect(
-    page.locator(".asset-card").filter({ hasText: "Tree Dwelling Crab Eating Macaque" })
-  ).toBeVisible();
+  for (const [category, title] of [
+    ["Cells", "neutrophil"],
+    ["Tissues & models", "granuloma"],
+    ["Viruses", "coronavirus particle"],
+    ["Proteins & complexes", "nuclear receptor"],
+    ["Animals", "laboratory mouse"]
+  ]) {
+    await page.getByRole("button", { name: category, exact: true }).click();
+    await search.fill(title);
+    await expect(page.getByRole("button", { name: `Insert ${title}`, exact: true })).toBeVisible();
+  }
 });
 
-test("renders and persists complex NIH illustrations without losing their colors", async ({
+test("renders and persists complex OpenSketch illustrations without losing their colors", async ({
   page
 }) => {
   test.setTimeout(45_000);
@@ -4947,7 +4892,7 @@ test("renders and persists complex NIH illustrations without losing their colors
   await page.getByRole("button", { name: "New figure" }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("dendritic");
   await page.getByRole("button", { name: "Toggle asset filters" }).click();
-  await selectUiOption(page, "Filter by source", "NIH BioArt");
+  await selectUiOption(page, "Filter by topic", "NIH BioArt");
   const dendriticCell = page.locator(".asset-card").filter({ hasText: "Dendritic Cell" }).first();
   await expect(dendriticCell).toBeVisible();
   await dendriticCell.hover();
@@ -5069,8 +5014,8 @@ test("shows no synthetic style or variant menu for a single-variant biological a
 }) => {
   await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
-  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
-  await page.getByRole("button", { name: "Insert Cajal-Retzius Cell", exact: true }).click();
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("neuron");
+  await page.getByRole("button", { name: "Insert neuron", exact: true }).click();
   await page.getByRole("button", { name: "Edit", exact: true }).click();
 
   await expect(page.getByRole("button", { name: "Style", exact: true })).toHaveCount(0);
@@ -5088,13 +5033,13 @@ test("saves and resets styling for future copies of the same biological asset", 
 }) => {
   await page.goto("./");
   await page.getByRole("button", { name: "New figure" }).click();
-  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("neuron");
   await expect(page.locator(".asset-card")).toHaveCount(1);
   const insertAsset = page.getByRole("button", {
-    name: "Insert Cajal-Retzius Cell",
+    name: "Insert neuron",
     exact: true
   });
-  const assetCard = page.locator(".asset-card").filter({ hasText: "Cajal-Retzius Cell" }).first();
+  const assetCard = page.locator(".asset-card").filter({ hasText: "neuron" }).first();
   const assetPreview = assetCard.locator(".asset-card-image");
   const assetPreviewImage = assetPreview.locator("img");
   await expect(assetPreview).toBeVisible();
@@ -5131,12 +5076,12 @@ test("saves and resets styling for future copies of the same biological asset", 
   const center = await artboardPoint(page);
   await page.mouse.click(center.x, center.y, { button: "right" });
   await page
-    .getByRole("menu", { name: "Cajal-Retzius Cell actions" })
+    .getByRole("menu", { name: "neuron actions" })
     .getByRole("menuitem", { name: "Save styling" })
     .click();
 
   await page.getByRole("tab", { name: "Assets", exact: true }).click();
-  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("neuron");
   await expect.poll(() => assetPreviewImage.getAttribute("src")).toMatch(/^data:image\/png/);
   expect(await assetPreviewImage.getAttribute("src")).not.toBe(originalPreviewSource);
   await expect
@@ -5164,14 +5109,14 @@ test("saves and resets styling for future copies of the same biological asset", 
 
   await page.mouse.click(center.x, center.y, { button: "right" });
   await page
-    .getByRole("menu", { name: "Cajal-Retzius Cell actions" })
+    .getByRole("menu", { name: "neuron actions" })
     .getByRole("menuitem", { name: "Reset styling" })
     .click();
   await ensureEditorOpen(page);
   await expect(transparency).toHaveValue("0");
   await expect.poll(async () => Number(await width.inputValue())).toBeCloseTo(originalWidth, 0);
   await page.getByRole("tab", { name: "Assets", exact: true }).click();
-  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Cajal-Retzius Cell");
+  await page.getByPlaceholder("Search cells, proteins, equipment…").fill("neuron");
   await expect(assetPreviewImage).toHaveAttribute("src", originalPreviewSource ?? "");
 
   await insertAsset.click();
@@ -5532,7 +5477,7 @@ test("exports an atomic SVG asset with its vector parts intact", async ({ page }
     };
   };
   const exportedAsset = portable.objects.objects[0];
-  expect(exportedAsset.OpenSketchType).toBe("nih-asset");
+  expect(exportedAsset.OpenSketchType).toBe("library-asset");
   expect(exportedAsset.assetId).toBeTruthy();
   const descendants = (object: SerializedObject): SerializedObject[] => [
     object,

@@ -10,7 +10,7 @@ describe("semantic group recognition", () => {
   const tCell: RecognizedGroup = {
     objectId: "t-cell-group",
     memberObjectIds: ["membrane", "cytoplasm", "nucleus"],
-    properties: { name: "T Cell", OpenSketchType: "nih-asset", assetId: "t-cell-variant" }
+    properties: { name: "T Cell", OpenSketchType: "library-asset", assetId: "t-cell-variant" }
   };
 
   it("recognizes exactly the original direct members in any selection order", () => {

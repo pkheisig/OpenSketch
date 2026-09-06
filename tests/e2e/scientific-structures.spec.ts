@@ -132,8 +132,8 @@ test("generated artwork is searchable, inserts as editable vectors and reloads",
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
   await observeCanvas(page);
   await page.getByRole("button", { name: "Toggle asset filters" }).click();
-  await page.getByRole("combobox", { name: "Filter by source" }).click();
-  await page.getByRole("option", { name: "OpenSketch generated", exact: true }).click();
+  await page.getByRole("combobox", { name: "Filter by editability" }).click();
+  await page.getByRole("option", { name: "Fixed SVG", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("nucleolus");
   await page.getByRole("button", { name: "Insert nucleolus", exact: true }).click();
   await expect
@@ -162,12 +162,12 @@ test("generated artwork is searchable, inserts as editable vectors and reloads",
       inserted.id
     )
   ).toBe(true);
-  // Reopen the library and verify a deliberate alias resolves to the canonical card.
+  // Historical shared artwork does not imply biological subtype equivalence.
   await page.getByRole("tab", { name: "Assets", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("regulatory T cell");
-  await expect(
-    page.getByRole("button", { name: "Insert T lymphocyte", exact: true })
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Insert T lymphocyte", exact: true })).toHaveCount(
+    0
+  );
 });
 
 test("sidebar identifies editable structures and hides legacy sources", async ({
@@ -181,9 +181,9 @@ test("sidebar identifies editable structures and hides legacy sources", async ({
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
   await observeCanvas(page);
   await page.getByRole("button", { name: "Toggle asset filters" }).click();
-  await page.getByRole("combobox", { name: "Filter by source" }).click();
+  await page.getByRole("combobox", { name: "Filter by editability" }).click();
   await expect(page.getByRole("listbox")).not.toContainText(/NIH BioArt|SciDraw|BioIcons|Arcadia/);
-  await page.getByRole("option", { name: "OpenSketch structures", exact: true }).click();
+  await page.getByRole("option", { name: "Editable structure", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Lipid bilayer");
   const card = page
     .locator(".asset-card")

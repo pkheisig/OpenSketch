@@ -3,8 +3,10 @@ import { useEditorFields } from "@/editor/editorHooks";
 import { type FabricObject } from "fabric";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useOpenSketchPortalRoot } from "@/application/hostServices";
 
 export function AssetColorPresets({ object }: { object: FabricObject }) {
+  const portalRoot = useOpenSketchPortalRoot();
   const editor = useEditorFields(["applyColorPreset", "resetColors", "selection", "setObject"]);
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState({ left: 0, top: 0, maxHeight: 640 });
@@ -129,7 +131,7 @@ export function AssetColorPresets({ object }: { object: FabricObject }) {
               Themes larger regions together. Tiny details and neutral outlines retain their colors.
             </p>
           </div>,
-          document.body
+          portalRoot ?? document.body
         )}
     </div>
   );

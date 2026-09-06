@@ -1,9 +1,10 @@
+import { ASSET_CATEGORY_ORDER } from "./assetTaxonomy";
 import type { AssetFamily } from "./types";
 
 const ABBREVIATIONS: Record<string, string[]> = {
   er: ["endoplasmic reticulum"],
   igg: ["antibody", "immunoglobulin"],
-  "t cell": ["t-cell", "lymphocyte", "cd4", "cd8"],
+  "t cell": ["t-cell", "t lymphocyte"],
   mitochondria: ["mitochondrion"]
 };
 
@@ -23,7 +24,7 @@ export function searchableText(family: AssetFamily): string {
       family.title,
       family.description,
       family.category,
-      family.author,
+      ...(family.topics ?? []),
       ...family.keywords,
       ...family.keywords.flatMap((keyword) => ABBREVIATIONS[normalizeSearch(keyword)] ?? [])
     ].join(" ")
@@ -55,38 +56,14 @@ function matchesTerms(haystack: string, value: string): boolean {
 }
 
 /** Browse order shared by the catalog UI and unfiltered search results. */
-export const ASSET_CATEGORY_ORDER = [
-  "Cells",
-  "Cancer & pathology",
-  "Immunology & blood",
-  "Cell components",
-  "Proteins",
-  "Molecules",
-  "Nucleic acids & genetics",
-  "Cellular processes",
-  "Tissues & histology",
-  "Equipment",
-  "Techniques & assays",
-  "Bacteria",
-  "Viruses",
-  "Parasites",
-  "Fungi & protists",
-  "Anatomy",
-  "People",
-  "Animals",
-  "Arthropods",
-  "Plants",
-  "Food",
-  "Symbols & diagrams",
-  "Other"
-] as const;
+export { ASSET_CATEGORY_ORDER } from "./assetTaxonomy";
 
 const CATEGORY_BROWSE_PRIORITY: Record<string, number> = Object.fromEntries(
   ASSET_CATEGORY_ORDER.map((category, index) => [category, index])
 );
 
 export function assetBrowsePriority(family: AssetFamily): number {
-  return CATEGORY_BROWSE_PRIORITY[family.category] ?? CATEGORY_BROWSE_PRIORITY.Other;
+  return CATEGORY_BROWSE_PRIORITY[family.category] ?? ASSET_CATEGORY_ORDER.length;
 }
 
 export function filterAssetFamilies(

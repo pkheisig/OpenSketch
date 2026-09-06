@@ -181,7 +181,7 @@ const moduleFiles = moduleManifest.moduleFiles || [];
 const moduleJavaScript = [];
 for (const moduleFile of moduleFiles) {
   const modulePath = join(releaseRoot, "module", moduleFile);
-  if (/(^|\/)(nih-bioart|scidraw|organism-library|bioicons)(?:-|\/|$)/.test(moduleFile)) {
+  if (/(^|\/)(opensketch-generated|scientific-structures)(?:-|\/|$)/.test(moduleFile)) {
     errors.push(`module bundle contains scientific asset payload: ${moduleFile}`);
   }
   try {

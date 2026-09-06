@@ -1,93 +1,31 @@
-# Asset pipeline
+# OpenSketch artwork pipeline
 
-The primary importer discovers the first-party NIAID NIH BioArt catalog at
-`bioart.niaid.nih.gov`, parses each record's declared license and SVG file IDs,
-and processes direct NIH downloads with bounded concurrency, retries, and a
-global request cadence. `pnpm assets:sync:commons` retains the older Wikimedia
-Commons mirror importer for maintenance and project compatibility, but the
-direct NIH catalog is authoritative.
+The shipped library contains only original OpenSketch generated artwork and procedural structures. The UI, search, offline pack and export records use this same catalog. Retired external collections, manifests, importers and collection notices are removed. Font notices remain with their bundled fonts.
 
-`pnpm assets:sync:open` separately imports every technically usable SciDraw
-vector drawing licensed CC0 1.0 or CC BY 4.0 and every tricolor/stroke and
-silhouette SVG in the Arcadia Science Free organism illustration library. It
-also imports the pinned BioIcons SVG catalog under each file's declared CC0,
-CC BY, CC BY-SA, MIT, or BSD license. `pnpm assets:sync:bioicons` refreshes only
-that third source while retaining the already generated SciDraw and Arcadia
-entries. The current BioIcons bundle contains all 2,827 renderable SVGs in the
-pinned catalog; its three excluded `.svg` files are empty. These files are
-copied into source-specific local directories and combined with NIH BioArt only
-in the browser manifest, preserving the established NIH source lock and stable
-IDs. All upstream technical exclusions are recorded in
-`data/open-assets-import-report.json`.
+## Categories and search
 
-## Trust gates
+`docs/scientific-asset-planning/curated-metadata.json` assigns a primary category, topics and search keywords to all 768 planned concepts. The original inventory is unchanged. `packages/editor-core/src/assetTaxonomy.ts` defines the category boundaries. Organism-specific and embryo categories take precedence over generic cell or structure categories. Whole organs differ from tissue sections; active instruments differ from passive labware. Dedicated imaging and culture equipment have their own categories. Topics cross these boundaries.
 
-An asset enters the bundle only when:
+Use the depicted canonical concept for tags. A shared illustration is not evidence that different cell states or receptor identities are interchangeable. Historical generation aliases remain in the audit registry, but do not become search aliases. Exact synonyms and abbreviations are allowed. New metadata must satisfy the taxonomy tests before release.
 
-1. The first-party NIH record declares its license exactly `Public Domain`.
-2. NIH advertises an SVG representation with a concrete file ID.
-3. The downloaded response has an SVG root and non-empty content.
-4. The family has exactly one assignment in `data/taxonomy.json`; new records
-   are initially routed from NIH's own category metadata and can be reviewed
-   there.
-5. Sanitized XML has a root SVG and `viewBox`.
-6. Security validation finds no executable or network content.
-7. A transparent 256 × 256 WebP thumbnail can be rendered.
+## Importing committed artwork
 
-For SciDraw, Arcadia Science, and BioIcons, the same technical gates apply and
-the source must additionally expose a redistribution/modification license
-supported by OpenSketch. CC BY and CC BY-SA files retain author, source-page,
-license, and license-URL metadata; SciDraw also retains its DOI. MIT and BSD
-icons retain their author/copyright source and license. CC0 files retain source
-and license metadata for traceability. A BioIcons SVG without the full
-license/category/author path required for attribution is excluded rather than
-being assigned guessed provenance.
-
-Public-domain records without an SVG and records under another license are
-listed as skips in `data/import-errors.json`. Download, sanitization, rendering,
-or security failures are recorded separately and fail the synchronization.
-Legacy Commons identity conflicts can still be resolved explicitly in
-`data/asset-overrides.json`.
-
-The open-asset importer records individual upstream failures in
-`data/open-assets-import-report.json` while still publishing every other valid,
-licensed file. This prevents one corrupt third-party SVG from discarding an
-otherwise complete source collection.
-
-## Determinism
-
-`data/source-lock.json` records the direct NIH source page, source file ID,
-source SHA-256, local SHA-256, and sanitizer pipeline version. Retained legacy
-mirror entries keep their Commons source metadata. Unchanged downloads are
-skipped only when their recorded source digest and sanitizer version still
-match. Families and variants are sorted.
-
-Removed files are removed locally only after complete catalog discovery and
-successful lock construction. Existing public-domain mirror assets without a
-direct NIH match are retained so previously saved OpenSketch projects continue
-to resolve their stable asset IDs.
-
-## Manual review
-
-After synchronization:
+The generation agent owns its separate worktree. Import only an immutable, reviewed commit:
 
 ```sh
-corepack pnpm assets:validate
-git diff --stat
-git diff -- data/source-lock.json \
-  apps/web/src/generated/nih-bioart-manifest.json
+python scripts/assets/trace-generated-app.py <40-character-commit>
+pnpm assets:sync <40-character-commit>
+pnpm exec tsx scripts/assets/build-canonical-registry.ts <40-character-commit>
 ```
 
-Review `data/import-errors.json`. A non-empty failure list prevents a successful
-sync. Verify identity or taxonomy corrections against the linked NIH source
-page (and Commons page for a retained mirror entry) before adding overrides.
-`assets:validate` also proves that the taxonomy and generated manifest contain
-the same family IDs and categories.
+The tracer requires Pillow 11.3.0 and vtracer 0.6.15. It makes bounded, editable vector derivatives from approved masters: at most 48 colors and 4,000 paths. More complex sources are reduced adaptively and must be visually checked. Source masters are not changed. Receipts record source and derivative hashes, dimensions and settings. The importer checks review evidence and source hashes, keeps established IDs, deduplicates identical SVG artwork, and creates local thumbnails. Metadata updates do not regenerate artwork.
 
-BioIcons is pinned by commit in `scripts/assets/bioicons.ts`; update that commit
-deliberately when refreshing the catalog. Its SVGs and thumbnails, like the
-other bundled libraries, are served from the OpenSketch origin and intentionally
-excluded from the app-shell precache. The Assets panel's versioned offline-pack
-action explicitly fetches and verifies every local SVG and WebP before declaring
-the complete library ready for cold offline use. Data-URL labware entries do not
-need a Cache Storage entry.
+The manifest is `apps/web/src/generated/opensketch-generated-manifest.json`; assets are in `apps/web/public/assets/opensketch-generated/`. Procedural structures are generated by the editor and have static previews in `assets/scientific-structures/`.
+
+## Composites
+
+Build future composites from existing library assets, with transforms, labels and relations. Do not draw an entire composite as a new monolithic SVG. Broad component editing stops after one level. Fixed assets and editable structures are separate choices; structural editability controls the sidebar badge and filter.
+
+## Validation and deployment
+
+Run `pnpm typecheck`, `pnpm test`, the focused browser checks and `pnpm build:pages`. Verify categories, search, filtering, asset insertion, palette restoration and export metadata in the built app. A successful local build does not deploy GitHub Pages; publishing remains a separate step. GitHub Actions remain disabled unless the user explicitly authorizes a run.

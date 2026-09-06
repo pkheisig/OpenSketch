@@ -1,4 +1,3 @@
-import { readFile } from "node:fs/promises";
 import { Group, type FabricObject } from "../apps/web/node_modules/fabric";
 import { describe, expect, it } from "vitest";
 import { sanitizeImportedSvg } from "../apps/web/src/assets/browserSanitizer";
@@ -74,28 +73,6 @@ describe("editable SVG rendering", () => {
       offsetX: 0,
       offsetY: 0
     });
-  });
-
-  it("restores the glow layers in the bundled fluorescent bead asset", async () => {
-    const source = await readFile(
-      "apps/web/public/assets/bioicons/bioicons-fluoresent-bead-blue-26c811ca.svg",
-      "utf8"
-    );
-    const parsed = await loadEditableSvg(source);
-    const glowObjects = leaves(parsed.objects).filter((object) => object.shadow);
-
-    expect(glowObjects).toHaveLength(2);
-    expect(
-      glowObjects.map((object) => ({
-        blur: object.shadow?.blur,
-        color: object.shadow?.color
-      }))
-    ).toEqual(
-      expect.arrayContaining([
-        { blur: 4.52, color: "rgba(88,102,226,1)" },
-        { blur: 4.52, color: "rgba(204,207,247,1)" }
-      ])
-    );
   });
 
   it("preserves every source SVG group as a nested editable hierarchy", async () => {
