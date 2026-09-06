@@ -14,6 +14,7 @@ import {
   findAssetVariantForStyle,
   filterAssetFamilies,
   isAssetStyle,
+  variantsForStyle,
   type AssetManifest,
   type AssetFamily,
   type AssetStyle,
@@ -694,8 +695,12 @@ function isEffectivelyVisible(path: readonly { visible?: boolean; opacity?: numb
   return path.every((object) => object.visible !== false && (object.opacity ?? 1) > 0);
 }
 
-function assetSummary(family: AssetFamily) {
+function assetSummary(family: AssetFamily, style?: AssetStyle) {
   const styles = [...new Set(family.variants.map(assetStyleOf))];
+  const variants = style ? variantsForStyle(family, style) : family.variants;
+  const defaultVariantId = style
+    ? findAssetVariantForStyle(family, style)?.id
+    : family.defaultVariantId;
   return {
     familyId: family.familyId,
     title: boundedText(family.title, 200) ?? family.familyId,
@@ -708,9 +713,9 @@ function assetSummary(family: AssetFamily) {
     licenseUrl: boundedText(family.licenseUrl, 500),
     sourceName: boundedText(family.sourceName, 200),
     sourcePage: boundedText(family.sourcePage, 500),
-    defaultVariantId: family.defaultVariantId,
+    defaultVariantId,
     availableStyles: styles,
-    variants: family.variants.slice(0, 64).map((variant) => ({
+    variants: variants.slice(0, 64).map((variant) => ({
       id: variant.id,
       label: boundedText(variant.label, 200) ?? variant.id,
       style: assetStyleOf(variant),
@@ -775,7 +780,7 @@ export function createSemanticEditorAdapter(
       (family) => style === undefined || findAssetVariantForStyle(family, style) !== undefined
     );
     return {
-      results: matches.slice(0, limit).map(assetSummary),
+      results: matches.slice(0, limit).map((family) => assetSummary(family, style)),
       total: matches.length
     };
   };
@@ -827,10 +832,10 @@ export function createSemanticEditorAdapter(
       );
     return {
       family: {
-        ...assetSummary(family),
+        ...assetSummary(family, style),
         selectedVariantId: selectedVariant.id,
         selectedStyle: assetStyleOf(selectedVariant),
-        selectedVariant: assetSummary(family).variants.find(
+        selectedVariant: assetSummary(family, style).variants.find(
           (variant) => variant.id === selectedVariant.id
         )
       }

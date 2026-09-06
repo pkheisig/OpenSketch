@@ -527,6 +527,7 @@ async function createBundledAssetGroup(
     ...(family.sourceName ? { sourceName: family.sourceName } : {}),
     ...(family.licenseUrl ? { licenseUrl: family.licenseUrl } : {}),
     style: group.assetStyle,
+    ...(variant.localSha256 ? { localSha256: variant.localSha256 } : {}),
     credit: family.credit,
     author: family.author,
     license: family.license
@@ -3317,6 +3318,7 @@ export function EditorProvider({
               ...(family.sourceName ? { sourceName: family.sourceName } : {}),
               ...(family.licenseUrl ? { licenseUrl: family.licenseUrl } : {}),
               style: group.assetStyle,
+              ...(variant.localSha256 ? { localSha256: variant.localSha256 } : {}),
               credit: family.credit,
               author: family.author,
               license: family.license

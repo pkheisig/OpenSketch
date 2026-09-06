@@ -691,12 +691,16 @@ describe("semantic editor adapter", () => {
       results: Array<{
         familyId: string;
         availableStyles: string[];
+        defaultVariantId?: string;
         variants: Array<{ id: string; style: string }>;
       }>;
     };
     const family = searched.results.find((candidate) => candidate.familyId === "editable-cell");
     expect(family?.availableStyles).toContain("simplified");
-    expect(family?.variants.some((variant) => variant.style === "simplified")).toBe(true);
+    expect(family?.defaultVariantId).toBe("editable-cell-simplified");
+    expect(family?.variants).toEqual([
+      expect.objectContaining({ id: "editable-cell-simplified", style: "simplified" })
+    ]);
 
     const inspected = (await adapter.inspectAsset({
       familyId: "editable-cell",

@@ -8,6 +8,7 @@ export interface AssetProvenanceRecord {
   assetId?: string;
   familyId?: string;
   style?: AssetStyle;
+  localSha256?: string;
   name?: string;
   source?: string;
   sourceUrl?: string;
@@ -35,6 +36,7 @@ const RECORD_FIELDS: Array<keyof AssetProvenanceRecord> = [
   "assetId",
   "familyId",
   "style",
+  "localSha256",
   "name",
   "source",
   "sourceUrl",
@@ -160,6 +162,7 @@ export function formatProvenanceCredits(
     if (asset.assetId) lines.push(`   Asset ID: ${asset.assetId}`);
     if (asset.familyId) lines.push(`   Family ID: ${asset.familyId}`);
     if (asset.style) lines.push(`   Style: ${asset.style}`);
+    if (asset.localSha256) lines.push(`   SHA-256: ${asset.localSha256}`);
     if (asset.source) lines.push(`   Source: ${asset.source}`);
     if (asset.sourceUrl) lines.push(`   Source URL: ${asset.sourceUrl}`);
     if (asset.sourceReference) lines.push(`   Source reference: ${asset.sourceReference}`);
