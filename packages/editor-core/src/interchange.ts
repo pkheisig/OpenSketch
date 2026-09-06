@@ -534,7 +534,7 @@ function probeTiff(bytes: Uint8Array):
 }
 
 function probeSvg(bytes: Uint8Array): boolean {
-  const text = new TextDecoder().decode(bytes.slice(0, Math.min(bytes.length, 16_384)));
+  const text = new TextDecoder().decode(bytes);
   let offset = 0;
   let allowXmlDeclaration = true;
   let doctypeSeen = false;
@@ -545,9 +545,18 @@ function probeSvg(bytes: Uint8Array): boolean {
 
   while (offset < text.length) {
     skipWhitespace();
-    if (text.slice(offset, offset + 5).toLowerCase() === "<?xml") {
+    const xmlPrefix = text.slice(offset, offset + 5).toLowerCase();
+    const xmlNext = text[offset + 5] ?? "";
+    if (xmlPrefix === "<?xml" && /[\s?]/.test(xmlNext)) {
       if (!allowXmlDeclaration) return false;
       const end = text.indexOf("?>", offset + 5);
+      if (end < 0) return false;
+      offset = end + 2;
+      allowXmlDeclaration = false;
+      continue;
+    }
+    if (text.slice(offset, offset + 2) === "<?") {
+      const end = text.indexOf("?>", offset + 2);
       if (end < 0) return false;
       offset = end + 2;
       allowXmlDeclaration = false;

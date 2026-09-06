@@ -170,6 +170,20 @@ describe("strict interchange probing", () => {
     expect(probeIsUsable(probe)).toBe(true);
   });
 
+  it("accepts SVG processing instructions and a prolog beyond the old short window", () => {
+    const preamble = `<?xml version="1.0"?><?xml-stylesheet type="text/css" href="figure.css"?>${"<!-- license -->".repeat(1_200)}`;
+    const bytes = new TextEncoder().encode(
+      `${preamble}<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" />`
+    );
+    const probe = probeInterchangeBytes(bytes, {
+      mimeType: "image/svg+xml",
+      name: "licensed.svg"
+    });
+
+    expect(probe).toMatchObject({ format: "svg", diagnostics: [] });
+    expect(probeIsUsable(probe)).toBe(true);
+  });
+
   it("detects BMP, TIFF, GIF animation, and modern container signatures", () => {
     const bmp = new Uint8Array(26);
     bmp.set([0x42, 0x4d], 0);

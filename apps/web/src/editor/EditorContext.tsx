@@ -64,8 +64,7 @@ import {
 import { sanitizeImportedSvg } from "@/assets/browserSanitizer";
 import {
   importDecisionMessage,
-  prepareInterchangeFile,
-  requiresImportDecision
+  prepareInterchangeFile
 } from "@/interchange/registry";
 import {
   encodeBmpRgba,
@@ -3633,8 +3632,7 @@ export function EditorProvider({
                 !(
                   reason.code === "animated_requires_choice" ||
                   reason.code === "multipage_requires_choice" ||
-                  reason.code === "lossy_depth_requires_choice" ||
-                  requiresImportDecision(reason.probe)
+                  reason.code === "lossy_depth_requires_choice"
                 )
               ) {
                 throw reason;
@@ -4981,12 +4979,24 @@ export function EditorProvider({
         event.preventDefault();
         clipboard.current = [];
         clipboardMarker.current = undefined;
-        media.forEach((file, index) => {
-          const offset = Math.min(index, 8) * 24;
-          void importMedia(file, {
-            x: canvasSettings.width / 2 + offset,
-            y: canvasSettings.height / 2 + offset
+        void Promise.allSettled(
+          media.map((file, index) => {
+            const offset = Math.min(index, 8) * 24;
+            return importMedia(file, {
+              x: canvasSettings.width / 2 + offset,
+              y: canvasSettings.height / 2 + offset
+            });
+          })
+        ).then((results) => {
+          const failures = results.flatMap((result, index) => {
+            if (result.status !== "rejected") return [];
+            const message =
+              result.reason instanceof Error ? result.reason.message : String(result.reason);
+            return [`${media[index]?.name ?? "Clipboard file"}: ${message}`];
           });
+          if (failures.length === 0) return;
+          const message = `Could not paste ${failures.join(" ")}`;
+          void services.dialogs.alert?.(message);
         });
         return;
       }
@@ -5144,6 +5154,7 @@ export function EditorProvider({
     redo,
     requestExit,
     refreshConnectors,
+    services.dialogs,
     selectParentAsset,
     setEditingGroupPath,
     setZoom,

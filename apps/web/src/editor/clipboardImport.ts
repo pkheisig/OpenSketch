@@ -82,7 +82,9 @@ export function importedMediaFilesFromClipboard(data: DataTransfer): File[] {
     .map((item) => item.getAsFile())
     .filter((file): file is File => file !== null && isSupportedImportedImageFile(file));
   const transferredFiles =
-    transferredItems.length > 0 ? transferredItems : importedMediaFilesFromDataTransfer(data);
+    transferredItems.length > 0
+      ? transferredItems
+      : importedMediaFilesFromDataTransfer(data).filter(isSupportedImportedImageFile);
   if (transferredFiles.length > 0) {
     return transferredFiles.map((file) => {
       const declaredMimeType = file.type.toLowerCase();
