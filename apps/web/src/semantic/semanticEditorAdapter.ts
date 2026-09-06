@@ -4111,6 +4111,7 @@ export function createSemanticEditorAdapter(
     runTransaction: async <T>(operation: () => Promise<T>): Promise<T> => {
       const canvas = canvasOrThrow();
       const snapshot = dependencies.serialize();
+      const canvasSettingsSnapshot = structuredClone(dependencies.getCanvasSettings());
       const layoutSnapshot = dependencies.getLayoutState();
       const selectionObjectIds = canvas
         .getActiveObjects()
@@ -4128,6 +4129,7 @@ export function createSemanticEditorAdapter(
           dependencies.setLayoutState(
             layoutSnapshot === undefined ? undefined : structuredClone(layoutSnapshot)
           );
+          dependencies.setCanvasSettings(canvasSettingsSnapshot, { commit: false });
           const restoredCanvas = dependencies.getCanvas();
           if (restoredCanvas) {
             restoreSelection(restoredCanvas, selectionObjectIds, dependencies.setSelection);

@@ -395,6 +395,30 @@ describe("semantic editor adapter", () => {
     expect(adapter.commit).not.toHaveBeenCalled();
   });
 
+  it("restores canvas settings when a semantic transaction fails after resizing", async () => {
+    const adapter = makeAdapter(makeCanvas());
+
+    await expect(
+      adapter.runTransaction(async () => {
+        await adapter.execute("resize_canvas", { width: 1200, height: 900 });
+        throw new Error("stop after resize");
+      })
+    ).rejects.toThrow("stop after resize");
+
+    expect(adapter.setCanvasSettings).toHaveBeenLastCalledWith(
+      {
+        width: 1000,
+        height: 800,
+        unit: "px",
+        dpi: 96,
+        background: "#ffffff",
+        transparent: false
+      },
+      { commit: false }
+    );
+    expect(adapter.commit).not.toHaveBeenCalled();
+  });
+
   it("resizes SVG groups through scale and remains stable when repeated", async () => {
     const part = new Rect({ width: 80, height: 40, left: 12, top: 8 });
     const group = new Group([part], { angle: 25, scaleX: 2, scaleY: 3 });

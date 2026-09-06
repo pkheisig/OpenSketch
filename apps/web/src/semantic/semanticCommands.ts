@@ -1,5 +1,5 @@
 import type { ShapeKind, TextKind } from "@/editor/creation";
-import { PORTABLE_PROJECT_LIMITS } from "@workspace/editor-core";
+import { LAYOUT_LIMITS, PORTABLE_PROJECT_LIMITS } from "@workspace/editor-core";
 import {
   SEMANTIC_RUNTIME_VERSION,
   type JsonSchema,
@@ -142,12 +142,13 @@ const point = (): JsonSchema => ({
 });
 
 const objectId = (): JsonSchema => ({ type: "string", minLength: 1, maxLength: 200 });
-const objectIds = (minItems = 1): JsonSchema => ({
+const objectIds = (minItems = 1, maxItems = 200): JsonSchema => ({
   type: "array",
   minItems,
-  maxItems: 200,
+  maxItems,
   items: objectId()
 });
+const layoutObjectIds = (): JsonSchema => objectIds(0, LAYOUT_LIMITS.maxChildrenPerFrame);
 const emptyObject = (): JsonSchema => ({
   type: "object",
   properties: {},
@@ -1734,7 +1735,7 @@ definitions.push(
     },
     outputSchema: output({
       frameId: objectId(),
-      objectIds: objectIds(0),
+      objectIds: layoutObjectIds(),
       diagnostics: layoutDiagnostics(),
       warnings: { type: "array", maxItems: 500, items: { type: "string", maxLength: 500 } }
     })
@@ -1840,7 +1841,7 @@ definitions.push(
       required: ["frameId"],
       additionalProperties: false
     },
-    outputSchema: output({ frameId: objectId(), objectIds: objectIds(0) })
+    outputSchema: output({ frameId: objectId(), objectIds: layoutObjectIds() })
   },
   {
     name: "compose_labeled_group",

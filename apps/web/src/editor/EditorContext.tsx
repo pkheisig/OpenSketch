@@ -3879,6 +3879,7 @@ export function EditorProvider({
       sceneObjectEntries(canvas)
         .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
         .forEach((entry) => {
+          if (entry.object.objectId) removedIds.add(entry.object.objectId);
           removeSceneObject(entry);
           changed = true;
         });
@@ -4224,7 +4225,10 @@ export function EditorProvider({
     }
     sceneObjectEntries(canvas)
       .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
-      .forEach(removeSceneObject);
+      .forEach((entry) => {
+        if (entry.object.objectId) removedIds.add(entry.object.objectId);
+        removeSceneObject(entry);
+      });
     removeLayoutReferences(removedIds);
     const selectionObject = new ActiveSelection(objects, { canvas });
     configureSelectionControls(selectionObject, latestZoom.current);
