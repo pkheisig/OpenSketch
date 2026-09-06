@@ -123,6 +123,18 @@ describe("new flat scientific structures", () => {
     );
     expect(JSON.stringify(object.toObject())).toBe(before);
   });
+  it("keeps original semantic colors through manual recoloring and extension", () => {
+    const object = membrane();
+    const original = { ...object.originalPalette };
+    expect(original["scientific:fill"]).toBe(object.scientificBrush.fill);
+    updateBrushObject(object, { ...object.scientificBrush, fill: "#d48e8e" });
+    moveBrushAnchor(object, 1, new Point(370, 0));
+    expect(object.originalPalette).toEqual(original);
+    const legacy = membrane();
+    legacy.originalPalette = undefined;
+    updateBrushObject(legacy, { ...legacy.scientificBrush, fill: "#d48e8e" });
+    expect(legacy.originalPalette).toEqual(original);
+  });
   it("retains palette changes after extension and releases ordinary editable parts", () => {
     const object = membrane();
     updateBrushObject(object, { ...object.scientificBrush, fill: "#d48e8e" });

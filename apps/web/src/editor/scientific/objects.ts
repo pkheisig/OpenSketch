@@ -211,6 +211,11 @@ export function createBrushObject(spec: ScientificBrushSpec): Group {
     ...spec,
     points: spec.points.map((p) => ({ x: p.x - center.x, y: p.y - center.y }))
   };
+  group.originalPalette = {
+    "scientific:fill": spec.fill,
+    "scientific:accent": spec.accent,
+    "scientific:stroke": spec.stroke
+  };
   group.OpenSketchType = "scientific-brush";
   group.name = spec.kind;
   return group;
@@ -219,6 +224,15 @@ export function createBrushObject(spec: ScientificBrushSpec): Group {
 export function updateBrushObject(group: Group, spec: ScientificBrushSpec): void {
   // Validate and render before touching the original; an excessive path must leave it intact.
   const replacement = createBrushObject(spec);
+  // Older saved structures may not yet carry their semantic color baseline.
+  if (group.scientificBrush && !group.originalPalette?.["scientific:fill"]) {
+    group.originalPalette = {
+      ...group.originalPalette,
+      "scientific:fill": group.scientificBrush.fill,
+      "scientific:accent": group.scientificBrush.accent,
+      "scientific:stroke": group.scientificBrush.stroke
+    };
+  }
   const matrix = group.calcTransformMatrix();
   const center = util.transformPoint(replacement.getRelativeCenterPoint(), group.calcOwnMatrix());
   const children = replacement.removeAll();

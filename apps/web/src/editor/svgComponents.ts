@@ -7,8 +7,7 @@ const MAX_COMPONENTS = 8;
 export function hasSvgComponents(group: Group): boolean {
   const parts = group.getObjects();
   return (
-    parts.length >= 2 &&
-    parts.length <= MAX_COMPONENTS &&
+    parts.length > 0 &&
     parts.every((part) => part instanceof Group && Boolean(part.svgComponent))
   );
 }

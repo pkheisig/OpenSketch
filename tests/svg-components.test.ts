@@ -23,7 +23,7 @@ describe("broad SVG components", () => {
     );
     expect(proposeSvgComponents(objects)).toBeNull();
   });
-  it("requires two to eight explicit boundaries, independent of user names", () => {
+  it("recognizes explicit boundaries, independent of user names", () => {
     const parts = Array.from({ length: 2 }, () => new Group([new Rect({ width: 10, height: 10 })]));
     parts.forEach((part, i) => {
       part.svgComponent = `part-${i}`;
@@ -31,6 +31,17 @@ describe("broad SVG components", () => {
     });
     expect(hasSvgComponents(new Group(parts))).toBe(true);
     expect(hasSvgComponents(new Group([new Rect()]))).toBe(false);
+  });
+  it("retains prepared boundaries after deletion or duplication", () => {
+    for (const count of [1, 9]) {
+      const parts = Array.from({ length: count }, (_, i) => {
+        const part = new Group([new Rect({ width: 10, height: 10 })]);
+        part.svgComponent = `part-${i}`;
+        return part;
+      });
+      expect(hasSvgComponents(new Group(parts))).toBe(true);
+    }
+    expect(hasSvgComponents(new Group([]))).toBe(false);
   });
   it("retains authored boundaries while keeping deeper SVG groups inside them", async () => {
     const parsed =
