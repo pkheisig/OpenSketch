@@ -47,6 +47,58 @@ describe("persistent layout frames", () => {
     expect(resolved.diagnostics).toEqual([]);
   });
 
+  it("fits preserve-aspect children in linear flows before applying reject overflow", () => {
+    const horizontal = createLayoutFrame(createLayoutDocument(), {
+      frameId: "aspect-horizontal",
+      bounds: { left: 0, top: 0, width: 220, height: 50 },
+      flow: "horizontal",
+      gap: 10,
+      overflow: "reject",
+      children: [
+        { objectId: "first", sizing: "preserve-aspect" },
+        { objectId: "second", sizing: "preserve-aspect" }
+      ]
+    });
+    expect(
+      layoutFrame(horizontal.frames[0]!, [
+        child("first", 0, 0, 200, 100),
+        child("second", 0, 0, 200, 100)
+      ])
+    ).toEqual({
+      frameId: "aspect-horizontal",
+      children: [
+        { objectId: "first", bounds: { left: 0, top: 0, width: 100, height: 50 } },
+        { objectId: "second", bounds: { left: 110, top: 0, width: 100, height: 50 } }
+      ],
+      diagnostics: []
+    });
+
+    const vertical = createLayoutFrame(createLayoutDocument(), {
+      frameId: "aspect-vertical",
+      bounds: { left: 0, top: 0, width: 50, height: 220 },
+      flow: "vertical",
+      gap: 10,
+      overflow: "reject",
+      children: [
+        { objectId: "first", sizing: "preserve-aspect" },
+        { objectId: "second", sizing: "preserve-aspect" }
+      ]
+    });
+    expect(
+      layoutFrame(vertical.frames[0]!, [
+        child("first", 0, 0, 100, 200),
+        child("second", 0, 0, 100, 200)
+      ])
+    ).toEqual({
+      frameId: "aspect-vertical",
+      children: [
+        { objectId: "first", bounds: { left: 0, top: 0, width: 50, height: 100 } },
+        { objectId: "second", bounds: { left: 0, top: 110, width: 50, height: 100 } }
+      ],
+      diagnostics: []
+    });
+  });
+
   it("supports grid spans and rejects silent clipping when overflow is disallowed", () => {
     const document = createLayoutDocument();
     const next = createLayoutFrame(document, {

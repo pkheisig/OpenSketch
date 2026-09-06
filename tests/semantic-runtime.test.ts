@@ -161,6 +161,25 @@ describe("semantic command contracts", () => {
       type: "array",
       maxItems: 500
     });
+
+    const createLayoutFrame = SEMANTIC_COMMANDS.find(
+      (command) => command.name === "create_layout_frame"
+    )?.inputSchema;
+    expect(createLayoutFrame?.properties?.frameId).toMatchObject({
+      type: "string",
+      minLength: 1,
+      maxLength: 128
+    });
+    expect(createLayoutFrame?.properties?.containerObjectId).toMatchObject({
+      type: "string",
+      minLength: 1,
+      maxLength: 128
+    });
+    expect(createLayoutFrame?.properties?.children?.items?.properties?.objectId).toMatchObject({
+      type: "string",
+      minLength: 1,
+      maxLength: 128
+    });
   });
 });
 

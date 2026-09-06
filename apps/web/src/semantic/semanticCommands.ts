@@ -143,13 +143,23 @@ const point = (): JsonSchema => ({
 });
 
 const objectId = (): JsonSchema => ({ type: "string", minLength: 1, maxLength: 200 });
+const layoutObjectId = (): JsonSchema => ({
+  type: "string",
+  minLength: 1,
+  maxLength: LAYOUT_LIMITS.maxFrameIdLength
+});
 const objectIds = (minItems = 1, maxItems = 200): JsonSchema => ({
   type: "array",
   minItems,
   maxItems,
   items: objectId()
 });
-const layoutObjectIds = (): JsonSchema => objectIds(0, LAYOUT_LIMITS.maxChildrenPerFrame);
+const layoutObjectIds = (): JsonSchema => ({
+  type: "array",
+  minItems: 0,
+  maxItems: LAYOUT_LIMITS.maxChildrenPerFrame,
+  items: layoutObjectId()
+});
 const emptyObject = (): JsonSchema => ({
   type: "object",
   properties: {},
@@ -206,7 +216,7 @@ const layoutGap = (): JsonSchema => ({
 const layoutChild = (): JsonSchema => ({
   type: "object",
   properties: {
-    objectId: objectId(),
+    objectId: layoutObjectId(),
     sizing: { type: "string", enum: ["fixed", "fill", "preserve-aspect", "content-sized"] },
     role: { type: "string", maxLength: 120 },
     width: number(0.000001, 1_000_000),
@@ -263,8 +273,8 @@ const layoutDiagnostics = (): JsonSchema => ({
     type: "object",
     properties: {
       code: { type: "string", enum: ["FRAME_OVERFLOW", "INVALID_CELL"] },
-      frameId: objectId(),
-      objectId: objectId(),
+      frameId: layoutObjectId(),
+      objectId: layoutObjectId(),
       message: { type: "string", minLength: 1, maxLength: 500 }
     },
     required: ["code", "frameId", "message"],
@@ -272,7 +282,7 @@ const layoutDiagnostics = (): JsonSchema => ({
   }
 });
 const layoutFrameProperties: Record<string, JsonSchema> = {
-  frameId: objectId(),
+  frameId: layoutObjectId(),
   bounds: layoutBounds(),
   flow: { type: "string", enum: ["free", "horizontal", "vertical", "grid"] },
   padding: layoutPadding(),
@@ -281,7 +291,7 @@ const layoutFrameProperties: Record<string, JsonSchema> = {
   children: { type: "array", maxItems: 500, items: layoutChild() },
   tracks: layoutTracks(),
   role: { type: "string", maxLength: 120 },
-  containerObjectId: objectId()
+  containerObjectId: layoutObjectId()
 };
 
 const propertySchemas: Record<string, JsonSchema> = {
@@ -1739,7 +1749,7 @@ definitions.push(
       additionalProperties: false
     },
     outputSchema: output({
-      frameId: objectId(),
+      frameId: layoutObjectId(),
       objectIds: layoutObjectIds()
     })
   },
@@ -1761,7 +1771,7 @@ definitions.push(
       required: ["frameId"],
       additionalProperties: false
     },
-    outputSchema: output({ frameId: objectId() })
+    outputSchema: output({ frameId: layoutObjectId() })
   },
   {
     name: "insert_layout_child",
@@ -1778,14 +1788,14 @@ definitions.push(
     inputSchema: {
       type: "object",
       properties: {
-        frameId: objectId(),
+        frameId: layoutObjectId(),
         child: layoutChild(),
         index: integer(0, 500)
       },
       required: ["frameId", "child"],
       additionalProperties: false
     },
-    outputSchema: output({ frameId: objectId(), objectId: objectId() })
+    outputSchema: output({ frameId: layoutObjectId(), objectId: layoutObjectId() })
   },
   {
     name: "remove_layout_child",
@@ -1801,11 +1811,11 @@ definitions.push(
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
-      properties: { frameId: objectId(), objectId: objectId() },
+      properties: { frameId: layoutObjectId(), objectId: layoutObjectId() },
       required: ["frameId", "objectId"],
       additionalProperties: false
     },
-    outputSchema: output({ frameId: objectId(), objectId: objectId() })
+    outputSchema: output({ frameId: layoutObjectId(), objectId: layoutObjectId() })
   },
   {
     name: "remove_layout_frame",
@@ -1820,11 +1830,11 @@ definitions.push(
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
-      properties: { frameId: objectId() },
+      properties: { frameId: layoutObjectId() },
       required: ["frameId"],
       additionalProperties: false
     },
-    outputSchema: output({ frameId: objectId() })
+    outputSchema: output({ frameId: layoutObjectId() })
   },
   {
     name: "reflow_layout_frame",
@@ -1840,12 +1850,12 @@ definitions.push(
     requires: ["project", "canvas"],
     inputSchema: {
       type: "object",
-      properties: { frameId: objectId() },
+      properties: { frameId: layoutObjectId() },
       required: ["frameId"],
       additionalProperties: false
     },
     outputSchema: output({
-      frameId: objectId(),
+      frameId: layoutObjectId(),
       objectIds: layoutObjectIds(),
       diagnostics: layoutDiagnostics(),
       warnings: { type: "array", maxItems: 500, items: { type: "string", maxLength: 500 } }

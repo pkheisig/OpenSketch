@@ -777,17 +777,33 @@ function starts(sizes: readonly number[], start: number, gapSize: number): numbe
   return positions;
 }
 
+function preserveAspectWidth(child: LayoutChildGeometry, height: number): number {
+  return child.bounds.width > 0 && child.bounds.height > 0
+    ? child.bounds.width * (height / child.bounds.height)
+    : 0;
+}
+
+function preserveAspectHeight(child: LayoutChildGeometry, width: number): number {
+  return child.bounds.width > 0 && child.bounds.height > 0
+    ? child.bounds.height * (width / child.bounds.width)
+    : 0;
+}
+
 function resolveHorizontal(
   frame: LayoutFrame,
   children: readonly LayoutChildGeometry[]
 ): LayoutResolution {
   const inner = innerBounds(frame);
   const available = inner.width - frame.gap.horizontal * Math.max(0, children.length - 1);
+  const widthFor = (spec: LayoutCellSpec, child: LayoutChildGeometry): number =>
+    spec.sizing === "fixed"
+      ? (spec.width ?? child.bounds.width)
+      : spec.sizing === "preserve-aspect"
+        ? preserveAspectWidth(child, inner.height)
+        : child.bounds.width;
   const fixed = children.reduce((sum, child, index) => {
     const spec = frame.children[index]!;
-    return spec.sizing === "fill"
-      ? sum
-      : sum + (spec.sizing === "fixed" ? (spec.width ?? child.bounds.width) : child.bounds.width);
+    return spec.sizing === "fill" ? sum : sum + widthFor(spec, child);
   }, 0);
   const fillCount = frame.children.filter((child) => child.sizing === "fill").length;
   const remaining = available - fixed;
@@ -802,12 +818,7 @@ function resolveHorizontal(
   let cursor = inner.left;
   const resolved = children.map((child, index) => {
     const spec = frame.children[index]!;
-    const width =
-      spec.sizing === "fill"
-        ? fillWidth
-        : spec.sizing === "fixed"
-          ? (spec.width ?? child.bounds.width)
-          : child.bounds.width;
+    const width = spec.sizing === "fill" ? fillWidth : widthFor(spec, child);
     const result = resolveChildBounds(
       spec,
       child.bounds,
@@ -831,12 +842,15 @@ function resolveVertical(
 ): LayoutResolution {
   const inner = innerBounds(frame);
   const available = inner.height - frame.gap.vertical * Math.max(0, children.length - 1);
+  const heightFor = (spec: LayoutCellSpec, child: LayoutChildGeometry): number =>
+    spec.sizing === "fixed"
+      ? (spec.height ?? child.bounds.height)
+      : spec.sizing === "preserve-aspect"
+        ? preserveAspectHeight(child, inner.width)
+        : child.bounds.height;
   const fixed = children.reduce((sum, child, index) => {
     const spec = frame.children[index]!;
-    return spec.sizing === "fill"
-      ? sum
-      : sum +
-          (spec.sizing === "fixed" ? (spec.height ?? child.bounds.height) : child.bounds.height);
+    return spec.sizing === "fill" ? sum : sum + heightFor(spec, child);
   }, 0);
   const fillCount = frame.children.filter((child) => child.sizing === "fill").length;
   const remaining = available - fixed;
@@ -851,12 +865,7 @@ function resolveVertical(
   let cursor = inner.top;
   const resolved = children.map((child, index) => {
     const spec = frame.children[index]!;
-    const height =
-      spec.sizing === "fill"
-        ? fillHeight
-        : spec.sizing === "fixed"
-          ? (spec.height ?? child.bounds.height)
-          : child.bounds.height;
+    const height = spec.sizing === "fill" ? fillHeight : heightFor(spec, child);
     const result = resolveChildBounds(
       spec,
       child.bounds,
