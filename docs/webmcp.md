@@ -41,12 +41,12 @@ cold start, before a user creates or opens a figure. The lifecycle surface is
 bounded and returns safe metadata only; project files, scene objects, upload
 data, thumbnails, and storage handles remain private to the application.
 
-| Command | Purpose |
-| --- | --- |
-| `list_projects` | List bounded active-project metadata, optionally including archived entries |
-| `inspect_project` | Inspect bounded metadata for one opaque project ID |
-| `create_project` | Create, persist, and open a project through the canonical App path |
-| `open_project` | Open a current library entry through the guarded App path |
+| Command           | Purpose                                                                     |
+| ----------------- | --------------------------------------------------------------------------- |
+| `list_projects`   | List bounded active-project metadata, optionally including archived entries |
+| `inspect_project` | Inspect bounded metadata for one opaque project ID                          |
+| `create_project`  | Create, persist, and open a project through the canonical App path          |
+| `open_project`    | Open a current library entry through the guarded App path                   |
 
 Only one context is registered at a time. Returning to the library flushes the
 editor save path and is blocked when the existing navigation guard reports
@@ -61,75 +61,92 @@ schemas. The table is checked against `SEMANTIC_COMMANDS` by
 `tests/webmcp-documentation.test.ts`; add or remove a row when changing the
 registry.
 
-| Command                   | Purpose                                                          | Risk and confirmation                        |
-| ------------------------- | ---------------------------------------------------------------- | -------------------------------------------- |
-| `inspect_scene`           | Bounded canvas and hierarchy snapshot                            | Read-only                                    |
-| `inspect_object`          | Inspect one stable scene object ID                               | Read-only                                    |
-| `inspect_selection`       | Inspect the current human selection                              | Read-only                                    |
-| `search_assets`           | Search the bundled scientific asset manifest                     | Read-only                                    |
-| `inspect_asset`           | Inspect one asset family or variant without raw SVG              | Read-only                                    |
-| `inspect_provenance`      | Inspect bounded asset provenance for the figure                  | Read-only                                    |
-| `resize_canvas`           | Set the logical canvas width and height                          | Reversible and retryable                     |
-| `set_project_metadata`    | Set the figure name or description                               | Reversible and retryable                     |
-| `set_selection`           | Set the canvas selection by stable object IDs                    | Reversible and retryable                     |
-| `create_text`             | Create point or box text through the editor pathway              | Reversible                                   |
-| `set_text_content`        | Replace exact text content while preserving identity and style   | Reversible and retryable                     |
-| `create_shape`            | Create a supported OpenSketch shape                              | Reversible                                   |
-| `create_connector`        | Create a free or object-bound connector                          | Reversible                                   |
-| `create_circular_arc`     | Create a true center-and-radius circular arc                     | Reversible                                   |
-| `insert_asset`            | Insert an exact bundled asset family and variant                 | Reversible                                   |
-| `replace_asset_variant`   | Replace an asset variant while preserving identity and placement | Reversible and retryable                     |
-| `move_objects`            | Translate exact scene objects                                    | Reversible; repeated calls may change the result                     |
-| `snap_object`             | Snap outside another object with an exact gap                    | Reversible and retryable                     |
-| `layout_objects_radially` | Distribute ordered objects evenly around one circle              | Reversible and retryable                     |
-| `layout_objects_linear`   | Lay out a row or column with exact gaps and alignment            | Reversible and retryable                     |
-| `attach_object`           | Attach one object anchor to another with offset/rotation         | Reversible and retryable                     |
-| `place_object_between`    | Place an object between exact anchors on two objects             | Reversible and retryable                     |
-| `rotate_objects`          | Rotate exact scene objects                                       | Reversible; repeated calls may change the result                     |
-| `scale_objects`           | Scale exact scene objects                                        | Reversible; repeated calls may change the result                     |
-| `resize_objects`         | Set displayed dimensions through scale without rewriting SVG geometry | Reversible and retryable                  |
-| `flip_objects`            | Flip exact scene objects on one axis                             | Reversible; repeated calls may change the result                     |
-| `set_object_properties`   | Apply typed, whitelisted object properties                       | Reversible and retryable                     |
-| `set_asset_color_preset`  | Apply an existing asset color preset                             | Reversible and retryable                     |
-| `arrange_objects`         | Move objects within their layer collection                       | Reversible; repeated calls may change the result                     |
-| `align_objects`           | Align objects to the requested union-bound axis                  | Reversible; repeated calls may change the result                     |
-| `distribute_objects`      | Distribute three or more objects on one axis                     | Reversible and retryable                     |
-| `rebind_connector`        | Retarget a bound connector to exact objects and anchors          | Reversible and retryable                     |
-| `duplicate_objects`       | Clone objects with fresh identities                              | Reversible                                   |
-| `delete_objects`          | Delete exact objects and bound connectors                        | Sensitive/destructive; explicit confirmation |
-| `group_objects`           | Group exact sibling objects                                      | Reversible                                   |
-| `ungroup_objects`         | Ungroup one existing manual group                                | Reversible                                   |
-| `undo`                    | Undo the most recent editor history step                         | Reversible                                   |
-| `redo`                    | Redo the next editor history step                                | Reversible                                   |
-| `export_figure`           | Start the existing SVG, PDF, PNG, or credits download            | Local side effect                            |
-| `find_objects`            | Find bounded objects by semantic role, stage, asset, or relation | Read-only                                    |
-| `inspect_geometry`        | Inspect visual, layout, selection geometry, hulls, and ports     | Read-only                                    |
-| `inspect_relations`       | Inspect the bounded semantic relation graph                      | Read-only                                    |
-| `list_object_ports`       | List deterministic geometry-aware object ports                   | Read-only                                    |
-| `set_object_semantics`    | Set validated semantic metadata and relations                    | Reversible and retryable                     |
-| `create_bound_connector`  | Create a persistent visual-hull-bound connector                  | Reversible and retryable                     |
-| `connect_sequence`        | Connect an ordered open or closed semantic sequence              | Reversible and retryable                     |
-| `repair_connectors`       | Repair explicitly targeted connector defects                     | Reversible and retryable                     |
-| `plan_layout`             | Plan a bounded layout without mutating the scene                 | Read-only                                    |
-| `apply_layout_plan`       | Apply a current retained layout plan atomically                  | Reversible and retryable                     |
-| `repair_layout`           | Generate and apply a bounded layout repair                       | Reversible and retryable                     |
-| `compose_labeled_group`   | Compose stage content, labels, and optional title/subtitle       | Reversible; repeated calls may change the result                     |
-| `compose_interaction`     | Place interaction participants and publish a typed relation      | Reversible; repeated calls may change the result                     |
-| `create_particle_field`   | Create a seeded, bounded, editable particle field                | Reversible and retryable                     |
-| `create_annotation`       | Place a target-bound annotation and optional leader              | Reversible; repeated calls may change the result                     |
-| `fit_text`                | Fit text with bounded real font-metric measurement               | Reversible and retryable                     |
-| `normalize_styles`        | Apply canonical semantic role styles without asset recoloring    | Reversible and retryable                     |
-| `render_scene_preview`    | Reserved preview command; unavailable until the host supports image transport | Read-only                           |
-| `analyze_composition`     | Return bounded deterministic geometry/science findings           | Read-only                                    |
-| `validate_figure`         | Validate against a versioned publication profile                 | Read-only                                    |
-| `return_to_project_library` | Durably save and return through the guarded project-library path         | Reversible and retryable                     |
-| `batch`                   | Run up to 32 typed mutations as one atomic history step          | Sensitive/destructive; explicit confirmation |
+| Command                     | Purpose                                                                       | Risk and confirmation                            |
+| --------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------ |
+| `inspect_scene`             | Bounded canvas and hierarchy snapshot                                         | Read-only                                        |
+| `inspect_object`            | Inspect one stable scene object ID                                            | Read-only                                        |
+| `inspect_selection`         | Inspect the current human selection                                           | Read-only                                        |
+| `search_assets`             | Search the bundled scientific asset manifest                                  | Read-only                                        |
+| `inspect_asset`             | Inspect one asset family or variant without raw SVG                           | Read-only                                        |
+| `inspect_provenance`        | Inspect bounded asset provenance for the figure                               | Read-only                                        |
+| `resize_canvas`             | Set logical canvas geometry; compose with layout-frame reflow in a batch      | Reversible and retryable                         |
+| `set_project_metadata`      | Set the figure name or description                                            | Reversible and retryable                         |
+| `set_selection`             | Set the canvas selection by stable object IDs                                 | Reversible and retryable                         |
+| `create_text`               | Create point or box text through the editor pathway                           | Reversible                                       |
+| `set_text_content`          | Replace exact text content while preserving identity and style                | Reversible and retryable                         |
+| `create_shape`              | Create a supported OpenSketch shape                                           | Reversible                                       |
+| `create_connector`          | Create a free or object-bound connector                                       | Reversible                                       |
+| `create_circular_arc`       | Create a true center-and-radius circular arc                                  | Reversible                                       |
+| `insert_asset`              | Insert an exact bundled asset family and variant                              | Reversible                                       |
+| `replace_asset_variant`     | Replace an asset variant while preserving identity and placement              | Reversible and retryable                         |
+| `move_objects`              | Translate exact scene objects                                                 | Reversible; repeated calls may change the result |
+| `snap_object`               | Snap outside another object with an exact gap                                 | Reversible and retryable                         |
+| `layout_objects_radially`   | Distribute ordered objects evenly around one circle                           | Reversible and retryable                         |
+| `layout_objects_linear`     | Lay out a row or column with exact gaps and alignment                         | Reversible and retryable                         |
+| `attach_object`             | Attach one object anchor to another with offset/rotation                      | Reversible and retryable                         |
+| `place_object_between`      | Place an object between exact anchors on two objects                          | Reversible and retryable                         |
+| `rotate_objects`            | Rotate exact scene objects                                                    | Reversible; repeated calls may change the result |
+| `scale_objects`             | Scale exact scene objects                                                     | Reversible; repeated calls may change the result |
+| `resize_objects`            | Set displayed dimensions through scale without rewriting SVG geometry         | Reversible and retryable                         |
+| `flip_objects`              | Flip exact scene objects on one axis                                          | Reversible; repeated calls may change the result |
+| `set_object_properties`     | Apply typed, whitelisted object properties                                    | Reversible and retryable                         |
+| `set_asset_color_preset`    | Apply an existing asset color preset                                          | Reversible and retryable                         |
+| `arrange_objects`           | Move objects within their layer collection                                    | Reversible; repeated calls may change the result |
+| `align_objects`             | Align objects to the requested union-bound axis                               | Reversible; repeated calls may change the result |
+| `distribute_objects`        | Distribute three or more objects on one axis                                  | Reversible and retryable                         |
+| `rebind_connector`          | Retarget a bound connector to exact objects and anchors                       | Reversible and retryable                         |
+| `duplicate_objects`         | Clone objects with fresh identities                                           | Reversible                                       |
+| `delete_objects`            | Delete exact objects and bound connectors                                     | Sensitive/destructive; explicit confirmation     |
+| `group_objects`             | Group exact sibling objects                                                   | Reversible                                       |
+| `ungroup_objects`           | Ungroup one existing manual group                                             | Reversible                                       |
+| `undo`                      | Undo the most recent editor history step                                      | Reversible                                       |
+| `redo`                      | Redo the next editor history step                                             | Reversible                                       |
+| `export_figure`             | Start the existing SVG, PDF, PNG, or credits download                         | Local side effect                                |
+| `find_objects`              | Find bounded objects by semantic role, stage, asset, or relation              | Read-only                                        |
+| `inspect_geometry`          | Inspect visual, layout, selection geometry, hulls, and ports                  | Read-only                                        |
+| `inspect_relations`         | Inspect the bounded semantic relation graph                                   | Read-only                                        |
+| `list_object_ports`         | List deterministic geometry-aware object ports                                | Read-only                                        |
+| `set_object_semantics`      | Set validated semantic metadata and relations                                 | Reversible and retryable                         |
+| `create_bound_connector`    | Create a persistent visual-hull-bound connector                               | Reversible and retryable                         |
+| `connect_sequence`          | Connect an ordered open or closed semantic sequence                           | Reversible and retryable                         |
+| `repair_connectors`         | Repair explicitly targeted connector defects                                  | Reversible and retryable                         |
+| `plan_layout`               | Plan a bounded layout without mutating the scene                              | Read-only                                        |
+| `apply_layout_plan`         | Apply a current retained layout plan atomically                               | Reversible and retryable                         |
+| `repair_layout`             | Generate and apply a bounded layout repair                                    | Reversible and retryable                         |
+| `create_layout_frame`       | Create a persistent layout frame with bounded placement rules                 | Reversible and retryable                         |
+| `configure_layout_frame`    | Update a persistent layout frame's placement rules                            | Reversible and retryable                         |
+| `insert_layout_child`       | Add an exact scene object to a persistent layout frame                        | Reversible and retryable                         |
+| `remove_layout_child`       | Remove an exact scene object from a persistent layout frame                   | Reversible and retryable                         |
+| `remove_layout_frame`       | Remove a persistent layout frame and its child references                     | Reversible and retryable                         |
+| `reflow_layout_frame`       | Apply a persistent layout frame to its owned scene objects                    | Reversible and retryable                         |
+| `compose_labeled_group`     | Compose stage content, labels, and optional title/subtitle                    | Reversible; repeated calls may change the result |
+| `compose_interaction`       | Place interaction participants and publish a typed relation                   | Reversible; repeated calls may change the result |
+| `create_particle_field`     | Create a seeded, bounded, editable particle field                             | Reversible and retryable                         |
+| `create_annotation`         | Place a target-bound annotation and optional leader                           | Reversible; repeated calls may change the result |
+| `fit_text`                  | Fit text with bounded real font-metric measurement                            | Reversible and retryable                         |
+| `normalize_styles`          | Apply canonical semantic role styles without asset recoloring                 | Reversible and retryable                         |
+| `render_scene_preview`      | Reserved preview command; unavailable until the host supports image transport | Read-only                                        |
+| `analyze_composition`       | Return bounded deterministic geometry/science findings                        | Read-only                                        |
+| `validate_figure`           | Validate against a versioned publication profile                              | Read-only                                        |
+| `return_to_project_library` | Durably save and return through the guarded project-library path              | Reversible and retryable                         |
+| `batch`                     | Run up to 32 typed mutations as one atomic history step                       | Sensitive/destructive; explicit confirmation     |
 
 All current commands use semantic runtime version `opensketch.semantic.v1`.
 Command outputs contain a bounded result, changed object IDs, warnings, and
 the runtime version. Object references are stable IDs, not DOM selectors or
 array positions. `batch` accepts registered mutations only, resolves aliases
 within the batch, and rolls back the editor transaction if a member fails.
+
+### Page geometry and layout frames
+
+`resize_canvas` changes the logical page geometry and intentionally leaves
+explicit layout-frame coordinates unchanged. To resize a figure or poster and
+reflow its affected frames as one history transaction, use a confirmed
+`batch` with `resize_canvas`, any required `configure_layout_frame` calls for
+the new frame bounds, and one `reflow_layout_frame` call for each affected
+frame. This keeps page geometry, frame geometry, child materialization, and
+connector refresh under the same semantic transaction; direct canvas resize
+does not infer frame scaling from page dimensions.
 
 ## Safety and progressive enhancement
 

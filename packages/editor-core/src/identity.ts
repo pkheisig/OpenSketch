@@ -369,6 +369,57 @@ function remapRecognizedGroupIdentity(value: unknown, ids: Map<string, string>):
   });
 }
 
+function remapLayoutIdentity(value: unknown, ids: Map<string, string>): void {
+  if (!isRecord(value) || !Array.isArray(value.frames)) return;
+  value.frames.forEach((frame) => {
+    if (!isRecord(frame)) return;
+    if (typeof frame.containerObjectId === "string") {
+      frame.containerObjectId = ids.get(frame.containerObjectId) ?? frame.containerObjectId;
+    }
+    if (!Array.isArray(frame.children)) return;
+    frame.children.forEach((child) => {
+      if (!isRecord(child) || typeof child.objectId !== "string") return;
+      child.objectId = ids.get(child.objectId) ?? child.objectId;
+    });
+  });
+}
+
+function repairLayoutIdentity(
+  value: unknown,
+  candidatesById: Map<string, IdentityNode[]>,
+  warnings: string[]
+): void {
+  if (!isRecord(value) || !Array.isArray(value.frames)) return;
+  const rewrite = (objectId: unknown, path: string): unknown => {
+    if (typeof objectId !== "string") return objectId;
+    const candidates = candidatesById.get(objectId);
+    if (!candidates || candidates.length === 0) return objectId;
+    if (candidates.length > 1) {
+      warnings.push(
+        `Ambiguous layout reference ${path} for duplicate object ID "${objectId}"; kept the first scene occurrence.`
+      );
+    }
+    return candidates[0]?.repairedId ?? objectId;
+  };
+  value.frames.forEach((frame, frameIndex) => {
+    if (!isRecord(frame)) return;
+    if (frame.containerObjectId !== undefined) {
+      frame.containerObjectId = rewrite(
+        frame.containerObjectId,
+        `layout.frames[${frameIndex}].containerObjectId`
+      );
+    }
+    if (!Array.isArray(frame.children)) return;
+    frame.children.forEach((child, childIndex) => {
+      if (!isRecord(child)) return;
+      child.objectId = rewrite(
+        child.objectId,
+        `layout.frames[${frameIndex}].children[${childIndex}].objectId`
+      );
+    });
+  });
+}
+
 export function repairProjectIdentity(input: unknown): ProjectIdentityRepair {
   assertSceneBounds(input);
   let project: unknown;
@@ -417,6 +468,7 @@ export function repairProjectIdentity(input: unknown): ProjectIdentityRepair {
   nodes.forEach((node) => {
     rewriteMetadata(node.record, node, node.path, candidatesById, warnings, warningKeys);
   });
+  repairLayoutIdentity(project.layout, candidatesById, warnings);
   nodes.forEach((node) => {
     if (node.repairedId) node.record.objectId = node.repairedId;
   });
@@ -474,5 +526,10 @@ export function remintProjectIdentity(input: unknown): unknown {
     rewriteMetadata(node.record, node, node.path, candidatesById, [], new Set());
     remapRecognizedGroupIdentity(node.record.recognizedGroups, recognitionIds);
   });
+  const identityMap = new Map<string, string>();
+  nodes.forEach((node) => {
+    if (node.originalId && node.repairedId) identityMap.set(node.originalId, node.repairedId);
+  });
+  remapLayoutIdentity(project.layout, identityMap);
   return project;
 }

@@ -9,6 +9,12 @@ import { describe, expect, it, vi } from "vitest";
 import { DEFAULT_CREATION_DEFAULTS } from "../apps/web/src/editor/creation";
 import { createSemanticEditorAdapter } from "../apps/web/src/semantic/semanticEditorAdapter";
 import { assetManifest } from "../apps/web/src/assets/manifest";
+import {
+  createLayoutDocument,
+  createLayoutFrame,
+  type LayoutDocument
+} from "../packages/editor-core/src";
+import { applyLayoutFrameToCanvas } from "../apps/web/src/editor/layoutFrames";
 
 function makeCanvas(objects: FabricObject[] = [], activeObjects: FabricObject[] = []): Canvas {
   return {
@@ -48,6 +54,32 @@ function makeAdapter(
   const setCanvasSettings = vi.fn();
   const setProjectName = vi.fn();
   const setProjectDescription = vi.fn();
+  const refreshConnectors = vi.fn();
+  let layoutState: LayoutDocument | undefined = createLayoutDocument();
+  const setLayoutState = vi.fn((next: LayoutDocument | undefined) => {
+    layoutState = next;
+  });
+  const removeLayoutReferences = vi.fn((removedIds: ReadonlySet<string>) => {
+    if (!layoutState || removedIds.size === 0) return;
+    layoutState = {
+      version: layoutState.version,
+      frames: layoutState.frames
+        .filter(
+          (frame) =>
+            frame.containerObjectId === undefined || !removedIds.has(frame.containerObjectId)
+        )
+        .map((frame) => ({
+          ...frame,
+          children: frame.children.filter((child) => !removedIds.has(child.objectId))
+        }))
+    };
+  });
+  const applyFrame = vi.fn((frameId: string) => {
+    const frame = layoutState!.frames.find((candidate) => candidate.id === frameId)!;
+    const result = applyLayoutFrameToCanvas(canvas, frame);
+    refreshConnectors();
+    return result;
+  });
   const adapter = createSemanticEditorAdapter({
     getAssetManifest: async () => assetManifest,
     getCanvas: () => canvas,
@@ -61,6 +93,10 @@ function makeAdapter(
       background: "#ffffff",
       transparent: false
     }),
+    getLayoutState: () => layoutState,
+    setLayoutState,
+    removeLayoutReferences,
+    applyLayoutFrame: applyFrame,
     setCanvasSettings,
     setProjectName,
     setProjectDescription,
@@ -71,7 +107,7 @@ function makeAdapter(
     creationDefaults: () => DEFAULT_CREATION_DEFAULTS,
     prepareElementStyle: vi.fn(),
     configureCanvasAssets: vi.fn(),
-    refreshConnectors: vi.fn(),
+    refreshConnectors,
     applyColorPreset: vi.fn(async () => undefined),
     undo: vi.fn(async () => false),
     redo: vi.fn(async () => false),
@@ -91,11 +127,302 @@ function makeAdapter(
     restore,
     setCanvasSettings,
     setProjectName,
-    setProjectDescription
+    setProjectDescription,
+    layoutState: () => layoutState,
+    setLayoutState,
+    removeLayoutReferences,
+    applyFrame,
+    refreshConnectors
   });
 }
 
 describe("semantic editor adapter", () => {
+  it("persists, configures, edits, and reflows layout frames through semantic commands", async () => {
+    const first = new Rect({ width: 20, height: 20, left: 10, top: 10 });
+    first.objectId = "first";
+    const second = new Rect({ width: 20, height: 20, left: 40, top: 10 });
+    second.objectId = "second";
+    const canvas = makeCanvas([first, second]);
+    const adapter = makeAdapter(canvas);
+
+    await adapter.execute("create_layout_frame", {
+      frameId: "frame",
+      bounds: { left: 0, top: 0, width: 200, height: 100 },
+      flow: "horizontal",
+      gap: 10,
+      children: [
+        { objectId: "first", sizing: "fixed" },
+        { objectId: "second", sizing: "fill" }
+      ]
+    });
+    expect(adapter.layoutState()?.frames[0]?.children.map((child) => child.objectId)).toEqual([
+      "first",
+      "second"
+    ]);
+
+    await adapter.execute("configure_layout_frame", {
+      frameId: "frame",
+      padding: 10
+    });
+    const reflow = await adapter.execute("reflow_layout_frame", { frameId: "frame" });
+    expect(first.getBoundingRect().left).toBeCloseTo(10);
+    expect(second.getBoundingRect().left).toBeGreaterThan(first.getBoundingRect().left);
+    expect(reflow.data).toMatchObject({ frameId: "frame", objectIds: ["first", "second"] });
+    expect(reflow.data).toHaveProperty("diagnostics", []);
+    expect(reflow.warnings).toEqual([]);
+    expect(adapter.refreshConnectors).toHaveBeenCalledOnce();
+
+    await adapter.execute("remove_layout_child", { frameId: "frame", objectId: "second" });
+    await adapter.execute("insert_layout_child", {
+      frameId: "frame",
+      child: { objectId: "second", sizing: "content-sized" }
+    });
+    await adapter.execute("remove_layout_frame", { frameId: "frame" });
+    expect(adapter.layoutState()?.frames).toEqual([]);
+    expect(adapter.commit).toHaveBeenCalled();
+  });
+
+  it("removes deleted scene identities from persistent layout references", async () => {
+    const object = new Rect({ width: 20, height: 20 });
+    object.objectId = "object";
+    const adapter = makeAdapter(makeCanvas([object]));
+
+    await adapter.execute("create_layout_frame", {
+      frameId: "frame",
+      bounds: { left: 0, top: 0, width: 100, height: 100 },
+      flow: "free",
+      children: [{ objectId: "object", sizing: "content-sized" }]
+    });
+    await adapter.execute("delete_objects", { objectIds: ["object"] });
+
+    expect(adapter.layoutState()?.frames[0]?.children).toEqual([]);
+    expect(adapter.removeLayoutReferences).toHaveBeenCalledWith(new Set(["object"]));
+  });
+
+  it("rejects invalid grid cells before mutating scene geometry", async () => {
+    const object = new Rect({ width: 20, height: 20, left: 12, top: 18 });
+    object.objectId = "object";
+    const before = object.getBoundingRect();
+    const adapter = makeAdapter(makeCanvas([object]));
+
+    await adapter.execute("create_layout_frame", {
+      frameId: "frame",
+      bounds: { left: 0, top: 0, width: 100, height: 100 },
+      flow: "grid",
+      tracks: {
+        rows: [{ type: "flex", value: 1 }],
+        columns: [{ type: "flex", value: 1 }]
+      },
+      children: [{ objectId: "object", row: 1, sizing: "fill" }]
+    });
+
+    await expect(
+      adapter.execute("reflow_layout_frame", { frameId: "frame" })
+    ).rejects.toMatchObject({ code: "INVALID_LAYOUT" });
+    expect(object.getBoundingRect()).toEqual(before);
+    expect(adapter.refreshConnectors).not.toHaveBeenCalled();
+  });
+
+  it("rejects zero-sized resolved children before mutating any scene geometry", async () => {
+    const first = new Rect({ width: 300, height: 20, left: 12, top: 18 });
+    first.objectId = "first";
+    const second = new Rect({ width: 20, height: 20, left: 350, top: 18 });
+    second.objectId = "second";
+    const canvas = makeCanvas([first, second]);
+    const adapter = makeAdapter(canvas);
+
+    await adapter.execute("create_layout_frame", {
+      frameId: "frame",
+      bounds: { left: 0, top: 0, width: 100, height: 100 },
+      flow: "horizontal",
+      children: [
+        { objectId: "first", sizing: "content-sized" },
+        { objectId: "second", sizing: "fill" }
+      ]
+    });
+    const before = [first, second].map((object) => object.getBoundingRect());
+    const commitCount = adapter.commit.mock.calls.length;
+
+    await expect(
+      adapter.execute("reflow_layout_frame", { frameId: "frame" })
+    ).rejects.toMatchObject({ code: "INVALID_LAYOUT" });
+
+    expect([first, second].map((object) => object.getBoundingRect())).toEqual(before);
+    expect(adapter.commit.mock.calls).toHaveLength(commitCount);
+    expect(adapter.refreshConnectors).not.toHaveBeenCalled();
+  });
+
+  it("returns visible overflow diagnostics alongside materialized export geometry", async () => {
+    const object = new Rect({ width: 20, height: 20, left: 12, top: 18 });
+    object.objectId = "object";
+    const adapter = makeAdapter(makeCanvas([object]));
+
+    await adapter.execute("create_layout_frame", {
+      frameId: "frame",
+      bounds: { left: 0, top: 0, width: 100, height: 100 },
+      flow: "horizontal",
+      children: [{ objectId: "object", sizing: "fixed", width: 200, height: 20 }]
+    });
+
+    const result = await adapter.execute("reflow_layout_frame", { frameId: "frame" });
+    expect(result.data).toMatchObject({
+      frameId: "frame",
+      objectIds: ["object"],
+      diagnostics: expect.arrayContaining([
+        expect.objectContaining({ code: "FRAME_OVERFLOW", objectId: "object" })
+      ])
+    });
+    expect(result.warnings).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('Object "object" exceeds the content bounds')
+      ])
+    );
+    expect(object.getBoundingRect().width).toBeCloseTo(200);
+    expect(object.toSVG()).not.toMatch(/NaN|Infinity/);
+  });
+
+  it("keeps numeric SVG bounds aligned with editor bounds after reflow", async () => {
+    const object = new Rect({ width: 20, height: 10, strokeWidth: 0 });
+    object.objectId = "object";
+    const adapter = makeAdapter(makeCanvas([object]));
+
+    await adapter.execute("create_layout_frame", {
+      frameId: "frame",
+      bounds: { left: 100, top: 110, width: 20, height: 10 },
+      flow: "horizontal",
+      children: [{ objectId: "object", sizing: "fixed", width: 20, height: 10 }]
+    });
+    await adapter.execute("reflow_layout_frame", { frameId: "frame" });
+
+    const bounds = object.getBoundingRect();
+    const svg = object.toSVG();
+    const matrix = svg
+      .match(/matrix\(([^)]+)\)/)?.[1]
+      ?.trim()
+      .split(/\s+/)
+      .map(Number);
+    const x = Number(svg.match(/\bx="([^\"]+)"/)?.[1]);
+    const y = Number(svg.match(/\by="([^\"]+)"/)?.[1]);
+    const width = Number(svg.match(/\bwidth="([^\"]+)"/)?.[1]);
+    const height = Number(svg.match(/\bheight="([^\"]+)"/)?.[1]);
+    if (!matrix || matrix.length !== 6) throw new Error("SVG transform matrix was not exported.");
+    const [scaleX, skewY, skewX, scaleY, translateX, translateY] = matrix;
+
+    expect(
+      [x, y, width, height, scaleX, skewY, skewX, scaleY, translateX, translateY].every(
+        Number.isFinite
+      )
+    ).toBe(true);
+    expect(translateX + x * scaleX).toBeCloseTo(bounds.left, 6);
+    expect(translateY + y * scaleY).toBeCloseTo(bounds.top, 6);
+    expect(width * scaleX).toBeCloseTo(bounds.width, 6);
+    expect(height * scaleY).toBeCloseTo(bounds.height, 6);
+  });
+
+  it("keeps layout identities stable across grouping, ungrouping, and duplication", async () => {
+    const first = new Rect({ width: 20, height: 20, left: 10, top: 10 });
+    const second = new Rect({ width: 20, height: 20, left: 50, top: 10 });
+    first.objectId = "first";
+    second.objectId = "second";
+    const canvas = makeCanvas([first, second]);
+    const adapter = makeAdapter(canvas);
+
+    await adapter.execute("create_layout_frame", {
+      frameId: "frame",
+      bounds: { left: 0, top: 0, width: 200, height: 100 },
+      flow: "free",
+      children: [
+        { objectId: "first", sizing: "content-sized" },
+        { objectId: "second", sizing: "content-sized" }
+      ]
+    });
+    const duplicate = await adapter.execute("duplicate_objects", { objectIds: ["first"] });
+    const duplicateId = (duplicate.data as { objectIds: string[] }).objectIds[0];
+    expect(adapter.layoutState()?.frames[0]?.children.map((child) => child.objectId)).toEqual([
+      "first",
+      "second"
+    ]);
+    expect(duplicateId).not.toBe("first");
+
+    const grouped = await adapter.execute("group_objects", {
+      objectIds: ["first", "second"]
+    });
+    const groupId = (grouped.data as { objectId: string }).objectId;
+    expect(adapter.layoutState()?.frames[0]?.children.map((child) => child.objectId)).toEqual([
+      "first",
+      "second"
+    ]);
+
+    await adapter.execute("ungroup_objects", { objectIds: [groupId] });
+    expect(canvas.getObjects().map((object) => object.objectId)).toContain("first");
+    expect(canvas.getObjects().map((object) => object.objectId)).toContain("second");
+    expect(adapter.layoutState()?.frames[0]?.children.map((child) => child.objectId)).toEqual([
+      "first",
+      "second"
+    ]);
+  });
+
+  it("rejects rotated children before applying an inaccurate axis-aligned resize", () => {
+    const object = new Rect({ width: 40, height: 20, angle: 30 });
+    object.objectId = "rotated";
+    const canvas = makeCanvas([object]);
+    const frame = createLayoutFrame(createLayoutDocument(), {
+      frameId: "frame",
+      bounds: { left: 0, top: 0, width: 200, height: 100 },
+      flow: "free",
+      children: [{ objectId: "rotated", sizing: "fixed", width: 100, height: 60 }]
+    }).frames[0]!;
+
+    expect(() => applyLayoutFrameToCanvas(canvas, frame)).toThrow(/rotated/i);
+    expect(object.angle).toBe(30);
+    expect(object.scaleX).toBe(1);
+    expect(object.scaleY).toBe(1);
+  });
+
+  it("rolls back persistent layout state with a failed semantic batch", async () => {
+    const object = new Rect({ width: 20, height: 20 });
+    object.objectId = "object";
+    const adapter = makeAdapter(makeCanvas([object]));
+
+    await expect(
+      adapter.runTransaction(async () => {
+        await adapter.execute("create_layout_frame", {
+          frameId: "frame",
+          bounds: { left: 0, top: 0, width: 100, height: 100 },
+          flow: "free",
+          children: [{ objectId: "object", sizing: "content-sized" }]
+        });
+        throw new Error("stop batch");
+      })
+    ).rejects.toThrow("stop batch");
+    expect(adapter.layoutState()?.frames).toEqual([]);
+    expect(adapter.commit).not.toHaveBeenCalled();
+  });
+
+  it("restores canvas settings when a semantic transaction fails after resizing", async () => {
+    const adapter = makeAdapter(makeCanvas());
+
+    await expect(
+      adapter.runTransaction(async () => {
+        await adapter.execute("resize_canvas", { width: 1200, height: 900 });
+        throw new Error("stop after resize");
+      })
+    ).rejects.toThrow("stop after resize");
+
+    expect(adapter.setCanvasSettings).toHaveBeenLastCalledWith(
+      {
+        width: 1000,
+        height: 800,
+        unit: "px",
+        dpi: 96,
+        background: "#ffffff",
+        transparent: false
+      },
+      { commit: false }
+    );
+    expect(adapter.commit).not.toHaveBeenCalled();
+  });
+
   it("resizes SVG groups through scale and remains stable when repeated", async () => {
     const part = new Rect({ width: 80, height: 40, left: 12, top: 8 });
     const group = new Group([part], { angle: 25, scaleX: 2, scaleY: 3 });
@@ -220,7 +547,11 @@ describe("semantic editor adapter", () => {
       data: { width: 2600, height: 900 },
       changedObjectIds: []
     });
-    expect(adapter.setCanvasSettings).toHaveBeenCalledWith({ width: 2600, height: 900 });
+    expect(adapter.setCanvasSettings).toHaveBeenCalledWith(
+      { width: 2600, height: 900 },
+      { commit: false }
+    );
+    expect(adapter.commit).toHaveBeenCalledWith("Semantic resize canvas");
   });
 
   it("rejects a canvas resize whose area exceeds the portable project limit", async () => {
