@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a roundworm, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One complete adult nematode, Ascaris-like external morphology: long slender cylindrical ivory-cream body arranged in a gentle open S curve, tapered at both ends, fine subtle transverse cuticular striations without body segmentation. Small unobtrusive three-lipped mouth at anterior end, no eyes, limbs, clitellum or appendages. Slight pale coral shading below and warm ochre outline, smooth matte vector-like fill with soft pseudo-3D depth and restrained highlights. No internal cutaway, no soil, no extra worms. No photographic grain or wet gloss. Real transparent PNG alpha, all ends complete.",
+  "refinement": "Redraw this exact roundworm as a clean polished vector-style biomedical illustration. Preserve whole S-shaped cylindrical body, small three-lipped anterior mouth and tapered posterior tip. Remove photographic skin grain and dense rough wrinkles. Smooth matte ivory-cream fill with broad gentle pale coral underside gradient, crisp warm ochre outline, and only fine subtle spaced transverse cuticular lines, not segment boundaries. No wet reflections. Full object, true transparent PNG alpha and generous padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-2ea20775-5605-45b5-96e1-7cba7b287f0d.png",
+  "archetype": "Representative Ascaris-like adult nematode exterior: cylindrical unsegmented body, fine cuticular striations, three-lipped mouth and tapered posterior. Curvature and proportions illustrative; sex not specified.",
+  "references": [
+    "https://www.cdc.gov/dpdx/ascariasis/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "roundworm",
+  "name": "roundworm",
+  "original": "originals/inventory/roundworm/generated.png",
+  "original_sha256": "4089960a9a494c90f6e534468eeac38b2cbd6256b5f25325873013d829f03817"
+}

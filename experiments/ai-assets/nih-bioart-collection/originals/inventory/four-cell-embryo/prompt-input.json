@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a four-cell embryo, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Use attached approved two-cell illustration for PALETTE AND FINISH only. New morphology: exactly FOUR similarly sized coral blastomeres inside ONE common circular pale lavender zona pellucida, arranged as compact 2-by-2 group, all four cells individually visible. Four distinct rounded cell boundaries, one violet nucleus and dark nucleolus in EACH cell, total four large nuclei. Two tiny pale purple polar bodies outside blastomeres in perivitelline space at top. No fifth blastomere, no central lumen, no sperm. Smooth matte coral cells, sparse small vesicle dots, smooth lavender zona, crisp outlines and broad subtle gradients matching reference. Transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-e361854c-8beb-4689-8151-88e20623cf91.png",
+  "style_reference": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-abe06a78-3cb5-43fe-a18f-2a6dd09a6961.png",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Four-cell cleavage embryo, four similarly sized blastomeres each with one nucleus, shared zona pellucida and two symbolic polar bodies. Flat explanatory arrangement; not embryo grading.",
+  "references": [
+    "https://www.ncbi.nlm.nih.gov/books/NBK9901/"
+  ]
+}

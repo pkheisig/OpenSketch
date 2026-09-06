@@ -1,0 +1,12 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a Leishmania promastigote, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One elongated smooth spindle-shaped teal Leishmania promastigote, about four times longer than wide. Anterior at upper right has a tiny flagellar pocket giving rise to exactly ONE long slender curved free cyan flagellum. No undulating membrane, no cilia. Pale cyan cytoplasm with one central oval violet nucleus and a much smaller gold oval kinetoplast in front of nucleus near the anterior flagellar base. Sparse small blue granules only, no extra bean-like mitochondria. Posterior lower left ends in a short tapered body point with no filament. All tips complete. Smooth matte vector-like fills, crisp dark teal outlines, broad subtle gradients and no grain or glassy texture. Real transparent PNG alpha.",
+  "refinement": "Redraw this exact Leishmania promastigote as a clean polished vector-style biomedical illustration. Preserve full spindle body, one anterior flagellum, gold kinetoplast near its base, central violet nucleus and sparse blue granules. Remove ALL photographic grain, glassy texture and mottling. Smooth matte pale cyan cytoplasm, smooth purple nucleus, clean gold kinetoplast, crisp dark teal outline and broad subtle gradients. True transparent PNG alpha outside, all tips complete with ample padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-8bf2b674-448d-41d1-96ef-385bc1f30aa7.png",
+  "archetype": "Leishmania promastigote morphology with central nucleus, anterior kinetoplast and one free anterior flagellum, no undulating membrane. Internal granules symbolic and organelle proportions simplified.",
+  "references": [
+    "https://www.cdc.gov/dpdx/leishmaniasis/",
+    "https://wwwnc.cdc.gov/eid/article/27/6/20-4198-f1"
+  ]
+}

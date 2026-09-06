@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a leaf, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One simple broad ovate green dicot leaf with pointed apex, smooth entire margin, short petiole, pale central midrib and several paired branching secondary veins with fine reticulate tertiary veins. Three-quarter oblique view, gentle natural curvature with one edge lifting slightly. Saturated forest green and fresh green surfaces, crisp dark green outline, smooth matte vector-style broad subtle gradients. No dew, no damage, no photographic grain or surface texture, no stem branch. Transparent PNG alpha.",
+  "refinement": "Redraw this exact green leaf as clean polished vector-style biomedical art. Preserve full petiole, ovate entire-margin blade, pointed apex, gentle curled edge, pale midrib and branching secondary veins. Reduce dense tiny vein mesh to sparse clean tertiary branching lines. Smooth matte green surfaces, crisp dark green outline, broad subtle gradients. Remove all photographic grain and mottled surface texture. Transparent PNG alpha, generous padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-002c1205-e3a1-43cd-ada8-08c88e112080.png",
+  "archetype": "Simple ovate dicot leaf with entire margin, petiole, midrib and reticulate venation. Generic morphology rather than species identification; vein density simplified for illustration.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "leaf",
+  "name": "leaf",
+  "original": "originals/inventory/leaf/generated.png",
+  "original_sha256": "56a3108c5666c6c1de79faaa4bc54b3a13565d5a1d722ec16fed5793849e8183"
+}

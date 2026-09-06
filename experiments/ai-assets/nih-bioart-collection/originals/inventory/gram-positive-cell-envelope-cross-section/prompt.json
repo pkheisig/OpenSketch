@@ -1,0 +1,25 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a Gram-positive cell-envelope cross-section, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Small oblique rectangular local bacterial envelope patch, outside at top. A THICK violet multilayer peptidoglycan mesh wall sits above ONE teal cytoplasmic lipid bilayer at bottom. The bilayer has two rows of teal heads with short opposing tails meeting in center. A few golden wall-teichoic-acid chains attach within peptidoglycan; two coral lipoteichoic-acid chains visibly extend from lipid anchors in the membrane through the thick wall. NO outer lipid membrane above the wall, no LPS. Slight pale cyan cytoplasm band beneath the sole membrane. Polymer chains and mesh are clean schematic forms, not exact molecular structures. Smooth matte vector-style art, crisp outlines, subtle broad gradients, no photographic grain. Transparent PNG alpha.",
+  "refinements": [
+    "Correct this Gram-positive envelope section and smooth its style. At the sole bottom membrane, replace every full-height wavy head-to-head connector with TWO opposing half-length tail sets: tails descend from upper teal heads and ascend from lower teal heads, meeting at a thin dark central gap. No continuous tail joins both head rows. Coral lipoteichoic-acid chains anchor ONLY in the upper leaflet, their lipid tails stop at the membrane midplane. The short golden chain near the front center currently touches the membrane: lift its bottom end so it attaches to the VIOLET peptidoglycan mesh above, with a visible gap above membrane. All gold chains attach to wall; both coral chains attach to membrane. Preserve thick violet wall and absence of outer membrane. Smooth matte forms, remove grain, crisp outlines, broad gradients, transparent PNG alpha.",
+    "Make ONLY these corrections to this Gram-positive envelope illustration. DELETE all wavy vertical lines inside the teal membrane, including orange lines. Replace that membrane interior with a smooth dark teal band between the existing upper and lower teal head rows. This is a simplified bilayer section, no individual tails shown. Keep coral polymer chains attached at the upper membrane row, ending there with no visible full-height tail. DELETE the entire short gold chain at the front center (near x840 y620); keep the three other gold wall-associated chains. Preserve all violet thick peptidoglycan mesh. Smooth vector-style finish and transparent PNG alpha."
+  ],
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-eb60d5f8-3acf-4bf3-b234-1880da05cace.png",
+  "archetype": "Gram-positive envelope with thick peptidoglycan outside one cytoplasmic bilayer, gold wall-associated teichoic-acid chains and coral membrane-anchored lipoteichoic-acid chains. No outer membrane. Bilayer hydrophobic interior shown as a solid band between head rows, deliberately omitting individual tails after correcting misleading full-height connectors. Polymer mesh is schematic, not stoichiometric chemistry.",
+  "references": [
+    "https://www.ncbi.nlm.nih.gov/books/NBK8477/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "gram-positive-cell-envelope-cross-section",
+  "name": "Gram-positive cell-envelope cross-section",
+  "original": "originals/inventory/gram-positive-cell-envelope-cross-section/generated.png",
+  "original_sha256": "8d7459dec4c942cb87babcb91a8f9683c4a589373d36adb136223bdf19ce501a"
+}

@@ -15922,252 +15922,1652 @@
     "rod-shaped-bacterium": {
       "name": "rod-shaped bacterium",
       "category": "14. Bacteria and archaea",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/rod-shaped-bacterium-bioart-transparent.png",
+      "svg": "svg/rod-shaped-bacterium-bioart-traced.svg",
+      "png_sha256": "b22d0f8c7bb293746a54649a16474e4e0e412e6f12ff4b08b83c9a7911253555",
+      "svg_sha256": "770434e03747a05779c856837b4750a0474bb3336fc1f0d41b3d222e65f7ebf6",
+      "original_sha256": "e5e0b85f0b0e3d60b0990363df90336676d8aeabfb7954b31d2cb34af7b15d40",
+      "png_dimensions": [
+        2340,
+        2340
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        334,
+        711,
+        344,
+        700
+      ],
+      "svg_paths": 15683,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/rod-shaped-bacterium/prompt.json",
+      "qa": "qa/inventory/rod-shaped-bacterium",
+      "visual_review": "Reviewed light/dark PNG and SVG: intact rod outline, nucleoid without nuclear membrane, one plasmid and ribosome symbols; clean alpha and faithful vector rendering.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rod-shaped-bacterium/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rod-shaped-bacterium/inspection.webm"
+      }
     },
     "spherical-bacterium": {
       "name": "spherical bacterium",
       "category": "14. Bacteria and archaea",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/spherical-bacterium-bioart-transparent.png",
+      "svg": "svg/spherical-bacterium-bioart-traced.svg",
+      "png_sha256": "ff2f3bfae662c198e60e0f3daec210318c1163a43cd5ad162863b50e7ed42624",
+      "svg_sha256": "447fd0c61d86c793c6ab220572ef2d2c0f728a3f195274be44d110df39f16173",
+      "original_sha256": "2256841de35d093ef18fb3f7b7ce49a2b3b0a67722fffc444c35c6f04653024b",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        300,
+        283,
+        315,
+        306
+      ],
+      "svg_paths": 15164,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/spherical-bacterium/prompt.json",
+      "qa": "qa/inventory/spherical-bacterium",
+      "visual_review": "Viewed PNG/SVG light/dark: complete spherical coccal cell, distinct cutaway and unbounded nucleoid, clean transparent edges; vector retains palette and internal detail with mild gradient contouring.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/spherical-bacterium/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/spherical-bacterium/inspection.webm"
+      }
     },
     "diplococcus-pair": {
       "name": "diplococcus pair",
       "category": "14. Bacteria and archaea",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/diplococcus-pair-bioart-transparent.png",
+      "svg": "svg/diplococcus-pair-bioart-traced.svg",
+      "png_sha256": "04aae077c2cc43e328838c97cb802fe9b62a7174b663580339f8c1aeeb04122c",
+      "svg_sha256": "5c368e52c5ab05c5352db23312102c9cb27a399f24b7f592e7968d157fe9593d",
+      "original_sha256": "9cc971de4ef143868ac8883d52fa20d336ab2e92499af70a47917f35bf3af36b",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        372,
+        584,
+        369,
+        579
+      ],
+      "svg_paths": 5855,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/diplococcus-pair/prompt.json",
+      "qa": "qa/inventory/diplococcus-pair",
+      "visual_review": "Viewed PNG/SVG light and dark: exactly two touching cells with distinct seam and complete silhouettes. No glow in composites; clean transparency and comparable vector shading.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/diplococcus-pair/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/diplococcus-pair/inspection.webm"
+      }
     },
     "bacterial-chain": {
       "name": "bacterial chain",
       "category": "14. Bacteria and archaea",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/bacterial-chain-bioart-transparent.png",
+      "svg": "svg/bacterial-chain-bioart-traced.svg",
+      "png_sha256": "0cb5b155e4d88c5ac96217ca1a01efddf7ea5701c792a5c5f4775f49dd49d811",
+      "svg_sha256": "d771262c99058dab0881743664d51e281ac76a6e43c6b23782187db99ec8810b",
+      "original_sha256": "e2c6be7b124a3853d37195dca56a1b526de76a058e84860542fda8e5d6bc76a8",
+      "png_dimensions": [
+        3040,
+        3040
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        446,
+        1169,
+        444,
+        1158
+      ],
+      "svg_paths": 7081,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/bacterial-chain/prompt.json",
+      "qa": "qa/inventory/bacterial-chain",
+      "visual_review": "Viewed PNG/SVG light/dark: eight connected round cells in one unbranched curved chain; contact seams and both ends retained, transparent padding and vector shading pass.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bacterial-chain/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bacterial-chain/inspection.webm"
+      }
     },
     "bacterial-cluster": {
       "name": "bacterial cluster",
       "category": "14. Bacteria and archaea",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/bacterial-cluster-bioart-transparent.png",
+      "svg": "svg/bacterial-cluster-bioart-traced.svg",
+      "png_sha256": "3d4b9c0e56296e7582cf9916fa3ee4e2e3f5d989cdd276b79352d3e8a9d0a064",
+      "svg_sha256": "83ac5b9ddcc0a13bf4ccbffaad36f04180164ab77ae2e8ab57e36bc58a8c172b",
+      "original_sha256": "f4dc7c03f7aa7d804567e2bb52e588c19ecd0e02a39300207d3c4706f8d71826",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        579,
+        584,
+        395,
+        581
+      ],
+      "svg_paths": 8632,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/bacterial-cluster/prompt.json",
+      "qa": "qa/inventory/bacterial-cluster",
+      "visual_review": "Viewed PNG/SVG light/dark: compact irregular coccal cluster with readable overlaps and individual cell boundaries; no halo in composites, clean alpha and faithful vector shading.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bacterial-cluster/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bacterial-cluster/inspection.webm"
+      }
     },
     "spiral-bacterium": {
       "name": "spiral bacterium",
       "category": "14. Bacteria and archaea",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/spiral-bacterium-bioart-transparent.png",
+      "svg": "svg/spiral-bacterium-bioart-traced.svg",
+      "png_sha256": "f011ee94d35fc5117940dff5ce150067fd19dfc11fe70321b1b0132efb3f11ea",
+      "svg_sha256": "7989b8c13119d54c6953571f0b583aee1fe62086ed374fc3dd5e5319d979d6a5",
+      "original_sha256": "6257961d05e6812c2ba973416e53167d729f81bfafd1f7c2d291e024243dffa8",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        375,
+        597,
+        372,
+        589
+      ],
+      "svg_paths": 2931,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/spiral-bacterium/prompt.json",
+      "qa": "qa/inventory/spiral-bacterium",
+      "visual_review": "Reviewed light/dark PNG and SVG: continuous spiral-form side projection with both ends retained, no branching or beads. Clean transparency and comparable smooth vector contour.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/spiral-bacterium/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/spiral-bacterium/inspection.webm"
+      }
     },
     "comma-shaped-bacterium": {
       "name": "comma-shaped bacterium",
       "category": "14. Bacteria and archaea",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/comma-shaped-bacterium-bioart-transparent.png",
+      "svg": "svg/comma-shaped-bacterium-bioart-traced.svg",
+      "png_sha256": "53009117d905117091f5a25a1fa51584ad4bc52b135d24b6b0f730088a11342f",
+      "svg_sha256": "bc2454603b6719f556c36ea62cd7a28d825287aca71b3bc3e8042b049f994470",
+      "original_sha256": "c04f39bae984169a64c5ad9c219223ac78904b3678653251af1a5ad525b380eb",
+      "png_dimensions": [
+        3040,
+        3040
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        630,
+        1158,
+        629,
+        1158
+      ],
+      "svg_paths": 4226,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/comma-shaped-bacterium/prompt.json",
+      "qa": "qa/inventory/comma-shaped-bacterium",
+      "visual_review": "Reviewed PNG/SVG light/dark: corrected single shallow curve, two closed ends and uniform body; clean alpha, smooth shading and faithful vector outline.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/comma-shaped-bacterium/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/comma-shaped-bacterium/inspection.webm"
+      }
     },
     "flagellated-bacterium": {
       "name": "flagellated bacterium",
       "category": "14. Bacteria and archaea",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/flagellated-bacterium-bioart-transparent.png",
+      "svg": "svg/flagellated-bacterium-bioart-traced.svg",
+      "png_sha256": "ff0fd922da45cd36492fa34a3eab3505038c7c108b0aba6a27236e48c03fe750",
+      "svg_sha256": "6ad51683cbff4620953143f203352b3d4f567703b23581d4bb73790698d41664",
+      "original_sha256": "de448932118d5c1cae7552c6cea2ecf8744fa438ae3631dc52e2834218472672",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        352,
+        568,
+        319,
+        563
+      ],
+      "svg_paths": 5191,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/flagellated-bacterium/prompt.json",
+      "qa": "qa/inventory/flagellated-bacterium",
+      "visual_review": "Viewed PNG/SVG light/dark: six distinct surface-attached flagella, all unbranched with full tips; intact rod, clean alpha without glow and faithful thin vector filaments.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/flagellated-bacterium/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/flagellated-bacterium/inspection.webm"
+      }
     },
     "bacterial-endospore": {
       "name": "bacterial endospore",
       "category": "14. Bacteria and archaea",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/bacterial-endospore-bioart-transparent.png",
+      "svg": "svg/bacterial-endospore-bioart-traced.svg",
+      "png_sha256": "a23a4aa8e294bb28d28ff543f5f89318382f0cdd3de776a89c920efec61dd206",
+      "svg_sha256": "8d1a0c0c1fccaef65d91147ab726cf7ca6cd247d202bcb7c3bc2c46d3a079cf3",
+      "original_sha256": "55a95705590f550c352e8dfa6c2d9be668aab9677b41ec48ecf046b6e6880dd8",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        469,
+        566,
+        321,
+        579
+      ],
+      "svg_paths": 16251,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/bacterial-endospore/prompt.json",
+      "qa": "qa/inventory/bacterial-endospore",
+      "visual_review": "Reviewed PNG/SVG light/dark: complete oval coat, ordered cortex/wall/membrane/core zones and condensed DNA preserved; clean alpha, no composite glow, vector detail comparable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bacterial-endospore/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bacterial-endospore/inspection.webm"
+      }
     },
     "gram-positive-cell-envelope-cross-section": {
       "name": "Gram-positive cell-envelope cross-section",
       "category": "14. Bacteria and archaea",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/gram-positive-cell-envelope-cross-section-bioart-transparent.png",
+      "svg": "svg/gram-positive-cell-envelope-cross-section-bioart-traced.svg",
+      "png_sha256": "479f1f64e882c4a7c6d67563a4d43c2e131982afd0f57665666ee21a24a50057",
+      "svg_sha256": "2602eed8fc5673257b28270765952faafbea139cb9ad536e0052559d6b5b4737",
+      "original_sha256": "8d7459dec4c942cb87babcb91a8f9683c4a589373d36adb136223bdf19ce501a",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        323,
+        563
+      ],
+      "svg_paths": 30791,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/gram-positive-cell-envelope-cross-section/prompt.json",
+      "qa": "qa/inventory/gram-positive-cell-envelope-cross-section",
+      "visual_review": "Viewed PNG/SVG light/dark: thick wall over one membrane, gold wall chains and two coral membrane-associated chains, corrected simplified hydrophobic band. Clean transparency and faithful detailed vector.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gram-positive-cell-envelope-cross-section/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gram-positive-cell-envelope-cross-section/inspection.webm"
+      }
     },
     "gram-negative-cell-envelope-cross-section": {
       "name": "Gram-negative cell-envelope cross-section",
       "category": "14. Bacteria and archaea",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/gram-negative-cell-envelope-cross-section-bioart-transparent.png",
+      "svg": "svg/gram-negative-cell-envelope-cross-section-bioart-traced.svg",
+      "png_sha256": "63fa6963648b646eaee0196bcb4249db65117c8c6bfb35056599204ed471e5b8",
+      "svg_sha256": "410e69329bf4c879965171be633973cabe79fd327135470bfd16011b5e774d61",
+      "original_sha256": "5287d4926709c9f489b67e48ac2e5fb0a010f835de7aed2606f02dd6b67c0d63",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        579,
+        321,
+        563
+      ],
+      "svg_paths": 21989,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/gram-negative-cell-envelope-cross-section/prompt.json",
+      "qa": "qa/inventory/gram-negative-cell-envelope-cross-section",
+      "visual_review": "Viewed PNG/SVG light/dark: two distinct membranes, thin intervening peptidoglycan, outward LPS and outer-membrane porins; no composite halo, clean alpha and faithful vector topology.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gram-negative-cell-envelope-cross-section/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gram-negative-cell-envelope-cross-section/inspection.webm"
+      }
     },
     "bacterial-biofilm-microcolony": {
       "name": "bacterial biofilm microcolony",
       "category": "14. Bacteria and archaea",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/bacterial-biofilm-microcolony-bioart-transparent.png",
+      "svg": "svg/bacterial-biofilm-microcolony-bioart-traced.svg",
+      "png_sha256": "976496af410e0ee00590106144063a32a6e54650afd1a02d07364989148e068e",
+      "svg_sha256": "50faa16619b43ad4b5811fefb6f04b3495f5bcdd486827daf4c35aa6d3442f29",
+      "original_sha256": "6f99154d782fe45d98b7e03335ae08daff3ab789cede4fbfc86525804dedfc1e",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        358,
+        563,
+        355,
+        563
+      ],
+      "svg_paths": 24719,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/bacterial-biofilm-microcolony/prompt.json",
+      "qa": "qa/inventory/bacterial-biofilm-microcolony",
+      "visual_review": "Viewed PNG and editable SVG on light and dark backgrounds: bacterial rods, pale matrix, gold polymer strands and violet extracellular DNA remain readable; complete silhouette and transparent padding preserved.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bacterial-biofilm-microcolony/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bacterial-biofilm-microcolony/inspection.webm"
+      }
     },
     "bacterial-conjugation-pair-with-pilus": {
       "name": "bacterial conjugation pair with pilus",
       "category": "14. Bacteria and archaea",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/bacterial-conjugation-pair-with-pilus-bioart-transparent.png",
+      "svg": "svg/bacterial-conjugation-pair-with-pilus-bioart-traced.svg",
+      "png_sha256": "ad04d7686f33d015cc03880f4a7a8d2cf3df5ed056157e8a942606b881320ceb",
+      "svg_sha256": "80947fa3c160bb7234ff989d67b5ea0a2235806d6e57c60d22320eb233270634",
+      "original_sha256": "2fb0b7f8f4c4a78f74434905a4eb8f626230b5b7a397cb893e701895e421f9d0",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        394,
+        600,
+        371,
+        589
+      ],
+      "svg_paths": 5108,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/bacterial-conjugation-pair-with-pilus/prompt.json",
+      "qa": "qa/inventory/bacterial-conjugation-pair-with-pilus",
+      "visual_review": "Viewed both formats on light and dark: two intact rods and the fine continuous connecting pilus are preserved, with clean transparent padding and comparable smooth shading.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bacterial-conjugation-pair-with-pilus/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bacterial-conjugation-pair-with-pilus/inspection.webm"
+      }
     },
     "archaeal-cell": {
       "name": "archaeal cell",
       "category": "14. Bacteria and archaea",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/archaeal-cell-bioart-transparent.png",
+      "svg": "svg/archaeal-cell-bioart-traced.svg",
+      "png_sha256": "e0772969b3cf2aa190ff78d8c03817125445db1dbaf024855ac84f9c4ffbf79d",
+      "svg_sha256": "7dfdffbb8a117c4a11a4035bc84309d37ba72c8c56615fa50914313f6a1315ef",
+      "original_sha256": "be682c77fd14c71a45fa01fd6a19264a3a5a21e09f2bfbe05de9f13decc30cd6",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        578,
+        405,
+        581
+      ],
+      "svg_paths": 22233,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/archaeal-cell/prompt.json",
+      "qa": "qa/inventory/archaeal-cell",
+      "visual_review": "Viewed light and dark PNG/SVG comparison: lobed contour, surface lattice, membrane band and internal coils retain clear separation; clean alpha and complete padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/archaeal-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/archaeal-cell/inspection.webm"
+      }
     },
     "budding-yeast-cell": {
       "name": "budding yeast cell",
       "category": "15. Fungi, protists, and parasites",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/budding-yeast-cell-bioart-transparent.png",
+      "svg": "svg/budding-yeast-cell-bioart-traced.svg",
+      "png_sha256": "1135c84bfd3643d3b70f7a4f71e3ab2b84df7ea7ca8111e2edafdec42fb5d7d5",
+      "svg_sha256": "df3695d653b9a6fbe529d689f9d92dcafecb2ecd7294275be32d1b3d1ad0f236",
+      "original_sha256": "a252314e107a5e523db6bd5ec10c178807e73fed9439170f406fbeaff513c73e",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        355,
+        327,
+        349,
+        326
+      ],
+      "svg_paths": 6545,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/budding-yeast-cell/prompt.json",
+      "qa": "qa/inventory/budding-yeast-cell",
+      "visual_review": "Viewed PNG and SVG on light and dark: intact mother-bud neck and scar preserved. Mild traced gradient contouring, with overall polished silhouette and clean alpha retained.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/budding-yeast-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/budding-yeast-cell/inspection.webm"
+      }
     },
     "filamentous-fungal-hypha": {
       "name": "filamentous fungal hypha",
       "category": "15. Fungi, protists, and parasites",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/filamentous-fungal-hypha-bioart-transparent.png",
+      "svg": "svg/filamentous-fungal-hypha-bioart-traced.svg",
+      "png_sha256": "767ea6ea86e15706f1b82d92350a3a91b4145df7095efe700e176236dde6c75c",
+      "svg_sha256": "f096adb810b9100265a31f65c308394760673363f44e798207358f4c93460ea8",
+      "original_sha256": "c607799e747098d15d356a0b62756e4ef10fc70293e7a54d78347c9fafd966f4",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        328,
+        583,
+        327,
+        563
+      ],
+      "svg_paths": 6100,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/filamentous-fungal-hypha/prompt.json",
+      "qa": "qa/inventory/filamentous-fungal-hypha",
+      "visual_review": "Viewed both formats on light and dark: all four ends, continuous branch junctions, septa and purple nuclei are preserved; no visible background or halo.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/filamentous-fungal-hypha/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/filamentous-fungal-hypha/inspection.webm"
+      }
     },
     "fungal-spore": {
       "name": "fungal spore",
       "category": "15. Fungi, protists, and parasites",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/fungal-spore-bioart-transparent.png",
+      "svg": "svg/fungal-spore-bioart-traced.svg",
+      "png_sha256": "671a1b6f2544859996d9836af6e6df1904d9c9180d02f4293a062c8dfeaa4e0b",
+      "svg_sha256": "f6c02478d13cad8ea99acd80b061f2d24faba46d8f86f8587919665d5178f8b0",
+      "original_sha256": "129966bf8b487d7ad5636c8b7fb7f98301dd499a2b84bc9537fe349894c450ac",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        273,
+        275,
+        251
+      ],
+      "svg_paths": 16332,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/fungal-spore/prompt.json",
+      "qa": "qa/inventory/fungal-spore",
+      "visual_review": "Viewed light and dark PNG/SVG comparison: rounded wall ornamentation, attachment scar and full silhouette remain clear with comparable shading and clean alpha.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fungal-spore/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fungal-spore/inspection.webm"
+      }
     },
     "fungal-conidiophore": {
       "name": "fungal conidiophore",
       "category": "15. Fungi, protists, and parasites",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/fungal-conidiophore-bioart-transparent.png",
+      "svg": "svg/fungal-conidiophore-bioart-traced.svg",
+      "png_sha256": "712315b7723bb62bdd3fa1df81aad44c50c9a774b927115c56d74a7077dc4905",
+      "svg_sha256": "391907544860e7a2c773dabb77cb505ad0f8b4c9e6fb4d20c7d066c9d707f263",
+      "original_sha256": "2ec304d3269d56b080f5d16a7eb958571ef30593af1afd28ccf079f74d69e498",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        313,
+        575,
+        307
+      ],
+      "svg_paths": 9472,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/fungal-conidiophore/prompt.json",
+      "qa": "qa/inventory/fungal-conidiophore",
+      "visual_review": "Viewed both formats on light and dark: stalk, vesicle, phialides and radiating bead chains retained, full base and top tips intact, clean transparent background.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fungal-conidiophore/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fungal-conidiophore/inspection.webm"
+      }
     },
     "amoeboid-protozoan": {
       "name": "amoeboid protozoan",
       "category": "15. Fungi, protists, and parasites",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/amoeboid-protozoan-bioart-transparent.png",
+      "svg": "svg/amoeboid-protozoan-bioart-traced.svg",
+      "png_sha256": "38039b8a226a607d7942bd5fd795662ce482056c96258585ea157c8f48e7048d",
+      "svg_sha256": "c61c0e075c22057274957e1449d779b7429372aec64b0b178b24cb8b60800290",
+      "original_sha256": "606fce93857ec06a6e281817388f3b33cfa23e5ba5df1bf26d56f76d6b7352eb",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        564,
+        383,
+        563
+      ],
+      "svg_paths": 9407,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/amoeboid-protozoan/prompt.json",
+      "qa": "qa/inventory/amoeboid-protozoan",
+      "visual_review": "Viewed light and dark PNG/SVG: broad pseudopods, nucleus, three food vacuoles and contractile vacuole remain distinct, complete outline and transparent padding preserved.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/amoeboid-protozoan/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/amoeboid-protozoan/inspection.webm"
+      }
     },
     "flagellated-protozoan": {
       "name": "flagellated protozoan",
       "category": "15. Fungi, protists, and parasites",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/flagellated-protozoan-bioart-transparent.png",
+      "svg": "svg/flagellated-protozoan-bioart-traced.svg",
+      "png_sha256": "5f4b12ee13392ed70341745d27aad940fe2341c7674e9bebdd4a0d504a72a528",
+      "svg_sha256": "f43e5baab5f3a531e5269e6145fa3a34c74ea5f46835aea13a9709c636ae14f1",
+      "original_sha256": "38e5139d1e4a95160dcf74b4a134dfb26dd07199b9189eb071e216aecc56f405",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        596,
+        321,
+        577,
+        325
+      ],
+      "svg_paths": 8504,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/flagellated-protozoan/prompt.json",
+      "qa": "qa/inventory/flagellated-protozoan",
+      "visual_review": "Viewed PNG/SVG on light and dark: both long flagella remain continuous with intact tips, internal nucleus and vacuoles readable, clean alpha and full padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/flagellated-protozoan/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/flagellated-protozoan/inspection.webm"
+      }
     },
     "ciliated-protozoan": {
       "name": "ciliated protozoan",
       "category": "15. Fungi, protists, and parasites",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/ciliated-protozoan-bioart-transparent.png",
+      "svg": "svg/ciliated-protozoan-bioart-traced.svg",
+      "png_sha256": "56072706b49bb40fb579b014b891e72679a7335e35f8caf42c56794b1a69af29",
+      "svg_sha256": "8025dbb02c154b01088211a41efa84e2b153424d58939614d59355562ade053f",
+      "original_sha256": "55924c51cd4e633d7e4e27f84e767d0e6dd1a73d2aa87efbde454a1cac8bcfb6",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        368,
+        576,
+        321,
+        577
+      ],
+      "svg_paths": 11103,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/ciliated-protozoan/prompt.json",
+      "qa": "qa/inventory/ciliated-protozoan",
+      "visual_review": "Viewed PNG/SVG on light and dark: full ciliary fringe, oral groove, nuclear pair and radial contractile vacuoles preserved; slight trace darkening in dense cilia, clean alpha and complete tips.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ciliated-protozoan/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ciliated-protozoan/inspection.webm"
+      }
     },
     "malaria-merozoite": {
       "name": "malaria merozoite",
       "category": "15. Fungi, protists, and parasites",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/malaria-merozoite-bioart-transparent.png",
+      "svg": "svg/malaria-merozoite-bioart-traced.svg",
+      "png_sha256": "1d2759c7ca09f5c0776959ba16479231ff42b34660fc752118dc656a19fe1441",
+      "svg_sha256": "6feea532e92fa57bb78af8910e875061e024863d25aedc3a5e52c40e136b9d8d",
+      "original_sha256": "4acbaa20118486c543675250a7dec708a7ce843fe3be541043517bd421b3fcd0",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        331,
+        625,
+        307
+      ],
+      "svg_paths": 17486,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/malaria-merozoite/prompt.json",
+      "qa": "qa/inventory/malaria-merozoite",
+      "visual_review": "Viewed light/dark PNG/SVG: two rhoptries, small apical rings, micronemes, posterior nucleus and other organelles remain distinct. Mild gradient contouring only; full outline and clean transparency.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/malaria-merozoite/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/malaria-merozoite/inspection.webm"
+      }
     },
     "malaria-infected-erythrocyte": {
       "name": "malaria-infected erythrocyte",
       "category": "15. Fungi, protists, and parasites",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/malaria-infected-erythrocyte-bioart-transparent.png",
+      "svg": "svg/malaria-infected-erythrocyte-bioart-traced.svg",
+      "png_sha256": "1d9a10c4958436abcddd9b44af77c79487766280862ed88a84706c627556b5de",
+      "svg_sha256": "744cc4cacccf0a94775f28eb939bec96305112997ad57e6d18013d02eb1749b7",
+      "original_sha256": "64ea03c916910e6c74a5835761c66fe72f1265fe75ef166a33d7ef87efe8882d",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        302,
+        296,
+        299,
+        325
+      ],
+      "svg_paths": 7492,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/malaria-infected-erythrocyte/prompt.json",
+      "qa": "qa/inventory/malaria-infected-erythrocyte",
+      "visual_review": "Viewed light/dark PNG/SVG: complete red cell, viewing window and one cyan parasite ring with violet dot retained. Mild gradient contouring from tracing; clean transparent padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/malaria-infected-erythrocyte/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/malaria-infected-erythrocyte/inspection.webm"
+      }
     },
     "toxoplasma-tachyzoite": {
       "name": "toxoplasma tachyzoite",
       "category": "15. Fungi, protists, and parasites",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/toxoplasma-tachyzoite-bioart-transparent.png",
+      "svg": "svg/toxoplasma-tachyzoite-bioart-traced.svg",
+      "png_sha256": "808232a6cd310fa62bff4ec64a53d98c06fcc511f0560c59a452887fd54fbc25",
+      "svg_sha256": "60b866e487ffdb893a3d9c79a9c63827d8ad0ca18a2b94a66c2553f197562074",
+      "original_sha256": "9dbd7d80c2b56d6759dd7f13a5f594c9f97f8ff5c097d5b3d154040604f1ae96",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        622,
+        343,
+        676,
+        349
+      ],
+      "svg_paths": 15560,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/toxoplasma-tachyzoite/prompt.json",
+      "qa": "qa/inventory/toxoplasma-tachyzoite",
+      "visual_review": "Viewed PNG/SVG on light and dark: tapered apical complex, blunt posterior, central nucleus and corrected plain apicoplast preserved. Organelles readable and complete contour with clean alpha.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/toxoplasma-tachyzoite/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/toxoplasma-tachyzoite/inspection.webm"
+      }
     },
     "trypanosome": {
       "name": "trypanosome",
       "category": "15. Fungi, protists, and parasites",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/trypanosome-bioart-transparent.png",
+      "svg": "svg/trypanosome-bioart-traced.svg",
+      "png_sha256": "5ec7048c9e4d03139bd7d52f22aac2274218d6ca596b6858eb4e9a42eae8e80b",
+      "svg_sha256": "6d5fe50c4a17116b5cbb64e9f2cc6deab599453b3f368c142c86ecf36d9362b8",
+      "original_sha256": "b8e6097c78f359e59341c9f92b66fbf2c8cb1eea33fac3991f9b50196da1e7b0",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        320,
+        592,
+        379
+      ],
+      "svg_paths": 5177,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/trypanosome/prompt.json",
+      "qa": "qa/inventory/trypanosome",
+      "visual_review": "Viewed light/dark PNG/SVG: one complete anterior free flagellum, pale undulating membrane, nucleus and posterior gold kinetoplast retained; clean transparency and complete endpoints.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/trypanosome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/trypanosome/inspection.webm"
+      }
     },
     "leishmania-promastigote": {
       "name": "leishmania promastigote",
       "category": "15. Fungi, protists, and parasites",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/leishmania-promastigote-bioart-transparent.png",
+      "svg": "svg/leishmania-promastigote-bioart-traced.svg",
+      "png_sha256": "303b93257e1ad41133f467cad32d0ea958a83d9b35723ea82b39a32de127d8eb",
+      "svg_sha256": "4a92dfb0fd5793288897eeb68f3361aa880bddfca3a2116d04501683a1e870ad",
+      "original_sha256": "23679b649c699bdf7bddf6d30bd9212a8bcbeecc3f8609c6e7506d70ab3d6f56",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        596,
+        331,
+        651,
+        335
+      ],
+      "svg_paths": 4950,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/leishmania-promastigote/prompt.json",
+      "qa": "qa/inventory/leishmania-promastigote",
+      "visual_review": "Viewed both formats on light/dark: single flagellum complete, nucleus and anterior kinetoplast distinguishable, full spindle silhouette and clean alpha preserved.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/leishmania-promastigote/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/leishmania-promastigote/inspection.webm"
+      }
     },
     "helminth-egg": {
       "name": "helminth egg",
       "category": "15. Fungi, protists, and parasites",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/helminth-egg-bioart-transparent.png",
+      "svg": "svg/helminth-egg-bioart-traced.svg",
+      "png_sha256": "f780401a1d501f4c495a4e0adc1eb4c48f525eb4fd21d34ac50c531019d5944f",
+      "svg_sha256": "6edb16aa1a8f73ceebbf6ba7030dc3f53296af9f1f9a1a81936f31a3ca7a5dc5",
+      "original_sha256": "04522a65494fcb47ba34588db95bfdac26395e47c87b87468b3085bc97ebde63",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        344,
+        579,
+        379
+      ],
+      "svg_paths": 8761,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/helminth-egg/prompt.json",
+      "qa": "qa/inventory/helminth-egg",
+      "visual_review": "Viewed light and dark PNG/SVG: four distinct touching blastomeres within intact oval shell and surrounding space. Mild gradient banding only, clean transparent padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/helminth-egg/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/helminth-egg/inspection.webm"
+      }
     },
     "roundworm": {
       "name": "roundworm",
       "category": "15. Fungi, protists, and parasites",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/roundworm-bioart-transparent.png",
+      "svg": "svg/roundworm-bioart-traced.svg",
+      "png_sha256": "ced84e6136e4fb36b3dde71448343b429011acadc8bbca976d60a2098fc61c4e",
+      "svg_sha256": "c53d6c819c119ee74e88adf9bacffccc4e024fbb49fc3d9cdece07e9a7ccd158",
+      "original_sha256": "4089960a9a494c90f6e534468eeac38b2cbd6256b5f25325873013d829f03817",
+      "png_dimensions": [
+        1806,
+        1806
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        299,
+        302,
+        292,
+        294
+      ],
+      "svg_paths": 7968,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/roundworm/prompt.json",
+      "qa": "qa/inventory/roundworm",
+      "visual_review": "Viewed PNG/SVG on light/dark: full S-shaped body and both ends retained, fine cuticle lines remain subtle; no visible stray background pixels, clean alpha and comparable pale shading.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/roundworm/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/roundworm/inspection.webm"
+      }
     },
     "tapeworm-segment": {
       "name": "tapeworm segment",
       "category": "15. Fungi, protists, and parasites",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/tapeworm-segment-bioart-transparent.png",
+      "svg": "svg/tapeworm-segment-bioart-traced.svg",
+      "png_sha256": "364f80082f09010d92087d1f84f55fc6b1d422b1e5493d5fb083c38cccda7306",
+      "svg_sha256": "0f2fe38f02bcb9733b23aa195b505d3bd756205700e39a647c5934f85e57a7e6",
+      "original_sha256": "f6b1528d70b5752fcd838f8b859272f3d80896fa034a2b1dd9e6c9145117716e",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        307,
+        571,
+        307
+      ],
+      "svg_paths": 21762,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/tapeworm-segment/prompt.json",
+      "qa": "qa/inventory/tapeworm-segment",
+      "visual_review": "Complete segment with clean transparent padding; SVG preserves branched uterus, egg dots, lateral pore and smooth outline on light and dark backgrounds. Branch count is illustrative, not species diagnostic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tapeworm-segment/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tapeworm-segment/inspection.webm"
+      }
     },
     "schistosome-pair": {
       "name": "schistosome pair",
       "category": "15. Fungi, protists, and parasites",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/schistosome-pair-bioart-transparent.png",
+      "svg": "svg/schistosome-pair-bioart-traced.svg",
+      "png_sha256": "7f65e4e8de458c6d041cdc5c8cc39c64a123eb8f3bcfa18235af96c023d106b3",
+      "svg_sha256": "4fcb3e4db860754e17641d58ae01c7d73f707f23c65bf027ae3bc325870f0156",
+      "original_sha256": "f4501afd904512f52959573c9f583584eb2c3eead4e69f8c4971211707ce8198",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        335,
+        605,
+        353
+      ],
+      "svg_paths": 5932,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/schistosome-pair/prompt.json",
+      "qa": "qa/inventory/schistosome-pair",
+      "visual_review": "Both complete worms, two male suckers and female seated in ventral groove retained. Clean alpha on light/dark, fine tail preserved in SVG; schematic proportions.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/schistosome-pair/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/schistosome-pair/inspection.webm"
+      }
     },
     "generic-plant-cell": {
       "name": "generic plant cell",
       "category": "16. Plant biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/generic-plant-cell-bioart-transparent.png",
+      "svg": "svg/generic-plant-cell-bioart-traced.svg",
+      "png_sha256": "ed5c2aee23ff4a6d2ff5b2c0b67680aabb76283bc7e360c13b0de1cb3c2424e9",
+      "svg_sha256": "c5543af3179e64bdec1694137461a79cabce6cf7ff14a3682403254439342d4c",
+      "original_sha256": "0c940fd99494ae0c16325749599238ec23282b8d72097dce4a8c785985dc0bbb",
+      "png_dimensions": [
+        1979,
+        1979
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        283,
+        433,
+        315,
+        433
+      ],
+      "svg_paths": 18937,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/generic-plant-cell/prompt.json",
+      "qa": "qa/inventory/generic-plant-cell",
+      "visual_review": "Complete cell wall, peripheral organelles and large central vacuole preserved. Chloroplast stacks and nucleus remain legible in SVG. Clean transparent perimeter on light and dark; slight gradient contouring acceptable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-plant-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-plant-cell/inspection.webm"
+      }
     },
     "plant-cell-wall-segment": {
       "name": "plant cell wall segment",
       "category": "16. Plant biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/plant-cell-wall-segment-bioart-transparent.png",
+      "svg": "svg/plant-cell-wall-segment-bioart-traced.svg",
+      "png_sha256": "b87ede57fcce0f29ad3359e1061697a5391adab16de17ea42e739264c08a9821",
+      "svg_sha256": "0eb81bc7a4d34cf0b75ae12b94dda2dc7e5a24aa1654905fc19420f92e9fe32c",
+      "original_sha256": "1d167279261163a3aa0a6e4042467387cc7d269e6131f24a5e96421a9217fab5",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        584,
+        327,
+        563
+      ],
+      "svg_paths": 17524,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/plant-cell-wall-segment/prompt.json",
+      "qa": "qa/inventory/plant-cell-wall-segment",
+      "visual_review": "Crossing cellulose bundles and fine gold/coral polymer network retained in SVG. Transparent interstices and perimeter clean on light/dark; matrix represented by strands rather than continuous fill.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/plant-cell-wall-segment/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/plant-cell-wall-segment/inspection.webm"
+      }
     },
     "chloroplast": {
       "name": "chloroplast",
       "category": "16. Plant biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/chloroplast-bioart-transparent.png",
+      "svg": "svg/chloroplast-bioart-traced.svg",
+      "png_sha256": "91109ceffb35aba69e60c47aa44c43bcbabb7514e7c4b8660f6098c939465d90",
+      "svg_sha256": "1b6ac18df97509e2c4b5ad1a9fef9cb81e25ab70512d69772e08459e58aa5f58",
+      "original_sha256": "71967ee8b6198ff726f42d87fee29cec9619f364c544b3ed931265035ca802e6",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        573,
+        329,
+        563
+      ],
+      "svg_paths": 18395,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/chloroplast/prompt.json",
+      "qa": "qa/inventory/chloroplast",
+      "visual_review": "Five grana stacks, connecting lamellae, envelope rim, starch grain and DNA loop retained in SVG. Complete contour and clean transparency on light/dark; slight gradient contouring acceptable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chloroplast/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chloroplast/inspection.webm"
+      }
     },
     "central-vacuole": {
       "name": "central vacuole",
       "category": "16. Plant biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/central-vacuole-bioart-transparent.png",
+      "svg": "svg/central-vacuole-bioart-traced.svg",
+      "png_sha256": "68000cdfd1e548c42c26a2bb5e251dd5700e5356794d33ae596374c0e06fe8cc",
+      "svg_sha256": "943b2b0116e934be062996f83418588824187f9ecd25c94368b49dba4f60a9bd",
+      "original_sha256": "501e6b3e58bfeceedddddd02da79e51fdae7d27339e60b364b3ffc44ae638ba4",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        332,
+        573,
+        327,
+        583
+      ],
+      "svg_paths": 2,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/central-vacuole/prompt-v2.json",
+      "qa": "qa/inventory/central-vacuole",
+      "visual_review": "Native SVG uses traced silhouette and tonoplast edge plus radial gradient, eliminating visible trace bands. Complete outline and clear cutaway retained; shading simplified. PNG unchanged, clean alpha on light/dark.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/central-vacuole/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/central-vacuole/inspection.webm"
+      }
     },
     "stomatal-guard-cell-pair": {
       "name": "stomatal guard-cell pair",
       "category": "16. Plant biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/stomatal-guard-cell-pair-bioart-transparent.png",
+      "svg": "svg/stomatal-guard-cell-pair-bioart-traced.svg",
+      "png_sha256": "2dad1494662b6bdec61b203fe92b8b4d5108848980e2e6123bc1538ef61c9912",
+      "svg_sha256": "610147543d6f04e1d8c450379d502a8a5cf39655a7939089abd584599cbdda3b",
+      "original_sha256": "a19dc984e66accc4ce8386a85e45e43b9788dfd79da89c7d44a7a768cb77f10f",
+      "png_dimensions": [
+        1952,
+        1952
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        279,
+        412,
+        297,
+        428
+      ],
+      "svg_paths": 24618,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/stomatal-guard-cell-pair/prompt.json",
+      "qa": "qa/inventory/stomatal-guard-cell-pair",
+      "visual_review": "Exactly two kidney guard cells with thick inner walls and open pore. SVG preserves nuclei, vacuoles and chloroplasts; central pore and perimeter transparent on light/dark. Minor gradient contouring acceptable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/stomatal-guard-cell-pair/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/stomatal-guard-cell-pair/inspection.webm"
+      }
     },
     "root-hair-cell": {
       "name": "root hair cell",
       "category": "16. Plant biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/root-hair-cell-bioart-transparent.png",
+      "svg": "svg/root-hair-cell-bioart-traced.svg",
+      "png_sha256": "f09c7ef76a9730b259280cefba119f8c364b86c453e9f84a79f29d94d10c73ec",
+      "svg_sha256": "402effde8f4521b43834bd6b24c6ff7ab97bac1765fac51deb612b623fa8854e",
+      "original_sha256": "6cbaad8a56fce1a0c4165cc912d9e6817d73fefb9ae706c0d6dbbc5a7996011a",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        582,
+        347,
+        583
+      ],
+      "svg_paths": 6917,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/root-hair-cell/prompt.json",
+      "qa": "qa/inventory/root-hair-cell",
+      "visual_review": "One continuous root hair with intact closed tip, vacuole, nucleus and mitochondria preserved in SVG. Clean alpha and full padding on both backgrounds; minor gradient contouring acceptable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/root-hair-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/root-hair-cell/inspection.webm"
+      }
     },
     "pollen-grain": {
       "name": "pollen grain",
       "category": "16. Plant biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/pollen-grain-bioart-transparent.png",
+      "svg": "svg/pollen-grain-bioart-traced.svg",
+      "png_sha256": "9082a98c85846a2c0805fe48418110a212ae1d3c43ba76686decb93e19aad83e",
+      "svg_sha256": "420296e6c6653a6677a39a129310f3148b56825940ac9e7a974d48d1581a40ed",
+      "original_sha256": "f9d067267f5cdf67e31ea6d65a5ab4af2805d28778235ef87acb6b79c9ea561f",
+      "png_dimensions": [
+        1825,
+        1825
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        364,
+        341,
+        356,
+        355
+      ],
+      "svg_paths": 21873,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/pollen-grain/prompt.json",
+      "qa": "qa/inventory/pollen-grain",
+      "visual_review": "Reticulate exine and long recessed colpi remain clearly recognizable in SVG. Complete grain, clean alpha and padding on light/dark; fine shading preserved.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pollen-grain/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pollen-grain/inspection.webm"
+      }
     },
     "seed": {
       "name": "seed",
       "category": "16. Plant biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/seed-bioart-transparent.png",
+      "svg": "svg/seed-bioart-traced.svg",
+      "png_sha256": "2f6c2764ceedebd96959517f9d01aeb0dd21aac191052beea3296f6af24d3756",
+      "svg_sha256": "781ab5885a15cbba812dcd13c1cc0b0ddacf8e7683ba7b162d507a6bb75b68f4",
+      "original_sha256": "1a75ae03a262595d4b4558af0bb29b3c0678d1a3b36deb3520812c1faa73af47",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        612,
+        338,
+        593,
+        347
+      ],
+      "svg_paths": 13909,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/seed/prompt.json",
+      "qa": "qa/inventory/seed",
+      "visual_review": "Complete kidney-shaped testa, hilum and micropyle retained in SVG. Smooth shading comparable to PNG with minor trace contouring; clean alpha on light/dark.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/seed/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/seed/inspection.webm"
+      }
     },
     "germinating-seed": {
       "name": "germinating seed",
       "category": "16. Plant biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/germinating-seed-bioart-transparent.png",
+      "svg": "svg/germinating-seed-bioart-traced.svg",
+      "png_sha256": "818da9e516060778c0e559525801b211a358f80d8abdb60289e92c375ec53cc0",
+      "svg_sha256": "b13668d37bae205e709e160fb41206d60deb5d3eb90cfec08eac9d54f8f94d98",
+      "original_sha256": "119e6bbe0191e3f152c12dc606b73a7cec8cc882372065669fe4f11a94363dbd",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        608,
+        329,
+        575,
+        328
+      ],
+      "svg_paths": 5866,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/germinating-seed/prompt.json",
+      "qa": "qa/inventory/germinating-seed",
+      "visual_review": "Two cotyledons, retained testa, connected shoot and complete fine root system preserved in SVG. Clean transparent gaps and perimeter on light/dark; fine lateral projections remain visible.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/germinating-seed/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/germinating-seed/inspection.webm"
+      }
     },
     "leaf": {
       "name": "leaf",
       "category": "16. Plant biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/leaf-bioart-transparent.png",
+      "svg": "svg/leaf-bioart-traced.svg",
+      "png_sha256": "1d9ee2aa517b4236cb4c3aadea8c5e5ba30c2a1068c86416ab59f4cbc8f67f9e",
+      "svg_sha256": "37dca70850404c36cb3cb567bc7228e9afb953c656967cacc12ad245975391a1",
+      "original_sha256": "56a3108c5666c6c1de79faaa4bc54b3a13565d5a1d722ec16fed5793849e8183",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        572,
+        321,
+        591
+      ],
+      "svg_paths": 12282,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/leaf/prompt.json",
+      "qa": "qa/inventory/leaf",
+      "visual_review": "Full petiole and apex, entire margin and branching veins retained in SVG. Smooth green shading comparable at asset size; clean transparent perimeter on light/dark.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/leaf/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/leaf/inspection.webm"
+      }
     },
     "flower": {
       "name": "flower",
       "category": "16. Plant biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/flower-bioart-transparent.png",
+      "svg": "svg/flower-bioart-traced.svg",
+      "png_sha256": "6b9e0dcccccd31cb3ce06b09c038ac1bfbcadfe28449fbec554dc6c90d4159e5",
+      "svg_sha256": "7a5ce80af60d25ac83379afac4b998016f48e511de542694f7a3127c7bce5904",
+      "original_sha256": "6b6a0258a15775d0ac2705330e70d11fc34bb0101a6de4155be5e4a9723d7c8d",
+      "png_dimensions": [
+        1822,
+        1822
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        276,
+        323,
+        273,
+        307
+      ],
+      "svg_paths": 21675,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/flower/prompt.json",
+      "qa": "qa/inventory/flower",
+      "visual_review": "Five petals and five stamens verified; pistil, sepals and full pedicel retained in SVG. Smooth petal shading comparable, transparent margins clean on light/dark.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/flower/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/flower/inspection.webm"
+      }
     },
     "root-system": {
       "name": "root system",
       "category": "16. Plant biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/root-system-bioart-transparent.png",
+      "svg": "svg/root-system-bioart-traced.svg",
+      "png_sha256": "8d0fdd0118423c947262d5551371b8a97d79d41b82290bda190839e350203ed9",
+      "svg_sha256": "e3349a70df520767414d44772abfe1d01d5991c22404060adf9e0cc97ae55552",
+      "original_sha256": "ae6c63c217f7ceab651915a6f9d61acb45299ed7ffcbcbfcfc65c7ba98ee01ca",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        335,
+        645,
+        321
+      ],
+      "svg_paths": 3539,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/root-system/prompt.json",
+      "qa": "qa/inventory/root-system",
+      "visual_review": "Connected primary, lateral and tertiary roots with complete tips retained in SVG. Fine branches are clearer in trace, clean transparent gaps on light/dark; no background remnants.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/root-system/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/root-system/inspection.webm"
+      }
     },
     "arabidopsis-plant": {
       "name": "Arabidopsis plant",
       "category": "16. Plant biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/arabidopsis-plant-bioart-transparent.png",
+      "svg": "svg/arabidopsis-plant-bioart-traced.svg",
+      "png_sha256": "ab63cdfd68fe7e5075cd6daeb10f85154f1c92fa9d4d921b09de3dcc8d8ba743",
+      "svg_sha256": "85a01826655df25eeb87eb88d8afd67111d8358c7a10b2d97dce576b1d8b9cc4",
+      "original_sha256": "31c02910c65933b50a518a83185aafd88a3c7695e6a1ae0f3afc1b6b107746dc",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        616,
+        321,
+        579,
+        307
+      ],
+      "svg_paths": 8410,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/arabidopsis-plant/prompt.json",
+      "qa": "qa/inventory/arabidopsis-plant",
+      "visual_review": "Basal rosette, slender siliques, four-petaled white flowers and complete taproot remain recognizable in SVG. Fine structures and transparent gaps retained on light/dark.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/arabidopsis-plant/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/arabidopsis-plant/inspection.webm"
+      }
     },
     "maize-plant": {
       "name": "maize plant",
       "category": "16. Plant biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/maize-plant-bioart-transparent.png",
+      "svg": "svg/maize-plant-bioart-traced.svg",
+      "png_sha256": "b346a8d5b9838e00b028f20605671e08969c28b05569464dfdad14c981780e58",
+      "svg_sha256": "75589d13c394c0e596022d012955c25f75057aae7fc58867773487cc227922b7",
+      "original_sha256": "71cf8270569321d95ae88aebdabcbf73c5329b154d6a2652fa64a1b2cc90c6e8",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        307,
+        563,
+        307
+      ],
+      "svg_paths": 13713,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/maize-plant/prompt.json",
+      "qa": "qa/inventory/maize-plant",
+      "visual_review": "Terminal tassel, two husked ears and silk, strap leaves and brace/fibrous roots retained in SVG. Whole plant and transparent gaps clean on light/dark; fine roots remain visible.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/maize-plant/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/maize-plant/inspection.webm"
+      }
     },
     "rice-plant": {
       "name": "rice plant",
       "category": "16. Plant biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/rice-plant-bioart-transparent.png",
+      "svg": "svg/rice-plant-bioart-traced.svg",
+      "png_sha256": "aebf24ba5bbbbfac2d24e152fccd57f14d60c619caa259dbb6bb7d97dcdc7ca9",
+      "svg_sha256": "c23062897a2cf7cb4437aa14cf68fb4d26b78c92cb214e546f4771baad15aef2",
+      "original_sha256": "e3816a734ff00c6db52035f54a9e695bf13c3da087840b82d8a86b94af3c3e81",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        324,
+        563,
+        307
+      ],
+      "svg_paths": 10437,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/rice-plant/prompt.json",
+      "qa": "qa/inventory/rice-plant",
+      "visual_review": "Three branched drooping panicles, narrow leaves, basal tillers and complete fibrous roots preserved in SVG. Original PNG needed no refinement; clean alpha and comparable detail on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rice-plant/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rice-plant/inspection.webm"
+      }
     },
     "tobacco-plant": {
       "name": "tobacco plant",
       "category": "16. Plant biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/tobacco-plant-bioart-transparent.png",
+      "svg": "svg/tobacco-plant-bioart-traced.svg",
+      "png_sha256": "f494387191a95b233b519857c1d58d2c49666825d8b85d0725ed6aad967ec565",
+      "svg_sha256": "8f9ca2826eb1e80824ee33c45be737b1fd77cb8c44f78b987031058094e8bad4",
+      "original_sha256": "2ade733cf91645f1bc1b283017786d8511075bfd0229699288399a5f202830c5",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        314,
+        583,
+        307
+      ],
+      "svg_paths": 18227,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/tobacco-plant/prompt.json",
+      "qa": "qa/inventory/tobacco-plant",
+      "visual_review": "Broad alternate leaves, tubular pink-tipped flowers, full stem and root system retained in SVG. Clean transparent perimeter and gaps on light/dark; comparable illustrated shading.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tobacco-plant/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tobacco-plant/inspection.webm"
+      }
     },
     "sperm-and-oocyte-pair": {
       "name": "sperm and oocyte pair",
       "category": "17. Developmental biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/sperm-and-oocyte-pair-bioart-transparent.png",
+      "svg": "svg/sperm-and-oocyte-pair-bioart-traced.svg",
+      "png_sha256": "a8f7e831fac51615be1c573d2c3e312b342c3c0bce1cdf2a8deb474a4271fb99",
+      "svg_sha256": "c4bcafc3af07a7569e348135a7287eaa0eaee018a11c6019bfad97794db28d5f",
+      "original_sha256": "0f5e10b49f5a1bdaef0bdd20582bc679a0e5f8abc3a5ec590c1ae907c9f9609c",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        332,
+        563,
+        319,
+        563
+      ],
+      "svg_paths": 5657,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/sperm-and-oocyte-pair/prompt.json",
+      "qa": "qa/inventory/sperm-and-oocyte-pair",
+      "visual_review": "One sperm and one oocyte, intact tail, zona, polar body and cortical spindle retained in SVG. Clean alpha on light/dark; mild cytoplasmic gradient bands accepted as schematic shading.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sperm-and-oocyte-pair/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sperm-and-oocyte-pair/inspection.webm"
+      }
     },
     "zygote": {
       "name": "zygote",
       "category": "17. Developmental biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/zygote-bioart-transparent.png",
+      "svg": "svg/zygote-bioart-traced.svg",
+      "png_sha256": "7a2641ab313469c7200abfd67a586b19aa0f969ce6024ef3ecb8c80f8cb43834",
+      "svg_sha256": "268bb1d3c1618fcb4f8e0a1ccab1cd0f6f8d7a5f66098c5e24b64a14b5497b05",
+      "original_sha256": "823c78c9476bd5df3e58c09a00e73f73290de32146ceed7e2dfed563be01d08a",
+      "png_dimensions": [
+        1790,
+        1790
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        314,
+        289,
+        327,
+        280
+      ],
+      "svg_paths": 12881,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/zygote/prompt.json",
+      "qa": "qa/inventory/zygote",
+      "visual_review": "One cell with exactly two separate pronuclei and two small polar bodies verified. SVG preserves zona, cytoplasm and nuclear detail with clean alpha on light/dark; slight gradient contouring acceptable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/zygote/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/zygote/inspection.webm"
+      }
     },
     "two-cell-embryo": {
       "name": "two-cell embryo",
       "category": "17. Developmental biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/two-cell-embryo-bioart-transparent.png",
+      "svg": "svg/two-cell-embryo-bioart-traced.svg",
+      "png_sha256": "78a115ab34e40cdbc2c0d1dc94add3b4bb08798ec97bd77a546a202ea03194e6",
+      "svg_sha256": "f7ee0da221b6bbbbeef6e03cedfcbba362a05243a70fc4d1727287cb4ce8c648",
+      "original_sha256": "82148175a497eeb47790dd0e146e2bf43b8707dbbabec58f8b6dcc7b7917a8fd",
+      "png_dimensions": [
+        1779,
+        1779
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        297,
+        309,
+        296,
+        305
+      ],
+      "svg_paths": 11966,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/two-cell-embryo/prompt.json",
+      "qa": "qa/inventory/two-cell-embryo",
+      "visual_review": "Exactly two blastomeres, one nucleus each, shared zona and two small polar bodies verified. SVG retains clear cell boundaries and clean alpha on both backgrounds; slight gradient contouring acceptable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/two-cell-embryo/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/two-cell-embryo/inspection.webm"
+      }
     },
     "four-cell-embryo": {
       "name": "four-cell embryo",
       "category": "17. Developmental biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/four-cell-embryo-bioart-transparent.png",
+      "svg": "svg/four-cell-embryo-bioart-traced.svg",
+      "png_sha256": "a25e9f576367eae0c932c2e0c72c74849be1a0337562d44382c02ab0725a2bcb",
+      "svg_sha256": "15525a141909ac18bc5dea5eda857a4be6b4a8356bb9f37577e7915d03720cf6",
+      "original_sha256": "3ccbdaff02a6e7ddc1d60b1dd14422889760ce04e752a2d6042887687a57da2e",
+      "png_dimensions": [
+        1783,
+        1783
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        311,
+        273,
+        303,
+        274
+      ],
+      "svg_paths": 17628,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/four-cell-embryo/prompt.json",
+      "qa": "qa/inventory/four-cell-embryo",
+      "visual_review": "Four blastomeres and four nuclei retained, complete common zona and two polar bodies. Clean alpha on light and dark backgrounds. SVG closely matches PNG; mild gradient contouring at large scale.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/four-cell-embryo/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/four-cell-embryo/inspection.webm"
+      }
     },
     "eight-cell-embryo": {
       "name": "eight-cell embryo",

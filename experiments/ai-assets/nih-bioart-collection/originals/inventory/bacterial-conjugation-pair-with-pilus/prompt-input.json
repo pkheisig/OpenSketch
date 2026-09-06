@@ -1,0 +1,12 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a bacterial conjugation pair with pilus, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Exactly two intact smooth teal rod-shaped bacteria, arranged diagonally side by side with a clear narrow gap. One slender gently curved gold conjugative pilus emerges from the side of the left rod and attaches to the side of the right rod across the gap. The single pilus is a fine continuous tube, far thinner than a bacterial body. Closed opaque cells, no exposed internal anatomy, no flagella or other hairs. Smooth matte vector-like fills with broad gentle gradients and crisp darker teal outlines; no grain, no wet gloss, no checkerboard. Real transparent PNG alpha outside.",
+  "refinement": "Redraw this exact pair and connecting gold pilus as a smooth polished vector-style biomedical illustration. Preserve two complete teal rods and one continuous thin gold connecting pilus. Replace ALL mottled grain and photographic texture with smooth matte teal fills and broad subtle gradients. Crisp darker teal outlines, minimal gentle highlights. No glow, no external shadows. Generous transparent padding, true transparent PNG alpha outside.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-b347f8c9-8ee5-4568-80a0-5797a7134cea.png",
+  "archetype": "Two rod bacteria linked by one conjugative pilus; illustrative attachment stage, without depicting internal DNA transfer or species-specific machinery.",
+  "references": [
+    "https://pubmed.ncbi.nlm.nih.gov/15907535/",
+    "https://pubmed.ncbi.nlm.nih.gov/37963249/"
+  ]
+}

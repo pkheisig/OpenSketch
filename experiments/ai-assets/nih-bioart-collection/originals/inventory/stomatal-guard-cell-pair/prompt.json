@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a stomatal guard-cell pair, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Top view of exactly TWO mirror-facing kidney-shaped green guard cells enclosing a narrow elongated OPEN central stomatal pore. Cells meet only at upper and lower ends; the pore between concave inner walls remains transparent empty space. Thicker dark green inner walls bordering pore, thinner outer walls. Each cell has pale mint cytoplasm, one violet nucleus, several small emerald chloroplast ovals, a pale blue vacuolar area. No surrounding epidermal cells. Smooth matte vector-style forms, crisp green outlines and broad subtle gradients, no photographic grain or wet texture. Transparent PNG alpha.",
+  "refinement": "Redraw this exact stomatal guard-cell pair as clean polished vector-style biomedical art. Preserve exactly two kidney guard cells with thick inner walls and OPEN transparent pore, one violet nucleus and one blue vacuole in each, green chloroplasts. Smooth matte pale mint cytoplasm, simple violet nuclei, plain smooth blue vacuoles, crisp green outlines. Remove all grain, mottling, wet shine and random tiny dots; retain major organelles. Complete cells with padding. Transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-828ee510-973d-413f-b169-b3345c27b2b6.png",
+  "archetype": "Open stoma with two kidney-shaped guard cells, thick inner walls, transparent pore, nuclei, vacuoles and chloroplasts. Dicot-like archetype, not grass dumbbell guard cells. Organelle counts and relative dimensions are schematic.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "stomatal-guard-cell-pair",
+  "name": "stomatal guard-cell pair",
+  "original": "originals/inventory/stomatal-guard-cell-pair/generated.png",
+  "original_sha256": "a19dc984e66accc4ce8386a85e45e43b9788dfd79da89c7d44a7a768cb77f10f"
+}

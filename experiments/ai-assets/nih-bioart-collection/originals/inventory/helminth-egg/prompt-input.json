@@ -1,0 +1,12 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a helminth egg, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Representative hookworm-type egg: one oval thin smooth pale cyan shell, about 1.6 times longer than wide, enclosing exactly four touching rounded pale gold blastomeres at center in a compact 2-by-2 arrangement. Clear spacious pale interior gap between embryo and shell. Thin double contour to indicate shell thickness, no operculum, no polar plugs, no spikes or larvae. Smooth matte vector-like colored forms with broad gentle gradients, crisp teal shell edge and amber blastomere outlines. No grain, photorealism or glass glare. True transparent PNG alpha outside, complete egg centered.",
+  "refinement": "Redraw this exact four-cell helminth egg as a clean polished vector-style biomedical illustration. Preserve thin oval cyan shell and exactly four touching gold blastomeres in a 2-by-2 arrangement with space around embryo. Remove all grain and photographic texture. Smooth matte pale gold cells with crisp amber outlines and broad subtle gradients. Smooth pale cyan interior, thin shell outline, no wet glass reflections. True transparent PNG alpha outside, full egg and generous padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-1d65e097-838a-4308-a248-b24a9c4415f7.png",
+  "archetype": "Representative hookworm-type thin-shelled egg at four-cell cleavage stage. False colors for recognition; not universal helminth egg morphology and not sufficient for species identification.",
+  "references": [
+    "https://www.cdc.gov/dpdx/hookworm/index.html",
+    "https://www.cdc.gov/dpdx/diagnosticprocedures/stool/morphcomp.html"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a fungal conidiophore, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Representative uniseriate Aspergillus-like conidiophore: one slender upright pale golden stalk expanding continuously into a round golden terminal vesicle. A single layer of short flask-shaped amber phialides directly covers the upper two-thirds of vesicle. Each phialide gives rise to an outward-radiating unbranched chain of four to six small round teal conidia. Front-facing section of vesicle remains visible below the radial spore head. Stalk bottom attaches to one very short horizontal hyphal fragment, all complete. No surrounding colony, no loose floating spores. Clean smooth matte vector-like fills, crisp amber and teal outlines, gentle gradients, no grain. True transparent PNG alpha.",
+  "refinement": "Redraw this exact conidiophore as a clean smooth vector-style biomedical illustration. Preserve complete golden stalk, terminal vesicle, directly attached amber flask-shaped phialides and radiating teal conidial chains. Remove all grain, photographic skin texture, wet reflections and cellular mottling. Broad smooth matte gradients, crisp amber and dark teal outlines. Ensure each teal bead chain touches the narrow neck of its phialide continuously, and adjacent beads touch. Base hyphal fragment smooth pale gold. Transparent PNG alpha outside, generous padding, no glow.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-a2a01e0b-5831-4536-96d7-e66244959600.png",
+  "archetype": "Representative uniseriate Aspergillus-like conidiophore: terminal vesicle, directly attached phialides and radiating conidial chains. Visible numbers and proportions are schematic, not diagnostic of a species.",
+  "references": [
+    "https://mycology.adelaide.edu.au/fungal-descriptions-and-antifungal-susceptibility/hyphomycetes-conidial-moulds/aspergillus",
+    "https://wwwn.cdc.gov/phil/Details.aspx?pid=24973"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "fungal-conidiophore",
+  "name": "fungal conidiophore",
+  "original": "originals/inventory/fungal-conidiophore/generated.png",
+  "original_sha256": "2ec304d3269d56b080f5d16a7eb958571ef30593af1afd28ccf079f74d69e498"
+}

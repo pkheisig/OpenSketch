@@ -1,0 +1,12 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a bacterial endospore, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One isolated oval Bacillus-subtilis-like mature spore in oblique cutaway, not inside a mother cell. From outside inward: a deep teal protective protein coat with a few smooth lamellar bands, a thick pale-golden cortex, a thin coral germ-cell-wall band and thin cyan inner membrane, then a compact pale-violet core containing one condensed dark-violet DNA coil and a few tiny gold ribosome symbols. Distinct nested structural zones, no nucleus or mitochondria, no flagella, no exosporium balloon. Smooth matte vector-style forms, crisp outlines, broad gentle gradients; no grain or wet texture. Transparent PNG alpha.",
+  "refinement": "Polish this exact endospore cutaway into clean smooth matte vector-style biomedical art. Preserve outside-to-inside order: deep teal coat bands, thick pale gold cortex, thin coral germ-cell-wall band, cyan inner membrane and violet DNA-containing core. Replace all grain, crumpled texture and wet highlights with smooth broad gradients and crisp outlines. Cortex may have a few sparse fine curved lines, not a porous sponge. Keep complete oval outline. Transparent PNG alpha, no glow.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-6f52d8f4-ed06-4ca2-b158-1b3b4a61f4c9.png",
+  "archetype": "Bacillus-subtilis-like mature endospore cutaway showing coat, thick cortex, germ-cell-wall band, inner membrane and DNA/ribosome-containing core. Layer thickness and coat lamella count exaggerated; no exosporium depicted, not universal across spore-forming species.",
+  "references": [
+    "https://www.ncbi.nlm.nih.gov/books/NBK7699/?report=reader",
+    "https://pubmed.ncbi.nlm.nih.gov/30061638/"
+  ]
+}

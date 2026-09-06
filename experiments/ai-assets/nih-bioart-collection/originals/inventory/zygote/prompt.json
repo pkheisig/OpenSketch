@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a zygote, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One mammalian pronuclear-stage zygote, SINGLE round cell with pale coral cytoplasm, thin coral plasma membrane, clear perivitelline space and thick pale lavender zona pellucida outer ring. Exactly TWO adjacent separate round violet pronuclei near center, equal size, each with a few tiny darker nucleolar precursor dots. Two small polar bodies in perivitelline space at upper edge. No cleavage furrow, no sperm, no spindle, no extra cells. Smooth matte vector-style forms, crisp outlines and subtle broad gradients, no photographic grain, no wet shine. Transparent PNG alpha.",
+  "refinement": "Redraw this exact pronuclear zygote as clean polished vector-style biomedical art. Preserve SINGLE coral cell, exactly TWO separate violet pronuclei with a few nucleolar dots, two tiny polar bodies in perivitelline space and pale lavender zona. Smooth matte coral cytoplasm with only sparse small vesicles, smooth violet pronuclei, uniform lavender zona, crisp outlines and broad gentle gradients. Remove all grain, mottling, dense cytoplasmic dots and wet shine. No cleavage furrow. Complete object generous padding, transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-79675850-494f-4eeb-ac70-78b1d85e0212.png",
+  "archetype": "Mammalian pronuclear-stage zygote: one cell with two separate pronuclei and two polar bodies within the zona. Organelle and nucleolar precursor counts are symbolic, not embryo quality or developmental timing criteria.",
+  "references": [
+    "https://www.ncbi.nlm.nih.gov/books/NBK9901/",
+    "https://www.ncbi.nlm.nih.gov/books/NBK10055/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "zygote",
+  "name": "zygote",
+  "original": "originals/inventory/zygote/generated.png",
+  "original_sha256": "823c78c9476bd5df3e58c09a00e73f73290de32146ceed7e2dfed563be01d08a"
+}

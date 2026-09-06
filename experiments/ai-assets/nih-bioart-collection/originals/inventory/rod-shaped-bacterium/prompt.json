@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a rod-shaped bacterium, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One generic bacillus-shaped bacterial cell, about three times as long as wide, oblique left-to-right orientation. Smooth teal outer cell surface with closed rounded ends, a small longitudinal cutaway showing pale cyan cytoplasm, an irregular loose violet nucleoid coil without a nuclear membrane, a few tiny gold ribosomes and one small circular plasmid. No flagella, no pili, no nucleus or mitochondria. Cell wall/envelope represented as a simple layered rim, no claim of a particular Gram type. Clean matte vector-style forms, broad subtle gradients, crisp thin outlines, no photographic texture. Transparent PNG alpha.",
+  "refinement": "Redraw this same rod-shaped bacterium as clean polished matte vector-style biomedical art. Preserve the closed rounded teal rod, cyan cutaway cytoplasm, loose violet nucleoid without a membrane, gold ribosomes and one coral circular plasmid. Replace all photographic grain, translucent crumpled surfaces and wet texture with smooth opaque forms, crisp outlines and broad subtle gradients. Preserve simple layered cell-envelope rim. No background glow, transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-b34ae68a-8f7a-4369-8b07-5762dd0eba5e.png",
+  "archetype": "Generic bacillus-shaped cell cutaway with non-membrane-bound nucleoid, ribosome symbols and one representative plasmid. Simple envelope rim is not a Gram-type specification. Plasmid presence and cellular component counts are illustrative rather than universal bacterial features.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "rod-shaped-bacterium",
+  "name": "rod-shaped bacterium",
+  "original": "originals/inventory/rod-shaped-bacterium/generated.png",
+  "original_sha256": "e5e0b85f0b0e3d60b0990363df90336676d8aeabfb7954b31d2cb34af7b15d40"
+}

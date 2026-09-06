@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a tapeworm segment, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One isolated Taenia-like gravid proglottid in flat frontal view, longer than wide, soft rectangular cream body with rounded corners and slight taper. Thin warm ochre outline, pale ivory surface. Visible through body: violet central longitudinal uterine stem with numerous short branching lateral uterine branches filled with small golden egg dots, branches entirely contained inside body. Small lateral genital pore on right side. Complete single segment only, no head or attached other segments, no eyes or limbs. Smooth matte vector-like forms, broad subtle gradients and crisp fine outlines, no photographic grain, no wet gloss. Transparent PNG alpha.",
+  "refinement": "Redraw this exact gravid tapeworm proglottid as a clean polished vector-style biomedical illustration. Preserve complete cream rectangular body, violet central uterine stem with lateral branches filled with small gold egg dots, and single lateral pore. Remove all photographic grain, wrinkles, fibrous texture and wet gloss. Smooth matte cream body, smooth violet uterine branches, crisp outlines and broad subtle gradients. Golden eggs simplified smooth tiny circles. True transparent PNG alpha outside with generous padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-99ff503c-a63e-400e-bfe3-bc183f8145b9.png",
+  "archetype": "Taenia-like gravid proglottid with longitudinal branched uterus containing symbolic egg dots and lateral genital pore. Branch counts and egg sizes are illustrative and must not be used for species identification.",
+  "references": [
+    "https://www.cdc.gov/dpdx/taeniasis/index.html"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "tapeworm-segment",
+  "name": "tapeworm segment",
+  "original": "originals/inventory/tapeworm-segment/generated.png",
+  "original_sha256": "f6b1528d70b5752fcd838f8b859272f3d80896fa034a2b1dd9e6c9145117716e"
+}

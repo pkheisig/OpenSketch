@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a spiral bacterium, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Use attached approved bacterial surface only for teal palette and smooth vector-style finish. NEW object: ONE continuous slender teal helical bacterial cell, a three-dimensional loose corkscrew with approximately three turns and two closed gently tapered ends. Uniform tubular thickness, clear alternating front and back curves, no branching, no segmentation into beads, no flagella or hairs, no cutaway. Oblique diagonal orientation. Smooth broad gradients, crisp darker-teal outline, restrained highlights. Transparent PNG alpha.",
+  "style_reference": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-e522f5c7-a030-4852-85c6-58a531d1bb41.png",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-40b9e1de-28f2-4a12-bf6c-51f84fa06a96.png",
+  "archetype": "Generic spiral bacterial morphology in side projection: one continuous wavy tubular cell with closed ends. Schematic projected coil; no exact handedness, pitch, species or flagellar arrangement asserted.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "spiral-bacterium",
+  "name": "spiral bacterium",
+  "original": "originals/inventory/spiral-bacterium/generated.png",
+  "original_sha256": "6257961d05e6812c2ba973416e53167d729f81bfafd1f7c2d291e024243dffa8"
+}

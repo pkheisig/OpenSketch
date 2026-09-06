@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a spherical bacterium, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Use the attached approved bacterium ONLY as visual style and palette reference. This NEW object is one ROUND coccal cell, not a rod. Smooth teal spherical exterior, one small quadrant cutaway with pale cyan cytoplasm, loose violet nucleoid coil without a nuclear membrane and a few small gold ribosome symbols. Simple cream/cyan envelope rim, no particular Gram-type claim. No nucleus, no membrane organelles, no appendages. Match the reference smooth vector-style finish; transparent PNG alpha.",
+  "style_reference": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-b34ae68a-8f7a-4369-8b07-5762dd0eba5e.png",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-83ebcb91-d7b8-4ada-a172-9910186db4d8.png",
+  "archetype": "Generic spherical coccal cell cutaway with a loose non-membrane-bound nucleoid and symbolic ribosomes. Simplified cell-envelope rim, no Gram-type claim. Cytoplasmic blue dots are generic small solute/inclusion symbols, not membrane-bound organelles.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "spherical-bacterium",
+  "name": "spherical bacterium",
+  "original": "originals/inventory/spherical-bacterium/generated.png",
+  "original_sha256": "2256841de35d093ef18fb3f7b7ce49a2b3b0a67722fffc444c35c6f04653024b"
+}

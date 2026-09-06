@@ -1,0 +1,8 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a bacterial chain, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Use attached approved diplococcus only as style/palette reference. NEW object: a single gently curving UNBRANCHED chain of EXACTLY EIGHT touching round teal coccal cells, each separated by a clear narrow contact seam. Cells arranged in a shallow S curve, no ring, no clusters, no rods. Similar sizes with modest natural variation. Intact opaque exterior, no cutaways or appendages. Smooth vector-style gradients and crisp thin outlines, restrained highlights. Transparent PNG alpha.",
+  "style_reference": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-e522f5c7-a030-4852-85c6-58a531d1bb41.png",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration and exactly eight cells.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-60756a8a-5197-4227-8422-58755682024b.png",
+  "archetype": "Generic streptococcal arrangement of eight touching cocci in an unbranched curved chain. Eight is an illustrative display count, not a biological invariant. Intact exterior view."
+}

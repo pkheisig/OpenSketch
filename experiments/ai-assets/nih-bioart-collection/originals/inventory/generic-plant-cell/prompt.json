@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a generic plant cell, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Mature photosynthetic plant cell cutaway as rounded rectangular polyhedral block: thick pale green cell wall, thin teal plasma membrane just inside, thin peripheral pale cyan cytoplasm, very large central pale blue vacuole occupying most interior bounded by thin continuous tonoplast. Peripheral violet nucleus with nucleolus, small adjacent violet ER and gold Golgi; several green oval chloroplasts with visible stacked green thylakoid discs inside, two small coral mitochondria. Organelles sit in peripheral cytoplasm OUTSIDE central vacuole. Crisp controlled dark teal outlines, simple smooth matte colored forms, broad subtle gradients, no grain, no glossy wet texture. Three-quarter view. Transparent PNG alpha.",
+  "refinement": "Redraw this exact plant-cell cutaway as clean polished vector-style biomedical art. Zoom out so complete cell wall and every corner fit with generous empty padding. Preserve large central blue vacuole, peripheral violet nucleus and ER, gold Golgi, green chloroplasts and coral mitochondria OUTSIDE vacuole. Smooth matte light green wall, pale cyan cytoplasm, violet nucleus with simple sparse chromatin curves, broad subtle gradients, crisp outlines. Remove photographic grain, cloudy vacuole, wet shine and random tiny background dots. Transparent PNG alpha.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-c9f92c09-ec0e-456b-9705-4b3db2c83a56.png",
+  "archetype": "Mature photosynthetic plant cell cutaway with large central vacuole and peripheral nucleus, ER, Golgi, chloroplasts and mitochondria. Organelle counts and dimensions are illustrative; small peripheral spheres are generic vesicles.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "generic-plant-cell",
+  "name": "generic plant cell",
+  "original": "originals/inventory/generic-plant-cell/generated.png",
+  "original_sha256": "0c940fd99494ae0c16325749599238ec23282b8d72097dce4a8c785985dc0bbb"
+}

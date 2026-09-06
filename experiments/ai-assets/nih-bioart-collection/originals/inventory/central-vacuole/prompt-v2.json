@@ -1,0 +1,14 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a central vacuole, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One isolated mature plant central vacuole: large softly irregular rounded polygonal sac, three-quarter view, pale blue fluid-filled lumen enclosed by a SINGLE continuous thin teal tonoplast membrane. A small cutaway window reveals the plain pale blue lumen and thin membrane edge, no internal organelles, no cell wall, no nucleus, no bubbles, no decorative dots. Smooth matte blue forms, crisp teal outline, broad subtle gradients, gentle depth without glossy wet texture. Transparent PNG alpha. Composition wider than tall, softly flattened sac with asymmetric gentle lobes.",
+  "refinement": "Redraw this exact central vacuole as clean vector-style biomedical art. Preserve irregular rounded sac and single thin teal tonoplast with cutaway edge. Replace all cloudy mottled texture with smooth flat pale blue lumen and broad gentle gradient only, slightly darker blue outer membrane surface at left. Crisp smooth teal outlines, subtle depth, no wet shine, no internal contents. Complete object generous padding, transparent PNG alpha.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-c48b435d-f49f-441c-bf37-4324812a31ab.png",
+  "archetype": "Isolated plant central vacuole with pale blue lumen, single tonoplast and cutaway surface edge. Shape is illustrative; cutaway is a drawing device, not an additional internal membrane.",
+  "svg_source": "originals/inventory/central-vacuole/native-gradient.svg",
+  "svg_method": "Native editable paths and gradients redrawn from generated PNG to eliminate visible tracing bands.",
+  "id": "central-vacuole",
+  "name": "central vacuole",
+  "original": "originals/inventory/central-vacuole/generated-v2.png",
+  "original_sha256": "501e6b3e58bfeceedddddd02da79e51fdae7d27339e60b364b3ffc44ae638ba4"
+}

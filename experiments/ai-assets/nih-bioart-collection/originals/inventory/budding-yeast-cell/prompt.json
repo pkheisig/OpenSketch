@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a budding yeast cell, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Saccharomyces-like single oval mother cell with one smaller round bud emerging at upper right through a narrow bud neck. Intact smooth opaque pale gold cell walls, one thin outlined bud scar on mother lower left. Subtle three-quarter volume, golden ochre outlines, soft broad highlights, clean matte smooth gradient fills. No cutaway, no nucleus or internal organelles shown, no extra cells or bubbles, no photographic grain. True transparent PNG background with generous padding.",
+  "refinement": "Redraw this exact budding yeast silhouette and bud scar as a clean polished vector-style biomedical illustration. Preserve mother, smaller connected bud and one oval scar. Replace ALL photographic grain and wet skin texture with smooth matte pale golden fills, broad subtle gradients and crisp ochre outlines. Gentle highlights only. Transparent PNG alpha outside, full object and generous padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-d4a574e6-e530-4705-9efc-0b41e08c324d.png",
+  "archetype": "Intact budding yeast mother with one smaller attached bud and one previous bud scar; representative external morphology, no internal cell-cycle stage asserted.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "budding-yeast-cell",
+  "name": "budding yeast cell",
+  "original": "originals/inventory/budding-yeast-cell/generated.png",
+  "original_sha256": "a252314e107a5e523db6bd5ec10c178807e73fed9439170f406fbeaff513c73e"
+}
