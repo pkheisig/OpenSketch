@@ -115,6 +115,10 @@
   );
 }
 
+:is(.opensketch-app, [data-suite-ui="opensketch"]) .menu {
+  border-radius: var(--opensketch-radius-control);
+}
+
 :is(.opensketch-app, [data-suite-ui="opensketch"]) :is(.dialog, .dialog-backdrop) {
   --opensketch-dialog-radius: var(--opensketch-radius-dialog);
 }
