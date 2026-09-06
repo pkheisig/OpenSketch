@@ -31,6 +31,34 @@ describe("asynchronous cut transactions", () => {
     ).toBe(true);
   });
 
+  it("allows unrelated z-order changes while preserving captured target order", () => {
+    const target = new Rect({ width: 40, height: 20 });
+    const sibling = new Rect({ width: 30, height: 15 });
+    const unrelated = new Rect({ width: 10, height: 10 });
+    target.objectId = "target";
+    sibling.objectId = "sibling";
+    unrelated.objectId = "unrelated";
+    const objects = [target, sibling];
+    const canvas = makeCanvas(objects);
+    const transaction = captureCutTransaction({
+      owner: 1,
+      canvas,
+      documentId: "document-1",
+      generation: 1,
+      targets: [target, sibling]
+    });
+
+    objects.unshift(unrelated);
+
+    expect(
+      isCutTransactionValid(transaction!, { canvas, documentId: "document-1", generation: 1 })
+    ).toBe(true);
+    objects.reverse();
+    expect(
+      isCutTransactionValid(transaction!, { canvas, documentId: "document-1", generation: 1 })
+    ).toBe(false);
+  });
+
   it("rejects an in-place target edit before deletion", () => {
     const target = new Rect({ width: 40, height: 20 });
     target.objectId = "target";
@@ -50,7 +78,7 @@ describe("asynchronous cut transactions", () => {
     ).toBe(false);
   });
 
-  it("rejects replacement, reparenting, reordering, and document changes", () => {
+  it("rejects replacement, reparenting, and document changes", () => {
     const target = new Rect({ width: 40, height: 20 });
     const sibling = new Rect({ width: 30, height: 15 });
     target.objectId = "target";
@@ -71,12 +99,6 @@ describe("asynchronous cut transactions", () => {
     ).toBe(false);
 
     objects[0] = target;
-    objects.reverse();
-    expect(
-      isCutTransactionValid(transaction!, { canvas, documentId: "document-1", generation: 1 })
-    ).toBe(false);
-
-    objects.reverse();
     const parent = new Group([target]);
     objects.splice(0, 1, parent);
     expect(

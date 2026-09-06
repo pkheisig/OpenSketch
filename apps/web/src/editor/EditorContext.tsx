@@ -3792,6 +3792,7 @@ export function EditorProvider({
       } catch (error) {
         systemObject = Promise.reject(error);
       }
+      void systemObject.catch(() => undefined);
       const operation: ClipboardOperation = {
         transaction,
         marker: `${SELECTION_CLIPBOARD_MARKER_PREFIX}${services.clock.randomUUID()}`,
