@@ -195,6 +195,17 @@ describe("strict interchange probing", () => {
       dimensions: { width: 4, height: 3 }
     });
 
+    const topDownBmp = new Uint8Array(54);
+    topDownBmp.set([0x42, 0x4d], 0);
+    const topDownView = new DataView(topDownBmp.buffer);
+    topDownView.setUint32(14, 40, true);
+    topDownView.setInt32(18, -4, true);
+    topDownView.setInt32(22, -3, true);
+    expect(probeInterchangeBytes(topDownBmp, { name: "top-down.bmp" })).toMatchObject({
+      format: "bmp",
+      dimensions: { width: 4, height: 3 }
+    });
+
     const tiff = new Uint8Array(26);
     tiff.set([0x49, 0x49, 0x2a, 0x00], 0);
     new DataView(tiff.buffer).setUint32(4, 8, true);

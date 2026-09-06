@@ -277,6 +277,12 @@ function readUint32LE(bytes: Uint8Array, offset: number): number | undefined {
   );
 }
 
+function readInt32LE(bytes: Uint8Array, offset: number): number | undefined {
+  const value = readUint32LE(bytes, offset);
+  if (value === undefined) return undefined;
+  return value >= 0x80000000 ? value - 0x100000000 : value;
+}
+
 function dimensions(
   width: number | undefined,
   height: number | undefined
@@ -367,10 +373,10 @@ function probeBmp(bytes: Uint8Array): InterchangeDimensions | undefined {
   const dibSize = readUint32LE(bytes, 14);
   if (dibSize === undefined || dibSize < 12) return undefined;
   if (dibSize === 12) return dimensions(readUint16LE(bytes, 18), readUint16LE(bytes, 20));
-  const width = readUint32LE(bytes, 18);
-  const rawHeight = readUint32LE(bytes, 22);
-  if (width === undefined || rawHeight === undefined) return undefined;
-  return dimensions(width, rawHeight & 0x7fffffff);
+  const rawWidth = readInt32LE(bytes, 18);
+  const rawHeight = readInt32LE(bytes, 22);
+  if (rawWidth === undefined || rawHeight === undefined) return undefined;
+  return dimensions(Math.abs(rawWidth), Math.abs(rawHeight));
 }
 
 function probeGif(
