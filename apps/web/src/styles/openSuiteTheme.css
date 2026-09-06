@@ -72,7 +72,7 @@
 :is(.opensketch-app, [data-suite-ui="opensketch"])[data-opensketch-density="compact"] {
   --opensketch-control-normal: var(
     --suite-control-compact,
-    var(--suite-control-height-normal, 30px)
+    var(--suite-control-height-compact, 30px)
   );
   --opensketch-control-compact: var(
     --suite-control-compact,
