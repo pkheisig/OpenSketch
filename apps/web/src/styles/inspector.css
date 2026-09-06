@@ -322,9 +322,21 @@
 
 .asset-search-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   gap: 6px;
   align-items: stretch;
+}
+
+.asset-style-select {
+  min-width: 94px;
+}
+
+.asset-style-coverage {
+  display: block;
+  margin: 5px 2px 0;
+  color: var(--shell-muted);
+  font-size: 9px;
+  line-height: 1.25;
 }
 
 .offline-asset-card {
@@ -1614,6 +1626,15 @@
     background var(--motion-ui),
     box-shadow var(--motion-ui);
   border-color: var(--shell-border-strong);
+}
+
+.opensketch-app .asset-style-select .ui-select-trigger {
+  min-height: 31px;
+  padding-inline: 8px;
+  border-color: var(--shell-border);
+  color: var(--shell-text);
+  background: var(--shell-input);
+  font-size: 10px;
 }
 
 .opensketch-app .asset-filter-toggle:hover {

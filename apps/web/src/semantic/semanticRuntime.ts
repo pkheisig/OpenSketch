@@ -282,6 +282,7 @@ export function createSemanticRuntime(adapter: SemanticEditorAdapter): SemanticR
       const result = await adapter.searchAssets({
         query: typeof input.query === "string" ? input.query : "",
         category: typeof input.category === "string" ? input.category : undefined,
+        style: input.style === "detailed" || input.style === "simplified" ? input.style : undefined,
         limit: typeof input.limit === "number" ? input.limit : 25
       });
       throwIfSemanticExecutionAborted(options.signal);
@@ -290,7 +291,8 @@ export function createSemanticRuntime(adapter: SemanticEditorAdapter): SemanticR
     if (name === "inspect_asset") {
       const result = await adapter.inspectAsset({
         familyId: String(input.familyId),
-        variantId: typeof input.variantId === "string" ? input.variantId : undefined
+        variantId: typeof input.variantId === "string" ? input.variantId : undefined,
+        style: input.style === "detailed" || input.style === "simplified" ? input.style : undefined
       });
       throwIfSemanticExecutionAborted(options.signal);
       return success(result as T);

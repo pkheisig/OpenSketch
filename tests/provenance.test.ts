@@ -73,6 +73,32 @@ describe("export provenance", () => {
     expect(manifest.assets).toEqual([]);
   });
 
+  it("retains the selected style in the exact asset provenance record", () => {
+    const selected = asset("editable-cell-simplified", "Cell", {
+      sourcePage: "https://github.com/pkheisig/OpenSketch",
+      author: "OpenSketch",
+      sourceName: "OpenSketch structures",
+      license: "AGPL-3.0-only",
+      style: "detailed",
+      localSha256: "a".repeat(64),
+      credit: "OpenSketch"
+    });
+    selected.assetStyle = "simplified";
+
+    const manifest = collectProvenanceManifest([selected]);
+
+    expect(manifest.assets).toEqual([
+      expect.objectContaining({
+        assetId: "editable-cell-simplified",
+        style: "simplified",
+        localSha256: "a".repeat(64)
+      })
+    ]);
+    const credits = formatProvenanceCredits(manifest, "Figure", "", "OpenSketch");
+    expect(credits).toContain("Style: simplified");
+    expect(credits).toContain(`SHA-256: ${"a".repeat(64)}`);
+  });
+
   it("ignores objects without provenance and produces a readable empty fallback", () => {
     const manifest = collectProvenanceManifest([new Rect({ width: 12, height: 12 })]);
     const credits = formatProvenanceCredits(manifest, "Untitled", "", "OpenSketch");

@@ -1,3 +1,5 @@
+import type { AssetStyle } from "@workspace/editor-core";
+
 export const SEMANTIC_RUNTIME_VERSION = "opensketch.semantic.v1" as const;
 
 export interface SemanticExecutionOptions {
@@ -102,6 +104,7 @@ export interface SemanticObjectDescriptor {
   asset?: {
     familyId?: string;
     variantId?: string;
+    style?: AssetStyle;
     provenance?: Record<string, string>;
   };
   connector?: {
@@ -171,8 +174,17 @@ export interface SemanticEditorAdapter {
   getSelectionObjectIds(): string[];
   inspectScene(options: { maxObjects: number; maxDepth: number }): SemanticSceneSnapshot;
   inspectObject(objectId: string): SemanticObjectDescriptor | undefined;
-  searchAssets(options: { query: string; category?: string; limit: number }): Promise<unknown>;
-  inspectAsset(options: { familyId: string; variantId?: string }): Promise<unknown>;
+  searchAssets(options: {
+    query: string;
+    category?: string;
+    style?: AssetStyle;
+    limit: number;
+  }): Promise<unknown>;
+  inspectAsset(options: {
+    familyId: string;
+    variantId?: string;
+    style?: AssetStyle;
+  }): Promise<unknown>;
   inspectProvenance(): unknown;
   execute(
     command: string,
