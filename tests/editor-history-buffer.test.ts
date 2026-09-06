@@ -1,6 +1,21 @@
 import { describe, expect, it } from "vitest";
 
+import {
+  createDocumentSnapshot,
+  estimateDocumentSnapshotBytes
+} from "../apps/web/src/editor/documentSnapshot";
 import { createHistoryBuffer } from "../apps/web/src/editor/historyBuffer";
+
+const settings = {
+  width: 800,
+  height: 600,
+  unit: "px" as const,
+  dpi: 96,
+  background: "#ffffff",
+  transparent: false,
+  grid: false,
+  doubleClickCreatesText: true
+};
 
 describe("history buffer", () => {
   it("supports undo, redo, and branch truncation", () => {
@@ -146,5 +161,37 @@ describe("history buffer", () => {
 
     history.dispose();
     expect(discarded).toEqual(["b", "a", "c", "d"]);
+  });
+
+  it("restores persistent layout mutations across undo and redo checkpoints", () => {
+    const initial = createDocumentSnapshot("scene", settings, {
+      version: 1,
+      frames: []
+    });
+    const updated = createDocumentSnapshot("scene", settings, {
+      version: 1,
+      frames: [
+        {
+          id: "frame",
+          bounds: { left: 0, top: 0, width: 100, height: 100 },
+          flow: "free",
+          padding: { top: 0, right: 0, bottom: 0, left: 0 },
+          gap: { horizontal: 0, vertical: 0 },
+          overflow: "visible",
+          children: [{ objectId: "object", sizing: "content-sized" }]
+        }
+      ]
+    });
+    const history = createHistoryBuffer({
+      maxBytes: 100_000,
+      maxEntries: 10,
+      measure: estimateDocumentSnapshotBytes
+    });
+
+    history.push(initial);
+    history.push(updated);
+
+    expect(history.move(-1)?.layout?.frames).toEqual([]);
+    expect(history.move(1)?.layout?.frames[0]?.id).toBe("frame");
   });
 });

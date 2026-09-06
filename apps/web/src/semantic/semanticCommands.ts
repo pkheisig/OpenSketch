@@ -249,6 +249,21 @@ const layoutTracks = (): JsonSchema => ({
   required: ["rows", "columns"],
   additionalProperties: false
 });
+const layoutDiagnostics = (): JsonSchema => ({
+  type: "array",
+  maxItems: 500,
+  items: {
+    type: "object",
+    properties: {
+      code: { type: "string", enum: ["FRAME_OVERFLOW", "INVALID_CELL"] },
+      frameId: objectId(),
+      objectId: objectId(),
+      message: { type: "string", minLength: 1, maxLength: 500 }
+    },
+    required: ["code", "frameId", "message"],
+    additionalProperties: false
+  }
+});
 const layoutFrameProperties: Record<string, JsonSchema> = {
   frameId: objectId(),
   bounds: layoutBounds(),
@@ -1709,7 +1724,12 @@ definitions.push(
       required: ["frameId", "bounds", "flow", "children"],
       additionalProperties: false
     },
-    outputSchema: output({ frameId: objectId(), objectIds: objectIds(0) })
+    outputSchema: output({
+      frameId: objectId(),
+      objectIds: objectIds(0),
+      diagnostics: layoutDiagnostics(),
+      warnings: { type: "array", maxItems: 500, items: { type: "string", maxLength: 500 } }
+    })
   },
   {
     name: "configure_layout_frame",

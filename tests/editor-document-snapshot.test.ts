@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  cloneDocumentSnapshot,
   cloneCanvasSettings,
   createDocumentSnapshot,
   documentSnapshotsEqual,
@@ -52,10 +53,12 @@ describe("editor document snapshots", () => {
       ]
     };
     const snapshot = createDocumentSnapshot("scene", canvasSettings(), layout);
-    const clone = structuredClone(snapshot);
+    const clone = cloneDocumentSnapshot(snapshot);
 
     expect(clone.layout).toEqual(snapshot.layout);
     expect(clone.layout).not.toBe(snapshot.layout);
+    clone.layout!.frames[0]!.children[0]!.objectId = "changed";
+    expect(snapshot.layout!.frames[0]!.children[0]!.objectId).toBe("object");
   });
 
   it("distinguishes scene, settings, and true no-op snapshots", () => {

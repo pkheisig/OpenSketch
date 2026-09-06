@@ -214,7 +214,7 @@ import {
 } from "@/editor/documentSnapshot";
 import { DEFAULT_TEXT_LINE_HEIGHT } from "@/editor/text";
 import { createSemanticEditorAdapter } from "@/semantic/semanticEditorAdapter";
-import { applyLayoutFrameToCanvas } from "@/editor/layoutFrames";
+import { applyLayoutFrameToCanvas, type LayoutFrameApplicationResult } from "@/editor/layoutFrames";
 import { inspectSemanticGeometry, perimeterPointForAnchor } from "@/semantic/composition";
 import { installSemanticIntrospection } from "@/semantic/semanticIntrospection";
 import { createSemanticRuntime, type SemanticRuntime } from "@/semantic/semanticRuntime";
@@ -599,7 +599,7 @@ export interface EditorContextValue {
   removeLayoutFrame: (frameId: string) => void;
   insertLayoutChild: (frameId: string, child: LayoutCellSpec, index?: number) => void;
   removeLayoutChild: (frameId: string, objectId: string) => void;
-  reflowLayoutFrame: (frameId: string) => string[];
+  reflowLayoutFrame: (frameId: string) => LayoutFrameApplicationResult;
   setAlignmentEnabled: (enabled: boolean) => void;
   setAutoEditEnabled: (enabled: boolean) => void;
   setProjectName: (name: string) => void;
@@ -2084,22 +2084,22 @@ export function EditorProvider({
   );
 
   const applyLayoutFrame = useCallback(
-    (frameId: string): string[] => {
+    (frameId: string): LayoutFrameApplicationResult => {
       if (!canvas) throw new Error("The OpenSketch canvas is not ready.");
       const frame = latestLayoutState.current?.frames.find((candidate) => candidate.id === frameId);
       if (!frame) throw new Error(`Layout frame "${frameId}" does not exist.`);
       const result = applyLayoutFrameToCanvas(canvas, frame);
       refreshConnectors();
-      return result.changedObjectIds;
+      return result;
     },
     [canvas, refreshConnectors]
   );
 
   const reflowLayoutFrame = useCallback(
-    (frameId: string): string[] => {
-      const changedObjectIds = applyLayoutFrame(frameId);
+    (frameId: string): LayoutFrameApplicationResult => {
+      const result = applyLayoutFrame(frameId);
       commit("Reflow layout frame");
-      return changedObjectIds;
+      return result;
     },
     [applyLayoutFrame, commit]
   );

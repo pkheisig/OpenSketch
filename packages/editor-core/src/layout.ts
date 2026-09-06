@@ -232,6 +232,44 @@ function normalizedTrack(value: unknown, path: string): LayoutTrack {
   };
 }
 
+function implicitGridTracks(childCount: number): {
+  rows: LayoutTrack[];
+  columns: LayoutTrack[];
+} {
+  const columns = Math.max(1, Math.ceil(Math.sqrt(Math.max(1, childCount))));
+  const rows = Math.max(1, Math.ceil(childCount / columns));
+  return {
+    rows: Array.from({ length: rows }, () => ({ type: "flex", value: 1 as const })),
+    columns: Array.from({ length: columns }, () => ({ type: "flex", value: 1 as const }))
+  };
+}
+
+function validateTrackBudget(
+  tracks: { rows: LayoutTrack[]; columns: LayoutTrack[] },
+  innerWidth: number,
+  innerHeight: number,
+  gap: LayoutGap,
+  path: string
+): void {
+  for (const [axis, values, available, gapSize] of [
+    ["rows", tracks.rows, innerHeight, gap.vertical],
+    ["columns", tracks.columns, innerWidth, gap.horizontal]
+  ] as const) {
+    const fixed = values
+      .filter((track) => track.type === "fixed")
+      .reduce((sum, track) => sum + track.value, 0);
+    const flex = values
+      .filter((track) => track.type === "flex")
+      .reduce((sum, track) => sum + track.value, 0);
+    const remaining = available - gapSize * Math.max(0, values.length - 1) - fixed;
+    if (flex > 0 && remaining <= 0.000001) {
+      throw new LayoutValidationError(
+        `${path}.${axis} leaves no positive space for flexible tracks.`
+      );
+    }
+  }
+}
+
 function normalizedChild(value: unknown, path: string): LayoutCellSpec {
   if (!isRecord(value)) throw new LayoutValidationError(`${path} must be an object.`);
   const sizing = value.sizing ?? "content-sized";
@@ -332,13 +370,16 @@ function normalizedFrame(value: unknown, path: string): LayoutFrame {
       )
     };
   }
-  if (normalized.flow === "grid" && !normalized.tracks) {
-    const columns = Math.max(1, Math.ceil(Math.sqrt(Math.max(1, children.length))));
-    const rows = Math.max(1, Math.ceil(children.length / columns));
-    normalized.tracks = {
-      rows: Array.from({ length: rows }, () => ({ type: "flex", value: 1 })),
-      columns: Array.from({ length: columns }, () => ({ type: "flex", value: 1 }))
-    };
+  if (normalized.flow === "grid" && normalized.tracks) {
+    const innerWidth = Math.max(
+      0,
+      normalized.bounds.width - normalized.padding.left - normalized.padding.right
+    );
+    const innerHeight = Math.max(
+      0,
+      normalized.bounds.height - normalized.padding.top - normalized.padding.bottom
+    );
+    validateTrackBudget(normalized.tracks, innerWidth, innerHeight, normalized.gap, path);
   }
   return normalized;
 }
@@ -400,24 +441,19 @@ export function validateLayoutDocument(
       }
     }
     if (context.parentByObjectId) {
-      for (let left = 0; left < frame.children.length; left += 1) {
-        for (let right = left + 1; right < frame.children.length; right += 1) {
-          if (
-            isAncestor(
-              frame.children[left]!.objectId,
-              frame.children[right]!.objectId,
-              context.parentByObjectId
-            ) ||
-            isAncestor(
-              frame.children[right]!.objectId,
-              frame.children[left]!.objectId,
-              context.parentByObjectId
-            )
-          ) {
+      const frameChildIds = new Set(frame.children.map((child) => child.objectId));
+      for (const child of frame.children) {
+        const visited = new Set<string>();
+        let parent = context.parentByObjectId.get(child.objectId);
+        while (parent) {
+          if (frameChildIds.has(parent)) {
             throw new LayoutValidationError(
               `layout frame "${frame.id}" cannot contain ancestor and descendant objects together.`
             );
           }
+          if (visited.has(parent)) break;
+          visited.add(parent);
+          parent = context.parentByObjectId.get(parent);
         }
       }
     }
@@ -439,19 +475,6 @@ export function validateLayoutDocument(
     throw new LayoutValidationError("layout exceeds the serialized resource limit.");
   }
   return document;
-}
-
-function isAncestor(
-  ancestorId: string,
-  descendantId: string,
-  parentByObjectId: ReadonlyMap<string, string | undefined>
-): boolean {
-  let parent = parentByObjectId.get(descendantId);
-  while (parent) {
-    if (parent === ancestorId) return true;
-    parent = parentByObjectId.get(parent);
-  }
-  return false;
 }
 
 export function createLayoutFrame(
@@ -787,7 +810,7 @@ function resolveGrid(
   children: readonly LayoutChildGeometry[]
 ): LayoutResolution {
   const inner = innerBounds(frame);
-  const tracks = frame.tracks!;
+  const tracks = frame.tracks ?? implicitGridTracks(frame.children.length);
   const rowTrack = trackSizes(tracks.rows, inner.height, frame.gap.vertical);
   const columnTrack = trackSizes(tracks.columns, inner.width, frame.gap.horizontal);
   const rowStarts = starts(rowTrack.sizes, inner.top, frame.gap.vertical);

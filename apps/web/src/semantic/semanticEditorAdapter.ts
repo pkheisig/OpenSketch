@@ -48,6 +48,7 @@ import {
 } from "./semanticTypes";
 import { createShapeObject } from "@/editor/creationObjects";
 import { type CreationDefaults, type ShapeKind } from "@/editor/creation";
+import { type LayoutFrameApplicationResult } from "@/editor/layoutFrames";
 import {
   connectorsForRemovedIds,
   createCircularArcObject,
@@ -119,7 +120,7 @@ export interface SemanticEditorAdapterDependencies {
   getLayoutState: () => LayoutDocument | undefined;
   setLayoutState: (layout: LayoutDocument | undefined) => void;
   removeLayoutReferences: (removedIds: ReadonlySet<string>) => void;
-  applyLayoutFrame: (frameId: string) => string[];
+  applyLayoutFrame: (frameId: string) => LayoutFrameApplicationResult;
   setCanvasSettings: (settings: Partial<CanvasSettings>) => void;
   setProjectName: (name: string) => void;
   setProjectDescription: (description: string) => void;
@@ -2685,9 +2686,17 @@ export function createSemanticEditorAdapter(
           commitSemantic("Semantic remove layout frame");
           return { data: { frameId }, changedObjectIds: [] };
         }
-        const changedObjectIds = dependencies.applyLayoutFrame(frameId);
+        const result = dependencies.applyLayoutFrame(frameId);
         commitSemantic("Semantic reflow layout frame");
-        return { data: { frameId, objectIds: changedObjectIds }, changedObjectIds };
+        return {
+          data: {
+            frameId,
+            objectIds: result.changedObjectIds,
+            diagnostics: result.resolution.diagnostics
+          },
+          changedObjectIds: result.changedObjectIds,
+          warnings: result.resolution.diagnostics.map((diagnostic) => diagnostic.message)
+        };
       } catch (error) {
         throw new SemanticAdapterError(
           "INVALID_LAYOUT",

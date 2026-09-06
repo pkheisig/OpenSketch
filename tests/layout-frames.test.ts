@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   createLayoutDocument,
   createLayoutFrame,
+  insertLayoutChild,
   layoutFrame,
   validateLayoutDocument,
   type LayoutChildGeometry
@@ -144,6 +145,36 @@ describe("persistent layout frames", () => {
     ]);
   });
 
+  it("re-derives implicit grid tracks after inserting a child", () => {
+    const initial = createLayoutFrame(createLayoutDocument(), {
+      frameId: "implicit-insert",
+      bounds: { left: 0, top: 0, width: 300, height: 200 },
+      flow: "grid",
+      children: [
+        { objectId: "a", sizing: "fill" },
+        { objectId: "b", sizing: "fill" },
+        { objectId: "c", sizing: "fill" },
+        { objectId: "d", sizing: "fill" }
+      ]
+    });
+    const next = insertLayoutChild(initial, "implicit-insert", {
+      objectId: "e",
+      sizing: "fill"
+    });
+    const frame = next.frames[0]!;
+
+    expect(frame.tracks).toBeUndefined();
+    expect(
+      layoutFrame(frame, [
+        child("a", 0, 0, 10, 10),
+        child("b", 0, 0, 10, 10),
+        child("c", 0, 0, 10, 10),
+        child("d", 0, 0, 10, 10),
+        child("e", 0, 0, 10, 10)
+      ]).diagnostics
+    ).toEqual([]);
+  });
+
   it("validates child references and ancestor/descendant membership before persistence", () => {
     const document = createLayoutDocument();
     const next = createLayoutFrame(document, {
@@ -209,5 +240,45 @@ describe("persistent layout frames", () => {
     expect(() =>
       layoutFrame(collision.frames[0]!, [child("one", 0, 0, 10, 10), child("two", 0, 0, 10, 10)])
     ).toThrow(/invalid cells|overlap/i);
+  });
+
+  it("rejects explicit flexible tracks with no positive remaining space", () => {
+    expect(() =>
+      createLayoutFrame(createLayoutDocument(), {
+        frameId: "degenerate-tracks",
+        bounds: { left: 0, top: 0, width: 100, height: 100 },
+        flow: "grid",
+        tracks: {
+          rows: [
+            { type: "fixed", value: 100 },
+            { type: "flex", value: 1 }
+          ],
+          columns: [{ type: "flex", value: 1 }]
+        },
+        children: []
+      })
+    ).toThrow(/positive space|flexible tracks/i);
+  });
+
+  it("reflows a bounded poster-sized grid within the resource budget", () => {
+    const objectCount = 500;
+    const document = createLayoutFrame(createLayoutDocument(), {
+      frameId: "stress",
+      bounds: { left: 0, top: 0, width: 2500, height: 2200 },
+      flow: "grid",
+      children: Array.from({ length: objectCount }, (_, index) => ({
+        objectId: `object-${index}`,
+        sizing: "fill" as const
+      }))
+    });
+    const geometries = Array.from({ length: objectCount }, (_, index) =>
+      child(`object-${index}`, 0, 0, 10, 10)
+    );
+    const started = performance.now();
+    const result = layoutFrame(document.frames[0]!, geometries);
+
+    expect(result.children).toHaveLength(objectCount);
+    expect(result.diagnostics).toEqual([]);
+    expect(performance.now() - started).toBeLessThan(1000);
   });
 });

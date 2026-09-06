@@ -1,6 +1,7 @@
 import { Canvas, FabricObject, Group, Point, util } from "fabric";
 import {
   layoutFrame,
+  LayoutResolutionError,
   type LayoutFrame,
   type LayoutResolution,
   type LayoutBounds,
@@ -9,6 +10,11 @@ import {
 import { sceneObjectIndex } from "./sceneTree";
 
 const MIN_GEOMETRY = 0.000001;
+
+export interface LayoutFrameApplicationResult {
+  resolution: LayoutResolution;
+  changedObjectIds: string[];
+}
 
 function hasMeaningfulRotation(object: FabricObject): boolean {
   const transform = object.calcTransformMatrix();
@@ -56,7 +62,12 @@ function deltaInParentPlane(object: FabricObject, dx: number, dy: number): Point
   return util.sendVectorToPlane(new Point(dx, dy), undefined, parent.calcTransformMatrix());
 }
 
-function applyBounds(object: FabricObject, target: LayoutBounds): void {
+function applyBounds(object: FabricObject, target: LayoutBounds, objectId: string): void {
+  if (target.width <= MIN_GEOMETRY || target.height <= MIN_GEOMETRY) {
+    throw new LayoutResolutionError(
+      `Layout frame child "${objectId}" resolved to a zero-sized bound.`
+    );
+  }
   const before = boundsOf(object);
   const scaleX = before.width > MIN_GEOMETRY ? target.width / before.width : 1;
   const scaleY = before.height > MIN_GEOMETRY ? target.height / before.height : 1;
@@ -97,14 +108,23 @@ export function layoutFrameOnCanvas(canvas: Canvas, frame: LayoutFrame): LayoutR
 export function applyLayoutFrameToCanvas(
   canvas: Canvas,
   frame: LayoutFrame
-): { resolution: LayoutResolution; changedObjectIds: string[] } {
+): LayoutFrameApplicationResult {
   const resolution = layoutFrameOnCanvas(canvas, frame);
+  const invalidCellDiagnostics = resolution.diagnostics.filter(
+    (diagnostic) => diagnostic.code === "INVALID_CELL"
+  );
+  if (invalidCellDiagnostics.length > 0) {
+    throw new LayoutResolutionError(
+      `Layout frame "${frame.id}" contains invalid cell placement.`,
+      invalidCellDiagnostics
+    );
+  }
   const index = sceneObjectIndex(canvas);
   resolution.children.forEach((child) => {
     const object = index.get(child.objectId);
     if (!object)
       throw new Error(`Layout frame "${frame.id}" references missing object "${child.objectId}".`);
-    applyBounds(object, child.bounds);
+    applyBounds(object, child.bounds, child.objectId);
   });
   canvas.requestRenderAll();
   return {

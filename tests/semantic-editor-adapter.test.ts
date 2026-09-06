@@ -54,6 +54,7 @@ function makeAdapter(
   const setCanvasSettings = vi.fn();
   const setProjectName = vi.fn();
   const setProjectDescription = vi.fn();
+  const refreshConnectors = vi.fn();
   let layoutState: LayoutDocument | undefined = createLayoutDocument();
   const setLayoutState = vi.fn((next: LayoutDocument | undefined) => {
     layoutState = next;
@@ -75,8 +76,9 @@ function makeAdapter(
   });
   const applyFrame = vi.fn((frameId: string) => {
     const frame = layoutState!.frames.find((candidate) => candidate.id === frameId)!;
-    const changed = applyLayoutFrameToCanvas(canvas, frame).changedObjectIds;
-    return changed;
+    const result = applyLayoutFrameToCanvas(canvas, frame);
+    refreshConnectors();
+    return result;
   });
   const adapter = createSemanticEditorAdapter({
     getAssetManifest: async () => assetManifest,
@@ -105,7 +107,7 @@ function makeAdapter(
     creationDefaults: () => DEFAULT_CREATION_DEFAULTS,
     prepareElementStyle: vi.fn(),
     configureCanvasAssets: vi.fn(),
-    refreshConnectors: vi.fn(),
+    refreshConnectors,
     applyColorPreset: vi.fn(async () => undefined),
     undo: vi.fn(async () => false),
     redo: vi.fn(async () => false),
@@ -125,7 +127,8 @@ function makeAdapter(
     layoutState: () => layoutState,
     setLayoutState,
     removeLayoutReferences,
-    applyFrame
+    applyFrame,
+    refreshConnectors
   });
 }
 
@@ -157,9 +160,13 @@ describe("semantic editor adapter", () => {
       frameId: "frame",
       padding: 10
     });
-    await adapter.execute("reflow_layout_frame", { frameId: "frame" });
+    const reflow = await adapter.execute("reflow_layout_frame", { frameId: "frame" });
     expect(first.getBoundingRect().left).toBeCloseTo(10);
     expect(second.getBoundingRect().left).toBeGreaterThan(first.getBoundingRect().left);
+    expect(reflow.data).toMatchObject({ frameId: "frame", objectIds: ["first", "second"] });
+    expect(reflow.data).toHaveProperty("diagnostics", []);
+    expect(reflow.warnings).toEqual([]);
+    expect(adapter.refreshConnectors).toHaveBeenCalledOnce();
 
     await adapter.execute("remove_layout_child", { frameId: "frame", objectId: "second" });
     await adapter.execute("insert_layout_child", {
@@ -186,6 +193,102 @@ describe("semantic editor adapter", () => {
 
     expect(adapter.layoutState()?.frames[0]?.children).toEqual([]);
     expect(adapter.removeLayoutReferences).toHaveBeenCalledWith(new Set(["object"]));
+  });
+
+  it("rejects invalid grid cells before mutating scene geometry", async () => {
+    const object = new Rect({ width: 20, height: 20, left: 12, top: 18 });
+    object.objectId = "object";
+    const before = object.getBoundingRect();
+    const adapter = makeAdapter(makeCanvas([object]));
+
+    await adapter.execute("create_layout_frame", {
+      frameId: "frame",
+      bounds: { left: 0, top: 0, width: 100, height: 100 },
+      flow: "grid",
+      tracks: {
+        rows: [{ type: "flex", value: 1 }],
+        columns: [{ type: "flex", value: 1 }]
+      },
+      children: [{ objectId: "object", row: 1, sizing: "fill" }]
+    });
+
+    await expect(
+      adapter.execute("reflow_layout_frame", { frameId: "frame" })
+    ).rejects.toMatchObject({ code: "INVALID_LAYOUT" });
+    expect(object.getBoundingRect()).toEqual(before);
+    expect(adapter.refreshConnectors).not.toHaveBeenCalled();
+  });
+
+  it("returns visible overflow diagnostics alongside materialized export geometry", async () => {
+    const object = new Rect({ width: 20, height: 20, left: 12, top: 18 });
+    object.objectId = "object";
+    const adapter = makeAdapter(makeCanvas([object]));
+
+    await adapter.execute("create_layout_frame", {
+      frameId: "frame",
+      bounds: { left: 0, top: 0, width: 100, height: 100 },
+      flow: "horizontal",
+      children: [{ objectId: "object", sizing: "fixed", width: 200, height: 20 }]
+    });
+
+    const result = await adapter.execute("reflow_layout_frame", { frameId: "frame" });
+    expect(result.data).toMatchObject({
+      frameId: "frame",
+      objectIds: ["object"],
+      diagnostics: expect.arrayContaining([
+        expect.objectContaining({ code: "FRAME_OVERFLOW", objectId: "object" })
+      ])
+    });
+    expect(result.warnings).toEqual(
+      expect.arrayContaining([
+        expect.stringContaining('Object "object" exceeds the content bounds')
+      ])
+    );
+    expect(object.getBoundingRect().width).toBeCloseTo(200);
+    expect(object.toSVG()).not.toMatch(/NaN|Infinity/);
+  });
+
+  it("keeps layout identities stable across grouping, ungrouping, and duplication", async () => {
+    const first = new Rect({ width: 20, height: 20, left: 10, top: 10 });
+    const second = new Rect({ width: 20, height: 20, left: 50, top: 10 });
+    first.objectId = "first";
+    second.objectId = "second";
+    const canvas = makeCanvas([first, second]);
+    const adapter = makeAdapter(canvas);
+
+    await adapter.execute("create_layout_frame", {
+      frameId: "frame",
+      bounds: { left: 0, top: 0, width: 200, height: 100 },
+      flow: "free",
+      children: [
+        { objectId: "first", sizing: "content-sized" },
+        { objectId: "second", sizing: "content-sized" }
+      ]
+    });
+    const duplicate = await adapter.execute("duplicate_objects", { objectIds: ["first"] });
+    const duplicateId = (duplicate.data as { objectIds: string[] }).objectIds[0];
+    expect(adapter.layoutState()?.frames[0]?.children.map((child) => child.objectId)).toEqual([
+      "first",
+      "second"
+    ]);
+    expect(duplicateId).not.toBe("first");
+
+    const grouped = await adapter.execute("group_objects", {
+      objectIds: ["first", "second"]
+    });
+    const groupId = (grouped.data as { objectId: string }).objectId;
+    expect(adapter.layoutState()?.frames[0]?.children.map((child) => child.objectId)).toEqual([
+      "first",
+      "second"
+    ]);
+
+    await adapter.execute("ungroup_objects", { objectIds: [groupId] });
+    expect(canvas.getObjects().map((object) => object.objectId)).toContain("first");
+    expect(canvas.getObjects().map((object) => object.objectId)).toContain("second");
+    expect(adapter.layoutState()?.frames[0]?.children.map((child) => child.objectId)).toEqual([
+      "first",
+      "second"
+    ]);
   });
 
   it("rejects rotated children before applying an inaccurate axis-aligned resize", () => {
