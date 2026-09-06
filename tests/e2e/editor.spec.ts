@@ -1409,6 +1409,20 @@ test("preserves clipboard object size across repeated pastes", async ({ page }) 
   await expect.poll(async () => Number(await width.inputValue())).toBeCloseTo(originalWidth, 0);
 });
 
+test("cuts the selected object and restores it with one undo", async ({ page }) => {
+  await page.goto("./");
+  await page.getByRole("button", { name: "New figure" }).click();
+  await placeTool(page, "Rectangle", 0.45, 0.45);
+  await ensureEditorOpen(page);
+
+  await expectLayerCount(page, 1);
+  await page.keyboard.press("ControlOrMeta+X");
+  await expectLayerCount(page, 0);
+
+  await page.keyboard.press("ControlOrMeta+Z");
+  await expectLayerCount(page, 1);
+});
+
 test("copies canvas objects to the system clipboard as PNG and SVG", async ({
   page,
   context,

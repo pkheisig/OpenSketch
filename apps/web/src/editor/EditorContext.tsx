@@ -157,6 +157,11 @@ import {
   type SelectionClipboardFormat,
   writeSelectionToSystemClipboard
 } from "@/editor/selectionClipboard";
+import {
+  captureCutTransaction,
+  isCutTransactionValid,
+  type CutTransaction
+} from "@/editor/cutTransaction";
 import type { AssetTemplate } from "@/editor/assetTemplates";
 import {
   clipboardContainsSelectionMarker,
@@ -632,6 +637,13 @@ export interface EditorContextValue {
 
 const EditorContext = createContext<EditorContextValue | null>(null);
 
+type ClipboardOperation = {
+  transaction: CutTransaction;
+  marker: string;
+  cut: boolean;
+  systemObject: Promise<FabricObject>;
+};
+
 function assignIdentity(object: FabricObject, name: string, type: string): void {
   object.objectId ??= crypto.randomUUID();
   object.name ??= name;
@@ -678,16 +690,28 @@ function restoreRecognizedGroup(
   consumeRecognizedGroup(objects, recognition);
 }
 
+function isEditableAssetGroup(object: FabricObject | undefined): object is Group {
+  return (
+    object instanceof Group &&
+    (object.OpenSketchType === "library-asset" ||
+      object.OpenSketchType === "import" ||
+      object.OpenSketchType === "upload")
+  );
+}
+
 function editableAssetParent(object: FabricObject | undefined): Group | null {
-  for (let parent = object?.group; parent; parent = parent.group) {
-    if (
-      parent instanceof Group &&
-      (parent.OpenSketchType === "library-asset" ||
-        parent.OpenSketchType === "import" ||
-        parent.OpenSketchType === "upload")
-    ) {
+  for (let parent: FabricObject | undefined = object?.group; parent; parent = parent.group) {
+    if (isEditableAssetGroup(parent)) {
       return parent;
     }
+  }
+  return null;
+}
+
+function editableAssetParentFromPath(path: readonly FabricObject[]): Group | null {
+  for (let index = path.length - 2; index >= 0; index -= 1) {
+    const parent = path[index];
+    if (isEditableAssetGroup(parent)) return parent;
   }
   return null;
 }
@@ -1348,6 +1372,9 @@ export function EditorProvider({
   const clipboard = useRef<FabricObject[]>([]);
   const pendingClipboardCopy = useRef<Promise<void> | null>(null);
   const clipboardMarker = useRef<string | undefined>(undefined);
+  const clipboardOperation = useRef<ClipboardOperation | null>(null);
+  const nextClipboardOperation = useRef(0);
+  const systemClipboardWrite = useRef(Promise.resolve());
   const savedElementStyles = useRef(loadSavedElementStyles(services.preferences.storage));
   const pendingSnapshot = useRef<
     { snapshot: EditorDocumentSnapshot; revision: number } | undefined
@@ -1461,6 +1488,12 @@ export function EditorProvider({
   useEffect(() => () => historyBuffer.current.dispose(), []);
   const latestZoom = useRef(1);
   const canvasElement = useRef<HTMLCanvasElement | null>(null);
+  const canvasGeneration = useRef(0);
+  const currentCanvasRef = useRef<Canvas | null>(canvas);
+  const currentProjectIdRef = useRef(project.id);
+  const canvasProjectIdRef = useRef<string | null>(null);
+  currentCanvasRef.current = canvas;
+  currentProjectIdRef.current = project.id;
   const guides = useRef<{ vertical?: number; horizontal?: number }>({});
   const snapSession = useRef<{
     target?: FabricObject;
@@ -1890,10 +1923,24 @@ export function EditorProvider({
     [canvas, captureDocumentSnapshot, persist, services.fonts, updateHistoryState]
   );
 
+  const isCurrentClipboardOperation = useCallback((operation: ClipboardOperation) => {
+    const transaction = operation.transaction;
+    return (
+      clipboardOperation.current === operation &&
+      clipboardOperation.current.transaction.owner === transaction.owner &&
+      currentCanvasRef.current === transaction.canvas &&
+      currentProjectIdRef.current === transaction.documentId &&
+      canvasProjectIdRef.current === transaction.documentId &&
+      canvasGeneration.current === transaction.generation &&
+      canvasReadyRef.current
+    );
+  }, []);
+
   const setCanvasElement = useCallback(
     (element: HTMLCanvasElement | null) => {
       if (!element || element === canvasElement.current) return;
       canvasElement.current = element;
+      const generation = ++canvasGeneration.current;
       const instance = new Canvas(element, {
         preserveObjectStacking: true,
         selectionKey: ["metaKey", "ctrlKey"],
@@ -1903,6 +1950,8 @@ export function EditorProvider({
         selectionBorderColor: "#12b2af",
         selectionLineWidth: SELECTION_STROKE_WIDTH_PX
       });
+      currentCanvasRef.current = instance;
+      canvasProjectIdRef.current = project.id;
       instance.setDimensions({ width: project.canvas.width, height: project.canvas.height });
       instance.backgroundColor = project.canvas.transparent ? "" : project.canvas.background;
       canvasReadyRef.current = false;
@@ -1919,6 +1968,13 @@ export function EditorProvider({
           );
           refreshTextMetrics(instance.getObjects());
           instance.requestRenderAll();
+          if (
+            currentCanvasRef.current !== instance ||
+            canvasGeneration.current !== generation ||
+            currentProjectIdRef.current !== project.id
+          ) {
+            return;
+          }
           const initial = JSON.stringify(instance.toJSON());
           historyBuffer.current.reset(
             createDocumentSnapshot(initial, latestCanvasSettings.current)
@@ -2602,10 +2658,16 @@ export function EditorProvider({
       canvas.upperCanvasEl.removeEventListener("contextmenu", suppressModifierContextMenu, true);
       cancelScheduledConnectorRefresh();
       void enqueuePendingSave();
-      canvasReadyRef.current = false;
-      setCanvasReady(false);
+      const ownsCurrentCanvas = currentCanvasRef.current === canvas;
+      if (ownsCurrentCanvas) {
+        canvasGeneration.current += 1;
+        currentCanvasRef.current = null;
+        canvasProjectIdRef.current = null;
+        canvasReadyRef.current = false;
+        setCanvasReady(false);
+      }
       canvas.dispose();
-      setCanvas(null);
+      setCanvas((current) => (current === canvas ? null : current));
     };
   }, [
     beginPendingEditorWork,
@@ -3498,71 +3560,138 @@ export function EditorProvider({
     canvas.requestRenderAll();
   }, [canvas, setEditingGroupPath]);
 
-  const deleteSelection = useCallback(() => {
-    if (!canvas) return;
-    const active = canvas.getActiveObjects();
-    const nested = active.filter((object) => editableAssetParent(object));
-    if (nested.length > 0) {
-      const removedIds = new Set(
-        nested.map((object) => object.objectId).filter((id): id is string => Boolean(id))
+  const deleteTargets = useCallback(
+    (targets: readonly FabricObject[], preserveSelection = false) => {
+      if (!canvas || targets.length === 0) return;
+      const uniqueTargets = [...new Set(targets)];
+      const selectionBeforeDelete = preserveSelection ? canvas.getActiveObjects() : [];
+      const entries = sceneObjectEntries(canvas);
+      const entriesByObject = new Map(entries.map((entry) => [entry.object, entry]));
+      const selectedRoots = uniqueTargets.filter(
+        (object) =>
+          !uniqueTargets.some(
+            (candidate) => candidate !== object && isSceneDescendant(object, candidate)
+          )
       );
-      const parents = new Set<Group>();
-      nested.forEach((object) => {
-        const parent = object.group;
-        if (!(parent instanceof Group)) return;
-        parents.add(editableAssetParent(object) ?? parent);
-        parent.remove(object);
-        parent.triggerLayout();
-        parent.dirty = true;
+      const nestedTargets = selectedRoots.filter((object) => {
+        const entry = entriesByObject.get(object);
+        return Boolean(entry && editableAssetParentFromPath(entry.path));
       });
-      const parentAsset = [...parents][0];
-      if (parentAsset && parentAsset.getObjects().length > 0) {
-        sceneObjectEntries(canvas)
-          .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
-          .forEach(removeSceneObject);
-        canvas.setActiveObject(parentAsset);
-        setSelection([parentAsset]);
-      } else {
-        parents.forEach((parent) => {
-          if (parent.objectId) removedIds.add(parent.objectId);
-          const entry = sceneObjectEntries(canvas).find(({ object }) => object === parent);
-          if (entry) removeSceneObject(entry);
+      const nestedTargetSet = new Set(nestedTargets);
+      const removedIds = new Set<string>();
+      visitSceneObjects(uniqueTargets, (object) => {
+        if (object.objectId) removedIds.add(object.objectId);
+      });
+      const parents = new Set<Group>();
+      let changed = false;
+
+      nestedTargets.forEach((object) => {
+        const entry = entriesByObject.get(object);
+        if (!(entry?.parent instanceof Group)) return;
+        const parentAsset = editableAssetParentFromPath(entry.path);
+        if (parentAsset) parents.add(parentAsset);
+        entry.parent.remove(object);
+        entry.parent.triggerLayout();
+        entry.parent.dirty = true;
+        changed = true;
+      });
+
+      parents.forEach((parent) => {
+        if (parent.getObjects().length > 0) return;
+        visitSceneObjects(parent, (object) => {
+          if (object.objectId) removedIds.add(object.objectId);
         });
-        sceneObjectEntries(canvas)
-          .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
-          .forEach(removeSceneObject);
+        const entry = sceneObjectEntries(canvas).find(({ object }) => object === parent);
+        if (entry) {
+          removeSceneObject(entry);
+          changed = true;
+        }
+      });
+
+      selectedRoots
+        .filter((object) => !nestedTargetSet.has(object))
+        .forEach((object) => {
+          const entry = entriesByObject.get(object);
+          if (!entry) return;
+          removeSceneObject(entry);
+          changed = true;
+        });
+
+      sceneObjectEntries(canvas)
+        .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
+        .forEach((entry) => {
+          removeSceneObject(entry);
+          changed = true;
+        });
+      if (!changed) return;
+
+      if (preserveSelection) {
+        const remainingObjects = new Set(sceneObjectEntries(canvas).map(({ object }) => object));
+        const survivors = selectionBeforeDelete.filter(
+          (object, index, objects) =>
+            remainingObjects.has(object) && objects.indexOf(object) === index
+        );
+        if (survivors.length === 0) {
+          canvas.discardActiveObject();
+          setSelection([]);
+        } else {
+          const selectionObject =
+            survivors.length === 1 ? survivors[0] : new ActiveSelection(survivors, { canvas });
+          configureSelectionControls(selectionObject, latestZoom.current);
+          canvas.setActiveObject(selectionObject);
+          setSelection(survivors);
+        }
+      } else if (nestedTargets.length > 0) {
+        const remainingAssets = [...parents].filter((parent) =>
+          sceneObjectEntries(canvas).some(({ object }) => object === parent)
+        );
+        if (remainingAssets.length > 0) {
+          canvas.setActiveObject(remainingAssets[0]);
+          setSelection([remainingAssets[0]]);
+        } else {
+          canvas.discardActiveObject();
+          setSelection([]);
+        }
+      } else {
         canvas.discardActiveObject();
         setSelection([]);
       }
       canvas.requestRenderAll();
-      commit("Delete SVG part");
-      return;
-    }
-    const removedIds = new Set<string>();
-    visitSceneObjects(active, (object) => {
-      if (object.objectId) removedIds.add(object.objectId);
-    });
-    const activeSet = new Set(active);
-    const entries = sceneObjectEntries(canvas);
-    entries
-      .filter(
-        ({ object }) =>
-          !activeSet.has(object) && connectorsForRemovedIds([object], removedIds).length > 0
-      )
-      .forEach(removeSceneObject);
-    const selectedRoots = active.filter(
-      (object) =>
-        !active.some((candidate) => candidate !== object && isSceneDescendant(object, candidate))
-    );
-    selectedRoots.forEach((object) => {
-      const entry = entries.find((candidate) => candidate.object === object);
-      if (entry) removeSceneObject(entry);
-    });
-    canvas.discardActiveObject();
-    setSelection([]);
-    canvas.requestRenderAll();
-    commit("Delete");
-  }, [canvas, commit]);
+      commit(nestedTargets.length > 0 ? "Delete SVG part" : "Delete");
+    },
+    [canvas, commit]
+  );
+
+  const deleteSelection = useCallback(() => {
+    if (!canvas) return;
+    deleteTargets(canvas.getActiveObjects());
+  }, [canvas, deleteTargets]);
+
+  const enqueueSystemClipboardWrite = useCallback(
+    (operation: ClipboardOperation, format: SelectionClipboardFormat) => {
+      const queued = systemClipboardWrite.current.then(async () => {
+        if (!isCurrentClipboardOperation(operation)) return;
+        const object = await operation.systemObject;
+        if (!isCurrentClipboardOperation(operation)) return;
+        const currentCanvas = currentCanvasRef.current;
+        if (
+          operation.cut &&
+          (!currentCanvas ||
+            !isCutTransactionValid(operation.transaction, {
+              canvas: currentCanvas,
+              documentId: canvasProjectIdRef.current ?? currentProjectIdRef.current,
+              generation: canvasGeneration.current
+            }))
+        ) {
+          return;
+        }
+        await writeSelectionToSystemClipboard(object, format, operation.marker, services.clipboard);
+      });
+      systemClipboardWrite.current = queued.catch(() => undefined);
+      return queued;
+    },
+    [isCurrentClipboardOperation, services.clipboard]
+  );
 
   const saveSelectionAsTemplate = useCallback(async () => {
     if (!canvas) return;
@@ -3642,32 +3771,85 @@ export function EditorProvider({
 
   const copySelectionToClipboard = useCallback(
     async (format: SelectionClipboardFormat = "png", cut = false) => {
-      if (!canvas) return;
+      if (!canvas || !canvasReadyRef.current || canvasProjectIdRef.current !== project.id) return;
       const activeObject = canvas.getActiveObject();
       const selectedObjects = canvas.getActiveObjects();
       if (!activeObject || selectedObjects.length === 0) return;
 
+      const owner = ++nextClipboardOperation.current;
+      const transaction = captureCutTransaction({
+        owner,
+        canvas,
+        documentId: canvasProjectIdRef.current,
+        generation: canvasGeneration.current,
+        targets: selectedObjects
+      });
+      if (!transaction) {
+        clipboardOperation.current = null;
+        console.warn("Could not capture the selection for an asynchronous clipboard operation.");
+        return;
+      }
       const complete = cut ? beginPendingEditorWork() : undefined;
       let internalCopy: Promise<void> | undefined;
+      let systemObject: Promise<FabricObject>;
       try {
-        const marker = `${SELECTION_CLIPBOARD_MARKER_PREFIX}${services.clock.randomUUID()}`;
-        clipboardMarker.current = marker;
-        const systemWrite = writeSelectionToSystemClipboard(
-          activeObject,
-          format,
-          marker,
-          services.clipboard
-        ).catch((error: unknown) => {
-          console.warn(`Could not copy the selection as ${format.toUpperCase()}.`, error);
-        });
+        systemObject = activeObject.clone();
+      } catch (error) {
+        systemObject = Promise.reject(error);
+      }
+      void systemObject.catch(() => undefined);
+      const operation: ClipboardOperation = {
+        transaction,
+        marker: `${SELECTION_CLIPBOARD_MARKER_PREFIX}${services.clock.randomUUID()}`,
+        cut,
+        systemObject
+      };
+      clipboardOperation.current = operation;
+      try {
+        const systemWrite = enqueueSystemClipboardWrite(operation, format).catch(
+          (error: unknown) => {
+            console.warn(`Could not copy the selection as ${format.toUpperCase()}.`, error);
+          }
+        );
         internalCopy = Promise.all(selectedObjects.map((object) => object.clone())).then(
           (clones) => {
+            if (!isCurrentClipboardOperation(operation)) return;
+            const currentCanvas = currentCanvasRef.current;
+            if (
+              operation.cut &&
+              (!currentCanvas ||
+                !isCutTransactionValid(operation.transaction, {
+                  canvas: currentCanvas,
+                  documentId: canvasProjectIdRef.current ?? currentProjectIdRef.current,
+                  generation: canvasGeneration.current
+                }))
+            ) {
+              return;
+            }
             clipboard.current = clones;
+            clipboardMarker.current = operation.marker;
           }
         );
         pendingClipboardCopy.current = internalCopy ?? null;
         await Promise.all([internalCopy, systemWrite]);
-        if (cut) deleteSelection();
+        const currentCanvas = currentCanvasRef.current;
+        if (
+          cut &&
+          isCurrentClipboardOperation(operation) &&
+          currentCanvas &&
+          isCutTransactionValid(operation.transaction, {
+            canvas: currentCanvas,
+            documentId: canvasProjectIdRef.current ?? currentProjectIdRef.current,
+            generation: canvasGeneration.current
+          })
+        ) {
+          deleteTargets(
+            operation.transaction.targets.map(({ object }) => object),
+            true
+          );
+        } else if (cut && isCurrentClipboardOperation(operation)) {
+          console.warn("Cut canceled because its original selection is no longer unchanged.");
+        }
       } finally {
         if (pendingClipboardCopy.current === internalCopy) {
           pendingClipboardCopy.current = null;
@@ -3675,7 +3857,15 @@ export function EditorProvider({
         complete?.();
       }
     },
-    [beginPendingEditorWork, canvas, deleteSelection, services]
+    [
+      beginPendingEditorWork,
+      canvas,
+      deleteTargets,
+      enqueueSystemClipboardWrite,
+      isCurrentClipboardOperation,
+      project.id,
+      services
+    ]
   );
 
   const pasteSelection = useCallback(async () => {
@@ -3684,9 +3874,11 @@ export function EditorProvider({
     try {
       await pendingClipboardCopy.current;
       if (clipboard.current.length === 0) return;
+      const clipboardOwner = clipboardOperation.current;
+      const sourceClipboard = [...clipboard.current];
       const [clones, nextClipboard] = await Promise.all([
-        Promise.all(clipboard.current.map((object) => object.clone())),
-        Promise.all(clipboard.current.map((object) => object.clone()))
+        Promise.all(sourceClipboard.map((object) => object.clone())),
+        Promise.all(sourceClipboard.map((object) => object.clone()))
       ]);
       configureCanvasAssets(clones);
       assignFreshCloneIds(clones);
@@ -3700,7 +3892,9 @@ export function EditorProvider({
       nextClipboard.forEach((clone) => {
         clone.set({ left: (clone.left ?? 0) + 24, top: (clone.top ?? 0) + 24 });
       });
-      clipboard.current = nextClipboard;
+      if (clipboardOperation.current === clipboardOwner) {
+        clipboard.current = nextClipboard;
+      }
       canvas.setActiveObject(
         clones.length === 1 ? clones[0] : new ActiveSelection(clones, { canvas })
       );
