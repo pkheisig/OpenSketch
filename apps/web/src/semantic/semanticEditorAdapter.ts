@@ -11,9 +11,14 @@ import {
 } from "fabric";
 import {
   assetStyleOf,
+  createLayoutDocument,
+  createLayoutFrame as createCoreLayoutFrame,
   findAssetVariantForStyle,
   filterAssetFamilies,
   isAssetStyle,
+  insertLayoutChild as insertCoreLayoutChild,
+  removeLayoutChild as removeCoreLayoutChild,
+  removeLayoutFrame as removeCoreLayoutFrame,
   variantsForStyle,
   type AssetManifest,
   type AssetFamily,
@@ -22,6 +27,11 @@ import {
   type CanvasSettings,
   type ConnectorBinding,
   type InterchangeFidelityReport,
+  type CreateLayoutFrameInput,
+  type LayoutCellSpec,
+  type LayoutDocument,
+  type LayoutFrame,
+  updateLayoutFrame as updateCoreLayoutFrame,
   PORTABLE_PROJECT_LIMITS
 } from "@workspace/editor-core";
 import {
@@ -44,6 +54,7 @@ import {
 } from "./semanticTypes";
 import { createShapeObject } from "@/editor/creationObjects";
 import { type CreationDefaults, type ShapeKind } from "@/editor/creation";
+import { type LayoutFrameApplicationResult } from "@/editor/layoutFrames";
 import {
   connectorsForRemovedIds,
   createCircularArcObject,
@@ -112,7 +123,11 @@ export interface SemanticEditorAdapterDependencies {
   getProjectId: () => string;
   isCanvasReady: () => boolean;
   getCanvasSettings: () => CanvasSettings;
-  setCanvasSettings: (settings: Partial<CanvasSettings>) => void;
+  getLayoutState: () => LayoutDocument | undefined;
+  setLayoutState: (layout: LayoutDocument | undefined) => void;
+  removeLayoutReferences: (removedIds: ReadonlySet<string>) => void;
+  applyLayoutFrame: (frameId: string) => LayoutFrameApplicationResult;
+  setCanvasSettings: (settings: Partial<CanvasSettings>, options?: { commit?: boolean }) => void;
   setProjectName: (name: string) => void;
   setProjectDescription: (description: string) => void;
   setSelection: (objects: FabricObject[]) => void;
@@ -1195,7 +1210,11 @@ export function createSemanticEditorAdapter(
           `Canvas area must not exceed ${PORTABLE_PROJECT_LIMITS.maxCanvasArea}.`
         );
       }
-      dependencies.setCanvasSettings({ width, height });
+      // Keep canvas geometry changes inside the semantic transaction boundary.
+      // This lets a page resize followed by frame configuration/reflow become
+      // one history entry when issued as a confirmed batch.
+      dependencies.setCanvasSettings({ width, height }, { commit: false });
+      commitSemantic("Semantic resize canvas");
       return { data: { width, height }, changedObjectIds: [] };
     }
     if (command === "find_objects") {
@@ -2051,6 +2070,7 @@ export function createSemanticEditorAdapter(
           .filter(({ object }) => connectorsForRemovedIds([object], removedIdSet).length > 0)
           .forEach((entry) => {
             if (entry.object.objectId) changedReferenceIds.add(entry.object.objectId);
+            if (entry.object.objectId) removedIdSet.add(entry.object.objectId);
             removeSceneObject(entry);
           });
         sceneObjectEntries(canvas).forEach(({ object }) => {
@@ -2076,6 +2096,7 @@ export function createSemanticEditorAdapter(
         });
         existingField.set({ scaleX: 1, scaleY: 1, angle: 0 });
         particles.forEach((particle) => existingField.remove(particle));
+        dependencies.removeLayoutReferences(removedIdSet);
         const repairedParticles = plan.points.map((position, index) => {
           const objectId = `${existingField.objectId!}-particle-${index}`;
           const particle =
@@ -2343,9 +2364,13 @@ export function createSemanticEditorAdapter(
           };
         }
       } catch (error) {
+        const removedIds = new Set<string>();
         for (const entry of sceneObjectEntries(canvas).reverse()) {
-          if (!existingObjects.has(entry.object)) removeSceneObject(entry);
+          if (existingObjects.has(entry.object)) continue;
+          if (entry.object.objectId) removedIds.add(entry.object.objectId);
+          removeSceneObject(entry);
         }
+        dependencies.removeLayoutReferences(removedIds);
         throw error;
       }
       target.semanticRelations = [...(target.semanticRelations ?? []), relation];
@@ -2699,6 +2724,104 @@ export function createSemanticEditorAdapter(
       canvas.requestRenderAll();
       commitSemantic("Semantic repair connectors");
       return { data: { connectorIds: repaired, repaired }, changedObjectIds: repaired };
+    }
+    if (
+      command === "create_layout_frame" ||
+      command === "configure_layout_frame" ||
+      command === "insert_layout_child" ||
+      command === "remove_layout_child" ||
+      command === "remove_layout_frame" ||
+      command === "reflow_layout_frame"
+    ) {
+      try {
+        const frameId = input.frameId as string;
+        if (command === "create_layout_frame") {
+          const next = createCoreLayoutFrame(
+            dependencies.getLayoutState() ?? createLayoutDocument(),
+            {
+              frameId,
+              bounds: input.bounds as CreateLayoutFrameInput["bounds"],
+              flow: input.flow as CreateLayoutFrameInput["flow"],
+              padding: input.padding as CreateLayoutFrameInput["padding"],
+              gap: input.gap as CreateLayoutFrameInput["gap"],
+              overflow: input.overflow as CreateLayoutFrameInput["overflow"],
+              children: input.children as LayoutCellSpec[],
+              tracks: input.tracks as CreateLayoutFrameInput["tracks"],
+              role: input.role as string | undefined,
+              containerObjectId: input.containerObjectId as string | undefined
+            }
+          );
+          dependencies.setLayoutState(next);
+          commitSemantic("Semantic create layout frame");
+          return {
+            data: {
+              frameId,
+              objectIds: (input.children as LayoutCellSpec[]).map((child) => child.objectId)
+            },
+            changedObjectIds: []
+          };
+        }
+        if (command === "configure_layout_frame") {
+          const patch = { ...input } as Record<string, unknown>;
+          delete patch.frameId;
+          const next = updateCoreLayoutFrame(
+            dependencies.getLayoutState() ?? createLayoutDocument(),
+            frameId,
+            patch as Partial<Omit<LayoutFrame, "id">>
+          );
+          dependencies.setLayoutState(next);
+          commitSemantic("Semantic configure layout frame");
+          return { data: { frameId }, changedObjectIds: [] };
+        }
+        if (command === "insert_layout_child") {
+          const child = input.child as LayoutCellSpec;
+          const next = insertCoreLayoutChild(
+            dependencies.getLayoutState() ?? createLayoutDocument(),
+            frameId,
+            child,
+            input.index as number | undefined
+          );
+          dependencies.setLayoutState(next);
+          commitSemantic("Semantic insert layout child");
+          return { data: { frameId, objectId: child.objectId }, changedObjectIds: [] };
+        }
+        if (command === "remove_layout_child") {
+          const objectId = input.objectId as string;
+          const next = removeCoreLayoutChild(
+            dependencies.getLayoutState() ?? createLayoutDocument(),
+            frameId,
+            objectId
+          );
+          dependencies.setLayoutState(next);
+          commitSemantic("Semantic remove layout child");
+          return { data: { frameId, objectId }, changedObjectIds: [] };
+        }
+        if (command === "remove_layout_frame") {
+          const next = removeCoreLayoutFrame(
+            dependencies.getLayoutState() ?? createLayoutDocument(),
+            frameId
+          );
+          dependencies.setLayoutState(next);
+          commitSemantic("Semantic remove layout frame");
+          return { data: { frameId }, changedObjectIds: [] };
+        }
+        const result = dependencies.applyLayoutFrame(frameId);
+        commitSemantic("Semantic reflow layout frame");
+        return {
+          data: {
+            frameId,
+            objectIds: result.changedObjectIds,
+            diagnostics: result.resolution.diagnostics
+          },
+          changedObjectIds: result.changedObjectIds,
+          warnings: result.resolution.diagnostics.map((diagnostic) => diagnostic.message)
+        };
+      } catch (error) {
+        throw new SemanticAdapterError(
+          "INVALID_LAYOUT",
+          error instanceof Error ? error.message : String(error)
+        );
+      }
     }
     if (command === "plan_layout") {
       const ids = objectIds(input);
@@ -3788,8 +3911,12 @@ export function createSemanticEditorAdapter(
         });
         sceneObjectEntries(canvas)
           .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
-          .forEach(removeSceneObject);
+          .forEach((entry) => {
+            if (entry.object.objectId) removedIds.add(entry.object.objectId);
+            removeSceneObject(entry);
+          });
         const changedRelationOwners = removeDeletedRelations(removedIds);
+        dependencies.removeLayoutReferences(removedIds);
         restoreSelection(
           canvas,
           previousSelectionObjectIds.filter((objectId) => !removedIds.has(objectId)),
@@ -3813,13 +3940,17 @@ export function createSemanticEditorAdapter(
       );
       sceneObjectEntries(canvas)
         .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
-        .forEach(removeSceneObject);
+        .forEach((entry) => {
+          if (entry.object.objectId) removedIds.add(entry.object.objectId);
+          removeSceneObject(entry);
+        });
       const entries = sceneObjectEntries(canvas);
       roots.forEach((root) => {
         const entry = entries.find((candidate) => candidate.object === root);
         if (entry) removeSceneObject(entry);
       });
       const changedRelationOwners = removeDeletedRelations(removedIds);
+      dependencies.removeLayoutReferences(removedIds);
       restoreSelection(
         canvas,
         previousSelectionObjectIds.filter((objectId) => !removedIds.has(objectId)),
@@ -3885,7 +4016,10 @@ export function createSemanticEditorAdapter(
       const removedIds = new Set(removedId ? [removedId] : []);
       sceneObjectEntries(canvas)
         .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
-        .forEach(removeSceneObject);
+        .forEach((entry) => {
+          if (entry.object.objectId) removedIds.add(entry.object.objectId);
+          removeSceneObject(entry);
+        });
       const children = group.removeAll();
       rememberRecognizedGroup(children, recognizedGroupRecord(group, children));
       if (index >= 0) {
@@ -3906,6 +4040,7 @@ export function createSemanticEditorAdapter(
         ),
         dependencies.setSelection
       );
+      dependencies.removeLayoutReferences(removedIds);
       dependencies.refreshConnectors();
       canvas.requestRenderAll();
       commitSemantic("Semantic ungroup");
@@ -4056,6 +4191,8 @@ export function createSemanticEditorAdapter(
     runTransaction: async <T>(operation: () => Promise<T>): Promise<T> => {
       const canvas = canvasOrThrow();
       const snapshot = dependencies.serialize();
+      const canvasSettingsSnapshot = structuredClone(dependencies.getCanvasSettings());
+      const layoutSnapshot = dependencies.getLayoutState();
       const selectionObjectIds = canvas
         .getActiveObjects()
         .map((object) => object.objectId)
@@ -4069,6 +4206,10 @@ export function createSemanticEditorAdapter(
       } catch (error) {
         try {
           await dependencies.restore(snapshot);
+          dependencies.setLayoutState(
+            layoutSnapshot === undefined ? undefined : structuredClone(layoutSnapshot)
+          );
+          dependencies.setCanvasSettings(canvasSettingsSnapshot, { commit: false });
           const restoredCanvas = dependencies.getCanvas();
           if (restoredCanvas) {
             restoreSelection(restoredCanvas, selectionObjectIds, dependencies.setSelection);

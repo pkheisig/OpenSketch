@@ -336,6 +336,7 @@ export function createProject(name?: string, options: ProjectCreationOptions = {
   let objects: Record<string, unknown> = { version: "7.0.0", objects: [] };
   let uploads: ImportedMediaRecord[] = [];
   let usedAssetIds: string[] = [];
+  let layout: ProjectRecord["layout"];
   let canvas = defaults.canvas;
   if (template) {
     const snapshot = migrateProject(template.project);
@@ -346,6 +347,7 @@ export function createProject(name?: string, options: ProjectCreationOptions = {
     objects = reminted.objects;
     uploads = structuredClone(reminted.uploads);
     usedAssetIds = structuredClone(reminted.usedAssetIds);
+    layout = reminted.layout === undefined ? undefined : structuredClone(reminted.layout);
     canvas = structuredClone(reminted.canvas);
   }
   return {
@@ -362,6 +364,7 @@ export function createProject(name?: string, options: ProjectCreationOptions = {
     objects,
     uploads,
     usedAssetIds,
+    ...(layout === undefined ? {} : { layout }),
     ...(template?.project.description === undefined
       ? {}
       : { description: template.project.description })

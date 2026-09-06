@@ -1,7 +1,15 @@
 import {
+  collectSerializedLayoutValidationContext,
+  createLayoutDocument,
+  createLayoutFrame as createCoreLayoutFrame,
+  insertLayoutChild as insertCoreLayoutChild,
+  removeLayoutChild as removeCoreLayoutChild,
+  removeLayoutFrame as removeCoreLayoutFrame,
   createFidelityReport,
   mimeTypeForFormat,
-  rehydrateProjectScene
+  rehydrateProjectScene,
+  updateLayoutFrame as updateCoreLayoutFrame,
+  validateLayoutDocument
 } from "@workspace/editor-core";
 import { ProjectConflictError } from "@/application/hostServices";
 import { hasSvgComponents, prepareSvgComponents } from "./svgComponents";
@@ -47,7 +55,11 @@ import {
   type AssetVariant,
   type CanvasSettings,
   type ConnectorBinding,
+  type CreateLayoutFrameInput,
   type ImportedMediaRecord,
+  type LayoutCellSpec,
+  type LayoutDocument,
+  type LayoutFrame,
   type InterchangeFidelityReport,
   type InterchangeFormat,
   type ProjectTemplateRecord,
@@ -222,6 +234,7 @@ import {
 } from "@/editor/documentSnapshot";
 import { DEFAULT_TEXT_LINE_HEIGHT } from "@/editor/text";
 import { createSemanticEditorAdapter } from "@/semantic/semanticEditorAdapter";
+import { applyLayoutFrameToCanvas, type LayoutFrameApplicationResult } from "@/editor/layoutFrames";
 import { inspectSemanticGeometry, perimeterPointForAnchor } from "@/semantic/composition";
 import { installSemanticIntrospection } from "@/semantic/semanticIntrospection";
 import { createSemanticRuntime, type SemanticRuntime } from "@/semantic/semanticRuntime";
@@ -658,11 +671,18 @@ export interface EditorContextValue {
   zoom: number;
   historyState: { canUndo: boolean; canRedo: boolean };
   canvasSettings: CanvasSettings;
+  layoutState?: LayoutDocument;
   alignmentEnabled: boolean;
   autoEditEnabled: boolean;
   projectDescription: string;
   setCanvasElement: (element: HTMLCanvasElement | null) => void;
   setCanvasSettings: (settings: Partial<CanvasSettings>) => void;
+  createLayoutFrame: (input: CreateLayoutFrameInput) => void;
+  updateLayoutFrame: (frameId: string, patch: Partial<Omit<LayoutFrame, "id">>) => void;
+  removeLayoutFrame: (frameId: string) => void;
+  insertLayoutChild: (frameId: string, child: LayoutCellSpec, index?: number) => void;
+  removeLayoutChild: (frameId: string, objectId: string) => void;
+  reflowLayoutFrame: (frameId: string) => LayoutFrameApplicationResult;
   setAlignmentEnabled: (enabled: boolean) => void;
   setAutoEditEnabled: (enabled: boolean) => void;
   setProjectName: (name: string) => void;
@@ -1432,6 +1452,9 @@ export function EditorProvider({
   const [canvasSettings, setCanvasSettingsState] = useState(() =>
     cloneCanvasSettings(project.canvas)
   );
+  const [layoutState, setLayoutState] = useState<LayoutDocument | undefined>(() =>
+    project.layout === undefined ? undefined : validateLayoutDocument(project.layout)
+  );
   const [alignmentEnabled, setAlignmentEnabledState] = useState(() => {
     return services.preferences.get("OpenSketch:alignment-enabled") !== "false";
   });
@@ -1581,6 +1604,8 @@ export function EditorProvider({
     updatedAt: project.updatedAt
   });
   const latestCanvasSettings = useRef<CanvasSettings>(cloneCanvasSettings(project.canvas));
+  const latestLayoutState = useRef<LayoutDocument | undefined>(layoutState);
+  latestLayoutState.current = layoutState;
   useEffect(() => () => historyBuffer.current.dispose(), []);
   const latestZoom = useRef(1);
   const canvasElement = useRef<HTMLCanvasElement | null>(null);
@@ -1751,7 +1776,7 @@ export function EditorProvider({
       canvas && canvasReadyRef.current
         ? serialize()
         : JSON.stringify(initialProjectObjects.current);
-    return createDocumentSnapshot(scene, latestCanvasSettings.current);
+    return createDocumentSnapshot(scene, latestCanvasSettings.current, latestLayoutState.current);
   }, [canvas, serialize]);
 
   const applyCanvasSettings = useCallback(
@@ -1779,7 +1804,8 @@ export function EditorProvider({
       const copy = await services.projects.duplicate({
         ...latestProject.current,
         canvas: snapshot.canvasSettings,
-        objects: JSON.parse(snapshot.scene)
+        objects: JSON.parse(snapshot.scene),
+        layout: snapshot.layout === undefined ? undefined : structuredClone(snapshot.layout)
       });
       onRequestProjectSwitch?.(copy);
     } catch (reason) {
@@ -1815,6 +1841,7 @@ export function EditorProvider({
           canvas: cloneCanvasSettings(snapshot.canvasSettings),
           objects,
           usedAssetIds: assetIdsFromSnapshot(objects),
+          layout: snapshot.layout === undefined ? undefined : structuredClone(snapshot.layout),
           // The project data is the durable source of truth. Its derived preview
           // is refreshed after the save queue drains or by the project overview.
           thumbnail: undefined
@@ -1963,6 +1990,7 @@ export function EditorProvider({
       canvas: snapshot.canvasSettings,
       objects,
       usedAssetIds: assetIdsFromSnapshot(objects),
+      layout: snapshot.layout === undefined ? undefined : structuredClone(snapshot.layout),
       thumbnail: undefined
     });
     const now = services.clock.now();
@@ -2030,7 +2058,7 @@ export function EditorProvider({
 
   const commit = useCallback(
     (label = "Change") => {
-      if (!canvas || restoring.current) return;
+      if (restoring.current) return;
       const snapshot = captureDocumentSnapshot();
       if (documentSnapshotsEqual(historyBuffer.current.current(), snapshot)) return;
       const now = performance.now();
@@ -2047,9 +2075,150 @@ export function EditorProvider({
       lastCommit.current = { label, at: now };
       updateHistoryState();
       persist(snapshot);
-      warmCanvasPdfFonts(canvas, services.fonts);
+      if (canvas) warmCanvasPdfFonts(canvas, services.fonts);
     },
     [canvas, captureDocumentSnapshot, persist, services.fonts, updateHistoryState]
+  );
+
+  const validateRuntimeLayout = useCallback(
+    (next: LayoutDocument): LayoutDocument => {
+      if (!canvas) {
+        const { objectIds, parentByObjectId } = collectSerializedLayoutValidationContext(
+          initialProjectObjects.current
+        );
+        return validateLayoutDocument(next, { objectIds, parentByObjectId });
+      }
+      const parentByObjectId = new Map<string, string | undefined>();
+      const objectIds: string[] = [];
+      sceneObjectEntries(canvas).forEach(({ object, parent }) => {
+        if (!object.objectId) return;
+        objectIds.push(object.objectId);
+        parentByObjectId.set(
+          object.objectId,
+          parent instanceof Group ? parent.objectId : undefined
+        );
+      });
+      return validateLayoutDocument(next, { objectIds, parentByObjectId });
+    },
+    [canvas]
+  );
+
+  const setLayoutStateWithoutCommit = useCallback(
+    (next: LayoutDocument | undefined) => {
+      const normalized = next === undefined ? undefined : validateRuntimeLayout(next);
+      latestLayoutState.current = normalized;
+      setLayoutState(normalized);
+    },
+    [validateRuntimeLayout]
+  );
+
+  const replaceLayoutState = useCallback(
+    (next: LayoutDocument | undefined, label: string) => {
+      setLayoutStateWithoutCommit(next);
+      if (canvas) commit(label);
+    },
+    [canvas, commit, setLayoutStateWithoutCommit]
+  );
+
+  const createLayoutFrame = useCallback(
+    (input: CreateLayoutFrameInput) => {
+      replaceLayoutState(
+        createCoreLayoutFrame(latestLayoutState.current ?? createLayoutDocument(), input),
+        "Create layout frame"
+      );
+    },
+    [replaceLayoutState]
+  );
+
+  const updateLayoutFrame = useCallback(
+    (frameId: string, patch: Partial<Omit<LayoutFrame, "id">>) => {
+      replaceLayoutState(
+        updateCoreLayoutFrame(latestLayoutState.current ?? createLayoutDocument(), frameId, patch),
+        "Configure layout frame"
+      );
+    },
+    [replaceLayoutState]
+  );
+
+  const removeLayoutFrame = useCallback(
+    (frameId: string) => {
+      replaceLayoutState(
+        removeCoreLayoutFrame(latestLayoutState.current ?? createLayoutDocument(), frameId),
+        "Remove layout frame"
+      );
+    },
+    [replaceLayoutState]
+  );
+
+  const insertLayoutChild = useCallback(
+    (frameId: string, child: LayoutCellSpec, index?: number) => {
+      replaceLayoutState(
+        insertCoreLayoutChild(
+          latestLayoutState.current ?? createLayoutDocument(),
+          frameId,
+          child,
+          index
+        ),
+        "Insert layout child"
+      );
+    },
+    [replaceLayoutState]
+  );
+
+  const removeLayoutChild = useCallback(
+    (frameId: string, objectId: string) => {
+      replaceLayoutState(
+        removeCoreLayoutChild(
+          latestLayoutState.current ?? createLayoutDocument(),
+          frameId,
+          objectId
+        ),
+        "Remove layout child"
+      );
+    },
+    [replaceLayoutState]
+  );
+
+  const applyLayoutFrame = useCallback(
+    (frameId: string): LayoutFrameApplicationResult => {
+      if (!canvas) throw new Error("The OpenSketch canvas is not ready.");
+      const frame = latestLayoutState.current?.frames.find((candidate) => candidate.id === frameId);
+      if (!frame) throw new Error(`Layout frame "${frameId}" does not exist.`);
+      const result = applyLayoutFrameToCanvas(canvas, frame);
+      refreshConnectors();
+      return result;
+    },
+    [canvas, refreshConnectors]
+  );
+
+  const reflowLayoutFrame = useCallback(
+    (frameId: string): LayoutFrameApplicationResult => {
+      const result = applyLayoutFrame(frameId);
+      commit("Reflow layout frame");
+      return result;
+    },
+    [applyLayoutFrame, commit]
+  );
+
+  const removeLayoutReferences = useCallback(
+    (removedIds: ReadonlySet<string>) => {
+      const current = latestLayoutState.current;
+      if (!current || removedIds.size === 0) return;
+      const next: LayoutDocument = {
+        version: current.version,
+        frames: current.frames
+          .filter(
+            (frame) =>
+              frame.containerObjectId === undefined || !removedIds.has(frame.containerObjectId)
+          )
+          .map((frame) => ({
+            ...frame,
+            children: frame.children.filter((child) => !removedIds.has(child.objectId))
+          }))
+      };
+      if (JSON.stringify(next) !== JSON.stringify(current)) setLayoutStateWithoutCommit(next);
+    },
+    [setLayoutStateWithoutCommit]
   );
 
   const isCurrentClipboardOperation = useCallback((operation: ClipboardOperation) => {
@@ -2106,7 +2275,7 @@ export function EditorProvider({
           }
           const initial = JSON.stringify(instance.toJSON());
           historyBuffer.current.reset(
-            createDocumentSnapshot(initial, latestCanvasSettings.current)
+            createDocumentSnapshot(initial, latestCanvasSettings.current, latestLayoutState.current)
           );
           updateHistoryState();
           canvasReadyRef.current = true;
@@ -2822,6 +2991,10 @@ export function EditorProvider({
         try {
           await canvas.loadFromJSON(target.scene);
           applyCanvasSettings(target.canvasSettings);
+          const restoredLayout =
+            target.layout === undefined ? undefined : structuredClone(target.layout);
+          latestLayoutState.current = restoredLayout;
+          setLayoutState(restoredLayout);
           assignSceneIdentities(canvas.getObjects());
           configureCanvasAssets(canvas.getObjects());
           assertUniqueSceneObjectIds(canvas);
@@ -2830,7 +3003,8 @@ export function EditorProvider({
           historyBuffer.current.move(offset);
           const repairedSnapshot: EditorDocumentSnapshot = createDocumentSnapshot(
             serialize(),
-            target.canvasSettings
+            target.canvasSettings,
+            restoredLayout
           );
           historyBuffer.current.replaceCurrent(repairedSnapshot);
           setSelection([]);
@@ -2855,6 +3029,7 @@ export function EditorProvider({
       persist,
       refreshConnectors,
       serialize,
+      setLayoutState,
       updateHistoryState
     ]
   );
@@ -2993,9 +3168,9 @@ export function EditorProvider({
   semanticUndoRef.current = undo;
   const semanticRedoRef = useRef(redo);
   semanticRedoRef.current = redo;
-  const semanticSetCanvasSettingsRef = useRef<(settings: Partial<CanvasSettings>) => void>(
-    () => undefined
-  );
+  const semanticSetCanvasSettingsRef = useRef<
+    (settings: Partial<CanvasSettings>, options?: { commit?: boolean }) => void
+  >(() => undefined);
   const semanticSetProjectNameRef = useRef<(name: string) => void>(() => undefined);
   const semanticSetProjectDescriptionRef = useRef<(description: string) => void>(() => undefined);
   const semanticExportSvgRef = useRef<EditorContextValue["exportSvg"]>(() => undefined);
@@ -3040,7 +3215,12 @@ export function EditorProvider({
         getProjectId: () => semanticProjectIdRef.current,
         isCanvasReady: () => canvasReadyRef.current,
         getCanvasSettings: () => latestCanvasSettings.current,
-        setCanvasSettings: (settings) => semanticSetCanvasSettingsRef.current(settings),
+        getLayoutState: () => latestLayoutState.current,
+        setLayoutState: (layout) => setLayoutStateWithoutCommit(layout),
+        removeLayoutReferences: (removedIds) => removeLayoutReferences(removedIds),
+        applyLayoutFrame: (frameId) => applyLayoutFrame(frameId),
+        setCanvasSettings: (settings, options) =>
+          semanticSetCanvasSettingsRef.current(settings, options),
         setProjectName: (name) => semanticSetProjectNameRef.current(name),
         setProjectDescription: (description) =>
           semanticSetProjectDescriptionRef.current(description),
@@ -3940,10 +4120,12 @@ export function EditorProvider({
       sceneObjectEntries(canvas)
         .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
         .forEach((entry) => {
+          if (entry.object.objectId) removedIds.add(entry.object.objectId);
           removeSceneObject(entry);
           changed = true;
         });
       if (!changed) return;
+      removeLayoutReferences(removedIds);
 
       if (preserveSelection) {
         const remainingObjects = new Set(sceneObjectEntries(canvas).map(({ object }) => object));
@@ -3979,7 +4161,7 @@ export function EditorProvider({
       canvas.requestRenderAll();
       commit(nestedTargets.length > 0 ? "Delete SVG part" : "Delete");
     },
-    [canvas, commit]
+    [canvas, commit, removeLayoutReferences]
   );
 
   const deleteSelection = useCallback(() => {
@@ -4284,7 +4466,11 @@ export function EditorProvider({
     }
     sceneObjectEntries(canvas)
       .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
-      .forEach(removeSceneObject);
+      .forEach((entry) => {
+        if (entry.object.objectId) removedIds.add(entry.object.objectId);
+        removeSceneObject(entry);
+      });
+    removeLayoutReferences(removedIds);
     const selectionObject = new ActiveSelection(objects, { canvas });
     configureSelectionControls(selectionObject, latestZoom.current);
     canvas.setActiveObject(selectionObject);
@@ -4293,7 +4479,7 @@ export function EditorProvider({
     refreshConnectors();
     canvas.requestRenderAll();
     commit("Ungroup");
-  }, [canvas, commit, refreshConnectors]);
+  }, [canvas, commit, refreshConnectors, removeLayoutReferences]);
 
   const arrange = useCallback(
     (action: "front" | "forward" | "backward" | "back") => {
@@ -4751,10 +4937,10 @@ export function EditorProvider({
   }, [canvas, canvasSettings, setZoom]);
 
   const setCanvasSettings = useCallback(
-    (settings: Partial<CanvasSettings>) => {
+    (settings: Partial<CanvasSettings>, options: { commit?: boolean } = {}) => {
       const next = { ...latestCanvasSettings.current, ...settings };
       applyCanvasSettings(next);
-      if (canvas) {
+      if (canvas && options.commit !== false) {
         commit("Canvas settings");
       }
     },
@@ -4815,6 +5001,7 @@ export function EditorProvider({
       canvas: snapshot.canvasSettings,
       objects,
       usedAssetIds: assetIdsFromSnapshot(objects),
+      layout: snapshot.layout === undefined ? undefined : structuredClone(snapshot.layout),
       thumbnail: undefined
     });
   }, [captureDocumentSnapshot, flushPendingTitle, services, waitForPendingEditorWork]);
@@ -5358,11 +5545,18 @@ export function EditorProvider({
       zoom,
       historyState,
       canvasSettings,
+      layoutState,
       alignmentEnabled,
       autoEditEnabled,
       projectDescription,
       setCanvasElement,
       setCanvasSettings,
+      createLayoutFrame,
+      updateLayoutFrame,
+      removeLayoutFrame,
+      insertLayoutChild,
+      removeLayoutChild,
+      reflowLayoutFrame,
       setAlignmentEnabled,
       setAutoEditEnabled,
       setProjectName,
@@ -5437,6 +5631,7 @@ export function EditorProvider({
       canvas,
       canvasReady,
       canvasSettings,
+      layoutState,
       alignmentEnabled,
       autoEditEnabled,
       commit,
@@ -5471,6 +5666,12 @@ export function EditorProvider({
       setAutoEditEnabled,
       setCanvasElement,
       setCanvasSettings,
+      createLayoutFrame,
+      updateLayoutFrame,
+      removeLayoutFrame,
+      insertLayoutChild,
+      removeLayoutChild,
+      reflowLayoutFrame,
       setCreationDefaults,
       setObject,
       saveSelectionStyle,

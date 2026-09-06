@@ -127,6 +127,59 @@ describe("semantic command contracts", () => {
       SEMANTIC_COMMANDS.find((command) => command.name === "inspect_provenance")?.outputSchema
         .properties?.truncated
     ).toEqual({ type: "boolean" });
+    const createLayoutFrameOutput = SEMANTIC_COMMANDS.find(
+      (command) => command.name === "create_layout_frame"
+    )?.outputSchema;
+    const reflowLayoutFrameOutput = SEMANTIC_COMMANDS.find(
+      (command) => command.name === "reflow_layout_frame"
+    )?.outputSchema;
+    expect(Object.keys(createLayoutFrameOutput?.properties ?? {}).sort()).toEqual([
+      "frameId",
+      "objectIds"
+    ]);
+    expect(Object.keys(reflowLayoutFrameOutput?.properties ?? {}).sort()).toEqual([
+      "diagnostics",
+      "frameId",
+      "objectIds",
+      "warnings"
+    ]);
+    expect(createLayoutFrameOutput?.properties?.objectIds).toMatchObject({
+      type: "array",
+      minItems: 0,
+      maxItems: 500
+    });
+    expect(reflowLayoutFrameOutput?.properties?.objectIds).toMatchObject({
+      type: "array",
+      minItems: 0,
+      maxItems: 500
+    });
+    expect(reflowLayoutFrameOutput?.properties?.diagnostics).toMatchObject({
+      type: "array",
+      maxItems: 500
+    });
+    expect(reflowLayoutFrameOutput?.properties?.warnings).toMatchObject({
+      type: "array",
+      maxItems: 500
+    });
+
+    const createLayoutFrame = SEMANTIC_COMMANDS.find(
+      (command) => command.name === "create_layout_frame"
+    )?.inputSchema;
+    expect(createLayoutFrame?.properties?.frameId).toMatchObject({
+      type: "string",
+      minLength: 1,
+      maxLength: 128
+    });
+    expect(createLayoutFrame?.properties?.containerObjectId).toMatchObject({
+      type: "string",
+      minLength: 1,
+      maxLength: 128
+    });
+    expect(createLayoutFrame?.properties?.children?.items?.properties?.objectId).toMatchObject({
+      type: "string",
+      minLength: 1,
+      maxLength: 128
+    });
   });
 });
 
@@ -159,6 +212,18 @@ describe("semantic runtime", () => {
       (await readyRuntime.execute("delete_objects", { objectIds: ["missing"], confirmed: false }))
         .error?.code
     ).toBe("CONFIRMATION_REQUIRED");
+  });
+
+  it("rejects zero-sized fixed layout children at the semantic boundary", async () => {
+    const runtime = createSemanticRuntime(fakeAdapter());
+    const result = await runtime.execute("create_layout_frame", {
+      frameId: "frame",
+      bounds: { left: 0, top: 0, width: 100, height: 100 },
+      flow: "free",
+      children: [{ objectId: "object", sizing: "fixed", width: 0, height: 20 }]
+    });
+
+    expect(result).toMatchObject({ ok: false, error: { code: "INVALID_INPUT" } });
   });
 
   it("forwards asset style qualifiers to the semantic adapter", async () => {

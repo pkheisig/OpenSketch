@@ -1,5 +1,5 @@
 import type { ShapeKind, TextKind } from "@/editor/creation";
-import { PORTABLE_PROJECT_LIMITS } from "@workspace/editor-core";
+import { LAYOUT_LIMITS, PORTABLE_PROJECT_LIMITS } from "@workspace/editor-core";
 import { INTERCHANGE_EXPORT_REGISTRY } from "@/interchange/registry";
 import {
   SEMANTIC_RUNTIME_VERSION,
@@ -100,6 +100,12 @@ export const MUTATION_COMMAND_NAMES = [
   "distribute_objects",
   "apply_layout_plan",
   "repair_layout",
+  "create_layout_frame",
+  "configure_layout_frame",
+  "insert_layout_child",
+  "remove_layout_child",
+  "remove_layout_frame",
+  "reflow_layout_frame",
   "rebind_connector",
   "duplicate_objects",
   "delete_objects",
@@ -137,11 +143,22 @@ const point = (): JsonSchema => ({
 });
 
 const objectId = (): JsonSchema => ({ type: "string", minLength: 1, maxLength: 200 });
-const objectIds = (minItems = 1): JsonSchema => ({
+const layoutObjectId = (): JsonSchema => ({
+  type: "string",
+  minLength: 1,
+  maxLength: LAYOUT_LIMITS.maxFrameIdLength
+});
+const objectIds = (minItems = 1, maxItems = 200): JsonSchema => ({
   type: "array",
   minItems,
-  maxItems: 200,
+  maxItems,
   items: objectId()
+});
+const layoutObjectIds = (): JsonSchema => ({
+  type: "array",
+  minItems: 0,
+  maxItems: LAYOUT_LIMITS.maxChildrenPerFrame,
+  items: layoutObjectId()
 });
 const emptyObject = (): JsonSchema => ({
   type: "object",
@@ -157,6 +174,125 @@ const changedOutput = output({
   objectId: objectId(),
   objectIds: objectIds()
 });
+
+const layoutBounds = (): JsonSchema => ({
+  type: "object",
+  properties: {
+    left: number(-1_000_000, 1_000_000),
+    top: number(-1_000_000, 1_000_000),
+    width: number(0.000001, 1_000_000),
+    height: number(0.000001, 1_000_000)
+  },
+  required: ["left", "top", "width", "height"],
+  additionalProperties: false
+});
+const layoutPadding = (): JsonSchema => ({
+  oneOf: [
+    number(0, 100_000),
+    {
+      type: "object",
+      properties: {
+        top: number(0, 100_000),
+        right: number(0, 100_000),
+        bottom: number(0, 100_000),
+        left: number(0, 100_000)
+      },
+      required: ["top", "right", "bottom", "left"],
+      additionalProperties: false
+    }
+  ]
+});
+const layoutGap = (): JsonSchema => ({
+  oneOf: [
+    number(0, 100_000),
+    {
+      type: "object",
+      properties: { horizontal: number(0, 100_000), vertical: number(0, 100_000) },
+      required: ["horizontal", "vertical"],
+      additionalProperties: false
+    }
+  ]
+});
+const layoutChild = (): JsonSchema => ({
+  type: "object",
+  properties: {
+    objectId: layoutObjectId(),
+    sizing: { type: "string", enum: ["fixed", "fill", "preserve-aspect", "content-sized"] },
+    role: { type: "string", maxLength: 120 },
+    width: number(0.000001, 1_000_000),
+    height: number(0.000001, 1_000_000),
+    row: integer(0, 64),
+    column: integer(0, 64),
+    rowSpan: integer(1, 64),
+    columnSpan: integer(1, 64),
+    horizontalAlign: { type: "string", enum: ["start", "center", "end", "stretch"] },
+    verticalAlign: { type: "string", enum: ["start", "center", "end", "stretch"] }
+  },
+  required: ["objectId"],
+  additionalProperties: false
+});
+const layoutTracks = (): JsonSchema => ({
+  type: "object",
+  properties: {
+    rows: {
+      type: "array",
+      minItems: 1,
+      maxItems: 64,
+      items: {
+        type: "object",
+        properties: {
+          type: { type: "string", enum: ["fixed", "flex"] },
+          value: number(0.000001, 1_000_000)
+        },
+        required: ["type", "value"],
+        additionalProperties: false
+      }
+    },
+    columns: {
+      type: "array",
+      minItems: 1,
+      maxItems: 64,
+      items: {
+        type: "object",
+        properties: {
+          type: { type: "string", enum: ["fixed", "flex"] },
+          value: number(0.000001, 1_000_000)
+        },
+        required: ["type", "value"],
+        additionalProperties: false
+      }
+    }
+  },
+  required: ["rows", "columns"],
+  additionalProperties: false
+});
+const layoutDiagnostics = (): JsonSchema => ({
+  type: "array",
+  maxItems: 500,
+  items: {
+    type: "object",
+    properties: {
+      code: { type: "string", enum: ["FRAME_OVERFLOW", "INVALID_CELL"] },
+      frameId: layoutObjectId(),
+      objectId: layoutObjectId(),
+      message: { type: "string", minLength: 1, maxLength: 500 }
+    },
+    required: ["code", "frameId", "message"],
+    additionalProperties: false
+  }
+});
+const layoutFrameProperties: Record<string, JsonSchema> = {
+  frameId: layoutObjectId(),
+  bounds: layoutBounds(),
+  flow: { type: "string", enum: ["free", "horizontal", "vertical", "grid"] },
+  padding: layoutPadding(),
+  gap: layoutGap(),
+  overflow: { type: "string", enum: ["visible", "reject"] },
+  children: { type: "array", maxItems: 500, items: layoutChild() },
+  tracks: layoutTracks(),
+  role: { type: "string", maxLength: 120 },
+  containerObjectId: layoutObjectId()
+};
 
 const propertySchemas: Record<string, JsonSchema> = {
   left: number(-100000, 100000),
@@ -1652,6 +1788,137 @@ definitions.push(
       additionalProperties: false
     },
     outputSchema: output({ planId: objectId(), objectIds: objectIds(0) })
+  },
+  {
+    name: "create_layout_frame",
+    title: "Create layout frame",
+    description:
+      "Persist a bounded layout frame with explicit flow, sizing, padding, gaps, ownership, and overflow policy.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: false,
+    cancellable: true,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: layoutFrameProperties,
+      required: ["frameId", "bounds", "flow", "children"],
+      additionalProperties: false
+    },
+    outputSchema: output({
+      frameId: layoutObjectId(),
+      objectIds: layoutObjectIds()
+    })
+  },
+  {
+    name: "configure_layout_frame",
+    title: "Configure layout frame",
+    description:
+      "Update the persisted geometry and policy of one layout frame without changing scene objects.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: true,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: layoutFrameProperties,
+      required: ["frameId"],
+      additionalProperties: false
+    },
+    outputSchema: output({ frameId: layoutObjectId() })
+  },
+  {
+    name: "insert_layout_child",
+    title: "Insert layout child",
+    description:
+      "Add one scene object to a persisted layout frame at an optional deterministic index.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: false,
+    cancellable: true,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: {
+        frameId: layoutObjectId(),
+        child: layoutChild(),
+        index: integer(0, 500)
+      },
+      required: ["frameId", "child"],
+      additionalProperties: false
+    },
+    outputSchema: output({ frameId: layoutObjectId(), objectId: layoutObjectId() })
+  },
+  {
+    name: "remove_layout_child",
+    title: "Remove layout child",
+    description:
+      "Remove one scene object from a persisted layout frame without deleting the object.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: false,
+    cancellable: true,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: { frameId: layoutObjectId(), objectId: layoutObjectId() },
+      required: ["frameId", "objectId"],
+      additionalProperties: false
+    },
+    outputSchema: output({ frameId: layoutObjectId(), objectId: layoutObjectId() })
+  },
+  {
+    name: "remove_layout_frame",
+    title: "Remove layout frame",
+    description: "Remove one persisted layout frame while preserving its scene objects.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: false,
+    cancellable: true,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: { frameId: layoutObjectId() },
+      required: ["frameId"],
+      additionalProperties: false
+    },
+    outputSchema: output({ frameId: layoutObjectId() })
+  },
+  {
+    name: "reflow_layout_frame",
+    title: "Reflow layout frame",
+    description:
+      "Resolve one persisted layout frame and apply its bounds atomically to its scene children.",
+    version: SEMANTIC_RUNTIME_VERSION,
+    risk: "reversible_mutation",
+    confirmation: "none",
+    retryable: true,
+    idempotent: true,
+    cancellable: true,
+    requires: ["project", "canvas"],
+    inputSchema: {
+      type: "object",
+      properties: { frameId: layoutObjectId() },
+      required: ["frameId"],
+      additionalProperties: false
+    },
+    outputSchema: output({
+      frameId: layoutObjectId(),
+      objectIds: layoutObjectIds(),
+      diagnostics: layoutDiagnostics(),
+      warnings: { type: "array", maxItems: 500, items: { type: "string", maxLength: 500 } }
+    })
   },
   {
     name: "compose_labeled_group",

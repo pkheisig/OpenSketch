@@ -13,6 +13,28 @@ const fixtureText = readFileSync(fixturePath, "utf8");
 const fixture = migrateProject(JSON.parse(fixtureText));
 
 describe("portable OpenSketch projects", () => {
+  it("round-trips persistent layout frames through the portable project boundary", () => {
+    const objectId = (fixture.objects.objects[0] as { objectId?: string }).objectId;
+    if (!objectId) throw new Error("The portable fixture has no stable scene object ID.");
+    const layout = {
+      version: 1 as const,
+      frames: [
+        {
+          id: "frame",
+          bounds: { left: 0, top: 0, width: 200, height: 100 },
+          flow: "horizontal" as const,
+          padding: { top: 0, right: 0, bottom: 0, left: 0 },
+          gap: { horizontal: 10, vertical: 0 },
+          overflow: "visible" as const,
+          children: [{ objectId, sizing: "fill" as const }]
+        }
+      ]
+    };
+    const restored = migrateProject(JSON.parse(serializeProject({ ...fixture, layout })));
+
+    expect(restored.layout).toEqual(layout);
+  });
+
   it("round-trips the established project schema without scene loss", () => {
     const serialized = serializeProject({
       ...fixture,
