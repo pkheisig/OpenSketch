@@ -325,6 +325,7 @@ export function CanvasWorkspace() {
   const pendingZoomAnchor = useRef<ZoomAnchor | null>(null);
   const [rulerZoom, setRulerZoom] = useState(zoom);
   const [dragging, setDragging] = useState(false);
+  const [dropError, setDropError] = useState("");
   const [viewportReady, setViewportReady] = useState(false);
   const [rulerVisible, setRulerVisible] = useState(() => {
     try {
@@ -683,6 +684,7 @@ export function CanvasWorkspace() {
   const onDrop = (event: DragEvent) => {
     event.preventDefault();
     setDragging(false);
+    setDropError("");
     const bounds = stageRef.current?.getBoundingClientRect();
     const point = bounds
       ? {
@@ -756,7 +758,15 @@ export function CanvasWorkspace() {
               : undefined
           );
         })
-      );
+      ).then((results) => {
+        const failures = results.flatMap((result, index) => {
+          if (result.status !== "rejected") return [];
+          const message =
+            result.reason instanceof Error ? result.reason.message : String(result.reason);
+          return [`${files[index]?.name ?? "Dropped file"}: ${message}`];
+        });
+        if (failures.length > 0) setDropError(failures.join(" "));
+      });
     }
   };
 
@@ -1186,6 +1196,11 @@ export function CanvasWorkspace() {
           <button type="button" onClick={editor.closeGroupEdit}>
             Exit group
           </button>
+        </div>
+      ) : null}
+      {dropError ? (
+        <div className="panel-error" role="alert" aria-live="polite">
+          {dropError}
         </div>
       ) : null}
       {rulerVisible ? (

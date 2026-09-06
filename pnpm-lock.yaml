@@ -160,6 +160,9 @@ importers:
       svg2pdf.js:
         specifier: 2.7.0
         version: 2.7.0(jspdf@4.2.1)
+      tiff:
+        specifier: 7.1.3
+        version: 7.1.3
     devDependencies:
       "@types/react-window":
         specifier: ^1.8.8
@@ -3861,6 +3864,12 @@ packages:
         integrity: sha512-DRebOWuqDvxunfkNJAlc3IzWIPD5xVxwUNbHr7xKB8E6aLJxIPfNX3CoMJghcFjpv6RWQsrcJbghtEwSPoJqMA==
       }
 
+  iobuffer@6.0.1:
+    resolution:
+      {
+        integrity: sha512-SZWYkWNfjIXIBYSDpXDYIgshqtbOPsi4lviawAEceR1Kqk+sHDlcQjWrzNQsii80AyBY0q5c8HCTNjqo74ul+Q==
+      }
+
   is-array-buffer@3.0.5:
     resolution:
       {
@@ -5323,6 +5332,12 @@ packages:
     resolution:
       {
         integrity: sha512-iOiPUo/BGnZ6+54OsWxZidGCsdU8YbE4PSpdPinp7DeMtUJNJBoJ/ouUSTJjHkh1KntHaltHl/gDs2FC4i5+Nw==
+      }
+
+  tiff@7.1.3:
+    resolution:
+      {
+        integrity: sha512-YEEq3fT++2pdta/9P/vGG4QRMdZQoe6W6JNaWnIi6NvAsbeNITwFCtmWwL/BZvOi+uo2I3ohyOkD3sZfme+c6g==
       }
 
   tinybench@2.9.0:
@@ -8266,6 +8281,8 @@ snapshots:
 
   iobuffer@5.4.0: {}
 
+  iobuffer@6.0.1: {}
+
   is-array-buffer@3.0.5:
     dependencies:
       call-bind: 1.0.9
@@ -9218,6 +9235,11 @@ snapshots:
     dependencies:
       utrie: 1.0.2
     optional: true
+
+  tiff@7.1.3:
+    dependencies:
+      fflate: 0.8.3
+      iobuffer: 6.0.1
 
   tinybench@2.9.0: {}
 

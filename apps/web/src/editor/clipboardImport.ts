@@ -1,10 +1,10 @@
-const SUPPORTED_CLIPBOARD_IMAGE_TYPES = new Set([
-  "image/svg+xml",
-  "image/png",
-  "image/jpeg",
-  "image/webp"
-]);
-const SUPPORTED_IMAGE_EXTENSIONS = new Set(["svg", "png", "jpg", "jpeg", "webp"]);
+import {
+  extensionForFormat,
+  formatForExtension,
+  formatForMimeType,
+  mimeTypeForFormat
+} from "@workspace/editor-core";
+import { isKnownInterchangeFile, isKnownInterchangeMimeType } from "@/interchange/registry";
 
 function svgSourceFromClipboard(data: DataTransfer): string | undefined {
   const candidates = [
@@ -21,10 +21,8 @@ function svgSourceFromClipboard(data: DataTransfer): string | undefined {
 }
 
 function extensionForMimeType(mimeType: string): string {
-  if (mimeType === "image/svg+xml") return "svg";
-  if (mimeType === "image/jpeg") return "jpg";
-  if (mimeType === "image/webp") return "webp";
-  return "png";
+  const format = formatForMimeType(mimeType);
+  return format ? extensionForFormat(format) : "png";
 }
 
 function extensionForFile(file: File): string {
@@ -32,38 +30,37 @@ function extensionForFile(file: File): string {
 }
 
 export function isSupportedImportedImageFile(file: File): boolean {
-  return (
-    SUPPORTED_CLIPBOARD_IMAGE_TYPES.has(file.type.toLowerCase()) ||
-    SUPPORTED_IMAGE_EXTENSIONS.has(extensionForFile(file))
-  );
+  return isKnownInterchangeFile(file);
 }
 
 export function importedMediaFilesFromDataTransfer(data: DataTransfer): File[] {
-  const files = Array.from(data.files).filter(isSupportedImportedImageFile);
+  const files = Array.from(data.files);
   if (files.length > 0) return files;
   return Array.from(data.items)
     .filter((item) => item.kind === "file")
     .map((item) => item.getAsFile())
-    .filter((file): file is File => file !== null && isSupportedImportedImageFile(file));
+    .filter((file): file is File => file !== null);
 }
 
 function embeddedImageDataUrl(data: DataTransfer): string | undefined {
   const candidates = [data.getData("text/html"), data.getData("text/plain")];
   for (const candidate of candidates) {
     const match = candidate.match(
-      /(?:src\s*=\s*["']\s*)?(data:image\/(?:png|jpeg|webp|svg\+xml)(?:;charset=[^;,]+)?(?:;base64)?,[^"'\s<>]+)/i
+      /(?:src\s*=\s*["']\s*)?(data:([a-z0-9.+-]+\/[a-z0-9.+-]+)(?:;[^,]*)?,[^"'\s<>]+)/i
     );
-    if (match) return match[1];
+    if (match && isKnownInterchangeMimeType(match[2])) return match[1];
   }
   return undefined;
 }
 
 function fileFromDataUrl(dataUrl: string): File | undefined {
-  const match = dataUrl.match(
-    /^data:(image\/(?:png|jpeg|webp|svg\+xml))(?:;charset=[^;,]+)?(;base64)?,(.*)$/is
-  );
+  const match = dataUrl.match(/^data:([^;,]+)(?:;[^,]*)?,(.*)$/is);
   if (!match) return undefined;
-  const [, mimeType, base64, encoded] = match;
+  const [, declaredMimeType, encoded] = match;
+  const mimeType = declaredMimeType.toLowerCase();
+  if (!isKnownInterchangeMimeType(mimeType)) return undefined;
+  const header = dataUrl.slice(5, dataUrl.indexOf(","));
+  const base64 = /(?:^|;)base64$/i.test(header);
   try {
     const decoded = base64 ? atob(encoded) : decodeURIComponent(encoded);
     const bytes = Uint8Array.from(decoded, (character) => character.charCodeAt(0));
@@ -85,25 +82,21 @@ export function importedMediaFilesFromClipboard(data: DataTransfer): File[] {
     .map((item) => item.getAsFile())
     .filter((file): file is File => file !== null && isSupportedImportedImageFile(file));
   const transferredFiles =
-    transferredItems.length > 0 ? transferredItems : importedMediaFilesFromDataTransfer(data);
+    transferredItems.length > 0
+      ? transferredItems
+      : importedMediaFilesFromDataTransfer(data).filter(isSupportedImportedImageFile);
   if (transferredFiles.length > 0) {
     return transferredFiles.map((file) => {
       const declaredMimeType = file.type.toLowerCase();
-      const mimeType = SUPPORTED_CLIPBOARD_IMAGE_TYPES.has(declaredMimeType)
-        ? declaredMimeType
-        : "";
-      const extension = mimeType
-        ? extensionForMimeType(mimeType)
-        : extensionForFile(file) || "png";
+      const format =
+        formatForMimeType(declaredMimeType) ?? formatForExtension(extensionForFile(file));
+      const mimeType = format ? mimeTypeForFormat(format) : "";
+      const extension = mimeType ? extensionForMimeType(mimeType) : extensionForFile(file) || "png";
       const isSvg = mimeType === "image/svg+xml" || extension === "svg";
-      return new File(
-        [file],
-        isSvg ? "Clipboard SVG.svg" : `Clipboard image.${extension}`,
-        {
-          type: mimeType,
-          lastModified: file.lastModified
-        }
-      );
+      return new File([file], isSvg ? "Clipboard SVG.svg" : `Clipboard image.${extension}`, {
+        type: mimeType,
+        lastModified: file.lastModified
+      });
     });
   }
 

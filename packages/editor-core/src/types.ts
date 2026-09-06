@@ -1,4 +1,4 @@
-export const OpenSketch_FORMAT_VERSION = 2;
+export const OpenSketch_FORMAT_VERSION = 3;
 
 export const PROJECT_KINDS = ["diagram", "figure", "poster"] as const;
 export type ProjectKind = (typeof PROJECT_KINDS)[number];
@@ -93,11 +93,21 @@ export interface AssetManifest {
   families: AssetFamily[];
 }
 
+export interface ImportedMediaSourceResource {
+  format: string;
+  name: string;
+  mimeType: string;
+  byteLength: number;
+  sha256: string;
+}
+
 export interface ImportedMediaRecord {
   id: string;
   name: string;
   mimeType: string;
   dataUrl: string;
+  /** Source identity retained without embedding a second copy of the source bytes. */
+  sourceResource?: ImportedMediaSourceResource;
 }
 
 export interface PortableProject {

@@ -42,6 +42,7 @@ import {
   type ConnectorLineStyle
 } from "@workspace/editor-core";
 import { AssetPreviewImage } from "@/components/AssetPreviewImage";
+import { interchangeFileAccept } from "@/interchange/registry";
 import { MotionCollapse } from "@/components/MotionCollapse";
 import { MotionPresence } from "@/components/MotionPresence";
 import { useEditorFields } from "@/editor/editorHooks";
@@ -1866,13 +1867,13 @@ function ImportsPanel() {
           <ImagePlus size={24} />
         </span>
         <strong>Import an image</strong>
-        <small>SVG, PNG, JPEG, or WebP</small>
+        <small>SVG, PNG, JPEG, WebP, TIFF, BMP, GIF, or modern raster</small>
       </button>
       <input
         ref={input}
         hidden
         type="file"
-        accept=".svg,.png,.jpg,.jpeg,.webp,image/svg+xml,image/png,image/jpeg,image/webp"
+        accept={interchangeFileAccept()}
         onChange={(event) => {
           const file = event.target.files?.[0];
           if (file) {
