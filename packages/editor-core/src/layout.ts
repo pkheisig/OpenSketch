@@ -301,7 +301,12 @@ function normalizedChild(value: unknown, path: string): LayoutCellSpec {
   }
   for (const key of ["width", "height"] as const) {
     if (value[key] !== undefined) {
-      result[key] = finite(value[key], `${path}.${key}`, 0, LAYOUT_LIMITS.maxCoordinate);
+      result[key] = finite(
+        value[key],
+        `${path}.${key}`,
+        MIN_LAYOUT_SIZE,
+        LAYOUT_LIMITS.maxCoordinate
+      );
     }
   }
   if (value.role !== undefined)

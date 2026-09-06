@@ -121,7 +121,7 @@ export interface SemanticEditorAdapterDependencies {
   setLayoutState: (layout: LayoutDocument | undefined) => void;
   removeLayoutReferences: (removedIds: ReadonlySet<string>) => void;
   applyLayoutFrame: (frameId: string) => LayoutFrameApplicationResult;
-  setCanvasSettings: (settings: Partial<CanvasSettings>) => void;
+  setCanvasSettings: (settings: Partial<CanvasSettings>, options?: { commit?: boolean }) => void;
   setProjectName: (name: string) => void;
   setProjectDescription: (description: string) => void;
   setSelection: (objects: FabricObject[]) => void;
@@ -1095,7 +1095,11 @@ export function createSemanticEditorAdapter(
           `Canvas area must not exceed ${PORTABLE_PROJECT_LIMITS.maxCanvasArea}.`
         );
       }
-      dependencies.setCanvasSettings({ width, height });
+      // Keep canvas geometry changes inside the semantic transaction boundary.
+      // This lets a page resize followed by frame configuration/reflow become
+      // one history entry when issued as a confirmed batch.
+      dependencies.setCanvasSettings({ width, height }, { commit: false });
+      commitSemantic("Semantic resize canvas");
       return { data: { width, height }, changedObjectIds: [] };
     }
     if (command === "find_objects") {

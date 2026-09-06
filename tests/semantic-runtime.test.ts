@@ -161,6 +161,18 @@ describe("semantic runtime", () => {
     ).toBe("CONFIRMATION_REQUIRED");
   });
 
+  it("rejects zero-sized fixed layout children at the semantic boundary", async () => {
+    const runtime = createSemanticRuntime(fakeAdapter());
+    const result = await runtime.execute("create_layout_frame", {
+      frameId: "frame",
+      bounds: { left: 0, top: 0, width: 100, height: 100 },
+      flow: "free",
+      children: [{ objectId: "object", sizing: "fixed", width: 0, height: 20 }]
+    });
+
+    expect(result).toMatchObject({ ok: false, error: { code: "INVALID_INPUT" } });
+  });
+
   it("supports explicit aliases and one transaction for bounded batches", async () => {
     const adapter = fakeAdapter();
     const runtime = createSemanticRuntime(adapter);

@@ -1703,7 +1703,9 @@ function validateScene(
     if (value[key] !== undefined) validatePaint(value[key], `${path}.${key}`, context);
   }
   for (const key of ["backgroundImage", "overlayImage", "clipPath"]) {
-    if (value[key] !== undefined) validateSceneObject(value[key], `${path}.${key}`, context, 1);
+    if (value[key] !== undefined) {
+      validateSceneObject(value[key], `${path}.${key}`, context, 1, undefined, false);
+    }
   }
   for (const reference of context.connectorBindings) {
     for (const key of ["fromObjectId", "toObjectId"]) {

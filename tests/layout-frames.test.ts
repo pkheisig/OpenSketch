@@ -309,6 +309,17 @@ describe("persistent layout frames", () => {
     ).toThrow(/positive space|flexible tracks/i);
   });
 
+  it("rejects zero-sized explicit child dimensions before persistence", () => {
+    expect(() =>
+      createLayoutFrame(createLayoutDocument(), {
+        frameId: "zero-child",
+        bounds: { left: 0, top: 0, width: 100, height: 100 },
+        flow: "free",
+        children: [{ objectId: "child", sizing: "fixed", width: 0, height: 20 }]
+      })
+    ).toThrow(/width|positive|zero-sized/i);
+  });
+
   it("reflows a bounded poster-sized grid within the resource budget", () => {
     const objectCount = 500;
     const document = createLayoutFrame(createLayoutDocument(), {

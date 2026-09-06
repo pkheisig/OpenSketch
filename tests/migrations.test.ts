@@ -268,6 +268,33 @@ describe("project migrations", () => {
     ).toThrow(/unknown object|layout frame/i);
   });
 
+  it("does not treat scene-root decoration objects as layout-scene identities", () => {
+    for (const key of ["backgroundImage", "overlayImage", "clipPath"] as const) {
+      expect(() =>
+        migrateProject({
+          ...project,
+          formatVersion: 2,
+          kind: "figure",
+          objects: {
+            objects: [{ type: "Rect", objectId: "rect", width: 40, height: 40 }],
+            [key]: { type: "Rect", objectId: "decoration", width: 20, height: 20 }
+          },
+          layout: {
+            version: 1,
+            frames: [
+              {
+                id: "frame",
+                bounds: { left: 0, top: 0, width: 100, height: 100 },
+                flow: "free",
+                children: [{ objectId: "decoration", sizing: "content-sized" }]
+              }
+            ]
+          }
+        })
+      ).toThrow(/unknown object|layout frame/i);
+    }
+  });
+
   it("preserves an explicit project kind", () => {
     expect(migrateProject({ ...project, formatVersion: 2, kind: "poster" }).kind).toBe("poster");
   });

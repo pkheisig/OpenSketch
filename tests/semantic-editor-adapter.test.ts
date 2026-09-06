@@ -519,7 +519,11 @@ describe("semantic editor adapter", () => {
       data: { width: 2600, height: 900 },
       changedObjectIds: []
     });
-    expect(adapter.setCanvasSettings).toHaveBeenCalledWith({ width: 2600, height: 900 });
+    expect(adapter.setCanvasSettings).toHaveBeenCalledWith(
+      { width: 2600, height: 900 },
+      { commit: false }
+    );
+    expect(adapter.commit).toHaveBeenCalledWith("Semantic resize canvas");
   });
 
   it("rejects a canvas resize whose area exceeds the portable project limit", async () => {

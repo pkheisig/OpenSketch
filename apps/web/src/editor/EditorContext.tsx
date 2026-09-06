@@ -3072,9 +3072,9 @@ export function EditorProvider({
   semanticUndoRef.current = undo;
   const semanticRedoRef = useRef(redo);
   semanticRedoRef.current = redo;
-  const semanticSetCanvasSettingsRef = useRef<(settings: Partial<CanvasSettings>) => void>(
-    () => undefined
-  );
+  const semanticSetCanvasSettingsRef = useRef<
+    (settings: Partial<CanvasSettings>, options?: { commit?: boolean }) => void
+  >(() => undefined);
   const semanticSetProjectNameRef = useRef<(name: string) => void>(() => undefined);
   const semanticSetProjectDescriptionRef = useRef<(description: string) => void>(() => undefined);
   const semanticExportSvgRef = useRef<EditorContextValue["exportSvg"]>(() => undefined);
@@ -3114,7 +3114,8 @@ export function EditorProvider({
         setLayoutState: (layout) => setLayoutStateWithoutCommit(layout),
         removeLayoutReferences: (removedIds) => removeLayoutReferences(removedIds),
         applyLayoutFrame: (frameId) => applyLayoutFrame(frameId),
-        setCanvasSettings: (settings) => semanticSetCanvasSettingsRef.current(settings),
+        setCanvasSettings: (settings, options) =>
+          semanticSetCanvasSettingsRef.current(settings, options),
         setProjectName: (name) => semanticSetProjectNameRef.current(name),
         setProjectDescription: (description) =>
           semanticSetProjectDescriptionRef.current(description),
@@ -4645,10 +4646,10 @@ export function EditorProvider({
   }, [canvas, canvasSettings, setZoom]);
 
   const setCanvasSettings = useCallback(
-    (settings: Partial<CanvasSettings>) => {
+    (settings: Partial<CanvasSettings>, options: { commit?: boolean } = {}) => {
       const next = { ...latestCanvasSettings.current, ...settings };
       applyCanvasSettings(next);
-      if (canvas) {
+      if (canvas && options.commit !== false) {
         commit("Canvas settings");
       }
     },

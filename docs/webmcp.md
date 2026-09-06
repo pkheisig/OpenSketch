@@ -69,7 +69,7 @@ registry.
 | `search_assets`             | Search the bundled scientific asset manifest                                  | Read-only                                        |
 | `inspect_asset`             | Inspect one asset family or variant without raw SVG                           | Read-only                                        |
 | `inspect_provenance`        | Inspect bounded asset provenance for the figure                               | Read-only                                        |
-| `resize_canvas`             | Set the logical canvas width and height                                       | Reversible and retryable                         |
+| `resize_canvas`             | Set logical canvas geometry; compose with layout-frame reflow in a batch      | Reversible and retryable                         |
 | `set_project_metadata`      | Set the figure name or description                                            | Reversible and retryable                         |
 | `set_selection`             | Set the canvas selection by stable object IDs                                 | Reversible and retryable                         |
 | `create_text`               | Create point or box text through the editor pathway                           | Reversible                                       |
@@ -136,6 +136,17 @@ Command outputs contain a bounded result, changed object IDs, warnings, and
 the runtime version. Object references are stable IDs, not DOM selectors or
 array positions. `batch` accepts registered mutations only, resolves aliases
 within the batch, and rolls back the editor transaction if a member fails.
+
+### Page geometry and layout frames
+
+`resize_canvas` changes the logical page geometry and intentionally leaves
+explicit layout-frame coordinates unchanged. To resize a figure or poster and
+reflow its affected frames as one history transaction, use a confirmed
+`batch` with `resize_canvas`, any required `configure_layout_frame` calls for
+the new frame bounds, and one `reflow_layout_frame` call for each affected
+frame. This keeps page geometry, frame geometry, child materialization, and
+connector refresh under the same semantic transaction; direct canvas resize
+does not infer frame scaling from page dimensions.
 
 ## Safety and progressive enhancement
 
