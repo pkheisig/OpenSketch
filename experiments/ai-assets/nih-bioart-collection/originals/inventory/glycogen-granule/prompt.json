@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a glycogen granule, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One glycogen beta-particle schematic: compact rounded highly branched polymer network, many small purple glucose beads linked in short gently curved branching chains radiating from a tiny central golden glycogenin protein core. Dense near-spherical outer branching, a slightly opened front region lets several branching tiers and core be seen, but no enclosing membrane or smooth outer shell. All glucose beads same type and color, thin violet connecting bonds, irregular natural branching with no disconnected floating beads. Roughly four visible branching tiers for readability, not literal molecular count. No text, chemical formulas, atom labels, organelles or scenery. Smooth matte bead forms, thin crisp dark purple outlines, restrained gradients and soft highlights; no photographic grain.",
+  "style_refinement": "Refine image 1 into the polished biomedical vector-like illustration style of image 2. Use image 2 only for rendering style, not its cell shape or components. Preserve the glycogen granule's branched purple glucose-bead chains and small golden glycogenin core, no enclosing membrane. Make the beads smooth matte filled forms, thin crisp dark violet outlines, soft restrained gradients and small subdued highlights. Remove shiny plastic gloss, granular textures and purple haze between branches. Keep branching connections clear and distinct. Complete isolated object, transparent background with generous padding; no text, labels, shadows or unrelated objects.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-562a0b7f-ae58-4c33-a46c-d60454c14b73.png",
+  "archetype": "Simplified glycogen beta-particle: branched glucose polymer with a glycogenin core. Bead counts, tiers, bond lengths and relative protein size are illustrative, not a molecular reconstruction.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "glycogen-granule",
+  "name": "glycogen granule",
+  "original": "originals/inventory/glycogen-granule/generated.png",
+  "original_sha256": "bb0deaaacf0a4386fe85f9a9227b15b722de6fc2bd9a8c7dbc7a9d6a6fdf4dd2"
+}

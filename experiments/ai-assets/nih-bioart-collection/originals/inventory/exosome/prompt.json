@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an exosome, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Use a conventional spherical small extracellular vesicle cutaway: one teal lipid bilayer shell, a few small integrated purple membrane proteins, pale turquoise aqueous lumen containing two short curled orange RNA strands and three discrete small protein cargo blobs. One clean open cutaway window reveals the lumen; intact round silhouette with membrane surface visible around it. No nucleus, organelles, nested vesicles, spikes or virus capsid. Treat cargo as illustrative, not universal. Matte vector-like biomedical art with thin dark colored outlines, restrained smooth gradients, no photorealism or glow.",
+  "style_refinement": "Refine image 1 to match only the illustration style of image 2: matte biomedical vector-like illustration, thin crisp colored outlines, clean filled forms, restrained gradients and small soft highlights. Preserve image 1's exosome cutaway, two orange RNA strands, three protein cargo blobs, and three integrated membrane proteins. Simplify the excessively beaded exterior into a smooth teal membrane surface; show phospholipid head-tail detail only along the cutaway rim. Reduce glossy specular reflections and remove floating bubble clutter from the lumen. Keep the whole complete vesicle centered with generous transparent padding. Do not copy image 2's cell anatomy. No text, labels, arrows, shadows or unrelated objects.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-2d129674-6527-4c38-a975-fff80f0bd584.png",
+  "archetype": "Illustrative small extracellular vesicle cutaway usable as an exosome in a context establishing endosomal origin. Shape alone does not establish biogenesis. RNA, protein cargo and membrane proteins are schematic examples, not universal composition or diagnostic markers; membrane thickness and molecular scale exaggerated.",
+  "structure_references": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC10850029/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "exosome",
+  "name": "exosome",
+  "original": "originals/inventory/exosome/generated.png",
+  "original_sha256": "9806a1000fb6b566c986385763d200601ecdeae44fbfe33e7771d5576e4ab7c4"
+}

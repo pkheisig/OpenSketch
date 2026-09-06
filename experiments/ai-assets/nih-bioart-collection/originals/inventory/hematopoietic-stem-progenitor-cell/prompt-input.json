@@ -1,0 +1,13 @@
+{
+  "tool": "built-in image_gen",
+  "trace_settings": {"color_step": 8, "color_precision": 8, "filter_speckle": 2, "layer_difference": 1},
+  "generation": "Create a single isolated scientific illustration of a generic human hematopoietic stem/progenitor cell, matching the supplied NIH BioArt reference image visual style: detailed polished biomedical illustration, clean smooth forms, crisp thin purple outlines, soft pseudo-3D depth, subtle gradients and highlights, saturated professional colors. A simple round immature blood-forming cell with a high nucleus-to-cytoplasm ratio, one large round violet nucleus with fine subtly indicated chromatin and one small darker nucleolus, a narrow pale blue-lavender cytoplasmic rim containing only a few small intrinsic organelles. No granule-rich cytoplasm, no lobulated nucleus, no long projections, no invented cell markers or surface symbols. Generic schematic morphology, not a diagnostic phenotype. Matte clean vector-like drawing with restrained gentle shading, no photorealistic texture or glossy plastic. Complete single cell centered with generous true transparent padding; no text, labels, arrows, borders, scenery, unrelated objects, cast shadows, glow or checkerboard.",
+  "style_refinement": "Redraw stem/progenitor cell image 1 in the clean smooth matte NIH BioArt illustration style of macrophage image 2. Image 2 is a STYLE reference only. Preserve the round stem/progenitor cell shape with one large round violet nucleus, one darker small nucleolus, and a narrow blue-lavender cytoplasmic rim with a few small organelles. Replace all mottled photorealistic texture and intricate chromatin threads with smooth filled shapes and only a few subtle fine chromatin marks. Thin crisp purple outlines, restrained gradients and simple gentle highlights, professional saturated color. No granule-rich cytoplasm, no additional cells, surface markers or labels. Complete centered object with transparent padding. No checkerboard, shadow or glow.",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-15399ac4-3c06-4a4f-a126-02842ce4f4ae.png",
+  "structure_references": [
+    "https://pubmed.ncbi.nlm.nih.gov/11574770/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC8057613/"
+  ],
+  "morphology_note": "Generic immature hematopoietic cell archetype; stemness and progenitor subsets cannot be established from this unlabeled morphology alone."
+}

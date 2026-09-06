@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a cryovial, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One upright closed laboratory cryogenic storage vial, compact clear polypropylene cylindrical tube with rounded inner bottom and a short flat self-standing skirt at its base. Tall ribbed navy-blue screw cap seated on neck, small white circular cap-top insert blank. A narrow molded rim beneath cap; no external hinge. Empty pale-blue translucent body with one blank frosted white writing patch, no writing or graduation ticks. Three-quarter view, cap top ellipse visible. Smooth biomedical equipment cartoon with thin crisp gray-blue outlines, restrained gradients and clean broad highlights, matte blue cap, no photographic grain, frost, ice or vapor. Complete object, transparent background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-27059184-da53-4601-8cb1-ee4f7a05fb2c.png",
+  "style_review": "Smooth equipment illustration with restrained molded-cap texture; accepted for SVG comparison.",
+  "archetype": "Generic self-standing cryovial with blank writing area and cap insert; no manufacturer or calibrated volume.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "cryovial",
+  "name": "cryovial",
+  "original": "originals/inventory/cryovial/generated.png",
+  "original_sha256": "0729c2fef991d056d6b31c2c253c08263f298b0cd3f6cd16c1d7eb1f4a1829f4"
+}

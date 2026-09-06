@@ -43,20 +43,15 @@ Use the Assets panel's **Prepare offline library** action when the complete bund
 illustration library is needed offline; this is an explicit, large download rather
 than an automatic first-visit download.
 
-## Open artwork and software
+## Artwork and software
 
-The bundled library includes public-domain and openly licensed artwork from
-NIAID NIH BioArt, SciDraw, the Arcadia Science Free organism illustration
-library, BioIcons, and Servier Medical Art. Every asset retains its original
-source, author, and license metadata; exports preserve that provenance. If a
-downstream figure tool strips embedded metadata, use the Export dialog's
-readable credits download as a sidecar.
+The library contains original OpenSketch generated artwork and editable scientific
+structures. Assets use one defined primary category plus searchable topics and
+keywords. The retired external artwork collections are no longer bundled.
 
-OpenSketch itself is licensed under
-[AGPL-3.0-only](LICENSE). Artwork keeps its original license and is not
-relicensed as part of the software. External contributions are subject to the
-additional contributor license and patent grants in
-[`CONTRIBUTING.md`](CONTRIBUTING.md).
+OpenSketch and its original artwork are licensed under [AGPL-3.0-only](LICENSE).
+Bundled fonts retain their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md).
+External contributions follow [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Project links
 

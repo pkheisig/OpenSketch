@@ -27,14 +27,7 @@
     "test:pwa": "playwright test --config playwright.pwa.config.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "assets:sync": "tsx scripts/assets/sync-nih.ts",
-    "assets:sync:open": "tsx scripts/assets/sync-open-assets.ts",
-    "assets:sync:bioicons": "tsx scripts/assets/sync-bioicons.ts",
-    "assets:taxonomy:open": "tsx scripts/assets/reclassify-open-assets.ts",
-    "assets:sync:commons": "tsx scripts/assets/sync-commons.ts",
-    "assets:validate": "tsx scripts/assets/validate-assets.ts",
-    "assets:thumbnails": "tsx scripts/assets/generate-thumbnails.ts",
-    "assets:manifest": "tsx scripts/assets/build-manifest.ts"
+    "assets:sync": "node scripts/assets/sync-generated.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",

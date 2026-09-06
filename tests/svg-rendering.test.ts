@@ -1,4 +1,3 @@
-import { readFile } from "node:fs/promises";
 import { Group, type FabricObject } from "../apps/web/node_modules/fabric";
 import { describe, expect, it } from "vitest";
 import { sanitizeImportedSvg } from "../apps/web/src/assets/browserSanitizer";
@@ -76,28 +75,6 @@ describe("editable SVG rendering", () => {
     });
   });
 
-  it("restores the glow layers in the bundled fluorescent bead asset", async () => {
-    const source = await readFile(
-      "apps/web/public/assets/bioicons/bioicons-fluoresent-bead-blue-26c811ca.svg",
-      "utf8"
-    );
-    const parsed = await loadEditableSvg(source);
-    const glowObjects = leaves(parsed.objects).filter((object) => object.shadow);
-
-    expect(glowObjects).toHaveLength(2);
-    expect(
-      glowObjects.map((object) => ({
-        blur: object.shadow?.blur,
-        color: object.shadow?.color
-      }))
-    ).toEqual(
-      expect.arrayContaining([
-        { blur: 4.52, color: "rgba(88,102,226,1)" },
-        { blur: 4.52, color: "rgba(204,207,247,1)" }
-      ])
-    );
-  });
-
   it("preserves every source SVG group as a nested editable hierarchy", async () => {
     const parsed = await loadEditableSvg(`
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 60">
@@ -168,4 +145,22 @@ describe("editable SVG rendering", () => {
       objects: expect.arrayContaining([expect.anything()])
     });
   });
+});
+
+it("loads inherited explicit color roles after SVG sanitization", async () => {
+  const source = sanitizeImportedSvg(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><g data-color-role="primary"><rect width="40" height="40" fill="#fff"/><circle data-color-role="detail" cx="20" cy="20" r="2" fill="#111"/></g></svg>',
+    "roles"
+  );
+  const parsed = await loadEditableSvg(source);
+  const leaves = (objects: Array<FabricObject | null>): FabricObject[] =>
+    objects.flatMap((o) => (!o ? [] : o instanceof Group ? leaves(o.getObjects()) : [o]));
+  expect(leaves(parsed.objects).map((o) => o.assetColorRole)).toEqual(["primary", "detail"]);
+});
+
+it("omits non-rendering empty paths so traced assets remain portable", async () => {
+  const result = await loadEditableSvg(
+    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="" fill="#fff"/><path d="M0 0H20V20H0Z" fill="#888"/></svg>'
+  );
+  expect(result.objects).toHaveLength(1);
 });

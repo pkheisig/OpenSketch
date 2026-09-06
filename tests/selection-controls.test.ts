@@ -48,7 +48,7 @@ describe("selection control colors", () => {
     const second = new Rect({ width: 20, height: 20, left: 30 });
     const selection = new ActiveSelection([first, second]);
     const atomicAsset = new Group([new Rect({ width: 20, height: 20 })]);
-    atomicAsset.OpenSketchType = "nih-asset";
+    atomicAsset.OpenSketchType = "library-asset";
 
     configureSelectionControls(first);
     configureSelectionControls(selection);

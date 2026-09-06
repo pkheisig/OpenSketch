@@ -1,0 +1,24 @@
+{
+  "result": "pass",
+  "counts": {
+    "collection_rows": 770,
+    "baseline_unique_names": 768,
+    "existing_roadmap_concepts": 136,
+    "verified_specs": 70,
+    "new_primitive_candidates": 12,
+    "reuse_presets": 18,
+    "composite_recipes": 40,
+    "new_composite_topics": 11,
+    "expanded_existing_composites": 29,
+    "brainstorm_candidates": 36,
+    "sources": 35
+  },
+  "protected_files_byte_identical": true,
+  "exact_name_duplicates_with_baseline": 0,
+  "duplicate_catalog_names": 0,
+  "all_dependencies_resolve": true,
+  "dependency_cycles": 0,
+  "all_verified_specs_have_sources": true,
+  "semantic_review": "Manual nearest-archetype and roadmap comparison recorded per entry; normalization alone does not prove semantic uniqueness.",
+  "artwork_generated": false
+}

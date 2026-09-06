@@ -1,0 +1,24 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a primary cilium, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A conventional solitary nonmotile primary cilium: slender gently tapering teal membrane-enclosed shaft with rounded closed distal tip, short golden basal body and narrow transition zone at base. Show a narrow longitudinal cutaway exposing only peripheral golden axonemal microtubules, few near-side fibers visible with far-side fibers hidden, leaving an uncluttered pale lumen; no central microtubule pair, no periodic dynein arms or ladder-like cross bridges. Conventional proximal 9+0 organization is implied, not shown as an extra cross-section. Several peripheral microtubules terminate before the distal tip, illustrating tapering of the distal axoneme. No cell, apical membrane patch or neighboring cilia. Smooth matte vector-like forms, thin crisp outlines, restrained gradients and small highlights. Whole object with generous transparent padding.",
+  "style_refinement": "Refine image 1's primary cilium to the clean matte biomedical illustration style of image 2. Preserve slender teal closed-tip shaft, narrow longitudinal window and short golden basal body. Correct the golden fibers: every visible axonemal fiber must run continuously from the base to its own distal endpoint at a different height. Remove floating detached tube fragments and segmented pipe joints. Leave a sparse loosely arranged bundle with some fibers ending halfway and others near the tip, no central paired apparatus or ladder-like bridges. Smooth filled forms, thin crisp colored outlines, restrained gradients, small soft highlights; remove glassy sheen, texture and glow. Image 2 is style only. Complete isolated object with generous transparent padding, no cell, labels or text.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-3c1802ee-e82f-4e57-837b-1e3b80929bab.png",
+  "archetype": "Conventional mammalian nonmotile primary cilium, simplified longitudinal window with a subset of continuous microtubules ending at different distal heights. Proximal 9+0 organization is not a full-length invariant; distal organization varies. No central pair or motile axonemal apparatus shown. Fiber counts, basal structures and dimensions schematic, not a direct reconstruction.",
+  "structure_references": [
+    "https://www.nature.com/articles/s41594-020-0507-4",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6511023/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "primary-cilium",
+  "name": "primary cilium",
+  "original": "originals/inventory/primary-cilium/generated.png",
+  "original_sha256": "74878abb9726b2068b5486f2d0e98cddc23e055f228fd752781fb25d057a5d91"
+}

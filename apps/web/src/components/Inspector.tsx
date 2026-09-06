@@ -1,3 +1,6 @@
+import { AssetColorPresets } from "./AssetColorPresets";
+import { ScientificBrushInspector } from "./ScientificBrushInspector";
+import { isScientificBrush } from "@/editor/scientific/objects";
 import { useEffect, useState } from "react";
 import {
   AlignCenter,
@@ -178,8 +181,22 @@ function ObjectInspector({ object }: { object: FabricObject }) {
   );
   return (
     <>
+      {!canGroup && (assetFamily || isScientificBrush(object) || object.svgComponent) && (
+        <InspectorSection title="Color palette" open>
+          <AssetColorPresets key={object.objectId} object={object} />
+        </InspectorSection>
+      )}
+      {isScientificBrush(object) && (
+        <InspectorSection title="Editable structure" open>
+          <ScientificBrushInspector object={object} />
+        </InspectorSection>
+      )}
       <InspectorSection title="Transform" open>
-        {isSvgPart && <p className="section-note">Position and size within the parent SVG.</p>}
+        {isSvgPart && (
+          <p className="section-note">
+            Edit this component as a whole. Its smaller details stay together.
+          </p>
+        )}
         <div className="field-row two">
           <NumberField
             label="X"
@@ -192,42 +209,44 @@ function ObjectInspector({ object }: { object: FabricObject }) {
             onChange={(top) => editor.setObject({ top })}
           />
         </div>
-        <div className="field-row dimensions">
-          <NumberField
-            label="W"
-            value={width}
-            min={1}
-            onChange={(next) => {
-              const scaleX = next / (object.width || 1);
-              editor.setObject(
-                aspectLocked
-                  ? { scaleX, scaleY: (object.scaleY ?? 1) * (next / Math.max(width, 1)) }
-                  : { scaleX }
-              );
-            }}
-          />
-          <button
-            className={`aspect-lock ${aspectLocked ? "active" : ""}`}
-            onClick={() => setAspectLocked((current) => !current)}
-            aria-label={aspectLocked ? "Unlock aspect ratio" : "Lock aspect ratio"}
-            aria-pressed={aspectLocked}
-          >
-            {aspectLocked ? <Lock size={13} /> : <Unlock size={13} />}
-          </button>
-          <NumberField
-            label="H"
-            value={height}
-            min={1}
-            onChange={(next) => {
-              const scaleY = next / (object.height || 1);
-              editor.setObject(
-                aspectLocked
-                  ? { scaleY, scaleX: (object.scaleX ?? 1) * (next / Math.max(height, 1)) }
-                  : { scaleY }
-              );
-            }}
-          />
-        </div>
+        {!isScientificBrush(object) && (
+          <div className="field-row dimensions">
+            <NumberField
+              label="W"
+              value={width}
+              min={1}
+              onChange={(next) => {
+                const scaleX = next / (object.width || 1);
+                editor.setObject(
+                  aspectLocked
+                    ? { scaleX, scaleY: (object.scaleY ?? 1) * (next / Math.max(width, 1)) }
+                    : { scaleX }
+                );
+              }}
+            />
+            <button
+              className={`aspect-lock ${aspectLocked ? "active" : ""}`}
+              onClick={() => setAspectLocked((current) => !current)}
+              aria-label={aspectLocked ? "Unlock aspect ratio" : "Lock aspect ratio"}
+              aria-pressed={aspectLocked}
+            >
+              {aspectLocked ? <Lock size={13} /> : <Unlock size={13} />}
+            </button>
+            <NumberField
+              label="H"
+              value={height}
+              min={1}
+              onChange={(next) => {
+                const scaleY = next / (object.height || 1);
+                editor.setObject(
+                  aspectLocked
+                    ? { scaleY, scaleX: (object.scaleX ?? 1) * (next / Math.max(height, 1)) }
+                    : { scaleY }
+                );
+              }}
+            />
+          </div>
+        )}
         <NumberField
           label="Rotation"
           value={object.angle ?? 0}
@@ -356,7 +375,7 @@ function ObjectInspector({ object }: { object: FabricObject }) {
           ) : null}
           {transparencyControl}
         </InspectorSection>
-      ) : isShape || isSvgPart ? (
+      ) : (isShape || isSvgPart) && !object.svgComponent ? (
         <InspectorSection title={isSvgPart ? "Part" : "Shape"} open>
           {typeof object.fill === "string" ? (
             <div className="inspector-color-row color-field">
@@ -435,6 +454,11 @@ function ObjectInspector({ object }: { object: FabricObject }) {
           {transparencyControl}
         </InspectorSection>
       ) : null}
+      {object.svgComponent && (
+        <InspectorSection title="Appearance" open>
+          {transparencyControl}
+        </InspectorSection>
+      )}
       {object.connector ? (
         <InspectorSection title="Arrow" open>
           <button
@@ -700,7 +724,7 @@ function svgPartParent(object: FabricObject): FabricGroup | null {
   for (let parent = object.group; parent; parent = parent.group) {
     if (
       parent instanceof FabricGroup &&
-      (parent.OpenSketchType === "nih-asset" ||
+      (parent.OpenSketchType === "library-asset" ||
         parent.OpenSketchType === "import" ||
         parent.OpenSketchType === "upload")
     ) {

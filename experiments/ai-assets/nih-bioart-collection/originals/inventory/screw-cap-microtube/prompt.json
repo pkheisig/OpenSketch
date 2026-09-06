@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a screw-cap microtube, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One compact empty clear polypropylene laboratory microtube with a seated navy-blue cylindrical screw cap, fine vertical grip ribs on the cap, narrow threaded neck partly visible beneath cap, straight cylindrical body tapering into a conical bottom. Upright slight three-quarter view so cap top ellipse visible. No hinged lid, no tether, no floating cap, no liquid, no rack or printed scale. Pale blue translucent plastic body with crisp gray-blue contours and a few clean subtle specular highlights; smooth matte blue cap, polished NIH BioArt equipment style, not photorealistic. Real transparent background.",
+  "style_refinement": "Refine image 1 using image 2 only as the visual style reference. Preserve one complete closed screw-cap microtube with blue ribbed cap, pale clear cylindrical body and conical bottom. Render smooth clean biomedical illustration, thin crisp gray-blue outlines, simplified broad reflections and subtle gradients, matte navy cap with fewer clean evenly spaced ribs. Remove photographic grain, excessive refraction and glare. The tube is empty; the line where its cylinder meets the cone is a wall contour, not a liquid meniscus. No words, scale, labels or additions. Transparent background and generous padding.",
+  "style_reference": "png/micropipette-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-d3c72df1-d49b-43e9-9ff6-1c92d5ed5774.png",
+  "archetype": "Generic empty conical screw-cap microtube. No specified volume or manufacturer.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "screw-cap-microtube",
+  "name": "screw-cap microtube",
+  "original": "originals/inventory/screw-cap-microtube/generated.png",
+  "original_sha256": "8824cacb0cd87f9439eea9f8f4b62cfeaac1f4fa52f6c4f353182d6f24c1eb04"
+}

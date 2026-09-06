@@ -386,7 +386,7 @@ export function CanvasWorkspace() {
         target instanceof Element &&
         (target.closest(".canvas-controls") ||
           target.closest(".ui-select-menu") ||
-          target.closest(".color-palette-popover"))
+          target.closest(".color-palette-popover, .asset-palette-popover"))
       ) {
         return;
       }
@@ -1027,7 +1027,7 @@ export function CanvasWorkspace() {
 
     const styleable = objects.length === 1 && Boolean(elementStyleKey(objects[0]));
     const assetFamilyId =
-      objects.length === 1 && objects[0].OpenSketchType === "nih-asset"
+      objects.length === 1 && objects[0].OpenSketchType === "library-asset"
         ? objects[0].familyId
         : undefined;
     const assetIsFavorite = assetFamilyId
@@ -1177,7 +1177,7 @@ export function CanvasWorkspace() {
       {editor.editingGroup ? (
         <div className="group-edit-banner" role="status">
           <strong>
-            {editor.editingGroup.OpenSketchType === "nih-asset" ||
+            {editor.editingGroup.OpenSketchType === "library-asset" ||
             editor.editingGroup.OpenSketchType === "import" ||
             editor.editingGroup.OpenSketchType === "upload"
               ? "Editing vector asset"

@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a Pasteur pipette, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One assembled glass Pasteur pipette with an attached small dark-blue rubber squeeze bulb at the upper end. A short clear cylindrical glass barrel narrows at a smooth shoulder into a long straight slender capillary dispensing tube. Diagonal from bulb at upper left to complete fine open outlet at lower right. Empty glass tube, no liquid, droplets, graduations, numbers or color bands. Bulb is rounded and smooth with a short neck snugly gripping the glass barrel, no buttons or display. Transparent pale-blue glass walls, fine dark blue-gray contours, restrained white highlights and matte blue bulb shading. No hand, rack or other equipment. Complete isolated asset with real transparent background.",
+  "style_review": "Initial rendering uses the collection blue lab-equipment palette, clear glass highlights and fine outlines. Rubber bulb has restrained surface texture.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-fe449fb2-6ed3-4563-821a-29429811da27.png",
+  "archetype": "Generic glass Pasteur pipette with attached rubber bulb, ungraduated barrel and slender capillary outlet; no calibrated delivery volume or brand.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "pasteur-pipette",
+  "name": "Pasteur pipette",
+  "original": "originals/inventory/pasteur-pipette/generated.png",
+  "original_sha256": "414f5d80a2f3e391fe056e9df6ec781418c1becdc45ef3720a492059f28fe3ce"
+}

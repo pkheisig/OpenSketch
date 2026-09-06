@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a lipid droplet, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One spherical intracellular lipid droplet with a clean wedge cutaway. Smooth warm golden-yellow neutral-lipid core, homogeneous rather than aqueous lumen or nested vesicles. At the exposed rim show a PHOSPHOLIPID MONOLAYER: exactly one row of small orange hydrophilic heads on the outside, with paired short hydrophobic tails pointing inward into the lipid core; NO second inner head row and NO bilayer. Most exterior remains a smooth golden surface with three small purple surface-associated protein patches lying shallowly on the surface, not spanning a membrane. No nucleus or other organelles. Three-quarter cutaway view, restrained matte gradients, crisp thin amber outlines, soft small highlights. Complete isolated object with generous transparent padding.",
+  "style_refinement": "Refine image 1's lipid droplet into the clean matte biomedical style of image 2. Preserve the single spherical droplet and single phospholipid MONOLAYER rim: one orange head row with short tails pointing inward, no second head row. Replace swirling liquid-like core and rough exterior texture with a homogeneous smooth golden neutral-lipid core and smooth exterior, restrained gradients, thin crisp amber outlines, small soft highlights. Keep three small purple surface-associated protein patches flat against the outside. No grain, wet gloss, large reflections, nucleus, lumen cargo or other organelles. Image 2 provides style only. Complete isolated asset with generous transparent padding, no text or labels.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-b2d0f311-6480-41bb-8fec-cbc831dac471.png",
+  "archetype": "Intracellular lipid droplet cutaway with neutral-lipid core and phospholipid monolayer, one outer head row and inward hydrophobic tails. Three surface protein patches are illustrative, not a universal count or identity. Molecular dimensions and lipid arrangement exaggerated for readability.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "lipid-droplet",
+  "name": "lipid droplet",
+  "original": "originals/inventory/lipid-droplet/generated.png",
+  "original_sha256": "38e982e671068de87ae8464f5ab1340f0c31b08ee469e99bbc09ed0d328bfe0a"
+}

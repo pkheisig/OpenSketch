@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a lipid bilayer cross-section, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A simple straight horizontal phospholipid bilayer seen in exact side cross-section. Show twelve lavender spherical hydrophilic heads in one upper row and twelve in one lower row. Each upper head has exactly two short dark violet hydrocarbon tails pointing DOWNWARD toward the central hydrophobic midplane; each lower head has exactly two separate short tails pointing UPWARD toward that same midplane. Slight natural kinks in the tails, blunt tail tips meeting closely at the center with a thin irregular seam. No tail runs all the way from upper head to lower head. Only two leaflets, no extra rows in depth, no proteins, sugar chains, cholesterol or surrounding cell. Render each head with soft pseudo-3D volume, restrained highlight, crisp dark violet outline and smooth matte gradient. This is a clean reusable membrane primitive; symmetry and molecular count are schematic.",
+  "style_refinement": "Restyle image 1 to match the smooth polished biomedical vector-like rendering in image 2, using image 2 for style only. Keep the lipid bilayer exact side-view structure: twelve top lavender heads with two short tails each pointing down, twelve bottom heads with two separate short tails each pointing up, separate tail tips at midplane. Retain all 24 head beads and 48 tails, two leaflets only. Use lighter lavender heads, dark violet tails with crisp outlines, matte smooth gradients and restrained small highlights, not glossy plastic. Preserve complete straight rectangular bilayer strip and transparent generous padding. No proteins, labels, other objects or background.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-abc8d68c-cc38-4438-8d3b-ab8d14351362.png",
+  "archetype": "Side-view phospholipid bilayer primitive: two opposing rows, each lipid has a polar head and two inward-facing tails. Spacing emphasizes separate molecules and leaflet tail ends, not aqueous channels through a real membrane. Counts and regular spacing are schematic.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "lipid-bilayer-cross-section",
+  "name": "lipid bilayer cross-section",
+  "original": "originals/inventory/lipid-bilayer-cross-section/generated.png",
+  "original_sha256": "b2d24a197bf03742f7c542249d57259ac2a2c7065d1f47729c47da1300887b77"
+}

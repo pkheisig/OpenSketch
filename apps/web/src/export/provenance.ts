@@ -11,8 +11,6 @@ export interface AssetProvenanceRecord {
   sourceUrl?: string;
   sourceReference?: string;
   sourcePage?: string;
-  nihSourcePage?: string;
-  commonsPage?: string;
   sourceName?: string;
   author?: string;
   license?: string;
@@ -39,8 +37,6 @@ const RECORD_FIELDS: Array<keyof AssetProvenanceRecord> = [
   "sourceUrl",
   "sourceReference",
   "sourcePage",
-  "nihSourcePage",
-  "commonsPage",
   "sourceName",
   "author",
   "license",
@@ -61,11 +57,15 @@ function nonEmptyString(value: unknown): string | undefined {
 function provenanceRecordForObject(object: FabricObject): AssetProvenanceRecord | undefined {
   const provenance = object.provenance as ProvenanceValue | undefined;
   if (!provenance || typeof provenance !== "object" || Array.isArray(provenance)) return undefined;
+  if (
+    provenance.author !== "OpenSketch" ||
+    typeof provenance.sourceName !== "string" ||
+    !provenance.sourceName.startsWith("OpenSketch")
+  )
+    return undefined;
 
   const sourcePage =
     nonEmptyString(provenance.sourcePage) ??
-    nonEmptyString(provenance.nihSourcePage) ??
-    nonEmptyString(provenance.commonsPage) ??
     nonEmptyString(provenance.source) ??
     nonEmptyString(provenance.sourceUrl) ??
     nonEmptyString(provenance.sourceReference);
@@ -156,8 +156,6 @@ export function formatProvenanceCredits(
     if (asset.sourceUrl) lines.push(`   Source URL: ${asset.sourceUrl}`);
     if (asset.sourceReference) lines.push(`   Source reference: ${asset.sourceReference}`);
     if (asset.sourcePage) lines.push(`   Source page: ${asset.sourcePage}`);
-    if (asset.nihSourcePage) lines.push(`   NIH source page: ${asset.nihSourcePage}`);
-    if (asset.commonsPage) lines.push(`   Commons page: ${asset.commonsPage}`);
     if (asset.sourceName) lines.push(`   Source name: ${asset.sourceName}`);
     if (asset.author) lines.push(`   Author: ${asset.author}`);
     if (asset.license) lines.push(`   License: ${asset.license}`);

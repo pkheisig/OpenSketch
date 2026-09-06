@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create one isolated monocyte scientific illustration as a genuine transparent-background PNG. Match the approved NIH BioArt purple-cell collection in this conversation: crisp thin violet outlines, smooth lavender matte fills, subtle soft shading, pink mitochondria, small blue Golgi. Large circulating monocyte with round-to-oval outline, abundant pale gray-lavender cytoplasm, large folded kidney-shaped dark-purple nucleus with fine lacy chromatin, fine scattered azurophilic granules and a few small vacuoles. Preserve this blood-cell form; no long macrophage pseudopods. Illustrated cell cutaway with all intrinsic components contained inside. Complete centered object with generous transparent padding, no text, arrows, other cells, floor, shadow, glow, checkerboard, wet glossy highlights or photorealistic grain.",
+  "style_refinement": "Redraw monocyte image 1 in the same clean matte biomedical illustration style as image 2, which is style reference only. Keep round monocyte silhouette and folded kidney-shaped nucleus, but remove marbled microscopic textures and wet highlights. Smooth lavender cytoplasm, purple nucleus with sparse fine chromatin hints, thin crisp purple outlines, pink mitochondria and small blue Golgi. Make the cytoplasmic granules fine and inconspicuous, with only a few small vacuoles. No large pseudopods. Complete isolated cell, no text, no other objects, transparent background.",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-02778608-a423-4941-8694-a60aa8e17642.png",
+  "id": "monocyte",
+  "name": "monocyte",
+  "original": "originals/inventory/monocyte/generated.png",
+  "original_sha256": "512e7657b82df7cc6df0839b4544f5b4b7480b1fb8ada4416564c3eba1c71845"
+}

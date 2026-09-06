@@ -14,7 +14,7 @@
 
 ## Asset and security checks
 
-- [ ] No runtime request to NIH, Wikimedia, font CDNs, or another external service
+- [ ] No runtime request to retired asset providers, font CDNs, or another external service
 - [ ] SVG/project input changes include adversarial regression coverage
 - [ ] Built-in artwork retains explicit source and license/public-domain metadata
 

@@ -247,15 +247,55 @@ test("qualifies a real-asset cancer-immunity reference through registered WebMCP
 
     const [apoptosis, dendritic, lymphNode, cd8, tCell, venule, antibody, mhc, tumor] =
       await Promise.all([
-        findFamily("Apoptosis", "Apoptosis", "Cellular processes", "nih-bioart-21"),
-        findFamily("Dendritic Cell", "Dendritic Cell", "Cells", "nih-bioart-114"),
-        findFamily("Lymph Node", "Lymph Node", "Anatomy", "nih-bioart-304"),
-        findFamily("CD8 TCell", "CD8 TCell", "Cells", "nih-bioart-69"),
-        findFamily("T Cell", "T Cell", "Cells", "nih-bioart-509"),
-        findFamily("Venule Cross Section", "Venule Cross Section", "Anatomy", "nih-bioart-539"),
-        findFamily("Antibody", "Antibody", "Proteins", "nih-bioart-17"),
-        findFamily("MHC Class 1", "MHC Class 1", "Proteins", "nih-bioart-341"),
-        findFamily("Tumor", "Tumor", "Cancer & pathology", "bioicons-tumor-480bc370")
+        findFamily(
+          "apoptotic cell",
+          "apoptotic cell",
+          "Cells",
+          "opensketch-generated-apoptotic-cell"
+        ),
+        findFamily(
+          "dendritic cell",
+          "dendritic cell",
+          "Cells",
+          "opensketch-generated-dendritic-cell"
+        ),
+        findFamily(
+          "lymph node cross-section",
+          "lymph node cross-section",
+          "Tissues & models",
+          "opensketch-generated-lymph-node-cross-section"
+        ),
+        findFamily(
+          "activated T lymphocyte",
+          "activated T lymphocyte",
+          "Cells",
+          "opensketch-generated-activated-t-lymphocyte"
+        ),
+        findFamily("T lymphocyte", "T lymphocyte", "Cells", "opensketch-generated-t-lymphocyte"),
+        findFamily(
+          "vein cross-section",
+          "vein cross-section",
+          "Tissues & models",
+          "opensketch-generated-vein-cross-section"
+        ),
+        findFamily(
+          "generic IgG antibody",
+          "generic IgG antibody",
+          "Proteins & complexes",
+          "opensketch-generated-generic-igg-antibody"
+        ),
+        findFamily(
+          "MHC class I",
+          "MHC class I",
+          "Proteins & complexes",
+          "opensketch-generated-mhc-class-i"
+        ),
+        findFamily(
+          "tumor spheroid",
+          "tumor spheroid",
+          "Tissues & models",
+          "opensketch-generated-tumor-spheroid"
+        )
       ]);
     const assetInput = (asset: { familyId: string; variantId: string }) => ({
       familyId: asset.familyId,
@@ -958,23 +998,23 @@ test("qualifies a real-asset cancer-immunity reference through registered WebMCP
       limit: 100
     });
     const assetDescriptors = await call("find_objects", {
-      assetFamilyId: "nih-bioart-509",
+      assetFamilyId: "opensketch-generated-t-lymphocyte",
       limit: 8
     });
     const tumorDescriptors = await call("find_objects", {
-      assetFamilyId: "bioicons-tumor-480bc370",
+      assetFamilyId: "opensketch-generated-tumor-spheroid",
       limit: 8
     });
     const apoptosisDescriptors = await call("find_objects", {
-      assetFamilyId: "nih-bioart-21",
+      assetFamilyId: "opensketch-generated-apoptotic-cell",
       limit: 8
     });
     const dendriticDescriptors = await call("find_objects", {
-      assetFamilyId: "nih-bioart-114",
+      assetFamilyId: "opensketch-generated-dendritic-cell",
       limit: 8
     });
     const lymphNodeDescriptors = await call("find_objects", {
-      assetFamilyId: "nih-bioart-304",
+      assetFamilyId: "opensketch-generated-lymph-node-cross-section",
       limit: 8
     });
     const checkpointDescriptors = await call("find_objects", {
@@ -982,12 +1022,15 @@ test("qualifies a real-asset cancer-immunity reference through registered WebMCP
       limit: 8
     });
     const vesselDescriptors = await call("find_objects", {
-      assetFamilyId: "nih-bioart-539",
+      assetFamilyId: "opensketch-generated-vein-cross-section",
       limit: 8
     });
-    const cd8Descriptors = await call("find_objects", { assetFamilyId: "nih-bioart-69", limit: 8 });
+    const cd8Descriptors = await call("find_objects", {
+      assetFamilyId: "opensketch-generated-activated-t-lymphocyte",
+      limit: 8
+    });
     const mhcDescriptors = await call("find_objects", {
-      assetFamilyId: "nih-bioart-341",
+      assetFamilyId: "opensketch-generated-mhc-class-i",
       limit: 8
     });
     const stageGeometry = await call("inspect_geometry", {

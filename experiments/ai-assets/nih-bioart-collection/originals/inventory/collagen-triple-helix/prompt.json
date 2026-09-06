@@ -1,0 +1,17 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a collagen triple helix, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Show THREE continuous slender polypeptide chains, respectively teal, lavender and muted gold, winding closely together into one elongated right-handed collagen triple helix, diagonal lower left to upper right, about five broad turns. Each chain is a smooth gently twisted strand, not a conventional alpha-helix spring. Keep all six chain ends visible and rounded. Compact ropelike uniform diameter, each color traceable through the braid. No DNA rungs or bases, no globular heads, no surrounding fibril, no molecular spheres, no arrowheads. Smooth restrained broad gradients and fine darker outlines, match the existing protein illustration family. Real alpha transparency.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-30a78084-5cb9-4a14-9c9c-2c2cde57a12b.png",
+  "archetype": "Three-chain collagen molecular schematic, not a fibril or atomic model. Helical pitch and chain thickness are illustrative.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "collagen-triple-helix",
+  "name": "collagen triple helix",
+  "original": "originals/inventory/collagen-triple-helix/generated.png",
+  "original_sha256": "cc57dccb7756d7b28ed1d3fd6dfd3a09bb3fa420f7403a22627ade1b352eb892"
+}

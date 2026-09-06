@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create one isolated resting mast cell, transparent-background PNG scientific illustration. Match the matte NIH BioArt reference style and recent outlined purple immune cells in this conversation: smooth pale lavender cell body, thin dark purple outlines, restrained soft shading and saturated violet-pink granules. Oval tissue mast cell with a single round unlobed slightly eccentric violet nucleus, numerous small round metachromatic purple-magenta cytoplasmic granules densely surrounding it, a few subtle intrinsic organelles. No bilobed nucleus. No degranulation, no released particles. Complete rounded cell with generous transparent padding, no labels, text, arrows, surrounding tissue, shadows, glow or checkerboard. Clean textbook illustration rather than microscopy or glossy plastic.",
+  "style_refinement": "Redraw mast-cell image 1 in the clean matte NIH BioArt illustration style of image 2, used only as a style reference. Preserve its oval membrane, one round unlobed nucleus and many small purple-magenta granules. Fine crisp dark-purple outlines, smooth lavender cytoplasm and shaded violet granules; remove glassy highlights and microscopic marbled textures. Pink mitochondria and a small blue Golgi for palette consistency. Keep every component inside the cell. Complete isolated cell, genuinely transparent background, no text, labels or other objects.",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-8d3b285b-0357-4430-82d2-e6a43fe9922b.png",
+  "id": "mast-cell",
+  "name": "mast cell",
+  "original": "originals/inventory/mast-cell/generated.png",
+  "original_sha256": "00fc503816128c06f5fffffc554a3bb9c791cd43d5cd4c6b688c77b55c4ea40e"
+}

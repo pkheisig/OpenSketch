@@ -1,0 +1,25 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a membrane raft, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One rectangular lipid-bilayer patch in three-quarter perspective with a central oval ordered lipid domain embedded seamlessly within surrounding more disordered lipids. Surrounding lipid heads lavender and kinked tails violet; central domain lipid heads muted teal and straighter more closely packed teal tails, slight increase in thickness at the central domain, continuous bilayer not a separate island floating above it. Both top and bottom leaflets have polar head groups facing outward, paired tails inward ending at the midplane; no tails cross from top head to bottom head. A few small golden cholesterol glyphs interspersed among the central domain tails, each drawn simply as a short compact rigid gold rod with one tiny polar bead near the aqueous surface and a short tail pointing inward, not a chemical ring diagram. No proteins, sugar branches, text, fences, labels or surrounding cell. Smooth matte forms, thin dark outlines, subdued pseudo-3D highlights. Conceptual lipid-ordered domain illustration, not a fixed universal raft shape.",
+  "style_refinement": "Correct image 1 using image 2 as the style and lipid-bilayer architecture reference only. Keep image 1's lavender surrounding membrane and teal central ordered domain; do not add image 2's proteins or glycan. CRITICAL: split all long tails into TWO OPPOSING LEAFLETS, exactly like image 2. Every upper head has two short tails pointing down to the midplane; every bottom head has separate short tails pointing up to that midplane. Leave a narrow dark seam at opposing tail ends. No tail connects top and bottom heads. Central teal tails should be straighter and more closely packed than the kinked purple tails. Correct all gold cholesterol glyphs: small bead at head-group level and short rigid rod embedded within ONE leaflet pointing inward, never projecting above the membrane, no free floating gold beads. Use smooth matte filled forms with crisp outlines and soft restrained gradients matching image 2. No glossy glow, granular textures, backgrounds, labels or extra objects. Complete patch centered with transparent padding.",
+  "style_reference": "png/plasma-membrane-segment-bioart-transparent.png",
+  "topology_refinement": "Remove all six gold lollipop-shaped marks projecting above the top surface of the teal lipid domain. Replace each removed top-surface mark with normal teal lipid heads continuous with its neighbors. Preserve ONLY the seven gold cholesterol glyphs already embedded in the front cut face among the teal lipid tails, including the upward-facing lower-leaflet ones. Preserve the entire bilayer geometry, two opposing leaflets, colors, outlines and gradients. Transparent background; no other changes.",
+  "background_extraction": "Not needed: corrected generated source is RGBA with alpha extrema 0..254.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-6ea2d2e9-3ea0-4688-96bc-3df1e876ea96.png",
+  "archetype": "Conceptual ordered lipid domain in a model bilayer, with a teal domain within lavender surrounding lipids and simplified gold cholesterol glyphs embedded in the leaflets. Domain shape, symmetric registration, lipid packing and counts are illustrative, not a universal living-cell raft reconstruction. Gold rods are abstract cholesterol symbols, not chemical structures. Midplane seam marks separate leaflet tail ends.",
+  "structure_references": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC4423047/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC1301627/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "membrane-raft",
+  "name": "membrane raft",
+  "original": "originals/inventory/membrane-raft/generated.png",
+  "original_sha256": "62c4f6df97c8e3e9aeac303a3317bfe56ad6f1cd175d7f63a918a90991411ba2"
+}

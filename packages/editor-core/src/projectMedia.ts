@@ -99,7 +99,9 @@ export function rehydrateProjectScene(
   objects: Record<string, unknown>,
   uploads: readonly ImportedMediaRecord[]
 ): Record<string, unknown> {
-  return transformScene(objects, uploadIndexes(uploads), "rehydrate") as Record<string, unknown>;
+  return normalizeLibraryAssetTypes(
+    transformScene(objects, uploadIndexes(uploads), "rehydrate") as Record<string, unknown>
+  );
 }
 
 /** Normalize scene/media storage while retaining the original project object. */
@@ -112,4 +114,25 @@ export function normalizeProjectMedia(
     objects: compactProjectScene(objects, retainedUploads),
     uploads: retainedUploads
   };
+}
+
+/** Migrate vendor-prefixed group types without changing stored artwork or IDs. */
+export function normalizeLibraryAssetTypes(
+  scene: Record<string, unknown>
+): Record<string, unknown> {
+  const walk = (value: unknown): void => {
+    if (!isRecord(value)) return;
+    if (
+      value.type === "Group" &&
+      typeof value.assetId === "string" &&
+      typeof value.familyId === "string" &&
+      typeof value.OpenSketchType === "string" &&
+      /^[a-z]+-asset$/.test(value.OpenSketchType)
+    )
+      value.OpenSketchType = "library-asset";
+    if (Array.isArray(value.objects)) value.objects.forEach(walk);
+    for (const key of ["clipPath", "backgroundImage", "overlayImage"]) walk(value[key]);
+  };
+  walk(scene);
+  return scene;
 }

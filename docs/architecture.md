@@ -148,7 +148,7 @@ compatible with files produced by earlier releases.
 
 SVG is the canonical vector export. Fabric emits the scene SVG; OpenSketch adds
 an accessible title, description, generator, used asset IDs, per-asset
-source/author/license records, and global NIH BioArt credit. The per-asset
+source/author/license records, and OpenSketch application credit. The per-asset
 records come from a versioned, recursively collected provenance manifest, so
 manual grouping cannot hide an asset from attribution. The manifest is
 deterministically ordered and includes asset/family identity, name, source

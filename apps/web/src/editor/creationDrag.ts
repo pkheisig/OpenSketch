@@ -1,3 +1,4 @@
+import { SCIENTIFIC_PRESETS } from "./scientific/catalog";
 import {
   CONNECTOR_PRESETS,
   creationToolForConnectorPreset,
@@ -76,6 +77,7 @@ export function readConnectorPresetDragPayload(
 }
 
 const shapeKinds = new Set<ShapeKind>([
+  ...SCIENTIFIC_PRESETS.map((preset) => preset.id),
   "rectangle",
   "rounded-rectangle",
   "pill",
@@ -92,10 +94,7 @@ const shapeKinds = new Set<ShapeKind>([
   "parallelogram"
 ]);
 
-export function setShapePresetDragPayload(
-  dataTransfer: DataTransfer,
-  kind: ShapeKind
-): void {
+export function setShapePresetDragPayload(dataTransfer: DataTransfer, kind: ShapeKind): void {
   dataTransfer.effectAllowed = "copy";
   dataTransfer.setData(SHAPE_PRESET_DRAG_TYPE, kind);
 }

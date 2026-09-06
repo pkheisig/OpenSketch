@@ -83,16 +83,7 @@ export default defineConfig(({ mode }) => {
           // actually used. Keeping them out of the app-shell precache avoids
           // making every installation download the complete font catalog.
           globPatterns: ["**/*.{html,js,css,svg,png,webp,txt}"],
-          globIgnores: [
-            "assets/nih-bioart/**",
-            "assets/nih-bioart-thumbnails/**",
-            "assets/scidraw/**",
-            "assets/scidraw-thumbnails/**",
-            "assets/organism-library/**",
-            "assets/organism-library-thumbnails/**",
-            "assets/bioicons/**",
-            "assets/bioicons-thumbnails/**"
-          ],
+          globIgnores: ["assets/opensketch-generated/**"],
           // The complete asset pack is primed explicitly from the Assets panel.
           // Do not evict entries: a ready pack must contain every required source
           // and preview, and the pack manager clears these caches on version change.
@@ -120,7 +111,7 @@ export default defineConfig(({ mode }) => {
             {
               urlPattern: publicAssetPattern(
                 publicBase,
-                "(?:nih-bioart|scidraw|organism-library|bioicons)-thumbnails/"
+                "opensketch-generated/.*\\.webp$"
               ),
               handler: "CacheFirst",
               options: {
@@ -133,7 +124,7 @@ export default defineConfig(({ mode }) => {
             {
               urlPattern: publicAssetPattern(
                 publicBase,
-                "(?:nih-bioart|scidraw|organism-library|bioicons)/"
+                "(?:opensketch-generated|scientific-structures)/.*\\.svg$"
               ),
               handler: "CacheFirst",
               options: {

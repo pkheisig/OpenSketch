@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a transparent PNG of one resting human plasmacytoid dendritic cell, an isolated scientific clip-art illustration in the supplied NIH BioArt style. Draw crisp fine purple path-like outlines and smooth matte lavender color shapes with gentle shaded depth, as in the recent approved T-cell and monocyte drawings. Oval compact cell with moderately abundant cytoplasm, eccentric oval slightly indented violet nucleus with finely dispersed chromatin and inconspicuous nucleolus, well-developed blue rough ER, small blue Golgi and several pink mitochondria. No long dendritic processes in this resting state, no plasma-cell clock-face spokes. Textbook illustrated cutaway, complete centered cell with generous transparent padding. No text, labels, markers, arrows, other objects, shadows or checkerboard; avoid photorealistic granular texture and glossy plastic.",
+  "style_refinement": "Redraw the resting plasmacytoid dendritic cell in image 1 in the clean flat matte NIH BioArt drawing style of image 2 (style reference only). Keep the oval compact cell, eccentric lightly indented nucleus, abundant blue rough ER, small Golgi and pink mitochondria. Smooth purple and lavender fills with restrained depth and fine crisp outlines; remove the marbled nucleus texture, glassy membranes and glossy highlights. No long dendrites, no clock-face nucleus. Complete isolated cell and genuinely transparent background. No labels or other objects.",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-6fe65082-8cd9-407e-afd2-43337f05ea81.png",
+  "structure_references": [
+    "https://ashpublications.org/blood/article/111/7/3778/25171/Novel-markers-of-normal-and-neoplastic-human",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6329307/"
+  ]
+}

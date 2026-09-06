@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a neuronal synapse, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Scientific cutaway schematic of one chemical synapse. Upper lavender presynaptic axon bouton with short complete narrowed axon stem, cutaway showing many small round synaptic vesicles filled with tiny gold transmitter dots and one small orange mitochondrion. Lower blue-lavender postsynaptic dendritic spine head, neck ending at a small complete rounded dendrite fragment. Two clearly separate facing membranes separated by a narrow open synaptic cleft. A few tiny gold transmitter dots only in the cleft; compact teal receptor channels embedded in the lower membrane with their heads facing the cleft; darker postsynaptic density immediately beneath that membrane. One docked vesicle at upper active zone. No nucleus, no whole cells, no text or molecular labels. Continuous enclosing membrane surfaces with intentional front cutaway windows, simple recognizable internal components. Smooth matte broad gradients, crisp fine purple outlines, saturated coordinated colors, no grain or photoreal texture. Generous real transparent padding around complete axon and dendrite ends.",
+  "style_refinement": "Refine this same chemical synapse into smooth polished NIH BioArt illustration style. Preserve all complete outer contours, separated membranes, vesicles with gold cargo, single orange mitochondrion, one fusion pore releasing transmitter into cleft, lower teal receptors and cut ends. Remove the fibrous photorealistic tissue texture and sparkles from cytoplasm and membranes: smooth lavender and pale blue cytoplasm with only a few simple curved cytoskeletal strands. Replace the knobby purple bead cluster beneath lower membrane with a thin smooth dark-purple postsynaptic density band. Soft broad gradients, thin crisp outlines, no glossy wet sheen, no glow, no extra items. Keep the whole object centered with generous transparent padding, all ends complete.",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-106ad705-8074-4095-a9c9-51516cd54b48.png",
+  "archetype": "Chemical neuronal synapse with vesicle fusion and postsynaptic receptors. Transmitter type, receptor stoichiometry and dimensions are unspecified.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "neuronal-synapse",
+  "name": "neuronal synapse",
+  "original": "originals/inventory/neuronal-synapse/generated.png",
+  "original_sha256": "b129759d4c832f04008100f5c0352a5d7059563db442155aa3f7938f1a88c855"
+}

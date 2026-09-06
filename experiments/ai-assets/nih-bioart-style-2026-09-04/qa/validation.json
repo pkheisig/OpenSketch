@@ -1,0 +1,87 @@
+{
+  "base_dev_sha": "2aea75a8ccd7956d7addbc60547bf5d884ccf590",
+  "branch": "experimental/ai-bioart-assets-20260904",
+  "validation": [
+    {
+      "asset": "macrophage",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "png_alpha_range": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        262,
+        319,
+        287,
+        339
+      ],
+      "svg_path_count": 428,
+      "embedded_rasters": false,
+      "generated_original_sha256": "93c2cd1f24d17f5c68a0b64f5101830a5cc7c3c7c2c72dde3ae73341af1af840",
+      "png_sha256": "d501e107fa961a602418b5292f5586abc7b6c3a09998d50fde0463915306e8d5",
+      "svg_sha256": "b18345122dfe56a04b4c167e802028f17ae9b0d0759267c84bf289e53e8c54a0"
+    },
+    {
+      "asset": "mitochondrion",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "png_alpha_range": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        298,
+        303,
+        317,
+        331
+      ],
+      "svg_path_count": 372,
+      "embedded_rasters": false,
+      "generated_original_sha256": "81aaf411da988cb13e7e47e121d183f0c081cf950c5006825ade8df356631f16",
+      "png_sha256": "619a2b7017a67ba265444917157bd6659d28e2e9d78bfaa8531f9be255e9043b",
+      "svg_sha256": "dac23bc596d4513138c89e7d3a9437f6778e5bd7d616595c4c56ba17d4485ebd"
+    },
+    {
+      "asset": "cd8-receptor",
+      "png_dimensions": [
+        1790,
+        1790
+      ],
+      "png_alpha_range": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        354,
+        256,
+        521,
+        288
+      ],
+      "svg_path_count": 434,
+      "embedded_rasters": false,
+      "generated_original_sha256": "56e6dfa9aaa5a8ef9b21395d149a89b9d5116c3596118103527566f4a87ba3ce",
+      "png_sha256": "9b8c2e863eceb9efb568196126cee1240680af7cf814cc984c8f3b946e2e0282",
+      "svg_sha256": "530406f6f592915ee8618c08723ad47a6552e7f84e6ac1c38a80a8603a674d0e"
+    }
+  ],
+  "visual_qa": "Inspected Chromium-rendered PNG/SVG comparison on white and dark backgrounds. Recorded transparency inspection. Built-in in-app Browser tool unavailable in this session; used isolated headless Chromium via Playwright for local file inspection. No app UI was changed.",
+  "public_evidence": {
+    "png-vs-editable-svg.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/png-vs-editable-svg.png",
+    "transparency-inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/transparency-inspection.webm"
+  },
+  "tracer": {
+    "name": "VTracer",
+    "version": "0.6.15",
+    "filter_speckle": 10,
+    "color_precision": 6,
+    "layer_difference": 24,
+    "mode": "spline",
+    "alpha_preprocessing": "Threshold alpha at 128 for trace input only; leave original PNG bytes unchanged.",
+    "svg_editability": "Color regions are individually editable paths, not semantic organelle layers. Gradients are approximated by color regions."
+  }
+}

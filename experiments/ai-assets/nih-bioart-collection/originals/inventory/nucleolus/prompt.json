@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a nucleolus, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Show one compact rounded gently lobulated non-membrane-bound mammalian nucleolar condensate, in a three-quarter cutaway. Plum-purple granular outer phase with small tidy granules; exposed cut surface contains three small pale-lavender fibrillar centers, each directly surrounded by a denser darker-violet fibrillar zone, all embedded in the continuous surrounding granular phase. Components are phase domains, NOT membrane-bound vesicles, no lipid membrane ring anywhere. Use schematic simplified forms, no surrounding nucleus or cell, no chromosome, no free particles floating outside. Smooth matte color fills, restrained gentle gradients and fine crisp purple outlines; no photorealistic texture or gloss. Entire complete object centered on transparent background.",
+  "style_refinement": "Refine image 1 to match image 2's clean biomedical illustration style, using image 2 for style only. Retain the complete isolated nucleolus cutaway with three pale fibrillar centers, each surrounded by darker fibrillar material, within one continuous plum granular phase. Greatly simplify the texture: use a smooth gently lobulated compact outer mass with small sparse tidy granules, not hundreds of large shiny grape-like balls. The pale centers should be quiet softly filled areas with just a few fine curved strands; denser surrounding zones use thin wavy curves, not thick rope coils. These are membrane-free phase regions, so no thick circular membrane borders around domains. Fine crisp outlines, smooth matte filled shapes, subtle gradients, restrained highlights like reference 2. Keep deep purple/lavender palette, complete outline, generous transparent padding, no text or extra objects.",
+  "style_reference": "png/generic-epithelial-cell-bioart-transparent.png",
+  "background_extraction": "Make the background transparent. Remove the checkerboard. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-9268fc2d-0bf0-4018-ac15-67e24b4b86e1.png",
+  "structure_references": [
+    "https://www.nature.com/articles/s42003-023-05519-1"
+  ],
+  "archetype": "Schematic mammalian nucleolus cutaway with three illustrative FC/DFC modules in granular material. Domain number, size, colors and strands are schematic, not a molecular reconstruction.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "nucleolus",
+  "name": "nucleolus",
+  "original": "originals/inventory/nucleolus/generated.png",
+  "original_sha256": "e65c958354fe0705bd0a75e434d7b1479743c587e9ccf24dc914f3bee6c1222e"
+}
