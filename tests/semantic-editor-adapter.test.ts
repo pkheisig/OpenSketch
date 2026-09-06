@@ -6,6 +6,7 @@ import {
   type FabricObject
 } from "../apps/web/node_modules/fabric";
 import { describe, expect, it, vi } from "vitest";
+import type { InterchangeFidelityReport } from "@workspace/editor-core";
 import { DEFAULT_CREATION_DEFAULTS } from "../apps/web/src/editor/creation";
 import { createSemanticEditorAdapter } from "../apps/web/src/semantic/semanticEditorAdapter";
 import { assetManifest } from "../apps/web/src/assets/manifest";
@@ -47,7 +48,21 @@ function makeAdapter(
   canvas: Canvas,
   setSelection = vi.fn(),
   replaceAssetVariant = vi.fn(async () => true),
-  exportPdf = vi.fn(async () => undefined)
+  exportPdf = vi.fn(async () => undefined),
+  importPptx = vi.fn(async () => ({
+    fidelity: {
+      format: "pptx",
+      status: "appearance-snapshot",
+      sourceName: "fixture.pptx",
+      sourceMimeType: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      sourceBytes: 0,
+      mappedCount: 0,
+      flattenedCount: 1,
+      refusedCount: 0,
+      substitutions: [],
+      diagnostics: []
+    } satisfies InterchangeFidelityReport
+  }))
 ) {
   const commit = vi.fn();
   const restore = vi.fn(async () => undefined);
@@ -117,6 +132,7 @@ function makeAdapter(
     exportCredits: vi.fn(),
     exportPdf,
     exportPng: vi.fn(async () => undefined),
+    importPptx,
     exportDocument: vi.fn(async (format, options) => {
       if (format === "pdf")
         await exportPdf(options?.title, options?.description, { signal: options?.signal });
@@ -301,10 +317,10 @@ describe("semantic editor adapter", () => {
       ?.trim()
       .split(/\s+/)
       .map(Number);
-    const x = Number(svg.match(/\bx="([^\"]+)"/)?.[1]);
-    const y = Number(svg.match(/\by="([^\"]+)"/)?.[1]);
-    const width = Number(svg.match(/\bwidth="([^\"]+)"/)?.[1]);
-    const height = Number(svg.match(/\bheight="([^\"]+)"/)?.[1]);
+    const x = Number(svg.match(/\bx="([^"]+)"/)?.[1]);
+    const y = Number(svg.match(/\by="([^"]+)"/)?.[1]);
+    const width = Number(svg.match(/\bwidth="([^"]+)"/)?.[1]);
+    const height = Number(svg.match(/\bheight="([^"]+)"/)?.[1]);
     if (!matrix || matrix.length !== 6) throw new Error("SVG transform matrix was not exported.");
     const [scaleX, skewY, skewX, scaleY, translateX, translateY] = matrix;
 

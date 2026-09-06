@@ -63,6 +63,15 @@ describe("SVG sanitization", () => {
     expect(clean).toContain("url(#local-g)");
   });
 
+  it("preserves bounded embedded image data URLs while removing external references", () => {
+    const embedded =
+      "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
+    const source = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><image href="${embedded}" width="10" height="10"/><image href="https://example.org/lost.png" width="10" height="10"/></svg>`;
+    const clean = sanitizeImportedSvg(source, "local");
+    expect(clean).toContain(embedded);
+    expect(clean).not.toContain("example.org");
+  });
+
   it("removes external references embedded in imported SVG styles", () => {
     const styled = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
       <style>.tracked { fill: url(https://example.org/paint.svg); }</style>

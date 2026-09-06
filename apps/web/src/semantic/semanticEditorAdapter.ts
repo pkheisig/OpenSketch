@@ -26,6 +26,7 @@ import {
   type AssetVariant,
   type CanvasSettings,
   type ConnectorBinding,
+  type InterchangeFidelityReport,
   type CreateLayoutFrameInput,
   type LayoutCellSpec,
   type LayoutDocument,
@@ -170,7 +171,7 @@ export interface SemanticEditorAdapterDependencies {
     options?: SemanticExecutionOptions
   ) => Promise<void>;
   exportDocument: (
-    format: "svg" | "pdf" | "png" | "jpeg" | "webp" | "tiff" | "bmp",
+    format: "svg" | "pdf" | "png" | "jpeg" | "webp" | "tiff" | "bmp" | "pptx",
     options?: {
       title?: string;
       description?: string;
@@ -181,6 +182,13 @@ export interface SemanticEditorAdapterDependencies {
       signal?: AbortSignal;
     }
   ) => Promise<unknown>;
+  importPptx: (
+    bytes: Uint8Array,
+    sourceName: string,
+    slideIndices: readonly number[],
+    point?: SemanticPointInput,
+    options?: SemanticExecutionOptions
+  ) => Promise<{ fidelity: InterchangeFidelityReport; changedObjectIds?: string[] }>;
 }
 
 type SemanticPointInput = { x: number; y: number };
@@ -1133,6 +1141,32 @@ export function createSemanticEditorAdapter(
         );
       }
       return { data: { requested: true }, changedObjectIds: [] };
+    }
+    if (command === "probe_pptx") {
+      const { base64ToBytes, parsePptxPackage } = await import("@/interchange/pptx");
+      const sourceName = input.sourceName;
+      if (typeof sourceName !== "string" || sourceName.trim() === "") {
+        throw new SemanticAdapterError("INVALID_INPUT", "sourceName is required.");
+      }
+      const sourceBytes = base64ToBytes(String(input.sourceBase64 ?? ""));
+      const parsed = parsePptxPackage(sourceBytes, options.signal);
+      throwIfSemanticExecutionAborted(options.signal);
+      return {
+        data: {
+          format: "pptx",
+          widthEmu: parsed.widthEmu,
+          heightEmu: parsed.heightEmu,
+          slides: parsed.slides.map((slide) => ({
+            index: slide.index,
+            stableId: slide.stableId,
+            title: boundedText(slide.title, 512),
+            flattenedCount: slide.flattenedCount,
+            refusedCount: slide.refusedCount
+          })),
+          diagnostics: parsed.diagnostics
+        },
+        changedObjectIds: []
+      };
     }
     const canvas = canvasOrThrow();
     const assetManifest = await dependencies.getAssetManifest();
@@ -3577,9 +3611,43 @@ export function createSemanticEditorAdapter(
       commitSemantic("Semantic color preset");
       return { data: { objectId, presetId }, changedObjectIds: [objectId] };
     }
+    if (command === "import_pptx") {
+      const { base64ToBytes } = await import("@/interchange/pptx");
+      const sourceName = input.sourceName;
+      const slideIndices = input.slideIndices;
+      if (typeof sourceName !== "string" || sourceName.trim() === "") {
+        throw new SemanticAdapterError("INVALID_INPUT", "sourceName is required.");
+      }
+      if (
+        !Array.isArray(slideIndices) ||
+        slideIndices.length === 0 ||
+        slideIndices.some(
+          (index) => !Number.isSafeInteger(index) || (index as number) < 0 || (index as number) > 99
+        ) ||
+        new Set(slideIndices).size !== slideIndices.length
+      ) {
+        throw new SemanticAdapterError(
+          "INVALID_INPUT",
+          "slideIndices must contain one or more unique slide indices from 0 to 99."
+        );
+      }
+      const sourceBytes = base64ToBytes(String(input.sourceBase64 ?? ""));
+      const imported = await dependencies.importPptx(
+        sourceBytes,
+        sourceName,
+        slideIndices as number[],
+        input.point ? point(input.point, "point") : undefined,
+        options
+      );
+      throwIfSemanticExecutionAborted(options.signal);
+      return {
+        data: { format: "pptx", importedSlides: slideIndices.length, fidelity: imported.fidelity },
+        changedObjectIds: imported.changedObjectIds ?? []
+      };
+    }
     if (command === "export_figure") {
       const format = input.format as
-        "svg" | "pdf" | "png" | "jpeg" | "webp" | "tiff" | "bmp" | "credits";
+        "svg" | "pdf" | "png" | "jpeg" | "webp" | "tiff" | "bmp" | "pptx" | "credits";
       const title = typeof input.title === "string" ? input.title : undefined;
       const description = typeof input.description === "string" ? input.description : undefined;
       if (format === "credits") dependencies.exportCredits(title, description);

@@ -10,6 +10,7 @@ import {
 } from "react";
 import { AlertTriangle, X } from "lucide-react";
 import type {
+  ImportedMediaRecord,
   ProjectFolderRecord,
   ProjectKind,
   ProjectRecord,
@@ -28,6 +29,12 @@ import { resolveOpenSketchApplicationPresentation } from "@/application/uiContra
 import { createProjectLifecycleRuntime } from "@/semantic/projectLifecycle";
 import { SemanticExecutionAborted, type SemanticExecutionOptions } from "@/semantic/semanticTypes";
 import { createWebMcpRegistry, type WebMcpRegistry, type WebMcpRuntime } from "@/semantic/webmcp";
+import {
+  PPTX_EMU_PER_INCH,
+  PPTX_MIME_TYPE,
+  svgDataUrlForPptx,
+  svgForPptxCanvas
+} from "@/interchange/pptxShared";
 
 const EditorStudio = lazy(() =>
   import("@/components/EditorStudio").then((module) => ({ default: module.EditorStudio }))
@@ -45,6 +52,113 @@ function identityRepairNotice(project: ProjectRecord, warnings: string[]): strin
 function projectLoadError(project: ProjectRecord, reason: unknown): string {
   const detail = reason instanceof Error ? reason.message : String(reason);
   return `Could not load “${project.name}”: ${detail.replace(/^Error:\s*/, "")}`;
+}
+
+function pptxProjectBaseName(fileName: string): string {
+  return (
+    fileName
+      .replace(/\.pptx$/i, "")
+      .trim()
+      .slice(0, 120) || "PowerPoint import"
+  );
+}
+
+function projectFromPptxSlide(
+  project: ProjectRecord,
+  file: Pick<File, "name" | "type" | "size">,
+  slide: {
+    index: number;
+    stableId: string;
+    svg: string;
+  },
+  widthEmu: number,
+  heightEmu: number,
+  checksum?: string
+): ProjectRecord {
+  const dpi = 96;
+  const width = (widthEmu / PPTX_EMU_PER_INCH) * dpi;
+  const height = (heightEmu / PPTX_EMU_PER_INCH) * dpi;
+  const svg = svgForPptxCanvas(slide.svg, width, height);
+  const dataUrl = svgDataUrlForPptx(svg);
+  const mediaId = crypto.randomUUID();
+  const objectId = crypto.randomUUID();
+  const media: ImportedMediaRecord = {
+    id: mediaId,
+    name: `${file.name} — slide ${slide.index + 1}`,
+    mimeType: "image/svg+xml",
+    dataUrl,
+    ...(checksum
+      ? {
+          sourceResource: {
+            format: "pptx",
+            name: file.name,
+            mimeType: file.type || PPTX_MIME_TYPE,
+            byteLength: file.size,
+            sha256: checksum,
+            slideIndex: slide.index,
+            slideStableId: slide.stableId
+          }
+        }
+      : {})
+  };
+  return {
+    ...project,
+    name: `${pptxProjectBaseName(file.name)} — slide ${slide.index + 1}`.slice(0, 200),
+    canvas: {
+      ...project.canvas,
+      width,
+      height,
+      dpi,
+      unit: "px"
+    },
+    objects: {
+      version: "7.4.0",
+      objects: [
+        {
+          type: "Image",
+          version: "7.4.0",
+          originX: "center",
+          originY: "center",
+          left: width / 2,
+          top: height / 2,
+          width,
+          height,
+          fill: "rgb(0,0,0)",
+          stroke: null,
+          strokeWidth: 0,
+          strokeDashArray: null,
+          strokeLineCap: "butt",
+          strokeDashOffset: 0,
+          strokeLineJoin: "miter",
+          strokeUniform: false,
+          strokeMiterLimit: 4,
+          scaleX: 1,
+          scaleY: 1,
+          angle: 0,
+          flipX: false,
+          flipY: false,
+          opacity: 1,
+          shadow: null,
+          visible: true,
+          backgroundColor: "",
+          fillRule: "nonzero",
+          paintFirst: "fill",
+          globalCompositeOperation: "source-over",
+          skewX: 0,
+          skewY: 0,
+          objectId,
+          name: media.name,
+          OpenSketchType: "import",
+          assetId: mediaId,
+          src: dataUrl,
+          crossOrigin: null,
+          filters: []
+        }
+      ]
+    },
+    uploads: [media],
+    updatedAt: new Date().toISOString()
+  };
 }
 
 export function App({
@@ -362,6 +476,50 @@ export function App({
     [openProject, refresh, services]
   );
 
+  const importPptxProjects = useCallback(
+    async (file: File, slideIndices: readonly number[]) => {
+      const created: ProjectRecord[] = [];
+      let folder: ProjectFolderRecord | undefined;
+      try {
+        const { preparePptxImport } = await import("@/interchange/pptx");
+        const prepared = await preparePptxImport(file, { selectedSlideIndices: slideIndices });
+        const dimensions = prepared.probe.dimensions;
+        if (!dimensions || prepared.slides.length === 0) {
+          throw new Error("The PPTX did not contain an importable slide.");
+        }
+        if (prepared.slides.length > 1) {
+          folder = await services.projects.createFolder(pptxProjectBaseName(file.name));
+        }
+        for (const slide of prepared.slides) {
+          const blank = services.projects.create(
+            `${pptxProjectBaseName(file.name)} — slide ${slide.index + 1}`,
+            { kind: "diagram" }
+          );
+          const project = projectFromPptxSlide(
+            blank,
+            file,
+            slide,
+            dimensions.width,
+            dimensions.height,
+            prepared.source.sha256
+          );
+          if (folder) project.folderId = folder.id;
+          await services.projects.save(project);
+          created.push(project);
+        }
+        await refresh();
+        if (!openProject(created[0])) throw new Error("The imported PPTX project could not open.");
+      } catch (reason) {
+        await Promise.all(
+          created.map((project) => services.projects.delete(project.id, project.revision))
+        ).catch(() => undefined);
+        if (folder) await services.projects.deleteFolder(folder.id).catch(() => undefined);
+        setError(String(reason).replace(/^Error:\s*/, ""));
+      }
+    },
+    [openProject, refresh, services]
+  );
+
   if (!lifecycleRuntimeRef.current) {
     lifecycleRuntimeRef.current = createProjectLifecycleRuntime({
       getProjects: () => projectsRef.current,
@@ -577,7 +735,15 @@ export function App({
               .then(refresh)
               .catch((reason) => setError(String(reason)));
           }}
-          onImport={(file) => {
+          onImport={(file, slideIndices) => {
+            const isPptx =
+              file.name.toLowerCase().endsWith(".pptx") ||
+              file.type ===
+                "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+            if (isPptx) {
+              void importPptxProjects(file, slideIndices ?? [0]);
+              return;
+            }
             services.files
               .readProject(file)
               .then(async ({ project, identityRepaired, identityWarnings }) => {
@@ -588,6 +754,7 @@ export function App({
               })
               .catch((reason) => setError(String(reason)));
           }}
+          onImportError={(reason) => setError(String(reason).replace(/^Error:\s*/, ""))}
         />
       )}
       {error && (

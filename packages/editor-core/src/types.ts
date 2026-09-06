@@ -101,6 +101,9 @@ export interface ImportedMediaSourceResource {
   mimeType: string;
   byteLength: number;
   sha256: string;
+  /** Stable source slide identity for page-based interchange formats. */
+  slideIndex?: number;
+  slideStableId?: string;
 }
 
 export interface ImportedMediaRecord {

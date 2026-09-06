@@ -101,7 +101,9 @@ registry.
 | `ungroup_objects`           | Ungroup one existing manual group                                             | Reversible                                       |
 | `undo`                      | Undo the most recent editor history step                                      | Reversible                                       |
 | `redo`                      | Redo the next editor history step                                             | Reversible                                       |
-| `export_figure`             | Start the existing SVG, PDF, PNG, or credits download                         | Local side effect                                |
+| `export_figure`             | Start the existing SVG, PDF, PNG, PPTX, or credits download                   | Local side effect                                |
+| `probe_pptx`                | Read a bounded PPTX package and its slide diagnostics                         | Read-only                                        |
+| `import_pptx`               | Import explicitly selected PPTX slides as snapshots                           | Reversible                                       |
 | `find_objects`              | Find bounded objects by semantic role, stage, asset, or relation              | Read-only                                        |
 | `inspect_geometry`          | Inspect visual, layout, selection geometry, hulls, and ports                  | Read-only                                        |
 | `inspect_relations`         | Inspect the bounded semantic relation graph                                   | Read-only                                        |
@@ -190,6 +192,159 @@ When `document.modelContext` is absent or does not provide
 editor still works, and local tests can use the transport-neutral runtime or
 development introspection surface. This is the expected fallback for browsers
 without WebMCP support; it is not an application error.
+
+## Judge qualification path
+
+The hosted app is [OpenSketch on GitHub Pages](https://pkheisig.github.io/OpenSketch/).
+No account or judge credential is required.
+
+1. Open the hosted app in ChatGPT's in-app browser or another compatible
+   browser with WebMCP enabled. Confirm that the landing-state tools are
+   available, then call `list_projects` and either `create_project` or
+   `open_project`. Do not depend on a manual **New figure** click.
+2. Confirm that the host can discover the registered tools. In a local browser
+   harness, install a `document.modelContext.registerTool` recorder before
+   navigation and inspect the recorded tool names. The expected landing names
+   are the lifecycle table above; after opening a project they are replaced by
+   the editor catalogue.
+3. Run a bounded read-only check with `inspect_scene` and search the bundled
+   library with `search_assets`. Use `inspect_asset` to choose an exact family
+   and variant, then insert it with `insert_asset`.
+4. Continue the same workflow with `create_text`, `move_objects`, or
+   `set_object_properties`, and re-run `inspect_scene` to verify the stable
+   object identity and changed state. `inspect_provenance` should report the
+   inserted scientific asset.
+5. Make a normal manual canvas edit, then use `inspect_scene` again. The
+   semantic surface should see the same live editor state. `undo` and `redo`
+   use the same history as the manual editor.
+6. If a local download check is needed, use `export_figure` with
+   `format: "credits"`; exports remain local browser downloads.
+
+Run the focused qualification from the repository root with:
+
+```sh
+pnpm test:webmcp
+```
+
+This runs the semantic unit tests, the registry/catalogue drift guard, the
+production build guard, and the Chromium browser workflow in
+`tests/e2e/webmcp.spec.ts`. The browser test supplies a small model-context
+recorder, exercises asset search/insertion, editing, grouping, history,
+provenance, stale-ID handling, manual editing, and a local credits download.
+
+The full reference-composition qualification is also available as a focused
+Chromium entrypoint:
+
+```sh
+pnpm test:webmcp:composition
+```
+
+It installs a real `document.modelContext.registerTool` recorder before page
+load and uses only registered callbacks to search and inspect bundled NIH
+BioArt assets, compose seven ordered cancer-immunity-cycle stages, create typed
+particle fields and relation-bound annotations, apply a planner-generated
+cycle layout, bind the closed main-flow connector cycle, and inspect the
+resulting semantic graph. The workflow also performs a real canvas drag,
+verifies bound-connector refresh through undo/redo, captures a screenshot, and
+checks a provenance download. A deterministic fixture records the historical
+false-pass baseline and requires the corrected validator to reject it. The
+workflow uses telemetry rather than a hard WebMCP call budget and does not use
+a test-only semantic adapter or alter product UI code.
+
+The positive workflow uses compact valid NIH families for reliable local
+qualification. Large or malformed source SVGs are not silently repaired: the
+geometry inspector filters non-finite samples and reports an asset as
+unevaluable, which keeps layout qualification fail-closed.
+
+For an auditable demo recording, add `?webmcpDemo=1` to the editor URL. This
+shows a compact live panel that records every WebMCP tool call, its bounded
+input summary, completion state, and duration. The panel is intentionally
+opt-in and does not alter the canvas or exported figure.
+
+## Deployment variants
+
+The production build supports the GitHub Pages path `/OpenSketch/` by default.
+WEB-6 (PAU-433, [PR #18](https://github.com/pkheisig/OpenSketch/pull/18)) adds
+one normalized `VITE_PUBLIC_BASE` and the provider-native static-host
+configuration. On the current `dev` head, use:
+
+```sh
+pnpm build:pages  # /OpenSketch/; the default GitHub Pages deployment
+pnpm build:root   # /; root-hosted static deployment
+pnpm test:deployment
+```
+
+The root variant uses `netlify.toml`: it runs
+`pnpm build:root`, publishes `dist`, uses Node 24, and serves the SPA fallback
+from `/index.html`. The same normalized base then drives Vite assets, PWA scope
+and `start_url`, Workbox navigation fallback, and runtime font/scientific-asset
+cache paths. No generated `dist` directory is committed, and the deployment
+does not depend on GitHub Actions artifacts.
+
+The default build retains the existing offline contract: the app shell is
+cached by the service worker, while the large scientific asset pack is fetched
+only after the user explicitly prepares it from the Assets panel. Cache
+entries, IndexedDB projects, and imported media remain origin-local.
+
+## Existing project and WebMCP change boundary
+
+The repository does not encode an external WebMCP Challenge start timestamp.
+For an auditable, reproducible source boundary, this guide records the
+following history instead:
+
+| Boundary               | Evidence                                                                                                                                                                                                                                                                                                                     |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Pre-WebMCP baseline    | [`d8c7428`](https://github.com/pkheisig/OpenSketch/commit/d8c74284435605a72d7ed5ce60a854da74e56399), the direct parent of the first semantic-runtime commit, dated 2026-08-30; its parent is [`920de47`](https://github.com/pkheisig/OpenSketch/commit/920de476e9e802f97ff3a2af78337c4b6311da69), the preceding merge commit |
+| First semantic runtime | [`8373141`](https://github.com/pkheisig/OpenSketch/commit/83731418a85916f50b536c5426e75920237d80d7), `feat: add semantic editor runtime`, dated 2026-09-02                                                                                                                                                                   |
+| WebMCP exposure        | [`2ca786b`](https://github.com/pkheisig/OpenSketch/commit/2ca786b3e6243279faab34e86f89e9e63ed5ad7b), `feat: expose semantic workflows through WebMCP`, dated 2026-09-02                                                                                                                                                      |
+| WebMCP hardening       | [`771c41f`](https://github.com/pkheisig/OpenSketch/commit/771c41f876601f3988cf9b19e9ec02f167229572) and [`557efd7`](https://github.com/pkheisig/OpenSketch/commit/557efd7c7c1f0accbc43eb79909da5e60b22c34b), dated 2026-09-02                                                                                                |
+
+Before that recorded boundary, OpenSketch already had the browser editor,
+Fabric canvas, local projects and history, offline assets, manual figure
+editing, provenance-aware exports, and the AGPL/third-party-artwork licensing
+model. The semantic/WebMCP work added or changed the following implementation
+areas:
+
+- `apps/web/src/semantic/` — registry, typed runtime, editor adapter,
+  introspection, and WebMCP registration;
+- `apps/web/src/editor/EditorContext.tsx` and
+  `apps/web/src/editor/creationObjects.ts` — shared semantic/editor mutation
+  paths;
+- `tests/semantic-runtime.test.ts`,
+  `tests/semantic-editor-adapter.test.ts`, `tests/webmcp.test.ts`, and
+  `tests/e2e/webmcp.spec.ts` — unit and browser qualification;
+- `scripts/check-webmcp-build.mjs` and the root `test:webmcp` script — the
+  production guard and repeatable qualification entry point.
+
+The commit boundary is repository evidence, not a claim about the external
+challenge calendar. For a submission report, pair these immutable commits with
+the challenge's official submission timestamp. Do not describe the preexisting
+editor or artwork library as WebMCP work.
+
+## Licensing and provenance
+
+OpenSketch source is AGPL-3.0-only; the complete text is in [`LICENSE`](../LICENSE)
+and the GitHub-visible summary is [`LICENSE.md`](../LICENSE.md). Bundled
+artwork is not relicensed: source, author, license, and attribution metadata
+remain attached to the asset manifests and third-party notices. The semantic
+asset and provenance commands preserve that distinction, and exports provide
+readable credits alongside embedded provenance where the format supports it.
+
+## Geometry and host capabilities
+
+Use `resize_objects` for absolute displayed dimensions and `scale_objects` for
+relative scale factors. Resize uses the inspector's parent-plane dimensions
+before rotation. A single dimension preserves aspect ratio by default. Supply
+`preserveAspectRatio: false` to set both dimensions independently. Intrinsic SVG
+sizes and child coordinates stay intact. Generic property edits reject raw
+width/height on groups and assets before changing any target. Move or rebind
+bound connector endpoints instead of scaling their derived paths.
+
+`attach_object` places an anchor once; it does not establish a persistent
+attachment. Use semantic layout constraints for relationships that must follow
+later edits. `render_scene_preview` remains a reserved semantic command but is
+not registered as a WebMCP tool on hosts without image transport; direct calls
+return `COMMAND_UNAVAILABLE`. Use a browser screenshot for visual inspection.
 
 ## Judge qualification path
 
