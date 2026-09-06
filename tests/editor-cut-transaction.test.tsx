@@ -1,7 +1,12 @@
 import { act, cleanup, render, waitFor } from "@testing-library/react";
-import { ActiveSelection, Rect, type FabricObject } from "../apps/web/node_modules/fabric/index.js";
+import {
+  ActiveSelection,
+  Group,
+  Rect,
+  type FabricObject
+} from "../apps/web/node_modules/fabric/index.js";
 import { createElement } from "../apps/web/node_modules/react/index.js";
-import type { ProjectRecord } from "@workspace/editor-core";
+import type { AssetManifest, ProjectRecord } from "@workspace/editor-core";
 import {
   OpenSketchHostProvider,
   type OpenSketchHostServices
@@ -55,7 +60,15 @@ function project(): ProjectRecord {
   };
 }
 
-function services(): OpenSketchHostServices {
+function services(
+  assetManifest: AssetManifest = {
+    version: 1,
+    generatedAt: "2026-09-06T00:00:00.000Z",
+    source: "test",
+    families: []
+  },
+  loadAssetText: (assetPath: string) => Promise<string> = async () => ""
+): OpenSketchHostServices {
   let uuid = 0;
   const storageValues = new Map<string, string>();
   const noOp = async () => undefined;
@@ -106,14 +119,9 @@ function services(): OpenSketchHostServices {
     },
     exports: { deliver: noOp },
     assets: {
-      getManifest: async () => ({
-        version: 1,
-        generatedAt: "2026-09-06T00:00:00.000Z",
-        source: "test",
-        families: []
-      }),
+      getManifest: async () => assetManifest,
       getVersion: async () => "test",
-      loadText: async () => "",
+      loadText: loadAssetText,
       loadBlob: async () => new Blob(),
       resolveVariant: (_family, variant) => variant
     },
@@ -165,8 +173,11 @@ function EditorProbe({ onEditor }: { onEditor: (editor: EditorContextValue) => v
   return null;
 }
 
-async function renderEditor() {
-  const host = services();
+async function renderEditor(
+  assetManifest?: AssetManifest,
+  loadAssetText?: (assetPath: string) => Promise<string>
+) {
+  const host = services(assetManifest, loadAssetText);
   const onProjectChange = vi.fn(async () => undefined);
   let navigationGuard: (() => boolean) | null = null;
   const onNavigationGuardChange = vi.fn((guard: (() => boolean) | null) => {
@@ -398,5 +409,60 @@ describe("EditorProvider asynchronous cut transactions", () => {
     await editor.copySelectionToClipboard("png", true);
 
     expect(canvas.getObjects()).toEqual([]);
+  });
+});
+
+describe("EditorProvider scientific asset variants", () => {
+  it("restores editable Detailed structures after a Simplified round-trip", async () => {
+    const family = {
+      familyId: "editable-cell",
+      editableStructure: true,
+      title: "Cell with movable parts",
+      description: "",
+      category: "Scientific structures",
+      keywords: ["cell"],
+      author: "OpenSketch",
+      credit: "OpenSketch",
+      license: "AGPL-3.0-only" as const,
+      defaultVariantId: "editable-cell",
+      variants: [
+        {
+          id: "editable-cell",
+          style: "detailed" as const,
+          assetPath: "assets/scientific-structures/editable-cell.svg",
+          thumbnailPath: "assets/scientific-structures/editable-cell.svg"
+        },
+        {
+          id: "editable-cell-simplified",
+          style: "simplified" as const,
+          assetPath: "assets/scientific-structures/editable-cell-simplified.svg",
+          thumbnailPath: "assets/scientific-structures/editable-cell-simplified.svg"
+        }
+      ]
+    };
+    const { editor } = await renderEditor(
+      {
+        version: 1,
+        generatedAt: "2026-09-06T00:00:00.000Z",
+        source: "test",
+        families: [family]
+      },
+      async () =>
+        '<svg xmlns="http://www.w3.org/2000/svg" width="220" height="170"><rect width="220" height="170" fill="#d8efe9"/></svg>'
+    );
+
+    await editor.addAsset(family, family.variants[0]);
+    const detailed = editor.canvas!.getObjects()[0] as Group;
+    expect(detailed.OpenSketchType).toBe("group");
+    expect(detailed.getObjects().some((child) => child.name === "Cell outline")).toBe(true);
+
+    await editor.setAssetVariant("editable-cell-simplified");
+    const simplified = editor.canvas!.getObjects()[0] as Group;
+    expect(simplified).toMatchObject({ assetStyle: "simplified", OpenSketchType: "library-asset" });
+
+    await editor.setAssetVariant("editable-cell");
+    const restored = editor.canvas!.getObjects()[0] as Group;
+    expect(restored).toMatchObject({ assetStyle: "detailed", OpenSketchType: "group" });
+    expect(restored.getObjects().some((child) => child.name === "Cell outline")).toBe(true);
   });
 });

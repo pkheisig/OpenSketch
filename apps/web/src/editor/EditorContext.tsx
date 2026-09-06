@@ -3410,7 +3410,30 @@ export function EditorProvider({
           const variant = family?.variants.find((candidate) => candidate.id === variantId);
           if (!family || !variant) return false;
 
-          const replacement = await createBundledAssetGroup(services.assets, family, variant);
+          const preset =
+            family.editableStructure && (variant.style ?? "detailed") === "detailed"
+              ? scientificPreset(family.familyId)
+              : undefined;
+          const replacement = preset
+            ? createScientificObject(preset.id, semanticCreationDefaultsRef.current)
+            : await createBundledAssetGroup(services.assets, family, variant);
+          if (!replacement) return false;
+          if (preset) {
+            replacement.assetId = variant.id;
+            replacement.familyId = family.familyId;
+            replacement.assetStyle = variant.style ?? "detailed";
+            replacement.provenance = {
+              sourcePage: family.sourcePage ?? "",
+              ...(family.sourceName ? { sourceName: family.sourceName } : {}),
+              ...(family.licenseUrl ? { licenseUrl: family.licenseUrl } : {}),
+              style: replacement.assetStyle,
+              ...(variant.localSha256 ? { localSha256: variant.localSha256 } : {}),
+              credit: family.credit,
+              author: family.author,
+              license: family.license
+            };
+            rememberOriginalColors(replacement);
+          }
           if (options?.signal?.aborted) return false;
           if (
             semanticCanvasRef.current !== currentCanvas ||
@@ -3424,7 +3447,11 @@ export function EditorProvider({
           replacement.set({
             objectId: current.objectId,
             name: current.name ?? family.title,
-            OpenSketchType: "library-asset",
+            OpenSketchType: preset
+              ? preset.form === "parts"
+                ? "group"
+                : "scientific-brush"
+              : "library-asset",
             scaleX: scale,
             scaleY: scale,
             angle: current.angle,
