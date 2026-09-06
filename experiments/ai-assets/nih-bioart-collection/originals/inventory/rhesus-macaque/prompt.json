@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a rhesus macaque, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Adult Macaca mulatta in relaxed seated three-quarter profile facing LEFT. Robust medium-sized monkey, gray-brown fur on head/shoulders transitioning warm russet on back and hindquarters, paler cream chest/belly, bare pink face with short projecting muzzle, close-set brown eyes and small rounded pink ears. Natural neutral expression, no smile or human expression. Medium-length nonprehensile tail roughly half head-and-body length, resting in a loose simple curve behind to right, full tip visible. Two arms and two folded hind legs, natural five-digit primate hands resting in front, feet partly visible beside haunches. Distinct near hand with four fingers and small opposable thumb, natural nails rather than claws. Smooth stylized fur masses with a few crisp contour tufts, NO dense realistic fur strands or grain. Matte broad gradients, thin warm brown outlines, polished biomedical asset. Complete animal only, transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-733ac8f0-b937-4b95-9635-24be338cd1a5.png",
+  "refinement": "Redraw this same rhesus macaque as a polished clean vector-style biomedical illustration. Preserve anatomical pose, proportions, pink muzzle, eyes, ears, two arms, two folded legs, hands/feet and complete medium-length curved tail. Replace ALL dense realistic fur strands with smooth matte gray-brown, warm russet and cream color masses, broad subtle gradients, a few short contour tufts and sparse curved fur accents only. Simplify facial pores/wrinkles to a few clean lines, natural neutral monkey expression, no human smile. Keep hand and foot digits naturally separate with nails, near hand four fingers plus short opposable thumb. Crisp warm dark brown outlines, restrained highlights, no grain or photorealism. Generous transparent padding on every side, true PNG alpha background.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Adult rhesus macaque, seated external anatomy with medium tail, pink face and warm hindquarter coat. Some digits naturally hidden by perspective; generic phenotype rather than population or sex diagnostic plate.",
+  "references": [
+    "https://primate.wisc.edu/primate-info-net/pin-factsheets/pin-factsheet-rhesus-macaque/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6362266/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "rhesus-macaque",
+  "name": "rhesus macaque",
+  "original": "originals/inventory/rhesus-macaque/generated.png",
+  "original_sha256": "602561620da1d7f520ff407d43afedc25ba025ec15bdd68df5e24419efb94cef"
+}

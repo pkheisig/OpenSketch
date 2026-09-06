@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a paraffin block, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One histology paraffin-embedded tissue block mounted firmly onto a teal rectangular tissue cassette base, three-quarter isometric view from above. Solid ivory pale cream wax block forms a low rectangular cuboid projecting from cassette, with slight beveled shoulders and smooth flat exposed cutting face facing viewer/up. One small irregular tan-pink tissue fragment visible embedded FLUSH inside the central wax cutting face, no tissue protruding above wax. Thin teal cassette plastic base extends slightly beyond wax with a blank sloped writing end and a few small side slots. No lid, knife, ribbons, mold or separate objects. Wax gently translucent only enough to suggest embedded fragment; no glassy jar or liquid. Smooth matte surfaces, crisp teal/ochre outlines, restrained gradients and tiny highlights, no grain or photographic wax texture. Entire single assembled block with generous transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-3c5b2c0b-93af-40a8-868e-9aea6d8a7012.png",
+  "refinement": "Redraw this same paraffin histology block in smooth vector-style biomedical illustration. Keep ivory wax cuboid mounted on teal cassette base, beveled wax shoulders, blank sloped label face and side slots. Tissue fragment is EMBEDDED FLUSH in cutting face, not lying as a raised slice on top. Simplify tissue to a smooth irregular tan-pink shape with a few broad internal rose/brown areas, no photographic tissue grain, fat droplets, tiny veins or mottled noise. Smooth matte cream wax and teal plastic with restrained gradients and crisp outlines, no grain or texture. Preserve complete object with generous transparent PNG alpha padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Paraffin embedded histology tissue block mounted on a cassette; tissue flush with wax cutting face.",
+  "references": [
+    "https://www.leicabiosystems.com/us/histology-consumables/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "paraffin-block",
+  "name": "paraffin block",
+  "original": "originals/inventory/paraffin-block/generated.png",
+  "original_sha256": "1776e4a153e7999f5abd058c08f00a0e34bbd2d5be8c7605f11bedb40b772346"
+}

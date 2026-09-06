@@ -1,0 +1,24 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an organoid bud, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Attached organoid is style reference only. New geometry: early epithelial organoid cutaway with ONE rounded large cyst and exactly ONE SMALL emerging bud on upper right side, bud about one-third parent diameter joined by short narrow neck. One continuous layer of smooth coral epithelial cells with violet nuclei lines the whole parent cyst and bud. One shared pale cream lumen, clearly CONTINUOUS through the narrow neck into bud, no blocking wall at neck. Cells at bud tip are slightly smaller and densely packed. A few tiny fine apical brush border marks face lumen. Closed entire external basal contour. No second or third bud, no detached sphere, no dish, no matrix droplet. Smooth matte surfaces, crisp outlines, subtle gradients, restrained highlights, no grain, transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-8790adca-548c-4fc6-9309-91ef1f0ec7a3.png",
+  "style_reference": "/Users/pkheisig/.codex/worktrees/OpenSketch/ai-bioart-assets-20260904/experiments/ai-assets/nih-bioart-collection/png/organoid-bioart-transparent.png",
+  "padding_correction": "Zoom out this exact single-bud organoid so the ENTIRE bud tip and bottom outer wall are visible, with 20% empty padding on all four sides. Restore clipped curved coral tissue contour at very top of bud. Preserve one parent cyst and one connected bud, shared cream lumen and all cell outlines. Simplify highlights slightly to smooth matte broad gradients. Output actual transparent PNG alpha, no checkerboard painted background. Do not crop or enlarge object.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Early epithelial organoid with one emerging crypt-like bud connected to parent cyst by continuous lumen. Experimental form distinct from multi-budded organoid. Cell numbers, brush border and proportions schematic; no specific molecular identity encoded.",
+  "references": [
+    "https://pubmed.ncbi.nlm.nih.gov/?term=19329995",
+    "https://pubmed.ncbi.nlm.nih.gov/21113151/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "organoid-bud",
+  "name": "organoid bud",
+  "original": "originals/inventory/organoid-bud/generated.png",
+  "original_sha256": "6f6e805853b088cb7e1f43387cd90d52697e00c98568c43d584a3425f532b3e3"
+}

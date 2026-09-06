@@ -17572,37 +17572,233 @@
     "eight-cell-embryo": {
       "name": "eight-cell embryo",
       "category": "17. Developmental biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/eight-cell-embryo-bioart-transparent.png",
+      "svg": "svg/eight-cell-embryo-bioart-traced.svg",
+      "png_sha256": "a02c9bc847ec0eddef8b90f074c6eb40438179b8f6ebb2885b5158e7a1e74a03",
+      "svg_sha256": "c9bc243ab720d582b5f754a858b7bb37b85e07f95820ef55dd944fed1c739c6a",
+      "original_sha256": "2ec668353baaae29da8bffc39d892dc92058890cfaaacdd47a8cd518c1f2dc09",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        270,
+        299,
+        251
+      ],
+      "svg_paths": 20361,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/eight-cell-embryo/prompt.json",
+      "qa": "qa/inventory/eight-cell-embryo",
+      "visual_review": "Corrected count is eight cells with eight nuclei, retained in SVG. Common zona fully visible with generous padding; clean light/dark alpha. Minor gradient contours comparable at asset scale.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/eight-cell-embryo/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/eight-cell-embryo/inspection.webm"
+      }
     },
     "morula": {
       "name": "morula",
       "category": "17. Developmental biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/morula-bioart-transparent.png",
+      "svg": "svg/morula-bioart-traced.svg",
+      "png_sha256": "d7fea4ea6ec9eeec0ed8bdb7106b049cf7b7d59e76584c685dc576c2a7588bbd",
+      "svg_sha256": "264ce621298fdb0f8f24ad2d3797f3e174191d91800e9f0dda807d7d8163b808",
+      "original_sha256": "3c5029600aa54f1224ef3de40f90516526e3b9b0ed7158e7d11269a0f64d5b45",
+      "png_dimensions": [
+        1813,
+        1813
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        311,
+        299,
+        309,
+        340
+      ],
+      "svg_paths": 26313,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/morula/prompt.json",
+      "qa": "qa/inventory/morula",
+      "visual_review": "Solid overlapping cell mass without lumen and full zona retained. SVG preserves cell boundaries, nuclei and shading; clean transparent edges on both backgrounds, slight contouring only.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/morula/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/morula/inspection.webm"
+      }
     },
     "blastocyst": {
       "name": "blastocyst",
       "category": "17. Developmental biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/blastocyst-bioart-transparent.png",
+      "svg": "svg/blastocyst-bioart-traced.svg",
+      "png_sha256": "fbd03d3e873052a5ef706d03973511bf38e20ae9e5ea79f8a8f6dbc748aff04c",
+      "svg_sha256": "8642a98c80cb3b5e932cee463e40c54d7c158af69a62fbd35c781b4ab27d3dbd",
+      "original_sha256": "cecf19c337ae1b98eeb9ff95fe3e512ef3ea574036b04f5a049b2794c7a000ed",
+      "png_dimensions": [
+        1783,
+        1783
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        255,
+        273,
+        333,
+        274
+      ],
+      "svg_paths": 17119,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/blastocyst/prompt.json",
+      "qa": "qa/inventory/blastocyst",
+      "visual_review": "Outer cell layer, large cavity and localized inner cell mass remain distinct in SVG. Full zona, good padding and clean light/dark alpha. Slight cavity gradient contouring accepted at asset scale.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/blastocyst/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/blastocyst/inspection.webm"
+      }
     },
     "gastrula-schematic-embryo": {
       "name": "gastrula schematic embryo",
       "category": "17. Developmental biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/gastrula-schematic-embryo-bioart-transparent.png",
+      "svg": "svg/gastrula-schematic-embryo-bioart-traced.svg",
+      "png_sha256": "fda84996a152aaa42e682215e4ebcda87d745a633bed5c4e0efe2c6a019ca125",
+      "svg_sha256": "688ea2999693ac86b86a577ca582436ad352e90b26a4fcfdc8cbfe7f439c1312",
+      "original_sha256": "d136204eb29402621f787628a16d36e9296abac7e541a85d269683bbe0016059",
+      "png_dimensions": [
+        1850,
+        1850
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        264,
+        342,
+        284,
+        350
+      ],
+      "svg_paths": 17229,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/gastrula-schematic-embryo/prompt.json",
+      "qa": "qa/inventory/gastrula-schematic-embryo",
+      "visual_review": "Teal ectoderm, gold blind-ended gut with external opening and coral mesenchyme remain distinct. Fine filopodia retained; whole outline padded, clean alpha on light/dark. SVG shading comparable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gastrula-schematic-embryo/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gastrula-schematic-embryo/inspection.webm"
+      }
     },
     "neural-tube-cross-section": {
       "name": "neural tube cross-section",
       "category": "17. Developmental biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/neural-tube-cross-section-bioart-transparent.png",
+      "svg": "svg/neural-tube-cross-section-bioart-traced.svg",
+      "png_sha256": "8533766e038979dbbeb45c345294aab8e05b6997f49299ca025ea3794de541aa",
+      "svg_sha256": "e49d3bc4f064f6d260a11c171b9503e1e9bb00d9b493c8b9c5417d0949ae1e54",
+      "original_sha256": "606c33380425fc633c62374ef9f0834e79ae06c67a36c402c249765565b54780",
+      "png_dimensions": [
+        1939,
+        1939
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        490,
+        328,
+        440,
+        277
+      ],
+      "svg_paths": 23579,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/neural-tube-cross-section/prompt.json",
+      "qa": "qa/inventory/neural-tube-cross-section",
+      "visual_review": "Full outer boundary restored with padding. SVG retains radial cell walls, staggered nuclei, roof/floor colors and transparent lumen. Smooth shading comparable, clean light/dark alpha.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/neural-tube-cross-section/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/neural-tube-cross-section/inspection.webm"
+      }
     },
     "embryoid-body": {
       "name": "embryoid body",
       "category": "17. Developmental biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/embryoid-body-bioart-transparent.png",
+      "svg": "svg/embryoid-body-bioart-traced.svg",
+      "png_sha256": "4c678dc2f6832ac75d9b1fbbded3cecc652fb02cca2570a90fff349956cdf72f",
+      "svg_sha256": "b317a9e1928bf3790d3e0920fe9f907619ac58dc7a6248c5bcf7b99a84545816",
+      "original_sha256": "962ad4cb39b9190003b685e22ced8de6505954fd9e3f1b59d678b63d8daa7904",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        280,
+        271,
+        251
+      ],
+      "svg_paths": 26881,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/embryoid-body/prompt.json",
+      "qa": "qa/inventory/embryoid-body",
+      "visual_review": "Gold outer layer, lavender basement membrane, teal radial inner layer and cavity remain distinct in SVG. Complete outline and clean alpha; slight cavity contouring comparable at normal scale.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/embryoid-body/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/embryoid-body/inspection.webm"
+      }
     },
     "organoid-bud": {
       "name": "organoid bud",
       "category": "17. Developmental biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/organoid-bud-bioart-transparent.png",
+      "svg": "svg/organoid-bud-bioart-traced.svg",
+      "png_sha256": "2e753ecc183437461c3024804f4a26de1bb6b79dff26d8b41945540d88a9f3c1",
+      "svg_sha256": "cdf4f394ca8443be20318fd9eb721c49892a08339dd266cff994f06dfb3f6222",
+      "original_sha256": "6f6e805853b088cb7e1f43387cd90d52697e00c98568c43d584a3425f532b3e3",
+      "png_dimensions": [
+        2007,
+        2007
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        421,
+        456,
+        341,
+        485
+      ],
+      "svg_paths": 17543,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/organoid-bud/prompt.json",
+      "qa": "qa/inventory/organoid-bud",
+      "visual_review": "Single bud and continuous shared lumen retained. Restored bud tip fully visible, generous padded output. Fine apical border survives trace; mild lumen contouring, clean light/dark alpha.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/organoid-bud/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/organoid-bud/inspection.webm"
+      }
     },
     "laboratory-mouse": {
       "name": "laboratory mouse",
@@ -17617,107 +17813,695 @@
     "laboratory-rat": {
       "name": "laboratory rat",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/laboratory-rat-bioart-transparent.png",
+      "svg": "svg/laboratory-rat-bioart-traced.svg",
+      "png_sha256": "e9e6fb02da7c3e47c16921078b1792e52674c73463b5d12bdf3c304f3f3a4898",
+      "svg_sha256": "e7b07c5b8af2171ad811e3d6e84bad9faff4241c51ed41b41c90396c6a8241e9",
+      "original_sha256": "0af1be5c1532f1829058f43f1d6bc2d50cc3274338b3443fe8cb31eae78cd81a",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        584,
+        307,
+        563
+      ],
+      "svg_paths": 14365,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/laboratory-rat/prompt.json",
+      "qa": "qa/inventory/laboratory-rat",
+      "visual_review": "Robust rat silhouette, red eye, all four paws and complete tail preserved. SVG retains major whiskers with slight fine-tip simplification. Pale fur reads on light/dark backgrounds; no visible alpha halo.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/laboratory-rat/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/laboratory-rat/inspection.webm"
+      }
     },
     "nude-mouse": {
       "name": "nude mouse",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/nude-mouse-bioart-transparent.png",
+      "svg": "svg/nude-mouse-bioart-traced.svg",
+      "png_sha256": "344e3399b7938c567eaab83d95133dea8e874420ea23d546e2513d0d58dc8c1d",
+      "svg_sha256": "ea9d7f5b9ee3f42cd3601866ca510538237af2e60be429b842f5651a806a23eb",
+      "original_sha256": "f0c80d688b9518b6115eeae9df2436d81011563a820b9a89073bfcddc3cddc56",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        330,
+        572,
+        327,
+        582
+      ],
+      "svg_paths": 10255,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/nude-mouse/prompt.json",
+      "qa": "qa/inventory/nude-mouse",
+      "visual_review": "Hairless silhouette, neck folds, large ears, four paws and full tail retained. Smooth skin shading comparable with mild trace contours. Clean alpha on light/dark backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nude-mouse/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nude-mouse/inspection.webm"
+      }
     },
     "guinea-pig": {
       "name": "guinea pig",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/guinea-pig-bioart-transparent.png",
+      "svg": "svg/guinea-pig-bioart-traced.svg",
+      "png_sha256": "1fb22f4dcd3814ce3e8b6f4f5948b0db09cf61e5dd288baee41c0586d4733246",
+      "svg_sha256": "230be593f524d41a152ab5fb5ae867332055e2cd5f8df2829863083a47546793",
+      "original_sha256": "25b17bfb58d0caffa0e73187bf18c42a42f1a0954db1983ccbcad7b54d8914ef",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        566,
+        307,
+        587
+      ],
+      "svg_paths": 30474,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/guinea-pig/prompt.json",
+      "qa": "qa/inventory/guinea-pig",
+      "visual_review": "Tailless stocky form, folded ears and coat patches retained. Near hind paw has three toes; all four limbs accounted for with far hind partly hidden. SVG preserves coat shading and clean alpha; fine whiskers simplified.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/guinea-pig/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/guinea-pig/inspection.webm"
+      }
     },
     "syrian-hamster": {
       "name": "Syrian hamster",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/syrian-hamster-bioart-transparent.png",
+      "svg": "svg/syrian-hamster-bioart-traced.svg",
+      "png_sha256": "21ef3467006208c2300bd5c9c264fe061095ded391922a79ef7d41f64758bf93",
+      "svg_sha256": "ccd38f0c0d11247539b7998c9ed4b1e865e2c0b7c31a798b500403aaa2f0ad4f",
+      "original_sha256": "2a579eb4a396574dc74bd154c7d48048693f2fccf84244461dfdc1e1e2614272",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        592,
+        333,
+        589
+      ],
+      "svg_paths": 31281,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/syrian-hamster/prompt.json",
+      "qa": "qa/inventory/syrian-hamster",
+      "visual_review": "Five near hind toes retained after correction; far hind limb occluded naturally. Coat pattern, short tail and major whiskers preserved. SVG makes some whiskers more opaque but overall finish comparable; clean alpha on light/dark.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/syrian-hamster/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/syrian-hamster/inspection.webm"
+      }
     },
     "rabbit": {
       "name": "rabbit",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/rabbit-bioart-transparent.png",
+      "svg": "svg/rabbit-bioart-traced.svg",
+      "png_sha256": "97d676d543618f14c674d93b409b3e9759d3012d6d2fd62b3b95696f3ade64aa",
+      "svg_sha256": "2042b3a62e4df36afda38894bcd4d8dcb0bf1053df65debb21f16c2c09283e00",
+      "original_sha256": "63cc5af072ee55e6d930d5cc70f9d53a4132ed7b756947142ce8386b164e5ba5",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        357,
+        563
+      ],
+      "svg_paths": 17599,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/rabbit/prompt.json",
+      "qa": "qa/inventory/rabbit",
+      "visual_review": "Full ears, fur-covered paws and short tail preserved. SVG keeps major whiskers and smooth ivory coat shading with slight simplification. Clean alpha on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rabbit/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rabbit/inspection.webm"
+      }
     },
     "ferret": {
       "name": "ferret",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/ferret-bioart-transparent.png",
+      "svg": "svg/ferret-bioart-traced.svg",
+      "png_sha256": "c023a1522637ad63bde4bb3134013a9f4d402dc8aa621c10dfe81b0016d5bc2f",
+      "svg_sha256": "c9135cb15c7e3d815594d7d3c3d7faff47839cb074d7d060ea63417814e3d1dc",
+      "original_sha256": "8f6d3e0d5e6dfb8d0a18d01f35ab7e261d0d4b454560a92724ece6a3e035a197",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        326,
+        584,
+        311,
+        563
+      ],
+      "svg_paths": 16195,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/ferret/prompt.json",
+      "qa": "qa/inventory/ferret",
+      "visual_review": "Corrected low elongated silhouette, mask, four paws and full furry tail retained. SVG preserves broad coat shading with minor fine-hair simplification; clean alpha on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ferret/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ferret/inspection.webm"
+      }
     },
     "zebrafish-adult": {
       "name": "zebrafish adult",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/zebrafish-adult-bioart-transparent.png",
+      "svg": "svg/zebrafish-adult-bioart-traced.svg",
+      "png_sha256": "3d717766b4e400872854f4d8e83a519a10914bbe3d064c5d907373bf1aa9250d",
+      "svg_sha256": "68b44bceec7ae4c578192d4b7cf9a7494065079fe14a072a14b750d46578c141",
+      "original_sha256": "c881285cf71f891fe8350def5afcdd1ecfcf856cbd6cfc4465338f5b4f68ca79",
+      "png_dimensions": [
+        2868,
+        2868
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        410,
+        1058,
+        424,
+        1076
+      ],
+      "svg_paths": 16917,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/zebrafish-adult/prompt.json",
+      "qa": "qa/inventory/zebrafish-adult",
+      "visual_review": "Adult stripe pattern and complete fin layout retained. SVG preserves fin rays and broad shading with mild banding; clean alpha on both backgrounds, no cropped fin tips.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/zebrafish-adult/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/zebrafish-adult/inspection.webm"
+      }
     },
     "zebrafish-larva": {
       "name": "zebrafish larva",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/zebrafish-larva-bioart-transparent.png",
+      "svg": "svg/zebrafish-larva-bioart-traced.svg",
+      "png_sha256": "e07dd030849a7122907286fb5790f2c8567210642e8af87b96c57c55a4994a62",
+      "svg_sha256": "f7ff05ad0f942b8c98322eb9b312e641ea671e390c6bd22252ca492579055cbe",
+      "original_sha256": "db2a0f7ab809356a1ebdf9d2e69b45dbdcecaf6a98ed26ba7dc055675d9035ce",
+      "png_dimensions": [
+        3040,
+        3040
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        459,
+        1167,
+        480,
+        1158
+      ],
+      "svg_paths": 8995,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/zebrafish-larva/prompt.json",
+      "qa": "qa/inventory/zebrafish-larva",
+      "visual_review": "Reviewed PNG and editable SVG on light and dark backgrounds. Large eye, smooth yolk remnant, chevron myotomes, pigment rows and complete rounded fin fold retained. Trace makes pale translucent tissue somewhat more opaque; silhouette and intrinsic anatomy remain readable. Approximate larval archetype, not a precise staging diagram.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/zebrafish-larva/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/zebrafish-larva/inspection.webm"
+      }
     },
     "xenopus-frog": {
       "name": "Xenopus frog",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/xenopus-frog-bioart-transparent.png",
+      "svg": "svg/xenopus-frog-bioart-traced.svg",
+      "png_sha256": "893d1e3ca2440ceb15724e74f7c374eb98e0200979d96d18e5fee796dafad5ee",
+      "svg_sha256": "ec1272f521aae843a49e34b334a8c24055a0e592c435d861ac78dffbb61ee57f",
+      "original_sha256": "b79f9e27928d82c2647fa293903b4628efe73166867e4563c9c1b715d748486b",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        372,
+        571,
+        343,
+        597
+      ],
+      "svg_paths": 16036,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/xenopus-frog/prompt.json",
+      "qa": "qa/inventory/xenopus-frog",
+      "visual_review": "Viewed light/dark PNG and SVG comparison. Flattened body, dorsal eyes, four limbs, four unwebbed foredigits and five webbed hind toes with three adjacent claws per foot retained after corrections. Full digit tips and transparent outer padding intact. Minor gradient contouring does not obscure morphology; skin pattern is schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/xenopus-frog/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/xenopus-frog/inspection.webm"
+      }
     },
     "drosophila-fruit-fly": {
       "name": "Drosophila fruit fly",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/drosophila-fruit-fly-bioart-transparent.png",
+      "svg": "svg/drosophila-fruit-fly-bioart-traced.svg",
+      "png_sha256": "f91983f73e16a4d6f02911fc16ab552afe88382326c44d53d6b93a0e633d41d6",
+      "svg_sha256": "d2447fa3a1abdf59a7378223f99e3c29fbc6fddf6d4f9d1d0e655cab50fb8122",
+      "original_sha256": "d232152a2fb6723b4e4547110d2ea444872afbef3689aa57516107419b51aa83",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        426,
+        563,
+        405,
+        594
+      ],
+      "svg_paths": 10622,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/drosophila-fruit-fly/prompt.json",
+      "qa": "qa/inventory/drosophila-fruit-fly",
+      "visual_review": "Viewed PNG and SVG on light/dark backgrounds. Six separated legs, paired wings and halteres, red eyes, aristae and female tapered banded abdomen retained. Full margins and transparent exterior verified. Finest arista branches and bristles simplify in trace; major outlines and leg tips preserved. Wing venation and facet/bristle counts schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/drosophila-fruit-fly/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/drosophila-fruit-fly/inspection.webm"
+      }
     },
     "caenorhabditis-elegans-worm": {
       "name": "Caenorhabditis elegans worm",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/caenorhabditis-elegans-worm-bioart-transparent.png",
+      "svg": "svg/caenorhabditis-elegans-worm-bioart-traced.svg",
+      "png_sha256": "6573102d336ada4c64bad9dbceaa736282a11d398098fcc94c18db9fc7613a7f",
+      "svg_sha256": "28b4f9a4d496a7b2562199a2c6ff9d0557718e29db58317cf08ac496df2b49cb",
+      "original_sha256": "f8a679974e64db43ab89d8555c916cf2f6283a225a3c20e3366f57790fec443d",
+      "png_dimensions": [
+        2878,
+        2878
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        411,
+        1177,
+        453,
+        1057
+      ],
+      "svg_paths": 7257,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/caenorhabditis-elegans-worm/prompt.json",
+      "qa": "qa/inventory/caenorhabditis-elegans-worm",
+      "visual_review": "Reviewed light/dark PNG and SVG. Complete slender S outline, tapered tail, anterior pharynx, separate gut, two folded blind-ended gonad arms and central eggs retained. Pale body becomes slightly more opaque and gradients show minor trace contours. Internal subregions and cell counts schematic; no exterior alpha halo in composites.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/caenorhabditis-elegans-worm/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/caenorhabditis-elegans-worm/inspection.webm"
+      }
     },
     "rhesus-macaque": {
       "name": "rhesus macaque",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/rhesus-macaque-bioart-transparent.png",
+      "svg": "svg/rhesus-macaque-bioart-traced.svg",
+      "png_sha256": "4dd57011d5556b72406c5d83b742bccb6ace5c87c3a76a49493030219a1423aa",
+      "svg_sha256": "b296ca5ee5da4cf543c20d2672d0e28750eb84a1156ccf20aac0724d577d7e67",
+      "original_sha256": "602561620da1d7f520ff407d43afedc25ba025ec15bdd68df5e24419efb94cef",
+      "png_dimensions": [
+        1806,
+        1806
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        295,
+        279,
+        314,
+        282
+      ],
+      "svg_paths": 21815,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/rhesus-macaque/prompt.json",
+      "qa": "qa/inventory/rhesus-macaque",
+      "visual_review": "Viewed complete PNG/SVG on light/dark backgrounds. Pink macaque face, robust seated proportions, warm rump coat and full medium curved tail retained. Hands and feet have natural partial digit occlusion. Trace preserves face and major fur forms with minor texture simplification; transparent margins clean.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rhesus-macaque/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rhesus-macaque/inspection.webm"
+      }
     },
     "cynomolgus-macaque": {
       "name": "cynomolgus macaque",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cynomolgus-macaque-bioart-transparent.png",
+      "svg": "svg/cynomolgus-macaque-bioart-traced.svg",
+      "png_sha256": "cbee716e3823409d37e9691f93efea0a783bcce70d2a8a5ee7ab244ad8bbe415",
+      "svg_sha256": "63ade4437561fe7ada8417ee5faac374d0c316aee52392ab31bcebe940dfe9d8",
+      "original_sha256": "26811bb83c21e5f06c775a85f66bd50d020b78bb7fbea7a0a58292906c6d3aca",
+      "png_dimensions": [
+        1962,
+        1962
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        280,
+        425,
+        293,
+        432
+      ],
+      "svg_paths": 12259,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cynomolgus-macaque/prompt.json",
+      "qa": "qa/inventory/cynomolgus-macaque",
+      "visual_review": "Viewed light/dark comparisons. Slimmer gray-olive body, crown crest, pale cheeks and complete very long tail retained. Full silhouette and alpha padding clear. Trace introduces slight tail gradient banding but preserves smooth shape and limb/face detail; partially hidden digits are perspective occlusion.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cynomolgus-macaque/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cynomolgus-macaque/inspection.webm"
+      }
     },
     "common-marmoset": {
       "name": "common marmoset",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/common-marmoset-bioart-transparent.png",
+      "svg": "svg/common-marmoset-bioart-traced.svg",
+      "png_sha256": "5fa86296a4acee1322517011725401f54f2131a988eb6c426a0a6b8d3dd4adf0",
+      "svg_sha256": "c519e54371ac73a18d29f5de6d869df2b06fa0902cc73f4f0df3ea0875ce1a68",
+      "original_sha256": "0594d62a818e9dd14c098a297a9db47fb86f832c8f3d0fb5842aaff61d6871b6",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        409,
+        588,
+        357,
+        617
+      ],
+      "svg_paths": 19177,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/common-marmoset/prompt.json",
+      "qa": "qa/inventory/common-marmoset",
+      "visual_review": "Reviewed PNG and SVG on light/dark backgrounds. White ear tufts and forehead blaze, short muzzle, four limbs, gray-tawny pelage and full ringed tail retained. Fine fur becomes simpler but silhouette, face and rings remain clear. Partial toe/finger occlusion is natural; not a digit-count reference. Clean transparent exterior and padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/common-marmoset/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/common-marmoset/inspection.webm"
+      }
     },
     "pig": {
       "name": "pig",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/pig-bioart-transparent.png",
+      "svg": "svg/pig-bioart-traced.svg",
+      "png_sha256": "9830b94eefd113543ddb18fc094da2a5b7e9872121254f991d6ffd1b5aa93892",
+      "svg_sha256": "f40d42c7369e443d64104098bfe0c13ef8fc8266c7937f87bdd7efaeb1bdd51d",
+      "original_sha256": "d77ddaacbc9da9efd713ea4f6b32993dd60a9929ce1d17aed03838f62335bfca",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        336,
+        563,
+        321,
+        563
+      ],
+      "svg_paths": 16981,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/pig/prompt.json",
+      "qa": "qa/inventory/pig",
+      "visual_review": "Viewed light/dark PNG and SVG. Adult barrel body, snout, ears, all four cloven-hoof legs and complete curled tail preserved. Gradient tracing adds mild texture but keeps polished form and readable hoof splits. Clean alpha exterior and generous padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pig/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pig/inspection.webm"
+      }
     },
     "miniature-pig": {
       "name": "miniature pig",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/miniature-pig-bioart-transparent.png",
+      "svg": "svg/miniature-pig-bioart-traced.svg",
+      "png_sha256": "64161364d2e49d09f93c8f5c86682e5b027817992da3fa37b0ae4093d5c283a6",
+      "svg_sha256": "19b5249c9c2cf2011ca2b5be32212ede4281b0e90c9c48e6371ee3a0f0732f81",
+      "original_sha256": "12880db1efb5f6e5124d2e1587db4efd16a557c658bd35519c118e0a4f34dbbd",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        568,
+        355,
+        597
+      ],
+      "svg_paths": 14073,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/miniature-pig/prompt.json",
+      "qa": "qa/inventory/miniature-pig",
+      "visual_review": "Viewed PNG/SVG light and dark. Compact rounded torso, short legs, small ears, snout, four cloven hooves and complete tail curl retained. Mild tracing texture within gradients; crisp outline and alpha margin intact. General minipig phenotype, not absolute scale or certified breed morphology.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/miniature-pig/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/miniature-pig/inspection.webm"
+      }
     },
     "sheep": {
       "name": "sheep",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/sheep-bioart-transparent.png",
+      "svg": "svg/sheep-bioart-traced.svg",
+      "png_sha256": "543f851b34ed472fbe88753c79ac6716a9ba5082711f7751e1fae5b67b8fed87",
+      "svg_sha256": "e0343c21d1e125e1ec13250fc92193b75755108511dbb94816e58e2ed2f505b3",
+      "original_sha256": "661f2e13d85570cc0f9dcc548f0240f343c654f8422396306ba9029c03e4e7e4",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        364,
+        563,
+        321,
+        595
+      ],
+      "svg_paths": 11784,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/sheep/prompt.json",
+      "qa": "qa/inventory/sheep",
+      "visual_review": "Viewed light/dark PNG/SVG. Hornless ewe silhouette, broad fleece locks, rectangular pupil, four legs with cloven hoof tips and complete hanging tail retained. Trace preserves coat layering and face with mild gradient contouring. Exterior alpha and padding clean.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sheep/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sheep/inspection.webm"
+      }
     },
     "goat": {
       "name": "goat",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/goat-bioart-transparent.png",
+      "svg": "svg/goat-bioart-traced.svg",
+      "png_sha256": "b8787c0d294072a4ca6657430466f5a061fd4d84f5583a38396c4118b2a1c8a1",
+      "svg_sha256": "4f294488e0f5c234b9c4ed7284d7fad15dbe97a43eb4310dc93328595d1781c3",
+      "original_sha256": "3120d60b2dadbb20a018c98eb64180db705b44df80facc346db14080942b4c4a",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        372,
+        563,
+        321,
+        579
+      ],
+      "svg_paths": 12968,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/goat/prompt.json",
+      "qa": "qa/inventory/goat",
+      "visual_review": "Viewed light/dark PNG/SVG. Complete two horn arches, ears, beard, raised tail and four cloven-hoof legs verified after repeated framing corrections. Eye detail is partly lid/highlight obscured. Trace retains coat masses and morphology with slight fine-fur simplification, clean transparent exterior and ample final padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/goat/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/goat/inspection.webm"
+      }
     },
     "laboratory-beagle": {
       "name": "laboratory beagle",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/laboratory-beagle-bioart-transparent.png",
+      "svg": "svg/laboratory-beagle-bioart-traced.svg",
+      "png_sha256": "2ebffad90b5039dc91311a7dbc1035adc69477daf653224b2bbe19fc8bc05777",
+      "svg_sha256": "ee37a10a43ff6555fe76a8f31001cdb4b2b9c1b57a09d1cfb38ecde78f50e076",
+      "original_sha256": "0f31edf24bee33ac18d494d8e98044d8e4af22d9502daaf8c1c28aaa03e4192e",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        368,
+        563,
+        419,
+        591
+      ],
+      "svg_paths": 11856,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/laboratory-beagle/prompt.json",
+      "qa": "qa/inventory/laboratory-beagle",
+      "visual_review": "Viewed PNG/SVG on both backgrounds. Tricolor saddle, pendant ears, natural face, four paws and complete white-tipped tail retained. Trace simplifies fur gently and keeps smooth silhouette, with natural partial paw-digit occlusion. Clean transparent padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/laboratory-beagle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/laboratory-beagle/inspection.webm"
+      }
     },
     "chicken": {
       "name": "chicken",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/chicken-bioart-transparent.png",
+      "svg": "svg/chicken-bioart-traced.svg",
+      "png_sha256": "9d5a1284dbc23385ba0b8df8f5d02392c5dca98ce9dfa11fca9a32ddf31f42bf",
+      "svg_sha256": "733a5aa4e5f7f9a112803650a3a0ff1b61caa8eedb72c90113447a63cdd812e5",
+      "original_sha256": "a8814e6fdeaa68015b708b4625f585bab2357621a6ddd6780c60c65a5d54667f",
+      "png_dimensions": [
+        1799,
+        1799
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        328,
+        265,
+        320,
+        265
+      ],
+      "svg_paths": 10668,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/chicken/prompt.json",
+      "qa": "qa/inventory/chicken",
+      "visual_review": "Viewed light/dark PNG and SVG. Complete comb, beak, folded wing, tail feathers and both four-toed feet retained after extra-toe correction. Broad feather shapes remain clear; trace adds mild shade contours and preserves full alpha padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chicken/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chicken/inspection.webm"
+      }
     },
     "chick-embryo": {
       "name": "chick embryo",
       "category": "18. Model organisms and laboratory animals",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/chick-embryo-bioart-transparent.png",
+      "svg": "svg/chick-embryo-bioart-traced.svg",
+      "png_sha256": "d5cb32ace40fb40eba3c0467be3b77c1bf561a396b14db49ce0b18656d81871d",
+      "svg_sha256": "d99b61743661559b6ea24a358a283dd704b3ea6aacef0191f4ce54f3b180e945",
+      "original_sha256": "0e5c6121cb077a53618d1cb40e30b4b3add51b2d3ff6dce539107c5f01481a7f",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        592,
+        316,
+        599,
+        307
+      ],
+      "svg_paths": 10107,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/chick-embryo/prompt.json",
+      "qa": "qa/inventory/chick-embryo",
+      "visual_review": "Viewed PNG/SVG light and dark. Full flexed head, optic cup/lens, ventral heart bulge, two near limb buds, dorsal somite relief and complete curled tail retained. Minor gradient contouring but clean alpha and shape fidelity. Schematic early chick anatomy, not exact somite count or HH staging evidence.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chick-embryo/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chick-embryo/inspection.webm"
+      }
     },
     "micropipette": {
       "name": "micropipette",
@@ -23178,112 +23962,728 @@
     "tissue-cassette": {
       "name": "tissue cassette",
       "category": "26. Histology and pathology equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/tissue-cassette-bioart-transparent.png",
+      "svg": "svg/tissue-cassette-bioart-traced.svg",
+      "png_sha256": "6d1aea8b6f956ae35358c8238953d72c1b389a697621ca41dc1285b153a97094",
+      "svg_sha256": "f70e257588aee41da1b6bdee1f9c10575a0a898322bcc82949d3657fc996ba4a",
+      "original_sha256": "15e43f8e3d14ec4bd37772951f4ccc8f26929ea4bd08a78ef6ac080f12b589e9",
+      "png_dimensions": [
+        1813,
+        1813
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        381,
+        289,
+        334,
+        291
+      ],
+      "svg_paths": 13294,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/tissue-cassette/prompt.json",
+      "qa": "qa/inventory/tissue-cassette",
+      "visual_review": "Viewed light/dark PNG/SVG: slotted lid and basket apertures show the background correctly, hinges/latch/blank writing face retained, complete outline and padding. Minor trace texture on plastic does not compromise geometry. Generic slot count.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tissue-cassette/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tissue-cassette/inspection.webm"
+      }
     },
     "paraffin-block": {
       "name": "paraffin block",
       "category": "26. Histology and pathology equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/paraffin-block-bioart-transparent.png",
+      "svg": "svg/paraffin-block-bioart-traced.svg",
+      "png_sha256": "6d400d61f9ce4e1099f227016c76c7049938f5557b3eaed07f19fd6322210758",
+      "svg_sha256": "5920e2362199ac9d430a556a47499b6c348aecbe30f65cdada73abbaf6834cbf",
+      "original_sha256": "1776e4a153e7999f5abd058c08f00a0e34bbd2d5be8c7605f11bedb40b772346",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        346,
+        580,
+        391,
+        595
+      ],
+      "svg_paths": 11180,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/paraffin-block/prompt.json",
+      "qa": "qa/inventory/paraffin-block",
+      "visual_review": "Complete wax block and cassette with flush embedded tissue, blank label face and side slots. PNG alpha clean on light and dark; editable SVG preserves geometry and shading with minor gradient quantization.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/paraffin-block/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/paraffin-block/inspection.webm"
+      }
     },
     "microtome": {
       "name": "microtome",
       "category": "26. Histology and pathology equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/microtome-bioart-transparent.png",
+      "svg": "svg/microtome-bioart-traced.svg",
+      "png_sha256": "00aa3e52b339c6729b4b7227c10c7dcdba9d108b92df02067f6b4c42b975569f",
+      "svg_sha256": "32d634cc13ca5439d0b8b7ef9b683fc8710e5daa600db4ab418515c577e64443",
+      "original_sha256": "b18f803221519dc164e5a4f09762dfa92aba72975d674fd696e59901b9fd1f07",
+      "png_dimensions": [
+        1962,
+        1962
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        350,
+        440,
+        311,
+        449
+      ],
+      "svg_paths": 10463,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/microtome/prompt.json",
+      "qa": "qa/inventory/microtome",
+      "visual_review": "Complete rotary microtome with cassette clamp over guarded blade holder, side handwheel and integral waste tray. Clean alpha on both backgrounds; SVG preserves key assembly with modest shading quantization. Small molded cassette ribs are schematic, no readable labels.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microtome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microtome/inspection.webm"
+      }
     },
     "cryostat": {
       "name": "cryostat",
       "category": "26. Histology and pathology equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cryostat-bioart-transparent.png",
+      "svg": "svg/cryostat-bioart-traced.svg",
+      "png_sha256": "621935522628b97868d0ae9d1177d08f74ddc10b970adfca2acc6b40c479ef35",
+      "svg_sha256": "a9a1c4f5c4e1035bbdafcbe0b4313280630782a2164ade67360ab9b238205a0a",
+      "original_sha256": "e0123197a077c5bbec359bbbc8454e71e5d58a6efa5e870f405037a86f83bdbc",
+      "png_dimensions": [
+        1916,
+        1916
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        476,
+        282,
+        433,
+        274
+      ],
+      "svg_paths": 14113,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cryostat/prompt.json",
+      "qa": "qa/inventory/cryostat",
+      "visual_review": "Full cabinet feet handwheel and open cold chamber preserved. Specimen disc, freezing shelf and blade assembly recognizable. Clean alpha on light and dark; SVG retains details with minor gradient banding. Generic schematic controls and shelf well count.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cryostat/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cryostat/inspection.webm"
+      }
     },
     "tissue-slicer-vibratome": {
       "name": "tissue slicer / vibratome",
       "category": "26. Histology and pathology equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/tissue-slicer-vibratome-bioart-transparent.png",
+      "svg": "svg/tissue-slicer-vibratome-bioart-traced.svg",
+      "png_sha256": "4f868fab6b3a71314ba8cd90cd898533750383defa5dead2ca0d39d1dcdf6ed4",
+      "svg_sha256": "f42f613713792747f2d4066ebb73b36e9ce8723928996bc546d0bfd2d5090758",
+      "original_sha256": "9d29c4200f86cb4c4a314511f5d9b44ffce25d54e9f17f552dc903ae0da5b3a5",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        448,
+        563
+      ],
+      "svg_paths": 10028,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/tissue-slicer-vibratome/prompt.json",
+      "qa": "qa/inventory/tissue-slicer-vibratome",
+      "visual_review": "Complete slicer with shallow inclined blade over specimen stage and round bath, controls blank. PNG/SVG preserve assembly and clean external alpha with minor gradient banding. Fluid fill level and specimen mounting are illustrative, not procedural instructions.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tissue-slicer-vibratome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tissue-slicer-vibratome/inspection.webm"
+      }
     },
     "slide-staining-rack": {
       "name": "slide staining rack",
       "category": "26. Histology and pathology equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/slide-staining-rack-bioart-transparent.png",
+      "svg": "svg/slide-staining-rack-bioart-traced.svg",
+      "png_sha256": "3c6c62e84475a4e9bba05b0cea988d2e117d419a3ea7148c169ddc76f80f839a",
+      "svg_sha256": "fe5bfdb6bc86f47b7b266233faf8d84ec9edaad25daca244d6b65b8e75c583a5",
+      "original_sha256": "9f7961d1fc6bff82d4bfb2434c470827dcb292515622aa6bbba545ba83b9c9b6",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        532,
+        577,
+        503,
+        563
+      ],
+      "svg_paths": 12912,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/slide-staining-rack/prompt-v2.json",
+      "qa": "qa/inventory/slide-staining-rack",
+      "visual_review": "Version 2 removes painted checkerboard from glass. Five upright slides with schematic rose tissue patches, complete handle and basket. Clean exterior and handle openings on light/dark, glass depicted as pale reflective surfaces rather than optically clear. SVG matches geometry with minor quantized gradients.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/slide-staining-rack/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/slide-staining-rack/inspection.webm"
+      }
     },
     "automated-slide-stainer": {
       "name": "automated slide stainer",
       "category": "26. Histology and pathology equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/automated-slide-stainer-bioart-transparent.png",
+      "svg": "svg/automated-slide-stainer-bioart-traced.svg",
+      "png_sha256": "4169207dfbad6a68014b42fd03d01c862491e8f474f1931adf0a3b8f14174dba",
+      "svg_sha256": "76fc29441adaa77510642a5aa1655c90f1c0cee033e432d27a99cde9029cad1e",
+      "original_sha256": "6d59f296f8e6c750f134d339f540657254642948a61da904bff20e93cf603236",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        403,
+        573
+      ],
+      "svg_paths": 15557,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/automated-slide-stainer/prompt.json",
+      "qa": "qa/inventory/automated-slide-stainer",
+      "visual_review": "Full raised hood, robotic slide basket lift and two rows of baths retained. Clean alpha around cabinet and open front, reflective blue hood illustrative. SVG keeps hardware with modest gradient quantization. Not a product-specific station layout or reagent protocol.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/automated-slide-stainer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/automated-slide-stainer/inspection.webm"
+      }
     },
     "coverslipper": {
       "name": "coverslipper",
       "category": "26. Histology and pathology equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/coverslipper-bioart-transparent.png",
+      "svg": "svg/coverslipper-bioart-traced.svg",
+      "png_sha256": "38d6ac4049c09e512a9fc4ee7152d4227a252ba9aa6ccc6029c2729dcff3102c",
+      "svg_sha256": "437e03762e6841f090fe3eb8e79d272fbb4ded47809b501b464a23bd00beef3f",
+      "original_sha256": "4a20264d43fb2af27f1ae9d764e89a775e3c54140938f89da3002c74d18e34ac",
+      "png_dimensions": [
+        1962,
+        1962
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        280,
+        420,
+        332,
+        420
+      ],
+      "svg_paths": 12092,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/coverslipper/prompt.json",
+      "qa": "qa/inventory/coverslipper",
+      "visual_review": "Complete enclosure and feet, suction pickup touches coverglass above flat slide, input rack magazine and mountant reservoir present. Alignment streaks removed. PNG/SVG clean exterior alpha and closely matched apparatus with slight shading quantization. Generic closed-hood layout and schematic tissue.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/coverslipper/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/coverslipper/inspection.webm"
+      }
     },
     "tissue-processor": {
       "name": "tissue processor",
       "category": "26. Histology and pathology equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/tissue-processor-bioart-transparent.png",
+      "svg": "svg/tissue-processor-bioart-traced.svg",
+      "png_sha256": "5b18b8f7dd1fd6b6520c038e112f878dc3d10b7fbf05732f1042d54a21264b64",
+      "svg_sha256": "f2e0c722829c6cf772b360bc1682bc18ef3a08b859a40854701999005a05b5cf",
+      "original_sha256": "c3851b896f19a7f3e4d0ad11e0afba236860c53d91e67eb45a184156cb9d350e",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        337,
+        601,
+        345
+      ],
+      "svg_paths": 13148,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/tissue-processor/prompt.json",
+      "qa": "qa/inventory/tissue-processor",
+      "visual_review": "Complete retort lid cabinet door and casters, cassette basket three wax-bath lids and two bottle shelves recognizable. Clean alpha light/dark; SVG retains hardware with slight gradient banding. Generic reservoir count and simplified internal plumbing.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tissue-processor/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tissue-processor/inspection.webm"
+      }
     },
     "embedding-station": {
       "name": "embedding station",
       "category": "26. Histology and pathology equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/embedding-station-bioart-transparent.png",
+      "svg": "svg/embedding-station-bioart-traced.svg",
+      "png_sha256": "1e502fef1fcb1b9da9faf80d195a65d94d4f2f9852e53dbee190ed6033c57b68",
+      "svg_sha256": "b659e7a1fb87eef321aca44c781da62660819ad11318c4ec668cefbd653e7454",
+      "original_sha256": "65b33676f6059fa443b7ffdab5232e8f4885c3736469a6937a52edf6882d7bb1",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        334,
+        583,
+        327,
+        583
+      ],
+      "svg_paths": 11101,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/embedding-station/prompt.json",
+      "qa": "qa/inventory/embedding-station",
+      "visual_review": "Complete station with dispenser over mold, two covered warming trays and two cassette blocks on cold plate. Clean external alpha on light/dark; SVG retains arrangement and restrained depth with minor shading quantization. Generic integrated layout.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/embedding-station/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/embedding-station/inspection.webm"
+      }
     },
     "tissue-microarray-block": {
       "name": "tissue microarray block",
       "category": "26. Histology and pathology equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/tissue-microarray-block-bioart-transparent.png",
+      "svg": "svg/tissue-microarray-block-bioart-traced.svg",
+      "png_sha256": "b8f0b150957299fece6e3c745e4e7fb9914b76606ae70654307f2342a5c17f1d",
+      "svg_sha256": "f4ddbba84c4851ea47751a484d15f9cd4235637eab068db96aa8fa331bde882c",
+      "original_sha256": "43834e12c8691c26662fb9565de3fcd5d2292f2f4795d8f11fb066f0e86bed7e",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        454,
+        577,
+        451,
+        579
+      ],
+      "svg_paths": 6530,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/tissue-microarray-block/prompt.json",
+      "qa": "qa/inventory/tissue-microarray-block",
+      "visual_review": "Twenty flush solid cores in regular 4 by 5 perspective array, complete wax block cassette and blank label face. PNG/SVG clean alpha on both backgrounds, matched geometry and broad shading. Core colors and count schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tissue-microarray-block/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tissue-microarray-block/inspection.webm"
+      }
     },
     "biopsy-punch": {
       "name": "biopsy punch",
       "category": "26. Histology and pathology equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/biopsy-punch-bioart-transparent.png",
+      "svg": "svg/biopsy-punch-bioart-traced.svg",
+      "png_sha256": "cdf921285041a206b664b0fa4397626cd70ff297fdbfdfedb83fd7ed700a400a",
+      "svg_sha256": "13cfe82486c9405d4413bc19346b0f4880214a3aa37e6c623e251a4a526ec5e5",
+      "original_sha256": "802330687b22577d586c4fe4b55e12288abd180eb4f876f173ef80359428d633",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        341,
+        584,
+        321,
+        589
+      ],
+      "svg_paths": 6135,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/biopsy-punch/prompt.json",
+      "qa": "qa/inventory/biopsy-punch",
+      "visual_review": "Complete straight ribbed handle and hollow tubular blade with open elliptical cutting rim. Clean alpha on light/dark; SVG retains blade lumen and smooth depth with minor shading quantization.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/biopsy-punch/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/biopsy-punch/inspection.webm"
+      }
     },
     "pathology-specimen-jar": {
       "name": "pathology specimen jar",
       "category": "26. Histology and pathology equipment",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/pathology-specimen-jar-bioart-transparent.png",
+      "svg": "svg/pathology-specimen-jar-bioart-traced.svg",
+      "png_sha256": "b5fe869903f60eec0ef8e0a706cbbaba44a3451762d136b52b1a7ff7e03c4214",
+      "svg_sha256": "b08eee588cb17928d197cff9c9e5bebcd2b1a7cc205f7f7f88f7234354c48016",
+      "original_sha256": "b4ce01300dc68c87d09043a7ccfe32e26e8a0611c0c27efd6ba9cc15730c8c7e",
+      "png_dimensions": [
+        1785,
+        1785
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        276,
+        255,
+        290,
+        255
+      ],
+      "svg_paths": 8669,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/pathology-specimen-jar/prompt.json",
+      "qa": "qa/inventory/pathology-specimen-jar",
+      "visual_review": "Complete closed jar and submerged simplified specimen, smooth meniscus and no painted checkerboard. Exterior alpha clean on light/dark; SVG retains lid ribs tissue and liquid boundary with minor gradient banding. Glass and liquid are illustrative pale reflective fills rather than optically clear.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pathology-specimen-jar/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pathology-specimen-jar/inspection.webm"
+      }
     },
     "protein-crystal": {
       "name": "protein crystal",
       "category": "27. Structural biology and biophysics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/protein-crystal-bioart-transparent.png",
+      "svg": "svg/protein-crystal-bioart-traced.svg",
+      "png_sha256": "c5a7afdc94804d19d8a1b83e6063e63f30e9a3b842bef7271e32160136bdd6a6",
+      "svg_sha256": "a7fdbc162cf47e26cb128c187bfccee4783777a00fded9a45735b6f53c223e76",
+      "original_sha256": "b94e60eb2aa4ca0b669a26c4ef6a20d454f9e9e368e2fef032f0753be019c0e4",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        506,
+        659,
+        454,
+        635
+      ],
+      "svg_paths": 5606,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/protein-crystal/prompt.json",
+      "qa": "qa/inventory/protein-crystal",
+      "visual_review": "Single complete prismatic crystal with pyramidal ends, straight facets and clean external alpha with no rendered glow. PNG/SVG match with minor gradient steps. Tetragonal-like illustrative habit and color, not an exact lattice representation.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/protein-crystal/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/protein-crystal/inspection.webm"
+      }
     },
     "crystallization-drop": {
       "name": "crystallization drop",
       "category": "27. Structural biology and biophysics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/crystallization-drop-bioart-transparent.png",
+      "svg": "svg/crystallization-drop-bioart-traced.svg",
+      "png_sha256": "656e20c0d2ac2f89cc9789a41d088aca710a466ee5ab7133777e6ea287e502e9",
+      "svg_sha256": "089217715bd31d50c55a01b4141e8da53a20b78fcf86b39f32241888a88678f1",
+      "original_sha256": "6ffe83bb565c0a20e110e8cdc082c0659d6ecc9ec91a67dc1d43b9f82a7694f7",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        378,
+        563,
+        333,
+        563
+      ],
+      "svg_paths": 8090,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/crystallization-drop/prompt-v3.json",
+      "qa": "qa/inventory/crystallization-drop",
+      "visual_review": "Version 3 resolves alpha-threshold hole: continuous pale cyan liquid dome with three contained crystals. PNG/SVG now match on light and dark, no exterior glow. Mild gradient banding accepted. Earlier trace and underlay trial retained, not final.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/crystallization-drop/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/crystallization-drop/inspection.webm"
+      }
     },
     "crystallization-plate": {
       "name": "crystallization plate",
       "category": "27. Structural biology and biophysics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/crystallization-plate-bioart-transparent.png",
+      "svg": "svg/crystallization-plate-bioart-traced.svg",
+      "png_sha256": "c9b23889ac2d6a731a98ce51a5c8aafcb058a025af8fe81e8447a6ab2cabfe0e",
+      "svg_sha256": "9c9e3fb8522b52a6039e3f5624b2932bfa1d721ce8e0da97fe1cb798b92bfd6d",
+      "original_sha256": "7a43fa55ee34af709aa4b8cc345f4c41162d33621b57cead0600b03876d75628",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        400,
+        587
+      ],
+      "svg_paths": 19045,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/crystallization-plate/prompt.json",
+      "qa": "qa/inventory/crystallization-plate",
+      "visual_review": "Verified 4 rows by 6 wells, each with a raised central sitting-drop post above reservoir floor. Complete plate clean alpha on light/dark; SVG retains all 24 wells with modest gradient quantization. Generic plate schematic, no labels.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/crystallization-plate/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/crystallization-plate/inspection.webm"
+      }
     },
     "x-ray-diffractometer": {
       "name": "X-ray diffractometer",
       "category": "27. Structural biology and biophysics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/x-ray-diffractometer-bioart-transparent.png",
+      "svg": "svg/x-ray-diffractometer-bioart-traced.svg",
+      "png_sha256": "7fc39d7b94e70a4cdc3a541fdb6f9d7041b0935c17b0c03b9cdeaf4bac8408bd",
+      "svg_sha256": "d393afb99426aaf86a664a1d0c554bb9ad7fbc752cbfd46dd7bf5579386621b9",
+      "original_sha256": "dd092008cb2fcd60508886dabd074cb8b54ac40981f5e48f871022e9f50cdb73",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        433,
+        563
+      ],
+      "svg_paths": 10415,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/x-ray-diffractometer/prompt.json",
+      "qa": "qa/inventory/x-ray-diffractometer",
+      "visual_review": "Full enclosure top contour restored and all feet included. Source goniometer unloaded specimen mount detector and blunt cryostream nozzle recognizable. PNG/SVG clean alpha and matching geometry with slight gradient quantization; illustrative instrument layout.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/x-ray-diffractometer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/x-ray-diffractometer/inspection.webm"
+      }
     },
     "nmr-spectrometer": {
       "name": "NMR spectrometer",
       "category": "27. Structural biology and biophysics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/nmr-spectrometer-bioart-transparent.png",
+      "svg": "svg/nmr-spectrometer-bioart-traced.svg",
+      "png_sha256": "f6d66bf8536516d779f091ef323864ef4d0754a53aab007f462791094073e745",
+      "svg_sha256": "b7c140ac15801e3d16a3b653d0f92d0529649c5e35afff8e945a1b665c55a352",
+      "original_sha256": "495974d886197a72babc73a3c248c67eb2f74bc1dff258945fa76fa8b41bea31",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        604,
+        320,
+        575,
+        341
+      ],
+      "svg_paths": 5967,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/nmr-spectrometer/prompt.json",
+      "qa": "qa/inventory/nmr-spectrometer",
+      "visual_review": "Viewed original and light/dark PNG-SVG comparison: complete magnet, sample neck, cryogen necks, legs and lower probe; transparent surroundings without glow; editable trace retains instrument silhouette and details with minor gradient banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nmr-spectrometer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/nmr-spectrometer/inspection.webm"
+      }
     },
     "cryo-em-grid": {
       "name": "cryo-EM grid",
       "category": "27. Structural biology and biophysics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cryo-em-grid-bioart-transparent.png",
+      "svg": "svg/cryo-em-grid-bioart-traced.svg",
+      "png_sha256": "20dc05990e467ef577ff3e8a6f8e643875f9f8dd4440c1d8b4454df2076930a4",
+      "svg_sha256": "baeaa2d699c0e820a64079715d21105930b47bb0cdcd47d0ab8f78af43baa164",
+      "original_sha256": "528f9c33b52d62366a4416c7d496904bdb0eda8edf18ad8020efba15d233fa91",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        500,
+        577,
+        489,
+        599
+      ],
+      "svg_paths": 14420,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cryo-em-grid/prompt.json",
+      "qa": "qa/inventory/cryo-em-grid",
+      "visual_review": "Viewed original and four-panel render. Complete thin copper rim, perpendicular mesh and finer circular perforations remain recognizable in editable SVG. Transparent outer area clean on both backgrounds; schematic enlarged mesh and holes, minor trace banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cryo-em-grid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cryo-em-grid/inspection.webm"
+      }
     },
     "plunge-freezer": {
       "name": "plunge freezer",
       "category": "27. Structural biology and biophysics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/plunge-freezer-bioart-transparent.png",
+      "svg": "svg/plunge-freezer-bioart-traced.svg",
+      "png_sha256": "c000b58ba83d663f94606b49f7a6f7b638ad9d47411557d14b317a1561e2b600",
+      "svg_sha256": "ee9bddbabdd5e531328bb7833025de2387c8a8a2746666b75ef7eedea063e033",
+      "original_sha256": "cd5bd33ca7da7d025eaa271d20749708f90ede070e5b26f37806622a6bdb3ff1",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        659,
+        323,
+        576,
+        331
+      ],
+      "svg_paths": 9503,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/plunge-freezer/prompt.json",
+      "qa": "qa/inventory/plunge-freezer",
+      "visual_review": "Viewed source and PNG/SVG comparison on light and dark backgrounds: complete column, chamber, tweezers/grid, opposing pads and cryogen cup; blank controls and clean transparent exterior. Trace preserves shape and intrinsic mechanisms, minor gradient banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/plunge-freezer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/plunge-freezer/inspection.webm"
+      }
     },
     "optical-tweezers-instrument": {
       "name": "optical tweezers instrument",
       "category": "27. Structural biology and biophysics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/optical-tweezers-instrument-bioart-transparent.png",
+      "svg": "svg/optical-tweezers-instrument-bioart-traced.svg",
+      "png_sha256": "1b6709225c7992179b9fae5e9e3d809adc62175397b320059b646d4ff11846c6",
+      "svg_sha256": "8a14fd500c19209e72ce01d2f760ac293a67cfbddcab839051903179600458fe",
+      "original_sha256": "d3cb4ef77a21ee0f34723ef5edb7a44261b39d9f615837ef5d87caa02bc5c5bf",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        324,
+        584,
+        379,
+        581
+      ],
+      "svg_paths": 10715,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/optical-tweezers-instrument/prompt.json",
+      "qa": "qa/inventory/optical-tweezers-instrument",
+      "visual_review": "Viewed source and four-panel comparison: complete integrated instrument, upper condenser and lower objective with flow cell between, camera, reservoirs and tubing retained. Symbol removed, no labels, clean transparent exterior. Editable trace comparable with minor broad gradient banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/optical-tweezers-instrument/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/optical-tweezers-instrument/inspection.webm"
+      }
     },
     "patch-clamp-electrode": {
       "name": "patch-clamp electrode",
       "category": "27. Structural biology and biophysics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/patch-clamp-electrode-bioart-transparent.png",
+      "svg": "svg/patch-clamp-electrode-bioart-traced.svg",
+      "png_sha256": "5ef1861b286fec716a990fd14637d592428dd57fc5e5e9a9a0579751f1ab4615",
+      "svg_sha256": "416945173e0330c8d632b4bc711486d51874fd8982f9b10f1844c4bb0c65ca9d",
+      "original_sha256": "69762d97928a0b2fc332a04e12c4a9d1f2aadc51c5cda256410bf2eb3671f51b",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        595,
+        350,
+        589
+      ],
+      "svg_paths": 5501,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/patch-clamp-electrode/prompt.json",
+      "qa": "qa/inventory/patch-clamp-electrode",
+      "visual_review": "Viewed original and light/dark comparison: continuous filled glass taper and open tiny tip, internal wire ending proximal to taper, holder port and connector intact. Transparent exterior clean. Editable SVG retains long fine tip and internal wire; minor shading banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/patch-clamp-electrode/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/patch-clamp-electrode/inspection.webm"
+      }
     },
     "patch-clamp-rig": {
       "name": "patch-clamp rig",

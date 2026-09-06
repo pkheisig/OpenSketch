@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an adult zebrafish, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Adult wild-type Danio rerio, clean LEFT-facing lateral view, slender torpedo body, dark blue horizontal stripes alternating pale gold/silver bands running from gill region along side into caudal fin. Dark eye with fine gold iris rim, small upturned mouth, operculum curve. One dorsal fin on posterior back, one anal fin on posterior belly, paired pectoral fins just behind gills and paired small pelvic fins mid-belly with far-side fins partly hidden, forked caudal tail fin. Delicate pale blue-gold translucent fins with crisp fin-ray lines, no adipose fin, no extra fins. Smooth matte body, very sparse subtle scale indications, no photorealistic scales or noise. Navy outlines and broad restrained highlights. Whole fins and tail tips fully visible, no water bubbles or scenery, transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-a3d380e5-5db1-41de-be79-d398d7ea19b2.png",
+  "refinement": "Redraw this exact adult zebrafish as clean polished vector-style biomedical illustration. Preserve slender body, horizontal navy and pale gold stripes, dark eye, operculum, dorsal/anal/pectoral/pelvic fins and forked tail. Remove ALL realistic scales, iridescent mottling, grain and metallic glitter. Replace body with smooth matte silver/pale gold fill, crisp navy horizontal bands and one broad subtle highlight. Face smooth pale gold/blue planes, no rainbow patches. Fin membranes smooth pale blue with fine simple gold ray lines, not ridged metallic rods. Crisp outlines, soft pseudo-3D depth. Preserve complete fins and tail with generous transparent PNG alpha padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Adult zebrafish lateral view with longitudinal blue/gold bands, operculum, dorsal, anal, caudal and paired-fin representatives. Far paired fins hidden; ray and stripe counts schematic rather than morphometric reference.",
+  "references": [
+    "https://journals.sagepub.com/doi/10.1177/0192623311409597",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC5770327/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "zebrafish-adult",
+  "name": "zebrafish adult",
+  "original": "originals/inventory/zebrafish-adult/generated.png",
+  "original_sha256": "c881285cf71f891fe8350def5afcdd1ecfcf856cbd6cfc4465338f5b4f68ca79"
+}

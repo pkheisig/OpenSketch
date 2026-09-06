@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a tissue cassette, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One EMPTY histology tissue-processing cassette, small shallow rectangular molded plastic basket with ATTACHED hinged slotted lid open roughly 110 degrees, three-quarter isometric view from above/front. Saturated teal plastic with lighter cyan bevel highlights, blank sloped writing face at front with absolutely no lettering. Bottom and lid have parallel elongated rectangular drainage slots arranged evenly with real openings; thin ribs between slots, small side-wall slots, clear shallow inner compartment. Lid connected at rear by two small integral hinges, front snap latch. No tissue, no wax block or extra cassette. Smooth matte plastic, crisp dark teal outlines, subtle broad gradients, clean geometric perspective and modest bevel depth, no grain or photographic texture. Full open lid and basket centered with generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-6c7b4d60-b668-484e-a20e-5ef33e121e35.png",
+  "alpha_note": "First generation returned RGBA.",
+  "archetype": "Open empty routine histology tissue cassette with integral slotted hinged lid and blank sloped writing face. Generic geometry and slot count, not a specific product.",
+  "references": [
+    "https://shop.leicabiosystems.com/us/histology-consumables/cassettes/pid-ip-biopsy-cassette-iii"
+  ]
+}

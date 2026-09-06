@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an eight-cell embryo, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Use attached four-cell embryo for palette and finish only. Create exactly EIGHT coral blastomeres packed in a single common lavender zona pellucida. Explanatory slightly flattened projection: two cells across the top row, three across the middle, three across the lower row, compact rounded cluster, all eight cell bodies separately recognizable, one violet nucleus with one dark nucleolus in EACH cell, exactly eight nuclei total. No central lumen. No ninth cell. Keep two tiny pale purple polar bodies outside the blastomere cluster in the perivitelline space. Smooth matte coral forms, crisp clean outlines, broad subtle gradients, no grain or texture, transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-4c5a0b14-195e-4fbe-9d0c-cbbd26a85338.png",
+  "style_reference": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-e361854c-8beb-4689-8151-88e20623cf91.png",
+  "refinement": "Correct the cell count. Current illustration has seven large coral cells, but the requested embryo must have exactly EIGHT. Replace the BOTTOM TWO cells with THREE smaller equal cells side by side, each with its own violet nucleus and dark nucleolus. Keep top row two and middle row three unchanged. Total row counts 2 + 3 + 3 = 8 blastomeres and eight nuclei. Fit the three bottom cells within the zona. Preserve two tiny polar bodies, palette, outlines and shading. Transparent PNG alpha background.",
+  "archetype": "Eight-cell cleavage embryo, exactly eight blastomeres and nuclei within zona; flattened 2-3-3 projection and cell size variation are schematic, not embryo grading.",
+  "references": [
+    "https://www.ncbi.nlm.nih.gov/books/NBK554562/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "eight-cell-embryo",
+  "name": "eight-cell embryo",
+  "original": "originals/inventory/eight-cell-embryo/generated.png",
+  "original_sha256": "2ec668353baaae29da8bffc39d892dc92058890cfaaacdd47a8cd518c1f2dc09"
+}

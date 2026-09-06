@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an optical tweezers instrument, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One compact integrated optical trapping microscope system on a low navy vibration-isolation base, three-quarter view. Ivory and teal instrument housing with front access opening showing a small horizontal rectangular microfluidic flow cell in a precision stage. One large silver objective BELOW the flow cell pointing upward, and a condenser ABOVE pointing downward, precisely coaxial with the cell. Rear enclosed laser optics module integrated into housing, a small camera detector module attached to side, three short neat fluid tubes linking flow cell to three integrated upright sample reservoirs on one side. No visible laser rays, no diagram lines, no floating beads or biological inset, no eyepiece required, no monitor, no table or room. Smooth matte vector-style illustration, crisp navy outlines, broad restrained gradients without grain. Full housing and feet centered with true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-fa2646dc-8c22-43f1-8e83-7edbdb8133ed.png",
+  "refinement": "Keep this complete optical tweezers instrument and its architecture, but remove the small yellow triangular symbol entirely from the right rear panel and leave a smooth teal panel. Smooth all materials to clean matte vector-style biomedical shading with crisp navy contours, no fine grain or photographic texture. Preserve upper condenser, lower upward objective, horizontal flow cell, side camera, three reservoirs and tubing, integrated rear optics housing and all support feet. No labels, writing, symbols or glow. Entire instrument within generous transparent PNG alpha padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Integrated optical trapping microscope with upward objective below flow cell and condenser above, enclosed optics and side camera. Conceptual exterior architecture, not a replica or ray diagram; fluid connections simplified.",
+  "references": [
+    "https://www.lumicks.com/dynamic-single-molecule/solution/c-trap",
+    "https://microscopy.ucsf.edu/content/c-trap-opticial-trap"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "optical-tweezers-instrument",
+  "name": "optical tweezers instrument",
+  "original": "originals/inventory/optical-tweezers-instrument/generated.png",
+  "original_sha256": "d3cb4ef77a21ee0f34723ef5edb7a44261b39d9f615837ef5d87caa02bc5c5bf"
+}

@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a ferret, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Adult domestic sable ferret, anatomically recognizable long slender flexible body, short legs, long neck, small rounded ears, cream face with dark brown eye mask, dark eyes, pink nose. Cream-tan torso with dark brown legs and fully furred tapering brown tail about one-third body length, no ringtail. Calm standing left-facing three-quarter side view, all four paws naturally placed, whole tail bends loosely to right, mouth closed. Five toes on each paw with natural partial overlaps. Smooth simplified fur masses, sparse short contour strokes, crisp warm brown outlines, broad soft pseudo-3D shading and restrained highlights. Professional biomedical vector-style finish, no dense fur texture, no photographic grain, no harness or objects. All ear tips whiskers paws and tail within generous transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-1c9a47f6-5ce7-4ec6-9236-626e40c18846.png",
+  "refinement": "Correct this domestic ferret to a long low mustelid silhouette: shorten all four legs by about one-third and lower the body while keeping elongated torso and gently raised neck, not a doglike tall stance. Preserve cream face with brown eye mask, small rounded ears, brown legs and tapering furry tail. Replace ALL dense individual fur hairs with broad smooth matte tan/brown/cream gradients, crisp warm brown outline and sparse short edge strokes only. Simplify coat surface without photographic texture. Keep five digits per paw with natural partial overlap, whiskers intact and entire tail visible. Zoom out slightly for generous padding on all sides. Transparent PNG alpha.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Domestic sable ferret with long low torso, short legs, dark facial mask and furry tapered tail. Coat phenotype generic; paw digits partly occluded by fur and perspective.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "ferret",
+  "name": "ferret",
+  "original": "originals/inventory/ferret/generated.png",
+  "original_sha256": "8f6d3e0d5e6dfb8d0a18d01f35ab7e261d0d4b454560a92724ece6a3e035a197"
+}

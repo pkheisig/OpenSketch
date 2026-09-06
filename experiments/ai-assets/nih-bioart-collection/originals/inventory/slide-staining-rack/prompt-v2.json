@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a slide staining rack, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One teal histology microscope slide staining basket in three-quarter view from above: narrow rectangular open rack, parallel slotted side rails, perforated base, a single raised U-shaped carry handle attached at its two ends. Five slender transparent glass microscope slides stand vertically parallel in separate slots with clear gaps between slides; blank frosted top label areas and tiny pink tissue patches on lower glass portions. Several rack slots empty so construction visible. Slide rectangles about three times taller than their width, not test tubes. No staining bath jar, no loose slides, no liquids outside rack. Smooth matte plastic, restrained soft gradients and highlights, crisp outlines, pale cyan translucent glass, no grain or photorealistic texture. Entire handle basket slides complete with generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-25e607ff-5299-49ef-b635-670823148c3f.png",
+  "refinement": "Redraw the same teal slide staining basket as a smooth polished biomedical vector-style illustration. Preserve five parallel upright glass slides in separate slots, blank frosted tops, raised handle attached at both ends, perforated bottom and slotted rails. Replace microscopic photographic tissue textures with simple smooth rose and lavender tissue silhouettes with just 2-3 broad internal color areas each, no microscopic dots or noise. Eliminate plastic grain and frosted-glass noise. Crisp navy-teal outlines, restrained broad gradients, smooth matte plastic and pale cyan translucent glass. Ensure true transparent alpha not only outside but through open gaps above rack, between handle and slides, between rail bars and bottom perforations. No text. Full complete object and generous transparent padding.",
+  "refinement_2": "Correct only the five glass slide surfaces: remove the visible checkerboard squares painted inside the glass. Each slide must have a uniform smooth pale cyan translucent face with a single narrow edge highlight, blank white frosted top and existing pink tissue patch. No alternating squares or mottled color anywhere in glass. Preserve the teal basket, five parallel slides, handle and open gaps. Keep true transparent PNG alpha around and through open handle spaces. Complete object, no crop, no text.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "alpha_attempts": 2,
+  "archetype": "Generic slide staining basket with five upright glass slides and carrying handle; simplified tissue patches and pale reflective glass. Version 2 removes painted checkerboard inside slides.",
+  "references": [],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "slide-staining-rack",
+  "name": "slide staining rack",
+  "original": "originals/inventory/slide-staining-rack/generated-v2.png",
+  "original_sha256": "9f7961d1fc6bff82d4bfb2434c470827dcb292515622aa6bbba545ba83b9c9b6"
+}

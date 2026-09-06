@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a laboratory rat, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Attached mouse is STYLE reference only: generate adult albino laboratory RAT, Rattus norvegicus, recognizable robust elongated body, broad blunt wedge-shaped muzzle and relatively small round ears, much smaller ear-to-head ratio than mouse, ruby red eyes, white/ivory short coat, pale pink nose/paws and thick-based tapering sparsely haired annulated pink tail slightly shorter than head-plus-body. Calm standing left-facing three-quarter side view, all four paws naturally placed, whole tail curves loosely forward without covering feet, whiskers complete. Smooth simplified fur masses with only sparse short coat strokes, avoid photorealistic individual hairs, no fur grain, crisp warm gray outlines and broad soft shading. No clothes or equipment. Actual transparent PNG alpha, 15% margin around nose whiskers ears paws and tail.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-6dcab9ce-c4b1-4449-aa43-f58478cd55cd.png",
+  "style_reference": "/Users/pkheisig/.codex/worktrees/OpenSketch/ai-bioart-assets-20260904/experiments/ai-assets/nih-bioart-collection/png/laboratory-mouse-bioart-transparent.png",
+  "refinement": "Redraw this exact albino laboratory rat with the same anatomy and pose, but use clean smooth vector-style fur masses. Replace dense individual fur hairs across the entire body with broad ivory and pale warm gray matte gradients and only sparse short directional strokes at cheeks and silhouette. Preserve broad blunt muzzle, relatively small ears, ruby red eye, four paws, complete curved pink annulated tail and thin whiskers. Crisp warm gray outline, soft pseudo-3D depth, professional biomedical illustration. No realistic fur grain, no photographic texture, no cast shadow. Keep complete tail and whisker tips inside generous padding. Transparent PNG alpha.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Adult albino laboratory rat, robust body, broad muzzle, small relative ears and annulated tail. Generic phenotype, not strain-specific; paw digits partly overlapped in perspective.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "laboratory-rat",
+  "name": "laboratory rat",
+  "original": "originals/inventory/laboratory-rat/generated.png",
+  "original_sha256": "0af1be5c1532f1829058f43f1d6bc2d50cc3274338b3443fe8cb31eae78cd81a"
+}

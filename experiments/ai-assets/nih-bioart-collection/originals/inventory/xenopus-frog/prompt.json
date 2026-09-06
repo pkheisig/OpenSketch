@@ -1,0 +1,24 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a Xenopus frog, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Adult Xenopus laevis African clawed frog, dorsal three-quarter view, head toward upper left. Broad flattened oval olive-brown body, short flat head, small upward-facing eyes, cream lower flank. Smooth matte skin with a few broad subdued dark olive patches and subtle short lateral-line marks, no grain, warts or photographic texture. Exactly four limbs. Two slender short forelimbs each ending in FOUR long unwebbed fingers without claws. Two powerful folded hind limbs, each ending in a large clearly spread fan of FIVE long fully webbed toes, small dark cornified claws on ONLY three inner toes per hind foot. All fingers, toes and webbing complete and separately readable; hind feet not overlapping. No external ear disk, no tail. Polished restrained gradients and crisp dark olive outlines, simplified smooth biomedical vector illustration style. Transparent PNG alpha, generous padding around every toe.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-a772204d-3cfb-45b8-ab2b-2e049a999cfc.png",
+  "refinement": "Redraw this same Xenopus frog as a smooth clean biomedical vector-style illustration. Remove photographic mottling, granular skin and wet reflections; use broad matte olive shapes, a few simple dark olive patches and subtle gradients with crisp outlines. Anatomical correction: each hind foot must have EXACTLY FIVE toes, not six. Rebuild each hind foot as a clearly countable five-ray webbed fan: three adjacent inner rays have small dark pointed claws, remaining two outer rays have rounded unclawed tips. Remove the extra unclawed uppermost toe on the right-side hind foot so only five rays remain. Lower hind foot also exactly five rays. Preserve four long unwebbed fingers per front hand, four limbs, flattened broad body, dorsal eyes, no ear disk, no tail. Zoom out so every finger/toe has generous empty margin. Transparent PNG with alpha outside the complete frog.",
+  "refinement_2": "Preserve this smooth frog and exact digit counts. Correct ONLY claw placement. On right-hand side of picture, hind foot has five rays from top to bottom: tips 1, 2, 3 must be dark clawed; tips 4 and 5 must be plain rounded without claws. So add a dark small claw to the uppermost tip and remove the claw on the second-lowest tip. On lower foot, five tips from left to right: tips 1, 2, 3 must have small dark claws; tips 4 and 5 must be rounded without claws. Add claw to leftmost tip and remove claw from second-rightmost tip. Do not add or remove toes. Keep the two forehands each four long unclawed fingers. Maintain clean matte smooth shading and complete generous padding. Remove checkerboard background and output true transparent PNG alpha.",
+  "refinement_3": "Make exactly one small anatomical edit: on the hind foot at the RIGHT EDGE of this image, add a small dark brown pointed claw to its MIDDLE toe tip, the rounded tip approximately at x1390 y315. Keep existing claws on its top two tips. That right foot must then have three consecutive clawed upper tips and two rounded lower tips. Leave all other anatomy and colors exactly unchanged, especially the correct lower hind foot with three claws. Output transparent PNG alpha, remove checkerboard background.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Adult Xenopus laevis dorsal oblique view, schematic skin pattern and lateral line. Four unwebbed foredigits and five webbed hind toes with three adjacent inner claws.",
+  "references": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC10664028/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "xenopus-frog",
+  "name": "Xenopus frog",
+  "original": "originals/inventory/xenopus-frog/generated.png",
+  "original_sha256": "b79f9e27928d82c2647fa293903b4628efe73166867e4563c9c1b715d748486b"
+}

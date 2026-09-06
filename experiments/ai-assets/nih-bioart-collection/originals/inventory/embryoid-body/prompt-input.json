@@ -1,0 +1,12 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an embryoid body, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Attached cell spheroid is palette and finish reference only. New morphology: a cystic embryoid body in frontal cutaway, compact round aggregate with an OUTER continuous single layer of small flattened GOLD endoderm-like cells with violet nuclei, a thin lavender basement membrane just inside, then a thick INNER layer of TEAL radially elongated ectoderm-like cells with staggered violet nuclei facing a small irregular CENTRAL pale cyan cavity. Continuous layers around whole sphere, not a localized inner cell mass. Some rounded exterior cells visible along far rim for shallow 3D depth. No zona pellucida, no embryo body plan, no blastopore, no organ buds, no dish. Smooth matte cells, broad subtle gradients, crisp outlines, no grain or photographic texture, transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-49f4e56c-f532-48af-a0b1-0b7d9510c9a0.png",
+  "style_reference": "/Users/pkheisig/.codex/worktrees/OpenSketch/ai-bioart-assets-20260904/experiments/ai-assets/nih-bioart-collection/png/cell-spheroid-bioart-transparent.png",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Cystic embryoid body with outer endoderm-like epithelium, basement membrane and internal radial epithelium surrounding cavity. Selected differentiated cystic form, not universal morphology of all embryoid bodies; schematic cell counts.",
+  "references": [
+    "https://pubmed.ncbi.nlm.nih.gov/15067230/",
+    "https://pubmed.ncbi.nlm.nih.gov/24752320/"
+  ]
+}

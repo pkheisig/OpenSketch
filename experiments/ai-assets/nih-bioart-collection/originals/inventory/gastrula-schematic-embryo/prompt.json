@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a gastrula schematic embryo, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Style reference only attached. New morphology: simple sea-urchin-type MID GASTRULA sagittal cutaway. One oval shell of small TEAL ectoderm epithelial cells with violet nuclei, enclosing pale cyan blastocoel. At bottom center shell turns inward at an OPEN blastopore into a narrow GOLD endoderm tube that extends upward halfway through the blastocoel; gold tube has closed rounded upper tip and clear narrow lumen CONTINUOUS with outside through bottom opening. A few CORAL mesenchyme cells lie scattered inside blastocoel between gut and ectoderm; two at archenteron tip have delicate short filopodia. NO zona pellucida, no inner cell mass, no placenta. Clearly show open gut opening at bottom, closed gut tip inside, distinct teal outer cells/gold gut/coral mesenchyme. Smooth matte forms, crisp outlines, restrained soft gradients, transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-226012fb-5cc4-462b-8d35-feb1bfad77dc.png",
+  "style_reference": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-c62ef9b5-3dac-4e3f-a8e4-835b3fc17dfe.png",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Sea-urchin-type mid-gastrula cutaway: teal ectoderm, gold blind-ended archenteron continuous with external blastopore, coral mesenchyme. Cell counts and positions schematic; not mammalian gastrulation. Mesenchyme filopodia shown without modeling their exact archenteron attachments.",
+  "references": [
+    "https://pubmed.ncbi.nlm.nih.gov/31959288/",
+    "https://www.ncbi.nlm.nih.gov/books/NBK9987/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "gastrula-schematic-embryo",
+  "name": "gastrula schematic embryo",
+  "original": "originals/inventory/gastrula-schematic-embryo/generated.png",
+  "original_sha256": "d136204eb29402621f787628a16d36e9296abac7e541a85d269683bbe0016059"
+}

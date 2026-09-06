@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a pig, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Healthy adult domestic white farm pig, left-facing three-quarter side view standing naturally on all FOUR legs. Long deep barrel torso, strong broad shoulders and rounded rump, fairly long wedge-shaped head ending in circular pink snout with two nostrils, small dark eye, two upright triangular ears with slight tip folds. Pale peach-pink skin with very sparse fine pale bristle accents, cream highlights and rose shadows. Four distinct sturdy legs, two main cloven hoof tips per foot with small rear dewclaws where visible. Complete short curly tail attached at rump. Natural pig proportions, not baby cartoon, no clothing, collar, tags or floor. Smooth matte vector-style biomedical illustration with broad restrained gradients and crisp rose-brown outlines, no skin pores or grain, all ear/hoof/tail tips complete. Transparent PNG alpha, generous padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-64b455cd-27d4-4321-9e2a-d0fa410f4117.png",
+  "refinement": "Redraw this exact adult pig as a clean smooth vector-style biomedical asset. Preserve adult long barrel body, wedge snout with two nostrils, two ears, four sturdy legs, paired cloven hoof tips, small rear dewclaws and complete curly tail. Remove all realistic skin hair, pores, stippling and grain. Smooth matte pale peach/pink body with broad subtle rose gradients and cream highlights, crisp rose-brown outlines. Only a few short sparse bristle accents if any. Neutral natural mouth line, no cartoon smile. All intrinsic structures complete with generous empty padding. Transparent PNG alpha background.",
+  "archetype": "Adult domestic white farm pig with long barrel torso, upright ears, cloven hooves and curled tail. Generic phenotype, no specific strain; teat and bristle counts schematic.",
+  "alpha_note": "Refinement returned RGBA directly; no separate alpha edit.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "pig",
+  "name": "pig",
+  "original": "originals/inventory/pig/generated.png",
+  "original_sha256": "d77ddaacbc9da9efd713ea4f6b32993dd60a9929ce1d17aed03838f62335bfca"
+}

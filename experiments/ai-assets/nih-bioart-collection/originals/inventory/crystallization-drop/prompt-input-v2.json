@@ -1,0 +1,13 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a crystallization drop, matching the supplied NIH BioArt reference image\u2019s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One small isolated sitting crystallization droplet represented in three-quarter view as a broad shallow pale cyan transparent spherical cap with flat oval base and smooth curved dome. Inside the drop, fully contained near base, three small lavender protein crystals with crisp prismatic facets, one slightly larger than two others. All crystals entirely within liquid, not sticking through surface. No supporting plate, cover slide, reservoir or pipette, no detached droplets, no molecular balls. Smooth restrained gradients, thin teal droplet outline, one curved small white highlight, no rippling water or grain, no checkerboard painted within drop, no sparkle stars. Complete drop centered with generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-50bfbaf5-e8dc-4eed-a08a-558bcc869a40.png",
+  "refinement": "Redraw this same crystallization droplet in smooth vector-style biomedical illustration. Preserve one shallow dome of pale cyan liquid with three lavender crystals wholly inside, one large and two small. Remove watery ripples, grain, cloudy crystal mottling and complex refraction. Each crystal has just clean straight planar facets with smooth lavender/cyan gradients. Droplet has one smooth broad gradient, thin teal outline and one small curved highlight. No heavy double rim suggesting glass vessel; this is liquid drop only. No shadow, no pedestal, no text, generous true transparent PNG alpha padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Isolated sitting crystallization droplet containing three protein crystals; support and reservoir omitted as separate assets. Crystal habit, number and liquid color illustrative.",
+  "references": [
+    "https://hamptonresearch.com/uploads/23.pdf"
+  ],
+  "svg_source": "originals/inventory/crystallization-drop/translucent-underlay.svg",
+  "svg_refinement": "Preserve traced paths and insert native editable 18 percent opacity pale cyan outer silhouette underlay to avoid an alpha-threshold hole."
+}

@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an NMR spectrometer, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One high-field solution NMR instrument represented by its characteristic superconducting magnet cryostat, three-quarter view: large upright smooth ivory cylindrical dewar with teal band, gently rounded top, central vertical sample bore tube at top and a slim capped NMR sample tube partly inserted coaxially. Two short auxiliary cryogen service necks offset on top with small metal caps. Magnet supported above ground by three sturdy dark teal legs on a low triangular support frame, probe assembly visible beneath bottom center with a few short neatly attached cables terminating in integrated lower electronics module. No patient tunnel or bed, no MRI scanner shape, no separate computer or room equipment. Smooth matte vector-style biomedical illustration with crisp navy outlines, broad restrained gradients, no grain, no labels or hazard symbols. Entire top necks legs and base inside generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-ab24ecc1-1e87-4fc4-8b55-e9d69f90f48e.png",
+  "refinement": "Redraw the same high-field NMR magnet assembly as a polished smooth vector-style biomedical illustration. Preserve ivory cylindrical dewar with teal band, central top sample neck and narrow partly inserted tube, two cryogen service necks, three teal support legs and triangular base, probe and short attached cables underneath. Replace photographic metal grain and mottled plastic with smooth matte broad gradients and crisp navy outlines, reduce tiny bolts to clean simple circles. Ensure sample tube has no graduation or text. Full top tube cap and base feet with generous true transparent PNG alpha padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "High-field solution NMR magnet cryostat with sample neck, cryogen service necks, support legs and lower probe; schematic instrument, not a model-specific plumbing diagram.",
+  "references": [
+    "https://www.bruker.com/en/products-and-solutions/mr/nmr/probes.html"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "nmr-spectrometer",
+  "name": "NMR spectrometer",
+  "original": "originals/inventory/nmr-spectrometer/generated.png",
+  "original_sha256": "495974d886197a72babc73a3c248c67eb2f74bc1dff258945fa76fa8b41bea31"
+}

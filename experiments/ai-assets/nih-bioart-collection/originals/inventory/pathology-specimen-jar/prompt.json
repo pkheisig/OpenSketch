@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a pathology specimen jar, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One squat wide-mouth transparent cylindrical pathology sample jar standing upright in three-quarter view, closed teal ribbed screw lid, broad flat base. Clear pale cyan fixation fluid fills lower two thirds with one flat elliptical meniscus, one small smooth irregular tan-pink tissue specimen settled on bottom fully submerged. Jar walls smooth pale cyan transparent material with only two narrow curved edge highlights; no checkerboard texture painted on glass, no reflections of room or scenery. No label, graduations, writing or logos. Specimen abstract gross tissue fragment, no microscopic grain or blood. Smooth matte polished vector-style outlines and restrained broad gradients. Entire jar and lid with generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-9d6f0256-db9f-4fd1-9773-98a71b25beec.png",
+  "refinement": "Redraw this specimen jar as smooth polished vector-style biomedical illustration. Preserve full wide teal screw lid, cylindrical pale cyan jar, single fluid meniscus and one tan-pink tissue fragment resting submerged at bottom. Replace detailed fatty photographic tissue texture with 3-4 broad smooth tan and rose lobes and simple soft shadows, no veins grain or microscopic details. Remove rippling liquid reflections and replace meniscus with a smooth flat pale cyan ellipse. Jar has smooth translucent pale cyan surfaces and two simple narrow edge highlights; no checkerboard patterns inside. Crisp clean outlines, restrained gradients, complete jar, generous transparent PNG alpha padding, no text.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Closed wide-mouth pathology specimen jar with submerged gross tissue fragment. Smooth pale cyan walls and fixative depicted schematically; no reagent identity or concentration implied.",
+  "references": [],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "pathology-specimen-jar",
+  "name": "pathology specimen jar",
+  "original": "originals/inventory/pathology-specimen-jar/generated.png",
+  "original_sha256": "b4ce01300dc68c87d09043a7ccfe32e26e8a0611c0c27efd6ba9cc15730c8c7e"
+}

@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a biopsy punch, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One disposable dermatology biopsy punch lying diagonally from upper left handle to lower right cutting tip in three-quarter view. Long slender teal cylindrical molded grip with fine evenly spaced grip ribs and rounded closed back end; short seamless silver hollow cylindrical cutting tube projects from tapered handle nose. Open circular cutting rim visible as an ellipse, dark hollow lumen and thin beveled sharp metal edge. Straight coaxial handle and tube, blade tube diameter much narrower than grip, no syringe plunger or side opening, no tissue, no cap, no packaging. Smooth matte plastic and silver with restrained gradients and crisp outlines, no photographic grain, no engraved numbers or labels. Entire object with generous transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-47ff520e-c9a5-4f42-83a5-59462f7c806a.png",
+  "refinement": "Redraw this same biopsy punch in polished smooth biomedical vector style. Preserve straight coaxial teal ribbed grip, rounded back end, tapered nose and short silver hollow cylindrical cutting tube with visibly open lumen and thin elliptical cutting rim. Remove all plastic grain and brushed metal microtexture; use crisp dark teal outlines, smooth matte fills, broad gentle gradients and small highlights. Keep entire handle and tip centered with generous true transparent alpha padding. No writing or size marks.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Disposable dermatology biopsy punch with hollow circular cutting blade and ribbed handle.",
+  "references": [
+    "https://www.kaimedical.jp/en/wp-content/uploads/sites/2/general/catalog/Biopsy_Punch_and_Dermal_Curette_Catalog_2406.pdf"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "biopsy-punch",
+  "name": "biopsy punch",
+  "original": "originals/inventory/biopsy-punch/generated.png",
+  "original_sha256": "802330687b22577d586c4fe4b55e12288abd180eb4f876f173ef80359428d633"
+}

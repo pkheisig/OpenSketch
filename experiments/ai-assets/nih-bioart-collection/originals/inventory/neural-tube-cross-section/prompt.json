@@ -1,0 +1,24 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a neural tube cross-section, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Illustrate ONLY a closed early vertebrate neural tube transverse section, no whole embryo and no notochord or somites. Upright oval outer outline, thick left and right walls of elongated radial teal neuroepithelial cells, violet oval nuclei staggered at different apicobasal heights to show pseudostratification. Each radial cell extends between outer basal surface and inner lumen. A narrow vertically elongated pale cyan lumen runs up center. Short thin roof plate at top midpoint in pale lavender, thin floor plate at bottom midpoint in pale gold, both intrinsic continuous parts of tube wall and no openings to outside. Complete thin dark teal basal boundary. No mature spinal cord butterfly gray matter, no axons, no floating neurons. Smooth matte forms, crisp colored outlines and broad restrained gradients, no photographic texture or grain. Transparent PNG with real alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-b1139d9f-e06c-4efd-9b9e-e52427a87f87.png",
+  "refinement": "Redraw this exact neural tube cross-section as a smooth polished vector-style biomedical illustration. Keep closed upright oval, narrow pale cyan lumen, radial teal elongated neuroepithelial cells, staggered violet nuclei, lavender roof domain and gold floor domain. REMOVE ALL grain, mottling, fibrous texture and glassy wet glare. Each cell and nucleus should be a clean smooth matte fill with a single broad subtle gradient and crisp dark colored outline, nuclei solid violet without internal speckles. Keep moderate saturated colors and complete outline with transparent padding. Preserve topology. Transparent PNG alpha.",
+  "padding_correction": "Zoom out this exact neural tube illustration so ENTIRE outer oval including top and bottom is visible with at least 15% empty margin on all four sides. Restore any clipped dark teal boundary at very top. Preserve all teal cells, violet nuclei and lavender/gold domains. Keep central lumen transparent and background transparent with real PNG alpha. No crop, no added objects, same clean smooth biomedical vector-style finish.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Closed early vertebrate neural tube section with radially elongated neuroepithelial cells, staggered nuclei and transparent lumen. Lavender roof and gold floor domains are schematic; cell boundaries and apicobasal nuclear positions simplified. No surrounding embryonic tissues.",
+  "references": [
+    "https://www.ncbi.nlm.nih.gov/books/NBK10034/",
+    "https://pubmed.ncbi.nlm.nih.gov/34449633/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "neural-tube-cross-section",
+  "name": "neural tube cross-section",
+  "original": "originals/inventory/neural-tube-cross-section/generated.png",
+  "original_sha256": "606c33380425fc633c62374ef9f0834e79ae06c67a36c402c249765565b54780"
+}

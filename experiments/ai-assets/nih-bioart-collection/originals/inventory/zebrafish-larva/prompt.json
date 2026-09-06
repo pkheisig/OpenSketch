@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a zebrafish larva, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Early zebrafish larva approximately 72 hours post fertilization, LEFT-facing lateral view. Very slender elongated nearly transparent pale cyan/cream body, proportionally large rounded head with one big dark eye and gold iris rim, small protruding mouth. Small pale gold diminishing yolk sac bulge under anterior trunk just behind head, narrow yolk extension posteriorly. Visible subtle straight notochord and chevron-shaped muscle myotomes down long tapering tail. Continuous delicate median fin fold around tail with ROUNDED tail end, no forked adult caudal fin, no separate adult dorsal/anal/pelvic fins. One delicate visible pectoral fin just behind head extending over yolk, far partner hidden. Sparse dark melanophore dots/short rows along dorsal and ventral body, no adult bold blue stripes. Minimal intrinsic internal organ hints only, no brain diagram or labels. Smooth matte fills with crisp delicate teal outlines and restrained gradients, no grain or photorealistic tissue texture. All fin folds and nose/tail tips complete, transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-8927d0ec-4362-44e2-be17-8d9287944572.png",
+  "refinement": "Redraw this exact zebrafish larva as clean smooth vector-style biomedical illustration. Preserve big dark eye, small mouth, gold yolk remnant, thin straight notochord, chevron muscle segments, sparse dark pigment dots, single visible pectoral fin and continuous rounded tail fin fold. Remove all realistic tissue mottling, granular yolk, metallic iris speckle and fibrous fin texture. Smooth pale cyan and cream body with broad subtle gradients, gold yolk smooth oval with narrow extension, eye simple gold ring and black center. Muscle segments shown by thin clean teal chevron lines. Fin fold plain translucent pale blue with smooth outline, no dense ray texture. Only minimal soft intrinsic organ hints in head. No grain, no photographic realism, crisp colored outlines, complete padded object, transparent PNG alpha.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Early zebrafish larva, approximately 72 hours post fertilization; schematic yolk remnant, myotomes and internal anatomy rather than a precise staging plate.",
+  "references": [
+    "https://zfin.org/zf_info/zfbook/stages/larv_stgs.html"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "zebrafish-larva",
+  "name": "zebrafish larva",
+  "original": "originals/inventory/zebrafish-larva/generated.png",
+  "original_sha256": "db2a0f7ab809356a1ebdf9d2e69b45dbdcecaf6a98ed26ba7dc055675d9035ce"
+}

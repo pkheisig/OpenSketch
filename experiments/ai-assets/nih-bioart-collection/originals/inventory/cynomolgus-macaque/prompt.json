@@ -1,0 +1,25 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a cynomolgus macaque, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Use attached rhesus illustration as STYLE reference only. Different species: adult Macaca fascicularis long-tailed macaque. Relaxed seated three-quarter LEFT-facing pose, slimmer body and finer limbs than reference, gray-olive brown coat, pale gray chest, short swept-back dark crown crest, modest pale cheek whiskers and gray-pink bare muzzle with brown eyes. No reddish rump coat. Its most distinctive feature is a VERY LONG slender nonprehensile tapering tail longer than head and torso combined, emerging behind haunch to right then gently sweeping back in a wide shallow S across bottom, complete tip visible, not curled into a tight loop. Two arms and two folded hind legs; natural five-digit hands/feet with some perspective occlusion. Smooth matte fur masses with sparse contour tufts, broad restrained gradients and crisp outlines; avoid realistic dense hairs or skin pores. Entire single animal, transparent PNG alpha, generous padding around long tail.",
+  "style_reference": "/Users/pkheisig/.codex/worktrees/OpenSketch/ai-bioart-assets-20260904/experiments/ai-assets/nih-bioart-collection/png/rhesus-macaque-bioart-transparent.png",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-67a543f7-d40b-45df-a9b4-dca88e943236.png",
+  "refinement": "Convert this exact cynomolgus macaque into clean smooth vector-style biomedical illustration. Preserve slender seated anatomy, gray-pink face, small crown crest, light cheeks, four limbs and very long complete tail. Remove ALL fine realistic hairs and pores. Fur should be broad matte olive-gray/brown and cream shapes with restrained smooth gradients, occasional short angular contour tufts and sparse curved fur accents. Keep natural face with a few subtle wrinkle lines, neutral expression. Crisp colored outlines, no grain, no photographic texture. Ensure full tail tip and hands have generous transparent padding. True transparent PNG alpha.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "alpha_attempts": 2,
+  "archetype": "Adult cynomolgus macaque, slimmer seated body, gray-olive coat, crown crest and long tail. Generic phenotype; digits partly obscured by pose.",
+  "references": [
+    "https://primate.wisc.edu/primate-info-net/pin-factsheets/pin-factsheet-long-tailed-macaque/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6362266/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "cynomolgus-macaque",
+  "name": "cynomolgus macaque",
+  "original": "originals/inventory/cynomolgus-macaque/generated.png",
+  "original_sha256": "26811bb83c21e5f06c775a85f66bd50d020b78bb7fbea7a0a58292906c6d3aca"
+}

@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a sheep, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Adult hornless domestic white ewe standing naturally in LEFT-facing three-quarter side view. Broad woolly barrel body, short slender wool-free pale cream face and lower legs, two lateral ears, amber eye with horizontal pupil, dark small nose and natural divided upper lip. Exactly FOUR legs with paired dark cloven hoof tips, far legs offset so all feet readable. Full natural hanging woolly tail angled down at rump, no tail dock wound. Thick cream fleece represented by medium broad rounded overlapping locks, clean scalloped contour and restrained beige shadows. NO hundreds of tiny curls, no grain or realistic hair. No horns, collar, tags or scenery. Smooth matte polished vector-style biomedical rendering, crisp warm gray-brown outlines, subtle gradients, all ears/hooves/tail complete with transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-f3769176-eb50-4f40-b68e-4e8fa0e827f1.png",
+  "refinement": "Redraw this same hornless adult ewe as smooth polished vector-style biomedical illustration. Replace the dense realistic fleece with about 60 broad rounded overlapping cream locks, each a simple matte shape with a soft beige lower shadow; no tiny curls, hair fibers, grain or photographic texture. Preserve woolly body, clean cream face/lower legs, two lateral ears, four legs with dark paired cloven hooves, and full hanging woolly tail. Correct visible amber eye: dark pupil should be a narrow HORIZONTAL rounded rectangular bar, not a round circle. Natural neutral sheep muzzle and divided upper lip. Crisp warm gray-brown outlines, broad restrained gradients and complete generous padding, transparent PNG alpha.",
+  "refinement_2": "Make only the visible eye anatomically correct for a sheep: the amber iris must contain a black narrow HORIZONTAL RECTANGULAR pupil, a long left-to-right bar with rounded ends, approximately three times wider than high. Remove the current round dark pupil. Preserve all the rest of this smooth cream sheep illustration exactly. Remove background and output a transparent PNG with alpha channel.",
+  "alpha_note": "Second refinement returned RGBA directly.",
+  "archetype": "Hornless white domestic ewe, broad stylized fleece locks, horizontal rectangular pupil, four cloven-hoof legs and natural hanging tail. Generic phenotype; fleece locks not counted anatomically.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "sheep",
+  "name": "sheep",
+  "original": "originals/inventory/sheep/generated.png",
+  "original_sha256": "661f2e13d85570cc0f9dcc548f0240f343c654f8422396306ba9029c03e4e7e4"
+}
