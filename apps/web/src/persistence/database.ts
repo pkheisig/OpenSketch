@@ -415,30 +415,46 @@ export async function saveProjectTemplate(
   const normalized = normalizeProjectTemplate(template);
   const now = new Date().toISOString();
   const next = { ...normalized, updatedAt: normalized.updatedAt || now };
+  const database = getOpenSketchDatabase();
   await getOpenSketchDatabase().transaction(
     "rw",
-    getOpenSketchDatabase().projectTemplates,
-    getOpenSketchDatabase().projectTemplateMigrations,
+    database.projectTemplates,
+    database.projectTemplateMigrations,
     async () => {
-      await getOpenSketchDatabase().projectTemplates.put(next);
-      await getOpenSketchDatabase().projectTemplateMigrations.put({
+      await database.projectTemplates.put(next);
+      const persisted = await database.projectTemplates.get(next.id);
+      if (!persisted || JSON.stringify(persisted) !== JSON.stringify(next)) {
+        throw new Error("Could not verify the saved project template.");
+      }
+      await database.projectTemplateMigrations.put({
         id: next.id,
         schemaVersion: 1,
         completedAt: now
       });
+      const migration = await database.projectTemplateMigrations.get(next.id);
+      if (!migration || migration.schemaVersion !== 1 || migration.completedAt !== now) {
+        throw new Error("Could not verify the saved project template migration.");
+      }
     }
   );
   return next;
 }
 
 export async function deleteProjectTemplate(id: string): Promise<void> {
-  await getOpenSketchDatabase().transaction(
+  const database = getOpenSketchDatabase();
+  await database.transaction(
     "rw",
-    getOpenSketchDatabase().projectTemplates,
-    getOpenSketchDatabase().projectTemplateMigrations,
+    database.projectTemplates,
+    database.projectTemplateMigrations,
     async () => {
-      await getOpenSketchDatabase().projectTemplates.delete(id);
-      await getOpenSketchDatabase().projectTemplateMigrations.delete(id);
+      await database.projectTemplates.delete(id);
+      await database.projectTemplateMigrations.delete(id);
+      if (
+        (await database.projectTemplates.get(id)) ||
+        (await database.projectTemplateMigrations.get(id))
+      ) {
+        throw new Error("Could not verify project template deletion.");
+      }
     }
   );
 }

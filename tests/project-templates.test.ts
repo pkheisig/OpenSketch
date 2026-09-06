@@ -8,6 +8,7 @@ import {
 import {
   OpenSketchDatabase,
   createProject,
+  deleteProjectTemplate,
   db,
   listProjectTemplates,
   saveProjectTemplate
@@ -83,6 +84,7 @@ describe("project template storage", () => {
           {
             type: "Rect",
             objectId: "source",
+            clipPath: { type: "Rect" },
             connector: binding("source", "target"),
             recognizedGroups: [
               {
@@ -114,6 +116,7 @@ describe("project template storage", () => {
 
     expect(remintedSource.objectId).not.toBe("source");
     expect(remintedTarget.objectId).not.toBe("target");
+    expect(remintedSource.clipPath).not.toHaveProperty("objectId");
     expect(remintedSource.connector).toEqual(
       binding(remintedSource.objectId, remintedTarget.objectId)
     );
@@ -170,6 +173,18 @@ describe("project template storage", () => {
     await expect(saveProjectTemplate(template())).rejects.toThrow(/storage is full/i);
     expect(await db.projectTemplates.get("template-diagram")).toBeUndefined();
     put.mockRestore();
+  });
+
+  it("verifies durable template saves and deletes", async () => {
+    const savedGet = vi.spyOn(db.projectTemplates, "get").mockResolvedValue(undefined);
+    await expect(saveProjectTemplate(template())).rejects.toThrow(/verify/i);
+    savedGet.mockRestore();
+
+    const saved = await saveProjectTemplate(template());
+    const deleteGet = vi.spyOn(db.projectTemplates, "get").mockResolvedValue(saved);
+    await expect(deleteProjectTemplate(saved.id)).rejects.toThrow(/verify/i);
+    deleteGet.mockRestore();
+    expect(await db.projectTemplates.get(saved.id)).toEqual(saved);
   });
 
   it("migrates legacy v1 projects when opening the v6 database", async () => {

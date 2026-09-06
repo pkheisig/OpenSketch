@@ -32,7 +32,7 @@ describe("OpenSketch application module", () => {
       schemaVersion: 1,
       id: "opensketch",
       displayName: "OpenSketch",
-      contractVersion: "1.0.0",
+      contractVersion: "1.1.0",
       uiContractVersion: "0.1.0-bootstrap",
       entry: "OpenSketchApplication",
       stylesheetEntry: "./module/opensketch-module.css",

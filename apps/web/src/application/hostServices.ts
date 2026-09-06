@@ -25,7 +25,7 @@ export type Theme = "light" | "dark";
 export type ThemeAppearance = "system" | "light" | "dark";
 
 export const OPENSKETCH_APPLICATION_VERSION = "0.1.0" as const;
-export const OPENSKETCH_APPLICATION_CONTRACT_VERSION = "1.0.0" as const;
+export const OPENSKETCH_APPLICATION_CONTRACT_VERSION = "1.1.0" as const;
 export const OPENSKETCH_OPEN_SUITE_CONTRACT_VERSION = "0.1.0-bootstrap" as const;
 export const OPENSKETCH_REACT_VERSION_RANGE = "^19.0.0" as const;
 export const OPENSKETCH_REACT_DOM_VERSION_RANGE = "^19.0.0" as const;
@@ -260,7 +260,7 @@ export interface OpenSketchModuleManifest {
   id: "opensketch";
   displayName: "OpenSketch";
   version: string;
-  contractVersion: "1.0.0";
+  contractVersion: "1.1.0";
   entry: "OpenSketchApplication";
   stylesheetEntry: string;
   assetManifestEntry: string;

@@ -466,7 +466,7 @@ export function remintProjectIdentity(input: unknown): unknown {
     });
   };
   nodes.forEach((node) => {
-    node.repairedId = freshId();
+    if (node.originalId) node.repairedId = freshId();
     collectRecognitionIds(node.record.recognizedGroups);
   });
   nodes.forEach((node) => {

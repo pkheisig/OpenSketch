@@ -348,7 +348,7 @@ export interface OpenSketchModuleManifest {
   id: "opensketch";
   displayName: "OpenSketch";
   version: string;
-  contractVersion: "1.0.0";
+  contractVersion: "1.1.0";
   entry: "OpenSketchApplication";
   stylesheetEntry: string;
   assetManifestEntry: string;
