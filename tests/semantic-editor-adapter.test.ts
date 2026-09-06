@@ -9,7 +9,11 @@ import { describe, expect, it, vi } from "vitest";
 import { DEFAULT_CREATION_DEFAULTS } from "../apps/web/src/editor/creation";
 import { createSemanticEditorAdapter } from "../apps/web/src/semantic/semanticEditorAdapter";
 import { assetManifest } from "../apps/web/src/assets/manifest";
-import { createLayoutDocument, type LayoutDocument } from "../packages/editor-core/src";
+import {
+  createLayoutDocument,
+  createLayoutFrame,
+  type LayoutDocument
+} from "../packages/editor-core/src";
 import { applyLayoutFrameToCanvas } from "../apps/web/src/editor/layoutFrames";
 
 function makeCanvas(objects: FabricObject[] = [], activeObjects: FabricObject[] = []): Canvas {
@@ -54,6 +58,21 @@ function makeAdapter(
   const setLayoutState = vi.fn((next: LayoutDocument | undefined) => {
     layoutState = next;
   });
+  const removeLayoutReferences = vi.fn((removedIds: ReadonlySet<string>) => {
+    if (!layoutState || removedIds.size === 0) return;
+    layoutState = {
+      version: layoutState.version,
+      frames: layoutState.frames
+        .filter(
+          (frame) =>
+            frame.containerObjectId === undefined || !removedIds.has(frame.containerObjectId)
+        )
+        .map((frame) => ({
+          ...frame,
+          children: frame.children.filter((child) => !removedIds.has(child.objectId))
+        }))
+    };
+  });
   const applyFrame = vi.fn((frameId: string) => {
     const frame = layoutState!.frames.find((candidate) => candidate.id === frameId)!;
     const changed = applyLayoutFrameToCanvas(canvas, frame).changedObjectIds;
@@ -74,6 +93,7 @@ function makeAdapter(
     }),
     getLayoutState: () => layoutState,
     setLayoutState,
+    removeLayoutReferences,
     applyLayoutFrame: applyFrame,
     setCanvasSettings,
     setProjectName,
@@ -104,6 +124,7 @@ function makeAdapter(
     setProjectDescription,
     layoutState: () => layoutState,
     setLayoutState,
+    removeLayoutReferences,
     applyFrame
   });
 }
@@ -148,6 +169,40 @@ describe("semantic editor adapter", () => {
     await adapter.execute("remove_layout_frame", { frameId: "frame" });
     expect(adapter.layoutState()?.frames).toEqual([]);
     expect(adapter.commit).toHaveBeenCalled();
+  });
+
+  it("removes deleted scene identities from persistent layout references", async () => {
+    const object = new Rect({ width: 20, height: 20 });
+    object.objectId = "object";
+    const adapter = makeAdapter(makeCanvas([object]));
+
+    await adapter.execute("create_layout_frame", {
+      frameId: "frame",
+      bounds: { left: 0, top: 0, width: 100, height: 100 },
+      flow: "free",
+      children: [{ objectId: "object", sizing: "content-sized" }]
+    });
+    await adapter.execute("delete_objects", { objectIds: ["object"] });
+
+    expect(adapter.layoutState()?.frames[0]?.children).toEqual([]);
+    expect(adapter.removeLayoutReferences).toHaveBeenCalledWith(new Set(["object"]));
+  });
+
+  it("rejects rotated children before applying an inaccurate axis-aligned resize", () => {
+    const object = new Rect({ width: 40, height: 20, angle: 30 });
+    object.objectId = "rotated";
+    const canvas = makeCanvas([object]);
+    const frame = createLayoutFrame(createLayoutDocument(), {
+      frameId: "frame",
+      bounds: { left: 0, top: 0, width: 200, height: 100 },
+      flow: "free",
+      children: [{ objectId: "rotated", sizing: "fixed", width: 100, height: 60 }]
+    }).frames[0]!;
+
+    expect(() => applyLayoutFrameToCanvas(canvas, frame)).toThrow(/rotated/i);
+    expect(object.angle).toBe(30);
+    expect(object.scaleX).toBe(1);
+    expect(object.scaleY).toBe(1);
   });
 
   it("rolls back persistent layout state with a failed semantic batch", async () => {

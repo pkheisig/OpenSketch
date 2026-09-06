@@ -236,6 +236,38 @@ describe("project migrations", () => {
     ).toThrow(/ancestor|descendant|container/i);
   });
 
+  it("does not treat clip-path objects as layout-scene identities", () => {
+    expect(() =>
+      migrateProject({
+        ...project,
+        formatVersion: 2,
+        kind: "figure",
+        objects: {
+          objects: [
+            {
+              type: "Rect",
+              objectId: "rect",
+              width: 40,
+              height: 40,
+              clipPath: { type: "Rect", objectId: "clip", width: 20, height: 20 }
+            }
+          ]
+        },
+        layout: {
+          version: 1,
+          frames: [
+            {
+              id: "frame",
+              bounds: { left: 0, top: 0, width: 100, height: 100 },
+              flow: "free",
+              children: [{ objectId: "clip", sizing: "content-sized" }]
+            }
+          ]
+        }
+      })
+    ).toThrow(/unknown object|layout frame/i);
+  });
+
   it("preserves an explicit project kind", () => {
     expect(migrateProject({ ...project, formatVersion: 2, kind: "poster" }).kind).toBe("poster");
   });

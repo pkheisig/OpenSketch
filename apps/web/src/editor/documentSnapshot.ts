@@ -29,7 +29,7 @@ export const createDocumentSnapshot = (
   });
 
 export const cloneDocumentSnapshot = (snapshot: EditorDocumentSnapshot): EditorDocumentSnapshot =>
-  createDocumentSnapshot(snapshot.scene, snapshot.canvasSettings);
+  createDocumentSnapshot(snapshot.scene, snapshot.canvasSettings, snapshot.layout);
 
 export const documentSnapshotsEqual = (
   left: EditorDocumentSnapshot | undefined,

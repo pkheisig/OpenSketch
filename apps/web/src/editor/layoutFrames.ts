@@ -10,6 +10,11 @@ import { sceneObjectIndex } from "./sceneTree";
 
 const MIN_GEOMETRY = 0.000001;
 
+function hasMeaningfulRotation(object: FabricObject): boolean {
+  const transform = object.calcTransformMatrix();
+  return Math.abs(transform[1]) > MIN_GEOMETRY || Math.abs(transform[2]) > MIN_GEOMETRY;
+}
+
 function isGroup(object: FabricObject | undefined): object is Group {
   return object instanceof Group;
 }
@@ -79,6 +84,11 @@ export function layoutFrameOnCanvas(canvas: Canvas, frame: LayoutFrame): LayoutR
     const object = index.get(child.objectId);
     if (!object)
       throw new Error(`Layout frame "${frame.id}" references missing object "${child.objectId}".`);
+    if (hasMeaningfulRotation(object)) {
+      throw new Error(
+        `Layout frame "${frame.id}" cannot resize rotated child "${child.objectId}"; reset its rotation first.`
+      );
+    }
     return { objectId: child.objectId, bounds: boundsOf(object) };
   });
   return layoutFrame(frame, children);

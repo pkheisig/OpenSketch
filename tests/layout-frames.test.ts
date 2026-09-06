@@ -95,6 +95,55 @@ describe("persistent layout frames", () => {
     );
   });
 
+  it("places implicit grid children in deterministic row-major order", () => {
+    const four = createLayoutFrame(createLayoutDocument(), {
+      frameId: "implicit-four",
+      bounds: { left: 0, top: 0, width: 200, height: 200 },
+      flow: "grid",
+      children: [
+        { objectId: "a", sizing: "fill" },
+        { objectId: "b", sizing: "fill" },
+        { objectId: "c", sizing: "fill" },
+        { objectId: "d", sizing: "fill" }
+      ]
+    }).frames[0]!;
+    const geometries = [
+      child("a", 0, 0, 10, 10),
+      child("b", 0, 0, 10, 10),
+      child("c", 0, 0, 10, 10),
+      child("d", 0, 0, 10, 10)
+    ];
+    const first = layoutFrame(four, geometries);
+    const second = layoutFrame(four, geometries);
+
+    expect(first).toEqual(second);
+    expect(first.diagnostics).toEqual([]);
+    expect(first.children.map(({ bounds }) => bounds)).toEqual([
+      { left: 0, top: 0, width: 100, height: 100 },
+      { left: 100, top: 0, width: 100, height: 100 },
+      { left: 0, top: 100, width: 100, height: 100 },
+      { left: 100, top: 100, width: 100, height: 100 }
+    ]);
+
+    const two = createLayoutFrame(createLayoutDocument(), {
+      frameId: "implicit-two",
+      bounds: { left: 0, top: 0, width: 200, height: 100 },
+      flow: "grid",
+      children: [
+        { objectId: "left", sizing: "fill" },
+        { objectId: "right", sizing: "fill" }
+      ]
+    }).frames[0]!;
+    expect(
+      layoutFrame(two, [child("left", 0, 0, 10, 10), child("right", 0, 0, 10, 10)]).children.map(
+        ({ bounds }) => bounds
+      )
+    ).toEqual([
+      { left: 0, top: 0, width: 100, height: 100 },
+      { left: 100, top: 0, width: 100, height: 100 }
+    ]);
+  });
+
   it("validates child references and ancestor/descendant membership before persistence", () => {
     const document = createLayoutDocument();
     const next = createLayoutFrame(document, {

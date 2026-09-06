@@ -36,6 +36,28 @@ describe("editor document snapshots", () => {
     expect(Object.isFrozen(snapshot.canvasSettings)).toBe(true);
   });
 
+  it("preserves persistent layout state when cloning a checkpoint", () => {
+    const layout = {
+      version: 1 as const,
+      frames: [
+        {
+          id: "frame",
+          bounds: { left: 0, top: 0, width: 100, height: 100 },
+          flow: "free" as const,
+          padding: { top: 0, right: 0, bottom: 0, left: 0 },
+          gap: { horizontal: 0, vertical: 0 },
+          overflow: "visible" as const,
+          children: [{ objectId: "object", sizing: "content-sized" as const }]
+        }
+      ]
+    };
+    const snapshot = createDocumentSnapshot("scene", canvasSettings(), layout);
+    const clone = structuredClone(snapshot);
+
+    expect(clone.layout).toEqual(snapshot.layout);
+    expect(clone.layout).not.toBe(snapshot.layout);
+  });
+
   it("distinguishes scene, settings, and true no-op snapshots", () => {
     const first: EditorDocumentSnapshot = {
       scene: '{"objects":[]}',

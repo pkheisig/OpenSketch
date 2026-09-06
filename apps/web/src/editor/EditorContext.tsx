@@ -3112,6 +3112,7 @@ export function EditorProvider({
         getCanvasSettings: () => latestCanvasSettings.current,
         getLayoutState: () => latestLayoutState.current,
         setLayoutState: (layout) => setLayoutStateWithoutCommit(layout),
+        removeLayoutReferences: (removedIds) => removeLayoutReferences(removedIds),
         applyLayoutFrame: (frameId) => applyLayoutFrame(frameId),
         setCanvasSettings: (settings) => semanticSetCanvasSettingsRef.current(settings),
         setProjectName: (name) => semanticSetProjectNameRef.current(name),

@@ -451,6 +451,8 @@ interface ValidationContext {
   dataUrls: Set<string>;
   objectIds: Set<string>;
   parentByObjectId: Map<string, string | undefined>;
+  layoutObjectIds: Set<string>;
+  layoutParentByObjectId: Map<string, string | undefined>;
   connectorBindings: Array<{
     path: string;
     binding: JsonRecord;
@@ -1446,7 +1448,8 @@ function validateSceneObject(
   path: string,
   context: ValidationContext,
   depth: number,
-  parentObjectId?: string
+  parentObjectId?: string,
+  includeInLayout = true
 ): void {
   if (!isRecord(value)) fail(path, "must be an object");
   if (depth > PORTABLE_PROJECT_LIMITS.maxSceneDepth) fail(path, "exceeds the scene nesting limit");
@@ -1462,6 +1465,9 @@ function validateSceneObject(
   }
   const objectId = typeof value.objectId === "string" ? value.objectId : undefined;
   if (objectId !== undefined) context.parentByObjectId.set(objectId, parentObjectId);
+  if (objectId !== undefined && includeInLayout) {
+    context.layoutParentByObjectId.set(objectId, parentObjectId);
+  }
 
   for (const [key, item] of Object.entries(value)) {
     if (SCENE_NUMERIC_PROPERTIES.has(key)) {
@@ -1542,7 +1548,7 @@ function validateSceneObject(
     } else if (key === "shadow") {
       validateShadow(item, `${path}.${key}`, context);
     } else if (key === "clipPath") {
-      validateSceneObject(item, `${path}.${key}`, context, depth + 1, objectId);
+      validateSceneObject(item, `${path}.${key}`, context, depth + 1, objectId, false);
     } else if (key === "layoutManager") {
       if (value.type !== "Group") fail(`${path}.layoutManager`, "is only supported on groups");
       validateLayoutManager(item, `${path}.${key}`);
@@ -1553,11 +1559,18 @@ function validateSceneObject(
         fail(`${path}.${key}`, "contains too many objects");
       }
       item.forEach((child, index) =>
-        validateSceneObject(child, `${path}.objects[${index}]`, context, depth + 1, objectId)
+        validateSceneObject(
+          child,
+          `${path}.objects[${index}]`,
+          context,
+          depth + 1,
+          objectId,
+          includeInLayout
+        )
       );
     } else if (key === "path") {
       if (["Text", "Textbox", "IText", "i-text"].includes(value.type) && isRecord(item)) {
-        validateSceneObject(item, `${path}.path`, context, depth + 1, objectId);
+        validateSceneObject(item, `${path}.path`, context, depth + 1, objectId, false);
       } else {
         validatePath(item, `${path}.path`);
       }
@@ -1622,6 +1635,7 @@ function validateSceneObject(
     if (typeof value.objectId !== "string") fail(`${path}.objectId`, "is invalid");
     if (context.objectIds.has(value.objectId)) fail(`${path}.objectId`, "is duplicated");
     context.objectIds.add(value.objectId);
+    if (includeInLayout) context.layoutObjectIds.add(value.objectId);
   }
   if (value.type === "Group" && !Array.isArray(value.objects))
     fail(`${path}.objects`, "is required for groups");
@@ -1664,6 +1678,8 @@ function createValidationContext(): ValidationContext {
     dataUrls: new Set(),
     objectIds: new Set(),
     parentByObjectId: new Map(),
+    layoutObjectIds: new Set(),
+    layoutParentByObjectId: new Map(),
     connectorBindings: []
   };
 }
@@ -1843,8 +1859,8 @@ export function migrateProject(input: unknown): PortableProject {
   let layout: LayoutDocument | undefined;
   if (project.layout !== undefined) {
     layout = validateLayoutDocument(project.layout, {
-      objectIds: context.objectIds,
-      parentByObjectId: context.parentByObjectId
+      objectIds: context.layoutObjectIds,
+      parentByObjectId: context.layoutParentByObjectId
     });
   }
   const relationIds = new Set<string>();

@@ -118,6 +118,7 @@ export interface SemanticEditorAdapterDependencies {
   getCanvasSettings: () => CanvasSettings;
   getLayoutState: () => LayoutDocument | undefined;
   setLayoutState: (layout: LayoutDocument | undefined) => void;
+  removeLayoutReferences: (removedIds: ReadonlySet<string>) => void;
   applyLayoutFrame: (frameId: string) => string[];
   setCanvasSettings: (settings: Partial<CanvasSettings>) => void;
   setProjectName: (name: string) => void;
@@ -1949,6 +1950,7 @@ export function createSemanticEditorAdapter(
           .filter(({ object }) => connectorsForRemovedIds([object], removedIdSet).length > 0)
           .forEach((entry) => {
             if (entry.object.objectId) changedReferenceIds.add(entry.object.objectId);
+            if (entry.object.objectId) removedIdSet.add(entry.object.objectId);
             removeSceneObject(entry);
           });
         sceneObjectEntries(canvas).forEach(({ object }) => {
@@ -1974,6 +1976,7 @@ export function createSemanticEditorAdapter(
         });
         existingField.set({ scaleX: 1, scaleY: 1, angle: 0 });
         particles.forEach((particle) => existingField.remove(particle));
+        dependencies.removeLayoutReferences(removedIdSet);
         const repairedParticles = plan.points.map((position, index) => {
           const objectId = `${existingField.objectId!}-particle-${index}`;
           const particle =
@@ -2241,9 +2244,13 @@ export function createSemanticEditorAdapter(
           };
         }
       } catch (error) {
+        const removedIds = new Set<string>();
         for (const entry of sceneObjectEntries(canvas).reverse()) {
-          if (!existingObjects.has(entry.object)) removeSceneObject(entry);
+          if (existingObjects.has(entry.object)) continue;
+          if (entry.object.objectId) removedIds.add(entry.object.objectId);
+          removeSceneObject(entry);
         }
+        dependencies.removeLayoutReferences(removedIds);
         throw error;
       }
       target.semanticRelations = [...(target.semanticRelations ?? []), relation];
@@ -3716,8 +3723,12 @@ export function createSemanticEditorAdapter(
         });
         sceneObjectEntries(canvas)
           .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
-          .forEach(removeSceneObject);
+          .forEach((entry) => {
+            if (entry.object.objectId) removedIds.add(entry.object.objectId);
+            removeSceneObject(entry);
+          });
         const changedRelationOwners = removeDeletedRelations(removedIds);
+        dependencies.removeLayoutReferences(removedIds);
         restoreSelection(
           canvas,
           previousSelectionObjectIds.filter((objectId) => !removedIds.has(objectId)),
@@ -3741,13 +3752,17 @@ export function createSemanticEditorAdapter(
       );
       sceneObjectEntries(canvas)
         .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
-        .forEach(removeSceneObject);
+        .forEach((entry) => {
+          if (entry.object.objectId) removedIds.add(entry.object.objectId);
+          removeSceneObject(entry);
+        });
       const entries = sceneObjectEntries(canvas);
       roots.forEach((root) => {
         const entry = entries.find((candidate) => candidate.object === root);
         if (entry) removeSceneObject(entry);
       });
       const changedRelationOwners = removeDeletedRelations(removedIds);
+      dependencies.removeLayoutReferences(removedIds);
       restoreSelection(
         canvas,
         previousSelectionObjectIds.filter((objectId) => !removedIds.has(objectId)),
@@ -3813,7 +3828,10 @@ export function createSemanticEditorAdapter(
       const removedIds = new Set(removedId ? [removedId] : []);
       sceneObjectEntries(canvas)
         .filter(({ object }) => connectorsForRemovedIds([object], removedIds).length > 0)
-        .forEach(removeSceneObject);
+        .forEach((entry) => {
+          if (entry.object.objectId) removedIds.add(entry.object.objectId);
+          removeSceneObject(entry);
+        });
       const children = group.removeAll();
       rememberRecognizedGroup(children, recognizedGroupRecord(group, children));
       if (index >= 0) {
@@ -3834,6 +3852,7 @@ export function createSemanticEditorAdapter(
         ),
         dependencies.setSelection
       );
+      dependencies.removeLayoutReferences(removedIds);
       dependencies.refreshConnectors();
       canvas.requestRenderAll();
       commitSemantic("Semantic ungroup");

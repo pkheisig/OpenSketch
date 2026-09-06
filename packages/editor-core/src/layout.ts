@@ -798,8 +798,8 @@ function resolveGrid(
   const occupiedCells = new Map<string, string>();
   const resolved = children.map((child, index) => {
     const spec = frame.children[index]!;
-    const row = spec.row ?? index;
-    const column = spec.column ?? 0;
+    const row = spec.row ?? Math.floor(index / tracks.columns.length);
+    const column = spec.column ?? index % tracks.columns.length;
     const rowSpan = spec.rowSpan ?? 1;
     const columnSpan = spec.columnSpan ?? 1;
     if (row + rowSpan > tracks.rows.length || column + columnSpan > tracks.columns.length) {
