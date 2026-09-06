@@ -228,6 +228,7 @@ it("persists scientific metadata through strict project validation and rejects m
     format: "OpenSketch",
     formatVersion: 1,
     version: 1,
+    kind: "diagram",
     id: "test",
     name: "Test",
     createdAt: "2026-09-05T00:00:00Z",

@@ -280,7 +280,8 @@ test("@smoke never paints fallback asset sizing or uninitialized canvas geometry
       states;
   });
 
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   const plane = page.locator(".workspace-plane");
   await expect(plane).toHaveAttribute("data-canvas-ready", "true");
   await expect(plane).toBeVisible();
@@ -325,7 +326,8 @@ test("@smoke keeps the canvas mounted during drag saves and restores the active 
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await placeTool(page, "Rectangle");
   await ensureLayersOpen(page);
   await expect(page.locator(".layers-title small")).toHaveText("1");
@@ -391,7 +393,8 @@ test("clears the text tool when another sidebar section or the page is clicked",
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   const textTool = page.getByRole("button", { name: "Text", exact: true });
 
   await textTool.click();
@@ -407,7 +410,8 @@ test("clears the text tool when another sidebar section or the page is clicked",
 
 test("debounces focused title saves and keeps blank titles loadable", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   const title = page.getByLabel("Document title");
 
   await page.evaluate(() => {
@@ -455,7 +459,8 @@ test("debounces focused title saves and keeps blank titles loadable", async ({ p
 
 test("rotates an object by dragging its rotation handle", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await placeTool(page, "Rectangle");
   await page.getByRole("button", { name: "Edit", exact: true }).click();
 
@@ -489,7 +494,8 @@ test("rotates an object by dragging its rotation handle", async ({ page }) => {
 
 test("resizes through the enlarged invisible control hitbox with a UI cursor", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await placeTool(page, "Rectangle");
   await page.getByRole("button", { name: "Edit", exact: true }).click();
 
@@ -533,7 +539,8 @@ test("resizes through the enlarged invisible control hitbox with a UI cursor", a
 
 test("inserts editable standard top-view labware", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("24 well plate top view");
 
   const card = page
@@ -557,7 +564,8 @@ test("inserts editable standard top-view labware", async ({ page }) => {
 
 test("previews and inserts the selected top-view plate color variant", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("24 well plate top view");
 
   const card = page
@@ -606,7 +614,8 @@ test("drags the chosen top-view plate variant preview instead of the default pla
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("24 well plate top view");
 
   const card = page
@@ -649,7 +658,8 @@ test("drags the chosen top-view plate variant preview instead of the default pla
 
 test("uses the complete SVG selector bounds as its canvas hitbox", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.locator(".upper-canvas")).toBeVisible();
   await page.evaluate(() => {
     const file = new File(
@@ -687,7 +697,8 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
     if (!["127.0.0.1", "localhost"].includes(url.hostname)) externalRequests.push(request.url());
   });
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.getByLabel("OpenSketch figure artboard")).toBeVisible();
 
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
@@ -855,7 +866,8 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
 
 test("keeps the canvas preset label synchronized with its dimensions", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("button", { name: "Canvas size", exact: true }).click();
 
   const canvasSettings = page.getByRole("dialog", { name: "Canvas settings" });
@@ -887,7 +899,8 @@ test("keeps the canvas preset label synchronized with its dimensions", async ({ 
 
 test("builds and persists a styled object-attached connector", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
   await placeTool(page, "Rectangle", 0.65, 0.5);
@@ -955,7 +968,8 @@ test("builds and persists a styled object-attached connector", async ({ page }) 
 
 test("changes line ends between blunt and curved in the edit menu", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await placeTool(page, "Line", 0.35, 0.5);
   await page.keyboard.press("ControlOrMeta+A");
   await ensureEditorOpen(page);
@@ -982,7 +996,8 @@ test("changes line ends between blunt and curved in the edit menu", async ({ pag
 
 test("extends a free line from one endpoint without scaling both dimensions", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await placeTool(page, "Line", 0.32, 0.5);
 
   const readLine = () =>
@@ -1063,7 +1078,8 @@ test("places text and shapes from active tools and persists line creation defaul
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   const shapeMenu = page.getByRole("menu", { name: "Shape tools" });
   await expect(shapeMenu.getByRole("menuitem", { name: /Shapes/ })).toBeVisible();
@@ -1237,7 +1253,8 @@ test("places text from the first Shapes tool without blanking the editor", async
   page.on("pageerror", (error) => pageErrors.push(error.message));
 
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.getByRole("tab", { name: "Text", exact: true })).toHaveCount(0);
   await expect(page.locator(".shape-grid")).toHaveCount(0);
   const pointText = page
@@ -1264,7 +1281,8 @@ test("places text from the first Shapes tool without blanking the editor", async
 
 test("shows only controls supported by each editor object type", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   const inspector = page.locator(".inspector-embedded");
 
   await placeTool(page, "Rectangle", 0.35, 0.45);
@@ -1343,7 +1361,8 @@ test("optionally creates Text on an empty-artboard double-click and persists the
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("button", { name: "Canvas size" }).click();
 
   const preference = page.getByLabel("Double-click to add text");
@@ -1368,7 +1387,8 @@ test("double-clicking an existing text item edits it instead of creating another
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
 
   const textTool = page
     .getByLabel("Editor tools")
@@ -1391,7 +1411,8 @@ test("double-clicking an existing text item edits it instead of creating another
 
 test("preserves clipboard object size across repeated pastes", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.45, 0.45);
   await ensureEditorOpen(page);
@@ -1431,7 +1452,8 @@ test("copies canvas objects to the system clipboard as PNG and SVG", async ({
   test.skip(browserName !== "chromium", "Clipboard image reads are only exposed by Chromium.");
   await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await placeTool(page, "Rectangle", 0.5, 0.5);
 
   await page.keyboard.press("ControlOrMeta+C");
@@ -1490,7 +1512,8 @@ test("copies canvas objects to the system clipboard as PNG and SVG", async ({
 
 test("inserts assets from the sidebar at the reduced default size", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
   await page.getByRole("button", { name: "Insert T Cell", exact: true }).first().click();
   await ensureEditorOpen(page);
@@ -1551,7 +1574,8 @@ test("keeps family variant previews normalized and drags the selected variant", 
   };
 
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("activated T lymphocyte");
   await expect(page.locator(".asset-card")).toHaveCount(1);
   const card = page
@@ -1602,7 +1626,8 @@ test("keeps family variant previews normalized and drags the selected variant", 
 
 test("previews bundled variants and inserts nested-clip-path assets", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Immune Cell");
   const immuneCell = page
     .locator(".asset-card")
@@ -1690,7 +1715,8 @@ test("previews bundled variants and inserts nested-clip-path assets", async ({ p
       .getByRole("option", { name: "Select Immune Cell variant 3" })
   ).toHaveAttribute("aria-selected", "true");
   await page.getByRole("button", { name: "Back to projects" }).click();
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Assets", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Immune Cell");
   const newProjectImmuneCell = page
@@ -1705,7 +1731,8 @@ test("promotes a canvas asset variant to the Assets default only when styling is
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Immune Cell");
   const assetCard = page
     .locator(".asset-card")
@@ -1824,7 +1851,8 @@ test("uses accessible in-app dropdowns with keyboard and outside-click behavior"
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("button", { name: "Canvas size" }).click();
 
   await expect(page.locator("select")).toHaveCount(0);
@@ -1884,7 +1912,8 @@ test("uses accessible in-app dropdowns with keyboard and outside-click behavior"
 
 test("prevents PNG export above the browser raster budget", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("button", { name: "Canvas size", exact: true }).click();
   await selectUiOption(page, "Preset", "A4 portrait");
   await page.getByRole("button", { name: "Canvas size", exact: true }).click();
@@ -1904,7 +1933,8 @@ test("prevents PNG export above the browser raster budget", async ({ page }) => 
 
 test("offers selection-aware canvas context actions", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
   await placeTool(page, "Rectangle", 0.65, 0.5);
@@ -1970,7 +2000,8 @@ test("offers selection-aware canvas context actions", async ({ page }) => {
 
 test("adds a selected asset to Favorites from its context menu", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("neuron");
   await page.getByRole("button", { name: "Insert neuron", exact: true }).click();
   await ensureEditorOpen(page);
@@ -1989,7 +2020,8 @@ test("adds a selected asset to Favorites from its context menu", async ({ page }
 
 test("saves and resets per-element styling for future sidebar shapes", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
 
   const firstPoint = await artboardPoint(page, 0.35, 0.5);
@@ -2003,7 +2035,8 @@ test("saves and resets per-element styling for future sidebar shapes", async ({ 
     .click();
 
   await page.getByRole("button", { name: "Back to projects" }).click();
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   const secondPoint = await artboardPoint(page, 0.65, 0.5);
   await placeTool(page, "Rectangle", 0.65, 0.5);
@@ -2033,7 +2066,8 @@ test("saves and resets per-element styling for future sidebar shapes", async ({ 
 
 test("resizes text by changing font size instead of stretching its glyphs", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
 
   await placeTool(page, "Text", 0.5, 0.45);
   await page.keyboard.type("Fixed label");
@@ -2094,7 +2128,8 @@ test("resizes text by changing font size instead of stretching its glyphs", asyn
 
 test("saved text styling overrides later new-text defaults", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
 
   const firstPoint = await artboardPoint(page, 0.32, 0.45);
   await placeTool(page, "Text", 0.32, 0.45);
@@ -2137,7 +2172,8 @@ test("saved text styling overrides later new-text defaults", async ({ page }) =>
 
 test("ungroups exactly one level of a nested group hierarchy", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.3, 0.5);
   await placeTool(page, "Circle", 0.5, 0.5);
@@ -2174,7 +2210,8 @@ test("ungroups exactly one level of a nested group hierarchy", async ({ page }) 
 
 test("treats an imported SVG as one atomic canvas object", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Imports", exact: true }).click();
   await page
     .locator('input[type="file"][accept*="image/svg+xml"]')
@@ -2195,7 +2232,8 @@ test("treats an imported SVG as one atomic canvas object", async ({ page }) => {
 
 test("edits broad SVG components without drilling into their descendants", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Imports", exact: true }).click();
   await page
     .locator('input[type="file"][accept*="image/svg+xml"]')
@@ -2241,7 +2279,8 @@ test("edits broad SVG components without drilling into their descendants", async
 
 test("double-clicks through overlapping objects and into grouped children", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await placeTool(page, "Rectangle", 0.5, 0.5);
   await placeTool(page, "Circle", 0.5, 0.5);
 
@@ -2306,7 +2345,8 @@ test("double-clicks through overlapping objects and into grouped children", asyn
 
 test("double-clicks into nested groups one hierarchy level at a time", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await placeTool(page, "Rectangle", 0.4, 0.5);
   await placeTool(page, "Circle", 0.4, 0.5);
   await page.keyboard.press("ControlOrMeta+A");
@@ -2362,7 +2402,8 @@ test("double-clicks into nested groups one hierarchy level at a time", async ({ 
 
 test("double-clicking outside exits one group hierarchy level", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
   await placeTool(page, "Circle", 0.35, 0.5);
   await page.keyboard.press("ControlOrMeta+A");
@@ -2389,7 +2430,8 @@ test("double-clicking outside exits one group hierarchy level", async ({ page })
 
 test("edits a group with single-click and modifier multi-selection", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await placeTool(page, "Rectangle", 0.3, 0.5);
   await placeTool(page, "Circle", 0.5, 0.5);
   await placeTool(page, "Triangle", 0.7, 0.5);
@@ -2429,7 +2471,8 @@ test("edits a group with single-click and modifier multi-selection", async ({ pa
 
 test("keeps a group created inside group editing nested at one canvas layer", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await placeTool(page, "Rectangle", 0.3, 0.5);
   await placeTool(page, "Circle", 0.5, 0.5);
   await placeTool(page, "Triangle", 0.7, 0.5);
@@ -2456,7 +2499,8 @@ test("keeps a group created inside group editing nested at one canvas layer", as
 
 test("adds independent canvas objects to the selection with Ctrl-click", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
   await placeTool(page, "Circle", 0.65, 0.5);
 
@@ -2473,7 +2517,8 @@ test("adds independent canvas objects to the selection with Ctrl-click", async (
 
 test("keeps the edit panel open while changing the selected object", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
   await placeTool(page, "Circle", 0.65, 0.5);
 
@@ -2497,7 +2542,8 @@ test("keeps the edit panel open while changing the selected object", async ({ pa
 
 test("preserves nested group dimensions when duplicating by modifier-drag", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await placeTool(page, "Rectangle", 0.4, 0.5);
   await placeTool(page, "Circle", 0.4, 0.5);
   await page.keyboard.press("ControlOrMeta+A");
@@ -2561,7 +2607,8 @@ test("preserves nested group dimensions when duplicating by modifier-drag", asyn
 
 test("shows every visible layer of a grouped stack in the project preview", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
 
   for (const width of [400, 300, 200]) {
@@ -2598,7 +2645,8 @@ test("shows every visible layer of a grouped stack in the project preview", asyn
 
 test("moves objects exactly one layer through the canvas context menu", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.25, 0.5);
   await placeTool(page, "Circle", 0.5, 0.5);
@@ -2629,7 +2677,8 @@ test("moves objects exactly one layer through the canvas context menu", async ({
 
 test("keeps grouped layers nested and preserves their outer stack slot", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
 
   await placeTool(page, "Rectangle", 0.25, 0.5);
@@ -2655,7 +2704,8 @@ test("keeps front and back actions at the outer canvas boundaries around groups"
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
 
   await placeTool(page, "Rectangle", 0.25, 0.5);
@@ -2684,7 +2734,8 @@ test("renders project previews with Fabric and upgrades legacy raster thumbnails
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Dentritic");
   await page.waitForTimeout(250);
   await page.locator(".asset-card-image").first().click();
@@ -2795,7 +2846,8 @@ test("@smoke supports visible and native navigation for new figures", async ({ p
   await expect(github.locator("svg")).toHaveCount(1);
   await page.keyboard.press("Escape");
   await expect(aboutDialog).toHaveCount(0);
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.getByLabel("OpenSketch figure artboard")).toBeVisible();
   await expect(page.locator(".layers-title small")).toHaveText("0");
   await expect(page.locator(".top-toolbar .brand-mark")).toHaveCount(0);
@@ -2838,7 +2890,8 @@ test("@smoke supports visible and native navigation for new figures", async ({ p
 
 test("@smoke exits the editor with Escape", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.getByLabel("OpenSketch figure artboard")).toBeVisible();
 
   await page.keyboard.press("Escape");
@@ -2849,7 +2902,8 @@ test("@smoke exits the editor with Escape", async ({ page }) => {
 
 test("archives projects and organizes newest-first project rows with folders", async ({ page }) => {
   const createNamedProject = async (name: string) => {
-    await page.getByRole("button", { name: "New figure" }).click();
+    await page.getByRole("button", { name: "New project" }).click();
+    await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
     const title = page.getByLabel("Document title");
     await title.fill(name);
     await title.blur();
@@ -2936,7 +2990,8 @@ test("archives projects and organizes newest-first project rows with folders", a
 
 test("previews canvas zoom without resizing its backing stores or the page", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   const workspace = page.locator(".workspace-scroll");
 
   const result = await workspace.evaluate(async (element) => {
@@ -2998,7 +3053,8 @@ test("previews canvas zoom without resizing its backing stores or the page", asy
 
 test("zooms around the cursor instead of the artboard center", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   const workspace = page.locator(".workspace-scroll");
   const stage = workspace.locator(".artboard-stage");
 
@@ -3032,7 +3088,8 @@ test("zooms around the cursor instead of the artboard center", async ({ page }) 
 
 test("rerenders vector artwork at the current zoom resolution", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T Cell");
   await page.getByRole("button", { name: "Insert T Cell", exact: true }).first().click();
   const workspace = page.locator(".workspace-scroll");
@@ -3068,7 +3125,8 @@ test("rerenders vector artwork at the current zoom resolution", async ({ page })
 
 test("keeps mirror controls out of the header and toggles grid and rulers", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
 
   const workspace = page.locator(".workspace-scroll");
   await page.locator(".layers-title").focus();
@@ -3141,7 +3199,8 @@ test("keeps mirror controls out of the header and toggles grid and rulers", asyn
 
 test("centers a new artboard and restores each project's zoom and pan", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
 
   const viewportGeometry = async () => {
     const [workspace, stage, footer] = await Promise.all([
@@ -3203,7 +3262,8 @@ test("centers a new artboard and restores each project's zoom and pan", async ({
 
 test("shows alignment guides only while an object is moving", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
   await placeTool(page, "Rectangle", 0.65, 0.5);
@@ -3236,7 +3296,8 @@ test("shows alignment guides only while an object is moving", async ({ page }) =
 
 test("duplicates with modifier-drag and disables snapping while Alt is held", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
   await placeTool(page, "Rectangle", 0.65, 0.5);
@@ -3294,7 +3355,8 @@ test("duplicates with modifier-drag and disables snapping while Alt is held", as
 
 test("preserves an asset's rendered size when duplicating by modifier-drag", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("neuron");
   await page.getByRole("button", { name: "Insert neuron", exact: true }).click();
   await ensureEditorOpen(page);
@@ -3337,7 +3399,8 @@ test("preserves an asset's rendered size when duplicating by modifier-drag", asy
 
 test("documents large cross-platform shortcuts and accepts Ctrl commands", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("button", { name: "Help" }).click();
 
   const dialog = page.getByRole("dialog", { name: "Keyboard shortcuts" });
@@ -3382,7 +3445,8 @@ test.skip("selects across the artboard and previews collapsed sidebars without s
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Rectangle", 0.35, 0.5);
   await placeTool(page, "Rectangle", 0.65, 0.5);
@@ -3595,7 +3659,8 @@ test.skip("selects across the artboard and previews collapsed sidebars without s
 
 test("fills the asset sidebar with the merged scientific catalog", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
 
   const insertTabs = page.getByRole("tab");
   await expect(insertTabs).toHaveCount(3);
@@ -3705,7 +3770,8 @@ test("fills the asset sidebar with the merged scientific catalog", async ({ page
 
 test("reveals asset filters and filters catalog metadata", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
 
   const filterToggle = page.getByRole("button", { name: "Toggle asset filters" });
   await expect(filterToggle).toHaveAttribute("aria-expanded", "false");
@@ -3767,7 +3833,8 @@ test("rapidly scrolls the complete symbols catalog without leaving blank thumbna
   });
 
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   collectAssetRequests = true;
   await page.getByRole("button", { name: "Instruments", exact: true }).click();
 
@@ -3843,7 +3910,8 @@ test("uses title-free insert panels and supports the expanded offline font catal
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
 
   await expect(page.getByRole("heading", { name: "Illustration library" })).toHaveCount(0);
   await expect(page.getByRole("tab", { name: "Text", exact: true })).toHaveCount(0);
@@ -3896,7 +3964,8 @@ test("embeds every selectable editor font in PDF output", async ({ page }) => {
   ];
 
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
 
   const missingBrowserFaces = await page.evaluate(async (families) => {
@@ -4641,7 +4710,8 @@ test("waits for the selected browser font before exporting PDF", async ({ page }
   });
 
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await placeTool(page, "Text", 0.5, 0.5);
   await page.keyboard.type("Noto Serif race");
@@ -4666,7 +4736,8 @@ test("waits for the selected browser font before exporting PDF", async ({ page }
 
 test("waits for imported Fabric text fonts before exporting PDF", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Imports", exact: true }).click();
 
   await page.evaluate(() => {
@@ -4716,7 +4787,8 @@ test("waits for imported Fabric text fonts before exporting PDF", async ({ page 
 
 test("preloads every text payload used by a PDF font face", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
 
   await placeTool(page, "Text", 0.3, 0.35);
@@ -4763,7 +4835,8 @@ test("preloads every text payload used by a PDF font face", async ({ page }) => 
 
 test("shows favorites only in a dedicated asset category", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
 
   const favoritesCategory = page.getByRole("button", { name: "Favorites", exact: true });
   await expect(favoritesCategory).toHaveClass(/active/);
@@ -4798,7 +4871,8 @@ test("shows favorites only in a dedicated asset category", async ({ page }) => {
 
 test("preserves an asset search after inserting artwork and reopening Assets", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
 
   const search = page.getByPlaceholder("Search cells, proteins, equipment…");
   await search.fill("neuron");
@@ -4821,7 +4895,8 @@ test("preserves an asset search after inserting artwork and reopening Assets", a
 
 test("preserves asset filters after closing and reopening Assets", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
 
   const filterToggle = page.getByRole("button", { name: "Toggle asset filters" });
   await filterToggle.click();
@@ -4855,7 +4930,8 @@ test("shows a minimal no-match state and preserves native page-text copying", as
     await context.grantPermissions(["clipboard-read", "clipboard-write"]);
   }
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
 
   const search = page.getByPlaceholder("Search cells, proteins, equipment…");
   await search.fill("definitely-not-a-biological-asset");
@@ -4878,7 +4954,8 @@ test("shows a minimal no-match state and preserves native page-text copying", as
 
 test("orders the audited taxonomy from cell biology to macroscopic assets", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
 
   const { ASSET_CATEGORY_ORDER } = await import("../../packages/editor-core/src/assetTaxonomy");
   const catalog = generatedManifest;
@@ -4909,7 +4986,8 @@ test("renders and persists complex OpenSketch illustrations without losing their
 }) => {
   test.setTimeout(45_000);
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("dendritic");
   await page.getByRole("button", { name: "Toggle asset filters" }).click();
   await selectUiOption(page, "Filter by topic", "NIH BioArt");
@@ -5003,7 +5081,8 @@ test("renders and persists complex OpenSketch illustrations without losing their
 
 test("treats a bundled biological SVG as one atomic canvas object", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("T lymphocyte");
   await page.getByRole("button", { name: "Insert T lymphocyte", exact: true }).first().click();
   await page.getByRole("button", { name: "Edit", exact: true }).click();
@@ -5033,7 +5112,8 @@ test("shows no synthetic style or variant menu for a single-variant biological a
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("neuron");
   await page.getByRole("button", { name: "Insert neuron", exact: true }).click();
   await page.getByRole("button", { name: "Edit", exact: true }).click();
@@ -5052,7 +5132,8 @@ test("saves and resets styling for future copies of the same biological asset", 
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("neuron");
   await expect(page.locator(".asset-card")).toHaveCount(1);
   const insertAsset = page.getByRole("button", {
@@ -5147,7 +5228,8 @@ test("saves and resets styling for future copies of the same biological asset", 
 
 test("renders every styled eosinophil part in a stable sidebar preview", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Eosinophil");
   const eosinophilCard = page
     .locator(".asset-card")
@@ -5215,7 +5297,8 @@ test("renders every styled eosinophil part in a stable sidebar preview", async (
 
 test("saves an inserted SVG before immediately leaving the editor", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("dendritic");
   const dendriticCell = page.locator(".asset-card").filter({ hasText: "Dendritic Cell" }).first();
   await expect(dendriticCell).toBeVisible();
@@ -5235,7 +5318,8 @@ test("saves an inserted SVG before immediately leaving the editor", async ({ pag
 
 test("keeps the latest project edits recoverable when autosave fails", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.locator('[data-save-state="saved"]')).toBeVisible();
 
   await page.evaluate(() => {
@@ -5348,7 +5432,8 @@ test("restores the current history entry when legacy unsaved Forward traversal i
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.locator('[data-save-state="saved"]')).toBeVisible({ timeout: 30_000 });
 
   const currentProjectId = await page.evaluate(
@@ -5409,7 +5494,8 @@ test("restores the current history entry when legacy unsaved Forward traversal i
 
 test("guards browser exit while an image import is still processing", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Imports", exact: true }).click();
 
   await page.evaluate(() => {
@@ -5462,7 +5548,8 @@ test("guards browser exit while an image import is still processing", async ({ p
 
 test("exports an atomic SVG asset with its vector parts intact", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("dendritic");
   const dendriticCell = page.locator(".asset-card").filter({ hasText: "Dendritic Cell" }).first();
   await expect(dendriticCell.locator("img")).toHaveAttribute("data-preview-ready", "true");
@@ -5522,7 +5609,8 @@ test("keeps the canvas responsive with one hundred ordinary objects", async ({
   );
   test.setTimeout(45_000);
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await placeTool(page, "Rectangle", 0.25, 0.25);
   for (let index = 1; index < 100; index += 1) {
     await page.keyboard.press("ControlOrMeta+D");

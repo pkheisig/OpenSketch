@@ -1,12 +1,24 @@
 import Dexie, { type EntityTable } from "dexie";
 import {
   compactProjectScene,
+  decodeImageDataUrlText,
+  imageDataUrlByteLength,
+  inspectRasterDataUrl,
+  isProjectKind,
+  isSupportedImageMimeType,
+  migrateProject,
+  remintProjectIdentity,
   OpenSketch_FORMAT_VERSION,
+  parseImageDataUrl,
+  PORTABLE_PROJECT_LIMITS,
+  PROJECT_STORAGE_LIMITS,
   referencedUploadIds,
-  DEFAULT_CANVAS,
+  resolveProjectDefaults,
   type ImportedMediaRecord,
+  type ProjectCreationOptions,
   type ProjectFolderRecord,
-  type ProjectRecord
+  type ProjectRecord,
+  type ProjectTemplateRecord
 } from "@workspace/editor-core";
 import { serializeProject } from "@/persistence/portable";
 
@@ -37,15 +49,23 @@ export interface AssetTemplateMigrationRecord {
   completedAt: string;
 }
 
+export interface ProjectTemplateMigrationRecord {
+  id: string;
+  schemaVersion: 1;
+  completedAt: string;
+}
+
 export class OpenSketchDatabase extends Dexie {
   projects!: EntityTable<ProjectRecord, "id">;
   folders!: EntityTable<ProjectFolderRecord, "id">;
   imports!: EntityTable<ImportedMediaLibraryRecord, "id">;
   templates!: EntityTable<AssetTemplateRecord, "id">;
   templateMigrations!: EntityTable<AssetTemplateMigrationRecord, "id">;
+  projectTemplates!: EntityTable<ProjectTemplateRecord, "id">;
+  projectTemplateMigrations!: EntityTable<ProjectTemplateMigrationRecord, "id">;
 
-  constructor() {
-    super("OpenSketch");
+  constructor(databaseName = "OpenSketch") {
+    super(databaseName);
     this.version(1).stores({
       projects: "id, updatedAt, name"
     });
@@ -80,6 +100,27 @@ export class OpenSketchDatabase extends Dexie {
           .modify((project) => {
             if (!Number.isSafeInteger(project.revision) || project.revision < 0)
               project.revision = 0;
+          })
+      );
+    this.version(6)
+      .stores({
+        projects: "id, updatedAt, name, archivedAt, folderId",
+        folders: "id, updatedAt, name",
+        imports: "id, updatedAt, name, mimeType, contentHash",
+        templates: "id, updatedAt, name",
+        templateMigrations: "id",
+        projectTemplates: "id, updatedAt, name, kind",
+        projectTemplateMigrations: "id"
+      })
+      .upgrade((transaction) =>
+        transaction
+          .table("projects")
+          .toCollection()
+          .modify((project) => {
+            if (project.formatVersion === 1) {
+              project.formatVersion = OpenSketch_FORMAT_VERSION;
+              project.kind = "diagram";
+            }
           })
       );
   }
@@ -283,22 +324,187 @@ export async function deleteImportedMedia(id: string): Promise<void> {
   notifyImportLibraryChanged();
 }
 
-export function createProject(name = "Untitled figure"): ProjectRecord {
+export function createProject(name?: string, options: ProjectCreationOptions = {}): ProjectRecord {
+  if (options.kind && options.template && options.kind !== options.template.kind) {
+    throw new Error("The project template does not match the selected project mode.");
+  }
+  const kind = options.kind ?? options.template?.kind ?? "diagram";
+  if (!isProjectKind(kind)) throw new Error("The project kind is unsupported.");
+  const defaults = resolveProjectDefaults(kind);
   const now = new Date().toISOString();
+  const template = options.template;
+  let objects: Record<string, unknown> = { version: "7.0.0", objects: [] };
+  let uploads: ImportedMediaRecord[] = [];
+  let usedAssetIds: string[] = [];
+  let canvas = defaults.canvas;
+  if (template) {
+    const snapshot = migrateProject(template.project);
+    if (snapshot.kind !== kind || template.kind !== kind) {
+      throw new Error("The project template does not match the selected project mode.");
+    }
+    const reminted = remintProjectIdentity(snapshot) as typeof snapshot;
+    objects = reminted.objects;
+    uploads = structuredClone(reminted.uploads);
+    usedAssetIds = structuredClone(reminted.usedAssetIds);
+    canvas = structuredClone(reminted.canvas);
+  }
   return {
     format: "OpenSketch",
     formatVersion: OpenSketch_FORMAT_VERSION,
     id: crypto.randomUUID(),
-    name,
+    name: name ?? (template?.name || defaults.name),
     revision: INITIAL_PROJECT_REVISION,
     version: 1,
+    kind,
     createdAt: now,
     updatedAt: now,
-    canvas: { ...DEFAULT_CANVAS },
-    objects: { version: "7.0.0", objects: [] },
-    uploads: [],
-    usedAssetIds: []
+    canvas,
+    objects,
+    uploads,
+    usedAssetIds,
+    ...(template?.project.description === undefined
+      ? {}
+      : { description: template.project.description })
   };
+}
+
+function normalizeProjectTemplate(template: ProjectTemplateRecord): ProjectTemplateRecord {
+  if (
+    !template ||
+    template.schemaVersion !== 1 ||
+    typeof template.id !== "string" ||
+    template.id.length === 0 ||
+    typeof template.name !== "string" ||
+    template.name.length === 0 ||
+    typeof template.createdAt !== "string" ||
+    template.createdAt.length === 0 ||
+    typeof template.updatedAt !== "string" ||
+    template.updatedAt.length === 0
+  ) {
+    throw new Error("The project template record is incomplete.");
+  }
+  if (!isProjectKind(template.kind)) throw new Error("The project template kind is unsupported.");
+  const thumbnail = normalizeProjectTemplateThumbnail(template.thumbnail);
+  const project = migrateProject(template.project);
+  if (project.kind !== template.kind) {
+    throw new Error("The project template kind does not match its project snapshot.");
+  }
+  return {
+    ...structuredClone(template),
+    project,
+    ...(thumbnail === undefined ? {} : { thumbnail }),
+    schemaVersion: 1
+  };
+}
+
+function normalizeProjectTemplateThumbnail(thumbnail: unknown): string | undefined {
+  if (thumbnail === undefined) return undefined;
+  if (typeof thumbnail !== "string") {
+    throw new Error("The project template thumbnail must be an image data URL.");
+  }
+  const parsed = parseImageDataUrl(thumbnail);
+  if (!parsed || !isSupportedImageMimeType(parsed.mimeType)) {
+    throw new Error("The project template thumbnail must be an image data URL.");
+  }
+  const byteLength = imageDataUrlByteLength(parsed);
+  if (!Number.isFinite(byteLength) || byteLength > PORTABLE_PROJECT_LIMITS.maxDataUrlBytes) {
+    throw new Error("The project template thumbnail exceeds the image resource limit.");
+  }
+  if (parsed.mimeType === "image/svg+xml") {
+    const svg = decodeImageDataUrlText(parsed);
+    if (
+      !svg ||
+      /<script\b|<foreignObject\b|javascript:|(?:href|xlink:href)\s*=\s*["'](?:https?:|\/\/|javascript:)|url\(\s*["']?(?:https?:|\/\/|javascript:)/i.test(
+        svg
+      )
+    ) {
+      throw new Error("The project template thumbnail contains unsafe SVG content.");
+    }
+  } else if (!inspectRasterDataUrl(thumbnail, parsed.mimeType)) {
+    throw new Error("The project template thumbnail is not a valid raster image.");
+  }
+  return thumbnail;
+}
+
+function assertProjectTemplateWithinBudget(template: ProjectTemplateRecord): void {
+  const bytes = new TextEncoder().encode(JSON.stringify(template)).byteLength;
+  if (bytes > PROJECT_STORAGE_LIMITS.maxPortableProjectBytes) {
+    throw new Error(
+      `The project template is larger than the ${PROJECT_STORAGE_LIMITS.maxPortableProjectBytes / (1024 * 1024)} MiB portable-project limit.`
+    );
+  }
+}
+
+export async function listProjectTemplates(): Promise<ProjectTemplateRecord[]> {
+  const templates = await getOpenSketchDatabase()
+    .projectTemplates.orderBy("updatedAt")
+    .reverse()
+    .toArray();
+  const normalized: ProjectTemplateRecord[] = [];
+  for (const template of templates) {
+    try {
+      normalized.push(normalizeProjectTemplate(template));
+    } catch {
+      // A single corrupt or newer template must not hide the valid project library.
+    }
+  }
+  return normalized;
+}
+
+export async function getProjectTemplate(id: string): Promise<ProjectTemplateRecord | undefined> {
+  const template = await getOpenSketchDatabase().projectTemplates.get(id);
+  return template ? normalizeProjectTemplate(template) : undefined;
+}
+
+export async function saveProjectTemplate(
+  template: ProjectTemplateRecord
+): Promise<ProjectTemplateRecord> {
+  const normalized = normalizeProjectTemplate(template);
+  const now = new Date().toISOString();
+  const next = { ...normalized, updatedAt: normalized.updatedAt || now };
+  assertProjectTemplateWithinBudget(next);
+  const database = getOpenSketchDatabase();
+  await getOpenSketchDatabase().transaction(
+    "rw",
+    database.projectTemplates,
+    database.projectTemplateMigrations,
+    async () => {
+      await database.projectTemplates.put(next);
+      const persisted = await database.projectTemplates.get(next.id);
+      if (!persisted || JSON.stringify(persisted) !== JSON.stringify(next)) {
+        throw new Error("Could not verify the saved project template.");
+      }
+      await database.projectTemplateMigrations.put({
+        id: next.id,
+        schemaVersion: 1,
+        completedAt: now
+      });
+      const migration = await database.projectTemplateMigrations.get(next.id);
+      if (!migration || migration.schemaVersion !== 1 || migration.completedAt !== now) {
+        throw new Error("Could not verify the saved project template migration.");
+      }
+    }
+  );
+  return next;
+}
+
+export async function deleteProjectTemplate(id: string): Promise<void> {
+  const database = getOpenSketchDatabase();
+  await database.transaction(
+    "rw",
+    database.projectTemplates,
+    database.projectTemplateMigrations,
+    async () => {
+      await database.projectTemplates.delete(id);
+      await database.projectTemplateMigrations.delete(id);
+      if (
+        (await database.projectTemplates.get(id)) ||
+        (await database.projectTemplateMigrations.get(id))
+      ) {
+        throw new Error("Could not verify project template deletion.");
+      }
+    }
+  );
 }
 
 export async function listProjects(): Promise<ProjectRecord[]> {

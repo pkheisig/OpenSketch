@@ -11,6 +11,7 @@ import {
   type ConnectorPathShape,
   type ConnectorRouting,
   type ImportedMediaRecord,
+  isProjectKind,
   type PortableProject
 } from "./types";
 import { repairProjectIdentity } from "./identity";
@@ -24,7 +25,7 @@ import {
 } from "./rasterResources";
 import { PORTABLE_PROJECT_LIMITS } from "./resourceLimits";
 
-export { repairProjectIdentity } from "./identity";
+export { remintProjectIdentity, repairProjectIdentity } from "./identity";
 export type { ProjectIdentityRepair } from "./identity";
 export { PORTABLE_PROJECT_LIMITS } from "./resourceLimits";
 
@@ -1808,7 +1809,7 @@ export function migrateProject(input: unknown): PortableProject {
   if (!isRecord(input)) throw new Error("This file is not an OpenSketch project.");
   const project = input;
   if (project.format !== "OpenSketch") throw new Error("The project marker is missing or invalid.");
-  if (project.formatVersion !== OpenSketch_FORMAT_VERSION) {
+  if (project.formatVersion !== 1 && project.formatVersion !== OpenSketch_FORMAT_VERSION) {
     throw new Error(
       `Project version ${String(project.formatVersion)} is not supported by this release.`
     );
@@ -1828,6 +1829,8 @@ export function migrateProject(input: unknown): PortableProject {
   assertNonEmptyString(project.createdAt, "createdAt", PORTABLE_PROJECT_LIMITS.maxTimestampLength);
   assertNonEmptyString(project.updatedAt, "updatedAt", PORTABLE_PROJECT_LIMITS.maxTimestampLength);
   if (project.version !== undefined && project.version !== 1) fail("version", "is unsupported");
+  const kind = project.formatVersion === 1 ? "diagram" : project.kind;
+  if (!isProjectKind(kind)) fail("project kind", "is unsupported");
   const canvas = validateCanvas(project.canvas);
   const context = createValidationContext();
   const scene = validateScene(project.objects, "scene", context);
@@ -1872,6 +1875,7 @@ export function migrateProject(input: unknown): PortableProject {
     format: "OpenSketch",
     formatVersion: OpenSketch_FORMAT_VERSION,
     version: 1,
+    kind,
     id: project.id,
     name: project.name,
     createdAt: project.createdAt,

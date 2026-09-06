@@ -19,6 +19,7 @@ const baseProject: PortableProject = {
   format: "OpenSketch",
   formatVersion: 1,
   version: 1,
+  kind: "diagram",
   id: "project-1",
   name: "Figure",
   createdAt: "2026-08-28T00:00:00.000Z",

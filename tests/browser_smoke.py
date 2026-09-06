@@ -30,10 +30,11 @@ with sync_playwright() as playwright:
 
     page.goto(BASE_URL)
     page.wait_for_load_state("networkidle")
-    page.get_by_role("button", name="New figure").wait_for()
+    page.get_by_role("button", name="New project").wait_for()
     page.screenshot(path=SCREENSHOTS / "home.png", full_page=True)
 
-    page.get_by_role("button", name="New figure").click()
+    page.get_by_role("button", name="New project").click()
+    page.get_by_role("menuitem", name="Figure", exact=True).click()
     page.get_by_label("OpenSketch figure artboard").wait_for()
     page.get_by_role("tab", name="Shapes", exact=True).click()
     page.get_by_role("button", name="Rectangle").click()

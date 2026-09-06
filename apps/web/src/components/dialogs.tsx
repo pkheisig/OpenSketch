@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Download, FileImage, FileText, FileType2, X } from "lucide-react";
+import { Download, FileImage, FileText, FileType2, Save, X } from "lucide-react";
 import { ColorPalettePicker } from "@/components/ColorPalettePicker";
 import { MotionCollapse } from "@/components/MotionCollapse";
 import { MotionPresence } from "@/components/MotionPresence";
@@ -12,7 +12,13 @@ import { useModalDialog } from "./useModalDialog";
 
 export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
   const services = useOpenSketchHostServices();
-  const editor = useEditorFields(["canvasSettings", "exportSvg", "exportPdf", "exportPng"]);
+  const editor = useEditorFields([
+    "canvasSettings",
+    "exportSvg",
+    "exportPdf",
+    "exportPng",
+    "saveProjectAsTemplate"
+  ]);
   const dialogRef = useModalDialog(open, onClose);
   const [format, setFormat] = useState<"svg" | "png" | "pdf">("svg");
   const [dpi, setDpi] = useState(() => loadExportDpi(1200, services.preferences.storage));
@@ -152,6 +158,25 @@ export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => 
           >
             <Download size={17} /> {exporting ? "Preparing…" : `Export ${format.toUpperCase()}`}
           </button>
+          <details className="export-template-disclosure">
+            <summary>
+              <Save size={15} aria-hidden="true" /> Save project as template
+            </summary>
+            <button
+              className="button secondary wide"
+              onClick={async () => {
+                setExportError("");
+                try {
+                  await editor.saveProjectAsTemplate();
+                  onClose();
+                } catch (reason) {
+                  setExportError(String(reason).replace(/^Error:\s*/, ""));
+                }
+              }}
+            >
+              Save as template
+            </button>
+          </details>
         </section>
       </div>
     </MotionPresence>

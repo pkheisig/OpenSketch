@@ -983,6 +983,29 @@ input[type="range"] {
   color: var(--shell-text);
 }
 
+.opensketch-app .export-template-disclosure {
+  margin-top: 10px;
+  border-top: 1px solid var(--shell-border);
+  padding-top: 10px;
+}
+
+.opensketch-app .export-template-disclosure summary {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  color: var(--shell-muted);
+  font-size: 12px;
+}
+
+.opensketch-app .export-template-disclosure summary:hover {
+  color: var(--shell-text);
+}
+
+.opensketch-app .export-template-disclosure .button {
+  margin-top: 9px;
+}
+
 .opensketch-app .panel-close-button:hover {
   color: var(--shell-accent);
   background: var(--shell-accent-soft);

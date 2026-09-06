@@ -13,7 +13,7 @@ import {
   Sun,
   Undo2
 } from "lucide-react";
-import type { ProjectRecord } from "@workspace/editor-core";
+import { resolveProjectDefaults, type ProjectRecord } from "@workspace/editor-core";
 import { GLOBAL_CREDIT } from "@/assets/credit";
 import { MotionPresence } from "@/components/MotionPresence";
 import { useEditorFields } from "@/editor/editorHooks";
@@ -180,10 +180,10 @@ export function TopToolbar({
           onChange={(event) => {
             const next = event.target.value;
             setTitle(next);
-            editor.setProjectName(next.trim() || "Untitled figure");
+            editor.setProjectName(next.trim() || resolveProjectDefaults(project.kind).name);
           }}
           onBlur={(event) => {
-            const next = event.target.value.trim() || "Untitled figure";
+            const next = event.target.value.trim() || resolveProjectDefaults(project.kind).name;
             setTitle(next);
             if (next !== event.target.value) editor.setProjectName(next);
           }}

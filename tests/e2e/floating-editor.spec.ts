@@ -27,7 +27,8 @@ test("@smoke uses floating BioRender-style tools, flyouts, and left-side propert
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
 
   await expect(page.locator(".floating-tool-rail")).toBeVisible();
   await expect(page.locator(".floating-panel")).toBeVisible();
@@ -196,9 +197,9 @@ test("@smoke uses floating BioRender-style tools, flyouts, and left-side propert
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   const shapeMenu = page.getByRole("menu", { name: "Shape tools" });
   await expect(shapeMenu).toBeVisible();
-  await expect(shapeMenu.getByRole("menuitem")).toHaveCount(2);
+  await expect(shapeMenu.getByRole("menuitem")).toHaveCount(3);
   await expect(shapeMenu.locator(".tool-flyout-primary")).toHaveCSS("width", "136px");
-  await expect(shapeMenu.locator(".tool-flyout-primary button svg")).toHaveCount(2);
+  await expect(shapeMenu.locator(".tool-flyout-primary button svg")).toHaveCount(3);
   const shapeCategoryStroke = await shapeMenu
     .locator(".tool-flyout-primary button svg")
     .first()
@@ -214,7 +215,7 @@ test("@smoke uses floating BioRender-style tools, flyouts, and left-side propert
   await page.mouse.move(900, 500);
   await expect(shapeMenu).toBeVisible();
   await expect(shapeMenu.locator(".tool-flyout-secondary")).toHaveCount(0);
-  for (const family of ["Shapes", "Polygons"]) {
+  for (const family of ["Shapes", "Polygons", "Scientific structures"]) {
     await expectFlyoutTopAligned(shapeMenu, family);
   }
   const shapeFamilySpacing = await shapeMenu
@@ -352,7 +353,8 @@ test("expands all creation defaults initially and restores each disclosure state
 }) => {
   await page.setViewportSize({ width: 1200, height: 1000 });
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("button", { name: "Defaults", exact: true }).click();
 
   const defaults = page.getByRole("dialog", { name: "New object defaults" });
@@ -429,7 +431,8 @@ test("expands all creation defaults initially and restores each disclosure state
 test("shows variant grids with viewport margins and invisible scrollbars", async ({ page }) => {
   await page.setViewportSize({ width: 1200, height: 760 });
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("Male Child");
   await expect(page.getByRole("combobox", { name: "Male Child variant" })).toBeVisible();
   await page.getByRole("combobox", { name: "Male Child variant" }).click();
@@ -464,7 +467,8 @@ test("shows variant grids with viewport margins and invisible scrollbars", async
 test("hides scrollbar chrome globally without disabling scrolling", async ({ page }) => {
   await page.setViewportSize({ width: 1200, height: 700 });
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("button", { name: "All", exact: true }).click();
 
   const assetList = page.locator(".asset-list");
@@ -483,7 +487,8 @@ test("hides scrollbar chrome globally without disabling scrolling", async ({ pag
 
 test("uses one focus ring and consistent neutral asset-control surfaces", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
 
   const search = page.getByPlaceholder("Search cells, proteins, equipment…");
   const searchBox = search.locator("..");
@@ -523,7 +528,8 @@ test("uses one focus ring and consistent neutral asset-control surfaces", async 
 
 test("creates every distinct shape variant exposed by the shape pop-out", async ({ page }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   const families = [
     {
       menu: /Shapes/,
@@ -573,7 +579,8 @@ test("creates every connector path and endpoint family with valid canvas geometr
   const pageErrors: string[] = [];
   page.on("pageerror", (error) => pageErrors.push(error.message));
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
 
   const tools = [
     ["Lines", "Straight line"],

@@ -13,8 +13,10 @@ import type {
   AssetVariant,
   ImportedMediaRecord,
   ProjectFolderRecord,
+  ProjectCreationOptions,
   ProjectRecord
 } from "@workspace/editor-core";
+import type { ProjectTemplateRecord } from "@workspace/editor-core";
 import type { AssetTemplate } from "@/editor/assetTemplates";
 import type { ProjectLoadResult } from "@/persistence/portable";
 import type { OfflineAssetPackStatus } from "@/assets/offlineAssetPack";
@@ -23,7 +25,7 @@ export type Theme = "light" | "dark";
 export type ThemeAppearance = "system" | "light" | "dark";
 
 export const OPENSKETCH_APPLICATION_VERSION = "0.1.0" as const;
-export const OPENSKETCH_APPLICATION_CONTRACT_VERSION = "1.0.0" as const;
+export const OPENSKETCH_APPLICATION_CONTRACT_VERSION = "1.1.0" as const;
 export const OPENSKETCH_OPEN_SUITE_CONTRACT_VERSION = "0.1.0-bootstrap" as const;
 export const OPENSKETCH_REACT_VERSION_RANGE = "^19.0.0" as const;
 export const OPENSKETCH_REACT_DOM_VERSION_RANGE = "^19.0.0" as const;
@@ -51,7 +53,7 @@ export interface ProjectRepository {
     projectRevision: string,
     thumbnail: string
   ): Promise<ProjectRecord | undefined>;
-  create(name?: string): ProjectRecord;
+  create(name?: string, options?: ProjectCreationOptions): ProjectRecord;
   delete(id: string, expectedRevision?: number): Promise<void>;
   duplicate(project: ProjectRecord): Promise<ProjectRecord>;
   moveToFolder(project: ProjectRecord, folderId?: string): Promise<void>;
@@ -79,6 +81,13 @@ export interface AssetTemplateRepository {
   list(): Promise<AssetTemplate[]>;
   get(id: string): Promise<AssetTemplate | undefined>;
   save(template: AssetTemplate): Promise<AssetTemplate>;
+  delete(id: string): Promise<void>;
+}
+
+export interface ProjectTemplateRepository {
+  list(): Promise<ProjectTemplateRecord[]>;
+  get(id: string): Promise<ProjectTemplateRecord | undefined>;
+  save(template: ProjectTemplateRecord): Promise<ProjectTemplateRecord>;
   delete(id: string): Promise<void>;
 }
 
@@ -176,6 +185,7 @@ export interface OpenSketchHostServices {
   projects: ProjectRepository;
   importedMedia: ImportedMediaRepository;
   templates: AssetTemplateRepository;
+  projectTemplates: ProjectTemplateRepository;
   files: ProjectFileService;
   exports: ExportDeliveryService;
   assets: AssetService;
@@ -250,7 +260,7 @@ export interface OpenSketchModuleManifest {
   id: "opensketch";
   displayName: "OpenSketch";
   version: string;
-  contractVersion: "1.0.0";
+  contractVersion: "1.1.0";
   entry: "OpenSketchApplication";
   stylesheetEntry: string;
   assetManifestEntry: string;

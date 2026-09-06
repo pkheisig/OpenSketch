@@ -13,13 +13,17 @@ import {
   getImportedMedia,
   listImportedMedia,
   listProjectFolders,
+  listProjectTemplates,
   listProjects,
   moveProjectToFolder,
   rememberProjectImports,
   saveImportedMedia,
   saveProject,
   saveProjectFolder,
-  saveProjectThumbnail
+  saveProjectTemplate,
+  saveProjectThumbnail,
+  getProjectTemplate,
+  deleteProjectTemplate
 } from "@/persistence/database";
 import {
   downloadBlob,
@@ -48,6 +52,7 @@ import type {
   OpenSketchHostServices,
   PreferenceService,
   ProjectRepository,
+  ProjectTemplateRepository,
   RenderHandle
 } from "@/application/hostServices";
 import type { AssetTemplateRepository } from "@/application/hostServices";
@@ -106,6 +111,15 @@ function templateRepository(): AssetTemplateRepository {
     get: getAssetTemplate,
     save: saveAssetTemplate,
     delete: deleteAssetTemplate
+  };
+}
+
+function projectTemplateRepository(): ProjectTemplateRepository {
+  return {
+    list: listProjectTemplates,
+    get: getProjectTemplate,
+    save: saveProjectTemplate,
+    delete: deleteProjectTemplate
   };
 }
 
@@ -292,6 +306,7 @@ export function createStandaloneOpenSketchHostServices({
     projects,
     importedMedia: importedMediaRepository(),
     templates: templateRepository(),
+    projectTemplates: projectTemplateRepository(),
     files: {
       readProject: readProjectFileWithWarnings,
       downloadProject,

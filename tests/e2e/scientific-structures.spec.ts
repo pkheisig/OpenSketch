@@ -64,7 +64,8 @@ test("flat membrane supports extension, undo, bending, reload, SVG export and ed
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
   await observeCanvas(page);
   await choose(page, "Lipid bilayer", 480, 330);
@@ -128,7 +129,8 @@ test("generated artwork is searchable, inserts as editable vectors and reloads",
   page
 }, testInfo) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
   await observeCanvas(page);
   await page.getByRole("button", { name: "Toggle asset filters" }).click();
@@ -177,7 +179,8 @@ test("sidebar identifies editable structures and hides legacy sources", async ({
   await page.getByRole("button", { name: "About", exact: true }).click();
   await expect(page.getByRole("dialog")).not.toContainText(/NIH BioArt|SciDraw|BioIcons|Arcadia/);
   await page.keyboard.press("Escape");
-  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
   await observeCanvas(page);
   await page.getByRole("button", { name: "Toggle asset filters" }).click();
@@ -208,7 +211,8 @@ test("round membrane expands to a full circle and fixed circles remain separate 
   page
 }, testInfo) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
   await observeCanvas(page);
   await choose(page, "Curved membrane", 480, 330);
@@ -256,7 +260,8 @@ test("curvature slider bends and straightens a membrane and vessel, with undo an
   page
 }, testInfo) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
   await observeCanvas(page);
   await choose(page, "Lipid bilayer", 480, 330);
@@ -294,7 +299,8 @@ test("organized asset palettes preserve details, restore originals and survive r
   page
 }, testInfo) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
   await observeCanvas(page);
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("generic epithelial cell");
@@ -368,7 +374,8 @@ test("membrane palette survives bending and restores original semantic colors", 
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
   await observeCanvas(page);
   await choose(page, "Lipid bilayer", 480, 330);
@@ -412,7 +419,8 @@ test("explicit color roles theme white bodies, preserve details and restore defa
     route.fulfill({ contentType: "image/svg+xml", body: source })
   );
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
   await observeCanvas(page);
   await page.getByPlaceholder("Search cells, proteins, equipment…").fill("nucleolus");
@@ -455,7 +463,8 @@ test("representative receptor and membrane assemble without flattening library i
   page
 }, testInfo) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
   await observeCanvas(page);
   for (const title of ["Lipid bilayer", "Receptor with movable domains"]) {
@@ -495,7 +504,8 @@ for (const title of ["laboratory mouse", "micropipette"]) {
     title + " keeps its native palette and restores it after saved recoloring",
     async ({ page }) => {
       await page.goto("./");
-      await page.getByRole("button", { name: "New figure", exact: true }).click();
+      await page.getByRole("button", { name: "New project" }).click();
+      await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
       await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
       await observeCanvas(page);
       await page.getByPlaceholder("Search cells, proteins, equipment…").fill(title);
@@ -533,7 +543,8 @@ test("continuous color sliders persist, preserve family choice and reset without
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
   await observeCanvas(page);
   await choose(page, "Lipid bilayer", 480, 330);
@@ -574,7 +585,8 @@ test("infers solid SVG regions and rejects regrouping that changes visible stack
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure", exact: true }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.locator(".upper-canvas").waitFor();
   const result = await page.evaluate(async () => {
     const base = new URL(".", location.href).pathname;

@@ -7,6 +7,7 @@ const ONE_PIXEL_PNG = Buffer.from(
 
 type StoredProject = {
   id: string;
+  kind: string;
   name: string;
   revision: number;
   objectCount: number;
@@ -33,6 +34,7 @@ async function readProject(page: Page, projectId: string): Promise<StoredProject
     const uploads = (project.uploads as Array<{ id: string; dataUrl: string }> | undefined) ?? [];
     return {
       id: String(project.id),
+      kind: String(project.kind ?? "diagram"),
       name: String(project.name),
       revision: Number(project.revision ?? 0),
       objectCount: objects.objects?.length ?? 0,
@@ -59,6 +61,7 @@ async function readProjects(page: Page): Promise<StoredProject[]> {
       const objects = (project.objects as { objects?: Array<Record<string, unknown>> }) ?? {};
       return {
         id: String(project.id),
+        kind: String(project.kind ?? "diagram"),
         name: String(project.name),
         revision: Number(project.revision ?? 0),
         objectCount: objects.objects?.length ?? 0,
@@ -153,9 +156,10 @@ async function addRectangle(page: Page) {
   await expect(page.getByRole("button", { name: "Arrange" })).toBeVisible();
 }
 
-async function startProject(page: Page) {
+async function startProject(page: Page, kind = "Figure") {
   await page.goto("/");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: kind, exact: true }).click();
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
   const projectId = await page.evaluate(
     () => (history.state as Record<string, unknown> | null)?.OpenSketchProjectId
@@ -163,6 +167,64 @@ async function startProject(page: Page) {
   if (typeof projectId !== "string") throw new Error("The project id was not recorded.");
   return projectId;
 }
+
+async function readProjectTemplates(page: Page): Promise<Array<Record<string, unknown>>> {
+  return page.evaluate(async () => {
+    const database = await new Promise<IDBDatabase>((resolve, reject) => {
+      const request = indexedDB.open("OpenSketch");
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+    const templates = await new Promise<Array<Record<string, unknown>>>((resolve, reject) => {
+      const request = database
+        .transaction("projectTemplates", "readonly")
+        .objectStore("projectTemplates")
+        .getAll();
+      request.onsuccess = () => resolve(request.result as Array<Record<string, unknown>>);
+      request.onerror = () => reject(request.error);
+    });
+    database.close();
+    return templates;
+  });
+}
+
+test("@smoke creates all document modes with portable kinds", async ({ page }) => {
+  for (const [label, expectedKind] of [
+    ["Diagram", "diagram"],
+    ["Figure", "figure"],
+    ["Poster", "poster"]
+  ] as const) {
+    const projectId = await startProject(page, label);
+    await expect.poll(async () => (await readProject(page, projectId))?.kind).toBe(expectedKind);
+    await page.getByRole("button", { name: "Back to projects" }).click();
+    await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
+  }
+});
+
+test("@smoke saves a live project as a validated project template", async ({ page }) => {
+  const projectId = await startProject(page, "Figure");
+  await page.getByRole("button", { name: /^Export/ }).click();
+  const exportDialog = page.getByRole("dialog", { name: "Export figure" });
+  await exportDialog.locator("summary").click();
+  const prompt = page.waitForEvent("dialog");
+  await exportDialog.getByRole("button", { name: "Save as template" }).click();
+  const nativeDialog = await prompt;
+  expect(nativeDialog.type()).toBe("prompt");
+  await nativeDialog.accept("Smoke figure template");
+
+  await expect
+    .poll(async () => {
+      const templates = await readProjectTemplates(page);
+      return templates.some(
+        (template) =>
+          template.name === "Smoke figure template" &&
+          template.kind === "figure" &&
+          template.project &&
+          (template.project as { id?: string }).id === projectId
+      );
+    })
+    .toBe(true);
+});
 
 test("stores imported raster media once in the project record", async ({ page }) => {
   const projectId = await startProject(page);
