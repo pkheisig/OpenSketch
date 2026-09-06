@@ -87,6 +87,20 @@ export interface ImportedMediaLibraryRecord extends ImportedMediaRecord {
   contentHash: string;
 }
 
+export type AssetQualificationState = "approved" | "rejected" | "pending";
+
+export interface AssetVariantLineage {
+  sourceVariantId: string;
+  relationship: "simplified-counterpart";
+}
+
+export interface AssetVariantQualification {
+  state: AssetQualificationState;
+  reviewedAt: string;
+  reviewer: string;
+  notes: string;
+}
+
 export interface AssetVariant {
   id: string;
   /** Legacy manifests omit this field; the canonical resolver treats them as Detailed. */
@@ -98,6 +112,8 @@ export interface AssetVariant {
   localSha256?: string;
   width?: number;
   height?: number;
+  lineage?: AssetVariantLineage;
+  qualification?: AssetVariantQualification;
 }
 
 export type AssetLicense =
