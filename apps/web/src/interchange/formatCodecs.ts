@@ -465,7 +465,10 @@ export async function prepareStrictInterchangeImport(
     byteLength: file.size
   };
   let probe = probeInterchangeBytes(boundedProbe, sourceDetails);
-  if (file.name.toLowerCase().endsWith(".pptm") || file.type.includes("macroenabled")) {
+  if (
+    file.name.toLowerCase().endsWith(".pptm") ||
+    file.type.toLowerCase().includes("macroenabled")
+  ) {
     const report = createFidelityReport({
       source: {
         name: file.name,

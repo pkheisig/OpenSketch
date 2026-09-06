@@ -712,7 +712,11 @@ export interface EditorContextValue {
   importMedia: (
     file: File,
     point?: Point,
-    options?: { pptxSlideIndices?: readonly number[]; signal?: AbortSignal }
+    options?: {
+      pptxSlideIndices?: readonly number[];
+      signal?: AbortSignal;
+      interactive?: boolean;
+    }
   ) => Promise<InterchangeImportResult>;
   deleteSelection: () => void;
   duplicateSelection: () => Promise<void>;
@@ -3249,7 +3253,8 @@ export function EditorProvider({
           const file = new File([bytes], sourceName, { type: PPTX_MIME_TYPE });
           const result = await semanticImportMediaRef.current(file, point, {
             pptxSlideIndices: slideIndices,
-            signal: options?.signal
+            signal: options?.signal,
+            interactive: false
           });
           return { fidelity: result.fidelity, changedObjectIds: result.importedObjectIds };
         }
@@ -3867,7 +3872,11 @@ export function EditorProvider({
     (
       file: File,
       point?: Point,
-      importOptions?: { pptxSlideIndices?: readonly number[]; signal?: AbortSignal }
+      importOptions?: {
+        pptxSlideIndices?: readonly number[];
+        signal?: AbortSignal;
+        interactive?: boolean;
+      }
     ) => {
       const operation = trackPendingEditorWork(
         importQueue.current.then(async () => {
@@ -3899,6 +3908,7 @@ export function EditorProvider({
                 throw reason;
               }
               if (reason.code === "pptx_slides_require_choice") {
+                if (importOptions?.interactive === false) throw reason;
                 const maximum = reason.slideIndices?.length ?? reason.probe.pageCount ?? 0;
                 const value = await services.dialogs.prompt(
                   importDecisionMessage(reason.probe),

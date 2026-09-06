@@ -38,6 +38,7 @@ const PPTX_MAX_XML_BYTES = 4 * 1024 * 1024;
 const PPTX_MAX_XML_ELEMENTS = 250_000;
 const PPTX_MAX_XML_ATTRIBUTES = 750_000;
 const PPTX_MAX_XML_TEXT_BYTES = 16 * 1024 * 1024;
+const PPTX_MAX_XML_DEPTH = 2_048;
 const PPTX_MAX_COMPRESSION_RATIO = 500;
 const ZIP_EOCD_SIGNATURE = 0x06054b50;
 const ZIP_CENTRAL_SIGNATURE = 0x02014b50;
@@ -51,6 +52,8 @@ const PPTX_OFFICE_DOCUMENT_RELATIONSHIP =
 const PPTX_SLIDE_RELATIONSHIP =
   "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide";
 const PPTX_IMAGE_RELATIONSHIP_SUFFIX = "/image";
+const PPTX_SVG_EXTENSION_NAMESPACE = "http://schemas.microsoft.com/office/drawing/2016/SVG/main";
+const PPTX_SVG_EXTENSION_URI = "{96DAC541-7B7A-43D3-8B79-37D633B846F1}";
 const XML_RELATIONSHIP_NAMESPACE = "http://schemas.openxmlformats.org/package/2006/relationships";
 const XML_CONTENT_TYPES_NAMESPACE = "http://schemas.openxmlformats.org/package/2006/content-types";
 const PPTX_PRESENTATION_NAMESPACE = "http://schemas.openxmlformats.org/presentationml/2006/main";
@@ -78,6 +81,8 @@ interface SlideTransform {
   width: number;
   height: number;
   rotation: number;
+  flipH: boolean;
+  flipV: boolean;
 }
 
 export interface PptxRenderedSlide {
@@ -119,6 +124,8 @@ export interface PptxExportOptions {
   title?: string;
   description?: string;
   signal?: AbortSignal;
+  /** Optional pre-rasterized fallback for non-browser callers and deterministic tests. */
+  rasterFallback?: Blob;
 }
 
 export interface PptxExportResult {
@@ -144,10 +151,11 @@ function readU16(bytes: Uint8Array, offset: number): number | undefined {
 function readU32(bytes: Uint8Array, offset: number): number | undefined {
   if (offset < 0 || offset + 4 > bytes.length) return undefined;
   return (
-    bytes[offset] |
-    (bytes[offset + 1] << 8) |
-    (bytes[offset + 2] << 16) |
-    (bytes[offset + 3] * 0x1000000)
+    (bytes[offset] |
+      (bytes[offset + 1] << 8) |
+      (bytes[offset + 2] << 16) |
+      (bytes[offset + 3] * 0x1000000)) >>>
+    0
   );
 }
 
@@ -424,12 +432,22 @@ function xmlElementCount(root: Document): {
   let elements = 0;
   let attributes = 0;
   let textBytes = 0;
-  const visit = (node: Node): void => {
+  const encoder = new TextEncoder();
+  const stack: Array<{ node: Node; depth: number }> = [{ node: root, depth: 0 }];
+  while (stack.length > 0) {
+    const current = stack.pop();
+    if (!current) break;
+    const { node, depth } = current;
+    if (depth > PPTX_MAX_XML_DEPTH) {
+      throw new InterchangeImportError("The PPTX XML exceeds the maximum nesting depth.", {
+        code: "pptx_xml_limit"
+      });
+    }
     if (node.nodeType === Node.ELEMENT_NODE) {
       elements += 1;
       attributes += (node as Element).attributes.length;
-    } else if (node.nodeType === Node.TEXT_NODE) {
-      textBytes += new TextEncoder().encode(node.nodeValue ?? "").byteLength;
+    } else if (node.nodeType === Node.TEXT_NODE || node.nodeType === Node.CDATA_SECTION_NODE) {
+      textBytes += encoder.encode(node.nodeValue ?? "").byteLength;
     }
     if (
       elements > PPTX_MAX_XML_ELEMENTS ||
@@ -440,9 +458,11 @@ function xmlElementCount(root: Document): {
         code: "pptx_xml_limit"
       });
     }
-    for (const child of Array.from(node.childNodes)) visit(child);
-  };
-  visit(root);
+    const children = Array.from(node.childNodes);
+    for (let index = children.length - 1; index >= 0; index -= 1) {
+      stack.push({ node: children[index], depth: depth + 1 });
+    }
+  }
   return { elements, attributes, textBytes };
 }
 
@@ -703,6 +723,10 @@ function qualifiedPaintColor(node: Element | undefined): string | undefined {
   return value && /^[0-9a-f]{6}$/i.test(value) ? `#${value}` : undefined;
 }
 
+function booleanAttribute(value: string | undefined): boolean {
+  return value === "1" || value?.toLowerCase() === "true";
+}
+
 function transformFor(node: Element | undefined): SlideTransform | undefined {
   const xfrm = node && firstDescendant(node, "xfrm");
   const off = xfrm && firstDescendant(xfrm, "off");
@@ -719,14 +743,33 @@ function transformFor(node: Element | undefined): SlideTransform | undefined {
     return undefined;
   }
   const rotation = (Number(attr(xfrm, "rot") ?? 0) || 0) / 60_000;
-  return { x, y, width, height, rotation };
+  return {
+    x,
+    y,
+    width,
+    height,
+    rotation,
+    flipH: booleanAttribute(attr(xfrm, "flipH")),
+    flipV: booleanAttribute(attr(xfrm, "flipV"))
+  };
 }
 
 function transformAttribute(transform: SlideTransform): string {
-  if (!transform.rotation) return "";
   const cx = transform.x + transform.width / 2;
   const cy = transform.y + transform.height / 2;
-  return ` transform="rotate(${transform.rotation} ${cx} ${cy})"`;
+  if (!transform.rotation && !transform.flipH && !transform.flipV) return "";
+  const radians = (transform.rotation * Math.PI) / 180;
+  const cosine = Math.cos(radians);
+  const sine = Math.sin(radians);
+  const scaleX = transform.flipH ? -1 : 1;
+  const scaleY = transform.flipV ? -1 : 1;
+  const a = cosine * scaleX;
+  const b = sine * scaleX;
+  const c = -sine * scaleY;
+  const d = cosine * scaleY;
+  const e = cx - a * cx - c * cy;
+  const f = cy - b * cx - d * cy;
+  return ` transform="matrix(${a} ${b} ${c} ${d} ${e} ${f})"`;
 }
 
 function svgText(value: string): string {
@@ -752,19 +795,32 @@ function textContent(shape: Element): string {
     .join("\n");
 }
 
-function textStyle(shape: Element): { fontFamily: string; fontSize: number; color: string } {
+function textStyle(shape: Element): {
+  fontFamily: string;
+  fontSize: number;
+  color: string;
+  fontSubstituted: boolean;
+} {
   const runProperties = firstDescendant(shape, "rPr");
   const font = firstDescendant(runProperties ?? shape, "latin");
-  const typeface = attr(font, "typeface") || "Arial";
+  const explicitTypeface = attr(font, "typeface")?.replace(/["<>]/g, "").trim();
+  const typeface = explicitTypeface || "Arial";
   const points = Number(attr(runProperties, "sz") ?? 1800) / 100;
   return {
-    fontFamily: typeface.replace(/["<>]/g, ""),
+    fontFamily: typeface,
     fontSize: Math.max(1, points * (PPTX_EMU_PER_INCH / 72)),
-    color: colorFrom(runProperties, "#111827")
+    color: colorFrom(runProperties, "#111827"),
+    fontSubstituted: !explicitTypeface
   };
 }
 
-function renderShape(shape: Element): { svg: string; mapped: number } | undefined {
+type RenderedContent = {
+  svg: string;
+  mapped: number;
+  diagnostics?: InterchangeDiagnostic[];
+};
+
+function renderShape(shape: Element): RenderedContent | undefined {
   const shapeProperties = firstDescendant(shape, "spPr");
   const transform = transformFor(shapeProperties);
   if (!shapeProperties || !transform) return undefined;
@@ -792,8 +848,23 @@ function renderShape(shape: Element): { svg: string; mapped: number } | undefine
     svg = `<rect x="${transform.x}" y="${transform.y}" width="${transform.width}" height="${transform.height}" rx="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="${Math.max(1, strokeWidth)}"${rotation} />`;
   }
   const value = textContent(shape);
+  const diagnostics: InterchangeDiagnostic[] = [];
   if (value) {
     const style = textStyle(shape);
+    if (style.fontSubstituted) {
+      diagnostics.push({
+        code: "font_substitution",
+        severity: "warning",
+        message:
+          "Slide text did not declare a usable font face in its run properties; Arial was used as an explicit fallback."
+      });
+    }
+    diagnostics.push({
+      code: "text_layout_approximated",
+      severity: "warning",
+      message:
+        "Slide text alignment, anchors, inheritance, and per-run styling were not fully resolved; the text remains part of an appearance snapshot."
+    });
     const lines = value.split("\n");
     const x = transform.x + Math.min(transform.width * 0.08, 24_000);
     const firstY = transform.y + style.fontSize * 1.2;
@@ -806,7 +877,7 @@ function renderShape(shape: Element): { svg: string; mapped: number } | undefine
       .join("");
     svg += `<text x="${x}" y="${firstY}" fill="${style.color}" font-family="${svgText(style.fontFamily)}" font-size="${style.fontSize}"${rotation}>${text}</text>`;
   }
-  return { svg, mapped: 1 };
+  return { svg, mapped: 1, diagnostics };
 }
 
 function renderPicture(
@@ -814,7 +885,7 @@ function renderPicture(
   relations: readonly PackageRelationship[],
   slidePath: string,
   entries: Record<string, Uint8Array>
-): { svg: string; mapped: number } | undefined {
+): RenderedContent | undefined {
   const shapeProperties = firstDescendant(picture, "spPr");
   const transform = transformFor(shapeProperties);
   if (!transform || firstDescendant(picture, "srcRect")) return undefined;
@@ -853,13 +924,14 @@ function renderSlide(
   const content: string[] = [];
   for (const child of tree ? childElements(tree) : []) {
     const name = localName(child);
-    let rendered: { svg: string; mapped: number } | undefined;
+    let rendered: RenderedContent | undefined;
     if (name === "sp") rendered = renderShape(child);
     else if (name === "pic") rendered = renderPicture(child, relations, slidePath, entries);
     if (rendered) {
       content.push(rendered.svg);
       mappedCount += rendered.mapped;
       flattenedCount += 1;
+      diagnostics.push(...(rendered.diagnostics ?? []));
       continue;
     }
     if (["nvGrpSpPr", "grpSpPr", "extLst"].includes(name)) continue;
@@ -1158,7 +1230,10 @@ export async function preparePptxImport(
   options: PptxImportOptions = {}
 ): Promise<PptxImportPreparation> {
   checkAbort(options.signal);
-  if (file.name.toLowerCase().endsWith(".pptm") || file.type.includes("macroenabled")) {
+  if (
+    file.name.toLowerCase().endsWith(".pptm") ||
+    file.type.toLowerCase().includes("macroenabled")
+  ) {
     throw new InterchangeImportError(
       "Macro-enabled .pptm packages are refused; executable content is never imported.",
       { code: "pptx_macro_refused" }
@@ -1352,7 +1427,24 @@ const THEME_XML = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
   <a:themeElements>
     <a:clrScheme name="OpenSketch"><a:dk1><a:sysClr val="windowText" lastClr="000000"/></a:dk1><a:lt1><a:sysClr val="window" lastClr="FFFFFF"/></a:lt1><a:dk2><a:srgbClr val="1F2937"/></a:dk2><a:lt2><a:srgbClr val="F9FAFB"/></a:lt2><a:accent1><a:srgbClr val="2563EB"/></a:accent1><a:accent2><a:srgbClr val="0F766E"/></a:accent2><a:accent3><a:srgbClr val="C2410C"/></a:accent3><a:accent4><a:srgbClr val="7C3AED"/></a:accent4><a:accent5><a:srgbClr val="BE123C"/></a:accent5><a:accent6><a:srgbClr val="A16207"/></a:accent6><a:hlink><a:srgbClr val="2563EB"/></a:hlink><a:folHlink><a:srgbClr val="7C3AED"/></a:folHlink></a:clrScheme>
     <a:fontScheme name="OpenSketch"><a:majorFont><a:latin typeface="Arial"/><a:ea typeface=""/><a:cs typeface=""/></a:majorFont><a:minorFont><a:latin typeface="Arial"/><a:ea typeface=""/><a:cs typeface=""/></a:minorFont></a:fontScheme>
-    <a:fmtScheme name="OpenSketch"><a:fillStyleLst><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill></a:fillStyleLst><a:lnStyleLst><a:ln w="9525"><a:solidFill><a:srgbClr val="1F2937"/></a:solidFill><a:prstDash val="solid"/></a:ln></a:lnStyleLst><a:effectStyleLst/><a:bgFillStyleLst/></a:fmtScheme>
+    <a:fmtScheme name="OpenSketch">
+      <a:fillStyleLst>
+        <a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill>
+        <a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:srgbClr val="FFFFFF"/></a:gs><a:gs pos="100000"><a:srgbClr val="F9FAFB"/></a:gs></a:gsLst><a:lin ang="5400000" scaled="1"/></a:gradFill>
+        <a:solidFill><a:srgbClr val="F9FAFB"/></a:solidFill>
+      </a:fillStyleLst>
+      <a:lnStyleLst>
+        <a:ln w="9525"><a:solidFill><a:srgbClr val="1F2937"/></a:solidFill><a:prstDash val="solid"/></a:ln>
+        <a:ln w="19050"><a:solidFill><a:srgbClr val="1F2937"/></a:solidFill><a:prstDash val="solid"/></a:ln>
+        <a:ln w="28575"><a:solidFill><a:srgbClr val="1F2937"/></a:solidFill><a:prstDash val="solid"/></a:ln>
+      </a:lnStyleLst>
+      <a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle></a:effectStyleLst>
+      <a:bgFillStyleLst>
+        <a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill>
+        <a:solidFill><a:srgbClr val="F9FAFB"/></a:solidFill>
+        <a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill>
+      </a:bgFillStyleLst>
+    </a:fmtScheme>
   </a:themeElements>
 </a:theme>`;
 
@@ -1405,17 +1497,17 @@ function layoutRelationships(): string {
 
 function slideXml(widthEmu: number, heightEmu: number, title: string): string {
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:cSld name="${xml(title)}"><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${widthEmu}" cy="${heightEmu}"/><a:chOff x="0" y="0"/><a:chExt cx="${widthEmu}" cy="${heightEmu}"/></a:xfrm></p:grpSpPr><p:pic><p:nvPicPr><p:cNvPr id="2" name="OpenSketch appearance snapshot"/><p:cNvPicPr preferRelativeResize="0"/><p:nvPr/></p:nvPicPr><p:blipFill><a:blip r:embed="rId1"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${widthEmu}" cy="${heightEmu}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic></p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>`;
+<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:asvg="${PPTX_SVG_EXTENSION_NAMESPACE}" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:cSld name="${xml(title)}"><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${widthEmu}" cy="${heightEmu}"/><a:chOff x="0" y="0"/><a:chExt cx="${widthEmu}" cy="${heightEmu}"/></a:xfrm></p:grpSpPr><p:pic><p:nvPicPr><p:cNvPr id="2" name="OpenSketch appearance snapshot"/><p:cNvPicPr preferRelativeResize="0"/><p:nvPr/></p:nvPicPr><p:blipFill><a:blip r:embed="rId1"><a:extLst><a:ext uri="${PPTX_SVG_EXTENSION_URI}"><asvg:svgBlip r:embed="rId2"/></a:ext></a:extLst></a:blip><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${widthEmu}" cy="${heightEmu}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic></p:spTree></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>`;
 }
 
 function slideRelationships(): string {
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Relationships xmlns="${XML_RELATIONSHIP_NAMESPACE}"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/scene.svg"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/></Relationships>`;
+<Relationships xmlns="${XML_RELATIONSHIP_NAMESPACE}"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/scene.png"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/scene.svg"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/></Relationships>`;
 }
 
 function contentTypes(): string {
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="svg" ContentType="image/svg+xml"/><Override PartName="/ppt/presentation.xml" ContentType="${PPTX_PRESENTATION_CONTENT_TYPE}"/><Override PartName="/ppt/slideMasters/slideMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/><Override PartName="/ppt/slideLayouts/slideLayout1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/><Override PartName="/ppt/slides/slide1.xml" ContentType="${PPTX_SLIDE_CONTENT_TYPE}"/><Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>`;
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Default Extension="svg" ContentType="image/svg+xml"/><Override PartName="/ppt/presentation.xml" ContentType="${PPTX_PRESENTATION_CONTENT_TYPE}"/><Override PartName="/ppt/slideMasters/slideMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/><Override PartName="/ppt/slideLayouts/slideLayout1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/><Override PartName="/ppt/slides/slide1.xml" ContentType="${PPTX_SLIDE_CONTENT_TYPE}"/><Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>`;
 }
 
 function coreProperties(title: string, description: string): string {
@@ -1426,6 +1518,103 @@ function appProperties(): string {
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>OpenSketch</Application><PresentationFormat>On-screen Show (16:9)</PresentationFormat><Slides>1</Slides></Properties>`;
 }
 
+const PNG_SIGNATURE = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]);
+const PPTX_RASTER_MAX_DIMENSION = 4_096;
+const PPTX_RASTER_MAX_PIXELS = 16_000_000;
+
+function isPng(bytes: Uint8Array): boolean {
+  return (
+    bytes.length >= PNG_SIGNATURE.length &&
+    PNG_SIGNATURE.every((value, index) => bytes[index] === value)
+  );
+}
+
+function readBlobBytes(blob: Blob): Promise<Uint8Array> {
+  if (typeof blob.arrayBuffer === "function") {
+    return blob.arrayBuffer().then((buffer) => new Uint8Array(buffer));
+  }
+  if (typeof FileReader === "undefined") {
+    return Promise.reject(new Error("The browser cannot read the PNG fallback."));
+  }
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(new Uint8Array(reader.result as ArrayBuffer));
+    reader.onerror = () => reject(reader.error ?? new Error("The PNG fallback could not be read."));
+    reader.readAsArrayBuffer(blob);
+  });
+}
+
+async function rasterizeSvgForPptx(
+  source: string,
+  width: number,
+  height: number,
+  signal?: AbortSignal
+): Promise<Uint8Array> {
+  checkAbort(signal);
+  if (typeof document === "undefined" || typeof Image === "undefined" || !URL.createObjectURL) {
+    throw new InterchangeImportError(
+      "PPTX export needs a browser PNG rasterizer for its standards-valid fallback image.",
+      { code: "pptx_rasterization" }
+    );
+  }
+  const scale = Math.min(
+    1,
+    PPTX_RASTER_MAX_DIMENSION / width,
+    PPTX_RASTER_MAX_DIMENSION / height,
+    Math.sqrt(PPTX_RASTER_MAX_PIXELS / (width * height))
+  );
+  const rasterWidth = Math.max(1, Math.round(width * scale));
+  const rasterHeight = Math.max(1, Math.round(height * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = rasterWidth;
+  canvas.height = rasterHeight;
+  let context: CanvasRenderingContext2D | null = null;
+  try {
+    context = canvas.getContext("2d");
+  } catch {
+    context = null;
+  }
+  if (!context) {
+    throw new InterchangeImportError("PPTX export could not create a browser 2D rasterizer.", {
+      code: "pptx_rasterization"
+    });
+  }
+  const sourceUrl = URL.createObjectURL(new Blob([source], { type: "image/svg+xml" }));
+  try {
+    const image = new Image();
+    await new Promise<void>((resolve, reject) => {
+      image.onload = () => resolve();
+      image.onerror = () =>
+        reject(new Error("The SVG appearance snapshot could not be rasterized."));
+      image.src = sourceUrl;
+    });
+    checkAbort(signal);
+    context.clearRect(0, 0, rasterWidth, rasterHeight);
+    context.drawImage(image, 0, 0, rasterWidth, rasterHeight);
+    const png = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (blob) resolve(blob);
+        else reject(new Error("The browser did not produce a PNG fallback."));
+      }, "image/png");
+    });
+    const bytes = await readBlobBytes(png);
+    if (!isPng(bytes)) throw new Error("The browser produced an invalid PNG fallback.");
+    return bytes;
+  } catch (error) {
+    if (error instanceof InterchangeImportError) throw error;
+    throw new InterchangeImportError(
+      error instanceof Error
+        ? error.message
+        : "The SVG appearance snapshot could not be rasterized.",
+      { code: "pptx_rasterization" }
+    );
+  } finally {
+    URL.revokeObjectURL(sourceUrl);
+    canvas.width = 0;
+    canvas.height = 0;
+  }
+}
+
 export async function exportPptx(options: PptxExportOptions): Promise<PptxExportResult> {
   checkAbort(options.signal);
   const extent = physicalExtent(options.width, options.height, options.dpi);
@@ -1434,6 +1623,17 @@ export async function exportPptx(options: PptxExportOptions): Promise<PptxExport
     throw new InterchangeImportError("The SVG appearance snapshot exceeds the PPTX entry limit.", {
       code: "pptx_package_limit"
     });
+  }
+  const pngBytes = options.rasterFallback
+    ? await readBlobBytes(options.rasterFallback)
+    : await rasterizeSvgForPptx(options.svg, options.width, options.height, options.signal);
+  if (!isPng(pngBytes) || pngBytes.byteLength === 0 || pngBytes.byteLength > PPTX_MAX_ENTRY_BYTES) {
+    throw new InterchangeImportError(
+      "The PPTX PNG fallback is invalid or exceeds the entry limit.",
+      {
+        code: "pptx_rasterization"
+      }
+    );
   }
   const title = options.title || "OpenSketch export";
   const description = options.description || "";
@@ -1455,6 +1655,7 @@ export async function exportPptx(options: PptxExportOptions): Promise<PptxExport
       slideXml(extent.widthEmu, extent.heightEmu, title)
     ),
     "ppt/slides/_rels/slide1.xml.rels": new TextEncoder().encode(slideRelationships()),
+    "ppt/media/scene.png": pngBytes,
     "ppt/media/scene.svg": svgBytes
   };
   checkAbort(options.signal);
@@ -1490,6 +1691,7 @@ export async function exportPptx(options: PptxExportOptions): Promise<PptxExport
     refusedCount: 0,
     substitutions: [
       "the resolved OpenSketch scene was materialized as one SVG appearance snapshot",
+      "a standards-valid PNG fallback was rasterized for broad PowerPoint compatibility; the SVG was retained through the DrawingML SVG extension",
       "OpenSketch layout constraints were not exported as fake PowerPoint metadata"
     ]
   });

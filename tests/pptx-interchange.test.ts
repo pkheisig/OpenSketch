@@ -1,5 +1,5 @@
 import { unzipSync, zipSync } from "fflate";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import {
   PPTX_EMU_PER_INCH,
   exportPptx,
@@ -44,6 +44,18 @@ function bytes(value: string): Uint8Array {
   return new TextEncoder().encode(value);
 }
 
+const PNG_FALLBACK = new Blob(
+  [
+    Uint8Array.from(
+      atob(
+        "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+      ),
+      (char) => char.charCodeAt(0)
+    )
+  ],
+  { type: "image/png" }
+);
+
 describe("bounded PPTX interchange", () => {
   it("exports one standards-shaped slide with exact EMU geometry and parses it back", async () => {
     const exported = await exportPptx({
@@ -51,6 +63,7 @@ describe("bounded PPTX interchange", () => {
       width: 1920,
       height: 1080,
       dpi: 120,
+      rasterFallback: PNG_FALLBACK,
       title: "Exact geometry"
     });
 
@@ -62,12 +75,28 @@ describe("bounded PPTX interchange", () => {
       "application/vnd.openxmlformats-officedocument.presentationml.presentation"
     );
 
+    const files = await packageFiles(exported.blob);
+    const slideXml = text(files, "ppt/slides/slide1.xml");
+    const themeXml = text(files, "ppt/theme/theme1.xml");
+    expect(Object.keys(files)).toEqual(
+      expect.arrayContaining(["ppt/media/scene.png", "ppt/media/scene.svg"])
+    );
+    expect(slideXml).toContain('<a:blip r:embed="rId1">');
+    expect(slideXml).toContain('<asvg:svgBlip r:embed="rId2"/>');
+    expect(text(files, "ppt/slides/_rels/slide1.xml.rels")).toContain(
+      'Target="../media/scene.png"'
+    );
+    expect((themeXml.match(/<a:fillStyleLst>/g) ?? []).length).toBe(1);
+    expect((themeXml.match(/<a:solidFill>/g) ?? []).length).toBeGreaterThanOrEqual(3);
+    expect((themeXml.match(/<a:ln /g) ?? []).length).toBe(3);
+    expect((themeXml.match(/<a:effectStyle>/g) ?? []).length).toBe(3);
+    expect((themeXml.match(/<a:bgFillStyleLst>/g) ?? []).length).toBe(1);
     const parsed = parsePptxPackage(await blobBytes(exported.blob));
     expect(parsed.widthEmu).toBe(16 * PPTX_EMU_PER_INCH);
     expect(parsed.heightEmu).toBe(9 * PPTX_EMU_PER_INCH);
     expect(parsed.slides).toHaveLength(1);
     expect(parsed.slides[0].flattenedCount).toBe(1);
-    expect(parsed.slides[0].svg).toContain("data:image/svg+xml;base64,");
+    expect(parsed.slides[0].svg).toContain("data:image/png;base64,");
   });
 
   it("requires explicit selection for a multi-slide package and accepts multiple indices", async () => {
@@ -76,6 +105,7 @@ describe("bounded PPTX interchange", () => {
       width: 1000,
       height: 1000,
       dpi: 100,
+      rasterFallback: PNG_FALLBACK,
       title: "Two slides"
     });
     const files = await packageFiles(exported.blob);
@@ -131,7 +161,8 @@ describe("bounded PPTX interchange", () => {
       svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
       width: 1000,
       height: 1000,
-      dpi: 100
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
     });
     const macro = fileLike(
       await blobBytes(exported.blob),
@@ -148,7 +179,8 @@ describe("bounded PPTX interchange", () => {
       svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
       width: 1000,
       height: 1000,
-      dpi: 100
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
     });
     const files = await packageFiles(exported.blob);
     files["ppt/slides/slide1.xml"] = bytes(
@@ -166,8 +198,8 @@ describe("bounded PPTX interchange", () => {
     const externalFiles = await packageFiles(exported.blob);
     externalFiles["ppt/slides/_rels/slide1.xml.rels"] = bytes(
       text(externalFiles, "ppt/slides/_rels/slide1.xml.rels").replace(
-        'Target="../media/scene.svg"',
-        'Target="https://example.invalid/scene.svg" TargetMode="External"'
+        'Target="../media/scene.png"',
+        'Target="https://example.invalid/scene.png" TargetMode="External"'
       )
     );
     const external = fileLike(
@@ -203,7 +235,8 @@ describe("bounded PPTX interchange", () => {
       svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
       width: 1000,
       height: 1000,
-      dpi: 100
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
     });
     const files = await packageFiles(exported.blob);
     files["ppt/slides/slide1.xml"] = bytes(
@@ -218,5 +251,68 @@ describe("bounded PPTX interchange", () => {
       code: "pptx_slide_refused",
       slideIndices: [0]
     });
+  });
+
+  it("preserves shape flips and reports unresolved text styling", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const files = await packageFiles(exported.blob);
+    files["ppt/slides/slide1.xml"] = bytes(
+      text(files, "ppt/slides/slide1.xml").replace(
+        "</p:spTree>",
+        '<p:sp><p:nvSpPr><p:cNvPr id="3" name="Flipped text"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm flipH="1" flipV="true"><a:off x="0" y="0"/><a:ext cx="1000" cy="1000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill></p:spPr><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr sz="1800"/><a:t>Flip me</a:t></a:r></a:p></p:txBody></p:sp></p:spTree>'
+      )
+    );
+    const parsed = parsePptxPackage(zipSync(files));
+    expect(parsed.slides[0].svg).toContain("matrix(-1 0 0 -1 1000 1000)");
+    expect(parsed.slides[0].diagnostics).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "font_substitution", severity: "warning" }),
+        expect.objectContaining({ code: "text_layout_approximated", severity: "warning" })
+      ])
+    );
+  });
+
+  it("uses the browser rasterizer when no fallback is supplied", async () => {
+    class FakeImage {
+      onload?: () => void;
+      onerror?: () => void;
+
+      set src(_value: string) {
+        queueMicrotask(() => this.onload?.());
+      }
+    }
+    const context = {
+      clearRect: vi.fn(),
+      drawImage: vi.fn()
+    } as unknown as CanvasRenderingContext2D;
+    const getContext = vi.spyOn(HTMLCanvasElement.prototype, "getContext").mockReturnValue(context);
+    const toBlob = vi
+      .spyOn(HTMLCanvasElement.prototype, "toBlob")
+      .mockImplementation((callback) => callback(PNG_FALLBACK));
+    vi.stubGlobal("Image", FakeImage);
+    vi.stubGlobal("URL", {
+      createObjectURL: vi.fn(() => "blob:opensketch-test"),
+      revokeObjectURL: vi.fn()
+    });
+    try {
+      const exported = await exportPptx({
+        svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+        width: 1000,
+        height: 1000,
+        dpi: 100
+      });
+      expect(exported.blob.size).toBeGreaterThan(0);
+      expect(context.drawImage).toHaveBeenCalledOnce();
+    } finally {
+      getContext.mockRestore();
+      toBlob.mockRestore();
+      vi.unstubAllGlobals();
+    }
   });
 });

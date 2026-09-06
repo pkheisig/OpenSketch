@@ -1,7 +1,22 @@
 import { useEffect, useMemo, useState } from "react";
 import type { PptxRenderedSlide } from "@/interchange/pptx";
-import { svgDataUrlForPptx } from "@/interchange/pptxShared";
+import { svgDataUrlForPptx, svgForPptxCanvas } from "@/interchange/pptxShared";
 import { useModalDialog } from "./useModalDialog";
+
+function thumbnailSource(source: string): string {
+  const root = /<svg\b[^>]*>/i.exec(source)?.[0];
+  const width = Number(root?.match(/\bwidth\s*=\s*["']([0-9.]+)/i)?.[1]);
+  const height = Number(root?.match(/\bheight\s*=\s*["']([0-9.]+)/i)?.[1]);
+  if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) {
+    return svgForPptxCanvas(source, 320, 180);
+  }
+  const scale = Math.min(320 / width, 180 / height);
+  return svgForPptxCanvas(
+    source,
+    Math.max(1, Math.round(width * scale)),
+    Math.max(1, Math.round(height * scale))
+  );
+}
 
 export function PptxSlideChooser({
   fileName,
@@ -36,18 +51,16 @@ export function PptxSlideChooser({
       >
         <div className="dialog-titlebar">
           <div>
-            <p className="eyebrow">PowerPoint import</p>
             <h2 id="pptx-slide-chooser-title">Choose slides</h2>
           </div>
           <button className="icon-button" onClick={onCancel} aria-label="Close slide chooser">
             ×
           </button>
         </div>
-        <p className="dialog-note">
-          {fileName} · {slides.length} slides · selected slides remain separate OpenSketch projects
-          or canvas snapshots.
-        </p>
-        <div className="pptx-slide-grid" aria-label="PowerPoint slide choices">
+        <div
+          className="pptx-slide-grid"
+          aria-label={`PowerPoint slide choices from ${fileName}; ${slides.length} slides`}
+        >
           {slides.map((slide) => {
             const checked = selected.has(slide.index);
             return (
@@ -68,7 +81,12 @@ export function PptxSlideChooser({
                   }}
                 />
                 <span className="pptx-slide-thumbnail">
-                  <img src={svgDataUrlForPptx(slide.svg)} alt="" />
+                  <img
+                    src={svgDataUrlForPptx(thumbnailSource(slide.svg))}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  />
                 </span>
                 <span className="pptx-slide-label">
                   <strong>Slide {slide.index + 1}</strong>
