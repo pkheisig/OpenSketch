@@ -118,6 +118,11 @@ export interface LayoutValidationContext {
   parentByObjectId?: ReadonlyMap<string, string | undefined>;
 }
 
+export interface SerializedLayoutValidationContext {
+  objectIds: string[];
+  parentByObjectId: ReadonlyMap<string, string | undefined>;
+}
+
 export interface CreateLayoutFrameInput {
   frameId: string;
   bounds: LayoutBounds;
@@ -156,6 +161,44 @@ export class LayoutResolutionError extends Error {
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   Boolean(value) && typeof value === "object" && !Array.isArray(value);
+const SERIALIZED_TEXT_TYPES = new Set(["IText", "i-text", "Text", "Textbox"]);
+
+/**
+ * Derive the same layout-visible object hierarchy used by portable-project
+ * validation from a serialized Fabric scene that has not been loaded yet.
+ */
+export function collectSerializedLayoutValidationContext(
+  scene: Record<string, unknown>
+): SerializedLayoutValidationContext {
+  const objectIds: string[] = [];
+  const parentByObjectId = new Map<string, string | undefined>();
+
+  const visit = (
+    value: unknown,
+    parentObjectId: string | undefined,
+    includeInLayout: boolean
+  ): void => {
+    if (!isRecord(value)) return;
+    const objectId = typeof value.objectId === "string" ? value.objectId : undefined;
+    if (objectId !== undefined && includeInLayout) {
+      objectIds.push(objectId);
+      parentByObjectId.set(objectId, parentObjectId);
+    }
+    if (Array.isArray(value.objects)) {
+      value.objects.forEach((child) => visit(child, objectId, includeInLayout));
+    }
+    if (isRecord(value.clipPath)) visit(value.clipPath, objectId, false);
+    if (SERIALIZED_TEXT_TYPES.has(String(value.type)) && isRecord(value.path)) {
+      visit(value.path, objectId, false);
+    }
+  };
+
+  if (Array.isArray(scene.objects)) {
+    scene.objects.forEach((object) => visit(object, undefined, true));
+  }
+
+  return { objectIds, parentByObjectId };
+}
 
 const finite = (value: unknown, path: string, minimum?: number, maximum?: number): number => {
   if (typeof value !== "number" || !Number.isFinite(value)) {
@@ -747,9 +790,15 @@ function resolveHorizontal(
       : sum + (spec.sizing === "fixed" ? (spec.width ?? child.bounds.width) : child.bounds.width);
   }, 0);
   const fillCount = frame.children.filter((child) => child.sizing === "fill").length;
-  const fillWidth = fillCount > 0 ? Math.max(0, available - fixed) / fillCount : 0;
+  const remaining = available - fixed;
+  const fillWidth = fillCount > 0 ? Math.max(0, remaining) / fillCount : 0;
   const required = fixed + fillWidth * fillCount;
-  const diagnostics = required > available ? [overflowDiagnostic(frame, required - available)] : [];
+  const diagnostics =
+    fillCount > 0 && remaining <= MIN_LAYOUT_SIZE
+      ? [overflowDiagnostic(frame, Math.max(MIN_LAYOUT_SIZE, -remaining))]
+      : required > available
+        ? [overflowDiagnostic(frame, required - available)]
+        : [];
   let cursor = inner.left;
   const resolved = children.map((child, index) => {
     const spec = frame.children[index]!;
@@ -790,9 +839,15 @@ function resolveVertical(
           (spec.sizing === "fixed" ? (spec.height ?? child.bounds.height) : child.bounds.height);
   }, 0);
   const fillCount = frame.children.filter((child) => child.sizing === "fill").length;
-  const fillHeight = fillCount > 0 ? Math.max(0, available - fixed) / fillCount : 0;
+  const remaining = available - fixed;
+  const fillHeight = fillCount > 0 ? Math.max(0, remaining) / fillCount : 0;
   const required = fixed + fillHeight * fillCount;
-  const diagnostics = required > available ? [overflowDiagnostic(frame, required - available)] : [];
+  const diagnostics =
+    fillCount > 0 && remaining <= MIN_LAYOUT_SIZE
+      ? [overflowDiagnostic(frame, Math.max(MIN_LAYOUT_SIZE, -remaining))]
+      : required > available
+        ? [overflowDiagnostic(frame, required - available)]
+        : [];
   let cursor = inner.top;
   const resolved = children.map((child, index) => {
     const spec = frame.children[index]!;

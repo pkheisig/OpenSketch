@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  collectSerializedLayoutValidationContext,
   createLayoutDocument,
   createLayoutFrame,
   insertLayoutChild,
@@ -195,6 +196,45 @@ describe("persistent layout frames", () => {
     );
   });
 
+  it("reports fixed siblings that starve fill children in horizontal and vertical flows", () => {
+    const horizontal = createLayoutFrame(createLayoutDocument(), {
+      frameId: "starved-horizontal",
+      bounds: { left: 0, top: 0, width: 100, height: 100 },
+      flow: "horizontal",
+      children: [
+        { objectId: "fixed", sizing: "fixed", width: 100 },
+        { objectId: "fill", sizing: "fill" }
+      ]
+    }).frames[0]!;
+    const vertical = createLayoutFrame(createLayoutDocument(), {
+      frameId: "starved-vertical",
+      bounds: { left: 0, top: 0, width: 100, height: 100 },
+      flow: "vertical",
+      children: [
+        { objectId: "fixed", sizing: "fixed", height: 100 },
+        { objectId: "fill", sizing: "fill" }
+      ]
+    }).frames[0]!;
+
+    const horizontalResolution = layoutFrame(horizontal, [
+      child("fixed", 0, 0, 10, 10),
+      child("fill", 0, 0, 10, 10)
+    ]);
+    const verticalResolution = layoutFrame(vertical, [
+      child("fixed", 0, 0, 10, 10),
+      child("fill", 0, 0, 10, 10)
+    ]);
+
+    expect(horizontalResolution.children.map(({ bounds }) => bounds.width)).toEqual([100, 0]);
+    expect(verticalResolution.children.map(({ bounds }) => bounds.height)).toEqual([100, 0]);
+    expect(horizontalResolution.diagnostics).toEqual(
+      expect.arrayContaining([expect.objectContaining({ code: "FRAME_OVERFLOW" })])
+    );
+    expect(verticalResolution.diagnostics).toEqual(
+      expect.arrayContaining([expect.objectContaining({ code: "FRAME_OVERFLOW" })])
+    );
+  });
+
   it("validates child references and ancestor/descendant membership before persistence", () => {
     const document = createLayoutDocument();
     const next = createLayoutFrame(document, {
@@ -218,6 +258,44 @@ describe("persistent layout frames", () => {
         parentByObjectId: new Map([["child", "frame-object"]])
       })
     ).toThrow(/ancestor|descendant|frame-object/i);
+  });
+
+  it("derives persisted-scene IDs and parents without treating decorations as layout objects", () => {
+    const context = collectSerializedLayoutValidationContext({
+      version: "7.0.0",
+      objects: [
+        {
+          type: "Group",
+          objectId: "frame-object",
+          objects: [
+            {
+              type: "Rect",
+              objectId: "child",
+              clipPath: { type: "Rect", objectId: "clip" }
+            },
+            {
+              type: "Textbox",
+              objectId: "label",
+              path: { type: "Path", objectId: "text-path" }
+            }
+          ]
+        }
+      ],
+      backgroundImage: { type: "Image", objectId: "background" }
+    });
+
+    expect(context.objectIds).toEqual(["frame-object", "child", "label"]);
+    expect(context.parentByObjectId.get("frame-object")).toBeUndefined();
+    expect(context.parentByObjectId.get("child")).toBe("frame-object");
+    expect(context.parentByObjectId.get("label")).toBe("frame-object");
+
+    const invalid = createLayoutFrame(createLayoutDocument(), {
+      frameId: "persisted-invalid",
+      bounds: { left: 0, top: 0, width: 100, height: 100 },
+      flow: "free",
+      children: [{ objectId: "missing", sizing: "content-sized" }]
+    });
+    expect(() => validateLayoutDocument(invalid, context)).toThrow(/unknown object/i);
   });
 
   it("keeps explicit fixed dimensions and rejects free-flow overflow or grid collisions", () => {

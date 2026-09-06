@@ -1,4 +1,5 @@
 import {
+  collectSerializedLayoutValidationContext,
   createLayoutDocument,
   createLayoutFrame as createCoreLayoutFrame,
   insertLayoutChild as insertCoreLayoutChild,
@@ -1997,7 +1998,12 @@ export function EditorProvider({
 
   const validateRuntimeLayout = useCallback(
     (next: LayoutDocument): LayoutDocument => {
-      if (!canvas) return validateLayoutDocument(next);
+      if (!canvas) {
+        const { objectIds, parentByObjectId } = collectSerializedLayoutValidationContext(
+          initialProjectObjects.current
+        );
+        return validateLayoutDocument(next, { objectIds, parentByObjectId });
+      }
       const parentByObjectId = new Map<string, string | undefined>();
       const objectIds: string[] = [];
       sceneObjectEntries(canvas).forEach(({ object, parent }) => {
