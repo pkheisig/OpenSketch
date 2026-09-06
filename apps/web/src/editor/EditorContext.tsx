@@ -174,6 +174,19 @@ import {
 } from "@/editor/creation";
 import { EditorSnapshotProvider } from "@/editor/editorSnapshotProvider";
 import { createSnapshotStore, type SnapshotStore } from "@/editor/editorStore";
+import {
+  DEFAULT_HISTORY_MAX_BYTES,
+  DEFAULT_HISTORY_MAX_ENTRIES,
+  createHistoryBuffer,
+  type HistoryBuffer
+} from "@/editor/historyBuffer";
+import {
+  cloneCanvasSettings,
+  createDocumentSnapshot,
+  documentSnapshotsEqual,
+  estimateDocumentSnapshotBytes,
+  type EditorDocumentSnapshot
+} from "@/editor/documentSnapshot";
 import { DEFAULT_TEXT_LINE_HEIGHT } from "@/editor/text";
 import { createSemanticEditorAdapter } from "@/semantic/semanticEditorAdapter";
 import { inspectSemanticGeometry, perimeterPointForAnchor } from "@/semantic/composition";
@@ -258,7 +271,6 @@ const RESTORABLE_GROUP_PROPERTIES = [
   "semanticConnector"
 ] as const;
 
-const MAX_HISTORY = 120;
 const SVG_CACHE_LIMIT = 64;
 const DRAG_DUPLICATE_OPACITY = 0.35;
 const TITLE_PERSISTENCE_DELAY_MS = 250;
@@ -1292,7 +1304,9 @@ export function EditorProvider({
       return DEFAULT_CREATION_DEFAULTS;
     }
   });
-  const [canvasSettings, setCanvasSettingsState] = useState(project.canvas);
+  const [canvasSettings, setCanvasSettingsState] = useState(() =>
+    cloneCanvasSettings(project.canvas)
+  );
   const [alignmentEnabled, setAlignmentEnabledState] = useState(() => {
     return services.preferences.get("OpenSketch:alignment-enabled") !== "false";
   });
@@ -1317,15 +1331,22 @@ export function EditorProvider({
   );
   const [projectDescription, setProjectDescriptionState] = useState(project.description ?? "");
   const [historyState, setHistoryState] = useState({ canUndo: false, canRedo: false });
-  const history = useRef<string[]>([]);
-  const historyIndex = useRef(-1);
+  const historyBuffer = useRef<HistoryBuffer<EditorDocumentSnapshot>>(
+    createHistoryBuffer<EditorDocumentSnapshot>({
+      maxBytes: DEFAULT_HISTORY_MAX_BYTES,
+      maxEntries: DEFAULT_HISTORY_MAX_ENTRIES,
+      measure: estimateDocumentSnapshotBytes
+    })
+  );
   const lastCommit = useRef<{ label: string; at: number } | null>(null);
   const restoring = useRef(false);
   const clipboard = useRef<FabricObject[]>([]);
   const pendingClipboardCopy = useRef<Promise<void> | null>(null);
   const clipboardMarker = useRef<string | undefined>(undefined);
   const savedElementStyles = useRef(loadSavedElementStyles(services.preferences.storage));
-  const pendingSnapshot = useRef<{ snapshot: string; revision: number } | undefined>(undefined);
+  const pendingSnapshot = useRef<
+    { snapshot: EditorDocumentSnapshot; revision: number } | undefined
+  >(undefined);
   const saveQueue = useRef<Promise<void>>(Promise.resolve());
   const exitPending = useRef(false);
   const saveRevision = useRef(0);
@@ -1431,7 +1452,8 @@ export function EditorProvider({
     imports: project.uploads,
     updatedAt: project.updatedAt
   });
-  const latestCanvasSettings = useRef(project.canvas);
+  const latestCanvasSettings = useRef<CanvasSettings>(cloneCanvasSettings(project.canvas));
+  useEffect(() => () => historyBuffer.current.dispose(), []);
   const latestZoom = useRef(1);
   const canvasElement = useRef<HTMLCanvasElement | null>(null);
   const guides = useRef<{ vertical?: number; horizontal?: number }>({});
@@ -1590,6 +1612,28 @@ export function EditorProvider({
     return JSON.stringify(canvas.toJSON());
   }, [canvas]);
 
+  const captureDocumentSnapshot = useCallback((): EditorDocumentSnapshot => {
+    const scene =
+      canvas && canvasReadyRef.current
+        ? serialize()
+        : JSON.stringify(initialProjectObjects.current);
+    return createDocumentSnapshot(scene, latestCanvasSettings.current);
+  }, [canvas, serialize]);
+
+  const applyCanvasSettings = useCallback(
+    (settings: CanvasSettings) => {
+      const next = cloneCanvasSettings(settings);
+      latestCanvasSettings.current = next;
+      setCanvasSettingsState(next);
+      if (!canvas) return;
+      canvas.setDimensions(zoomedCanvasDimensions(next.width, next.height, zoom));
+      canvas.setViewportTransform([zoom, 0, 0, zoom, 0, 0]);
+      canvas.backgroundColor = next.transparent ? "" : next.background;
+      canvas.requestRenderAll();
+    },
+    [canvas, zoom]
+  );
+
   const reloadProject = useCallback(() => {
     if (projectConflict?.current) onRequestProjectSwitch?.(projectConflict.current);
   }, [onRequestProjectSwitch, projectConflict]);
@@ -1597,10 +1641,11 @@ export function EditorProvider({
     if (!projectConflict || projectConflictSaving) return;
     setProjectConflictSaving(true);
     try {
+      const snapshot = captureDocumentSnapshot();
       const copy = await services.projects.duplicate({
         ...latestProject.current,
-        canvas: latestCanvasSettings.current,
-        objects: JSON.parse(serialize())
+        canvas: snapshot.canvasSettings,
+        objects: JSON.parse(snapshot.scene)
       });
       onRequestProjectSwitch?.(copy);
     } catch (reason) {
@@ -1609,25 +1654,31 @@ export function EditorProvider({
     } finally {
       setProjectConflictSaving(false);
     }
-  }, [onRequestProjectSwitch, projectConflict, projectConflictSaving, serialize, services]);
+  }, [
+    captureDocumentSnapshot,
+    onRequestProjectSwitch,
+    projectConflict,
+    projectConflictSaving,
+    services
+  ]);
 
   const updateHistoryState = useCallback(() => {
     setHistoryState({
-      canUndo: historyIndex.current > 0,
-      canRedo: historyIndex.current >= 0 && historyIndex.current < history.current.length - 1
+      canUndo: historyBuffer.current.canUndo,
+      canRedo: historyBuffer.current.canRedo
     });
   }, []);
 
   const saveSnapshot = useCallback(
-    async (snapshot: string, revision: number) => {
+    async (snapshot: EditorDocumentSnapshot, revision: number) => {
       try {
         const now = new Date().toISOString();
         const current = latestProject.current;
-        const objects = JSON.parse(snapshot) as Record<string, unknown>;
+        const objects = JSON.parse(snapshot.scene) as Record<string, unknown>;
         const next: ProjectRecord = {
           ...current,
           updatedAt: now,
-          canvas: latestCanvasSettings.current,
+          canvas: cloneCanvasSettings(snapshot.canvasSettings),
           objects,
           usedAssetIds: assetIdsFromSnapshot(objects),
           // The project data is the durable source of truth. Its derived preview
@@ -1708,19 +1759,15 @@ export function EditorProvider({
   }, [saveSnapshot]);
 
   const persist = useCallback(
-    (snapshot?: string) => {
+    (snapshot?: EditorDocumentSnapshot) => {
       const revision = saveRevision.current + 1;
       saveRevision.current = revision;
-      const snapshotToSave =
-        snapshot ??
-        (canvas && canvasReadyRef.current
-          ? serialize()
-          : JSON.stringify(initialProjectObjects.current));
+      const snapshotToSave = snapshot ?? captureDocumentSnapshot();
       pendingSnapshot.current = { snapshot: snapshotToSave, revision };
       setSaveState((current) => (current.phase === "saving" ? current : { phase: "saving" }));
       void enqueuePendingSave().catch(() => undefined);
     },
-    [canvas, enqueuePendingSave, serialize]
+    [captureDocumentSnapshot, enqueuePendingSave]
   );
 
   const flushPendingTitle = useCallback(() => {
@@ -1817,28 +1864,25 @@ export function EditorProvider({
   const commit = useCallback(
     (label = "Change") => {
       if (!canvas || restoring.current) return;
-      const snapshot = serialize();
-      if (history.current[historyIndex.current] === snapshot) return;
+      const snapshot = captureDocumentSnapshot();
+      if (documentSnapshotsEqual(historyBuffer.current.current(), snapshot)) return;
       const now = performance.now();
       const replaceCurrent =
         COALESCABLE_HISTORY_LABELS.has(label) &&
         lastCommit.current?.label === label &&
         now - lastCommit.current.at < 600 &&
-        historyIndex.current === history.current.length - 1;
+        historyBuffer.current.cursor === historyBuffer.current.length - 1;
       if (replaceCurrent) {
-        history.current[historyIndex.current] = snapshot;
+        historyBuffer.current.replaceCurrent(snapshot);
       } else {
-        history.current = history.current.slice(0, historyIndex.current + 1);
-        history.current.push(snapshot);
+        historyBuffer.current.push(snapshot);
       }
-      if (history.current.length > MAX_HISTORY) history.current.shift();
-      historyIndex.current = history.current.length - 1;
       lastCommit.current = { label, at: now };
       updateHistoryState();
       persist(snapshot);
       warmCanvasPdfFonts(canvas, services.fonts);
     },
-    [canvas, persist, serialize, services.fonts, updateHistoryState]
+    [canvas, captureDocumentSnapshot, persist, services.fonts, updateHistoryState]
   );
 
   const setCanvasElement = useCallback(
@@ -1871,8 +1915,9 @@ export function EditorProvider({
           refreshTextMetrics(instance.getObjects());
           instance.requestRenderAll();
           const initial = JSON.stringify(instance.toJSON());
-          history.current = [initial];
-          historyIndex.current = 0;
+          historyBuffer.current.reset(
+            createDocumentSnapshot(initial, latestCanvasSettings.current)
+          );
           updateHistoryState();
           canvasReadyRef.current = true;
           setCanvasReady(true);
@@ -2572,22 +2617,26 @@ export function EditorProvider({
   const restoreHistory = useCallback(
     (offset: -1 | 1) => {
       const scheduled = historyRestoreTail.current.then(async () => {
-        const index = historyIndex.current + offset;
-        if (!canvas || !history.current[index] || index < 0 || index >= history.current.length) {
+        const target = historyBuffer.current.peek(offset);
+        if (!canvas || !target) {
           return false;
         }
         const complete = beginPendingEditorWork();
         restoring.current = true;
         try {
-          await canvas.loadFromJSON(history.current[index]);
+          await canvas.loadFromJSON(target.scene);
+          applyCanvasSettings(target.canvasSettings);
           assignSceneIdentities(canvas.getObjects());
           configureCanvasAssets(canvas.getObjects());
           assertUniqueSceneObjectIds(canvas);
           refreshConnectors();
           canvas.requestRenderAll();
-          historyIndex.current = index;
-          const repairedSnapshot = serialize();
-          history.current[index] = repairedSnapshot;
+          historyBuffer.current.move(offset);
+          const repairedSnapshot: EditorDocumentSnapshot = createDocumentSnapshot(
+            serialize(),
+            target.canvasSettings
+          );
+          historyBuffer.current.replaceCurrent(repairedSnapshot);
           setSelection([]);
           updateHistoryState();
           persist(repairedSnapshot);
@@ -2603,7 +2652,15 @@ export function EditorProvider({
       );
       return scheduled;
     },
-    [beginPendingEditorWork, canvas, persist, refreshConnectors, serialize, updateHistoryState]
+    [
+      applyCanvasSettings,
+      beginPendingEditorWork,
+      canvas,
+      persist,
+      refreshConnectors,
+      serialize,
+      updateHistoryState
+    ]
   );
 
   const restoreSemanticSnapshot = useCallback(
@@ -4177,17 +4234,12 @@ export function EditorProvider({
   const setCanvasSettings = useCallback(
     (settings: Partial<CanvasSettings>) => {
       const next = { ...latestCanvasSettings.current, ...settings };
-      latestCanvasSettings.current = next;
-      setCanvasSettingsState(next);
+      applyCanvasSettings(next);
       if (canvas) {
-        canvas.setDimensions(zoomedCanvasDimensions(next.width, next.height, zoom));
-        canvas.setViewportTransform([zoom, 0, 0, zoom, 0, 0]);
-        canvas.backgroundColor = next.transparent ? "" : next.background;
-        canvas.requestRenderAll();
         commit("Canvas settings");
       }
     },
-    [canvas, commit, zoom]
+    [applyCanvasSettings, canvas, commit]
   );
   semanticSetCanvasSettingsRef.current = setCanvasSettings;
 
@@ -4236,18 +4288,17 @@ export function EditorProvider({
   const exportProject = useCallback(async () => {
     flushPendingTitle();
     await waitForPendingEditorWork();
-    const snapshot =
-      canvas && canvasReady ? serialize() : JSON.stringify(initialProjectObjects.current);
-    const objects = JSON.parse(snapshot) as Record<string, unknown>;
+    const snapshot = captureDocumentSnapshot();
+    const objects = JSON.parse(snapshot.scene) as Record<string, unknown>;
     await services.files.downloadProject({
       ...latestProject.current,
       updatedAt: new Date().toISOString(),
-      canvas: latestCanvasSettings.current,
+      canvas: snapshot.canvasSettings,
       objects,
       usedAssetIds: assetIdsFromSnapshot(objects),
       thumbnail: undefined
     });
-  }, [canvas, canvasReady, flushPendingTitle, serialize, services, waitForPendingEditorWork]);
+  }, [captureDocumentSnapshot, flushPendingTitle, services, waitForPendingEditorWork]);
 
   const buildSvg = useCallback(
     (title = latestProject.current.name, description = latestProject.current.description ?? "") => {
