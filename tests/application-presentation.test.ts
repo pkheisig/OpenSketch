@@ -83,6 +83,9 @@ describe("OpenSketch application presentation contract", () => {
     const hostRoot = document.createElement("div");
     hostRoot.id = "host-portal-root";
     hostRoot.dataset.suiteUi = "host";
+    const hostSibling = document.createElement("div");
+    hostSibling.className = "host-sibling";
+    hostRoot.append(hostSibling);
     document.body.append(hostRoot);
 
     const view = render(
@@ -106,14 +109,20 @@ describe("OpenSketch application presentation contract", () => {
       )
     );
 
-    expect(hostRoot).toHaveAttribute("data-suite-ui", "opensketch");
-    expect(hostRoot).toHaveAttribute("data-opensketch-theme", "dark");
-    expect(hostRoot).toHaveAttribute("data-density", "compact");
-    expect(hostRoot).toHaveClass("opensketch-app", "opensketch-portal-host", "theme-dark");
+    expect(hostRoot).toHaveAttribute("data-suite-ui", "host");
+    expect(hostRoot).not.toHaveClass("opensketch-app", "opensketch-portal-host");
+    expect(hostRoot).toContainElement(hostSibling);
+    const scopedRoot = hostRoot.querySelector(".opensketch-portal-host");
+    expect(scopedRoot).toBeTruthy();
+    expect(scopedRoot).toHaveAttribute("data-suite-ui", "opensketch");
+    expect(scopedRoot).toHaveAttribute("data-opensketch-theme", "dark");
+    expect(scopedRoot).toHaveAttribute("data-density", "compact");
+    expect(scopedRoot).toHaveClass("opensketch-app", "theme-dark");
 
     view.unmount();
     expect(hostRoot).toHaveAttribute("data-suite-ui", "host");
-    expect(hostRoot).not.toHaveAttribute("data-opensketch-theme");
+    expect(hostRoot).toContainElement(hostSibling);
+    expect(hostRoot.querySelector(".opensketch-portal-host")).toBeNull();
     expect(hostRoot).not.toHaveClass("opensketch-portal-host");
     hostRoot.remove();
   });

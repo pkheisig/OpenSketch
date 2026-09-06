@@ -301,11 +301,27 @@ export function OpenSketchPortalRoot({
   scope?: OpenSketchPortalScope;
 }) {
   const [root, setRoot] = useState<HTMLDivElement | null>(null);
+  const [hostPortalRoot, setHostPortalRoot] = useState<HTMLDivElement | null>(null);
   const hostRoot =
     portalRootId && typeof document !== "undefined" ? document.getElementById(portalRootId) : null;
 
   useLayoutEffect(() => {
-    if (!hostRoot || !scope) return undefined;
+    if (!hostRoot) {
+      setHostPortalRoot(null);
+      return undefined;
+    }
+    const scopedRoot = document.createElement("div");
+    scopedRoot.className = "opensketch-app opensketch-portal-host";
+    hostRoot.append(scopedRoot);
+    setHostPortalRoot(scopedRoot);
+    return () => {
+      setHostPortalRoot((current) => (current === scopedRoot ? null : current));
+      scopedRoot.remove();
+    };
+  }, [hostRoot]);
+
+  useLayoutEffect(() => {
+    if (!hostPortalRoot || !scope) return undefined;
     const attributes: Record<string, string> = {
       "data-opensketch-mode": scope.mode,
       "data-opensketch-theme": scope.theme,
@@ -321,37 +337,24 @@ export function OpenSketchPortalRoot({
       "data-theme": scope.theme,
       "data-density": scope.density
     };
-    const previous = new Map<string, string | null>();
     for (const [name, value] of Object.entries(attributes)) {
-      previous.set(name, hostRoot.getAttribute(name));
-      hostRoot.setAttribute(name, value);
+      hostPortalRoot.setAttribute(name, value);
     }
-    const previousClasses = new Map<string, boolean>();
-    for (const className of [
-      "opensketch-app",
-      "opensketch-portal-host",
-      "theme-light",
-      "theme-dark"
-    ]) {
-      previousClasses.set(className, hostRoot.classList.contains(className));
-    }
-    hostRoot.classList.add("opensketch-app", "opensketch-portal-host");
-    hostRoot.classList.toggle("theme-light", scope.theme === "light");
-    hostRoot.classList.toggle("theme-dark", scope.theme === "dark");
+    hostPortalRoot.classList.toggle("theme-light", scope.theme === "light");
+    hostPortalRoot.classList.toggle("theme-dark", scope.theme === "dark");
     return () => {
-      for (const [name, value] of previous) {
-        if (value === null) hostRoot.removeAttribute(name);
-        else hostRoot.setAttribute(name, value);
+      for (const name of Object.keys(attributes)) {
+        hostPortalRoot.removeAttribute(name);
       }
-      for (const [className, hadClass] of previousClasses) {
-        hostRoot.classList.toggle(className, hadClass);
-      }
+      hostPortalRoot.classList.remove("theme-light", "theme-dark");
     };
-  }, [hostRoot, scope]);
+  }, [hostPortalRoot, scope]);
+
+  const portalTarget = hostRoot ? hostPortalRoot : root;
 
   return createElement(
     OpenSketchPortalRootContext.Provider,
-    { value: hostRoot ?? root },
+    { value: portalTarget },
     createElement(
       Fragment,
       null,
