@@ -20,6 +20,14 @@ import { sampleBrush } from "./geometry";
 function mark(parts: FabricObject[], prefix = "") {
   parts.forEach((part, i) => {
     part.objectId ??= crypto.randomUUID();
+    if (typeof part.fill === "string" && part.fill) {
+      part.originalFill = part.fill;
+      part.effectBaseFill = part.fill;
+    }
+    if (typeof part.stroke === "string" && part.stroke) {
+      part.originalStroke = part.stroke;
+      part.effectBaseStroke = part.stroke;
+    }
     part.name ??= `${prefix}part ${i + 1}`;
     part.selectable = false;
     part.evented = false;
@@ -440,6 +448,7 @@ export function createScientificObject(id: string, defaults: CreationDefaults): 
     mark(parts);
     detachBrush(g);
     g.name = preset.label;
+    g.familyId = preset.id;
     return g;
   }
   let points = [
@@ -478,6 +487,7 @@ export function createScientificObject(id: string, defaults: CreationDefaults): 
     stroke
   });
   brush.name = preset.label;
+  brush.familyId = preset.id;
   return brush;
 }
 export function brushAnchorInScene(

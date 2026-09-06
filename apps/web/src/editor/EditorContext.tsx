@@ -2661,6 +2661,7 @@ export function EditorProvider({
   const addObject = useCallback(
     (object: FabricObject, name: string, type: string, point?: Point, select = true) => {
       if (!canvas) return null;
+      assertAssetCapacity(canvas.getObjects(), object);
       assignIdentity(object, name, type);
       assignSceneIdentities(object);
       prepareElementStyle(object);

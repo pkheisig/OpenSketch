@@ -176,6 +176,27 @@ describe("new flat scientific structures", () => {
       changed.every((part) => part.originalFill === original && part.effectBaseFill === "#d48e8e")
     ).toBe(true);
   });
+  it("initializes the same palette metadata through the shape menu", () => {
+    for (const kind of [
+      "editable-cell",
+      "editable-protein",
+      "editable-receptor",
+      "editable-antibody"
+    ] as const) {
+      const object = createShapeObject(kind, DEFAULT_CREATION_DEFAULTS);
+      expect(object.familyId).toBe(kind);
+      expect(object).toBeInstanceOf(Group);
+      const leaves: FabricObject[] = [];
+      const walk = (part: FabricObject) =>
+        part instanceof Group ? part.getObjects().forEach(walk) : leaves.push(part);
+      walk(object);
+      expect(
+        leaves
+          .filter((part) => typeof part.fill === "string" && part.fill)
+          .every((part) => part.originalFill === part.fill)
+      ).toBe(true);
+    }
+  });
   it("retains palette changes after extension and releases ordinary editable parts", () => {
     const object = membrane();
     updateBrushObject(object, { ...object.scientificBrush, fill: "#d48e8e" });
