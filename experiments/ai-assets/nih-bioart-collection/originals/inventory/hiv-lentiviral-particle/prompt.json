@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of HIV / lentiviral particle, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Mature HIV-like virion cutaway: spherical teal lipid envelope bearing a sparse set of short violet trimeric Env spikes, thin coral matrix lining inside membrane. A distinctive gold conical capsid inside, broad rounded base below and narrow rounded tip above, opened by small window to show TWO separate loosely coiled coral RNA strands and a few tiny blue enzyme globules. No DNA helix or nucleus, no rigid spherical capsid. Envelope rim two thin pale lines separated by dark stripe. Smooth matte vector-style forms, broad subtle gradients and crisp outlines, no photographic grain. Transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-aae857cf-4d21-4882-96e5-6d70bd6a4f73.png",
+  "refinement": "Redraw this exact HIV-like virion cutaway in clean matte vector-style biomedical art. Preserve sparse violet Env trimers, teal envelope and thin bilayer rim, coral matrix, GOLD CONICAL capsid and EXACTLY TWO separate coral RNA strands inside with small blue enzyme symbols. Remove pebble-like outer surface texture and photographic grain, replacing outer envelope with smooth teal gradients. Simplify interior background to smooth deep teal and capsid interior to muted gold. Crisp outlines and broad subtle highlights, no wet gloss. Transparent PNG alpha.",
+  "archetype": "Mature HIV-like enveloped virion with conical capsid, two schematic RNA strands and enzyme symbols. RNA lengths compressed and uneven visually, not different genome lengths; capsomer and Env counts symbolic.",
+  "references": [
+    "https://viralzone.expasy.org/264?outline=all_by_species"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "hiv-lentiviral-particle",
+  "name": "HIV / lentiviral particle",
+  "original": "originals/inventory/hiv-lentiviral-particle/generated.png",
+  "original_sha256": "fa67fee20a8d693d809d2740fe3c86975fb4d635244a5ed9f08c57a560ced903"
+}

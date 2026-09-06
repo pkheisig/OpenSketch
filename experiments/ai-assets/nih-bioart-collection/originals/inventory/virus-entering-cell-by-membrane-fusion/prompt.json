@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a virus entering a cell by membrane fusion, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A single enveloped virus above a small horizontal cell membrane patch, shown in clear cross-section at late fusion. Coral viral membrane has fused with teal cell membrane at a broad open pore: the membranes form one continuous contour on each side, with NO membrane sheet spanning across the pore. One golden elongated nucleocapsid containing a violet RNA coil passes downward through the broad opening, mostly below the cell membrane plane into lavender cytoplasm. Sparse teal viral glycoprotein knobs point outside the remaining upper viral envelope. The upper viral lumen and cytoplasm are continuous through the opening; show a short neck, not a long budding stalk. Use simple paired-line bilayer rims rather than individual lipid beads. No arrows, no duplicate particles, no whole cell. Smooth matte vector-style art, subtle gradients, crisp outlines, no photographic grain. Transparent PNG alpha.",
+  "refinement": "Polish this exact viral membrane-fusion section into clean matte vector-style biomedical art. Preserve continuous coral-to-teal fused membrane contours on either side of the open pore, and the golden nucleocapsid mostly below the membrane with violet RNA emerging. Remove all photographic grain, roughness and wet highlights. Smooth coral envelope, smooth teal cell membrane and smooth lavender cytoplasm. Replace the fine lipid textures at the membrane rims with two clean pale continuous lines separated by a darker stripe. Remove the large orange beads lining the inside of the viral envelope; the interior should be a smooth muted coral cavity. Retain sparse outward teal glycoproteins. Crisp outlines, broad subtle gradients, complete local patch with transparent PNG alpha.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-2f1199c2-b751-46b2-bc70-c8422bb80be5.png",
+  "archetype": "Generic late virus-cell membrane fusion section. Coral viral membrane joins teal plasma membrane around an open pore; golden nucleocapsid passes into lavender cytoplasm, with symbolic RNA becoming exposed. Illustrative entry/uncoating composite, not a named virus-specific temporal mechanism. Paired pale rim lines are simplified bilayer boundaries.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "virus-entering-cell-by-membrane-fusion",
+  "name": "virus entering cell by membrane fusion",
+  "original": "originals/inventory/virus-entering-cell-by-membrane-fusion/generated.png",
+  "original_sha256": "97520c90ea5405a6bd094c92fe5455e68ecc5f6c5f7c3430cc6bcd08682ee74e"
+}

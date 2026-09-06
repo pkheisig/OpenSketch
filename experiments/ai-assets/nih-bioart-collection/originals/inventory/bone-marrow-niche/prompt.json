@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a bone marrow niche, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A compact schematic perivascular hematopoietic niche in oblique cutaway: one short thin-walled teal marrow sinusoid with several red blood cells visible in the lumen; one small violet hematopoietic stem cell closely adjacent to the outside endothelial wall, two gold branching reticular stromal cells wrapping outside the sinusoid with fine processes, a few coral hematopoietic progenitors nearby, one large ivory adipocyte with thin cytoplasmic rim and flattened peripheral nucleus. One small curved pale tan trabecular bone segment at the rear edge with osteoblasts lining it. These form a single compact interconnected tissue vignette with no surrounding tissue slab or ambient cloud. Symbolic cell identities, not marker-specific. Every nucleated cell has one recognizable violet nucleus, and red blood cells are anucleate biconcave disks. Smooth matte forms, limited gradients, no photographic grain, no sparkles. Genuine transparent PNG alpha outside.",
+  "refinement": "Refine this exact bone marrow niche into clean matte NIH-style biomedical illustration with smooth broad gradients and crisp outlines. Remove the mottled photographic grain on all cells. Replace the porous sponge texture in the pale ivory bone segment with solid lamellar matrix, thin curved lamellar lines and sparse tiny oval osteocyte lacunae; keep its existing shape and surface osteoblast row. Preserve the teal sinusoid and red biconcave cells inside, two gold branching stromal cells, adjacent violet stem cell, coral progenitors and single large adipocyte with flattened peripheral nucleus. Preserve arrangement and complete outline. Genuine transparent PNG alpha, no glow, no backdrop.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-6c3fe28e-e975-41f8-a83c-62c6a017b828.png",
+  "archetype": "Compact schematic perivascular hematopoietic niche, with sinusoidal endothelium, erythrocytes, reticular stromal cells, stem/progenitor symbols, adipocyte and adjacent lamellar bone. Colors and cell sizes distinguish illustrative roles; identities cannot be diagnosed from morphology alone. Not a quantitative or comprehensive niche map.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "bone-marrow-niche",
+  "name": "bone marrow niche",
+  "original": "originals/inventory/bone-marrow-niche/generated.png",
+  "original_sha256": "3c274912c84893f1f493d36e48834aad7626790a1d7c9c5cbd2de8b838e6bcf3"
+}

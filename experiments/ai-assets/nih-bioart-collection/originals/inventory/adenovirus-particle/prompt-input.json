@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an adenovirus particle, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Use a faceted non-enveloped icosahedral violet capsid with ordered hexon surface tiles and golden penton vertex bases. Long slender teal protein fibers project ONLY from the visible icosahedral vertices, each ending in one small rounded trimeric knob. No lipid membrane, no dense all-over spike coat, no cutaway. Smooth matte vector-style surfaces, not photographic texture. Scientifically representative visible subunit counts, no labels. Transparent PNG alpha.",
+  "refinement": "Redraw this exact adenovirus as clean polished matte vector-style biomedical art. Preserve the faceted violet icosahedral capsid, golden vertex bases and teal fibers with three-lobed terminal knobs. Replace all fine bumpy photographic texture with smooth capsid tiles and smooth slender fiber shafts. Broad subtle gradients, crisp clean outlines, no glossy toy highlights. Zoom out slightly so every fiber tip has generous padding. Transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-3d68f068-abd3-4d93-9b2e-89da508fb8bd.png",
+  "archetype": "Non-enveloped adenovirus with faceted protein capsid and vertex-associated fibers ending in trimeric knobs. Capsid tile and visible vertex counts are schematic; hexon is a trimer with pseudohexagonal appearance, not six independently identified protein chains. Occluded fiber attachments are illustrative.",
+  "references": [
+    "https://ictv.global/report_9th/dsDNA/Adenoviridae"
+  ]
+}

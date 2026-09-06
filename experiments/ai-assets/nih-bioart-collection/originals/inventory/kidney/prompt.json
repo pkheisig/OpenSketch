@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of kidney, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Human kidney frontal cutaway, convex outer border on left, hilum on right. Coral cortex rim, six dark rose medullary pyramids with broad bases toward cortex and pointed papillae inward; ivory minor calyces cup the papillae and join larger calyces into one funnel-shaped renal pelvis exiting as single ureter downward right. One red renal artery and one blue renal vein at hilum, short stumps only. Thin outer capsule. Smooth matte forms, broad gradients, no photographic grain, no wet reflections. Transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-d2b1c4f8-b218-4810-80cb-39e9f04e5f77.png",
+  "refinement": "Redraw this exact kidney cutaway as polished smooth vector-style biomedical illustration. Preserve the five visible rose medullary pyramids with papillae pointing into ivory calyces, coral cortex and thin capsule, collecting pelvis and single ureter, red artery and blue vein. Simplify cortical granules and pyramid striations to sparse clean fine marks. Remove photographic grain and wet gloss; broad matte gradients and crisp outlines. Generous transparent PNG alpha padding, no glow or shadows.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Kidney frontal cutaway with five visible representative medullary pyramids, cortex, calyces and pelvis, ureter, artery and vein. Pyramid number and relative collecting-system dimensions schematic.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "kidney",
+  "name": "kidney",
+  "original": "originals/inventory/kidney/generated.png",
+  "original_sha256": "dd2c973423a8be9378397422ed4a0fcb0ac2e8e93a0d01488227a080db9c2103"
+}

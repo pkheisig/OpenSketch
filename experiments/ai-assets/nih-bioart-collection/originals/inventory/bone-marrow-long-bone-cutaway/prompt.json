@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of bone marrow long bone cutaway, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A complete generic adult long bone oblique lengthwise cutaway, two expanded ends and narrower straight shaft. Ivory compact cortical wall thick at shaft; spongy trabecular bone at expanded ends with red marrow between trabeculae; yellow marrow in the central shaft medullary cavity. Thin pale blue articular cartilage at both ends, small periosteal edge, no fractures or disease. Smooth matte vector-style forms, restrained gradients and crisp outlines. Transparent PNG alpha. Anatomical schematic, not microscopic cellular detail.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-8ecd0ec3-1588-4bc6-b3b8-22cddb192f42.png",
+  "refinement": "Redraw this exact complete long-bone cutaway in polished smooth vector-style biomedical art. Preserve both enlarged ends, blue cartilage caps, ivory compact shaft cortex, trabecular ends with red marrow and yellow shaft marrow, small periosteal flap and intrinsic vessels. Remove photographic grain and wet texture. Use clean smooth ivory trabecular struts with dark coral marrow spaces, matte golden marrow, broad subtle gradients and crisp outlines. Generous transparent PNG alpha padding, no glow or shadow.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Representative long bone cutaway with cortical shaft, trabecular ends, red and yellow marrow. Marrow distribution is simplified and varies with age and skeletal site; not a specific bone atlas.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "bone-marrow-long-bone-cutaway",
+  "name": "bone marrow / long-bone cutaway",
+  "original": "originals/inventory/bone-marrow-long-bone-cutaway/generated.png",
+  "original_sha256": "10c61e4f64f2bfed5e7b352b34b4ae3847b7eec7f61998a836dc28b5ed05dc0a"
+}

@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of ovary, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Human ovary oblique cutaway: smooth almond-shaped pale peach capsule, rose stromal interior, small follicles under cortex, several growing round follicles and one larger antral follicle near the periphery with pale blue fluid cavity and an eccentrically placed oocyte in a mound of granulosa cells. One golden folded corpus luteum and small white corpus albicans within stroma, representative combined stages, no arrows. Red and blue vessels in central medulla and short hilum stumps. No uterus or tube. Smooth matte vector-style surfaces, broad subtle gradients, crisp outlines, no photographic grain. Transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-f5daf652-13e3-44f9-a2a2-e9de523d95f1.png",
+  "refinement": "Redraw this exact ovary cutaway as polished smooth vector-style biomedical art. Preserve follicles with single oocytes, large blue antral follicle with eccentric oocyte in granulosa mound, central red/blue vessels, one large golden folded corpus luteum and one small ivory corpus albicans. Remove the additional small orange hollow circular structure at lower right, replacing it with plain rose stroma. Remove photographic fibrous grain and wet gloss; smooth matte peach capsule, clean rose stroma, crisp cell outlines and broad subtle gradients. Transparent PNG alpha, no glow.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Ovary cutaway combining representative follicular stages, corpus luteum and corpus albicans. Not a single physiological moment; follicles and oocytes enlarged for recognition.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "ovary",
+  "name": "ovary",
+  "original": "originals/inventory/ovary/generated.png",
+  "original_sha256": "6522ccb84c7ceef11ac5135430788d5dd604071438805b6809d3c7285409a0cd"
+}

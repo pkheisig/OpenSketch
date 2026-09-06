@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of skeletal muscle, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Whole generic fusiform skeletal muscle, diagonal from upper left to lower right, broad red-coral belly tapering into short ivory tendons at BOTH ends. Longitudinal parallel fascicle bundles visible under thin epimysium; one small side window in sheath revealing a few bundled fascicles, all within the same complete muscle, no exploded parts or bones. Smooth matte vector-style forms, broad subtle gradients, fine clean longitudinal lines, no photographic grain or wet gloss. Transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-2b68f7b3-0f49-4183-910b-15b7393ffa8c.png",
+  "refinement": "Redraw this exact whole fusiform skeletal muscle in clean matte vector-style biomedical art. Preserve the two ivory tendons, coral tapered muscle belly and small cutaway showing bundled fascicle cut faces. Remove photographic fibrous grain, webby white wisps and wet sheen. Use smooth broad longitudinal coral bundles with sparse fine lines, clean ivory sheath edge and smooth tendons, subtle gradients and crisp outlines. Transparent PNG alpha outside.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Whole generic fusiform muscle with two tendons and a small fascicle cutaway. Representative architecture; fascicle numbers and microscopic scale exaggerated. Distinct from existing isolated fascicle.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "skeletal-muscle",
+  "name": "skeletal muscle",
+  "original": "originals/inventory/skeletal-muscle/generated.png",
+  "original_sha256": "de5ba1838c82ee480999672991c24c9117f3cc288819968578c9329f304f2954"
+}

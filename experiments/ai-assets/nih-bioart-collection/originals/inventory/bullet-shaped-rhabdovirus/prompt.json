@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a bullet-shaped rhabdovirus, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Oblique virion with a rounded domed tip at upper left and a closed flat base at lower right, straight cylindrical sides. Teal lipid envelope covered in short coral trimeric glycoprotein knobs. A longitudinal quarter cutaway shows a thin golden matrix layer beneath the envelope and a purple continuous tightly wound helical ribonucleoprotein coil inside, following the bullet contour and tapering at the dome. No central icosahedral core, no open tube end. Smooth matte vector-style forms, broad subtle gradients, crisp outlines and no photographic grain. Transparent PNG alpha.",
+  "refinements": [
+    "Refine this rhabdovirus: shorten the body so its length is approximately THREE TIMES its width, preserving a domed closed upper-left tip and flat closed lower-right base. Keep teal envelope, coral short glycoprotein knobs, thin golden matrix and purple helical RNP visible through the longitudinal window. Smooth clean matte vector-style art: remove photographic grain and wet glare; use broad subtle gradients and crisp outlines. No background glow. Complete isolated object, transparent PNG alpha.",
+    "Zoom out this complete rhabdovirus so it occupies only the middle 75 percent of the canvas, with clear transparent padding on every side and all coral knobs fully visible. Keep anatomy and colors. Make the teal membrane completely smooth matte, removing all bumps and grain. Softer broad highlights instead of wet shine. Transparent PNG alpha."
+  ],
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-9c74accc-91d4-44ea-ab2c-259fc657ea06.png",
+  "archetype": "Bullet-shaped rhabdovirus cutaway with domed tip, closed basal envelope, matrix and helical ribonucleoprotein. Lighter strand emphasizes the RNA-associated helical path, not a second independent nucleocapsid. Protein lobes, turns and dimensions schematic.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "bullet-shaped-rhabdovirus",
+  "name": "bullet-shaped rhabdovirus",
+  "original": "originals/inventory/bullet-shaped-rhabdovirus/generated.png",
+  "original_sha256": "772a711d76dfcf9220180a2742f8ae7a1a238cb3e39f006b128b5f18c5b0df7b"
+}

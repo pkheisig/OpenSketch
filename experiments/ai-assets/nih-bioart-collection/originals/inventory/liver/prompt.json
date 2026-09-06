@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a liver, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Adult human liver alone, anterior slightly inferior oblique view. Smooth reddish-brown/burgundy organ with large broad domed anatomical right lobe on viewer-left and much smaller flattened tapered anatomical left lobe extending to viewer-right. Thin pale cream falciform ligament on anterior surface separating gross lobes, descending toward a small inferior notch; crisp thin inferior edge and rounded superior dome. No gallbladder, stomach, pancreas, bowel, loose blood vessels, microscopic lobules or surrounding tissue. Do not split into separate floating lobes. Smooth matte capsule, broad gentle highlights and darker underside, clean fine maroon outlines, vector-style biomedical drawing with no photographic texture or grain. Genuine transparent PNG alpha.",
+  "refinement": "Redraw this exact liver as a clean polished vector-style biomedical illustration. Preserve the broad domed right lobe on viewer-left, tapered smaller left lobe on viewer-right, inferior edge and pale falciform ligament. Remove photographic grain and wet surface sheen. Use smooth matte reddish-brown forms, crisp fine maroon outlines and broad subtle gradients. No added anatomy. Transparent PNG alpha outside.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-20597ed1-e214-4d2b-99bb-152f38df99cd.png",
+  "archetype": "Anterior-oblique external liver with dominant anatomical right lobe on viewer-left, smaller left lobe and falciform ligament. Posterior caudate/quadrate lobes and portal structures hidden; gallbladder intentionally separate. Gross shape and ligament thickness illustrative.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "liver",
+  "name": "liver",
+  "original": "originals/inventory/liver/generated.png",
+  "original_sha256": "2d96f1d165b225d0226274bf589e21f476d3a731de2ca2debab806d8e4e93357"
+}

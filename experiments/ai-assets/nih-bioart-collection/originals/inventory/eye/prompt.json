@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an eye, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One adult human eyeball in oblique sagittal cutaway, cornea at left and short optic nerve at rear right. Smooth ivory scleral outer shell, thin dark plum choroid and thin coral retina lining interior posterior globe in the correct outside-to-inside order. Transparent pale blue bulging cornea at front, teal iris diaphragm with central pupil opening directly in front of a single translucent pale blue biconvex lens. Fine gold zonular fibers suspend lens from ciliary body at its rim; aqueous chamber between cornea and iris/lens, large clear pale blue vitreous chamber behind lens. Retina converges to optic disc at nerve exit slightly eccentric to posterior pole. No detached lens, no eyelashes or eyelids, no extraocular muscles, no floating molecular objects. Use clean matte smooth forms, crisp dark outlines and broad gentle gradients, no photographic grain or excessive shine. Transparent PNG alpha outside.",
+  "refinement": "Keep this eye anatomy, exact layer order and composition. Make the style clean matte biomedical illustration: remove photographic grain, mottled tissue and wet reflections. Use smooth broad gradients, crisp thin outlines. Keep the teal iris with simple fine radial lines and central pupil, one pale blue biconvex lens behind it, fine gold zonular fibers, coral ciliary body. Clear pale blue vitreous should be smooth with no white tangled wisps. Preserve ivory sclera outside, plum choroid middle, orange-coral retina inside with thin branching retinal vessels converging on optic nerve. Transparent PNG alpha outside, no glow.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-8e51b529-95b1-4b84-a709-2ffb366d5a8a.png",
+  "archetype": "Human eyeball oblique cutaway with cornea, iris/pupil, lens/zonules/ciliary body, vitreous chamber, sclera/choroid/retina and optic nerve. Layer thicknesses, lens curvature, retinal vessel branching and colors schematic. No optical ray-tracing or diagnostic use implied.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "eye",
+  "name": "eye",
+  "original": "originals/inventory/eye/generated.png",
+  "original_sha256": "0391655f31c2228acb6fd7aaedb362da62201db34ca938ffeb0d55a4574aa73a"
+}

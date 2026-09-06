@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a thymus, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One youthful human thymus, two elongated irregular softly lobulated pink-lavender lobes closely apposed at midline, tapered narrow superior poles and broader inferior lobes, asymmetric but coherent. Thin delicate pale capsule and fine septa divide tissue into lobules. Small flat cutaway face on the lower front portion of one lobe shows darker violet cortex around lighter lavender medulla in several contiguous thymic lobules; medulla connects between lobules, not isolated circular lymph-node follicles. Just a few tiny concentric cream Hassall corpuscle symbols within medulla, and sparse small dark lymphocyte dots in cortex. No trachea, thyroid, sternum, lungs, neck, surrounding fat cloud or external blood vessels. Matte smooth biomedical drawing with crisp outlines and soft broad gradients, no photographic grain, no wet or sparkling texture. Genuine transparent PNG alpha.",
+  "refinement": "Refine this exact bilobed thymus. In the small cutaway at lower right, make the pale lavender medullary centers continuous through narrow pale tissue bridges between adjacent lobules; septa should stop short of fully separating medulla. Keep the concentric cream Hassall corpuscle symbols inside pale medulla and darker purple lymphocyte-rich cortex peripheral. Redraw all external tissue as smooth matte pink-lavender lobules with crisp thin darker outlines and broad soft gradients, removing ALL photographic grain and wet texture. Keep two elongated asymmetric lobes and their narrow superior tips. True transparent PNG alpha outside.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-0376fe54-9ad7-4460-91a3-034bc2b1a595.png",
+  "archetype": "Youthful, non-involuted bilobed thymus with enlarged schematic cutaway showing lymphocyte-rich cortex, communicating medullary regions and concentric Hassall corpuscle symbols. Lobule counts and microscopic features exaggerated to remain readable; not a histological section or adult involution model.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "thymus",
+  "name": "thymus",
+  "original": "originals/inventory/thymus/generated.png",
+  "original_sha256": "61368abf3e5311855242ea0c30900c4242ba2199ebb01dea91722a9ba775efad"
+}

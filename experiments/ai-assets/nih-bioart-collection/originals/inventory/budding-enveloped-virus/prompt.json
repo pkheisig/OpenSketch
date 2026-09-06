@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a budding enveloped virus, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One spherical viral bud bulges UPWARD from a small horizontal cell-membrane patch and remains connected by a narrow unsevered neck. Show the structure in section so the coral lipid bilayer is CONTINUOUS from the flat membrane patch up both sides of the neck around the bud; bud interior remains openly continuous with cytoplasm below through that neck. Short teal glycoprotein knobs point outward on the bud surface. Inside bud is one golden rounded capsid containing a violet RNA coil, exposed by the same section. Only the small local membrane patch needed to show budding, no whole cell. Clean matte vector-style art, smooth broad gradients and crisp outlines, no photographic grain. Transparent PNG alpha.",
+  "refinement": "Refine this budding-virus section into clean smooth matte vector-style biomedical art. Preserve the continuous open neck from cytoplasm into bud, gold capsid and violet RNA. Along the entire membrane cross-section, show a genuine lipid BILAYER: TWO rows of similarly sized coral round heads, one facing outside and one facing inside, with two opposing short tail sets meeting in the dark membrane center. Avoid one giant outer head row plus tiny inner dots. Keep continuity from flat patch through neck around bud. Smooth lavender cytoplasm with fewer small intrinsic protein symbols; remove grain and wet highlights. Broad subtle gradients, crisp outlines. Zoom out for generous transparent padding, no clipped patch ends. Transparent PNG alpha.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-2c5107e3-17fe-4953-9888-3b04c02d79cd.png",
+  "archetype": "Generic enveloped virus budding at a local plasma-membrane patch. Bilayer contour remains continuous around the protrusion and its unsevered open neck; viral interior is continuous with cytoplasm. Symbolic packaged genome/capsid and outward glycoproteins, not a virus-specific maturation model. Lipid head sizes exaggerated for visibility.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "budding-enveloped-virus",
+  "name": "budding enveloped virus",
+  "original": "originals/inventory/budding-enveloped-virus/generated.png",
+  "original_sha256": "32c0ec1999d8c55b19a8a4ddee00206d0f798b95fdecd29c5fd9111c15cddc7b"
+}

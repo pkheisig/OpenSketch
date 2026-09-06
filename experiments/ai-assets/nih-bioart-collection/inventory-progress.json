@@ -14236,267 +14236,1688 @@
     "peripheral-nerve-bundle": {
       "name": "peripheral nerve bundle",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/peripheral-nerve-bundle-bioart-transparent.png",
+      "svg": "svg/peripheral-nerve-bundle-bioart-traced.svg",
+      "png_sha256": "45050bd4ec268db971e1f4df590e1596d23ed7bd0ecd7560be2f47862956c5a2",
+      "svg_sha256": "412a14eb4c736321de6140358c1746079462db0ded7a8e79c1804fcfb13dcdce",
+      "original_sha256": "d3fe71f081c00ecfaafad85d9cf9f5c93b52e114fa7594509706d31e82f1467f",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        601,
+        323,
+        579
+      ],
+      "svg_paths": 30069,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/peripheral-nerve-bundle/prompt.json",
+      "qa": "qa/inventory/peripheral-nerve-bundle",
+      "visual_review": "Three fascicles, myelin-ring profiles and representative longitudinal axons with solid gold ends retained. SVG preserves sheath and node boundaries; clean alpha and complete silhouette on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/peripheral-nerve-bundle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/peripheral-nerve-bundle/inspection.webm"
+      }
     },
     "bone-trabecula": {
       "name": "bone trabecula",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/bone-trabecula-bioart-transparent.png",
+      "svg": "svg/bone-trabecula-bioart-traced.svg",
+      "png_sha256": "0e98e436ab31654ab4e51fc47e52356db1a70e2cf5b5255cbe4a9089fd92a373",
+      "svg_sha256": "ed1d5f9b6d23e31c0c121b344a82a679d9658dc9999a8b2779530a5454988ea3",
+      "original_sha256": "895394c4f7783012f1da49731411f0469f370cf9fcd10c6018128a7dfc80d77e",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        321,
+        589
+      ],
+      "svg_paths": 13548,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/bone-trabecula/prompt.json",
+      "qa": "qa/inventory/bone-trabecula",
+      "visual_review": "Viewed PNG and SVG on light and dark backgrounds. Three solid lamellar cut ends, embedded violet osteocytes, teal osteoblast row and coral multinucleated osteoclast retained. Clean alpha and matching silhouette; fine lamellae simplified in trace.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bone-trabecula/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bone-trabecula/inspection.webm"
+      }
     },
     "bone-marrow-niche": {
       "name": "bone marrow niche",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/bone-marrow-niche-bioart-transparent.png",
+      "svg": "svg/bone-marrow-niche-bioart-traced.svg",
+      "png_sha256": "b2ce2e9cd8295348adeb590c44304f47c7713772b01f8c8e037a72deb3aaad7f",
+      "svg_sha256": "4c93a1daa48d714b4a01ee44f3802babad6aba00cf63727fc53bd9290263e455",
+      "original_sha256": "3c274912c84893f1f493d36e48834aad7626790a1d7c9c5cbd2de8b838e6bcf3",
+      "png_dimensions": [
+        1962,
+        1962
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        323,
+        431,
+        294,
+        438
+      ],
+      "svg_paths": 20052,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/bone-marrow-niche/prompt.json",
+      "qa": "qa/inventory/bone-marrow-niche",
+      "visual_review": "Viewed both formats on light and dark. Sinusoid with anucleate erythrocytes, two gold reticular stromal cells, adjacent hematopoietic cells, adipocyte with peripheral nucleus and solid lamellar bone retained. Cell identities and proportions symbolic. Smooth matching trace and clean exterior/inter-process alpha.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bone-marrow-niche/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bone-marrow-niche/inspection.webm"
+      }
     },
     "lymph-node-cross-section": {
       "name": "lymph node cross-section",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/lymph-node-cross-section-bioart-transparent.png",
+      "svg": "svg/lymph-node-cross-section-bioart-traced.svg",
+      "png_sha256": "9d515e7f8a9128901954b809272be41398b0bf31ac84b556858f60ff4d85d9df",
+      "svg_sha256": "800baefc0c0f529ab73c21a7fd4aaec5a6e26d5e546357330585720f0ed0e533",
+      "original_sha256": "51cb3db92efed62908ae8ea79e9863d95f49d681e117c0e35576df0e34fc3009",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        591,
+        371,
+        583,
+        347
+      ],
+      "svg_paths": 29676,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/lymph-node-cross-section/prompt.json",
+      "qa": "qa/inventory/lymph-node-cross-section",
+      "visual_review": "Viewed PNG/SVG on both backgrounds: five peripheral pale-centered follicles with dark mantles, intervening paracortex, coral medullary cords and teal sinuses retained. Three afferent lymphatics on convex edge; one efferent plus red artery and blue vein at hilum. Clean alpha; trace retains compartment boundaries and capsule. Cell counts and region colors schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lymph-node-cross-section/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lymph-node-cross-section/inspection.webm"
+      }
     },
     "splenic-white-pulp-unit": {
       "name": "splenic white-pulp unit",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/splenic-white-pulp-unit-bioart-transparent.png",
+      "svg": "svg/splenic-white-pulp-unit-bioart-traced.svg",
+      "png_sha256": "f96d4c449bf1ff6574362513b7fb8ccdc3d0d7bf5bb945b2ee8e8688584d5336",
+      "svg_sha256": "a9c5dce788be9de388319bed0054215515d23a33837bcf5124bd5fdcdd1ac88f",
+      "original_sha256": "04abfe92f84f89086efff1ab2d03e30957ff4af55c93902ad64bed1e4480e324",
+      "png_dimensions": [
+        1847,
+        1847
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        295,
+        327,
+        288,
+        342
+      ],
+      "svg_paths": 30457,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/splenic-white-pulp-unit/prompt.json",
+      "qa": "qa/inventory/splenic-white-pulp-unit",
+      "visual_review": "Viewed PNG/SVG light and dark: eccentric pale-centered follicle, dark mantle/PALS around red arteriole, teal marginal zone and narrow coral red-pulp cuff retained. Arteriole bypasses germinal center. Clean transparency and close visual match; species-specific rodent schematic limitation recorded.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/splenic-white-pulp-unit/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/splenic-white-pulp-unit/inspection.webm"
+      }
     },
     "tumor-spheroid": {
       "name": "tumor spheroid",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/tumor-spheroid-bioart-transparent.png",
+      "svg": "svg/tumor-spheroid-bioart-traced.svg",
+      "png_sha256": "ee5c3e6eb250ec91b204ed8d4aed6ecd4b6bc5e9906a7a0a20568380c783f8c5",
+      "svg_sha256": "9de387bb4a2489f62c2ff5c84606e7d375de40b8207f6103701c8ff01886af33",
+      "original_sha256": "56bdb2d4cc8b572d7699d77dc5dfca16028b2ef99fa17bb89be0f8339fd8381c",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        524,
+        594,
+        487,
+        563
+      ],
+      "svg_paths": 20718,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/tumor-spheroid/prompt.json",
+      "qa": "qa/inventory/tumor-spheroid",
+      "visual_review": "Viewed PNG/SVG on light and dark: coral outer viable cells, lavender intermediate band and solid beige necrotic core with remnants remain distinct. No lumen or vessels. Matches approved cell-spheroid style with added mature avascular zonation. Clean alpha, complete silhouette, close trace.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tumor-spheroid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tumor-spheroid/inspection.webm"
+      }
     },
     "tumor-microvessel": {
       "name": "tumor microvessel",
       "category": "11. Extracellular matrix and tissue microstructures",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/tumor-microvessel-bioart-transparent.png",
+      "svg": "svg/tumor-microvessel-bioart-traced.svg",
+      "png_sha256": "f7534457e5a10dc0e813a4d1b5c191e0c6d1561d89aa0058471ad9ce91251fa5",
+      "svg_sha256": "4af3be3a24bff67eb7f66c578d3e53ad30c7c17e9b1ba72993f98f8d10846eb6",
+      "original_sha256": "3d1bf161b009401feb000b48ff5fd4016c61ef839e8a7cdc11e2bce95a29c738",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        362,
+        634,
+        363,
+        635
+      ],
+      "svg_paths": 9662,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/tumor-microvessel/prompt.json",
+      "qa": "qa/inventory/tumor-microvessel",
+      "visual_review": "Viewed PNG and SVG light/dark: tortuous variable-caliber tube, enlarged central segment, small exaggerated endothelial gaps, one sparsely covering gold pericyte and central cutaway with erythrocytes preserved. Clear ends and clean alpha. Style matches normal microvessel; trace closely follows cells and outline.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tumor-microvessel/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tumor-microvessel/inspection.webm"
+      }
     },
     "brain": {
       "name": "brain",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/brain-bioart-transparent.png",
+      "svg": "svg/brain-bioart-traced.svg",
+      "png_sha256": "8a9b6370400a477bea3e968ab3d38c97fb1bf96f4df1fc6f43ea1440649ca410",
+      "svg_sha256": "fc23b5b4cbd798f7504d7b19712722837bf53b445a91514b6b112197fb592627",
+      "original_sha256": "da6f516033fe7f6bc3d6f2f669e66cb82eccb4c1f4aa6151f04b3ac154339b50",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        418,
+        580,
+        391,
+        579
+      ],
+      "svg_paths": 16394,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/brain/prompt.json",
+      "qa": "qa/inventory/brain",
+      "visual_review": "Viewed PNG/SVG light and dark. Complete lateral brain silhouette, cerebral gyri, lateral sulcus, posterior-inferior cerebellum and anterior brainstem retained. Smoother matte surface maintained; minor gradient quantization at close zoom. Clean alpha and generous padding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/brain/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/brain/inspection.webm"
+      }
     },
     "spinal-cord-segment": {
       "name": "spinal cord segment",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/spinal-cord-segment-bioart-transparent.png",
+      "svg": "svg/spinal-cord-segment-bioart-traced.svg",
+      "png_sha256": "c06314e0a038a1bf5133a1f1655970b87fb2739a984e39795a55941923225710",
+      "svg_sha256": "5afe98948545b55dd6b1b6369c4122af2622b22752eab68b70def91dc9372d84",
+      "original_sha256": "e165c0ff450a8b411f86cccbfaefa6267facc8c1205da00921494d649ffd44f5",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        337,
+        565,
+        338,
+        617
+      ],
+      "svg_paths": 9364,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/spinal-cord-segment/prompt.json",
+      "qa": "qa/inventory/spinal-cord-segment",
+      "visual_review": "Viewed light/dark PNG/SVG: connected violet gray-matter butterfly, central canal, broad ventral horns, slender dorsal horns, surrounding white matter and anterior fissure retained. Dorsal ganglion only on upper root; un-swollen ventral root joins beyond it. Clean alpha between rootlets and outside; matching trace.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/spinal-cord-segment/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/spinal-cord-segment/inspection.webm"
+      }
     },
     "peripheral-nerve": {
       "name": "peripheral nerve",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "peripheral-nerve-bundle",
+      "alias_reason": "The generic peripheral-nerve entry specifies no distinct anatomical view or named nerve. The reviewed bundle cutaway already depicts a peripheral nerve with multiple perineurial fascicles inside epineurium, intrinsic vessels and representative myelinated fibers. Reuse the same archetype rather than duplicate an unlabeled object; original schematic scaling caveats apply.",
+      "reference": "https://pubmed.ncbi.nlm.nih.gov/23931772/",
+      "png": "png/peripheral-nerve-bundle-bioart-transparent.png",
+      "svg": "svg/peripheral-nerve-bundle-bioart-traced.svg",
+      "png_sha256": "45050bd4ec268db971e1f4df590e1596d23ed7bd0ecd7560be2f47862956c5a2",
+      "svg_sha256": "412a14eb4c736321de6140358c1746079462db0ded7a8e79c1804fcfb13dcdce"
     },
     "eye": {
       "name": "eye",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/eye-bioart-transparent.png",
+      "svg": "svg/eye-bioart-traced.svg",
+      "png_sha256": "87e08a33fd9410c8b06cd3e67e7d65a212bbc90920090536a5baeb9c27d69801",
+      "svg_sha256": "d97c4fd7ee8d86812590979872b2213aaa940a3dcc1b4721d9740b941d63879e",
+      "original_sha256": "0391655f31c2228acb6fd7aaedb362da62201db34ca938ffeb0d55a4574aa73a",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        321,
+        563
+      ],
+      "svg_paths": 12689,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/eye/prompt.json",
+      "qa": "qa/inventory/eye",
+      "visual_review": "Viewed PNG and SVG light/dark: cornea, iris aperture, lens behind iris, zonular fibers, sclera-choroid-retina order and optic nerve remain clear. Smooth vitreous and thin retinal vessels retained; mild gradient quantization in SVG. Clean alpha and complete object.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/eye/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/eye/inspection.webm"
+      }
     },
     "ear": {
       "name": "ear",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/ear-bioart-transparent.png",
+      "svg": "svg/ear-bioart-traced.svg",
+      "png_sha256": "7931b1114a40566ba92731190602457916f92529682d9c94ecd60c0a083a4025",
+      "svg_sha256": "6ff84cd8139e308c89a0a04f42639cc206d973cdc0a87011aa587c193eba2c19",
+      "original_sha256": "dd7f5cfacb99c7572c6a4848ae7deca672cbb043d8ad365ba8db776a378b7829",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        326,
+        659,
+        377
+      ],
+      "svg_paths": 7708,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/ear/prompt.json",
+      "qa": "qa/inventory/ear",
+      "visual_review": "Viewed PNG/SVG light and dark. Complete auricle, helix/antihelix, conchal hollow, canal entrance, tragus and lobule retained. Smooth matte shading and matching silhouette; minor gradient quantization only. Clean exterior alpha. External-ear view explicitly recorded.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ear/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ear/inspection.webm"
+      }
     },
     "thyroid-gland": {
       "name": "thyroid gland",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/thyroid-gland-bioart-transparent.png",
+      "svg": "svg/thyroid-gland-bioart-traced.svg",
+      "png_sha256": "1adc3dc26a97df6db7526506edd797f3af231ebed17de74bea7787d27ab4df71",
+      "svg_sha256": "09773c759e9f791f5effb51a56fb361432cacc5db028f19c187352cc7a077cf3",
+      "original_sha256": "d31a4f79749d194690859e42e67578131f5802dac7f7bb2ef114424f820cf5d9",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        468,
+        568,
+        469,
+        579
+      ],
+      "svg_paths": 10012,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/thyroid-gland/prompt.json",
+      "qa": "qa/inventory/thyroid-gland",
+      "visual_review": "Viewed PNG/SVG light and dark. Two smooth tapered lobes and connecting isthmus retained, fine branching surface vessels preserved. Exaggerated cobblestone texture removed. Clean alpha through notch and outside, close trace with subtle shading.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/thyroid-gland/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/thyroid-gland/inspection.webm"
+      }
     },
     "thymus": {
       "name": "thymus",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/thymus-bioart-transparent.png",
+      "svg": "svg/thymus-bioart-traced.svg",
+      "png_sha256": "6da3847d6036806be97f792b500853f5a11a4f1933705b600500012a69cbe19c",
+      "svg_sha256": "b28c2e3d5a8aaf9dcb12bb905a6e2635e6bfff71361667dc652161113bd1b870",
+      "original_sha256": "61368abf3e5311855242ea0c30900c4242ba2199ebb01dea91722a9ba775efad",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        634,
+        319,
+        613,
+        331
+      ],
+      "svg_paths": 15504,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/thymus/prompt.json",
+      "qa": "qa/inventory/thymus",
+      "visual_review": "Viewed PNG/SVG on both backgrounds. Two asymmetric lobulated lobes with complete tapered poles retained. Enlarged cutaway shows dark peripheral cortex, pale communicating medullary regions and concentric corpuscle symbols. Matte texture, clean alpha and matching trace; microscopic details explicitly schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/thymus/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/thymus/inspection.webm"
+      }
     },
     "lymph-node": {
       "name": "lymph node",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "lymph-node-cross-section",
+      "alias_reason": "The generic lymph-node entry specifies no different view or named node. The reviewed bean-shaped cutaway includes the complete node silhouette, capsule, intrinsic vessels and internal compartments, so it also serves as the generic organ archetype. Reuse this pair rather than duplicate the same unlabeled organ.",
+      "reference": "https://www.ncbi.nlm.nih.gov/books/NBK557717/",
+      "png": "png/lymph-node-cross-section-bioart-transparent.png",
+      "svg": "svg/lymph-node-cross-section-bioart-traced.svg",
+      "png_sha256": "9d515e7f8a9128901954b809272be41398b0bf31ac84b556858f60ff4d85d9df",
+      "svg_sha256": "800baefc0c0f529ab73c21a7fd4aaec5a6e26d5e546357330585720f0ed0e533"
     },
     "spleen": {
       "name": "spleen",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/spleen-bioart-transparent.png",
+      "svg": "svg/spleen-bioart-traced.svg",
+      "png_sha256": "7057435d82fc46bfa1d59911316e66aa2c313a76b0f6f062f14f5722554cfeb5",
+      "svg_sha256": "b564ed111b9301c6aafc07a89cec5668207130fddc20a1385265c02d6c9a89bf",
+      "original_sha256": "974bbca3ffb9a569a92754f5159410ef85724eed462888288e413d0b4eb20e9d",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        372,
+        578,
+        321,
+        589
+      ],
+      "svg_paths": 8289,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/spleen/prompt.json",
+      "qa": "qa/inventory/spleen",
+      "visual_review": "Viewed PNG/SVG on both backgrounds. Complete flattened plum spleen, two superior notches, shallow visceral impressions and red/blue hilar vessels retained. Smooth shading with minor trace banding, clean alpha and matching silhouette.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/spleen/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/spleen/inspection.webm"
+      }
     },
     "heart": {
       "name": "heart",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/heart-bioart-transparent.png",
+      "svg": "svg/heart-bioart-traced.svg",
+      "png_sha256": "e210462f492e4ad8ad93af770cfd3629064fa28b2992f2d1249e3a71c24e743a",
+      "svg_sha256": "2fc27b36c8065870c1a1729908fa56e9bbce83465513181893708c6084147ab9",
+      "original_sha256": "bdb82d22aa086651f83621e3b92a389c33bd38fc2c00ece7ba931ea17b117a1b",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        307,
+        607,
+        371
+      ],
+      "svg_paths": 30458,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/heart/prompt.json",
+      "qa": "qa/inventory/heart",
+      "visual_review": "Viewed PNG/SVG on both backgrounds. Three arch branches, anterior pulmonary trunk and visible branches, venae cavae, auricles and coronary grooves retained. Extra lower blue tube removed before alpha generation. Posterior vessels partly hidden as recorded. Clean alpha, matching silhouette and good vessel detail in trace.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/heart/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/heart/inspection.webm"
+      }
     },
     "lung-pair": {
       "name": "lung pair",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/lung-pair-bioart-transparent.png",
+      "svg": "svg/lung-pair-bioart-traced.svg",
+      "png_sha256": "fb13baf851c9997946333c6343e64ceb7b1bed3456353c670c8ca8d0cf8e1255",
+      "svg_sha256": "17b6ec8c47b4380bbcdc8ffd4adeaf2995859ee93221a44583d8b83c68e622a8",
+      "original_sha256": "7975efcd9911e08fd81c3f6ead5af81688699a95f8fe58c38879d2ec644a8027",
+      "png_dimensions": [
+        1843,
+        1843
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        263,
+        324,
+        263,
+        325
+      ],
+      "svg_paths": 16014,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/lung-pair/prompt.json",
+      "qa": "qa/inventory/lung-pair",
+      "visual_review": "Viewed PNG/SVG on light/dark: viewer-left anatomical right has three lobes, viewer-right left has two with cardiac notch and lingula. Trachea/main bronchi connected and complete. Clean alpha between lungs and outside, matched fissures and outline; minor broad-gradient quantization.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lung-pair/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lung-pair/inspection.webm"
+      }
     },
     "trachea": {
       "name": "trachea",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/trachea-bioart-transparent.png",
+      "svg": "svg/trachea-bioart-traced.svg",
+      "png_sha256": "aad7fbd3b4635c0ad0181f3a542307914a55cd957104c9253f6ec0843aead280",
+      "svg_sha256": "da7a873101d713e94229c651d595d60ebc8e71fe8aafd7b651cce2e09a11d53f",
+      "original_sha256": "56dd3478657f23f04b61819d79ced7ff4f0faceb8386c5f0cced80afafb62656",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        322,
+        583,
+        327
+      ],
+      "svg_paths": 9534,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/trachea/prompt.json",
+      "qa": "qa/inventory/trachea",
+      "visual_review": "Viewed PNG/SVG on light/dark. C-ring ends stop along posterior coral membrane; patent top opening and two bronchial ends retained. Smooth cartilage outlines and matching shading. Clean alpha and complete bifurcation; ring count symbolic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/trachea/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/trachea/inspection.webm"
+      }
     },
     "liver": {
       "name": "liver",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/liver-bioart-transparent.png",
+      "svg": "svg/liver-bioart-traced.svg",
+      "png_sha256": "e98bd8cc1fbe7fc9bd0cebb73f501d088d4aea7e8ac06ccdbc6d63874ba05dd8",
+      "svg_sha256": "4f81472d1445bab6ede6138714dac0c572c52637199de64b9bc3598c45d665d0",
+      "original_sha256": "2d96f1d165b225d0226274bf589e21f476d3a731de2ca2debab806d8e4e93357",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        579,
+        335,
+        588
+      ],
+      "svg_paths": 20878,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/liver/prompt.json",
+      "qa": "qa/inventory/liver",
+      "visual_review": "Viewed PNG/SVG on light/dark. Dominant right lobe and tapered smaller left lobe joined beneath pale falciform ligament, rounded dome and thin inferior edge retained. Complete alpha silhouette, no separate organ additions. Trace matches broad shading with minor surface quantization.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/liver/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/liver/inspection.webm"
+      }
     },
     "gallbladder": {
       "name": "gallbladder",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/gallbladder-bioart-transparent.png",
+      "svg": "svg/gallbladder-bioart-traced.svg",
+      "png_sha256": "8b3687e04232af01dd99447d4085b3900c4138896b41f50949c084e7c2b354fd",
+      "svg_sha256": "79b8530286fc38333491f8434a20f653e38555576a9845d584d926b9b8f3be56",
+      "original_sha256": "61d573a22b899dfcfc3739bb78b110a8237792d28dbfae6f53da153f74f094da",
+      "png_dimensions": [
+        1848,
+        1848
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        328,
+        273,
+        329,
+        264
+      ],
+      "svg_paths": 8976,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/gallbladder/prompt.json",
+      "qa": "qa/inventory/gallbladder",
+      "visual_review": "Viewed PNG/SVG on light/dark. Complete pear-shaped sac and single cystic duct, thin wall window and folded mucosa around bile retained. Smooth surfaces and clean alpha; mild broad-gradient banding in SVG, fine folds remain recognizable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gallbladder/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gallbladder/inspection.webm"
+      }
     },
     "stomach": {
       "name": "stomach",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/stomach-bioart-transparent.png",
+      "svg": "svg/stomach-bioart-traced.svg",
+      "png_sha256": "88b77ea6c829bee5e9fc4de7f39fe57384692402518794b32e99b99f04750c25",
+      "svg_sha256": "3d38966dab675eda6488bb9981a316958da26e7b9b250c4188e613cbb278f5d5",
+      "original_sha256": "f0fe51fdf45b38b4e93e12b41402b07471f93207448997a3520239cae380d684",
+      "png_dimensions": [
+        1814,
+        1814
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        300,
+        259,
+        300,
+        269
+      ],
+      "svg_paths": 20744,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/stomach/prompt.json",
+      "qa": "qa/inventory/stomach",
+      "visual_review": "Reviewed PNG and editable SVG on light and dark backgrounds. Complete J-shaped cutaway, rugae and pyloric passage retained; clean transparent padding. Minor vector gradient banding acceptable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/stomach/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/stomach/inspection.webm"
+      }
     },
     "pancreas": {
       "name": "pancreas",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/pancreas-bioart-transparent.png",
+      "svg": "svg/pancreas-bioart-traced.svg",
+      "png_sha256": "33a6c1b34273a80cdb82df0cb7e6a034fcd1e99a81bb9d95fe864389574d1787",
+      "svg_sha256": "1c9fd0691062d5d12efb68c7189a9b9aa394c84b200146577e3ee6765d9e414a",
+      "original_sha256": "0f6818ce8c6517d76166914a9cf5052cf2cab9ea0c75ed327ce035e82d7d4dbf",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        346,
+        572,
+        341,
+        589
+      ],
+      "svg_paths": 20821,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/pancreas/prompt.json",
+      "qa": "qa/inventory/pancreas",
+      "visual_review": "PNG and SVG reviewed on light and dark backgrounds. Transparent margins clean, duct branching and complete lobulated contour retained. Lobules and cutaway are schematic and exaggerated.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pancreas/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/pancreas/inspection.webm"
+      }
     },
     "small-intestine": {
       "name": "small intestine",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/small-intestine-bioart-transparent.png",
+      "svg": "svg/small-intestine-bioart-traced.svg",
+      "png_sha256": "d925c018a2248da408360ce378b81e0430de655a5b841910dde605cc7f531c9a",
+      "svg_sha256": "24b15fe86edd0aeef3aaff434628fcb3e2d4f0bd1a755d1bb1b909bb0d55e11b",
+      "original_sha256": "304b9a964f79e35bb59fbfbb9519dce5df963644a51758416631afc80b8ca7ac",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        596,
+        324,
+        611,
+        339
+      ],
+      "svg_paths": 19567,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/small-intestine/prompt.json",
+      "qa": "qa/inventory/small-intestine",
+      "visual_review": "Compared PNG and SVG on both backgrounds. Smooth unsegmented coils and two open ends retained; clean alpha and generous margins. Loop arrangement is schematic, not an anatomical routing map. Minor gradient banding acceptable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/small-intestine/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/small-intestine/inspection.webm"
+      }
     },
     "colon": {
       "name": "colon",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/colon-bioart-transparent.png",
+      "svg": "svg/colon-bioart-traced.svg",
+      "png_sha256": "a8a569e70e4e0a900ceaedffa4df24f44329f864ba3571cf215cc3bdb8876405",
+      "svg_sha256": "4fe6d66a2545950320d09f6decbb56a89f91a1228ba48edd89878fa259fa5ecc",
+      "original_sha256": "1e9256ab9107258c21e170eec8cee1ea3e4d9d436b36048dda311a45bb46cb51",
+      "png_dimensions": [
+        1856,
+        1856
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        296,
+        340,
+        295,
+        373
+      ],
+      "svg_paths": 14875,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/colon/prompt.json",
+      "qa": "qa/inventory/colon",
+      "visual_review": "Reviewed PNG and SVG on light and dark backgrounds. Clean central opening and outside alpha; cecum, appendix, ileal stump, haustra, taenia and sigmoid-to-rectum contour retained. Minor vector gradient banding acceptable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/colon/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/colon/inspection.webm"
+      }
     },
     "kidney": {
       "name": "kidney",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/kidney-bioart-transparent.png",
+      "svg": "svg/kidney-bioart-traced.svg",
+      "png_sha256": "1f08f35afb2c031f666abe9d94f1176013c2dd5d9b49603e896f1f77ff30edeb",
+      "svg_sha256": "2a48993fe5a6cf9e28ff929c1946ecb93c2289fa973bd00c6e9a9913022f019d",
+      "original_sha256": "dd2c973423a8be9378397422ed4a0fcb0ac2e8e93a0d01488227a080db9c2103",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        618,
+        346,
+        612,
+        347
+      ],
+      "svg_paths": 17549,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/kidney/prompt.json",
+      "qa": "qa/inventory/kidney",
+      "visual_review": "PNG/SVG comparison reviewed. Five representative medullary pyramids cup into collecting calyces; cortex, pelvis, ureter and hilar vessel stumps preserved. Transparent padding clean; minor gradient banding acceptable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/kidney/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/kidney/inspection.webm"
+      }
     },
     "urinary-bladder": {
       "name": "urinary bladder",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/urinary-bladder-bioart-transparent.png",
+      "svg": "svg/urinary-bladder-bioart-traced.svg",
+      "png_sha256": "1a3f795e6f54515eae4e72dfe28ab3cd73e849475a4486448877607fbadf3011",
+      "svg_sha256": "1f8c7a27c8b3dbdbb928cee24094cb91e5b64e3645a2fd68ffd13ff3481d8829",
+      "original_sha256": "dda1a102edc6a09a56ef66f6be35f8634bbfe8f1495da40df1182d2887fbd278",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        484,
+        566,
+        583,
+        587
+      ],
+      "svg_paths": 16560,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/urinary-bladder/prompt.json",
+      "qa": "qa/inventory/urinary-bladder",
+      "visual_review": "Reviewed PNG/SVG against light and dark backgrounds. Corrected draft now has two ureteric orifices rather than exposed intracavity ureters. Trigone, folds, muscular wall and urethral outlet retained; clean transparent margins.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/urinary-bladder/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/urinary-bladder/inspection.webm"
+      }
     },
     "bone-marrow-long-bone-cutaway": {
       "name": "bone marrow / long-bone cutaway",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/bone-marrow-long-bone-cutaway-bioart-transparent.png",
+      "svg": "svg/bone-marrow-long-bone-cutaway-bioart-traced.svg",
+      "png_sha256": "6409c81887764734a1b9e77425ff8e413556f86f2defdb0bc6e6450fcd9ced4d",
+      "svg_sha256": "142d40b1900e4f959f15a6dbf5c2fe3971632f405bc9a382a50d531addf8604f",
+      "original_sha256": "10c61e4f64f2bfed5e7b352b34b4ae3847b7eec7f61998a836dc28b5ed05dc0a",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        588,
+        307,
+        577,
+        339
+      ],
+      "svg_paths": 10447,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/bone-marrow-long-bone-cutaway/prompt.json",
+      "qa": "qa/inventory/bone-marrow-long-bone-cutaway",
+      "visual_review": "Viewed PNG/SVG on both backgrounds. Complete bone, cartilage, cortical shaft, trabecular ends and marrow compartments preserved. Clean alpha; fine trabecular detail simplifies at icon scale. Marrow distribution representative rather than age/site-specific.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bone-marrow-long-bone-cutaway/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bone-marrow-long-bone-cutaway/inspection.webm"
+      }
     },
     "skeletal-muscle": {
       "name": "skeletal muscle",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/skeletal-muscle-bioart-transparent.png",
+      "svg": "svg/skeletal-muscle-bioart-traced.svg",
+      "png_sha256": "d9eae639333c4fad3760108dfbea5a11baa20e4eac9fd07be6f48d10f8db1593",
+      "svg_sha256": "2dc05ea9a52bff46fff3d4377bb5dd217ddb507e7a28fb9124799783e33726b6",
+      "original_sha256": "de5ba1838c82ee480999672991c24c9117f3cc288819968578c9329f304f2954",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        354,
+        588,
+        321,
+        563
+      ],
+      "svg_paths": 10012,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/skeletal-muscle/prompt.json",
+      "qa": "qa/inventory/skeletal-muscle",
+      "visual_review": "Light/dark PNG and SVG reviewed. Complete fusiform belly, two tendons, smooth longitudinal bundles and fascicle cutaway retained. Transparent margins clean; minor gradient banding acceptable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/skeletal-muscle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/skeletal-muscle/inspection.webm"
+      }
     },
     "skin-patch": {
       "name": "skin patch",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "skin-cross-section",
+      "alias_reason": "Reviewed the existing complete skin block: it already depicts a skin patch with surface and depth, epidermis, dermis, hypodermis and appendages. The inventory gives skin patch no separate view or morphology requirement; reuse this archetype without creating a duplicate.",
+      "reference": "docs/ai-bioart-asset-inventory.md:326,360",
+      "png": "png/skin-cross-section-bioart-transparent.png",
+      "svg": "svg/skin-cross-section-bioart-traced.svg",
+      "png_sha256": "a33a20ef6bfc5272813365f399c0fe7038be2b9da95640f5c7909bd75b01c36e",
+      "svg_sha256": "4aa4df3eedfca868d8ec345ad7371a7badb75d8fffe7d8b5989cdb9b7b883ae1"
     },
     "uterus": {
       "name": "uterus",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/uterus-bioart-transparent.png",
+      "svg": "svg/uterus-bioart-traced.svg",
+      "png_sha256": "60c87e6e709605af249ee61476b32fe98804e858af042a23aae8db0f74444bf1",
+      "svg_sha256": "d3eef0672394523773d757c1eaba3c7c05311a350481188ffd07089f72c427ec",
+      "original_sha256": "1870591a1f06dc11226327cee06cd85b67667b1e58c5cf22fbf602f9722dd03d",
+      "png_dimensions": [
+        1793,
+        1793
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        283,
+        271,
+        315,
+        302
+      ],
+      "svg_paths": 16156,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/uterus/prompt.json",
+      "qa": "qa/inventory/uterus",
+      "visual_review": "Viewed PNG/SVG on light and dark. Narrowed cavity, endometrium, myometrium, cervical canal and short adjoining cuff retained. Clean alpha and complete silhouette; schematic opened cavity and cycle-independent lining.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/uterus/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/uterus/inspection.webm"
+      }
     },
     "ovary": {
       "name": "ovary",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/ovary-bioart-transparent.png",
+      "svg": "svg/ovary-bioart-traced.svg",
+      "png_sha256": "8897e4c3fd371a6a5a7651dfb2665afbee7df5b8b3f7d5874216dc29e5bf891e",
+      "svg_sha256": "a5d5b120e74ecaae1dc3bb91270d228e820906d436c68631cd9c656d737a4902",
+      "original_sha256": "6522ccb84c7ceef11ac5135430788d5dd604071438805b6809d3c7285409a0cd",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        345,
+        582,
+        321,
+        587
+      ],
+      "svg_paths": 20197,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/ovary/prompt.json",
+      "qa": "qa/inventory/ovary",
+      "visual_review": "Reviewed PNG/SVG on both backgrounds. Follicle walls and eccentric oocyte retained, central vessels and corpus luteum/albicans recognizable; no background halo. Combined stages and enlarged follicle proportions documented.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ovary/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ovary/inspection.webm"
+      }
     },
     "placenta": {
       "name": "placenta",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/placenta-bioart-transparent.png",
+      "svg": "svg/placenta-bioart-traced.svg",
+      "png_sha256": "07d61688f9483be1be6d4f0d49722f7135eb28584762ffc8f41cc2d90c2f0a78",
+      "svg_sha256": "f80e763d19e198c1d12fe78038dc51da91690940836e32c2fb65c548f6e728b0",
+      "original_sha256": "ab653b00b0b38bad9594480ca585b0aaadce9da1e095675b3d31615b71c896db",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        364,
+        563,
+        393,
+        578
+      ],
+      "svg_paths": 30025,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/placenta/prompt.json",
+      "qa": "qa/inventory/placenta",
+      "visual_review": "Reviewed PNG/SVG on both backgrounds. Complete fetal-surface disc and cord retained, three cut lumens visible, surface vessels preserved. Clean alpha; fine amniotic texture and vessel branches simplify at icon scale.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/placenta/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/placenta/inspection.webm"
+      }
     },
     "testis": {
       "name": "testis",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/testis-bioart-transparent.png",
+      "svg": "svg/testis-bioart-traced.svg",
+      "png_sha256": "17bb62eaa5d61acaebb3ef276d36566cdc780070e3704ee94bf3a7b5e7e4f0d6",
+      "svg_sha256": "8a404dad06a8b639469ffcebc82f91472dca3bb8e1755430f11ecbbd925b24a4",
+      "original_sha256": "9eac5294d36b52b5515550097c472bd8b779a42ef11a7ea221dfcdbbc13cacfc",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        337,
+        599,
+        363
+      ],
+      "svg_paths": 28917,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/testis/prompt.json",
+      "qa": "qa/inventory/testis",
+      "visual_review": "PNG/SVG reviewed on light and dark backgrounds. Capsule, representative lobules, rete, efferent connections, epididymis and vas continuation retained. Clean transparent margins; minor gradient banding acceptable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/testis/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/testis/inspection.webm"
+      }
     },
     "prostate": {
       "name": "prostate",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/prostate-bioart-transparent.png",
+      "svg": "svg/prostate-bioart-traced.svg",
+      "png_sha256": "cfb9f4ed10f131a12e64218968e9afbe8b05dce6e4856135a3b7495aa4b5abf3",
+      "svg_sha256": "1a234782ffeca517860d45834f49b044b6002161a092b384ba0085cefcfc13ea",
+      "original_sha256": "b51cf6bcd08aebfe3fe3ec11985ecdcff0978fa641dcfc548f72b8438cec8935",
+      "png_dimensions": [
+        1891,
+        1891
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        270,
+        363,
+        318,
+        374
+      ],
+      "svg_paths": 25815,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/prostate/prompt.json",
+      "qa": "qa/inventory/prostate",
+      "visual_review": "Reviewed PNG and SVG on light/dark backgrounds. Complete gland, central urethra, representative ducts and acini preserved. Clean alpha; minor vector banding acceptable. Simplified architecture does not encode anatomical zones.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/prostate/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/prostate/inspection.webm"
+      }
     },
     "mammary-gland": {
       "name": "mammary gland",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/mammary-gland-bioart-transparent.png",
+      "svg": "svg/mammary-gland-bioart-traced.svg",
+      "png_sha256": "fcc4b6cea73c12c6b4d7db325cd43d4a3c9cb683ea5c41f4fb808e01fb80eb9d",
+      "svg_sha256": "c9041e3ea19937e2dd03fb6eb84bb365f32882dce6fab91a4364b4300a929b7d",
+      "original_sha256": "30053998c8db2988abbae8e54c159ff2ac75f65337df48cba52631fd8986c3d5",
+      "png_dimensions": [
+        1808,
+        1808
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        295,
+        258,
+        317,
+        258
+      ],
+      "svg_paths": 27822,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/mammary-gland/prompt.json",
+      "qa": "qa/inventory/mammary-gland",
+      "visual_review": "Reviewed PNG and SVG on both backgrounds. Lobules, adipose, ducts with separate nipple openings and complete skin contour retained. True alpha and generous margins; minor gradient banding acceptable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mammary-gland/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mammary-gland/inspection.webm"
+      }
     },
     "adrenal-gland": {
       "name": "adrenal gland",
       "category": "12. Human organs and anatomy",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/adrenal-gland-bioart-transparent.png",
+      "svg": "svg/adrenal-gland-bioart-traced.svg",
+      "png_sha256": "ca3fe88ae8612ca7821accad2a3a0411d8ce39887c78983d11c0bd1a03c3b50b",
+      "svg_sha256": "1e80bc4759e3678d36d91df56d286c4cec93421d31593aa38bd3bc209a9934c6",
+      "original_sha256": "423b0ab84b1eead9f15777881d1f8cfb450efeb44a525801e0e9ad45b3f9d050",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        352,
+        582,
+        333,
+        587
+      ],
+      "svg_paths": 24419,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/adrenal-gland/prompt.json",
+      "qa": "qa/inventory/adrenal-gland",
+      "visual_review": "PNG/SVG compared on both backgrounds. Three cortical bands and medulla, capsule and hilar vein retained; clean alpha. Cellular and cord marks are schematic rather than literal histology. Minor gradient banding acceptable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adrenal-gland/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adrenal-gland/inspection.webm"
+      }
     },
     "generic-enveloped-spherical-virus": {
       "name": "generic enveloped spherical virus",
       "category": "13. Viruses and viral particles",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/generic-enveloped-spherical-virus-bioart-transparent.png",
+      "svg": "svg/generic-enveloped-spherical-virus-bioart-traced.svg",
+      "png_sha256": "d14529421fcf0cb043dedee241360c40758d84e90cd68bf237ac7d01e858c763",
+      "svg_sha256": "308f8ae5bb1dfeed0a669ed8bac9115910173d2a183b4cca1b7390fc34ef5713",
+      "original_sha256": "d73cb89692d5b4d10428e6677cc0a8555e057540abc625a8937f491735056ff0",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        270,
+        297,
+        251
+      ],
+      "svg_paths": 16246,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/generic-enveloped-spherical-virus/prompt.json",
+      "qa": "qa/inventory/generic-enveloped-spherical-virus",
+      "visual_review": "PNG/SVG reviewed on light and dark. Corrected thin bilayer rim, capsid, genome coil and intact spikes retained. Clean alpha; no species-specific structural claims. Minor gradient banding acceptable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-enveloped-spherical-virus/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-enveloped-spherical-virus/inspection.webm"
+      }
     },
     "generic-non-enveloped-icosahedral-virus": {
       "name": "generic non-enveloped icosahedral virus",
       "category": "13. Viruses and viral particles",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/generic-non-enveloped-icosahedral-virus-bioart-transparent.png",
+      "svg": "svg/generic-non-enveloped-icosahedral-virus-bioart-traced.svg",
+      "png_sha256": "c3dc0d9d39d62aba406d733f8399b1f360a58301a7f6e1d564528494999a5c78",
+      "svg_sha256": "5e34c73fc49f972245ef7beedf6fb1145929c15c2af603b02dd35f0d490f3bb4",
+      "original_sha256": "bf5b8c3f4cfaf14e1ab4026d5ad0cb8c14656fc5d552ec2b51527ed470561130",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        256,
+        289,
+        251
+      ],
+      "svg_paths": 20996,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/generic-non-enveloped-icosahedral-virus/prompt.json",
+      "qa": "qa/inventory/generic-non-enveloped-icosahedral-virus",
+      "visual_review": "PNG/SVG compared on light and dark. Angular faceted capsid and smooth protein subunits retained, no envelope or spikes. Clean transparent margins. Generic symmetry archetype without exact capsomer count.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-non-enveloped-icosahedral-virus/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/generic-non-enveloped-icosahedral-virus/inspection.webm"
+      }
     },
     "bacteriophage": {
       "name": "bacteriophage",
       "category": "13. Viruses and viral particles",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/bacteriophage-bioart-transparent.png",
+      "svg": "svg/bacteriophage-bioart-traced.svg",
+      "png_sha256": "8d6a0c9e03a5710af52c3aa25021466adbd0d29f5a893d3918ba2592d3dab62e",
+      "svg_sha256": "fc1ed66c54ec9279397518a88e3ae33f96a3035e4cd683218223a2358184252d",
+      "original_sha256": "6c0d0c258577a899acea80d5eeefa30c91008cf7513db61c8cafc6693638c7b6",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        588,
+        319,
+        587,
+        337
+      ],
+      "svg_paths": 9727,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/bacteriophage/prompt.json",
+      "qa": "qa/inventory/bacteriophage",
+      "visual_review": "Viewed PNG/SVG on both backgrounds. Six complete long tail fibers, head, collar, sheath, baseplate and pin retained; clean transparent gaps. Fine head tessellation simplifies at icon scale. T4-like schematic, not atomic geometry.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bacteriophage/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bacteriophage/inspection.webm"
+      }
     },
     "coronavirus-particle": {
       "name": "coronavirus particle",
       "category": "13. Viruses and viral particles",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/coronavirus-particle-bioart-transparent.png",
+      "svg": "svg/coronavirus-particle-bioart-traced.svg",
+      "png_sha256": "0a5b989d33c57481cb7e06bb22225c7d2544fdacd4c36730dd2935f102dceb38",
+      "svg_sha256": "852a87cb1c8127b9e1951f0975e9f0c41defaea0734a2e5c26688c87dde98c69",
+      "original_sha256": "c46cfb71afcafabe4c0a7ff2e50dbc7000cddb03cfce41c826025dc2e1b1daad",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        265,
+        283,
+        251
+      ],
+      "svg_paths": 22029,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/coronavirus-particle/prompt.json",
+      "qa": "qa/inventory/coronavirus-particle",
+      "visual_review": "PNG/SVG reviewed on both backgrounds. Complete spike crown, low-profile membrane proteins, bilayer rim and internal RNP coils retained. No rigid capsid. Clean alpha; fine shading simplifies in trace.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/coronavirus-particle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/coronavirus-particle/inspection.webm"
+      }
     },
     "influenza-virion": {
       "name": "influenza virion",
       "category": "13. Viruses and viral particles",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/influenza-virion-bioart-transparent.png",
+      "svg": "svg/influenza-virion-bioart-traced.svg",
+      "png_sha256": "b865b88f42c8bc3bf936ce01a2fb57ec338fbb4da0f02c10689723b193eab3c8",
+      "svg_sha256": "8d8ead33dd3981e3964b6074662e27345c87895ce3ef4dfcdb1ed813bb042f04",
+      "original_sha256": "190f3c48fabddc4912eb516156e0f5024f68cc7bdf9522b8be0b439de5f7ad5d",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        276,
+        303,
+        251
+      ],
+      "svg_paths": 26624,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/influenza-virion/prompt.json",
+      "qa": "qa/inventory/influenza-virion",
+      "visual_review": "Compared PNG/SVG light/dark. Eight distinct RNP rods and eight orange caps counted; complete outer spikes after padding correction, membrane rim and matrix retained. Clean alpha; fine RNP detail simplifies at icon scale.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/influenza-virion/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/influenza-virion/inspection.webm"
+      }
     },
     "hiv-lentiviral-particle": {
       "name": "HIV / lentiviral particle",
       "category": "13. Viruses and viral particles",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/hiv-lentiviral-particle-bioart-transparent.png",
+      "svg": "svg/hiv-lentiviral-particle-bioart-traced.svg",
+      "png_sha256": "34265a29bd7a5eff70697e6eb399a1365fd88a36290bdac67246e00fa7075716",
+      "svg_sha256": "370cfe912df31fdef9a6fed9e3a6cffbd933c4e8ef5e33fd2bee728df038ec7c",
+      "original_sha256": "fa67fee20a8d693d809d2740fe3c86975fb4d635244a5ed9f08c57a560ced903",
+      "png_dimensions": [
+        1771,
+        1771
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        264,
+        263,
+        282,
+        253
+      ],
+      "svg_paths": 23270,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/hiv-lentiviral-particle/prompt.json",
+      "qa": "qa/inventory/hiv-lentiviral-particle",
+      "visual_review": "PNG/SVG reviewed on both backgrounds. Conical capsid, two separate RNA symbols, matrix, bilayer and sparse Env spikes retained. Clean alpha; minor gradient banding acceptable. Counts except two genome copies schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hiv-lentiviral-particle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hiv-lentiviral-particle/inspection.webm"
+      }
     },
     "papillomavirus-particle": {
       "name": "papillomavirus particle",
       "category": "13. Viruses and viral particles",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/papillomavirus-particle-bioart-transparent.png",
+      "svg": "svg/papillomavirus-particle-bioart-traced.svg",
+      "png_sha256": "036e8b09bec804f38e5fa090c3b6a104c5ac8bbe609b673ba3d9c69953b7b886",
+      "svg_sha256": "406d9b5b24e04dc32d36f5aa5487746b4cb0c2ea3c9e6d7907f81950210a4d2d",
+      "original_sha256": "893f174cdc58e4f0e18ed6ce2695dd306388efc35b67b4b08e043a7ab66ad2a6",
+      "png_dimensions": [
+        1784,
+        1784
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        255,
+        292,
+        283,
+        275
+      ],
+      "svg_paths": 26371,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/papillomavirus-particle/prompt.json",
+      "qa": "qa/inventory/papillomavirus-particle",
+      "visual_review": "Reviewed PNG and SVG on light and dark backgrounds: complete capsid, five-lobed visible rosettes, smooth saturated shading, clean transparent padding and comparable editable vector detail. Capsomer count is schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/papillomavirus-particle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/papillomavirus-particle/inspection.webm"
+      }
     },
     "adenovirus-particle": {
       "name": "adenovirus particle",
       "category": "13. Viruses and viral particles",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/adenovirus-particle-bioart-transparent.png",
+      "svg": "svg/adenovirus-particle-bioart-traced.svg",
+      "png_sha256": "7eb94e240b8ff0ebce91f1d02b55edc2dde3e9ccd5d90ca8d2705d0e8fd5701a",
+      "svg_sha256": "02f383834ebdb9d6efd99787e031f118352e52a53b2a255cdf37b1e32476cb2f",
+      "original_sha256": "d02e0945cec6a9add8682a0e41bd906a96613febb340b0b076df75407be7079a",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        262,
+        339,
+        324,
+        353
+      ],
+      "svg_paths": 12370,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/adenovirus-particle/prompt.json",
+      "qa": "qa/inventory/adenovirus-particle",
+      "visual_review": "Viewed PNG and SVG on light and dark: intact vertex fibers and knobs, complete faceted capsid, clean alpha and generous padding; smooth editable vector rendition preserves detail.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adenovirus-particle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/adenovirus-particle/inspection.webm"
+      }
     },
     "herpesvirus-particle": {
       "name": "herpesvirus particle",
       "category": "13. Viruses and viral particles",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/herpesvirus-particle-bioart-transparent.png",
+      "svg": "svg/herpesvirus-particle-bioart-traced.svg",
+      "png_sha256": "457d8f55216ad671d51db13848cdbaf4fe984e887795f81c544d96929f41f38e",
+      "svg_sha256": "ca35545721b06977cfdded4bf609002b492c97b79ed3d74ad9cd1e2c8ed99b56",
+      "original_sha256": "c6deafabc31e769e782251bf1541f022a404cab31ec86a5309ce0bf8da66ed30",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        268,
+        275,
+        251
+      ],
+      "svg_paths": 24560,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/herpesvirus-particle/prompt.json",
+      "qa": "qa/inventory/herpesvirus-particle",
+      "visual_review": "Viewed PNG/SVG light and dark: distinct envelope, external tegument and DNA-containing faceted capsid, complete spikes, clean alpha and faithful vector shading.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/herpesvirus-particle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/herpesvirus-particle/inspection.webm"
+      }
     },
     "poxvirus-particle": {
       "name": "poxvirus particle",
       "category": "13. Viruses and viral particles",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/poxvirus-particle-bioart-transparent.png",
+      "svg": "svg/poxvirus-particle-bioart-traced.svg",
+      "png_sha256": "6798e3bdb18ecd6ae6dd32fb3e743ac2e0e80a872cfe1dcd2999c8a1efceca6d",
+      "svg_sha256": "8d10f4efcb61d026f1f24d0107a3e4bac0b68f5d8fedc4b50dbd037095f73fe0",
+      "original_sha256": "9099de36f051780915a112c5bb6bad0a35acb3120a296ce7b01b87e299c834ce",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        584,
+        371,
+        601
+      ],
+      "svg_paths": 18361,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/poxvirus-particle/prompt.json",
+      "qa": "qa/inventory/poxvirus-particle",
+      "visual_review": "Reviewed PNG/SVG light and dark: two lateral bodies, dumbbell core and DNA window, surface-parallel ridges, complete brick silhouette. Apparent raw glow is absent in composites; transparent padding and vector detail pass.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/poxvirus-particle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/poxvirus-particle/inspection.webm"
+      }
     },
     "filamentous-virus": {
       "name": "filamentous virus",
       "category": "13. Viruses and viral particles",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/filamentous-virus-bioart-transparent.png",
+      "svg": "svg/filamentous-virus-bioart-traced.svg",
+      "png_sha256": "ac3e0c452667519b32defffa0d905c7a275c7b04b147858f445a55829afc88cc",
+      "svg_sha256": "c4e8934cc9d6baaa4c6d9ba1997c333319dab874a58020770891b77ef8824037",
+      "original_sha256": "7cf6852d3c1430e8ccb4828dbc763f1dd048a722c4d02da8e4bccf637cab5085",
+      "png_dimensions": [
+        1827,
+        1827
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        310,
+        278,
+        321,
+        285
+      ],
+      "svg_paths": 8353,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/filamentous-virus/prompt.json",
+      "qa": "qa/inventory/filamentous-virus",
+      "visual_review": "Compared PNG/SVG light and dark: unbranched crook-shaped filament, both closed ends, intact surface knobs and axial nucleocapsid window; clean alpha and faithful smooth vector forms.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/filamentous-virus/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/filamentous-virus/inspection.webm"
+      }
     },
     "bullet-shaped-rhabdovirus": {
       "name": "bullet-shaped rhabdovirus",
       "category": "13. Viruses and viral particles",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/bullet-shaped-rhabdovirus-bioart-transparent.png",
+      "svg": "svg/bullet-shaped-rhabdovirus-bioart-traced.svg",
+      "png_sha256": "1b73381ce2c6714713a8ec7001f4a6cb851ae626cabaf3e82b204e8b5868f880",
+      "svg_sha256": "0a5418c0f1a89503c8da14c800efaedcfe4c7e892f24b72fa4508c7ef11b1a5c",
+      "original_sha256": "772a711d76dfcf9220180a2742f8ae7a1a238cb3e39f006b128b5f18c5b0df7b",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        368,
+        578,
+        321,
+        583
+      ],
+      "svg_paths": 15032,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/bullet-shaped-rhabdovirus/prompt.json",
+      "qa": "qa/inventory/bullet-shaped-rhabdovirus",
+      "visual_review": "Viewed PNG and SVG light/dark: intact bullet outline, domed tip and basal closure, matrix and tapered RNP helix. No background glow in composites; all knobs retained and vector quality comparable.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bullet-shaped-rhabdovirus/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bullet-shaped-rhabdovirus/inspection.webm"
+      }
     },
     "rotavirus-like-layered-capsid": {
       "name": "rotavirus-like layered capsid",
       "category": "13. Viruses and viral particles",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/rotavirus-like-layered-capsid-bioart-transparent.png",
+      "svg": "svg/rotavirus-like-layered-capsid-bioart-traced.svg",
+      "png_sha256": "4ee693a5099947b6984f77a12470103908bb9b5a2784a11277a4a1657a378799",
+      "svg_sha256": "e3835238a9caf455723e52e69dbeaf140af67b21d81e8d811037d8c2cc0d38de",
+      "original_sha256": "f43656fd702be10e2b8c55097f6aec45a498907405eb1e1dd315e38e1a75938c",
+      "png_dimensions": [
+        1827,
+        1827
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        261,
+        319,
+        314,
+        329
+      ],
+      "svg_paths": 27443,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/rotavirus-like-layered-capsid/prompt.json",
+      "qa": "qa/inventory/rotavirus-like-layered-capsid",
+      "visual_review": "Reviewed PNG/SVG light and dark: three nested protein shells, outer spikes and internal genome bundle all retained; clean alpha, complete silhouette and faithful vector forms.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rotavirus-like-layered-capsid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rotavirus-like-layered-capsid/inspection.webm"
+      }
     },
     "viral-capsid-cross-section": {
       "name": "viral capsid cross-section",
       "category": "13. Viruses and viral particles",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/viral-capsid-cross-section-bioart-transparent.png",
+      "svg": "svg/viral-capsid-cross-section-bioart-traced.svg",
+      "png_sha256": "7d0e07e2e1e940a8a9f7aab197344ffa0872fc266e7e9e8f2e465f6f60d1bb6c",
+      "svg_sha256": "d5df07286f130aae915b232d6cb15e226d3ed230477359c4903daeccffb76fe3",
+      "original_sha256": "6ace2afcac69f5efad8903ca68ae2efd8656e93de31ac7badfe29657ed4c06e1",
+      "png_dimensions": [
+        1804,
+        1804
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        258,
+        299,
+        312,
+        292
+      ],
+      "svg_paths": 23578,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/viral-capsid-cross-section/prompt.json",
+      "qa": "qa/inventory/viral-capsid-cross-section",
+      "visual_review": "Viewed PNG/SVG on light and dark: complete faceted shell, smooth single cut rim and packaged golden nucleic acid; clean alpha, generous padding and comparable editable vector quality.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/viral-capsid-cross-section/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/viral-capsid-cross-section/inspection.webm"
+      }
     },
     "budding-enveloped-virus": {
       "name": "budding enveloped virus",
       "category": "13. Viruses and viral particles",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/budding-enveloped-virus-bioart-transparent.png",
+      "svg": "svg/budding-enveloped-virus-bioart-traced.svg",
+      "png_sha256": "949b8d289fec3d18be3614a8dfef7d7d45ca663389167468e760abcf4fc8e5be",
+      "svg_sha256": "14b4a68192c70724f4ce90b8d8f781365a60d5a4ecc827fff47c2505125ce758",
+      "original_sha256": "32c0ec1999d8c55b19a8a4ddee00206d0f798b95fdecd29c5fd9111c15cddc7b",
+      "png_dimensions": [
+        2025,
+        2025
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        289,
+        487,
+        297,
+        469
+      ],
+      "svg_paths": 14933,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/budding-enveloped-virus/prompt.json",
+      "qa": "qa/inventory/budding-enveloped-virus",
+      "visual_review": "Viewed PNG and SVG light/dark: continuous bilayer outline and open budding neck, capsid/genome inside protrusion, whole local membrane patch visible. Clean composite transparency; comparable editable vector detail.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/budding-enveloped-virus/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/budding-enveloped-virus/inspection.webm"
+      }
     },
     "virus-entering-cell-by-membrane-fusion": {
       "name": "virus entering cell by membrane fusion",
       "category": "13. Viruses and viral particles",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/virus-entering-cell-by-membrane-fusion-bioart-transparent.png",
+      "svg": "svg/virus-entering-cell-by-membrane-fusion-bioart-traced.svg",
+      "png_sha256": "d8245329b07e0ab0e222a2295db12005b50f6aa8ab7f29d1423b5ad7fd9b6b13",
+      "svg_sha256": "abb6f109fb27717662b65272d5f57ea5f2e040fd7bcf1f9e81b183aed68238f8",
+      "original_sha256": "97520c90ea5405a6bd094c92fe5455e68ecc5f6c5f7c3430cc6bcd08682ee74e",
+      "png_dimensions": [
+        1871,
+        1871
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        372,
+        275,
+        363,
+        267
+      ],
+      "svg_paths": 10804,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/virus-entering-cell-by-membrane-fusion/prompt.json",
+      "qa": "qa/inventory/virus-entering-cell-by-membrane-fusion",
+      "visual_review": "Viewed PNG/SVG light and dark: open fusion pore with continuous membrane contours, nucleocapsid crossing into cytoplasm, all intrinsic components preserved. Clean alpha and readable vector geometry; mild broad-gradient contouring remains at enlarged view.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/virus-entering-cell-by-membrane-fusion/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/virus-entering-cell-by-membrane-fusion/inspection.webm"
+      }
     },
     "rod-shaped-bacterium": {
       "name": "rod-shaped bacterium",

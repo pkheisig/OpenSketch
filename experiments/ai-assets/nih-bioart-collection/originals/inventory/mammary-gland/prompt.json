@@ -1,0 +1,18 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of mammary gland, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Anatomical mammary gland side cutaway, one rounded breast tissue section with thin peach skin boundary, small nipple and areola at viewer right. Several rose glandular lobules made of small rounded acini connected through branching ivory lactiferous ducts toward separate nipple openings; golden adipose tissue between lobules, sparse white connective septa. No torso, ribs, chest wall, face or milk droplets. Ducts converge toward nipple but do not merge into one common tube. Smooth matte vector-style surfaces, crisp outlines and broad subtle gradients without photographic grain. Transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-0c446cfe-ea8b-4abc-99f3-3a035ae05b46.png",
+  "refinement": "Redraw this exact mammary-gland cutaway as smooth polished vector-style biomedical art. Preserve rose acinar lobules, gold adipose tissue, branching ivory ducts with separate openings at nipple, thin skin boundary and areola. Remove photographic mottling, wet gloss and skin grain; smooth matte rounded forms, broad subtle gradients and crisp outlines, simplify connective septa to clean thin lines. Keep whole isolated tissue section with generous transparent PNG alpha padding.",
+  "archetype": "Mammary gland cutaway with representative lobules, adipose and separate lactiferous duct openings. Lobe and duct counts and sizes schematic; no specific lactation state asserted.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "mammary-gland",
+  "name": "mammary gland",
+  "original": "originals/inventory/mammary-gland/generated.png",
+  "original_sha256": "30053998c8db2988abbae8e54c159ff2ac75f65337df48cba52631fd8986c3d5"
+}

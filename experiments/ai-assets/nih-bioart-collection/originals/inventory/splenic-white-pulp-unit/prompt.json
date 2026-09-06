@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a splenic white-pulp unit, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One compact oblique cutaway of a representative rodent splenic white-pulp unit: a short red central arteriole traverses a dark violet cylindrical periarteriolar lymphoid sheath. A single rounded B-cell follicle bulges eccentrically from the side of this sheath, with pale lavender germinal center and dark purple mantle. A lighter teal marginal zone wraps outside the combined follicle and sheath, containing sparse tiny cell dots. Only a narrow coral red-pulp cuff at the cut tissue edge with a few red blood cell profiles; no whole spleen or lymph node capsule. The red arteriole is inside the PALS, displaced to the side of the follicle, never through the germinal center. Show clean red vessel ends protruding a little at two opposite ends of the sheath. Use small crisp simple cell dots, smooth matte color regions, broad restrained gradients, no mottled texture, no glistening pearl cells. Transparent PNG alpha outside.",
+  "refinement": "Keep the exact anatomy, silhouette and colors of this splenic white-pulp unit. Smooth the style to match clean matte biomedical vector illustration: replace glistening pearly lymphocytes with simple small round cells and restrained highlights; remove all fibrous mottled photographic texture in the teal marginal zone and red-pulp cuff, use smooth broad gradients and thin crisp outlines. Preserve one pale-centered follicle with dark mantle to the left of the red arteriole, the arteriole inside the darker violet PALS at right, teal outer zone and narrow coral outer cuff with red cell profiles. Preserve complete red arteriole ends. Transparent PNG alpha outside.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-e9aced76-2347-40c6-9098-9689188b05c6.png",
+  "references": [
+    "https://pubmed.ncbi.nlm.nih.gov/25827019/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC1828535/"
+  ],
+  "archetype": "Representative rodent-style white-pulp unit with central arteriole in PALS, eccentric secondary B-cell follicle, surrounding marginal zone and narrow red-pulp cuff. Not a species-neutral microanatomical map: human marginal/perifollicular organization differs. Colors, cell counts, vessel branches and zone thicknesses schematic.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "splenic-white-pulp-unit",
+  "name": "splenic white-pulp unit",
+  "original": "originals/inventory/splenic-white-pulp-unit/generated.png",
+  "original_sha256": "04abfe92f84f89086efff1ab2d03e30957ff4af55c93902ad64bed1e4480e324"
+}

@@ -1,0 +1,12 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a rotavirus-like layered capsid, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A non-enveloped roughly spherical icosahedral viral particle with one wedge cut away to show EXACTLY THREE nested protein shells: outer teal tiled VP7 shell bearing short coral VP4 spikes, middle violet VP6 shell, inner golden VP2 core shell. Each shell touches its neighboring shell, no large empty gaps. Inside the core show a compact bundle of coral paired RNA coils, mostly overlapping so individual genome segments are not separately countable. The three exposed shell rims are clearly distinct. No lipid membrane or extra fourth shell. Clean matte vector-style forms, subtle broad gradients, crisp outlines. Transparent PNG alpha.",
+  "refinement": "Polish this exact rotavirus cutaway into smooth matte vector-style biomedical illustration. Preserve EXACTLY THREE protein shells: teal outer, violet middle, golden inner, with coral RNA inside and coral surface spikes. Remove all photographic grain and faceted scratch texture; smooth rounded protein tiles with crisp outlines and broad gentle gradients. The pale teal cut rim belongs to the teal shell, not an extra layer. Complete object, transparent PNG alpha with generous padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-61f6e526-8fc0-4e4c-beb7-078ad6191f42.png",
+  "archetype": "Mature non-enveloped rotavirus-like particle: teal VP7 outer shell with coral VP4 projections, violet VP6 middle layer, gold VP2 core shell. RNA is an overlapping symbolic genome bundle, not a count of the eleven biological dsRNA segments. Capsomer and spike counts/oligomer shapes illustrative.",
+  "references": [
+    "https://ictv.global/report/chapter/sedoreoviridae/sedoreoviridae/rotavirus",
+    "https://journals.plos.org/plospathogens/article?id=10.1371/journal.ppat.1006242"
+  ]
+}

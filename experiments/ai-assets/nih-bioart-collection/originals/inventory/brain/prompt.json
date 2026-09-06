@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a brain, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Adult human brain in left lateral view, frontal pole facing left, occipital pole to right. Warm coral rose cerebral hemisphere with anatomically plausible smoothly rounded gyri and narrow deep sulci, visible central sulcus and lateral sulcus, temporal lobe beneath lateral sulcus. Compact muted lavender cerebellum at lower rear right with many fine parallel curved folia, pale tan brainstem descending below and in front of cerebellum to a short clean medulla end. No skull, no arteries on surface, no cutaway, no color-coded lobes, no disconnected pieces. Anatomical silhouette with rounded frontal/occipital poles and basal temporal contour; one lateral hemisphere dominates view. Clean matte illustrative surfaces with thin darker rose outlines and restrained broad gradients, no wet sheen, no rough grain. Genuine transparent PNG with alpha channel outside.",
+  "refinement": "Preserve this exact left-lateral brain anatomy, sulci, gyri, cerebellum and brainstem. Change rendering style to a polished clean biomedical illustration: eliminate realistic grain and tiny surface wrinkles, make gyri smooth matte coral forms with crisp dark rose contours and broad soft gradients. Retain fine orderly lavender cerebellar folia and smooth pale tan brainstem. Remove the tiny isolated-looking tan hook at the junction above cerebellum if not part of the main brainstem silhouette. No glossy highlights or photo texture. Transparent PNG alpha outside, no glow or backdrop.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-287f1857-da4d-40e6-aace-8a0441dfff77.png",
+  "archetype": "Adult human brain in left lateral view with cerebral gyri and sulci, cerebellar folia and brainstem. Surface folds are illustrative, not a parcellation or individual anatomical scan; vessels and cranial nerves omitted.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "brain",
+  "name": "brain",
+  "original": "originals/inventory/brain/generated.png",
+  "original_sha256": "da6f516033fe7f6bc3d6f2f669e66cb82eccb4c1f4aa6151f04b3ac154339b50"
+}

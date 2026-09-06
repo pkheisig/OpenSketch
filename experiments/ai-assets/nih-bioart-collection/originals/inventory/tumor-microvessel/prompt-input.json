@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a tumor microvessel, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Use the attached approved normal microvessel for visual style only. A new short tortuous S-shaped tumor-associated microvessel with irregularly varying diameter, one bulbous widened central region and one narrower curved segment. Thin teal endothelial cells with violet nuclei, some small irregular intercellular gaps. One longitudinal cutaway window reveals red biconcave erythrocytes within the lumen. Sparse coverage by just one gold pericyte with a violet nucleus and short processes loosely apposed to the outside wall, rather than complete wrapping. Thin irregular pale rose basement membrane remains around most of the vessel; not a thick artery wall. Two clean open vessel ends, all complete. No surrounding tumor mass, no arrows for leakage, no isolated floating objects. Smooth matte curves and broad subtle gradients, crisp cell boundaries, no granular texture. Transparent PNG alpha.",
+  "style_reference": "png/small-blood-vessel-bioart-transparent.png",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-95d989ba-d720-4c56-ae3b-a04b6444d2f6.png",
+  "references": [
+    "https://pubmed.ncbi.nlm.nih.gov/10751361/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC1867175/"
+  ],
+  "archetype": "Schematic abnormal tumor-associated microvessel with varying diameter, tortuosity, exaggerated endothelial gaps and sparse pericyte coverage. Large central window is an illustrative cutaway; small intercellular openings indicate abnormal junctions. Features vary across tumors and do not describe every tumor vessel."
+}

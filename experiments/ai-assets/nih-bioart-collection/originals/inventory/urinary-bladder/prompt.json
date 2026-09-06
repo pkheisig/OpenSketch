@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of urinary bladder, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Human bladder frontal cutaway, rounded coral muscular sac with pale rose mucosal folds lining the cavity, smooth triangular trigone at lower posterior wall. Exactly two short ureter stumps enter obliquely from behind at left and right sides and end at the two upper corners of trigone; one short urethra exits the lower neck. No kidneys, prostate or reproductive organs. Clean smooth matte vector-style surfaces, sparse broad muscle bands, crisp outlines, subtle gradients without grain or wet gloss. Transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-4ffe367f-4050-4eb3-af0f-fb424cc2264b.png",
+  "refinement": "Correct and simplify this bladder cutaway. The ureters must run behind and within the bladder wall, NOT as exposed tubes floating across the interior cavity. Remove both long gold tubes visible inside the cavity. Keep two external short ureter stumps behind the sides, and show only two small slit-like ureteric orifices at the upper corners of the smooth trigone. Preserve one lower urethral exit. Redraw in clean matte vector-style biomedical art with broad coral gradients, sparse smooth muscle bands and simplified rose mucosal folds. Remove photographic grain and wet reflections. True transparent PNG alpha with no glow.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Frontal bladder cutaway with trigone, paired ureteric orifices and short urethra. Posterior/intramural ureter courses hidden; external stumps schematic.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "urinary-bladder",
+  "name": "urinary bladder",
+  "original": "originals/inventory/urinary-bladder/generated.png",
+  "original_sha256": "dda1a102edc6a09a56ef66f6be35f8634bbfe8f1495da40df1182d2887fbd278"
+}

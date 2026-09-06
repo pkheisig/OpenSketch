@@ -1,0 +1,19 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of bacteriophage, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A complete T4-like tailed bacteriophage in three-quarter view: elongated faceted violet head capsid, short collar, teal cylindrical contractile tail sheath with regular rings, small gold hexagonal baseplate, central short tail pin, and six thin jointed teal long tail fibers radiating from baseplate with angular elbows and delicate distal tips. No bacterium, injection, membrane or genome outside. Keep all six fibers and tips within image. Smooth matte vector-style forms, broad subtle gradients and crisp outlines, no photographic grain. Transparent PNG alpha.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-a07b003e-41c3-4547-8179-4466e28a99a4.png",
+  "refinement": "Redraw this exact bacteriophage as clean matte vector-style biomedical illustration. Preserve violet elongated faceted head, collar, teal ringed tail sheath, gold baseplate and central pin, and EXACTLY SIX separate long tail fibers with all tips visible. Remove metallic chrome reflections, mechanical-looking ball joints and tube-coupler rings from fibers: make them slender continuous protein rods with simple angular elbow bends and tapering ends. Smooth biological protein forms, broad subtle gradients, crisp outlines, no grain. Transparent PNG alpha with generous padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "T4-like tailed bacteriophage with six long tail fibers and prolate head. Capsomer and sheath-ring counts symbolic; not an atomic reconstruction.",
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "bacteriophage",
+  "name": "bacteriophage",
+  "original": "originals/inventory/bacteriophage/generated.png",
+  "original_sha256": "6c0d0c258577a899acea80d5eeefa30c91008cf7513db61c8cafc6693638c7b6"
+}
