@@ -326,10 +326,25 @@ export function OpenSketchPortalRoot({
       previous.set(name, hostRoot.getAttribute(name));
       hostRoot.setAttribute(name, value);
     }
+    const previousClasses = new Map<string, boolean>();
+    for (const className of [
+      "opensketch-app",
+      "opensketch-portal-host",
+      "theme-light",
+      "theme-dark"
+    ]) {
+      previousClasses.set(className, hostRoot.classList.contains(className));
+    }
+    hostRoot.classList.add("opensketch-app", "opensketch-portal-host");
+    hostRoot.classList.toggle("theme-light", scope.theme === "light");
+    hostRoot.classList.toggle("theme-dark", scope.theme === "dark");
     return () => {
       for (const [name, value] of previous) {
         if (value === null) hostRoot.removeAttribute(name);
         else hostRoot.setAttribute(name, value);
+      }
+      for (const [className, hadClass] of previousClasses) {
+        hostRoot.classList.toggle(className, hadClass);
       }
     };
   }, [hostRoot, scope]);

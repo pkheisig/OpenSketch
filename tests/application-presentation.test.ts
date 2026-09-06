@@ -109,10 +109,12 @@ describe("OpenSketch application presentation contract", () => {
     expect(hostRoot).toHaveAttribute("data-suite-ui", "opensketch");
     expect(hostRoot).toHaveAttribute("data-opensketch-theme", "dark");
     expect(hostRoot).toHaveAttribute("data-density", "compact");
+    expect(hostRoot).toHaveClass("opensketch-app", "opensketch-portal-host", "theme-dark");
 
     view.unmount();
     expect(hostRoot).toHaveAttribute("data-suite-ui", "host");
     expect(hostRoot).not.toHaveAttribute("data-opensketch-theme");
+    expect(hostRoot).not.toHaveClass("opensketch-portal-host");
     hostRoot.remove();
   });
 });

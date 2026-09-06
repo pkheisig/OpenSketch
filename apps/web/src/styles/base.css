@@ -702,6 +702,14 @@ input[type="range"] {
   background: var(--shell-bg);
 }
 
+.opensketch-app.opensketch-portal-host {
+  width: 0;
+  height: 0;
+  min-height: 0;
+  overflow: visible;
+  background: transparent;
+}
+
 .opensketch-app.theme-dark {
   --ink: var(--shell-text);
   --ink-soft: var(--shell-muted);
