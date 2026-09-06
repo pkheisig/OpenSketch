@@ -1066,6 +1066,7 @@ function validateCustomProperties(
     "OpenSketchType",
     "assetId",
     "familyId",
+    "assetStyle",
     "provenance",
     "originalPalette",
     "originalFill",

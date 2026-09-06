@@ -553,6 +553,27 @@ describe("project migrations", () => {
       })
     ).not.toThrow();
 
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: {
+          objects: [
+            {
+              type: "Rect",
+              objectId: "member",
+              recognizedGroups: [
+                {
+                  objectId: "historical-group",
+                  memberObjectIds: ["member"],
+                  properties: { assetStyle: "simplified" }
+                }
+              ]
+            }
+          ]
+        }
+      })
+    ).not.toThrow();
+
     const historicalBinding = {
       fromObjectId: "removed-from",
       fromAnchor: "center",
