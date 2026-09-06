@@ -74,7 +74,8 @@ describe("OpenSketch application presentation contract", () => {
       resolveOpenSketchApplicationPresentation({
         mode: "opensuite",
         appearance: "system",
-        systemTheme: "dark"
+        systemTheme: "dark",
+        theme: "light"
       })
     ).toMatchObject({ appearance: "system", systemTheme: "dark", theme: "dark" });
   });

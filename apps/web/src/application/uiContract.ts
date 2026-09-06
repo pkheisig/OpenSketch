@@ -43,7 +43,7 @@ export function resolveOpenSketchApplicationPresentation(
   const appearance = context.appearance ?? context.theme ?? standaloneTheme;
   return {
     mode,
-    theme: context.theme ?? (appearance === "system" ? systemTheme : appearance),
+    theme: appearance === "system" ? systemTheme : appearance,
     appearance,
     systemTheme,
     style: context.style ?? "default",
