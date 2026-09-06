@@ -127,14 +127,40 @@ describe("semantic command contracts", () => {
       SEMANTIC_COMMANDS.find((command) => command.name === "inspect_provenance")?.outputSchema
         .properties?.truncated
     ).toEqual({ type: "boolean" });
-    expect(
-      SEMANTIC_COMMANDS.find((command) => command.name === "create_layout_frame")?.outputSchema
-        .properties?.objectIds
-    ).toMatchObject({ type: "array", minItems: 0, maxItems: 500 });
-    expect(
-      SEMANTIC_COMMANDS.find((command) => command.name === "reflow_layout_frame")?.outputSchema
-        .properties?.objectIds
-    ).toMatchObject({ type: "array", minItems: 0, maxItems: 500 });
+    const createLayoutFrameOutput = SEMANTIC_COMMANDS.find(
+      (command) => command.name === "create_layout_frame"
+    )?.outputSchema;
+    const reflowLayoutFrameOutput = SEMANTIC_COMMANDS.find(
+      (command) => command.name === "reflow_layout_frame"
+    )?.outputSchema;
+    expect(Object.keys(createLayoutFrameOutput?.properties ?? {}).sort()).toEqual([
+      "frameId",
+      "objectIds"
+    ]);
+    expect(Object.keys(reflowLayoutFrameOutput?.properties ?? {}).sort()).toEqual([
+      "diagnostics",
+      "frameId",
+      "objectIds",
+      "warnings"
+    ]);
+    expect(createLayoutFrameOutput?.properties?.objectIds).toMatchObject({
+      type: "array",
+      minItems: 0,
+      maxItems: 500
+    });
+    expect(reflowLayoutFrameOutput?.properties?.objectIds).toMatchObject({
+      type: "array",
+      minItems: 0,
+      maxItems: 500
+    });
+    expect(reflowLayoutFrameOutput?.properties?.diagnostics).toMatchObject({
+      type: "array",
+      maxItems: 500
+    });
+    expect(reflowLayoutFrameOutput?.properties?.warnings).toMatchObject({
+      type: "array",
+      maxItems: 500
+    });
   });
 });
 

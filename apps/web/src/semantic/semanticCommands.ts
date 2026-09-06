@@ -1735,9 +1735,7 @@ definitions.push(
     },
     outputSchema: output({
       frameId: objectId(),
-      objectIds: layoutObjectIds(),
-      diagnostics: layoutDiagnostics(),
-      warnings: { type: "array", maxItems: 500, items: { type: "string", maxLength: 500 } }
+      objectIds: layoutObjectIds()
     })
   },
   {
@@ -1841,7 +1839,12 @@ definitions.push(
       required: ["frameId"],
       additionalProperties: false
     },
-    outputSchema: output({ frameId: objectId(), objectIds: layoutObjectIds() })
+    outputSchema: output({
+      frameId: objectId(),
+      objectIds: layoutObjectIds(),
+      diagnostics: layoutDiagnostics(),
+      warnings: { type: "array", maxItems: 500, items: { type: "string", maxLength: 500 } }
+    })
   },
   {
     name: "compose_labeled_group",
