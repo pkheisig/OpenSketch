@@ -13,8 +13,8 @@ import {
 describe("reviewed generated artwork app snapshot", () => {
   it("indexes all distinct artwork once and retains intentional aliases", () => {
     expect(manifest.families).toHaveLength(snapshot.distinctAssets);
-    expect(snapshot.completedNames).toBe(768);
-    expect(new Set(manifest.families.map((f) => f.familyId)).size).toBe(741);
+    expect(snapshot.completedNames).toBe(767);
+    expect(new Set(manifest.families.map((f) => f.familyId)).size).toBe(740);
     expect(
       filterAssetFamilies((manifest as AssetManifest).families, "regulatory T cell").map(
         (f) => f.title
@@ -44,7 +44,7 @@ describe("reviewed generated artwork app snapshot", () => {
 
 it("exposes only OpenSketch collections with no retired fallback catalog", async () => {
   const { assetManifest, bundledAssetManifest } = await import("../apps/web/src/assets/manifest");
-  expect(assetManifest.families).toHaveLength(760);
+  expect(assetManifest.families).toHaveLength(759);
   expect(new Set(assetManifest.families.map((f) => f.sourceName))).toEqual(
     new Set(["OpenSketch generated", "OpenSketch structures"])
   );

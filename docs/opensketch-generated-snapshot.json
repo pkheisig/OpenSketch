@@ -1,7 +1,7 @@
 {
   "sourceCommit": "601fead222e37988dc80ae950f1c3d3fd065dc1f",
-  "distinctAssets": 741,
-  "completedNames": 768,
+  "distinctAssets": 740,
+  "completedNames": 767,
   "assets": [
     {
       "id": "t-lymphocyte",
@@ -8279,18 +8279,6 @@
       "qa": {
         "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/electroporator-nucleofector/comparison.png",
         "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/electroporator-nucleofector/inspection.webm"
-      }
-    },
-    {
-      "id": "dna-lipid-transfection-complex",
-      "aliases": [
-        "dna-lipid-transfection-complex"
-      ],
-      "sha256": "22d4f5224fc7c52a50eff462fe5db358a37830ef66d87a96b0dea8f9cc4a419a",
-      "visualReview": "Reviewed both light and dark PNG/SVG renders. Three nested lipid layers and interlamellar violet DNA remain clear, complete particle and transparent padding preserved. Representative lamellar lipoplex with schematic tail and molecule counts.",
-      "qa": {
-        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-lipid-transfection-complex/comparison.png",
-        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-lipid-transfection-complex/inspection.webm"
       }
     },
     {

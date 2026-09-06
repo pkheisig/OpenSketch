@@ -1,6 +1,6 @@
 # Curated library snapshot
 
-741 distinct generated SVGs from committed artwork `601fead222e37988dc80ae950f1c3d3fd065dc1f`, representing all 768 completed generation concepts. The app also includes 17 editable structures and two fixed circular membranes. The generation branch remains available and is not modified by this import. The app contains 760 unique assets in total. All 611 previously shipped asset IDs and SVG hashes are preserved.
+740 shipped generated SVGs from committed artwork `601fead222e37988dc80ae950f1c3d3fd065dc1f`, representing 767 generation concepts. All 768 source concepts were completed; the DNA-lipid transfection complex was subsequently rejected and removed from the app. The app also includes 17 editable structures and two fixed circular membranes. The generation branch remains available and is not modified by this import. The app contains 759 unique assets in total. All 611 previously shipped asset IDs and SVG hashes are preserved.
 
 All 768 planned concepts have explicit categories, topics and keywords in [curated-metadata.json](scientific-asset-planning/curated-metadata.json). The original inventory is unchanged. Identical source SVG digests are deduplicated and existing canonical IDs are retained. Historical aliases record generation history; they are not biological synonyms. These are schematic illustrations, not validated molecular structures.
 
@@ -27,7 +27,7 @@ All 768 planned concepts have explicit categories, topics and keywords in [curat
 | Culture & microfluidics | 22 | Culture chambers, bioreactors, chips and microfluidic hardware; living models belong in Tissues & models. |
 | Lab infrastructure & safety | 25 | Storage, cold chain, containment, sterilization, protective clothing and safety infrastructure. |
 | Animal & clinical equipment | 36 | Animal handling, surgery, administration and clinical sample-collection equipment. |
-| Experimental assemblies | 19 | Multi-part assay complexes, experimental preparations and readout schematics that do not represent one standalone object. |
+| Experimental assemblies | 18 | Multi-part assay complexes, experimental preparations and readout schematics that do not represent one standalone object. |
 
 Empty categories are hidden in the current sidebar. Category selection uses the complete catalog so searching or selecting Favorites cannot erase the category controls. Topic and editability filters can be combined with text search and categories.
 

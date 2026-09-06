@@ -50,6 +50,8 @@ for (const { canonical: entry, entries } of canonicalArtworkGroups(
   progress.assets,
   previousSnapshot.assets
 )) {
+  // Explicitly rejected artwork must not return on a later source import.
+  if (entry.id === "dna-lipid-transfection-complex") continue;
   const path = entry.svg;
   if (!entry.visual_review && entry.provenance !== "Approved batches 01/02")
     throw new Error(`Missing canonical review: ${entry.id}`);

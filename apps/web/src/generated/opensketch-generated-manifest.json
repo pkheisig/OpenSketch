@@ -13313,14 +13313,14 @@
     },
     {
       "familyId": "opensketch-generated-b-chner-funnel",
-      "title": "Büchner funnel",
-      "description": "Büchner funnel. Original OpenSketch schematic for laboratory.",
+      "title": "B\u00fcchner funnel",
+      "description": "B\u00fcchner funnel. Original OpenSketch schematic for laboratory.",
       "category": "Labware & consumables",
       "topics": [
         "laboratory"
       ],
       "keywords": [
-        "Büchner funnel",
+        "B\u00fcchner funnel",
         "Buchner funnel",
         "laboratory"
       ],
@@ -19877,14 +19877,14 @@
     },
     {
       "familyId": "opensketch-generated-20-c-freezer",
-      "title": "−20 °C freezer",
-      "description": "−20 °C freezer. Original OpenSketch schematic for cold storage.",
+      "title": "\u221220 \u00b0C freezer",
+      "description": "\u221220 \u00b0C freezer. Original OpenSketch schematic for cold storage.",
       "category": "Lab infrastructure & safety",
       "topics": [
         "cold storage"
       ],
       "keywords": [
-        "−20 °C freezer",
+        "\u221220 \u00b0C freezer",
         "minus 20 freezer",
         "-20 C",
         "cold storage"
@@ -19910,14 +19910,14 @@
     },
     {
       "familyId": "opensketch-generated-80-c-ultra-low-freezer",
-      "title": "−80 °C ultra-low freezer",
-      "description": "−80 °C ultra-low freezer. Original OpenSketch schematic for cold storage.",
+      "title": "\u221280 \u00b0C ultra-low freezer",
+      "description": "\u221280 \u00b0C ultra-low freezer. Original OpenSketch schematic for cold storage.",
       "category": "Lab infrastructure & safety",
       "topics": [
         "cold storage"
       ],
       "keywords": [
-        "−80 °C ultra-low freezer",
+        "\u221280 \u00b0C ultra-low freezer",
         "minus 80 freezer",
         "-80 C",
         "cold storage"
@@ -21820,37 +21820,6 @@
           "assetPath": "assets/opensketch-generated/electroporator-nucleofector.svg",
           "thumbnailPath": "assets/opensketch-generated/electroporator-nucleofector.webp",
           "localSha256": "605f415385dfbe62263514d276f437c985fc42a7775db8ca2bd2d37176ee74ed",
-          "width": 1024,
-          "height": 1024
-        }
-      ]
-    },
-    {
-      "familyId": "opensketch-generated-dna-lipid-transfection-complex",
-      "title": "DNA-lipid transfection complex",
-      "description": "DNA-lipid transfection complex. Original OpenSketch schematic for cell engineering.",
-      "category": "Experimental assemblies",
-      "topics": [
-        "cell engineering"
-      ],
-      "keywords": [
-        "DNA-lipid transfection complex",
-        "cell engineering"
-      ],
-      "author": "OpenSketch",
-      "credit": "OpenSketch AI-assisted artwork",
-      "license": "AGPL-3.0-only",
-      "licenseUrl": "https://github.com/pkheisig/OpenSketch/blob/601fead222e37988dc80ae950f1c3d3fd065dc1f/LICENSE",
-      "sourceName": "OpenSketch generated",
-      "sourcePage": "https://github.com/pkheisig/OpenSketch/commit/601fead222e37988dc80ae950f1c3d3fd065dc1f",
-      "defaultVariantId": "opensketch-generated-dna-lipid-transfection-complex",
-      "variants": [
-        {
-          "id": "opensketch-generated-dna-lipid-transfection-complex",
-          "label": "Original",
-          "assetPath": "assets/opensketch-generated/dna-lipid-transfection-complex.svg",
-          "thumbnailPath": "assets/opensketch-generated/dna-lipid-transfection-complex.webp",
-          "localSha256": "4bd579333381f511191652d0dceb2fb46a401d616518f7facda0888b5954ce8a",
           "width": 1024,
           "height": 1024
         }
