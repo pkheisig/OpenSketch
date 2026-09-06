@@ -170,7 +170,20 @@ describe("project migrations", () => {
   } as const;
 
   it("accepts the current format", () => {
-    expect(migrateProject(project).name).toBe("Figure");
+    const migrated = migrateProject(project);
+    expect(migrated.name).toBe("Figure");
+    expect(migrated.formatVersion).toBe(2);
+    expect(migrated.kind).toBe("diagram");
+  });
+
+  it("preserves an explicit project kind", () => {
+    expect(migrateProject({ ...project, formatVersion: 2, kind: "poster" }).kind).toBe("poster");
+  });
+
+  it("fails closed for an unknown project kind", () => {
+    expect(() => migrateProject({ ...project, formatVersion: 2, kind: "comic" })).toThrow(
+      /project kind/i
+    );
   });
 
   it("repairs duplicate descendant IDs and keeps each subtree connector local", () => {

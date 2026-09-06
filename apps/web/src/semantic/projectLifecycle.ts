@@ -1,4 +1,4 @@
-import type { ProjectFolderRecord, ProjectRecord } from "@workspace/editor-core";
+import type { ProjectFolderRecord, ProjectKind, ProjectRecord } from "@workspace/editor-core";
 import {
   SEMANTIC_EXECUTION_ABORTED,
   SEMANTIC_RUNTIME_VERSION,
@@ -26,6 +26,10 @@ const projectName = (): JsonSchema => ({
   type: "string",
   minLength: 1,
   maxLength: MAX_NAME_LENGTH
+});
+const projectKind = (): JsonSchema => ({
+  type: "string",
+  enum: ["diagram", "figure", "poster"]
 });
 const output = (properties: Record<string, JsonSchema>): JsonSchema => ({
   type: "object",
@@ -87,13 +91,14 @@ export const PROJECT_LIFECYCLE_COMMANDS = Object.freeze([
     requires: [],
     inputSchema: {
       type: "object",
-      properties: { name: projectName() },
+      properties: { name: projectName(), kind: projectKind(), templateId: projectId() },
       additionalProperties: false
     },
     outputSchema: output({
       created: { type: "boolean" },
       projectId: projectId(),
-      name: projectName()
+      name: projectName(),
+      kind: projectKind()
     })
   },
   {
@@ -118,6 +123,7 @@ export type ProjectLifecycleCallbacks = {
   getFolders: () => readonly ProjectFolderRecord[];
   createProject: (
     name: string | undefined,
+    request: { kind?: ProjectKind; templateId?: string },
     options: SemanticExecutionOptions
   ) => Promise<ProjectRecord | null>;
   openProject: (project: ProjectRecord) => boolean;
@@ -153,6 +159,7 @@ function projectSummary(
   return {
     projectId: project.id,
     name: boundedString(project.name, MAX_NAME_LENGTH) ?? project.id,
+    kind: project.kind,
     ...(boundedString(project.description, MAX_DESCRIPTION_LENGTH)
       ? { description: boundedString(project.description, MAX_DESCRIPTION_LENGTH) }
       : {}),
@@ -232,13 +239,22 @@ export function createProjectLifecycleRuntime(callbacks: ProjectLifecycleCallbac
       }
       const project = await callbacks.createProject(
         nameValue,
+        {
+          ...(typeof input.kind === "string" ? { kind: input.kind as ProjectKind } : {}),
+          ...(typeof input.templateId === "string" ? { templateId: input.templateId } : {})
+        },
         options
       );
       if (!project) {
         if (options.signal?.aborted) throw new SemanticExecutionAborted();
         return failure("PROJECT_CREATE_FAILED", "The project could not be created.");
       }
-      return success({ created: true, projectId: project.id, name: project.name });
+      return success({
+        created: true,
+        projectId: project.id,
+        name: project.name,
+        kind: project.kind
+      });
     }
 
     return failure("UNKNOWN_COMMAND", `Lifecycle command "${name}" is not registered.`);

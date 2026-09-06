@@ -2,7 +2,8 @@ import { expect, test } from "@playwright/test";
 
 test("keeps the complete asset library behind explicit offline preparation", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
 
   const offlineLibrary = page.getByRole("region", { name: "Offline asset library" });
   await expect(offlineLibrary).toBeVisible();
@@ -23,7 +24,8 @@ test("keeps the complete asset library behind explicit offline preparation", asy
 
 test("reopens the production app and a saved project while offline", async ({ context, page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   const shapeMenu = page.getByRole("menu", { name: "Shape tools" });
   await shapeMenu.getByRole("menuitem", { name: /Shapes/ }).hover();
@@ -64,7 +66,8 @@ test("keeps an active production editing session open across an offline reload",
   page
 }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
 
   await page.evaluate(async () => {
@@ -110,7 +113,8 @@ test("exports text-bearing PDFs offline from a runtime-cached font face", async 
     (response) =>
       response.url().includes("source-sans-3-400-normal") && response.url().endsWith(".ttf")
   );
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Shapes", exact: true }).click();
   await page.getByLabel("Editor tools").getByRole("button", { name: "Text", exact: true }).click();
   const onlineArtboard = await page.locator(".artboard-stage").boundingBox();

@@ -23,8 +23,10 @@ import {
 import {
   rehydrateProjectScene,
   type ProjectFolderRecord,
+  type ProjectKind,
   type ProjectRecord
 } from "@workspace/editor-core";
+import type { ProjectTemplateRecord } from "@workspace/editor-core";
 import { MotionPresence } from "@/components/MotionPresence";
 import { Logo } from "./Logo";
 import { useModalDialog } from "./useModalDialog";
@@ -39,6 +41,7 @@ export function HomeScreen({
   onToggleTheme,
   showThemeControl,
   showBrand,
+  projectTemplates,
   onNew,
   onNewFolder,
   onOpen,
@@ -59,7 +62,8 @@ export function HomeScreen({
   onToggleTheme: () => void;
   showThemeControl: boolean;
   showBrand: boolean;
-  onNew: () => void;
+  projectTemplates: ProjectTemplateRecord[];
+  onNew: (kind: ProjectKind, template?: ProjectTemplateRecord) => void;
   onNewFolder: (name: string) => void;
   onOpen: (project: ProjectRecord) => void;
   onDuplicate: (project: ProjectRecord) => void;
@@ -75,6 +79,7 @@ export function HomeScreen({
 }) {
   const services = useOpenSketchHostServices();
   const input = useRef<HTMLInputElement>(null);
+  const newProjectRef = useRef<HTMLDivElement>(null);
   const [about, setAbout] = useState(false);
   const [archiveOpen, setArchiveOpen] = useState(false);
   const [creatingFolder, setCreatingFolder] = useState(false);
@@ -84,6 +89,8 @@ export function HomeScreen({
   });
   const [draggedProjectId, setDraggedProjectId] = useState<string>();
   const [dropTarget, setDropTarget] = useState<string>();
+  const [newProjectOpen, setNewProjectOpen] = useState(false);
+  const [selectedKind, setSelectedKind] = useState<ProjectKind | null>(null);
   const aboutRef = useModalDialog(about, () => setAbout(false));
   const activeProjects = useMemo(
     () =>
@@ -127,10 +134,40 @@ export function HomeScreen({
       document.querySelectorAll<HTMLDetailsElement>(".library-menu[open]").forEach((menu) => {
         if (menu !== clickedMenu) menu.open = false;
       });
+      if (!newProjectRef.current?.contains(event.target as Node)) {
+        setNewProjectOpen(false);
+        setSelectedKind(null);
+      }
+    };
+    const closeNewProjectMenu = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setNewProjectOpen(false);
+        setSelectedKind(null);
+      }
     };
     document.addEventListener("pointerdown", closeOtherProjectMenus);
-    return () => document.removeEventListener("pointerdown", closeOtherProjectMenus);
+    document.addEventListener("keydown", closeNewProjectMenu);
+    return () => {
+      document.removeEventListener("pointerdown", closeOtherProjectMenus);
+      document.removeEventListener("keydown", closeNewProjectMenu);
+    };
   }, []);
+
+  const templatesForKind = selectedKind
+    ? projectTemplates.filter((template) => template.kind === selectedKind)
+    : [];
+  const closeNewProjectMenu = () => {
+    setNewProjectOpen(false);
+    setSelectedKind(null);
+  };
+  const chooseProjectKind = (kind: ProjectKind) => {
+    if (projectTemplates.some((template) => template.kind === kind)) {
+      setSelectedKind(kind);
+      return;
+    }
+    closeNewProjectMenu();
+    onNew(kind);
+  };
 
   return (
     <main className="home-shell">
@@ -167,12 +204,70 @@ export function HomeScreen({
       <div className="home-content">
         <section className="new-figure-section">
           <div className="creation-actions">
-            <button className="new-figure-button" onClick={onNew}>
-              <span className="new-figure-icon" aria-hidden="true">
-                <FilePlus2 size={20} />
-              </span>
-              New figure
-            </button>
+            <div className="new-project-picker" ref={newProjectRef}>
+              <button
+                className="new-figure-button"
+                aria-haspopup="menu"
+                aria-expanded={newProjectOpen}
+                onClick={() => {
+                  setNewProjectOpen((open) => !open);
+                  setSelectedKind(null);
+                }}
+              >
+                <span className="new-figure-icon" aria-hidden="true">
+                  <FilePlus2 size={20} />
+                </span>
+                New project
+                <ChevronDown size={15} aria-hidden="true" />
+              </button>
+              {newProjectOpen ? (
+                <div className="new-project-menu" role="menu" aria-label="New project mode">
+                  {selectedKind ? (
+                    <>
+                      <button
+                        role="menuitem"
+                        className="new-project-blank"
+                        onClick={() => {
+                          closeNewProjectMenu();
+                          onNew(selectedKind);
+                        }}
+                      >
+                        Blank
+                      </button>
+                      {templatesForKind.map((template) => (
+                        <button
+                          key={template.id}
+                          role="menuitem"
+                          className="new-project-template"
+                          onClick={() => {
+                            closeNewProjectMenu();
+                            onNew(selectedKind, template);
+                          }}
+                        >
+                          {template.thumbnail ? (
+                            <img src={template.thumbnail} alt="" aria-hidden="true" />
+                          ) : null}
+                          <span>{template.name}</span>
+                        </button>
+                      ))}
+                      <button
+                        role="menuitem"
+                        className="new-project-back"
+                        onClick={() => setSelectedKind(null)}
+                      >
+                        Back
+                      </button>
+                    </>
+                  ) : (
+                    (["diagram", "figure", "poster"] as const).map((kind) => (
+                      <button key={kind} role="menuitem" onClick={() => chooseProjectKind(kind)}>
+                        {kind[0].toUpperCase() + kind.slice(1)}
+                      </button>
+                    ))
+                  )}
+                </div>
+              ) : null}
+            </div>
             <button
               className={`new-folder-button ${creatingFolder ? "active" : ""}`}
               onClick={() => setCreatingFolder(true)}

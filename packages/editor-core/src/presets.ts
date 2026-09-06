@@ -1,4 +1,4 @@
-import type { CanvasSettings, CanvasUnit } from "./types";
+import type { CanvasSettings, CanvasUnit, ProjectKind } from "./types";
 
 export const DEFAULT_DPI = 300;
 
@@ -25,6 +25,33 @@ export const DEFAULT_CANVAS: CanvasSettings = {
   grid: false,
   doubleClickCreatesText: true
 };
+
+const FIGURE_CANVAS: CanvasSettings = {
+  ...CANVAS_PRESETS["A4 landscape"],
+  unit: "mm",
+  dpi: DEFAULT_DPI,
+  background: DEFAULT_CANVAS.background,
+  transparent: DEFAULT_CANVAS.transparent,
+  grid: DEFAULT_CANVAS.grid,
+  doubleClickCreatesText: DEFAULT_CANVAS.doubleClickCreatesText
+};
+
+export interface ProjectDefaults {
+  kind: ProjectKind;
+  name: string;
+  canvas: CanvasSettings;
+}
+
+/** The single mode-to-defaults seam used by project creation and templates. */
+export function resolveProjectDefaults(kind: ProjectKind): ProjectDefaults {
+  if (kind === "figure") {
+    return { kind, name: "Untitled figure", canvas: { ...FIGURE_CANVAS } };
+  }
+  if (kind === "poster") {
+    return { kind, name: "Untitled poster", canvas: { ...DEFAULT_CANVAS } };
+  }
+  return { kind: "diagram", name: "Untitled diagram", canvas: { ...DEFAULT_CANVAS } };
+}
 
 export function pixelsToUnit(pixels: number, unit: CanvasUnit, dpi = DEFAULT_DPI): number {
   if (unit === "in") return pixels / dpi;

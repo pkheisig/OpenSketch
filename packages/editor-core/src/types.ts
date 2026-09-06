@@ -1,4 +1,11 @@
-export const OpenSketch_FORMAT_VERSION = 1;
+export const OpenSketch_FORMAT_VERSION = 2;
+
+export const PROJECT_KINDS = ["diagram", "figure", "poster"] as const;
+export type ProjectKind = (typeof PROJECT_KINDS)[number];
+
+export function isProjectKind(value: unknown): value is ProjectKind {
+  return typeof value === "string" && (PROJECT_KINDS as readonly string[]).includes(value);
+}
 
 export type CanvasUnit = "px" | "mm" | "in";
 
@@ -82,6 +89,7 @@ export interface PortableProject {
   format: "OpenSketch";
   formatVersion: number;
   version: 1;
+  kind: ProjectKind;
   id: string;
   name: string;
   createdAt: string;
@@ -92,6 +100,22 @@ export interface PortableProject {
   uploads: ImportedMediaRecord[];
   usedAssetIds: string[];
   description?: string;
+}
+
+export interface ProjectTemplateRecord {
+  id: string;
+  name: string;
+  kind: ProjectKind;
+  project: PortableProject;
+  thumbnail?: string;
+  createdAt: string;
+  updatedAt: string;
+  schemaVersion: 1;
+}
+
+export interface ProjectCreationOptions {
+  kind?: ProjectKind;
+  template?: ProjectTemplateRecord;
 }
 
 export interface ProjectRecord extends PortableProject {

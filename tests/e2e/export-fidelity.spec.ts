@@ -32,7 +32,8 @@ test("preserves editable color, gradients, clipping, fonts, and raster dimension
   page
 }) => {
   await page.goto("./");
-  await page.getByRole("button", { name: "New figure" }).click();
+  await page.getByRole("button", { name: "New project" }).click();
+  await page.getByRole("menuitem", { name: "Figure", exact: true }).click();
   await page.getByRole("tab", { name: "Imports", exact: true }).click();
   await page.locator('input[type="file"][accept*="image/svg+xml"]').setInputFiles(fixturePath);
   await page.getByRole("button", { name: "Back to projects" }).click();
