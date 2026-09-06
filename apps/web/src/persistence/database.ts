@@ -1,10 +1,17 @@
 import Dexie, { type EntityTable } from "dexie";
 import {
   compactProjectScene,
+  decodeImageDataUrlText,
+  imageDataUrlByteLength,
+  inspectRasterDataUrl,
   isProjectKind,
+  isSupportedImageMimeType,
   migrateProject,
   remintProjectIdentity,
   OpenSketch_FORMAT_VERSION,
+  parseImageDataUrl,
+  PORTABLE_PROJECT_LIMITS,
+  PROJECT_STORAGE_LIMITS,
   referencedUploadIds,
   resolveProjectDefaults,
   type ImportedMediaRecord,
@@ -377,6 +384,7 @@ function normalizeProjectTemplate(template: ProjectTemplateRecord): ProjectTempl
     throw new Error("The project template record is incomplete.");
   }
   if (!isProjectKind(template.kind)) throw new Error("The project template kind is unsupported.");
+  const thumbnail = normalizeProjectTemplateThumbnail(template.thumbnail);
   const project = migrateProject(template.project);
   if (project.kind !== template.kind) {
     throw new Error("The project template kind does not match its project snapshot.");
@@ -384,8 +392,47 @@ function normalizeProjectTemplate(template: ProjectTemplateRecord): ProjectTempl
   return {
     ...structuredClone(template),
     project,
+    ...(thumbnail === undefined ? {} : { thumbnail }),
     schemaVersion: 1
   };
+}
+
+function normalizeProjectTemplateThumbnail(thumbnail: unknown): string | undefined {
+  if (thumbnail === undefined) return undefined;
+  if (typeof thumbnail !== "string") {
+    throw new Error("The project template thumbnail must be an image data URL.");
+  }
+  const parsed = parseImageDataUrl(thumbnail);
+  if (!parsed || !isSupportedImageMimeType(parsed.mimeType)) {
+    throw new Error("The project template thumbnail must be an image data URL.");
+  }
+  const byteLength = imageDataUrlByteLength(parsed);
+  if (!Number.isFinite(byteLength) || byteLength > PORTABLE_PROJECT_LIMITS.maxDataUrlBytes) {
+    throw new Error("The project template thumbnail exceeds the image resource limit.");
+  }
+  if (parsed.mimeType === "image/svg+xml") {
+    const svg = decodeImageDataUrlText(parsed);
+    if (
+      !svg ||
+      /<script\b|<foreignObject\b|javascript:|(?:href|xlink:href)\s*=\s*["'](?:https?:|\/\/|javascript:)|url\(\s*["']?(?:https?:|\/\/|javascript:)/i.test(
+        svg
+      )
+    ) {
+      throw new Error("The project template thumbnail contains unsafe SVG content.");
+    }
+  } else if (!inspectRasterDataUrl(thumbnail, parsed.mimeType)) {
+    throw new Error("The project template thumbnail is not a valid raster image.");
+  }
+  return thumbnail;
+}
+
+function assertProjectTemplateWithinBudget(template: ProjectTemplateRecord): void {
+  const bytes = new TextEncoder().encode(JSON.stringify(template)).byteLength;
+  if (bytes > PROJECT_STORAGE_LIMITS.maxPortableProjectBytes) {
+    throw new Error(
+      `The project template is larger than the ${PROJECT_STORAGE_LIMITS.maxPortableProjectBytes / (1024 * 1024)} MiB portable-project limit.`
+    );
+  }
 }
 
 export async function listProjectTemplates(): Promise<ProjectTemplateRecord[]> {
@@ -415,6 +462,7 @@ export async function saveProjectTemplate(
   const normalized = normalizeProjectTemplate(template);
   const now = new Date().toISOString();
   const next = { ...normalized, updatedAt: normalized.updatedAt || now };
+  assertProjectTemplateWithinBudget(next);
   const database = getOpenSketchDatabase();
   await getOpenSketchDatabase().transaction(
     "rw",

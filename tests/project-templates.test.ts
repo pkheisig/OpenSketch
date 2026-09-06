@@ -65,6 +65,16 @@ describe("project template storage", () => {
     expect(await listProjectTemplates()).toEqual([expect.objectContaining({ kind: "figure" })]);
   });
 
+  it("rejects external and malformed template thumbnails before persistence", async () => {
+    await expect(
+      saveProjectTemplate({ ...template(), thumbnail: "https://example.com/template.svg" })
+    ).rejects.toThrow(/thumbnail/i);
+    await expect(
+      saveProjectTemplate({ ...template(), thumbnail: "data:image/png;base64,not-an-image" })
+    ).rejects.toThrow(/thumbnail/i);
+    expect(await db.projectTemplates.get("template-diagram")).toBeUndefined();
+  });
+
   it("remints connector, semantic, and recognition references together", () => {
     const binding = (fromObjectId: string, toObjectId: string) => ({
       fromObjectId,
