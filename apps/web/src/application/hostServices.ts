@@ -12,6 +12,7 @@ import type {
   AssetManifest,
   AssetVariant,
   ImportedMediaRecord,
+  InterchangeFidelityReport,
   ProjectFolderRecord,
   ProjectRecord
 } from "@workspace/editor-core";
@@ -91,7 +92,8 @@ export interface ProjectFileService {
 export interface ExportArtifact {
   blob: Blob;
   filename: string;
-  kind: "svg" | "pdf" | "png" | "credits" | "project";
+  kind: "svg" | "pdf" | "png" | "jpeg" | "webp" | "tiff" | "bmp" | "credits" | "project";
+  fidelity?: InterchangeFidelityReport;
 }
 
 export interface ExportDeliveryService {

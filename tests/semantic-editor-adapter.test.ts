@@ -80,7 +80,11 @@ function makeAdapter(
     exportSvg: vi.fn(),
     exportCredits: vi.fn(),
     exportPdf,
-    exportPng: vi.fn(async () => undefined)
+    exportPng: vi.fn(async () => undefined),
+    exportDocument: vi.fn(async (format, options) => {
+      if (format === "pdf")
+        await exportPdf(options?.title, options?.description, { signal: options?.signal });
+    })
   });
   return Object.assign(adapter, {
     commit,

@@ -1,5 +1,6 @@
 import type { ShapeKind, TextKind } from "@/editor/creation";
 import { PORTABLE_PROJECT_LIMITS } from "@workspace/editor-core";
+import { INTERCHANGE_EXPORT_REGISTRY } from "@/interchange/registry";
 import {
   SEMANTIC_RUNTIME_VERSION,
   type JsonSchema,
@@ -191,7 +192,10 @@ const propertiesSchema: JsonSchema = {
 const assetFamilyId = (): JsonSchema => ({ type: "string", minLength: 1, maxLength: 200 });
 const assetVariantId = (): JsonSchema => ({ type: "string", minLength: 1, maxLength: 200 });
 const assetLimit = (): JsonSchema => integer(1, 100);
-const exportFormat = { type: "string", enum: ["svg", "pdf", "png", "credits"] } as const;
+const exportFormat = {
+  type: "string",
+  enum: [...INTERCHANGE_EXPORT_REGISTRY.map((adapter) => adapter.format), "credits"]
+};
 
 const semanticRole = {
   type: "string",
@@ -1198,7 +1202,7 @@ const definitions: SemanticCommandDefinition[] = [
     name: "export_figure",
     title: "Export figure",
     description:
-      "Export the current figure through the existing sanitized SVG, PDF, PNG, or provenance-credit pathway.",
+      "Export the current figure through the shared interchange pipeline as SVG, PDF, PNG, JPEG, WebP, TIFF, BMP, or provenance credits.",
     version: SEMANTIC_RUNTIME_VERSION,
     risk: "side_effect",
     confirmation: "none",
@@ -1214,7 +1218,8 @@ const definitions: SemanticCommandDefinition[] = [
         description: { type: "string", maxLength: 2_000 },
         transparent: { type: "boolean" },
         dpi: number(1, 2_400),
-        background: { type: "string", maxLength: 100 }
+        background: { type: "string", maxLength: 100 },
+        quality: number(0.1, 1)
       },
       required: ["format"],
       additionalProperties: false

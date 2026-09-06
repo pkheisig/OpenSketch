@@ -1,4 +1,8 @@
-import { rehydrateProjectScene } from "@workspace/editor-core";
+import {
+  createFidelityReport,
+  mimeTypeForFormat,
+  rehydrateProjectScene
+} from "@workspace/editor-core";
 import { ProjectConflictError } from "@/application/hostServices";
 import { hasSvgComponents, prepareSvgComponents } from "./svgComponents";
 import { assertAssetCapacity } from "./assetCapacity";
@@ -43,19 +47,33 @@ import {
   type CanvasSettings,
   type ConnectorBinding,
   type ImportedMediaRecord,
+  type InterchangeFidelityReport,
+  type InterchangeFormat,
   type ProjectRecord,
   type RasterInspection,
   imageDataUrlByteLength,
   inspectRasterBlob,
   inspectRasterDataUrl,
   isSupportedImageMimeType,
-  isSupportedRasterMimeType,
   parseImageDataUrl,
   PORTABLE_PROJECT_LIMITS,
   rasterLimitMessage
 } from "@workspace/editor-core";
 import { sanitizeImportedSvg } from "@/assets/browserSanitizer";
+import {
+  importDecisionMessage,
+  prepareInterchangeFile,
+  requiresImportDecision
+} from "@/interchange/registry";
+import {
+  encodeBmpRgba,
+  encodeTiffRgba,
+  InterchangeImportError,
+  sha256Hex,
+  type RgbaRaster
+} from "@/interchange/formatCodecs";
 import { calculatePngExportResource, setPngDpi } from "@/export/png";
+import { setJpegDpi } from "@/export/jpeg";
 import {
   applyPhysicalSvgViewport,
   calculateDocumentPhysicalExtent,
@@ -280,6 +298,59 @@ const SVG_CACHE_LIMIT = 64;
 const DRAG_DUPLICATE_OPACITY = 0.35;
 const TITLE_PERSISTENCE_DELAY_MS = 250;
 const svgStringCache = new Map<string, string>();
+
+export type ExportDocumentFormat = Extract<
+  InterchangeFormat,
+  "svg" | "pdf" | "png" | "jpeg" | "webp" | "tiff" | "bmp"
+>;
+
+export interface ExportDocumentOptions {
+  title?: string;
+  description?: string;
+  transparent?: boolean;
+  dpi?: number;
+  background?: string;
+  quality?: number;
+  signal?: AbortSignal;
+}
+
+export type InterchangeImportResult = ImportedMediaRecord & {
+  fidelity: InterchangeFidelityReport;
+};
+
+async function exportFidelityReport(args: {
+  blob: Blob;
+  filename: string;
+  format: ExportDocumentFormat;
+  width: number;
+  height: number;
+  physicalResolution?: { x: number; y: number; unit: "dpi" | "dpcm" | "unknown" };
+  status: "native-editable" | "appearance-snapshot" | "editable-with-losses";
+  flattenedCount?: number;
+  substitutions?: string[];
+}): Promise<InterchangeFidelityReport> {
+  const checksum = await sha256Hex(new Uint8Array(await args.blob.arrayBuffer()));
+  return createFidelityReport({
+    source: {
+      name: args.filename,
+      mimeType: args.blob.type || mimeTypeForFormat(args.format),
+      byteLength: args.blob.size,
+      ...(checksum ? { sha256: checksum } : {})
+    },
+    probe: {
+      format: args.format,
+      dimensions: { width: args.width, height: args.height },
+      ...(args.physicalResolution ? { physicalResolution: args.physicalResolution } : {}),
+      diagnostics: []
+    },
+    checksum,
+    status: args.status,
+    mappedCount: 1,
+    flattenedCount: args.flattenedCount ?? 0,
+    refusedCount: 0,
+    substitutions: args.substitutions
+  });
+}
 
 function validateImportedMediaRecord(
   media: ImportedMediaRecord,
@@ -596,7 +667,7 @@ export interface EditorContextValue {
   addTemplate: (template: AssetTemplate, point?: Point) => Promise<void>;
   setAssetVariant: (variantId: string) => Promise<void>;
   addImportedMedia: (media: ImportedMediaRecord, point?: Point) => Promise<void>;
-  importMedia: (file: File, point?: Point) => Promise<ImportedMediaRecord>;
+  importMedia: (file: File, point?: Point) => Promise<InterchangeImportResult>;
   deleteSelection: () => void;
   duplicateSelection: () => Promise<void>;
   saveSelectionAsTemplate: () => Promise<void>;
@@ -625,6 +696,10 @@ export interface EditorContextValue {
   exportCredits: (title?: string, description?: string) => void;
   exportPdf: (title?: string, description?: string) => Promise<void>;
   exportPng: (transparent: boolean, dpi: number, background?: string) => Promise<void>;
+  exportDocument: (
+    format: ExportDocumentFormat,
+    options?: ExportDocumentOptions
+  ) => Promise<InterchangeFidelityReport | undefined>;
   commit: (label?: string) => void;
   /** Transport-neutral semantic editor surface used by WebMCP and tests. */
   semanticRuntime: SemanticRuntime;
@@ -2820,6 +2895,12 @@ export function EditorProvider({
       options?: SemanticExecutionOptions
     ) => Promise<void>
   >(async () => undefined);
+  const semanticExportDocumentRef = useRef<
+    (
+      format: ExportDocumentFormat,
+      options?: ExportDocumentOptions
+    ) => Promise<InterchangeFidelityReport | undefined>
+  >(async () => undefined);
   const semanticInsertAssetRef = useRef<
     (
       family: AssetFamily,
@@ -2863,7 +2944,8 @@ export function EditorProvider({
         exportSvg: (...args) => semanticExportSvgRef.current(...args),
         exportCredits: (...args) => semanticExportCreditsRef.current(...args),
         exportPdf: (...args) => semanticExportPdfRef.current(...args),
-        exportPng: (...args) => semanticExportPngRef.current(...args)
+        exportPng: (...args) => semanticExportPngRef.current(...args),
+        exportDocument: (...args) => semanticExportDocumentRef.current(...args)
       })
     );
   }
@@ -3433,49 +3515,81 @@ export function EditorProvider({
     (file: File, point?: Point) => {
       const operation = trackPendingEditorWork(
         importQueue.current.then(async () => {
-          const extension = file.name.toLowerCase().split(".").at(-1);
-          if (file.size > PORTABLE_PROJECT_LIMITS.maxDataUrlBytes) {
-            throw new Error("Images must be 25 MB or smaller.");
+          let prepared;
+          try {
+            prepared = await prepareInterchangeFile(file);
+          } catch (reason) {
+            if (
+              reason instanceof InterchangeImportError &&
+              reason.probe &&
+              (reason.code === "animated_requires_choice" ||
+                reason.code === "multipage_requires_choice" ||
+                requiresImportDecision(reason.probe))
+            ) {
+              const accepted = await services.dialogs.confirm(importDecisionMessage(reason.probe));
+              if (!accepted) throw reason;
+              prepared = await prepareInterchangeFile(file, {
+                allowAnimatedFirstFrame: true,
+                allowFirstPage: true
+              });
+            } else {
+              throw reason;
+            }
           }
-          const rasterInspection = await inspectRasterBlob(file);
-          const declaredRasterMimeType = file.type.toLowerCase();
-          const rasterExtension = ["png", "jpg", "jpeg", "webp"].includes(extension ?? "");
-          if (
-            !rasterInspection &&
-            (isSupportedRasterMimeType(declaredRasterMimeType) || rasterExtension)
-          ) {
-            throw new Error("The file is not a valid PNG, JPEG, or WebP image.");
+          if (prepared.requiresDecision) {
+            const accepted = await services.dialogs.confirm(importDecisionMessage(prepared.probe));
+            if (!accepted) {
+              throw new InterchangeImportError("The import was canceled.", {
+                code: "canceled",
+                probe: prepared.probe,
+                report: prepared.fidelity
+              });
+            }
           }
-          const inferredMimeType =
-            rasterInspection?.mimeType ??
-            (file.type.toLowerCase() === "image/svg+xml" || extension === "svg"
-              ? "image/svg+xml"
-              : "");
-          if (!inferredMimeType) {
-            throw new Error("The file is not a valid PNG, JPEG, WebP, or SVG image.");
-          }
-          if (rasterInspection) {
-            const limitMessage = rasterLimitMessage(rasterInspection);
-            if (limitMessage) throw new Error(limitMessage);
-          }
+          const inferredMimeType = prepared.normalizedMimeType;
           const importId = services.clock.randomUUID();
           let dataUrl = await new Promise<string>((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => resolve(String(reader.result));
             reader.onerror = () => reject(reader.error ?? new Error("Unable to read the image."));
-            reader.readAsDataURL(new Blob([file], { type: inferredMimeType }));
+            reader.readAsDataURL(new Blob([prepared.normalized], { type: inferredMimeType }));
           });
           if (inferredMimeType === "image/svg+xml") {
-            const source = sanitizeImportedSvg(await file.text(), `import-${importId}`);
+            const source = sanitizeImportedSvg(
+              await prepared.normalized.text(),
+              `import-${importId}`
+            );
             dataUrl = `data:image/svg+xml;base64,${btoa(unescape(encodeURIComponent(source)))}`;
+          }
+          const rasterInspection =
+            inferredMimeType === "image/svg+xml"
+              ? undefined
+              : await inspectRasterBlob(
+                  new Blob([prepared.normalized], { type: inferredMimeType })
+                );
+          if (rasterInspection) {
+            const limitMessage = rasterLimitMessage(rasterInspection);
+            if (limitMessage) throw new Error(limitMessage);
           }
           const media: ImportedMediaRecord = {
             id: importId,
             name: file.name,
             mimeType: inferredMimeType,
-            dataUrl
+            dataUrl,
+            ...(prepared.source.sha256
+              ? {
+                  sourceResource: {
+                    format: prepared.probe.format ?? prepared.fidelity.format,
+                    name: prepared.source.name,
+                    mimeType: prepared.source.mimeType,
+                    byteLength: prepared.source.byteLength,
+                    sha256: prepared.source.sha256
+                  }
+                }
+              : {})
           };
-          return placeImportedMedia(media, point, rasterInspection);
+          const stored = await placeImportedMedia(media, point, rasterInspection);
+          return { ...stored, fidelity: prepared.fidelity };
         })
       );
       importQueue.current = operation.then(() => undefined).catch(() => undefined);
@@ -4358,16 +4472,12 @@ export function EditorProvider({
     [buildSvg, services]
   );
 
-  const exportPdf = useCallback(
-    async (
-      title = latestProject.current.name,
-      description = latestProject.current.description ?? "",
-      options?: SemanticExecutionOptions
-    ) => {
+  const createPdfBlob = useCallback(
+    async (title: string, description: string, signal?: AbortSignal): Promise<Blob | undefined> => {
       if (!canvas) throw new Error("The figure canvas is not ready.");
       await waitForPendingEditorWork();
       await waitForCanvasTextFonts(canvas.getObjects(), services.fonts);
-      if (options?.signal?.aborted) return;
+      if (signal?.aborted) return undefined;
       const svg = buildSvg(title, description);
       const blob = await svgToPdfBlob(
         svg,
@@ -4383,22 +4493,26 @@ export function EditorProvider({
           provenance: collectProvenanceManifest(canvas.getObjects())
         }
       );
-      if (options?.signal?.aborted) return;
+      return signal?.aborted ? undefined : blob;
+    },
+    [buildSvg, canvas, canvasSettings, services, waitForPendingEditorWork]
+  );
+
+  const exportPdf = useCallback(
+    async (
+      title = latestProject.current.name,
+      description = latestProject.current.description ?? "",
+      options?: SemanticExecutionOptions
+    ) => {
+      const blob = await createPdfBlob(title, description, options?.signal);
+      if (!blob) return;
       await services.exports.deliver({
         blob,
         filename: `${safeFilename(title)}.pdf`,
         kind: "pdf"
       });
     },
-    [
-      buildSvg,
-      canvas,
-      canvasSettings.dpi,
-      canvasSettings.height,
-      canvasSettings.width,
-      services,
-      waitForPendingEditorWork
-    ]
+    [createPdfBlob, services]
   );
 
   const exportCredits = useCallback(
@@ -4462,10 +4576,137 @@ export function EditorProvider({
     [canvas, canvasSettings, services]
   );
 
+  const exportDocument = useCallback(
+    async (format: ExportDocumentFormat, options: ExportDocumentOptions = {}) => {
+      const title = options.title ?? latestProject.current.name;
+      const description = options.description ?? latestProject.current.description ?? "";
+      if (options.signal?.aborted) return;
+      if (format === "svg") {
+        const filename = `${safeFilename(title)}.svg`;
+        const blob = new Blob([buildSvg(title, description)], { type: "image/svg+xml" });
+        const fidelity = await exportFidelityReport({
+          blob,
+          filename,
+          format,
+          width: canvasSettings.width,
+          height: canvasSettings.height,
+          physicalResolution: { x: canvasSettings.dpi, y: canvasSettings.dpi, unit: "dpi" },
+          status: "native-editable"
+        });
+        await services.exports.deliver({ blob, filename, kind: format, fidelity });
+        return fidelity;
+      }
+      if (format === "pdf") {
+        const blob = await createPdfBlob(title, description, options.signal);
+        if (!blob) return undefined;
+        const filename = `${safeFilename(title)}.pdf`;
+        const fidelity = await exportFidelityReport({
+          blob,
+          filename,
+          format,
+          width: canvasSettings.width,
+          height: canvasSettings.height,
+          physicalResolution: { x: canvasSettings.dpi, y: canvasSettings.dpi, unit: "dpi" },
+          status: "appearance-snapshot",
+          flattenedCount: 1
+        });
+        await services.exports.deliver({ blob, filename, kind: format, fidelity });
+        return fidelity;
+      }
+      if (!canvas) throw new Error("The figure canvas is not ready.");
+      if (options.signal?.aborted) return;
+      await waitForPendingEditorWork();
+      await waitForCanvasTextFonts(canvas.getObjects(), services.fonts);
+      if (options.signal?.aborted) return;
+      const dpi = options.dpi ?? canvasSettings.dpi;
+      const resource = calculatePngExportResource(
+        canvasSettings.width,
+        canvasSettings.height,
+        canvasSettings.dpi,
+        dpi
+      );
+      const previous = canvas.backgroundColor;
+      const transparent = options.transparent === true && format !== "jpeg";
+      canvas.backgroundColor = transparent ? "" : (options.background ?? canvasSettings.background);
+      let blob: Blob;
+      try {
+        const exportCanvas = withLogicalViewport(canvas, canvasSettings, () =>
+          canvas.toCanvasElement(resource.scale)
+        );
+        if (format === "bmp" || format === "tiff") {
+          const context = exportCanvas.getContext("2d");
+          if (!context) throw new Error("The browser canvas is unavailable.");
+          const image = context.getImageData(0, 0, exportCanvas.width, exportCanvas.height);
+          const raster: RgbaRaster = {
+            width: exportCanvas.width,
+            height: exportCanvas.height,
+            data: new Uint8Array(image.data),
+            physicalResolution: { x: dpi, y: dpi, unit: "dpi" }
+          };
+          const encoded = format === "bmp" ? encodeBmpRgba(raster) : encodeTiffRgba(raster);
+          blob = new Blob([encoded], { type: format === "bmp" ? "image/bmp" : "image/tiff" });
+        } else {
+          const type =
+            format === "jpeg" ? "image/jpeg" : format === "webp" ? "image/webp" : "image/png";
+          const quality =
+            format === "jpeg" || format === "webp"
+              ? Math.min(1, Math.max(0.1, options.quality ?? 0.92))
+              : undefined;
+          blob = await new Promise<Blob>((resolve, reject) => {
+            exportCanvas.toBlob(
+              (candidate) =>
+                candidate
+                  ? resolve(candidate)
+                  : reject(new Error(`${format.toUpperCase()} encoding failed.`)),
+              type,
+              quality
+            );
+          });
+          if (format === "webp" && blob.type !== "image/webp") {
+            throw new Error("This browser does not provide a qualified WebP encoder.");
+          }
+        }
+      } finally {
+        canvas.backgroundColor = previous;
+        canvas.requestRenderAll();
+      }
+      if (options.signal?.aborted) return;
+      if (format === "png") {
+        blob = await setPngDpi(blob, dpi, {
+          provenance: collectProvenanceManifest(canvas.getObjects())
+        });
+      } else if (format === "jpeg") {
+        blob = await setJpegDpi(blob, dpi);
+      }
+      const extension = format === "jpeg" ? "jpg" : format;
+      const filename = `${safeFilename(title)}-${dpi}dpi.${extension}`;
+      const fidelity = await exportFidelityReport({
+        blob,
+        filename,
+        format,
+        width: resource.width,
+        height: resource.height,
+        ...(format === "png" || format === "jpeg" || format === "tiff" || format === "bmp"
+          ? { physicalResolution: { x: dpi, y: dpi, unit: "dpi" as const } }
+          : {}),
+        status:
+          format === "jpeg" || format === "webp" ? "editable-with-losses" : "appearance-snapshot",
+        flattenedCount: 1,
+        ...(format === "jpeg" || format === "webp"
+          ? { substitutions: ["scene rendered to lossy raster pixels"] }
+          : {})
+      });
+      await services.exports.deliver({ blob, filename, kind: format, fidelity });
+      return fidelity;
+    },
+    [buildSvg, canvas, canvasSettings, createPdfBlob, services, waitForPendingEditorWork]
+  );
+
   semanticExportSvgRef.current = exportSvg;
   semanticExportCreditsRef.current = exportCredits;
   semanticExportPdfRef.current = exportPdf;
   semanticExportPngRef.current = exportPng;
+  semanticExportDocumentRef.current = exportDocument;
 
   useEffect(() => {
     const onPaste = (event: ClipboardEvent) => {
@@ -4727,6 +4968,7 @@ export function EditorProvider({
       exportCredits,
       exportPdf,
       exportPng,
+      exportDocument,
       commit,
       semanticRuntime
     }),
@@ -4757,6 +4999,7 @@ export function EditorProvider({
       exportPdf,
       exportSvg,
       exportCredits,
+      exportDocument,
       fitCanvas,
       fitRequest,
       flip,

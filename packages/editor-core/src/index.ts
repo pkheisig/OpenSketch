@@ -1,4 +1,5 @@
 export * from "./migrations";
+export * from "./interchange";
 export * from "./projectMedia";
 export * from "./presets";
 export * from "./rasterResources";

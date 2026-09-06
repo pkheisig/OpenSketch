@@ -61,11 +61,21 @@ export interface AssetManifest {
   families: AssetFamily[];
 }
 
+export interface ImportedMediaSourceResource {
+  format: string;
+  name: string;
+  mimeType: string;
+  byteLength: number;
+  sha256: string;
+}
+
 export interface ImportedMediaRecord {
   id: string;
   name: string;
   mimeType: string;
   dataUrl: string;
+  /** Source identity retained without embedding a second copy of the source bytes. */
+  sourceResource?: ImportedMediaSourceResource;
 }
 
 export interface PortableProject {

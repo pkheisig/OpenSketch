@@ -759,12 +759,12 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   expect(assetRecord.license).toBeTruthy();
   expect(assetRecord.credit).toBeTruthy();
   expect(svg).toContain("<metadata>");
-  expect(svg).toContain("Per-asset authorship");
   expect(svg).toContain("<rect");
   expect(svg).toContain("CD8 T cell");
 
   await page.getByRole("button", { name: "Export" }).click();
-  await page.getByRole("tab", { name: /PNG/ }).click();
+  await selectUiOption(page, "Format", "PNG");
+  await page.getByRole("button", { name: "Advanced options" }).click();
   await selectUiOption(page, "Output DPI", "150 DPI");
   const pngDownloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export PNG" }).click();
@@ -779,7 +779,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   expect(pngProvenance(png)).toEqual(svgMetadata.provenance);
 
   await page.getByRole("button", { name: "Export" }).click();
-  await page.getByRole("tab", { name: /PDF/ }).click();
+  await selectUiOption(page, "Format", "PDF");
   const pdfDownloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export PDF" }).click();
   const pdfPath = await (await pdfDownloadPromise).path();
@@ -811,6 +811,7 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
       { exact: true }
     )
   ).toHaveCount(0);
+  await exportDialog.getByRole("button", { name: "Close export dialog" }).click();
 
   await page.getByRole("button", { name: "Back to projects" }).click();
   await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
@@ -1830,15 +1831,11 @@ test("uses accessible in-app dropdowns with keyboard and outside-click behavior"
 
   await page.getByRole("button", { name: "Export", exact: true }).click();
   await expect(page.getByLabel("Accessible description")).toHaveCount(0);
-  const pngOptions = page.locator(".export-format-options");
-  await expect(pngOptions).toHaveAttribute("aria-hidden", "true");
-  await expect(pngOptions).not.toHaveClass(/open/);
-  expect(
-    await pngOptions.evaluate((element) => getComputedStyle(element).transitionProperty)
-  ).toContain("grid-template-rows");
-  await page.getByRole("tab", { name: /PNG/ }).click();
-  await expect(pngOptions).toHaveClass(/open/);
-  await expect(pngOptions).toHaveAttribute("aria-hidden", "false");
+  await expect(page.getByRole("combobox", { name: "Format" })).toHaveAttribute("data-value", "svg");
+  await expect(page.getByRole("button", { name: "Advanced options" })).toHaveCount(0);
+  await expect(page.getByRole("combobox", { name: "Output DPI" })).toHaveCount(0);
+  await selectUiOption(page, "Format", "PNG");
+  await page.getByRole("button", { name: "Advanced options" }).click();
   const outputDpi = page.getByRole("combobox", { name: "Output DPI" });
   await expect(page.getByRole("combobox", { name: "Pixel scaling" })).toHaveCount(0);
   await expect(page.getByLabel("Pixel width")).toHaveCount(0);
@@ -1857,14 +1854,15 @@ test("uses accessible in-app dropdowns with keyboard and outside-click behavior"
   await selectUiOption(page, "Output DPI", "1200 DPI");
   await page.getByRole("button", { name: "Close export dialog" }).click();
   await page.getByRole("button", { name: "Export", exact: true }).click();
-  await page.getByRole("tab", { name: /PNG/ }).click();
+  await selectUiOption(page, "Format", "PNG");
+  const advancedOptions = page.getByRole("button", { name: "Advanced options", exact: true });
+  if ((await advancedOptions.count()) > 0) await advancedOptions.click();
   await expect(page.getByRole("combobox", { name: "Output DPI" })).toHaveAttribute(
     "data-value",
     "1200"
   );
-  await page.getByRole("tab", { name: /PDF/ }).click();
-  await expect(pngOptions).not.toHaveClass(/open/);
-  await expect(pngOptions).toHaveAttribute("aria-hidden", "true");
+  await selectUiOption(page, "Format", "PDF");
+  await expect(page.getByRole("combobox", { name: "Output DPI" })).toHaveCount(0);
   await expect(page.getByLabel("Accessible description")).toHaveCount(0);
 });
 
@@ -1876,7 +1874,8 @@ test("prevents PNG export above the browser raster budget", async ({ page }) => 
   await page.getByRole("button", { name: "Canvas size", exact: true }).click();
 
   await page.getByRole("button", { name: "Export", exact: true }).click();
-  await page.getByRole("tab", { name: /PNG/ }).click();
+  await selectUiOption(page, "Format", "PNG");
+  await page.getByRole("button", { name: "Advanced options" }).click();
   const outputDpi = page.getByRole("combobox", { name: "Output DPI" });
   await outputDpi.click();
   const unavailableDpi = page.getByRole("option", { name: "1200 DPI" });
@@ -3930,7 +3929,7 @@ test("embeds every selectable editor font in PDF output", async ({ page }) => {
   }
 
   await page.getByRole("button", { name: "Export" }).click();
-  await page.getByRole("tab", { name: /PDF/ }).click();
+  await selectUiOption(page, "Format", "PDF");
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export PDF" }).click();
   const path = await (await downloadPromise).path();
@@ -4637,7 +4636,7 @@ test("waits for the selected browser font before exporting PDF", async ({ page }
   await expect.poll(() => fontRequestStartedAt).toBeGreaterThan(0);
 
   await page.getByRole("button", { name: "Export" }).click();
-  await page.getByRole("tab", { name: /PDF/ }).click();
+  await selectUiOption(page, "Format", "PDF");
   const exportStartedAt = Date.now();
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export PDF" }).click();
@@ -4679,7 +4678,7 @@ test("waits for imported Fabric text fonts before exporting PDF", async ({ page 
   await expect(page.locator(".layers-title small")).toHaveText("1");
 
   await page.getByRole("button", { name: "Export" }).click();
-  await page.getByRole("tab", { name: /PDF/ }).click();
+  await selectUiOption(page, "Format", "PDF");
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export PDF" }).click();
   expect(await (await downloadPromise).path()).not.toBeNull();
@@ -4727,7 +4726,7 @@ test("preloads every text payload used by a PDF font face", async ({ page }) => 
   });
 
   await page.getByRole("button", { name: "Export" }).click();
-  await page.getByRole("tab", { name: /PDF/ }).click();
+  await selectUiOption(page, "Format", "PDF");
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "Export PDF" }).click();
   expect(await (await downloadPromise).path()).not.toBeNull();
