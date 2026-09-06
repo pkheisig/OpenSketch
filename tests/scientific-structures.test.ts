@@ -1,7 +1,14 @@
 import { assertAssetCapacity } from "../apps/web/src/editor/assetCapacity";
 import { migrateProject, DEFAULT_CANVAS } from "../packages/editor-core/src";
 import { describe, expect, it } from "vitest";
-import { FabricObject, Group, Point, util } from "../apps/web/node_modules/fabric";
+import {
+  FabricObject,
+  Group,
+  Point,
+  StaticCanvas,
+  Rect,
+  util
+} from "../apps/web/node_modules/fabric";
 import { DEFAULT_CREATION_DEFAULTS } from "../apps/web/src/editor/creation";
 import { createShapeObject } from "../apps/web/src/editor/creationObjects";
 import { SCIENTIFIC_PRESETS } from "../apps/web/src/editor/scientific/catalog";
@@ -134,6 +141,40 @@ describe("new flat scientific structures", () => {
     legacy.originalPalette = undefined;
     updateBrushObject(legacy, { ...legacy.scientificBrush, fill: "#d48e8e" });
     expect(legacy.originalPalette).toEqual(original);
+  });
+  it("rejects regeneration above the complete scene budget without mutation", () => {
+    const canvas = new StaticCanvas(undefined);
+    const object = membrane();
+    canvas.add(object);
+    const filler = new Group(Array.from({ length: 8000 }, () => new Rect({ width: 1, height: 1 })));
+    canvas.add(filler);
+    const before = JSON.stringify(object.toObject());
+    expect(() =>
+      updateBrushObject(object, {
+        ...object.scientificBrush,
+        points: [
+          { x: 0, y: 0 },
+          { x: 4590, y: 0 }
+        ]
+      })
+    ).toThrow(/editable-object limit/);
+    expect(JSON.stringify(object.toObject())).toBe(before);
+    canvas.dispose();
+  });
+  it("preserves original and current paints when converting a recolored brush", () => {
+    const object = membrane();
+    const original = object.scientificBrush.fill;
+    updateBrushObject(object, { ...object.scientificBrush, fill: "#d48e8e" });
+    detachBrush(object);
+    const leaves: FabricObject[] = [];
+    const walk = (part: FabricObject) =>
+      part instanceof Group ? part.getObjects().forEach(walk) : leaves.push(part);
+    walk(object);
+    const changed = leaves.filter((part) => part.fill === "#d48e8e");
+    expect(changed.length).toBeGreaterThan(0);
+    expect(
+      changed.every((part) => part.originalFill === original && part.effectBaseFill === "#d48e8e")
+    ).toBe(true);
   });
   it("retains palette changes after extension and releases ordinary editable parts", () => {
     const object = membrane();

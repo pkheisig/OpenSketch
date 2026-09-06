@@ -12,6 +12,7 @@ import {
   Rect,
   util
 } from "fabric";
+import { assertAssetCapacity } from "../assetCapacity";
 import type { CreationDefaults } from "../creation";
 import { scientificPreset, validBrushSpec, type ScientificBrushSpec } from "./catalog";
 import { sampleBrush } from "./geometry";
@@ -224,6 +225,7 @@ export function createBrushObject(spec: ScientificBrushSpec): Group {
 export function updateBrushObject(group: Group, spec: ScientificBrushSpec): void {
   // Validate and render before touching the original; an excessive path must leave it intact.
   const replacement = createBrushObject(spec);
+  if (group.canvas) assertAssetCapacity(group.canvas.getObjects(), replacement, group);
   // Older saved structures may not yet carry their semantic color baseline.
   if (group.scientificBrush && !group.originalPalette?.["scientific:fill"]) {
     group.originalPalette = {
@@ -256,6 +258,27 @@ export function isScientificBrush(
   return object instanceof Group && validBrushSpec(object.scientificBrush);
 }
 export function detachBrush(group: Group) {
+  if (group.scientificBrush) {
+    const spec = group.scientificBrush;
+    const palette = group.originalPalette;
+    const baseline = createBrushObject({
+      ...spec,
+      fill: palette?.["scientific:fill"] ?? spec.fill,
+      accent: palette?.["scientific:accent"] ?? spec.accent,
+      stroke: palette?.["scientific:stroke"] ?? spec.stroke
+    });
+    const copyPaints = (current: FabricObject, original: FabricObject) => {
+      if (typeof original.fill === "string" && original.fill) current.originalFill = original.fill;
+      if (typeof original.stroke === "string" && original.stroke)
+        current.originalStroke = original.stroke;
+      if (typeof current.fill === "string") current.effectBaseFill = current.fill;
+      if (typeof current.stroke === "string") current.effectBaseStroke = current.stroke;
+      if (current instanceof Group && original instanceof Group) {
+        current.getObjects().forEach((part, i) => copyPaints(part, original.getObjects()[i]));
+      }
+    };
+    copyPaints(group, baseline);
+  }
   group.scientificBrush = undefined;
   group.layoutManager.strategy = new FitContentLayout();
   group.OpenSketchType = "group";
