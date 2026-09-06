@@ -5,9 +5,11 @@ import {
   mimeTypeForFormat,
   probeInterchangeBytes,
   probeIsUsable,
+  type InterchangeDiagnostic,
   type InterchangeFidelityReport,
   type InterchangeFormat,
   type InterchangeImportPreparation,
+  type InterchangePhysicalResolution,
   type InterchangeProbe,
   type InterchangeSourceResource
 } from "@workspace/editor-core";
@@ -16,7 +18,8 @@ export interface RgbaRaster {
   width: number;
   height: number;
   data: Uint8Array;
-  physicalResolution?: { x: number; y: number; unit: "dpi" | "dpcm" | "unknown" };
+  physicalResolution?: InterchangePhysicalResolution;
+  sourceBitDepth?: number;
 }
 
 export class InterchangeImportError extends Error {
@@ -97,24 +100,31 @@ export function encodeBmpRgba(raster: RgbaRaster): Uint8Array {
   assertRasterPayload(raster);
   const rowBytes = raster.width * 4;
   const imageBytes = rowBytes * raster.height;
-  const bytes = new Uint8Array(54 + imageBytes);
+  const dibHeaderBytes = 108;
+  const pixelOffset = 14 + dibHeaderBytes;
+  const bytes = new Uint8Array(pixelOffset + imageBytes);
   const view = new DataView(bytes.buffer);
   bytes.set([0x42, 0x4d]);
   setU32(view, 2, bytes.byteLength);
-  setU32(view, 10, 54);
-  setU32(view, 14, 40);
+  setU32(view, 10, pixelOffset);
+  setU32(view, 14, dibHeaderBytes);
   view.setInt32(18, raster.width, true);
   view.setInt32(22, raster.height, true);
   setU16(view, 26, 1);
   setU16(view, 28, 32);
+  setU32(view, 30, 3);
   setU32(view, 34, imageBytes);
   const resolutionUnit = raster.physicalResolution?.unit ?? "unknown";
   setU32(view, 38, pixelsPerMeter(raster.physicalResolution?.x, resolutionUnit));
   setU32(view, 42, pixelsPerMeter(raster.physicalResolution?.y, resolutionUnit));
+  setU32(view, 54, 0x00ff0000);
+  setU32(view, 58, 0x0000ff00);
+  setU32(view, 62, 0x000000ff);
+  setU32(view, 66, 0xff000000);
   for (let y = 0; y < raster.height; y += 1) {
     const sourceRow = raster.height - 1 - y;
     const sourceOffset = sourceRow * rowBytes;
-    const targetOffset = 54 + y * rowBytes;
+    const targetOffset = pixelOffset + y * rowBytes;
     for (let x = 0; x < raster.width; x += 1) {
       const source = sourceOffset + x * 4;
       const target = targetOffset + x * 4;
@@ -133,7 +143,7 @@ export function decodeBmpRgba(bytes: Uint8Array): RgbaRaster {
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   const pixelOffset = readU32(view, 10, true);
   const dibSize = readU32(view, 14, true);
-  if (dibSize < 40 || pixelOffset >= bytes.length) {
+  if (dibSize < 40 || 14 + dibSize > bytes.length || pixelOffset >= bytes.length) {
     throw new InterchangeImportError("The BMP DIB header is unsupported.", { code: "bmp_header" });
   }
   const width = readI32(view, 18, true);
@@ -141,12 +151,18 @@ export function decodeBmpRgba(bytes: Uint8Array): RgbaRaster {
   const planes = readU16(view, 26, true);
   const bitsPerPixel = readU16(view, 28, true);
   const compression = readU32(view, 30, true);
+  const hasBgraMasks =
+    dibSize >= 108 &&
+    readU32(view, 54, true) === 0x00ff0000 &&
+    readU32(view, 58, true) === 0x0000ff00 &&
+    readU32(view, 62, true) === 0x000000ff &&
+    readU32(view, 66, true) === 0xff000000;
   if (
     width <= 0 ||
     rawHeight === 0 ||
     planes !== 1 ||
     ![24, 32].includes(bitsPerPixel) ||
-    compression !== 0
+    (compression !== 0 && !(compression === 3 && bitsPerPixel === 32 && hasBgraMasks))
   ) {
     throw new InterchangeImportError(
       "Only uncompressed 24-bit and 32-bit BMP files are supported.",
@@ -156,6 +172,7 @@ export function decodeBmpRgba(bytes: Uint8Array): RgbaRaster {
     );
   }
   const height = Math.abs(rawHeight);
+  const alphaDefined = bitsPerPixel === 32 && (dibSize >= 108 || hasBgraMasks);
   assertRasterDimensions(width, height);
   const rowBytes = Math.ceil((width * (bitsPerPixel / 8)) / 4) * 4;
   if (pixelOffset + rowBytes * height > bytes.length) {
@@ -173,7 +190,7 @@ export function decodeBmpRgba(bytes: Uint8Array): RgbaRaster {
       data[target] = bytes[source + 2];
       data[target + 1] = bytes[source + 1];
       data[target + 2] = bytes[source];
-      data[target + 3] = bitsPerPixel === 32 ? bytes[source + 3] : 255;
+      data[target + 3] = alphaDefined ? bytes[source + 3] : 255;
     }
   }
   const xPixelsPerMeter = readU32(view, 38, true);
@@ -290,6 +307,7 @@ export async function decodeTiffRgba(bytes: Uint8Array): Promise<RgbaRaster> {
       width,
       height,
       data: pixels,
+      sourceBitDepth: bitsPerSample,
       ...(Number.isFinite(xResolution) &&
       Number.isFinite(yResolution) &&
       xResolution > 0 &&
@@ -420,6 +438,7 @@ export async function prepareStrictInterchangeImport(
     signal?: AbortSignal;
     allowAnimatedFirstFrame?: boolean;
     allowFirstPage?: boolean;
+    allowLossyBitDepth?: boolean;
   } = {}
 ): Promise<
   InterchangeImportPreparation & {
@@ -437,7 +456,11 @@ export async function prepareStrictInterchangeImport(
   const probeByteLength = Math.min(file.size, INTERCHANGE_PROBE_READ_BYTES);
   const boundedProbe = new Uint8Array(await file.slice(0, probeByteLength).arrayBuffer());
   checkAbort(options.signal);
-  const probe = probeInterchangeBytes(boundedProbe, { mimeType: file.type, name: file.name });
+  const probe = probeInterchangeBytes(boundedProbe, {
+    mimeType: file.type,
+    name: file.name,
+    byteLength: file.size
+  });
   let source: InterchangeSourceResource = {
     name: file.name,
     mimeType: file.type || mimeTypeForFormat(probe.format ?? "png"),
@@ -504,12 +527,53 @@ export async function prepareStrictInterchangeImport(
   let normalized: Blob = file;
   let normalizedMimeType = mimeTypeForFormat(format);
   let requiresDecision = false;
+  let physicalResolution: InterchangePhysicalResolution | undefined;
+  const substitutions: string[] = [];
+  const fidelityDiagnostics: InterchangeDiagnostic[] = [];
   if (format === "bmp") {
     const raster = decodeBmpRgba(fullBytes);
+    physicalResolution = raster.physicalResolution;
     normalized = await blobFromRgba(raster, "image/png");
     normalizedMimeType = "image/png";
   } else if (format === "tiff") {
     const raster = await decodeTiffRgba(fullBytes);
+    physicalResolution = raster.physicalResolution;
+    if (raster.sourceBitDepth && raster.sourceBitDepth > 8) {
+      const substitution = `TIFF ${raster.sourceBitDepth}-bit samples reduced to 8-bit project-owned PNG pixels`;
+      const diagnostic: InterchangeDiagnostic = {
+        code: "bit_depth_flattened",
+        severity: "warning",
+        message: `The TIFF ${raster.sourceBitDepth}-bit samples are reduced to 8-bit display pixels.`
+      };
+      if (!options.allowLossyBitDepth) {
+        const decisionReport = createFidelityReport({
+          source,
+          probe,
+          checksum,
+          physicalResolution,
+          diagnostics: [diagnostic],
+          substitutions: [substitution]
+        });
+        throw new InterchangeImportError(
+          "This TIFF uses samples above 8-bit depth and needs explicit acceptance before import.",
+          {
+            code: "lossy_depth_requires_choice",
+            probe,
+            report: decisionReport
+          }
+        );
+      }
+      substitutions.push(substitution);
+      fidelityDiagnostics.push(diagnostic);
+    }
+    if ((probe.pageCount ?? 1) > 1 && options.allowFirstPage) {
+      substitutions.push("multi-page TIFF reduced to first page");
+      fidelityDiagnostics.push({
+        code: "multipage_reduced",
+        severity: "warning",
+        message: "Only the selected first page of the multi-page TIFF was imported."
+      });
+    }
     normalized = await blobFromRgba(raster, "image/png");
     normalizedMimeType = "image/png";
   } else if (format === "gif") {
@@ -538,17 +602,33 @@ export async function prepareStrictInterchangeImport(
       );
     }
     const raster = await decodeViaBrowser(file, options.signal);
+    if (probe.animated && options.allowAnimatedFirstFrame) {
+      substitutions.push("animated GIF reduced to first frame");
+      fidelityDiagnostics.push({
+        code: "animation_reduced",
+        severity: "warning",
+        message: "Only the first frame of the animated GIF was imported."
+      });
+    }
     normalized = await blobFromRgba(raster, "image/png");
     normalizedMimeType = "image/png";
   } else if (format === "svg") {
     normalizedMimeType = "image/svg+xml";
   } else if (format === "jpeg") {
     const raster = await decodeViaBrowser(file, options.signal);
+    physicalResolution = raster.physicalResolution;
     normalized = await blobFromRgba(raster, "image/png");
     normalizedMimeType = "image/png";
   } else if (format === "png" || format === "webp") {
     // The strict signature and dimensions are checked above. Keep the source bytes lossless.
     normalizedMimeType = mimeTypeForFormat(format);
+  }
+  if (format === "bmp" || format === "tiff") {
+    substitutions.push("normalized to project-owned PNG pixels");
+  } else if (format === "gif") {
+    substitutions.push("normalized to project-owned PNG pixels");
+  } else if (format === "jpeg") {
+    substitutions.push("JPEG EXIF orientation normalized to project-owned PNG pixels");
   }
   checkAbort(options.signal);
   return {
@@ -558,15 +638,9 @@ export async function prepareStrictInterchangeImport(
       source,
       probe,
       checksum,
-      ...(format === "bmp" || format === "tiff" || format === "gif" || format === "jpeg"
-        ? {
-            substitutions: [
-              format === "jpeg"
-                ? "JPEG EXIF orientation normalized to project-owned PNG pixels"
-                : "normalized to project-owned PNG pixels"
-            ]
-          }
-        : {})
+      physicalResolution,
+      diagnostics: fidelityDiagnostics,
+      substitutions
     }),
     normalized,
     normalizedMimeType,

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  INTERCHANGE_PROBE_READ_BYTES,
   createFidelityReport,
   importAcceptAttribute,
   probeInterchangeBytes,
@@ -30,17 +31,64 @@ describe("strict interchange probing", () => {
     expect(probeIsUsable(probe)).toBe(true);
   });
 
-  it("refuses MIME or extension mismatches", () => {
+  it("uses the verified signature while reporting MIME and extension mismatches", () => {
     const probe = probeInterchangeBytes(pngHeader(2, 2), {
       mimeType: "image/jpeg",
       name: "figure.jpg"
     });
 
-    expect(probeIsUsable(probe)).toBe(false);
+    expect(probeIsUsable(probe)).toBe(true);
     expect(probe.diagnostics.map((diagnostic) => diagnostic.code)).toEqual([
       "declared_type_mismatch",
       "extension_mismatch"
     ]);
+    expect(probe.diagnostics.every((diagnostic) => diagnostic.severity === "warning")).toBe(true);
+  });
+
+  it("reads out-of-line TIFF RATIONAL resolution values", () => {
+    const bytes = new Uint8Array(200);
+    const view = new DataView(bytes.buffer);
+    bytes.set([0x49, 0x49, 0x2a, 0x00]);
+    view.setUint32(4, 8, true);
+    view.setUint16(8, 5, true);
+    let entryOffset = 10;
+    const entry = (tag: number, type: number, count: number, value: number) => {
+      view.setUint16(entryOffset, tag, true);
+      view.setUint16(entryOffset + 2, type, true);
+      view.setUint32(entryOffset + 4, count, true);
+      view.setUint32(entryOffset + 8, value, true);
+      entryOffset += 12;
+    };
+    entry(256, 4, 1, 100);
+    entry(257, 4, 1, 50);
+    entry(282, 5, 1, 170);
+    entry(283, 5, 1, 178);
+    entry(296, 3, 1, 2);
+    view.setUint32(entryOffset, 0, true);
+    view.setUint32(170, 300, true);
+    view.setUint32(174, 1, true);
+    view.setUint32(178, 150, true);
+    view.setUint32(182, 1, true);
+
+    expect(
+      probeInterchangeBytes(bytes, { mimeType: "image/tiff", name: "figure.tiff" })
+    ).toMatchObject({
+      physicalResolution: { x: 300, y: 150, unit: "dpi" },
+      dimensions: { width: 100, height: 50 }
+    });
+  });
+
+  it("refuses an SVG whose bounded probe is known to be truncated", () => {
+    const bytes = new Uint8Array(INTERCHANGE_PROBE_READ_BYTES);
+    bytes.set(new TextEncoder().encode('<svg xmlns="http://www.w3.org/2000/svg">'));
+    const probe = probeInterchangeBytes(bytes, {
+      mimeType: "image/svg+xml",
+      name: "large.svg",
+      byteLength: INTERCHANGE_PROBE_READ_BYTES + 1
+    });
+
+    expect(probe.diagnostics.map((diagnostic) => diagnostic.code)).toContain("probe_truncated");
+    expect(probeIsUsable(probe)).toBe(false);
   });
 
   it("detects BMP, TIFF, GIF animation, and modern container signatures", () => {

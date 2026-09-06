@@ -36,4 +36,20 @@ describe("loss-aware raster codecs", () => {
     expect(decoded.physicalResolution?.x).toBeCloseTo(300, 0);
     expect(decoded.physicalResolution?.y).toBeCloseTo(150, 0);
   });
+
+  it("treats alpha as opaque for legacy 32-bit BI_RGB BMP files", () => {
+    const bytes = new Uint8Array(58);
+    const view = new DataView(bytes.buffer);
+    bytes.set([0x42, 0x4d]);
+    view.setUint32(10, 54, true);
+    view.setUint32(14, 40, true);
+    view.setInt32(18, 1, true);
+    view.setInt32(22, 1, true);
+    view.setUint16(26, 1, true);
+    view.setUint16(28, 32, true);
+    view.setUint32(30, 0, true);
+    bytes.set([3, 2, 1, 0], 54);
+
+    expect([...decodeBmpRgba(bytes).data]).toEqual([1, 2, 3, 255]);
+  });
 });

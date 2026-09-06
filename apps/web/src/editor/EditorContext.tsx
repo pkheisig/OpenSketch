@@ -3614,25 +3614,46 @@ export function EditorProvider({
     (file: File, point?: Point) => {
       const operation = trackPendingEditorWork(
         importQueue.current.then(async () => {
-          let prepared;
-          try {
-            prepared = await prepareInterchangeFile(file);
-          } catch (reason) {
-            if (
-              reason instanceof InterchangeImportError &&
-              reason.probe &&
-              (reason.code === "animated_requires_choice" ||
-                reason.code === "multipage_requires_choice" ||
-                requiresImportDecision(reason.probe))
-            ) {
-              const accepted = await services.dialogs.confirm(importDecisionMessage(reason.probe));
-              if (!accepted) throw reason;
+          let prepared: Awaited<ReturnType<typeof prepareInterchangeFile>> | undefined;
+          let allowAnimatedFirstFrame = false;
+          let allowFirstPage = false;
+          let allowLossyBitDepth = false;
+          while (!prepared) {
+            try {
               prepared = await prepareInterchangeFile(file, {
-                allowAnimatedFirstFrame: true,
-                allowFirstPage: true
+                allowAnimatedFirstFrame,
+                allowFirstPage,
+                allowLossyBitDepth
               });
-            } else {
-              throw reason;
+            } catch (reason) {
+              if (
+                !(reason instanceof InterchangeImportError) ||
+                !reason.probe ||
+                !(
+                  reason.code === "animated_requires_choice" ||
+                  reason.code === "multipage_requires_choice" ||
+                  reason.code === "lossy_depth_requires_choice" ||
+                  requiresImportDecision(reason.probe)
+                )
+              ) {
+                throw reason;
+              }
+              const accepted = await services.dialogs.confirm(
+                reason.code === "lossy_depth_requires_choice"
+                  ? "This TIFF uses samples above 8-bit depth and will be reduced to 8-bit display pixels. Continue?"
+                  : importDecisionMessage(reason.probe)
+              );
+              if (!accepted) throw reason;
+              if (reason.code === "animated_requires_choice" || reason.probe.animated) {
+                allowAnimatedFirstFrame = true;
+              }
+              if (
+                reason.code === "multipage_requires_choice" ||
+                (reason.probe.pageCount ?? 1) > 1
+              ) {
+                allowFirstPage = true;
+              }
+              if (reason.code === "lossy_depth_requires_choice") allowLossyBitDepth = true;
             }
           }
           if (prepared.requiresDecision) {

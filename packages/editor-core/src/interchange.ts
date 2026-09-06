@@ -490,7 +490,13 @@ function probeTiff(bytes: Uint8Array):
       const valueCount = tiffRead32(bytes, offset + 4, layout.littleEndian);
       if (tag === undefined || type === undefined || valueCount === undefined) return undefined;
       const typeSize =
-        type === 1 || type === 2 || type === 6 || type === 7 ? 1 : type === 3 || type === 8 ? 2 : 4;
+        type === 1 || type === 2 || type === 6 || type === 7
+          ? 1
+          : type === 3 || type === 8
+            ? 2
+            : type === 5 || type === 10
+              ? 8
+              : 4;
       const valueBytes = typeSize * valueCount;
       const valueOffset =
         valueBytes <= 4 ? offset + 8 : tiffRead32(bytes, offset + 8, layout.littleEndian);
@@ -564,7 +570,7 @@ function formatFromSignature(bytes: Uint8Array): {
 
 export function probeInterchangeBytes(
   bytes: Uint8Array,
-  source: { mimeType?: string; name?: string } = {}
+  source: { mimeType?: string; name?: string; byteLength?: number } = {}
 ): InterchangeProbe {
   const declaredMimeType = normalizeMimeType(source.mimeType);
   const extension = source.name?.toLowerCase().split(".").at(-1) || undefined;
@@ -582,18 +588,21 @@ export function probeInterchangeBytes(
   if (signature.format && declaredFormat && signature.format !== declaredFormat) {
     diagnostics.push({
       code: "declared_type_mismatch",
-      severity: "error",
+      severity: "warning",
       message: `The declared MIME type ${declaredMimeType} does not match the detected ${signature.format} signature.`
     });
   }
   if (signature.format && extensionFormat && signature.format !== extensionFormat) {
     diagnostics.push({
       code: "extension_mismatch",
-      severity: "error",
+      severity: "warning",
       message: `The .${extension} extension does not match the detected ${signature.format} signature.`
     });
   }
-  if (signature.format === "svg" && bytes.length > INTERCHANGE_PROBE_READ_BYTES) {
+  if (
+    signature.format === "svg" &&
+    (source.byteLength ?? bytes.length) > INTERCHANGE_PROBE_READ_BYTES
+  ) {
     diagnostics.push({
       code: "probe_truncated",
       severity: "error",
@@ -673,6 +682,7 @@ export function createFidelityReport(args: {
   probe: InterchangeProbe;
   checksum?: string;
   diagnostics?: InterchangeDiagnostic[];
+  physicalResolution?: InterchangePhysicalResolution;
   substitutions?: string[];
   mappedCount?: number;
   flattenedCount?: number;
@@ -691,7 +701,9 @@ export function createFidelityReport(args: {
     sourceBytes: args.source.byteLength,
     ...(args.checksum ? { checksum: args.checksum } : {}),
     ...(args.probe.dimensions ? { dimensions: args.probe.dimensions } : {}),
-    ...(args.probe.physicalResolution ? { physicalResolution: args.probe.physicalResolution } : {}),
+    ...((args.physicalResolution ?? args.probe.physicalResolution)
+      ? { physicalResolution: args.physicalResolution ?? args.probe.physicalResolution }
+      : {}),
     mappedCount: args.mappedCount ?? (hasErrors ? 0 : 1),
     flattenedCount: args.flattenedCount ?? (status === "appearance-snapshot" ? 1 : 0),
     refusedCount: args.refusedCount ?? (hasErrors || status === "unsupported/refused" ? 1 : 0),

@@ -85,6 +85,7 @@ export async function prepareInterchangeFile(
     signal?: AbortSignal;
     allowAnimatedFirstFrame?: boolean;
     allowFirstPage?: boolean;
+    allowLossyBitDepth?: boolean;
   } = {}
 ): Promise<
   InterchangeImportPreparation & {
