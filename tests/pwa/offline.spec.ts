@@ -5,7 +5,13 @@ test("keeps the complete asset library behind explicit offline preparation", asy
   await page.getByRole("button", { name: "New figure" }).click();
 
   const offlineLibrary = page.getByRole("region", { name: "Offline asset library" });
-  await expect(offlineLibrary).toContainText("Not prepared for offline use");
+  await expect(offlineLibrary).toBeVisible();
+  await expect(offlineLibrary).not.toContainText("Not prepared for offline use");
+  await expect(offlineLibrary).not.toContainText("Ready for offline use");
+  await expect(offlineLibrary.locator(".offline-asset-card > p")).toHaveCount(0);
+  await expect(
+    offlineLibrary.getByRole("img", { name: "Not prepared for offline use" })
+  ).toBeVisible();
   await expect(
     offlineLibrary.getByRole("button", { name: "Prepare offline library" })
   ).toBeVisible();

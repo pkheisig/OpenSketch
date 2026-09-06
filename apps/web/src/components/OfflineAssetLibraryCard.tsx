@@ -70,45 +70,44 @@ export function OfflineAssetLibraryCard({
       });
   };
 
-  const state = status?.state ?? "not-ready";
-  const label =
-    state === "ready"
-      ? "Ready for offline use"
-      : state === "preparing"
-        ? "Preparing offline copy…"
-        : state === "unavailable"
-          ? "Offline storage unavailable"
-          : state === "error"
-            ? "Offline copy incomplete"
-            : "Not prepared for offline use";
+  const effectiveStatus = status?.version === pack.version ? status : null;
+  const state = effectiveStatus?.state ?? "not-ready";
+  const stateLabel =
+    state === "preparing"
+      ? "Preparing offline copy"
+      : state === "unavailable"
+        ? "Offline storage unavailable"
+        : state === "error"
+          ? "Offline copy incomplete"
+          : "Not prepared for offline use";
+
+  if (state === "ready") return null;
 
   return (
     <section className="offline-asset-card" aria-label="Offline asset library">
       <div className="offline-asset-card-heading">
-        <div>
-          <strong>Offline asset library</strong>
-          <span>{label}</span>
-        </div>
-        <span className={`offline-asset-state offline-asset-state-${state}`} aria-hidden="true" />
+        <strong>Offline asset library</strong>
+        <span
+          className={`offline-asset-state offline-asset-state-${state}`}
+          role="img"
+          aria-label={stateLabel}
+        />
       </div>
-      <p>
-        Prepare {pack.sourceCount.toLocaleString()} SVGs and {pack.previewCount.toLocaleString()}{" "}
-        previews for cold offline use.
-      </p>
       {state === "preparing" ? (
         <div className="offline-asset-progress" role="status" aria-live="polite">
-          <progress value={status?.completed ?? 0} max={pack.entries.length} />
+          <progress value={effectiveStatus?.completed ?? 0} max={pack.entries.length} />
           <span>
-            {(status?.completed ?? 0).toLocaleString()} / {pack.entries.length.toLocaleString()}
+            {(effectiveStatus?.completed ?? 0).toLocaleString()} /{" "}
+            {pack.entries.length.toLocaleString()}
           </span>
         </div>
       ) : null}
-      {status?.message && state === "error" ? (
+      {effectiveStatus?.message && state === "error" ? (
         <p className="offline-asset-error" role="alert">
-          {status.message}
+          {effectiveStatus.message}
         </p>
       ) : null}
-      {state !== "ready" && state !== "preparing" && state !== "unavailable" ? (
+      {state !== "preparing" && state !== "unavailable" ? (
         <button type="button" className="offline-asset-button" onClick={startPreparation}>
           {state === "error" ? "Retry offline library" : "Prepare offline library"}
         </button>

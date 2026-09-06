@@ -796,14 +796,14 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   expect(pageSize.width).toBeGreaterThan(pageSize.height);
 
   await page.getByRole("button", { name: "Export" }).click();
-  const creditsDownloadPromise = page.waitForEvent("download");
-  await page.getByRole("button", { name: "Download credits" }).click();
-  const creditsPath = await (await creditsDownloadPromise).path();
-  expect(creditsPath).not.toBeNull();
-  const credits = await readFile(creditsPath!, "utf8");
-  expect(credits).toContain(assetRecord.source);
-  expect(credits).toContain(assetRecord.author);
-  expect(credits).toContain(assetRecord.license);
+  const exportDialog = page.getByRole("dialog", { name: "Export figure" });
+  await expect(exportDialog.getByRole("button", { name: "Download credits" })).toHaveCount(0);
+  await expect(
+    exportDialog.getByText(
+      "A readable credits file is available if another tool strips figure metadata.",
+      { exact: true }
+    )
+  ).toHaveCount(0);
 
   await page.getByRole("button", { name: "Back to projects" }).click();
   await expect(page.getByRole("heading", { name: "Projects" })).toBeVisible();
@@ -3589,44 +3589,53 @@ test("fills the asset sidebar with the merged scientific catalog", async ({ page
   const visibleAssetTitles = page.locator(".asset-card-copy strong");
   await expect(visibleAssetTitles.nth(7)).toBeVisible();
   expect((await visibleAssetTitles.allTextContents()).slice(0, 8)).toEqual([
-    "1cell Pn4 Zygote",
-    "2c Embryo",
-    "4c Embryo Style1",
-    "4c Embryo Style2",
-    "8c Embryo",
+    "acinar cell",
     "activated T lymphocyte",
-    "Adipocyte 1",
-    "Adipocyte 2"
+    "adherent spread cell",
+    "adipocyte",
+    "apoptotic cell",
+    "astrocyte",
+    "basophil",
+    "cardiomyocyte"
   ]);
 
   const dimensions = await page.locator(".asset-list-shell").evaluate((shell) => {
     const list = shell.querySelector<HTMLElement>(".asset-list")!;
+    const firstRow = list.querySelector<HTMLElement>(".asset-row");
+    const secondRow = list.querySelector<HTMLElement>(".asset-row:nth-child(2)");
     return {
       shellHeight: shell.getBoundingClientRect().height,
       listHeight: list.getBoundingClientRect().height,
       clientHeight: list.clientHeight,
-      scrollHeight: list.scrollHeight
+      scrollHeight: list.scrollHeight,
+      previewHeight: shell.querySelector<HTMLElement>(".asset-card-image")?.getBoundingClientRect()
+        .height,
+      rowHeight: firstRow?.getBoundingClientRect().height,
+      rowStep:
+        firstRow && secondRow
+          ? secondRow.getBoundingClientRect().top - firstRow.getBoundingClientRect().top
+          : undefined
     };
   });
   expect(dimensions.shellHeight).toBeGreaterThan(300);
   expect(Math.abs(dimensions.listHeight - dimensions.shellHeight)).toBeLessThan(14);
   expect(dimensions.scrollHeight).toBeGreaterThan(dimensions.clientHeight);
+  expect(dimensions.previewHeight).toBe(87);
+  expect(dimensions.rowHeight).toBe(155);
+  expect(dimensions.rowStep).toBe(155);
 
   const firstAsset = page.locator(".asset-card").first();
-  const sourceTrigger = firstAsset.getByRole("button", { name: /^Show source for / });
+  const sourceTrigger = firstAsset.getByRole("button", { name: /^Show details for / });
   await expect(sourceTrigger).toHaveCSS("opacity", "0");
   await firstAsset.hover();
   await expect(sourceTrigger).toHaveCSS("opacity", "1");
   await sourceTrigger.hover();
   const sourcePopover = page.locator(".asset-source-popover");
   await expect(sourcePopover).toBeVisible();
-  await expect(sourcePopover.locator(".asset-source-kicker")).toHaveText("Source");
+  await expect(sourcePopover.locator(".asset-source-kicker")).toHaveText("Cells");
   await expect(sourcePopover.locator("strong")).toHaveText(/.+/);
-  await expect(sourcePopover.locator(".asset-source-license")).toHaveText(/.+/);
-  await expect(sourcePopover.getByRole("link", { name: /View source/ })).toHaveAttribute(
-    "href",
-    /^https?:\/\//
-  );
+  await expect(sourcePopover.locator("span").nth(1)).toHaveText(/.+/);
+  await expect(sourcePopover.locator("span").nth(2)).toHaveText(/.+/);
   await expect(sourcePopover).toHaveCSS("position", "fixed");
   await expect(sourcePopover).toHaveCSS("z-index", "360");
   const sourcePopoverBounds = await sourcePopover.boundingBox();
@@ -3638,11 +3647,6 @@ test("fills the asset sidebar with the merged scientific catalog", async ({ page
   expect(sourcePopoverBounds!.y + sourcePopoverBounds!.height).toBeLessThanOrEqual(
     viewport!.height
   );
-  await expect(firstAsset.locator(".asset-card-image")).toHaveCSS(
-    "background-color",
-    "rgb(255, 255, 255)"
-  );
-  await expect(firstAsset.locator(".asset-card-image")).toHaveCSS("background-image", "none");
   const firstAssetPreview = firstAsset.locator(".asset-card-image img");
   await expect(firstAssetPreview).toHaveAttribute("data-preview-ready", "true");
   await expect(firstAssetPreview).toBeVisible();
