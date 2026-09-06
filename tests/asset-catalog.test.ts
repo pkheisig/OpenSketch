@@ -105,5 +105,26 @@ describe("canonical asset catalog", () => {
         .filter((variant) => assetStyleOf(variant) === "simplified")
         .every((variant) => /^[a-f0-9]{64}$/.test(variant.localSha256 ?? ""))
     ).toBe(true);
+    const simplifiedVariants = assetManifest.families.flatMap((family) =>
+      family.variants
+        .filter((variant) => assetStyleOf(variant) === "simplified")
+        .map((variant) => ({ family, variant }))
+    );
+    expect(simplifiedVariants).toHaveLength(8);
+    expect(
+      simplifiedVariants.every(
+        ({ family, variant }) =>
+          variant.qualification?.state === "approved" &&
+          variant.qualification?.reviewedAt === "2026-09-06" &&
+          variant.lineage?.relationship === "simplified-counterpart" &&
+          family.variants.some((candidate) => candidate.id === variant.lineage?.sourceVariantId)
+      )
+    ).toBe(true);
+    expect(
+      assetManifest.families
+        .find((family) => family.familyId === "editable-cell")
+        ?.variants.find((variant) => variant.id === "editable-cell-simplified")?.qualification
+        ?.notes
+    ).toContain("T lymphocyte");
   });
 });

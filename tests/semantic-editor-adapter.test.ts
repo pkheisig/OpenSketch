@@ -699,7 +699,12 @@ describe("semantic editor adapter", () => {
     expect(family?.availableStyles).toContain("simplified");
     expect(family?.defaultVariantId).toBe("editable-cell-simplified");
     expect(family?.variants).toEqual([
-      expect.objectContaining({ id: "editable-cell-simplified", style: "simplified" })
+      expect.objectContaining({
+        id: "editable-cell-simplified",
+        style: "simplified",
+        qualification: expect.objectContaining({ state: "approved" }),
+        lineage: { sourceVariantId: "editable-cell", relationship: "simplified-counterpart" }
+      })
     ]);
 
     const inspected = (await adapter.inspectAsset({

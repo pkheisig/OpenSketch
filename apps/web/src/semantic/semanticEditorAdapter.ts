@@ -721,7 +721,25 @@ function assetSummary(family: AssetFamily, style?: AssetStyle) {
       style: assetStyleOf(variant),
       ...(variant.localSha256 ? { localSha256: variant.localSha256 } : {}),
       width: variant.width,
-      height: variant.height
+      height: variant.height,
+      ...(variant.lineage
+        ? {
+            lineage: {
+              sourceVariantId: variant.lineage.sourceVariantId,
+              relationship: variant.lineage.relationship
+            }
+          }
+        : {}),
+      ...(variant.qualification
+        ? {
+            qualification: {
+              state: variant.qualification.state,
+              reviewedAt: boundedText(variant.qualification.reviewedAt, 32),
+              reviewer: boundedText(variant.qualification.reviewer, 200),
+              notes: boundedText(variant.qualification.notes, 500)
+            }
+          }
+        : {})
     }))
   };
 }

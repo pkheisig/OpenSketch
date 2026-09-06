@@ -39,6 +39,9 @@ The first bounded counterpart set contains 8 of the 759 bundled families:
 - DNA fragment with sequencing adapters.
 
 The coverage count is intentionally visible in the Simplified asset panel.
-Adding a new counterpart requires a stable variant ID, a local checksum, an
-authored SVG, and catalog/search/provenance tests. No Realistic tier is part of
-the current contract.
+Each counterpart carries a committed lineage record, an `approved` qualification
+state, the review date, and a short qualification note alongside its stable variant
+ID, local checksum, authored SVG, dimensions, and catalog/search/provenance tests.
+The generic editable cell and circular T lymphocyte are intentionally qualified as
+distinct at small size by silhouette and biological context; neither is a substitute
+for the other. No Realistic tier is part of the current contract.

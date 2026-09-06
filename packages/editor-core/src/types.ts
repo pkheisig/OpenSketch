@@ -16,6 +16,20 @@ export function isAssetStyle(value: unknown): value is AssetStyle {
   return typeof value === "string" && (ASSET_STYLES as readonly string[]).includes(value);
 }
 
+export type AssetQualificationState = "approved" | "rejected" | "pending";
+
+export interface AssetVariantLineage {
+  sourceVariantId: string;
+  relationship: "simplified-counterpart";
+}
+
+export interface AssetVariantQualification {
+  state: AssetQualificationState;
+  reviewedAt: string;
+  reviewer: string;
+  notes: string;
+}
+
 export interface CanvasSettings {
   width: number;
   height: number;
@@ -38,6 +52,8 @@ export interface AssetVariant {
   localSha256?: string;
   width?: number;
   height?: number;
+  lineage?: AssetVariantLineage;
+  qualification?: AssetVariantQualification;
 }
 
 export type AssetLicense =
