@@ -1,6 +1,6 @@
 /* Semantic token ownership. Components consume these values instead of
    replaying theme-specific declarations in a second stylesheet. */
-:is(.opensketch-app, [data-suite-ui="opensketch"])[data-opensketch-theme="light"] {
+:where(.opensketch-app)[data-opensketch-theme="light"] {
   --shell-bg: #eee7db;
   --shell-card: #fffaf0;
   --shell-raised: #fffdf6;
