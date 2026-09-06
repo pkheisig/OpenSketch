@@ -6,6 +6,14 @@ export function assetStyleOf(variant: Pick<AssetVariant, "style">): AssetStyle {
   return variant.style ?? "detailed";
 }
 
+/** Editable scientific presets currently have a Detailed representation only. */
+export function assetVariantIsEditable(
+  family: Pick<AssetFamily, "editableStructure">,
+  variant: Pick<AssetVariant, "style">
+): boolean {
+  return family.editableStructure === true && assetStyleOf(variant) === "detailed";
+}
+
 export function variantsForStyle(family: AssetFamily, style: AssetStyle): AssetVariant[] {
   return family.variants.filter((variant) => assetStyleOf(variant) === style);
 }

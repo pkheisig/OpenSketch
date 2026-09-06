@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   assertUniqueAssetCatalog,
+  assetVariantIsEditable,
   enrichAssetKeywords,
   assetStyleOf,
   findAssetVariantForStyle,
@@ -83,6 +84,17 @@ describe("canonical asset catalog", () => {
     ]);
     expect(findAssetVariantForStyle(family, "simplified")?.id).toBe("cell-simplified");
     expect(findAssetVariantForStyle(family, "detailed")?.id).toBe("cell-detailed");
+  });
+
+  it("classifies editability from the selected style-aware variant", () => {
+    const family = assetManifest.families.find(
+      (candidate) => candidate.familyId === "editable-cell"
+    )!;
+    const detailed = findAssetVariantForStyle(family, "detailed")!;
+    const simplified = findAssetVariantForStyle(family, "simplified")!;
+    expect(assetVariantIsEditable(family, detailed)).toBe(true);
+    expect(assetVariantIsEditable(family, simplified)).toBe(false);
+    expect(assetVariantIsEditable({ editableStructure: false }, detailed)).toBe(false);
   });
 
   it("publishes only Detailed or Simplified variants with paired scientific fixtures", () => {

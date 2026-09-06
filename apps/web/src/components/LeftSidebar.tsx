@@ -30,6 +30,7 @@ import {
 import {
   ASSET_CATEGORY_ORDER,
   ASSET_CATEGORY_DEFINITIONS,
+  assetVariantIsEditable,
   findAssetVariantForStyle,
   filterAssetFamilies,
   variantsForStyle,
@@ -925,13 +926,15 @@ function AssetsPanel({
       category === "Favorites" ? "All" : category
     );
     const filtered = matches.filter((family) => {
-      if (!findAssetVariantForStyle(family, assetStyle)) return false;
+      const selectedStyleVariant = findAssetVariantForStyle(family, assetStyle);
+      if (!selectedStyleVariant) return false;
       const matchesTopic =
         topicFilter === ALL_ASSET_FILTER_VALUE || family.topics?.includes(topicFilter);
+      const isEditable = assetVariantIsEditable(family, selectedStyleVariant);
       const matchesEditability =
         editabilityFilter === ALL_ASSET_FILTER_VALUE ||
-        (editabilityFilter === FIXED_ASSET_FILTER_VALUE && !family.editableStructure) ||
-        (editabilityFilter === EDITABLE_ASSET_FILTER_VALUE && family.editableStructure === true);
+        (editabilityFilter === FIXED_ASSET_FILTER_VALUE && !isEditable) ||
+        (editabilityFilter === EDITABLE_ASSET_FILTER_VALUE && isEditable);
       return matchesTopic && matchesEditability;
     });
     return category === "Favorites"
@@ -1482,7 +1485,7 @@ function AssetCard({
   };
   return (
     <article
-      className={`asset-card${family.editableStructure ? " asset-card-editable" : ""}`}
+      className={`asset-card${assetVariantIsEditable(family, variant) ? " asset-card-editable" : ""}`}
       draggable
       onDragStart={(event) => {
         onAssetDragStart();
@@ -1544,7 +1547,9 @@ function AssetCard({
         portalRoot ?? document.body
       )}
       <div className="asset-card-copy">
-        {family.editableStructure && <span className="asset-editable-badge">Editable</span>}
+        {assetVariantIsEditable(family, variant) && (
+          <span className="asset-editable-badge">Editable</span>
+        )}
         <strong title={family.title}>{family.title}</strong>
         {variants.length > 1 ? (
           <AssetVariantPicker

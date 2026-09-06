@@ -38,6 +38,7 @@ import {
   util
 } from "fabric";
 import {
+  assetVariantIsEditable,
   type AssetFamily,
   type AssetVariant,
   type CanvasSettings,
@@ -3302,10 +3303,9 @@ export function EditorProvider({
         assetInsertQueue.current.then(async () => {
           if (options?.signal?.aborted) return undefined;
           if (!semanticCanvasRef.current) return undefined;
-          const preset =
-            family.editableStructure && (variant.style ?? "detailed") === "detailed"
-              ? scientificPreset(family.familyId)
-              : undefined;
+          const preset = assetVariantIsEditable(family, variant)
+            ? scientificPreset(family.familyId)
+            : undefined;
           const group = preset
             ? createScientificObject(preset.id, semanticCreationDefaultsRef.current)!
             : await createBundledAssetGroup(services.assets, family, variant);
@@ -3410,10 +3410,9 @@ export function EditorProvider({
           const variant = family?.variants.find((candidate) => candidate.id === variantId);
           if (!family || !variant) return false;
 
-          const preset =
-            family.editableStructure && (variant.style ?? "detailed") === "detailed"
-              ? scientificPreset(family.familyId)
-              : undefined;
+          const preset = assetVariantIsEditable(family, variant)
+            ? scientificPreset(family.familyId)
+            : undefined;
           const replacement = preset
             ? createScientificObject(preset.id, semanticCreationDefaultsRef.current)
             : await createBundledAssetGroup(services.assets, family, variant);
