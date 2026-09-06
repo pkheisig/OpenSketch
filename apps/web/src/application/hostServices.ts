@@ -3,6 +3,7 @@ import {
   createContext,
   createElement,
   useContext,
+  useLayoutEffect,
   useState,
   type ReactNode
 } from "react";
@@ -214,6 +215,18 @@ export interface OpenSketchApplicationContext {
   portalRootId?: string;
 }
 
+export interface OpenSketchPortalScope {
+  mode: "standalone" | "opensuite";
+  theme: Theme;
+  density: "compact" | "standard";
+  reducedMotion: boolean;
+  uiContractVersion: string;
+  style: string;
+  palette: string;
+  appearance: ThemeAppearance;
+  themeContractVersion: string;
+}
+
 export interface OpenSketchLifecycleState extends OpenSketchApplicationContext {
   phase: "unmounted" | "mounted" | "suspended";
   busy: boolean;
@@ -280,14 +293,47 @@ export function useOpenSketchHostServices(): OpenSketchHostServices {
 
 export function OpenSketchPortalRoot({
   children,
-  portalRootId
+  portalRootId,
+  scope
 }: {
   children?: ReactNode;
   portalRootId?: string;
+  scope?: OpenSketchPortalScope;
 }) {
   const [root, setRoot] = useState<HTMLDivElement | null>(null);
   const hostRoot =
     portalRootId && typeof document !== "undefined" ? document.getElementById(portalRootId) : null;
+
+  useLayoutEffect(() => {
+    if (!hostRoot || !scope) return undefined;
+    const attributes: Record<string, string> = {
+      "data-opensketch-mode": scope.mode,
+      "data-opensketch-theme": scope.theme,
+      "data-opensketch-density": scope.density,
+      "data-opensketch-reduced-motion": String(scope.reducedMotion),
+      "data-opensketch-ui-contract": scope.uiContractVersion,
+      "data-suite-theme-root": "",
+      "data-suite-ui": "opensketch",
+      "data-suite-style": scope.style,
+      "data-suite-palette": scope.palette,
+      "data-suite-appearance": scope.appearance,
+      "data-suite-theme-contract-version": scope.themeContractVersion,
+      "data-theme": scope.theme,
+      "data-density": scope.density
+    };
+    const previous = new Map<string, string | null>();
+    for (const [name, value] of Object.entries(attributes)) {
+      previous.set(name, hostRoot.getAttribute(name));
+      hostRoot.setAttribute(name, value);
+    }
+    return () => {
+      for (const [name, value] of previous) {
+        if (value === null) hostRoot.removeAttribute(name);
+        else hostRoot.setAttribute(name, value);
+      }
+    };
+  }, [hostRoot, scope]);
+
   return createElement(
     OpenSketchPortalRootContext.Provider,
     { value: hostRoot ?? root },

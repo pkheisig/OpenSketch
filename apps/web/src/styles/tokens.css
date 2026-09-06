@@ -1,6 +1,6 @@
 /* Semantic token ownership. Components consume these values instead of
    replaying theme-specific declarations in a second stylesheet. */
-.opensketch-app[data-opensketch-theme="light"] {
+:is(.opensketch-app, [data-suite-ui="opensketch"])[data-opensketch-theme="light"] {
   --shell-bg: #eee7db;
   --shell-card: #fffaf0;
   --shell-raised: #fffdf6;
@@ -24,8 +24,8 @@
   color-scheme: light;
 }
 
-.opensketch-app[data-opensketch-mode="standalone"],
-.opensketch-app[data-opensketch-mode="opensuite"] {
+:is(.opensketch-app, [data-suite-ui="opensketch"])[data-opensketch-mode="standalone"],
+:is(.opensketch-app, [data-suite-ui="opensketch"])[data-opensketch-mode="opensuite"] {
   font-family: var(--font-sans);
   color: var(--shell-text);
   background: var(--shell-bg);

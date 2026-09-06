@@ -375,7 +375,20 @@ export function App({
       data-theme={theme}
       data-density={presentation.density === "comfortable" ? "standard" : presentation.density}
     >
-      <OpenSketchPortalRoot portalRootId={initialContext?.portalRootId}>
+      <OpenSketchPortalRoot
+        portalRootId={initialContext?.portalRootId}
+        scope={{
+          mode: presentation.mode,
+          theme,
+          density: presentation.density === "comfortable" ? "standard" : presentation.density,
+          reducedMotion: presentation.reducedMotion,
+          uiContractVersion: presentation.uiContractVersion,
+          style: presentation.style,
+          palette: presentation.palette,
+          appearance: presentation.appearance,
+          themeContractVersion: presentation.themeContractVersion
+        }}
+      >
         {content}
       </OpenSketchPortalRoot>
     </div>

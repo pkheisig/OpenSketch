@@ -1,8 +1,13 @@
-import { describe, expect, it } from "vitest";
+import { createElement } from "../apps/web/node_modules/react/index.js";
+import { cleanup, render } from "@testing-library/react";
+import { afterEach, describe, expect, it } from "vitest";
 import {
   OPENSUITE_UI_CONTRACT_VERSION,
   resolveOpenSketchApplicationPresentation
 } from "../apps/web/src/application/uiContract";
+import { OpenSketchPortalRoot } from "../apps/web/src/application/hostServices";
+
+afterEach(cleanup);
 
 describe("OpenSketch application presentation contract", () => {
   it("keeps standalone ownership and fallback behavior", () => {
@@ -72,5 +77,42 @@ describe("OpenSketch application presentation contract", () => {
         systemTheme: "dark"
       })
     ).toMatchObject({ appearance: "system", systemTheme: "dark", theme: "dark" });
+  });
+
+  it("scopes external hosted portal roots and restores host attributes", () => {
+    const hostRoot = document.createElement("div");
+    hostRoot.id = "host-portal-root";
+    hostRoot.dataset.suiteUi = "host";
+    document.body.append(hostRoot);
+
+    const view = render(
+      createElement(
+        OpenSketchPortalRoot,
+        {
+          portalRootId: hostRoot.id,
+          scope: {
+            mode: "opensuite",
+            theme: "dark",
+            density: "compact",
+            reducedMotion: true,
+            uiContractVersion: OPENSUITE_UI_CONTRACT_VERSION,
+            style: "default",
+            palette: "opensuite-default",
+            appearance: "dark",
+            themeContractVersion: "1.0.0"
+          }
+        },
+        createElement("span", null, "portal content")
+      )
+    );
+
+    expect(hostRoot).toHaveAttribute("data-suite-ui", "opensketch");
+    expect(hostRoot).toHaveAttribute("data-opensketch-theme", "dark");
+    expect(hostRoot).toHaveAttribute("data-density", "compact");
+
+    view.unmount();
+    expect(hostRoot).toHaveAttribute("data-suite-ui", "host");
+    expect(hostRoot).not.toHaveAttribute("data-opensketch-theme");
+    hostRoot.remove();
   });
 });

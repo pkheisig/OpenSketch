@@ -1,7 +1,7 @@
 /* OpenSuite foundation adapter ownership. The host may provide the canonical
    --suite-* tokens; standalone uses the same defaults locally. */
 
-.opensketch-app[data-suite-ui="opensketch"] {
+:is(.opensketch-app, [data-suite-ui="opensketch"]) {
   --shell-bg: var(--suite-bg-shell, var(--suite-color-shell, #eee7db));
   --shell-card: var(--suite-bg-surface, var(--suite-color-surface, #fffaf0));
   --shell-raised: var(--suite-bg-surface-raised, var(--suite-color-surface-raised, #fffdf8));
@@ -51,7 +51,7 @@
   color-scheme: light;
 }
 
-.opensketch-app[data-opensketch-theme="dark"] {
+:is(.opensketch-app, [data-suite-ui="opensketch"])[data-opensketch-theme="dark"] {
   --shell-bg: var(--suite-bg-shell, var(--suite-color-shell, #1d1916));
   --shell-card: var(--suite-bg-surface, var(--suite-color-surface, #2a241f));
   --shell-raised: var(--suite-bg-surface-raised, var(--suite-color-surface-raised, #322a24));
@@ -69,7 +69,7 @@
   color-scheme: dark;
 }
 
-.opensketch-app[data-opensketch-density="compact"] {
+:is(.opensketch-app, [data-suite-ui="opensketch"])[data-opensketch-density="compact"] {
   --opensketch-control-normal: var(
     --suite-control-compact,
     var(--suite-control-height-normal, 30px)
@@ -81,31 +81,31 @@
   --opensketch-space-control-gap: var(--suite-space-control-gap, 6px);
 }
 
-.opensketch-app[data-opensketch-reduced-motion="true"] {
+:is(.opensketch-app, [data-suite-ui="opensketch"])[data-opensketch-reduced-motion="true"] {
   --motion-ui: 0.01ms;
   --motion-panel: 0.01ms;
 }
 
-.opensketch-app[data-suite-ui="opensketch"] :is(.button, .ui-select-trigger) {
+:is(.opensketch-app, [data-suite-ui="opensketch"]) :is(.button, .ui-select-trigger) {
   min-height: var(--opensketch-control-normal);
   border-radius: var(--opensketch-radius-control);
   transition-duration: var(--motion-ui);
 }
 
-.opensketch-app[data-suite-ui="opensketch"] .icon-button {
+:is(.opensketch-app, [data-suite-ui="opensketch"]) .icon-button {
   width: var(--opensketch-control-normal);
   min-height: var(--opensketch-control-normal);
   border-radius: var(--opensketch-radius-control);
   transition-duration: var(--motion-ui);
 }
 
-.opensketch-app[data-suite-ui="opensketch"] :is(.text-button, .quiet-button) {
+:is(.opensketch-app, [data-suite-ui="opensketch"]) :is(.text-button, .quiet-button) {
   min-height: var(--opensketch-control-compact);
   border-radius: var(--opensketch-radius-control);
   transition-duration: var(--motion-ui);
 }
 
-.opensketch-app[data-suite-ui="opensketch"] :is(.ui-select-menu, .asset-variant-menu) {
+:is(.opensketch-app, [data-suite-ui="opensketch"]) :is(.ui-select-menu, .asset-variant-menu) {
   border-radius: var(--opensketch-radius-control);
   border-width: var(--opensketch-border-width);
   background: var(--shell-card);
@@ -115,11 +115,12 @@
   );
 }
 
-.opensketch-app[data-suite-ui="opensketch"] :is(.dialog, .dialog-backdrop) {
+:is(.opensketch-app, [data-suite-ui="opensketch"]) :is(.dialog, .dialog-backdrop) {
   --opensketch-dialog-radius: var(--opensketch-radius-dialog);
 }
 
-.opensketch-app[data-suite-ui="opensketch"] :is(button, input, select, textarea):focus-visible {
+:is(.opensketch-app, [data-suite-ui="opensketch"])
+  :is(button, input, select, textarea):focus-visible {
   outline: 2px solid var(--suite-focus, color-mix(in srgb, var(--shell-accent) 56%, transparent));
   outline-offset: 2px;
 }
