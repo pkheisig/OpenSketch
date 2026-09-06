@@ -99,6 +99,37 @@ describe("persistent layout frames", () => {
     });
   });
 
+  it("rejects stretch alignment for preserve-aspect children", () => {
+    const cases = [
+      {
+        frameId: "aspect-horizontal-stretch",
+        flow: "horizontal" as const,
+        alignment: { verticalAlign: "stretch" as const }
+      },
+      {
+        frameId: "aspect-vertical-stretch",
+        flow: "vertical" as const,
+        alignment: { horizontalAlign: "stretch" as const }
+      },
+      {
+        frameId: "aspect-grid-stretch",
+        flow: "grid" as const,
+        alignment: { horizontalAlign: "stretch" as const }
+      }
+    ];
+
+    for (const { frameId, flow, alignment } of cases) {
+      expect(() =>
+        createLayoutFrame(createLayoutDocument(), {
+          frameId,
+          bounds: { left: 0, top: 0, width: 100, height: 100 },
+          flow,
+          children: [{ objectId: "asset", sizing: "preserve-aspect", ...alignment }]
+        })
+      ).toThrow(/preserve-aspect.*stretch alignment/i);
+    }
+  });
+
   it("supports grid spans and rejects silent clipping when overflow is disallowed", () => {
     const document = createLayoutDocument();
     const next = createLayoutFrame(document, {

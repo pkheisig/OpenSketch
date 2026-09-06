@@ -342,6 +342,14 @@ function normalizedChild(value: unknown, path: string): LayoutCellSpec {
       result[key] = value[key] as LayoutAlignment;
     }
   }
+  if (
+    result.sizing === "preserve-aspect" &&
+    (result.horizontalAlign === "stretch" || result.verticalAlign === "stretch")
+  ) {
+    throw new LayoutValidationError(
+      `${path} cannot combine preserve-aspect sizing with stretch alignment.`
+    );
+  }
   for (const key of ["width", "height"] as const) {
     if (value[key] !== undefined) {
       result[key] = finite(
