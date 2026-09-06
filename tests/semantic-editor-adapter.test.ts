@@ -9,6 +9,8 @@ import { describe, expect, it, vi } from "vitest";
 import { DEFAULT_CREATION_DEFAULTS } from "../apps/web/src/editor/creation";
 import { createSemanticEditorAdapter } from "../apps/web/src/semantic/semanticEditorAdapter";
 import { assetManifest } from "../apps/web/src/assets/manifest";
+import { createLayoutDocument, type LayoutDocument } from "../packages/editor-core/src";
+import { applyLayoutFrameToCanvas } from "../apps/web/src/editor/layoutFrames";
 
 function makeCanvas(objects: FabricObject[] = [], activeObjects: FabricObject[] = []): Canvas {
   return {
@@ -48,6 +50,15 @@ function makeAdapter(
   const setCanvasSettings = vi.fn();
   const setProjectName = vi.fn();
   const setProjectDescription = vi.fn();
+  let layoutState: LayoutDocument | undefined = createLayoutDocument();
+  const setLayoutState = vi.fn((next: LayoutDocument | undefined) => {
+    layoutState = next;
+  });
+  const applyFrame = vi.fn((frameId: string) => {
+    const frame = layoutState!.frames.find((candidate) => candidate.id === frameId)!;
+    const changed = applyLayoutFrameToCanvas(canvas, frame).changedObjectIds;
+    return changed;
+  });
   const adapter = createSemanticEditorAdapter({
     getAssetManifest: async () => assetManifest,
     getCanvas: () => canvas,
@@ -61,6 +72,9 @@ function makeAdapter(
       background: "#ffffff",
       transparent: false
     }),
+    getLayoutState: () => layoutState,
+    setLayoutState,
+    applyLayoutFrame: applyFrame,
     setCanvasSettings,
     setProjectName,
     setProjectDescription,
@@ -87,11 +101,75 @@ function makeAdapter(
     restore,
     setCanvasSettings,
     setProjectName,
-    setProjectDescription
+    setProjectDescription,
+    layoutState: () => layoutState,
+    setLayoutState,
+    applyFrame
   });
 }
 
 describe("semantic editor adapter", () => {
+  it("persists, configures, edits, and reflows layout frames through semantic commands", async () => {
+    const first = new Rect({ width: 20, height: 20, left: 10, top: 10 });
+    first.objectId = "first";
+    const second = new Rect({ width: 20, height: 20, left: 40, top: 10 });
+    second.objectId = "second";
+    const canvas = makeCanvas([first, second]);
+    const adapter = makeAdapter(canvas);
+
+    await adapter.execute("create_layout_frame", {
+      frameId: "frame",
+      bounds: { left: 0, top: 0, width: 200, height: 100 },
+      flow: "horizontal",
+      gap: 10,
+      children: [
+        { objectId: "first", sizing: "fixed" },
+        { objectId: "second", sizing: "fill" }
+      ]
+    });
+    expect(adapter.layoutState()?.frames[0]?.children.map((child) => child.objectId)).toEqual([
+      "first",
+      "second"
+    ]);
+
+    await adapter.execute("configure_layout_frame", {
+      frameId: "frame",
+      padding: 10
+    });
+    await adapter.execute("reflow_layout_frame", { frameId: "frame" });
+    expect(first.getBoundingRect().left).toBeCloseTo(10);
+    expect(second.getBoundingRect().left).toBeGreaterThan(first.getBoundingRect().left);
+
+    await adapter.execute("remove_layout_child", { frameId: "frame", objectId: "second" });
+    await adapter.execute("insert_layout_child", {
+      frameId: "frame",
+      child: { objectId: "second", sizing: "content-sized" }
+    });
+    await adapter.execute("remove_layout_frame", { frameId: "frame" });
+    expect(adapter.layoutState()?.frames).toEqual([]);
+    expect(adapter.commit).toHaveBeenCalled();
+  });
+
+  it("rolls back persistent layout state with a failed semantic batch", async () => {
+    const object = new Rect({ width: 20, height: 20 });
+    object.objectId = "object";
+    const adapter = makeAdapter(makeCanvas([object]));
+
+    await expect(
+      adapter.runTransaction(async () => {
+        await adapter.execute("create_layout_frame", {
+          frameId: "frame",
+          bounds: { left: 0, top: 0, width: 100, height: 100 },
+          flow: "free",
+          children: [{ objectId: "object", sizing: "content-sized" }]
+        });
+        throw new Error("stop batch");
+      })
+    ).rejects.toThrow("stop batch");
+    expect(adapter.layoutState()?.frames).toEqual([]);
+    expect(adapter.commit).not.toHaveBeenCalled();
+  });
+
   it("resizes SVG groups through scale and remains stable when repeated", async () => {
     const part = new Rect({ width: 80, height: 40, left: 12, top: 8 });
     const group = new Group([part], { angle: 25, scaleX: 2, scaleY: 3 });

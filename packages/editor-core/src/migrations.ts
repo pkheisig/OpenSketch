@@ -24,6 +24,7 @@ import {
   type ParsedImageDataUrl
 } from "./rasterResources";
 import { PORTABLE_PROJECT_LIMITS } from "./resourceLimits";
+import { validateLayoutDocument, type LayoutDocument } from "./layout";
 
 export { remintProjectIdentity, repairProjectIdentity } from "./identity";
 export type { ProjectIdentityRepair } from "./identity";
@@ -449,6 +450,7 @@ interface ValidationContext {
   totalRasterArea: number;
   dataUrls: Set<string>;
   objectIds: Set<string>;
+  parentByObjectId: Map<string, string | undefined>;
   connectorBindings: Array<{
     path: string;
     binding: JsonRecord;
@@ -1443,7 +1445,8 @@ function validateSceneObject(
   value: unknown,
   path: string,
   context: ValidationContext,
-  depth: number
+  depth: number,
+  parentObjectId?: string
 ): void {
   if (!isRecord(value)) fail(path, "must be an object");
   if (depth > PORTABLE_PROJECT_LIMITS.maxSceneDepth) fail(path, "exceeds the scene nesting limit");
@@ -1457,6 +1460,8 @@ function validateSceneObject(
   if (typeof value.type !== "string" || !SUPPORTED_SCENE_TYPES.has(value.type)) {
     fail(`${path}.type`, "is unsupported");
   }
+  const objectId = typeof value.objectId === "string" ? value.objectId : undefined;
+  if (objectId !== undefined) context.parentByObjectId.set(objectId, parentObjectId);
 
   for (const [key, item] of Object.entries(value)) {
     if (SCENE_NUMERIC_PROPERTIES.has(key)) {
@@ -1537,7 +1542,7 @@ function validateSceneObject(
     } else if (key === "shadow") {
       validateShadow(item, `${path}.${key}`, context);
     } else if (key === "clipPath") {
-      validateSceneObject(item, `${path}.${key}`, context, depth + 1);
+      validateSceneObject(item, `${path}.${key}`, context, depth + 1, objectId);
     } else if (key === "layoutManager") {
       if (value.type !== "Group") fail(`${path}.layoutManager`, "is only supported on groups");
       validateLayoutManager(item, `${path}.${key}`);
@@ -1548,11 +1553,11 @@ function validateSceneObject(
         fail(`${path}.${key}`, "contains too many objects");
       }
       item.forEach((child, index) =>
-        validateSceneObject(child, `${path}.objects[${index}]`, context, depth + 1)
+        validateSceneObject(child, `${path}.objects[${index}]`, context, depth + 1, objectId)
       );
     } else if (key === "path") {
       if (["Text", "Textbox", "IText", "i-text"].includes(value.type) && isRecord(item)) {
-        validateSceneObject(item, `${path}.path`, context, depth + 1);
+        validateSceneObject(item, `${path}.path`, context, depth + 1, objectId);
       } else {
         validatePath(item, `${path}.path`);
       }
@@ -1658,6 +1663,7 @@ function createValidationContext(): ValidationContext {
     totalRasterArea: 0,
     dataUrls: new Set(),
     objectIds: new Set(),
+    parentByObjectId: new Map(),
     connectorBindings: []
   };
 }
@@ -1834,6 +1840,13 @@ export function migrateProject(input: unknown): PortableProject {
   const canvas = validateCanvas(project.canvas);
   const context = createValidationContext();
   const scene = validateScene(project.objects, "scene", context);
+  let layout: LayoutDocument | undefined;
+  if (project.layout !== undefined) {
+    layout = validateLayoutDocument(project.layout, {
+      objectIds: context.objectIds,
+      parentByObjectId: context.parentByObjectId
+    });
+  }
   const relationIds = new Set<string>();
   const collectRelations = (value: unknown): void => {
     if (!isRecord(value)) return;
@@ -1884,6 +1897,7 @@ export function migrateProject(input: unknown): PortableProject {
     objects: normalizeLibraryAssetTypes(structuredClone(scene)),
     uploads: structuredClone(uploads),
     usedAssetIds: structuredClone(usedAssetIds),
+    ...(layout === undefined ? {} : { layout: structuredClone(layout) }),
     ...(description === undefined ? {} : { description })
   };
 }

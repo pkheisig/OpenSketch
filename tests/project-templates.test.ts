@@ -33,7 +33,18 @@ const template = (kind: ProjectTemplateRecord["kind"] = "diagram"): ProjectTempl
       objects: [{ type: "Group", objectId: `group-${kind}`, objects: [] }]
     },
     uploads: [],
-    usedAssetIds: []
+    usedAssetIds: [],
+    layout: {
+      version: 1,
+      frames: [
+        {
+          id: `frame-${kind}`,
+          bounds: { left: 0, top: 0, width: 100, height: 100 },
+          flow: "free",
+          children: [{ objectId: `group-${kind}`, sizing: "content-sized" }]
+        }
+      ]
+    }
   },
   createdAt: "2026-08-01T00:00:00.000Z",
   updatedAt: "2026-08-01T00:00:00.000Z",
@@ -118,6 +129,20 @@ describe("project template storage", () => {
           },
           { type: "Rect", objectId: "target" }
         ]
+      },
+      layout: {
+        version: 1,
+        frames: [
+          {
+            id: "source-frame",
+            bounds: { left: 0, top: 0, width: 100, height: 100 },
+            flow: "free",
+            children: [
+              { objectId: "source", sizing: "content-sized" },
+              { objectId: "target", sizing: "content-sized" }
+            ]
+          }
+        ]
       }
     };
     const reminted = remintProjectIdentity(source) as typeof source;
@@ -147,6 +172,8 @@ describe("project template storage", () => {
       remintedSource.objectId,
       remintedTarget.objectId
     ]);
+    expect(reminted.layout?.frames[0]?.children[0]?.objectId).toBe(remintedSource.objectId);
+    expect(reminted.layout?.frames[0]?.children[1]?.objectId).toBe(remintedTarget.objectId);
   });
 
   it("instantiates fresh project and scene identities from a template", async () => {
@@ -160,6 +187,7 @@ describe("project template storage", () => {
     expect(first.objects.objects[0]).toMatchObject({ type: "Group" });
     expect(first.objects.objects[0].objectId).not.toBe(second.objects.objects[0].objectId);
     expect(first.objects.objects[0].objectId).not.toBe("group-diagram");
+    expect(first.layout?.frames[0]?.children[0]?.objectId).toBe(first.objects.objects[0].objectId);
   });
 
   it("rejects a template whose record and snapshot modes disagree", async () => {

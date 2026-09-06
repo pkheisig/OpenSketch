@@ -10,12 +10,22 @@ import {
   util
 } from "fabric";
 import {
+  createLayoutDocument,
+  createLayoutFrame as createCoreLayoutFrame,
   filterAssetFamilies,
+  insertLayoutChild as insertCoreLayoutChild,
+  removeLayoutChild as removeCoreLayoutChild,
+  removeLayoutFrame as removeCoreLayoutFrame,
   type AssetManifest,
   type AssetFamily,
   type AssetVariant,
   type CanvasSettings,
   type ConnectorBinding,
+  type CreateLayoutFrameInput,
+  type LayoutCellSpec,
+  type LayoutDocument,
+  type LayoutFrame,
+  updateLayoutFrame as updateCoreLayoutFrame,
   PORTABLE_PROJECT_LIMITS
 } from "@workspace/editor-core";
 import {
@@ -106,6 +116,9 @@ export interface SemanticEditorAdapterDependencies {
   getProjectId: () => string;
   isCanvasReady: () => boolean;
   getCanvasSettings: () => CanvasSettings;
+  getLayoutState: () => LayoutDocument | undefined;
+  setLayoutState: (layout: LayoutDocument | undefined) => void;
+  applyLayoutFrame: (frameId: string) => string[];
   setCanvasSettings: (settings: Partial<CanvasSettings>) => void;
   setProjectName: (name: string) => void;
   setProjectDescription: (description: string) => void;
@@ -2585,6 +2598,96 @@ export function createSemanticEditorAdapter(
       commitSemantic("Semantic repair connectors");
       return { data: { connectorIds: repaired, repaired }, changedObjectIds: repaired };
     }
+    if (
+      command === "create_layout_frame" ||
+      command === "configure_layout_frame" ||
+      command === "insert_layout_child" ||
+      command === "remove_layout_child" ||
+      command === "remove_layout_frame" ||
+      command === "reflow_layout_frame"
+    ) {
+      try {
+        const frameId = input.frameId as string;
+        if (command === "create_layout_frame") {
+          const next = createCoreLayoutFrame(
+            dependencies.getLayoutState() ?? createLayoutDocument(),
+            {
+              frameId,
+              bounds: input.bounds as CreateLayoutFrameInput["bounds"],
+              flow: input.flow as CreateLayoutFrameInput["flow"],
+              padding: input.padding as CreateLayoutFrameInput["padding"],
+              gap: input.gap as CreateLayoutFrameInput["gap"],
+              overflow: input.overflow as CreateLayoutFrameInput["overflow"],
+              children: input.children as LayoutCellSpec[],
+              tracks: input.tracks as CreateLayoutFrameInput["tracks"],
+              role: input.role as string | undefined,
+              containerObjectId: input.containerObjectId as string | undefined
+            }
+          );
+          dependencies.setLayoutState(next);
+          commitSemantic("Semantic create layout frame");
+          return {
+            data: {
+              frameId,
+              objectIds: (input.children as LayoutCellSpec[]).map((child) => child.objectId)
+            },
+            changedObjectIds: []
+          };
+        }
+        if (command === "configure_layout_frame") {
+          const patch = { ...input } as Record<string, unknown>;
+          delete patch.frameId;
+          const next = updateCoreLayoutFrame(
+            dependencies.getLayoutState() ?? createLayoutDocument(),
+            frameId,
+            patch as Partial<Omit<LayoutFrame, "id">>
+          );
+          dependencies.setLayoutState(next);
+          commitSemantic("Semantic configure layout frame");
+          return { data: { frameId }, changedObjectIds: [] };
+        }
+        if (command === "insert_layout_child") {
+          const child = input.child as LayoutCellSpec;
+          const next = insertCoreLayoutChild(
+            dependencies.getLayoutState() ?? createLayoutDocument(),
+            frameId,
+            child,
+            input.index as number | undefined
+          );
+          dependencies.setLayoutState(next);
+          commitSemantic("Semantic insert layout child");
+          return { data: { frameId, objectId: child.objectId }, changedObjectIds: [] };
+        }
+        if (command === "remove_layout_child") {
+          const objectId = input.objectId as string;
+          const next = removeCoreLayoutChild(
+            dependencies.getLayoutState() ?? createLayoutDocument(),
+            frameId,
+            objectId
+          );
+          dependencies.setLayoutState(next);
+          commitSemantic("Semantic remove layout child");
+          return { data: { frameId, objectId }, changedObjectIds: [] };
+        }
+        if (command === "remove_layout_frame") {
+          const next = removeCoreLayoutFrame(
+            dependencies.getLayoutState() ?? createLayoutDocument(),
+            frameId
+          );
+          dependencies.setLayoutState(next);
+          commitSemantic("Semantic remove layout frame");
+          return { data: { frameId }, changedObjectIds: [] };
+        }
+        const changedObjectIds = dependencies.applyLayoutFrame(frameId);
+        commitSemantic("Semantic reflow layout frame");
+        return { data: { frameId, objectIds: changedObjectIds }, changedObjectIds };
+      } catch (error) {
+        throw new SemanticAdapterError(
+          "INVALID_LAYOUT",
+          error instanceof Error ? error.message : String(error)
+        );
+      }
+    }
     if (command === "plan_layout") {
       const ids = objectIds(input);
       const settings = dependencies.getCanvasSettings();
@@ -3881,6 +3984,7 @@ export function createSemanticEditorAdapter(
     runTransaction: async <T>(operation: () => Promise<T>): Promise<T> => {
       const canvas = canvasOrThrow();
       const snapshot = dependencies.serialize();
+      const layoutSnapshot = dependencies.getLayoutState();
       const selectionObjectIds = canvas
         .getActiveObjects()
         .map((object) => object.objectId)
@@ -3894,6 +3998,9 @@ export function createSemanticEditorAdapter(
       } catch (error) {
         try {
           await dependencies.restore(snapshot);
+          dependencies.setLayoutState(
+            layoutSnapshot === undefined ? undefined : structuredClone(layoutSnapshot)
+          );
           const restoredCanvas = dependencies.getCanvas();
           if (restoredCanvas) {
             restoreSelection(restoredCanvas, selectionObjectIds, dependencies.setSelection);

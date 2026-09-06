@@ -1,8 +1,9 @@
-import type { CanvasSettings } from "@workspace/editor-core";
+import type { CanvasSettings, LayoutDocument } from "@workspace/editor-core";
 
 export interface EditorDocumentSnapshot {
   readonly scene: string;
   readonly canvasSettings: Readonly<CanvasSettings>;
+  readonly layout?: Readonly<LayoutDocument>;
 }
 
 export const cloneCanvasSettings = (settings: Readonly<CanvasSettings>): CanvasSettings => ({
@@ -18,11 +19,13 @@ export const cloneCanvasSettings = (settings: Readonly<CanvasSettings>): CanvasS
 
 export const createDocumentSnapshot = (
   scene: string,
-  settings: Readonly<CanvasSettings>
+  settings: Readonly<CanvasSettings>,
+  layout?: Readonly<LayoutDocument>
 ): EditorDocumentSnapshot =>
   Object.freeze({
     scene,
-    canvasSettings: Object.freeze(cloneCanvasSettings(settings))
+    canvasSettings: Object.freeze(cloneCanvasSettings(settings)),
+    ...(layout === undefined ? {} : { layout: structuredClone(layout) })
   });
 
 export const cloneDocumentSnapshot = (snapshot: EditorDocumentSnapshot): EditorDocumentSnapshot =>
@@ -33,6 +36,7 @@ export const documentSnapshotsEqual = (
   right: EditorDocumentSnapshot | undefined
 ): boolean => {
   if (!left || !right || left.scene !== right.scene) return false;
+  if (JSON.stringify(left.layout) !== JSON.stringify(right.layout)) return false;
   const leftSettings = left.canvasSettings;
   const rightSettings = right.canvasSettings;
   return (
@@ -51,4 +55,7 @@ const HISTORY_ENTRY_OVERHEAD_BYTES = 256;
 
 export const estimateDocumentSnapshotBytes = (snapshot: EditorDocumentSnapshot): number =>
   HISTORY_ENTRY_OVERHEAD_BYTES +
-  (snapshot.scene.length + JSON.stringify(snapshot.canvasSettings).length) * 2;
+  (snapshot.scene.length +
+    JSON.stringify(snapshot.canvasSettings).length +
+    (snapshot.layout === undefined ? 0 : JSON.stringify(snapshot.layout).length)) *
+    2;

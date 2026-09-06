@@ -1,3 +1,5 @@
+import type { LayoutDocument } from "./layout";
+
 export const OpenSketch_FORMAT_VERSION = 2;
 
 export const PROJECT_KINDS = ["diagram", "figure", "poster"] as const;
@@ -89,6 +91,8 @@ export interface PortableProject {
   /** Legacy serialized key retained for .OpenSketch project compatibility. */
   uploads: ImportedMediaRecord[];
   usedAssetIds: string[];
+  /** Optional persistent layout-frame document. Omitted by legacy projects. */
+  layout?: LayoutDocument;
   description?: string;
 }
 

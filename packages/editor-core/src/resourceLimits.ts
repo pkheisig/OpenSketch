@@ -1,4 +1,5 @@
 import { PORTABLE_SCENE_LIMITS } from "./sceneLimits";
+import { LAYOUT_LIMITS } from "./layout";
 
 /** Resource bounds applied before a portable project reaches Fabric or persistence. */
 export const PORTABLE_PROJECT_LIMITS = {
@@ -31,5 +32,9 @@ export const PORTABLE_PROJECT_LIMITS = {
   maxTotalRasterArea: 250_000_000,
   maxCoordinate: 1_000_000,
   maxScale: 1_000,
-  maxCurvature: 100
+  maxCurvature: 100,
+  maxLayoutFrames: LAYOUT_LIMITS.maxFrames,
+  maxLayoutChildrenPerFrame: LAYOUT_LIMITS.maxChildrenPerFrame,
+  maxLayoutTracksPerAxis: LAYOUT_LIMITS.maxTracksPerAxis,
+  maxLayoutSerializedBytes: LAYOUT_LIMITS.maxSerializedBytes
 } as const;

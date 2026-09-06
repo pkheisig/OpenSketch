@@ -56,6 +56,39 @@ describe("editor document snapshots", () => {
     expect(documentSnapshotsEqual(first, changedScene)).toBe(false);
   });
 
+  it("includes persistent layout state in history equality and byte accounting", () => {
+    const layout = {
+      version: 1 as const,
+      frames: [
+        {
+          id: "frame",
+          bounds: { left: 0, top: 0, width: 100, height: 100 },
+          flow: "free" as const,
+          padding: { top: 0, right: 0, bottom: 0, left: 0 },
+          gap: { horizontal: 0, vertical: 0 },
+          overflow: "visible" as const,
+          children: [{ objectId: "object", sizing: "content-sized" as const }]
+        }
+      ]
+    };
+    const first = createDocumentSnapshot("scene", canvasSettings(), layout);
+    const same = createDocumentSnapshot("scene", canvasSettings(), structuredClone(layout));
+    const changed = createDocumentSnapshot("scene", canvasSettings(), {
+      ...layout,
+      frames: [{ ...layout.frames[0], id: "changed" }]
+    });
+
+    expect(documentSnapshotsEqual(first, same)).toBe(true);
+    expect(documentSnapshotsEqual(first, changed)).toBe(false);
+    expect(estimateDocumentSnapshotBytes(first)).toBe(
+      256 +
+        (first.scene.length +
+          JSON.stringify(first.canvasSettings).length +
+          JSON.stringify(first.layout).length) *
+          2
+    );
+  });
+
   it("accounts for both scene and settings bytes", () => {
     const snapshot: EditorDocumentSnapshot = {
       scene: "scene",

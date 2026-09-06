@@ -174,6 +174,66 @@ describe("project migrations", () => {
     expect(migrated.name).toBe("Figure");
     expect(migrated.formatVersion).toBe(2);
     expect(migrated.kind).toBe("diagram");
+    expect(migrated.layout).toBeUndefined();
+  });
+
+  it("persists validated layout frames and rejects ambiguous nested ownership", () => {
+    const migrated = migrateProject({
+      ...project,
+      formatVersion: 2,
+      kind: "figure",
+      objects: { objects: [{ type: "Rect", objectId: "rect" }] },
+      layout: {
+        version: 1,
+        frames: [
+          {
+            id: "frame",
+            bounds: { left: 0, top: 0, width: 100, height: 100 },
+            flow: "free",
+            children: [{ objectId: "rect", sizing: "content-sized" }]
+          }
+        ]
+      }
+    });
+    expect(migrated.layout).toMatchObject({
+      version: 1,
+      frames: [
+        {
+          id: "frame",
+          padding: { top: 0, right: 0, bottom: 0, left: 0 },
+          gap: { horizontal: 0, vertical: 0 }
+        }
+      ]
+    });
+
+    expect(() =>
+      migrateProject({
+        ...project,
+        formatVersion: 2,
+        kind: "figure",
+        objects: {
+          objects: [
+            {
+              type: "Group",
+              objectId: "group",
+              objects: [{ type: "Rect", objectId: "rect" }]
+            }
+          ]
+        },
+        layout: {
+          version: 1,
+          frames: [
+            {
+              id: "frame",
+              containerObjectId: "group",
+              bounds: { left: 0, top: 0, width: 100, height: 100 },
+              flow: "free",
+              children: [{ objectId: "rect", sizing: "content-sized" }]
+            }
+          ]
+        }
+      })
+    ).toThrow(/ancestor|descendant|container/i);
   });
 
   it("preserves an explicit project kind", () => {
