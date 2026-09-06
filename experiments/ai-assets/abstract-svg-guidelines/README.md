@@ -14,6 +14,8 @@ For this abstract workflow, work directly in SVG using existing PNG/SVG assets a
 
 Preserve the silhouette, width-to-height ratio, orientation, major indentations and lobes, dominant compartments, and defining structures. Keep meaningful holes, channels, ring arrangements, membrane boundaries, attachment points, and subunit relationships. An observer should recognize the same object and view in both versions.
 
+Circular reference bodies must remain circular. Use equal radii for circular envelopes and verify their displayed width and height after transforms and export. Scale uniformly in the SVG and preview; never stretch a circle to fit a display box. Check the body itself rather than bounds enlarged by protruding proteins. Preserve reference ellipses when they express a perspective opening or genuinely elongated anatomy; preserve irregular outlines when the reference is irregular.
+
 Reduce repeated decorative detail: fine surface bumps, small shading islands, excess granules, dense ribosome stippling, minor folds, and repeated membrane units. Use fewer representative elements while retaining their arrangement and meaning. Preserve counts when they encode biological identity or a specified stoichiometry; a schematic repeated-unit count must not imply a measured or exact molecular structure.
 
 Use broad flat colour areas with restrained shadows or highlights where they clarify depth or separate parts. Match the approved asset's palette family: purple/teal proteins, peach mitochondrial membranes, pink Golgi and lysosome structures, and cool cell interiors. Use smooth, deliberate contours and consistent visible boundary weights. A small palette is useful; a fixed colour count is not a quality target.
@@ -67,6 +69,7 @@ For ambiguous anatomy or a reference that cannot resolve a meaningful structural
 ## Final acceptance checklist
 
 - [ ] Same recognizable object, view, rough silhouette, proportions, and compartment layout as the reference.
+- [ ] Circular bodies remain circular after transforms and export; perspective ellipses and irregular reference shapes remain intentional.
 - [ ] Defining pores, boundaries, connections, and biologically meaningful arrangements preserved.
 - [ ] Simplification visible at normal display size; unnecessary fine detail removed coherently.
 - [ ] No accidental membrane contact, compartment crossing, misplaced contents, or clipped geometry.
