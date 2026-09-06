@@ -1,5 +1,7 @@
 # Inventory production complete
 
+For new abstract SVG work, first read [the abstract SVG guidelines](../abstract-svg-guidelines/README.md). The workflow below describes the completed original PNG/SVG inventory; it does not override the subsequent SVG-native abstract workflow.
+
 All 768 unique concrete inventory names across 770 checklist rows are covered by 741 distinct PNG/SVG pairs and 27 documented archetype aliases. The final batch contains 30 new distinct pairs and one alias after the 711-pair checkpoint. No items remain pending. Preserve all outputs; do not restart production unless the user requests additional work. The continuation is to be paused after the final GitHub push is verified.
 
 The workflow below records how this collection was produced.

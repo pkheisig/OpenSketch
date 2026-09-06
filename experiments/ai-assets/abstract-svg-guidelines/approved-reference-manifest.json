@@ -1,0 +1,69 @@
+{
+  "approval_date": "2026-09-06",
+  "approval_scope": "Corrected abstract illustration style and rough structure; not molecular validation or app integration.",
+  "gallery_url": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/OpenSketch/abstract-svg-study/20260906-abstract-corrected/index.html",
+  "browser_screenshot_url": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/OpenSketch/abstract-svg-study/20260906-abstract-corrected/browser-gallery.png",
+  "download_url": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/OpenSketch/abstract-svg-study/20260906-abstract-corrected/assets.zip",
+  "assets": [
+    {
+      "name": "proteasome",
+      "svg_url": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/OpenSketch/abstract-svg-study/20260906-abstract-corrected/proteasome-abstract.svg",
+      "sha256": "480e011ed2d32d71f0895162fdb74fad5ff551cf570bb93c9a18952731303342",
+      "bytes": 10754
+    },
+    {
+      "name": "ribosome",
+      "svg_url": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/OpenSketch/abstract-svg-study/20260906-abstract-corrected/ribosome-abstract.svg",
+      "sha256": "4399af0731c2a66fc11440084dd41fba8c6116f59e199bcd743d21a4fb3aaff3",
+      "bytes": 1565
+    },
+    {
+      "name": "mitochondrion",
+      "svg_url": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/OpenSketch/abstract-svg-study/20260906-abstract-corrected/mitochondrion-abstract.svg",
+      "sha256": "cbc03f93e1dd9f71eeab9cadb9f466c209ff56b08228849128ab440e489f8404",
+      "bytes": 3470
+    },
+    {
+      "name": "golgi-apparatus",
+      "svg_url": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/OpenSketch/abstract-svg-study/20260906-abstract-corrected/golgi-apparatus-abstract.svg",
+      "sha256": "3423d8cf522f632116523dfbc32cf56344bb826d428a9d4be3ad9a862017f3c3",
+      "bytes": 2330
+    },
+    {
+      "name": "lysosome",
+      "svg_url": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/OpenSketch/abstract-svg-study/20260906-abstract-corrected/lysosome-abstract.svg",
+      "sha256": "ffb6ac3ae8520dc81f7d523dd6cb0b9626f228873c08ec85cdbe31cf290287f6",
+      "bytes": 3082
+    },
+    {
+      "name": "early-endosome",
+      "svg_url": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/OpenSketch/abstract-svg-study/20260906-abstract-corrected/early-endosome-abstract.svg",
+      "sha256": "0410849b18b683086056d6a1768fa72d005cea2a65bd13abbbfa8820e1f1e125",
+      "bytes": 1313
+    },
+    {
+      "name": "transport-vesicle",
+      "svg_url": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/OpenSketch/abstract-svg-study/20260906-abstract-corrected/transport-vesicle-abstract.svg",
+      "sha256": "12fe3ebfd80e30b415f725da5617336292d95fc1ea1a9c86cffa8b15d6534ea7",
+      "bytes": 7306
+    },
+    {
+      "name": "aquaporin-channel",
+      "svg_url": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/OpenSketch/abstract-svg-study/20260906-abstract-corrected/aquaporin-channel-abstract.svg",
+      "sha256": "3f58f499d2132b98c07415f84116e717819353f54595f1cf3ba34502cbf9fe62",
+      "bytes": 3011
+    },
+    {
+      "name": "neutrophil",
+      "svg_url": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/OpenSketch/abstract-svg-study/20260906-abstract-corrected/neutrophil-abstract.svg",
+      "sha256": "312babbb4a97d484cce04e8c285eda65860a30c7dba2a47ca60db1387bb88fbe",
+      "bytes": 2382
+    },
+    {
+      "name": "plasma-cell",
+      "svg_url": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/OpenSketch/abstract-svg-study/20260906-abstract-corrected/plasma-cell-abstract.svg",
+      "sha256": "34159e49a558e6dfefa236436f79c9bc3aaeb60be05d50fbbbd36de0bf308b30",
+      "bytes": 3705
+    }
+  ]
+}
