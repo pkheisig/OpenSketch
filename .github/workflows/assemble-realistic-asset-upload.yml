@@ -1,0 +1,47 @@
+name: Assemble realistic asset upload
+
+on:
+  push:
+    branches:
+      - experimental/ai-bioart-assets-20260904
+    paths:
+      - .asset-upload/READY
+
+permissions:
+  contents: write
+
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experimental/ai-bioart-assets-20260904
+          fetch-depth: 0
+      - name: Reconstruct optimized realistic SVGs
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .asset-upload/part-*.txt | base64 --decode > /tmp/opensketch-realistic-assets.zip
+          echo '5b28522e090264631ef8923d70d62f5531adf6c9a04d6d76836fc5e490ebc47e  /tmp/opensketch-realistic-assets.zip' | sha256sum -c -
+          target='experiments/ai-assets/nih-bioart-collection/svg/realistic'
+          mkdir -p "$target"
+          rm -f \
+            experiments/ai-assets/nih-bioart-collection/svg/t-lymphocyte-realistic.svg \
+            experiments/ai-assets/nih-bioart-collection/svg/macrophage-realistic.svg \
+            experiments/ai-assets/nih-bioart-collection/svg/antibody-realistic.svg \
+            "$target/t-lymphocyte-realistic.svg" \
+            "$target/macrophage-realistic.svg" \
+            "$target/antibody-realistic.svg"
+          unzip -j -o /tmp/opensketch-realistic-assets.zip -d "$target"
+          test "$(find "$target" -maxdepth 1 -name '*-realistic.svg' -type f | wc -l)" -eq 3
+          if grep -Riq '<image\b' "$target"; then
+            echo 'Embedded raster image found in realistic SVG output' >&2
+            exit 1
+          fi
+          rm -rf .asset-upload
+          git add -A
+          git config user.name 'OpenSketch asset automation'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Add optimized realistic mode SVG prototypes'
+          git push origin HEAD:experimental/ai-bioart-assets-20260904
