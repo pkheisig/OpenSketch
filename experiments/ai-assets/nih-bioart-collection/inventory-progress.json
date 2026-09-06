@@ -24688,47 +24688,299 @@
     "patch-clamp-rig": {
       "name": "patch-clamp rig",
       "category": "27. Structural biology and biophysics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/patch-clamp-rig-bioart-transparent.png",
+      "svg": "svg/patch-clamp-rig-bioart-traced.svg",
+      "png_sha256": "1f05b489e7c83d59cf256a59cfcdbd8431f57ef40516da4b8cb337ae680a6f90",
+      "svg_sha256": "25b90cd7b45a6e330f16ca59079dd613219de9ac430c5eb5050cd0e197c44d27",
+      "original_sha256": "f43ca2aeebb628455a436bf73ef4bdc561d831314e409cfed446a15ae1c56636",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        402,
+        592,
+        373,
+        577
+      ],
+      "svg_paths": 9426,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/patch-clamp-rig/prompt.json",
+      "qa": "qa/inventory/patch-clamp-rig",
+      "visual_review": "Viewed refined source and four-panel comparison. Complete microscope, bath, fine pipette, manipulator, amplifier and isolation base; all feet and tubing fittings inside frame. Clean alpha, no exterior glow. Editable trace retains recognizable apparatus with minor banding; connections schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/patch-clamp-rig/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/patch-clamp-rig/inspection.webm"
+      }
     },
     "microelectrode-array": {
       "name": "microelectrode array",
       "category": "27. Structural biology and biophysics",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/microelectrode-array-bioart-transparent.png",
+      "svg": "svg/microelectrode-array-bioart-traced.svg",
+      "png_sha256": "60d78e850b8d5594c0b7700e207f5c11394d659c02dbf5a638c5dea49b960db5",
+      "svg_sha256": "6118ccfacd2f99d2bbac618d7257185673bc93615948c161d3721edec945f30a",
+      "original_sha256": "574b8a1521be0fbf88c9f0a1ce46c88c1356c1ed3a7f46de72b7304514bf5f08",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        584,
+        321,
+        597
+      ],
+      "svg_paths": 13548,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/microelectrode-array/prompt.json",
+      "qa": "qa/inventory/microelectrode-array",
+      "visual_review": "Reviewed final source and light/dark PNG/SVG comparison. Sixteen separate radial recording sites, each connected to its own peripheral pad; no shared central connections. Low culture ring and complete carrier retained. Background transparent, glass intentionally pale filled schematic; trace comparable with subtle banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microelectrode-array/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microelectrode-array/inspection.webm"
+      }
     },
     "droplet-microfluidic-single-cell-chip": {
       "name": "droplet microfluidic single-cell chip",
       "category": "28. Single-cell and spatial biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/droplet-microfluidic-single-cell-chip-bioart-transparent.png",
+      "svg": "svg/droplet-microfluidic-single-cell-chip-bioart-traced.svg",
+      "png_sha256": "903b4dc419e1a3e8b5f3ca8f4cf34b9e46d7827b3ba0e59c6961c15f40098738",
+      "svg_sha256": "7119ec65ad5e56e06e448dc64e7c4b01116ad215d14562e6990ee07725f459eb",
+      "original_sha256": "f0cd50ae472a2544c3a2caf0b844de86d92ce4013f95eadcb0359d008c7c8afd",
+      "png_dimensions": [
+        2484,
+        2484
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        355,
+        822,
+        373,
+        799
+      ],
+      "svg_paths": 17564,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/droplet-microfluidic-single-cell-chip/prompt.json",
+      "qa": "qa/inventory/droplet-microfluidic-single-cell-chip",
+      "visual_review": "Viewed final source and padded four-panel render: complete chip contour, separate aqueous inlets, opposing oil inlets and four cell-bead droplets retained. Transparent exterior clean in final padded masters; trace comparable. Occupied droplets are idealized examples, not yield or universal occupancy.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/droplet-microfluidic-single-cell-chip/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/droplet-microfluidic-single-cell-chip/inspection.webm"
+      }
     },
     "single-cell-droplet-with-barcoded-bead": {
       "name": "single-cell droplet with barcoded bead",
       "category": "28. Single-cell and spatial biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/single-cell-droplet-with-barcoded-bead-bioart-transparent.png",
+      "svg": "svg/single-cell-droplet-with-barcoded-bead-bioart-traced.svg",
+      "png_sha256": "5f46126185318d12db942b4f44fbeed1790498299cf8facb5eef837a0935a714",
+      "svg_sha256": "e37f2797bff30fdd84f959e842f3d40bc5a89c92ad51a3cf75ddc541af22b6ff",
+      "original_sha256": "58efbcf3b78f24d71761c4ca00a3f7de180ab71d664192648bcb04fcd3bc350b",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        270,
+        279,
+        291
+      ],
+      "svg_paths": 12770,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/single-cell-droplet-with-barcoded-bead/prompt.json",
+      "qa": "qa/inventory/single-cell-droplet-with-barcoded-bead",
+      "visual_review": "Viewed source and light/dark PNG-SVG comparison. One intact nucleated cell and one separate oligo-tethered bead fully inside complete droplet, no floating bubbles. Clean outer transparency, pale filled fluid retained; editable trace maintains structure and gradients with slight banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/single-cell-droplet-with-barcoded-bead/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/single-cell-droplet-with-barcoded-bead/inspection.webm"
+      }
     },
     "barcoded-capture-bead": {
       "name": "barcoded capture bead",
       "category": "28. Single-cell and spatial biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/barcoded-capture-bead-bioart-transparent.png",
+      "svg": "svg/barcoded-capture-bead-bioart-traced.svg",
+      "png_sha256": "833440dbf8c9f15be577a9902bc0f30e24986a0be8acd9b6c2541ff6b17724e8",
+      "svg_sha256": "5626d078035268c330ab6bf3a5beb2428e3ff43e130d637306015172ef05c64f",
+      "original_sha256": "494120cc73b8f0840c82f905f57df52ee0753cf5395c10161f10ad1d7fe355fa",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        412,
+        568,
+        321,
+        563
+      ],
+      "svg_paths": 5962,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/barcoded-capture-bead/prompt.json",
+      "qa": "qa/inventory/barcoded-capture-bead",
+      "visual_review": "Viewed final source and four-panel render: ten attached strands all carry matching red-orange-purple motif outward, complete ends and single gold bead. Clean alpha without surrounding glow; editable trace preserves strand shapes and segment colors with minor gradient banding.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/barcoded-capture-bead/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/barcoded-capture-bead/inspection.webm"
+      }
     },
     "spatial-transcriptomics-slide": {
       "name": "spatial transcriptomics slide",
       "category": "28. Single-cell and spatial biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/spatial-transcriptomics-slide-bioart-transparent.png",
+      "svg": "svg/spatial-transcriptomics-slide-bioart-traced.svg",
+      "png_sha256": "c754039259b21659c1fb55663d7ccb9c4c0b7ae06f6ed88297ac6b18f3ae1f63",
+      "svg_sha256": "a151253fa36746f049cc3f027153f8ffb9833a9738f491ea4cb88ce9e1fd6543",
+      "original_sha256": "603e276eb09cea16621256fd17d710c5e5c1db235d23cd9c4d8abb5ea1b3895a",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        316,
+        584,
+        325,
+        563
+      ],
+      "svg_paths": 9078,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/spatial-transcriptomics-slide/prompt.json",
+      "qa": "qa/inventory/spatial-transcriptomics-slide",
+      "visual_review": "Viewed source and light/dark comparison. Four capture fields, one thin tissue section on second field, blank end and complete slide retained. Clean alpha exterior, pale glass filled schematically. SVG preserves spots and tissue nuclei with small trace banding; no biological data implied.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/spatial-transcriptomics-slide/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/spatial-transcriptomics-slide/inspection.webm"
+      }
     },
     "tissue-capture-spot-array": {
       "name": "tissue capture spot array",
       "category": "28. Single-cell and spatial biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/tissue-capture-spot-array-bioart-transparent.png",
+      "svg": "svg/tissue-capture-spot-array-bioart-traced.svg",
+      "png_sha256": "0ca0de88397f4dee441b1cb6daf228073b48476e2ee6e07bb8fc5982e9d7cce5",
+      "svg_sha256": "8cd60607d20e631ee13b8f185342a39a04746131bf7d641a28024956b4062ae9",
+      "original_sha256": "0aff39bd8f560e46cfe424347e4d0728cec251a2bb9b1b6c762fcf0dde29a78b",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        587,
+        338,
+        591
+      ],
+      "svg_paths": 17768,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/tissue-capture-spot-array/prompt.json",
+      "qa": "qa/inventory/tissue-capture-spot-array",
+      "visual_review": "Viewed source and four-panel render: thin attached tissue with five schematic gland profiles, exposed flat capture dots and complete substrate retained. Transparent exterior clean on both backgrounds; SVG comparable, no expression measurements represented.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tissue-capture-spot-array/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tissue-capture-spot-array/inspection.webm"
+      }
     },
     "microwell-single-cell-array": {
       "name": "microwell single-cell array",
       "category": "28. Single-cell and spatial biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/microwell-single-cell-array-bioart-transparent.png",
+      "svg": "svg/microwell-single-cell-array-bioart-traced.svg",
+      "png_sha256": "1945e27f72f72e321a7e0e49affa5491b0ee20dbdb2c9feafe26d84d5867bdc4",
+      "svg_sha256": "26bdf129267d923e6f8807e6dc5f7fd7e0cf48630575f4adde1d30bf63fbe3ff",
+      "original_sha256": "cc6687a21786e8d7e555ef356a1948edb11e561959e8108f0b4f00efeef6918a",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        354,
+        588,
+        319,
+        577
+      ],
+      "svg_paths": 11763,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/microwell-single-cell-array/prompt.json",
+      "qa": "qa/inventory/microwell-single-cell-array",
+      "visual_review": "Viewed original and light/dark comparison: 4 by 5 recessed wells, eight with one nucleated cell and one gold bead, twelve empty. Contents inside wells, complete corners. Clean alpha and comparable editable trace with subtle well-shading banding; no capture yield claim.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microwell-single-cell-array/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microwell-single-cell-array/inspection.webm"
+      }
     },
     "cell-hashing-antibody-tag-complex": {
       "name": "cell hashing antibody-tag complex",
       "category": "28. Single-cell and spatial biology",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cell-hashing-antibody-tag-complex-bioart-transparent.png",
+      "svg": "svg/cell-hashing-antibody-tag-complex-bioart-traced.svg",
+      "png_sha256": "127a54b06b7007b6510c61241212535c832f2890b6f097d0bc7dd5f79fc539c6",
+      "svg_sha256": "031b7b22b644027cdf026be5f1cf9f1cb54147d40636de2ce361faa302e7653c",
+      "original_sha256": "ef20f5c2194f92f267b57660d93867cfa5f1829122de92f9e9e4e7132dc39ef2",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        355,
+        281,
+        339,
+        332
+      ],
+      "svg_paths": 4727,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cell-hashing-antibody-tag-complex/prompt.json",
+      "qa": "qa/inventory/cell-hashing-antibody-tag-complex",
+      "visual_review": "Viewed source and PNG-SVG light/dark render. Eight blue heavy-chain domains and four cyan light-chain domains, hinge and one attached single-strand tag retained. Complete fine tail, no double helix. Clean alpha, editable trace comparable with slight shading banding; stoichiometry and linker schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-hashing-antibody-tag-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-hashing-antibody-tag-complex/inspection.webm"
+      }
     },
     "rodent-cage": {
       "name": "rodent cage",
@@ -24908,42 +25160,266 @@
     "laboratory-refrigerator": {
       "name": "laboratory refrigerator",
       "category": "31. Cryogenic storage and cold chain",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/laboratory-refrigerator-bioart-transparent.png",
+      "svg": "svg/laboratory-refrigerator-bioart-traced.svg",
+      "png_sha256": "237a75d458c7443c4fda42f338d80be2dd982cb610c967f3ee14b580b3901ffd",
+      "svg_sha256": "81b25ad97c291461d64053840f74ef6f38aa25d6e6a95c3cf8328c899aa92198",
+      "original_sha256": "98984218845b370c6c5bd43474ff6bf7f07fcbdc60ee3b36359002239f05cfed",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        565,
+        326,
+        583,
+        307
+      ],
+      "svg_paths": 10416,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/laboratory-refrigerator/prompt.json",
+      "qa": "qa/inventory/laboratory-refrigerator",
+      "visual_review": "Viewed generated alpha and four-panel browser comparison. Complete upright cabinet, closed glass door, four wire shelves, handle, blank control display and lower compressor grille. Glass remains filled on dark background; SVG preserves structure, no clipping or external glow.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/laboratory-refrigerator/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/laboratory-refrigerator/inspection.webm"
+      }
     },
     "20-c-freezer": {
       "name": "-20 C freezer",
       "category": "31. Cryogenic storage and cold chain",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/20-c-freezer-bioart-transparent.png",
+      "svg": "svg/20-c-freezer-bioart-traced.svg",
+      "png_sha256": "19ba8d8476c9ea20e7f2658f056ff5259cf5790b41b8a95232e8bda0cf555ee7",
+      "svg_sha256": "01519e4cb1fb99948576cae80588886f6d3d6ee60f753246a9cbed2314ce2c18",
+      "original_sha256": "be3add261eb1b1d4323f2478fc2fd92d049167e8245cd739141526c0d42cc05b",
+      "png_dimensions": [
+        1799,
+        1799
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        287,
+        257,
+        349,
+        293
+      ],
+      "svg_paths": 8353,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/20-c-freezer/prompt.json",
+      "qa": "qa/inventory/20-c-freezer",
+      "visual_review": "Viewed final alpha and browser PNG/SVG light-dark comparison. Six internal drawers, open solid insulated door with gasket, control panel, compressor grille and complete feet. Filled panels and clear outlines retained, no background or clipping.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/20-c-freezer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/20-c-freezer/inspection.webm"
+      }
     },
     "80-c-ultra-low-freezer": {
       "name": "-80 C ultra-low freezer",
       "category": "31. Cryogenic storage and cold chain",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/80-c-ultra-low-freezer-bioart-transparent.png",
+      "svg": "svg/80-c-ultra-low-freezer-bioart-traced.svg",
+      "png_sha256": "625bf6ea902f3f92f0b6013bd4a7d355621eab6de537e88928897047b406e094",
+      "svg_sha256": "1a45362f7e880ad076889ce567db7d8724528b30c5fe929a60dfb0a8c07e542a",
+      "original_sha256": "510a55fcfc13ebdb7b944364b9578ce47e545104048069bcd1445d01ad514b80",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        326,
+        577,
+        307
+      ],
+      "svg_paths": 14918,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/80-c-ultra-low-freezer/prompt.json",
+      "qa": "qa/inventory/80-c-ultra-low-freezer",
+      "visual_review": "Viewed final alpha and browser comparison on light/dark. Four hinged inner doors, thick insulated outer door, gasket, heavy latch, control panel and compressor section retained. Mild gradient banding in SVG at inspection scale, overall comparable clean complete equipment silhouette.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/80-c-ultra-low-freezer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/80-c-ultra-low-freezer/inspection.webm"
+      }
     },
     "liquid-nitrogen-dewar": {
       "name": "liquid nitrogen dewar",
       "category": "31. Cryogenic storage and cold chain",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/liquid-nitrogen-dewar-bioart-transparent.png",
+      "svg": "svg/liquid-nitrogen-dewar-bioart-traced.svg",
+      "png_sha256": "86a1767d2e2c3c92a7d40fbdb1591d11d8f6717558fa69aa789444ae46b2e8ce",
+      "svg_sha256": "586172b3430197bd48d6a89931c0234d7dd5fe86c3e98016c3adcd571d36edad",
+      "original_sha256": "6f505cd6195492c19bcd1f0fabbbabe65ef246b8ecc2eccb5f1e51bca322e020",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        600,
+        324,
+        583,
+        307
+      ],
+      "svg_paths": 7611,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/liquid-nitrogen-dewar/prompt.json",
+      "qa": "qa/inventory/liquid-nitrogen-dewar",
+      "visual_review": "Viewed final alpha and browser PNG/SVG comparison. Complete portable vessel, neck plug, two open handles and protective base. True alpha outside and through handle spaces, no external glow. Mild trace gradient banding, overall clean comparable equipment silhouette.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/liquid-nitrogen-dewar/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/liquid-nitrogen-dewar/inspection.webm"
+      }
     },
     "cryogenic-storage-tank": {
       "name": "cryogenic storage tank",
       "category": "31. Cryogenic storage and cold chain",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cryogenic-storage-tank-bioart-transparent.png",
+      "svg": "svg/cryogenic-storage-tank-bioart-traced.svg",
+      "png_sha256": "d060e723561ab84d296b2c5ac88019e1c81ffea4366b1b8a728ef60bb01a9676",
+      "svg_sha256": "8092ffaf57ed1edbf7b97d43850e511e697762b205ba5ee9860e6ba9d6cbd33b",
+      "original_sha256": "f3006fcca2d0ee1ccb1b92475dcb9bc6aa38d9224a707634cbac54dad89ad43b",
+      "png_dimensions": [
+        1813,
+        1813
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        381,
+        259,
+        334,
+        291
+      ],
+      "svg_paths": 12796,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cryogenic-storage-tank/prompt.json",
+      "qa": "qa/inventory/cryogenic-storage-tank",
+      "visual_review": "Viewed final alpha and PNG/SVG browser comparison. Complete open insulated lid, four racks including partially raised three-box rack, attached control unit and wheeled base. Vector retains fittings and clean outline on both backgrounds, no clipping or external glow.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cryogenic-storage-tank/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cryogenic-storage-tank/inspection.webm"
+      }
     },
     "dry-ice-container": {
       "name": "dry-ice container",
       "category": "31. Cryogenic storage and cold chain",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/dry-ice-container-bioart-transparent.png",
+      "svg": "svg/dry-ice-container-bioart-traced.svg",
+      "png_sha256": "99f448daef5b127d4861b747481f522c2044771eb8fab9764a84ec2d49aa2c80",
+      "svg_sha256": "dcf0d069765af299be798a8e41098ef003d215aef0b839d451c5582fd64bcda2",
+      "original_sha256": "0ece3cf88c23c930d904858f541f9926f1203e1e898780db47902b8dbbb4b8cb",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        372,
+        563,
+        473,
+        563
+      ],
+      "svg_paths": 8161,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/dry-ice-container/prompt.json",
+      "qa": "qa/inventory/dry-ice-container",
+      "visual_review": "Viewed alpha and four-panel browser comparison. Complete reusable insulated chest and open lid, thick rim with vent notch, recessed handle and filled interior. SVG comparable with restrained trace banding, clean padding on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dry-ice-container/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dry-ice-container/inspection.webm"
+      }
     },
     "insulated-sample-shipping-box": {
       "name": "insulated sample shipping box",
       "category": "31. Cryogenic storage and cold chain",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/insulated-sample-shipping-box-bioart-transparent.png",
+      "svg": "svg/insulated-sample-shipping-box-bioart-traced.svg",
+      "png_sha256": "f80d9cbd376122d5b52cfd8628b8264eaffa4e2ac4e27d4ecc600f81dd2afa92",
+      "svg_sha256": "0de9076f935943584e49399ca85d4fde16ba01add8a936d0a8f3a50aaf27763b",
+      "original_sha256": "cadcc7771718338f102080915a23a732f9bf437af88d30db6c0e14a6a6df4866",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        273,
+        318,
+        263,
+        319
+      ],
+      "svg_paths": 22585,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/insulated-sample-shipping-box/prompt.json",
+      "qa": "qa/inventory/insulated-sample-shipping-box",
+      "visual_review": "Viewed generated alpha and browser PNG/SVG light-dark comparison. Four attached carton flaps, thick fitted foam liner, empty cavity and supported foam lid fully visible. Vector preserves shape and material distinction with clean padded edges.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/insulated-sample-shipping-box/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/insulated-sample-shipping-box/inspection.webm"
+      }
     },
     "cryogenic-vial-rack": {
       "name": "cryogenic vial rack",
       "category": "31. Cryogenic storage and cold chain",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cryogenic-vial-rack-bioart-transparent.png",
+      "svg": "svg/cryogenic-vial-rack-bioart-traced.svg",
+      "png_sha256": "e35c3f0237c70e1e543f41910fc1a40439ae2497d479a27a6276d74e8688af57",
+      "svg_sha256": "63cd585929c62226b287416995ffb9e10c03dd729a925c0390c12ca428b55154",
+      "original_sha256": "e81cd2ba0120f93450084e4b923b65dd5621b3cb824eaf422da118585e6e4463",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        582,
+        441,
+        609
+      ],
+      "svg_paths": 9612,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cryogenic-vial-rack/prompt.json",
+      "qa": "qa/inventory/cryogenic-vial-rack",
+      "visual_review": "Viewed final alpha and browser PNG/SVG comparison. Exactly 16 sockets in 4 by 4 grid, visible anti-rotation ribs, side grip recesses and navy feet. Whole shape and socket detail retained on both backgrounds; no external glow. Generic socket count and rib geometry.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cryogenic-vial-rack/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cryogenic-vial-rack/inspection.webm"
+      }
     },
     "lab-coat": {
       "name": "lab coat",
@@ -25018,97 +25494,545 @@
     "antibody-coated-bead": {
       "name": "antibody-coated bead",
       "category": "33. Frequently reused assay and reagent primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/antibody-coated-bead-bioart-transparent.png",
+      "svg": "svg/antibody-coated-bead-bioart-traced.svg",
+      "png_sha256": "e0614ffcddbf840f971989dc89e5a694ab0a610b34e43182da3a965b17c98504",
+      "svg_sha256": "e902fdd7c152fc4186556b0c88c007e2fdb799ce995b0e565b8a2237406a2548",
+      "original_sha256": "3333fc165d4ede243769f6d6c672ced21bd6e74a32f16777a3f919b5a0d0e332",
+      "png_dimensions": [
+        1778,
+        1778
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        254,
+        286,
+        284,
+        270
+      ],
+      "svg_paths": 13526,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/antibody-coated-bead/prompt.json",
+      "qa": "qa/inventory/antibody-coated-bead",
+      "visual_review": "Reviewed eight complete IgGs with corrected four-domain Fc stems and two blue plus two cyan domains per Fab. PNG/SVG retain full sphere, tips and clean transparent padding on light/dark. Density and linkers schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/antibody-coated-bead/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/antibody-coated-bead/inspection.webm"
+      }
     },
     "streptavidin-coated-bead": {
       "name": "streptavidin-coated bead",
       "category": "33. Frequently reused assay and reagent primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/streptavidin-coated-bead-bioart-transparent.png",
+      "svg": "svg/streptavidin-coated-bead-bioart-traced.svg",
+      "png_sha256": "d70131a020c7ab9504d2a62ec95b250bc79eb66f5f5db3aa50ecd71c58e3c48f",
+      "svg_sha256": "e06bcf19b9b9d9609d58b4effbe30b3c5a5da71702b7a0ad8d2ea3670df18795",
+      "original_sha256": "d28b89d865b166407152f44148a2394dbb3f64ee08faae5fa3d8dde537e20966",
+      "png_dimensions": [
+        1769,
+        1769
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        303,
+        270,
+        267,
+        281
+      ],
+      "svg_paths": 11578,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/streptavidin-coated-bead/prompt.json",
+      "qa": "qa/inventory/streptavidin-coated-bead",
+      "visual_review": "Reviewed eight compact four-lobed streptavidin assemblies on gold bead; shallow clefts and complete contours retained by editable SVG on both backgrounds. Real transparent padding clean; coating and pocket details schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/streptavidin-coated-bead/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/streptavidin-coated-bead/inspection.webm"
+      }
     },
     "magnetic-bead-cell-complex": {
       "name": "magnetic-bead-cell complex",
       "category": "33. Frequently reused assay and reagent primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/magnetic-bead-cell-complex-bioart-transparent.png",
+      "svg": "svg/magnetic-bead-cell-complex-bioart-traced.svg",
+      "png_sha256": "1f9346f826f8acd0759c55d474c30096e4b34a76894c8802a96f124ff1f2eab6",
+      "svg_sha256": "5bf7fd7caefcd94347000995f552205102d7d349ea4fc905b7f08cf9c9f8b1e2",
+      "original_sha256": "73bb6f230e851d77982939655a4203c1f2087f04e33695ed14e8f72cdaa08246",
+      "png_dimensions": [
+        1793,
+        1793
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        273,
+        283,
+        271,
+        301
+      ],
+      "svg_paths": 12539,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/magnetic-bead-cell-complex/prompt.json",
+      "qa": "qa/inventory/magnetic-bead-cell-complex",
+      "visual_review": "Reviewed all five external beads and antibody bridges; Fc points toward bead, Fab toward cell antigens. Complete cell, nucleus and bead silhouettes retained in SVG with clean transparent padding. Molecular domains and sizes simplified.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/magnetic-bead-cell-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/magnetic-bead-cell-complex/inspection.webm"
+      }
     },
     "fluorescent-calibration-bead": {
       "name": "fluorescent calibration bead",
       "category": "33. Frequently reused assay and reagent primitives",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "fluorescent-bead",
+      "alias_reason": "Visually reviewed existing dye-loaded polymer bead cutaway. Calibration is a certified intensity/use property, not a distinct unlabeled morphology; this existing fluorescent bead represents the single calibration-bead primitive without claiming an intensity value.",
+      "reference": "https://documents.thermofisher.com/TFS-Assets/LSG/manuals/mp05000.pdf",
+      "png": "png/fluorescent-bead-bioart-transparent.png",
+      "svg": "svg/fluorescent-bead-bioart-traced.svg",
+      "png_sha256": "7f6208344f177a4ea423880d6e3d2c5580d3a57460b910162da468fe05fa64b8",
+      "svg_sha256": "277a2e746683888f5a3e5e0061b980c5c625127130fd5f4a0c6c57c9d92a751c"
     },
     "capture-antibody-bound-to-plate": {
       "name": "capture antibody bound to plate",
       "category": "33. Frequently reused assay and reagent primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/capture-antibody-bound-to-plate-bioart-transparent.png",
+      "svg": "svg/capture-antibody-bound-to-plate-bioart-traced.svg",
+      "png_sha256": "14465e3652fcb63c1f1a59ed032909de24db2fb0129a56414850db88bf56de23",
+      "svg_sha256": "1be4328dfd8d604150bddc58de3d922b8b93f80854bf55b2ccd5a9c27edf3420",
+      "original_sha256": "716c2665ebd58a3726356d97d1a9b6abb88912944c79f4c7bd3a9fb1b23e6c4b",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        392,
+        300,
+        341,
+        315
+      ],
+      "svg_paths": 8412,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/capture-antibody-bound-to-plate/prompt.json",
+      "qa": "qa/inventory/capture-antibody-bound-to-plate",
+      "visual_review": "Reviewed complete IgG with four Fc domains, paired heavy/light Fab domains and immobilization linker on small plate patch. SVG preserves clean contours and alpha on light/dark. Oriented immobilization is schematic, not passive-adsorption orientation.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/capture-antibody-bound-to-plate/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/capture-antibody-bound-to-plate/inspection.webm"
+      }
     },
     "sandwich-immunoassay-complex": {
       "name": "sandwich immunoassay complex",
       "category": "33. Frequently reused assay and reagent primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/sandwich-immunoassay-complex-bioart-transparent.png",
+      "svg": "svg/sandwich-immunoassay-complex-bioart-traced.svg",
+      "png_sha256": "cdf660ac5088b2de594ea270254e017d1a748e866fdbfe7cd49ff8882995413c",
+      "svg_sha256": "234fb22491a35832bdfb4922bf3911c3e3e842384a61d323f1d670b624a9d9f5",
+      "original_sha256": "d3f24d196dcaa5ca180d03ee9b4b3f14575d79c2ff3ca232dd419ac21576977a",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        586,
+        331,
+        577,
+        331
+      ],
+      "svg_paths": 6906,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/sandwich-immunoassay-complex/prompt.json",
+      "qa": "qa/inventory/sandwich-immunoassay-complex",
+      "visual_review": "Reviewed two IgGs binding distinct sides of one antigen, detector Fc with green reporter, and plate attachment. Corrected heavy/light domain colors retained in SVG. Complete assembly and clean transparent padding on both backgrounds.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sandwich-immunoassay-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sandwich-immunoassay-complex/inspection.webm"
+      }
     },
     "lateral-flow-strip": {
       "name": "lateral-flow strip",
       "category": "33. Frequently reused assay and reagent primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/lateral-flow-strip-bioart-transparent.png",
+      "svg": "svg/lateral-flow-strip-bioart-traced.svg",
+      "png_sha256": "0e004792ad3529e5a139ef48ff5fe4456deb1ef3bd038215fcb79ecc24f0507b",
+      "svg_sha256": "a564df28b74147a6995215849257a3359086918848ab3c30991e7ea2c80f4ab3",
+      "original_sha256": "9d369dbf6b784891ae107f321b562d9a0943cf9c61d335f2814316b7c7764920",
+      "png_dimensions": [
+        2484,
+        2484
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        368,
+        820,
+        355,
+        799
+      ],
+      "svg_paths": 11537,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/lateral-flow-strip/prompt.json",
+      "qa": "qa/inventory/lateral-flow-strip",
+      "visual_review": "Reviewed complete backing and four overlapping pad regions with two illustrative magenta bands. SVG retains thin geometry and pad distinction on light/dark; transparent padding clean. Synthetic signal only, not a diagnostic result.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lateral-flow-strip/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lateral-flow-strip/inspection.webm"
+      }
     },
     "membrane-filter": {
       "name": "membrane filter",
       "category": "33. Frequently reused assay and reagent primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/membrane-filter-bioart-transparent.png",
+      "svg": "svg/membrane-filter-bioart-traced.svg",
+      "png_sha256": "b911ebbd3117562ab4081a089e5e38b84466704c89beb4eba74c2c7979b868ef",
+      "svg_sha256": "7b0b8446ae223d1d1b6af8ef984b9c38c2f666cf947f100cacdeda7a2862eb3e",
+      "original_sha256": "a0c7981c3d5ec5f92376539e08bade54a712803e7ba96a44d032c57d43c265f7",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        324,
+        664,
+        333,
+        589
+      ],
+      "svg_paths": 4953,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/membrane-filter/prompt.json",
+      "qa": "qa/inventory/membrane-filter",
+      "visual_review": "Reviewed complete thin disc, curled edge and symbolic pore field. Smooth pale membrane and silhouette retained in SVG with clean alpha on light/dark. Pores enlarged for illustration, not a pore-size specification.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/membrane-filter/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/membrane-filter/inspection.webm"
+      }
     },
     "porous-membrane-insert": {
       "name": "porous membrane insert",
       "category": "33. Frequently reused assay and reagent primitives",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "transwell-insert",
+      "alias_reason": "Visually reviewed existing suspended cylindrical insert with support tabs and porous bottom membrane. Transwell is the same permeable membrane insert experimental form; no second geometry is specified by this inventory name.",
+      "reference": "https://www.corning.com/catalog/cls/documents/protocols/Transwell_InstructionManual.pdf",
+      "png": "png/transwell-insert-bioart-transparent.png",
+      "svg": "svg/transwell-insert-bioart-traced.svg",
+      "png_sha256": "fe22fc2a686b6a3f01d992c97390b054dc0a26a67cfc78eb80c94fcc4b0e75c6",
+      "svg_sha256": "0c638976a0207cb0510138e498d5342bd79c840402294190559dc1522ba3479a"
     },
     "hydrogel-droplet": {
       "name": "hydrogel droplet",
       "category": "33. Frequently reused assay and reagent primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/hydrogel-droplet-bioart-transparent.png",
+      "svg": "svg/hydrogel-droplet-bioart-traced.svg",
+      "png_sha256": "74e3d2447f2dfb045ad4b2d8ea50f18c336328670b60637bebc592992ea8a132",
+      "svg_sha256": "1bef58573487f3074d4e6517ba38ffdbd78b8319543a1c3baa8775b6a4eb3e46",
+      "original_sha256": "66a0ed1cef45957981c305325464173750c666451b404686dfb55afc2845ca6d",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        316,
+        275,
+        305
+      ],
+      "svg_paths": 16456,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/hydrogel-droplet/prompt.json",
+      "qa": "qa/inventory/hydrogel-droplet",
+      "visual_review": "Reviewed hydrated sphere and crosslinked polymer strands at front and rear depths. SVG retains the network and complete boundary with clean transparent padding on both backgrounds; molecular network schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hydrogel-droplet/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hydrogel-droplet/inspection.webm"
+      }
     },
     "hydrogel-scaffold": {
       "name": "hydrogel scaffold",
       "category": "33. Frequently reused assay and reagent primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/hydrogel-scaffold-bioart-transparent.png",
+      "svg": "svg/hydrogel-scaffold-bioart-traced.svg",
+      "png_sha256": "bfe68a81f76bc05eecf54dd6e20374dfcaecd7d3f4dfca9da58794da1d883458",
+      "svg_sha256": "7e8f9f601c0e67dde62a5cdb10a1c45915ff606a1103fab2a0b46b97de59943f",
+      "original_sha256": "23f6453ccf44496d246655878a6dcc22ea2a412893c4fae0992c1925066e1cd2",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        587,
+        363,
+        581
+      ],
+      "svg_paths": 20179,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/hydrogel-scaffold/prompt.json",
+      "qa": "qa/inventory/hydrogel-scaffold",
+      "visual_review": "Reviewed complete cutaway block, smooth gel faces and crosslinked mesh at several depths. Editable SVG preserves network and alpha on light/dark. Mesh and formulation schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hydrogel-scaffold/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hydrogel-scaffold/inspection.webm"
+      }
     },
     "extracellular-matrix-gel-dome": {
       "name": "extracellular matrix gel dome",
       "category": "33. Frequently reused assay and reagent primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/extracellular-matrix-gel-dome-bioart-transparent.png",
+      "svg": "svg/extracellular-matrix-gel-dome-bioart-traced.svg",
+      "png_sha256": "2738984f50cbf793aa0a1b98c86f65a4257e2f5a6b3a9f21e9e04b42a7f8f39d",
+      "svg_sha256": "babf7547622d464ef9d68366a9bad5b7e39e26e79a039a3492fa671743d0ca7b",
+      "original_sha256": "0d5a257aeec9337d43c079a2212d04d58152f9c2669b10d91682060412b9e3fc",
+      "png_dimensions": [
+        2340,
+        2340
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        334,
+        699,
+        350,
+        710
+      ],
+      "svg_paths": 19082,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/extracellular-matrix-gel-dome/prompt.json",
+      "qa": "qa/inventory/extracellular-matrix-gel-dome",
+      "visual_review": "Reviewed low dome with complete elliptical base and contained fine matrix network. PNG/SVG retain smooth pink fill, strand detail and clean alpha on both backgrounds. Protein mesh schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/extracellular-matrix-gel-dome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/extracellular-matrix-gel-dome/inspection.webm"
+      }
     },
     "barcode-oligonucleotide-bead": {
       "name": "barcode oligonucleotide bead",
       "category": "33. Frequently reused assay and reagent primitives",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "barcoded-capture-bead",
+      "alias_reason": "Both checklist names describe the same unlabeled physical archetype: one spherical capture bead carrying attached barcoded oligonucleotide strands. The reviewed capture-bead illustration already shows those strands and a shared symbolic barcode motif; no distinct morphology or topology is specified for the assay-component entry.",
+      "reference": "https://mccarrolllab.org/dropseq/",
+      "png": "png/barcoded-capture-bead-bioart-transparent.png",
+      "svg": "svg/barcoded-capture-bead-bioart-traced.svg",
+      "png_sha256": "833440dbf8c9f15be577a9902bc0f30e24986a0be8acd9b6c2541ff6b17724e8",
+      "svg_sha256": "5626d078035268c330ab6bf3a5beb2428e3ff43e130d637306015172ef05c64f"
     },
     "dna-barcoded-antibody": {
       "name": "DNA-barcoded antibody",
       "category": "33. Frequently reused assay and reagent primitives",
-      "status": "pending"
+      "status": "complete",
+      "alias_of": "cell-hashing-antibody-tag-complex",
+      "alias_reason": "Both checklist entries specify an antibody conjugated to a barcode-bearing DNA oligonucleotide. The reviewed hashing-antibody illustration shows exactly this generic topology; antigen specificity, barcode sequence and assay role do not provide another visible unlabeled morphology.",
+      "reference": "https://link.springer.com/article/10.1186/s13059-018-1603-1",
+      "png": "png/cell-hashing-antibody-tag-complex-bioart-transparent.png",
+      "svg": "svg/cell-hashing-antibody-tag-complex-bioart-traced.svg",
+      "png_sha256": "127a54b06b7007b6510c61241212535c832f2890b6f097d0bc7dd5f79fc539c6",
+      "svg_sha256": "031b7b22b644027cdf026be5f1cf9f1cb54147d40636de2ce361faa302e7653c"
     },
     "fluorescent-reporter-protein": {
       "name": "fluorescent reporter protein",
       "category": "33. Frequently reused assay and reagent primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/fluorescent-reporter-protein-bioart-transparent.png",
+      "svg": "svg/fluorescent-reporter-protein-bioart-traced.svg",
+      "png_sha256": "d82cd39dccbd00750950006c29cee56b6218e6e75c8e99ab6eda754040d70c69",
+      "svg_sha256": "6cc8971f161dbd8c73509ded35a3318e8b73d2d7e5e603973b524c3bb1cae42d",
+      "original_sha256": "0b576656144e01188b4633fd616fc20d4e0c203a83893438e0a849dde2a53e92",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        563,
+        346,
+        577,
+        307
+      ],
+      "svg_paths": 14696,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/fluorescent-reporter-protein/prompt.json",
+      "qa": "qa/inventory/fluorescent-reporter-protein",
+      "visual_review": "Reviewed green barrel-surface cutaway with coaxial helix and integrated yellow chromophore symbol. SVG retains recognizable fold shorthand, smooth depth and clean alpha on light/dark. Surface ridges and chromophore are schematic, not exact strand count or chemistry.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fluorescent-reporter-protein/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fluorescent-reporter-protein/inspection.webm"
+      }
     },
     "luciferase-reporter-protein": {
       "name": "luciferase reporter protein",
       "category": "33. Frequently reused assay and reagent primitives",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/luciferase-reporter-protein-bioart-transparent.png",
+      "svg": "svg/luciferase-reporter-protein-bioart-traced.svg",
+      "png_sha256": "5b2365ae4637a756bb387ec8faf29e56d23d8320e37f5e79156b962530cd6ee4",
+      "svg_sha256": "5d5b504f373115ad08bb3fb7fda42306611320c192a76a9896c88f5afbe7533a",
+      "original_sha256": "fff24e0870edb1c4a1cf109cb647b0d3e7d29994df1d496487636def2008c8a5",
+      "png_dimensions": [
+        1965,
+        1965
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        281,
+        445,
+        295,
+        455
+      ],
+      "svg_paths": 26396,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/luciferase-reporter-protein/prompt.json",
+      "qa": "qa/inventory/luciferase-reporter-protein",
+      "visual_review": "Reviewed unequal connected gold/orange domains and clear cleft. SVG preserves full protein silhouette, hinge, surface depth and clean alpha on light/dark. Representative firefly-luciferase domain architecture, not exact coordinates.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/luciferase-reporter-protein/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/luciferase-reporter-protein/inspection.webm"
+      }
     },
     "straight-microfluidic-channel": {
       "name": "straight microfluidic channel",
       "category": "34. Microfluidics and engineered biological systems",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/straight-microfluidic-channel-bioart-transparent.png",
+      "svg": "svg/straight-microfluidic-channel-bioart-traced.svg",
+      "png_sha256": "9bb0f9acc88cbeed79c68e4f9f4736aa44881bc6681f694bca70ad0ac55df805",
+      "svg_sha256": "ba22e52cb3cb75b90ddf98942ff030bcf7dff9b04ac4b97f9ff47407138ae98c",
+      "original_sha256": "a28b36af18148b897b529f0e9d27ca282af23ed1bd2a6645088791d08fdfa2e3",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        563,
+        329,
+        579
+      ],
+      "svg_paths": 7202,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/straight-microfluidic-channel/prompt.json",
+      "qa": "qa/inventory/straight-microfluidic-channel",
+      "visual_review": "Reviewed PNG and editable SVG on light and dark backgrounds: complete bonded slab, two reservoir ports connected by one continuous straight channel; transparent exterior and generous padding preserved. Minor gradient banding remains comparable at asset scale.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/straight-microfluidic-channel/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/straight-microfluidic-channel/inspection.webm"
+      }
     },
     "microfluidic-droplet-generator": {
       "name": "microfluidic droplet generator",
       "category": "34. Microfluidics and engineered biological systems",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/microfluidic-droplet-generator-bioart-transparent.png",
+      "svg": "svg/microfluidic-droplet-generator-bioart-traced.svg",
+      "png_sha256": "69e97fe616b4043e03adc3a83c10446f39595684986691323d6a5460ad4522b6",
+      "svg_sha256": "40453ae7d6a50ee9740d1b4ef8a74016ac95d6a0cde460020460637479445e81",
+      "original_sha256": "4e14abd668a6acbd71fa46ac42cbeb2b72818c39ec22e72be5e1f0811fce3196",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        602,
+        343,
+        587
+      ],
+      "svg_paths": 8870,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/microfluidic-droplet-generator/prompt.json",
+      "qa": "qa/inventory/microfluidic-droplet-generator",
+      "visual_review": "Reviewed PNG and editable SVG on light and dark backgrounds: one aqueous and two opposing carrier channels meet at cross junction, followed by four separated magenta droplets and one outlet. Four complete ports, filled substrate and transparent padded exterior preserved. Droplet size and fluids schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microfluidic-droplet-generator/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microfluidic-droplet-generator/inspection.webm"
+      }
     },
     "y-junction-microfluidic-chip": {
       "name": "Y-junction microfluidic chip",
       "category": "34. Microfluidics and engineered biological systems",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/y-junction-microfluidic-chip-bioart-transparent.png",
+      "svg": "svg/y-junction-microfluidic-chip-bioart-traced.svg",
+      "png_sha256": "001bf1a54711e09eef33cb00d646acd9b892c32ee12c61eca85fee8c4ebff15d",
+      "svg_sha256": "e5f4ec13f40d62d70ad9b609a29a3e869c61540245cf05a30433809e35cffffb",
+      "original_sha256": "ea24b477a92ea1e1e35961e9220713920779bf5e8b4a605dac5a86cc5d0902aa",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        594,
+        321,
+        601
+      ],
+      "svg_paths": 6580,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/y-junction-microfluidic-chip/prompt.json",
+      "qa": "qa/inventory/y-junction-microfluidic-chip",
+      "visual_review": "Viewed PNG and SVG on light and dark backgrounds: two separate inlet branches merge at one Y into one outlet, three complete ports and slab edges preserved. Transparent exterior and generous padding; restrained trace banding comparable at asset scale.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/y-junction-microfluidic-chip/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/y-junction-microfluidic-chip/inspection.webm"
+      }
     },
     "perfusion-chamber": {
       "name": "perfusion chamber",
@@ -25178,92 +26102,596 @@
     "mouse-embryonic-stem-cell-colony": {
       "name": "mouse embryonic stem-cell colony",
       "category": "36. Additional model systems",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/mouse-embryonic-stem-cell-colony-bioart-transparent.png",
+      "svg": "svg/mouse-embryonic-stem-cell-colony-bioart-traced.svg",
+      "png_sha256": "f08f2edefd15a86333061ea8197e4f18e75a418b2be5514d8aeeb96a8de6d161",
+      "svg_sha256": "8861ad59182a963e98bd40bd0283f3f7fcd7158530ddfc8bfbf73cad3aef2059",
+      "original_sha256": "fab0521a5ddbb9d9f2f184839e0664f957e5bb706fda5ecf54541dcdf081c465",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        321,
+        586,
+        308,
+        603
+      ],
+      "svg_paths": 22399,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/mouse-embryonic-stem-cell-colony/prompt.json",
+      "qa": "qa/inventory/mouse-embryonic-stem-cell-colony",
+      "visual_review": "Viewed final alpha PNG and four-panel browser comparison. Compact domed colony with tightly touching lavender cells, large violet nuclei, complete flattened base; SVG retains smooth shape and boundaries on light and dark backgrounds with no external glow. Cell number and internal layering schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mouse-embryonic-stem-cell-colony/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mouse-embryonic-stem-cell-colony/inspection.webm"
+      }
     },
     "human-ipsc-colony": {
       "name": "human iPSC colony",
       "category": "36. Additional model systems",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/human-ipsc-colony-bioart-transparent.png",
+      "svg": "svg/human-ipsc-colony-bioart-traced.svg",
+      "png_sha256": "c613a170779768dc56fb31f3d296050853223d75d21d3c29506b512666df2eeb",
+      "svg_sha256": "c50f6ed852c3ee9766d3d2b000e3ed3b6ccee18fb7584f1e1b6ae8d5ea61a083",
+      "original_sha256": "6f48c332b5df5f2b6f61914b39e5d1012b959059d1cb680d62fc8699ce0bcb74",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        357,
+        572,
+        354,
+        615
+      ],
+      "svg_paths": 28922,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/human-ipsc-colony/prompt.json",
+      "qa": "qa/inventory/human-ipsc-colony",
+      "visual_review": "Viewed final alpha and four-panel browser comparison. Flat compact one-cell-thick colony with closely touching polygonal cells and large violet nuclei; complete perimeter and clean background on both surfaces. SVG visually comparable to PNG. Representative primed culture, not all iPSC states.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/human-ipsc-colony/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/human-ipsc-colony/inspection.webm"
+      }
     },
     "intestinal-organoid": {
       "name": "intestinal organoid",
       "category": "36. Additional model systems",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/intestinal-organoid-bioart-transparent.png",
+      "svg": "svg/intestinal-organoid-bioart-traced.svg",
+      "png_sha256": "bd3111ebaf4494bc2a62a365954d248bf2ec8b38448f7251af6456a5eccc76b4",
+      "svg_sha256": "16590e6d37188f0f10408fbc0a9270b866243b4fbaf7acc112c7f3bd91096b7b",
+      "original_sha256": "85793ccacf43ef24c4d4de77e8e48a8aeec58902930a130a534a10bb0781961c",
+      "png_dimensions": [
+        1962,
+        1962
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        299,
+        441,
+        298,
+        420
+      ],
+      "svg_paths": 16257,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/intestinal-organoid/prompt.json",
+      "qa": "qa/inventory/intestinal-organoid",
+      "visual_review": "Viewed final alpha and browser PNG/SVG light-dark comparison. Three outward crypt buds share a continuous central lumen; apical brush border faces inward, Paneth-like granules at tips, violet basal nuclei. Complete padded outline, no external background; vector retains epithelial detail and broad gradients.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/intestinal-organoid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/intestinal-organoid/inspection.webm"
+      }
     },
     "cerebral-organoid": {
       "name": "cerebral organoid",
       "category": "36. Additional model systems",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cerebral-organoid-bioart-transparent.png",
+      "svg": "svg/cerebral-organoid-bioart-traced.svg",
+      "png_sha256": "c90e34d18c0f6bab832c4a89fe4411719adbf0e86b6b523128e83a5b0e9324af",
+      "svg_sha256": "6ed33894101812d7e2329f3fe4c5df13cb88c1b1bba0106739025a5a18b3263d",
+      "original_sha256": "26ec8fde69a98159d427575c4e73a4fdc9fb8c07021884a50478849aa365a0db",
+      "png_dimensions": [
+        1847,
+        1847
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        264,
+        327,
+        308,
+        354
+      ],
+      "svg_paths": 21396,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cerebral-organoid/prompt.json",
+      "qa": "qa/inventory/cerebral-organoid",
+      "visual_review": "Viewed alpha and four-panel browser comparison. Four separate pale lumens with elongated radial neural progenitor zones and outer pink tissue inside lobulated aggregate. Smooth vector shape and internal rosettes retained on both backgrounds; no extraneous marks visible. Regional anatomy and cell counts schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cerebral-organoid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cerebral-organoid/inspection.webm"
+      }
     },
     "tumor-organoid": {
       "name": "tumor organoid",
       "category": "36. Additional model systems",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/tumor-organoid-bioart-transparent.png",
+      "svg": "svg/tumor-organoid-bioart-traced.svg",
+      "png_sha256": "e26ba581a49fc862ddcfccc2de8447048f2ad58a64303af9c216dcef4c3f447d",
+      "svg_sha256": "bd7525d48db3754e4c5b0fdaae180942f021e9157d817ccfc6d181f964ebd768",
+      "original_sha256": "8a4187ddd2f61b82bc0a0a082c1615b0e39e033d285634618b2d963cceebe2c1",
+      "png_dimensions": [
+        1841,
+        1841
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        328,
+        339,
+        279,
+        362
+      ],
+      "svg_paths": 22260,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/tumor-organoid/prompt.json",
+      "qa": "qa/inventory/tumor-organoid",
+      "visual_review": "Viewed final alpha and PNG/SVG comparison on light and dark backgrounds. Three irregular unequal gland-like lumens in compact lobulated aggregate, uneven cellular walls and varied violet nuclei. Smooth shading and complete perimeter preserved in SVG; representative schematic, not diagnostic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tumor-organoid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tumor-organoid/inspection.webm"
+      }
     },
     "airway-organoid": {
       "name": "airway organoid",
       "category": "36. Additional model systems",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/airway-organoid-bioart-transparent.png",
+      "svg": "svg/airway-organoid-bioart-traced.svg",
+      "png_sha256": "85b1d32ac3360b5d84761dfdc69a4e2cb0588b06e247a592d0fb31fd1a7c7cac",
+      "svg_sha256": "5814ef4f0936635628bac6e27a08845e57aaa6bf8a255c259f4eafa0529b0de2",
+      "original_sha256": "84623853bfe53b92df3bf123fef37e659e31ef8dca61a6d019c7d3d1c98fcfc2",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        268,
+        277,
+        251
+      ],
+      "svg_paths": 17840,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/airway-organoid/prompt.json",
+      "qa": "qa/inventory/airway-organoid",
+      "visual_review": "Viewed final alpha and four-panel light-dark comparison. Hollow airway cyst section with all cilia inward, four nonciliated secretory cells each retaining basal violet nucleus and apical gold granules, smaller basal cells on outer side. Transparent lumen is intentional section view in final metadata. Complete outline with padded margins and comparable SVG detail.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/airway-organoid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/airway-organoid/inspection.webm"
+      }
     },
     "kidney-organoid": {
       "name": "kidney organoid",
       "category": "36. Additional model systems",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/kidney-organoid-bioart-transparent.png",
+      "svg": "svg/kidney-organoid-bioart-traced.svg",
+      "png_sha256": "2e6fa5ccd719522864ab6aaa60cde4e524c9672243b092d30d7b39481a2b08c3",
+      "svg_sha256": "c3465dc2f2793666ade0a7ecaa5336e9f6921747bb3e01b74398f5e6c9661b6a",
+      "original_sha256": "8bbc2a778daf5cc6c61d42e6fb62080782b60229215291571213bbe2c0a9e3d3",
+      "png_dimensions": [
+        1825,
+        1825
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        261,
+        340,
+        262,
+        340
+      ],
+      "svg_paths": 31019,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/kidney-organoid/prompt.json",
+      "qa": "qa/inventory/kidney-organoid",
+      "visual_review": "Viewed final alpha and PNG/SVG browser comparison. Three violet immature glomerular-like clusters with adjacent tubules, additional teal/coral tubular profiles in peach stroma. Complete tissue outline, clean padding and preserved detail on light/dark backgrounds. No mature vascular function implied.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/kidney-organoid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/kidney-organoid/inspection.webm"
+      }
     },
     "cardiac-organoid": {
       "name": "cardiac organoid",
       "category": "36. Additional model systems",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/cardiac-organoid-bioart-transparent.png",
+      "svg": "svg/cardiac-organoid-bioart-traced.svg",
+      "png_sha256": "6b84d50f4227f3919c60fd050176a12a8b8ffd3ee9f9ef51afd288e2785521dc",
+      "svg_sha256": "c8eac83cabaa3c09f36d3d26b6c963c8c5ab793345b0a104ae5a38fa3c13a673",
+      "original_sha256": "fbe6006730589b31bf64f549646ee5efb200e021c1f968aeaa13b34e34ab212b",
+      "png_dimensions": [
+        1924,
+        1924
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        349,
+        406,
+        327,
+        428
+      ],
+      "svg_paths": 19295,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/cardiac-organoid/prompt.json",
+      "qa": "qa/inventory/cardiac-organoid",
+      "visual_review": "Viewed final alpha and browser light-dark PNG/SVG comparison. Single cavity, thin teal endocardial-like lining and thick coral cellular wall with violet nuclei. Complete padded outline and smooth vector shading; muscle markings schematic, no adult chamber anatomy implied.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cardiac-organoid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cardiac-organoid/inspection.webm"
+      }
     },
     "precision-cut-tissue-slice": {
       "name": "precision-cut tissue slice",
       "category": "36. Additional model systems",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/precision-cut-tissue-slice-bioart-transparent.png",
+      "svg": "svg/precision-cut-tissue-slice-bioart-traced.svg",
+      "png_sha256": "48473b95aa5e11a25deb1f805fede753542ff8c69704ab7b6fc9cf714bf0feff",
+      "svg_sha256": "14703b5fec6d6745afff664ec014eb4c084e53121dbb346099ed72840fc02ed9",
+      "original_sha256": "231860d61615126085e18284392ca10c6b60db51a905e7643d6aee0fa4df0644",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        307,
+        600,
+        341,
+        563
+      ],
+      "svg_paths": 18112,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/precision-cut-tissue-slice/prompt.json",
+      "qa": "qa/inventory/precision-cut-tissue-slice",
+      "visual_review": "Viewed final alpha and four-panel PNG/SVG comparison. Thin oblique tissue disk with intact complete edge, multiple visible cellular layers, hepatocyte-like cells and narrow sinusoidal spaces. Smooth color and cellular detail retained, no external glow on either background. Dimensions and counts schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/precision-cut-tissue-slice/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/precision-cut-tissue-slice/inspection.webm"
+      }
     },
     "patient-derived-xenograft-tumor-fragment": {
       "name": "patient-derived xenograft tumor fragment",
       "category": "36. Additional model systems",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/patient-derived-xenograft-tumor-fragment-bioart-transparent.png",
+      "svg": "svg/patient-derived-xenograft-tumor-fragment-bioart-traced.svg",
+      "png_sha256": "8e1e82ab74486152fa9113e2381080ad5ddbeca05840d00ef398123996c5b6df",
+      "svg_sha256": "be421ab4adfd85a609db2476dbe5ebb0db56d96e040f20225d3d9a07b41fc9d3",
+      "original_sha256": "fe2506d3cee8c83ce6cd90338f815ab0b3a8b13d97db6eb94f850e0309b088cc",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        348,
+        582,
+        321,
+        595
+      ],
+      "svg_paths": 19812,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/patient-derived-xenograft-tumor-fragment/prompt.json",
+      "qa": "qa/inventory/patient-derived-xenograft-tumor-fragment",
+      "visual_review": "Viewed alpha and browser PNG/SVG comparison. Irregular cuboidal excised fragment with three cut faces, violet tumor-cell nests and pale stromal bands. Complete shape and smooth shading preserved on both backgrounds, no external glow. PDX identity is contextual, tissue representation schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/patient-derived-xenograft-tumor-fragment/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/patient-derived-xenograft-tumor-fragment/inspection.webm"
+      }
     },
     "car-receptor": {
       "name": "CAR receptor",
       "category": "38. Gene delivery and cell engineering",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/car-receptor-bioart-transparent.png",
+      "svg": "svg/car-receptor-bioart-traced.svg",
+      "png_sha256": "11d32d6e2f0ad0bb322302437cbe292b025643042b78d8b14254a2ca099aca86",
+      "svg_sha256": "a1356ab3ffe894378ea712c3cebdf1ba66bbe9c4b317ad834d21575d509f65e1",
+      "original_sha256": "ed810eaaed4c8a20fb4efd9f2851e884b863c49c53a0a7143fc9c5ae473b588f",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        628,
+        325,
+        721,
+        339
+      ],
+      "svg_paths": 5149,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/car-receptor/prompt.json",
+      "qa": "qa/inventory/car-receptor",
+      "visual_review": "Viewed source and four-panel comparison. Paired variable domains joined by linker, hinge, one TM helix and continuous gold-violet cytoplasmic tail with three paired motifs retained. Complete endpoints and clean alpha; trace comparable. All folds and motif marks schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/car-receptor/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/car-receptor/inspection.webm"
+      }
     },
     "car-t-cell": {
       "name": "CAR-T cell",
       "category": "38. Gene delivery and cell engineering",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/car-t-cell-bioart-transparent.png",
+      "svg": "svg/car-t-cell-bioart-traced.svg",
+      "png_sha256": "c1a6c1cf7fc6ec809fca003fc6ea2f0c92c4714bf771afe01053c11bfaadc2b6",
+      "svg_sha256": "b109ae3d03b6599b9cf3b84427380ddece564fa9fee99b9cfb215796aad379b4",
+      "original_sha256": "f1d5b47d45555b47ca23399ca7ff89ad3fec47b2659c8c5acd6e1f43f438910e",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        272,
+        259,
+        286,
+        251
+      ],
+      "svg_paths": 13722,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/car-t-cell/prompt.json",
+      "qa": "qa/inventory/car-t-cell",
+      "visual_review": "Viewed original and four-panel render: six membrane-spanning CARs with outward paired blue-cyan heads and inward signaling tails, large nucleus and small organelles. Entire heads and loops visible. Clean alpha; editable trace retains topology with minor nucleus gradient banding. Receptor number and motif marks schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/car-t-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/car-t-cell/inspection.webm"
+      }
     },
     "aav-particle": {
       "name": "AAV particle",
       "category": "38. Gene delivery and cell engineering",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/aav-particle-bioart-transparent.png",
+      "svg": "svg/aav-particle-bioart-traced.svg",
+      "png_sha256": "85259a939d8ef9fc6a26cddc145808f87520bd608794ffb873423c3b377f951f",
+      "svg_sha256": "13a9de6ebcf5cf83bf79828f4ab654f6a18365df3e144f13e9f250e9f4aa7976",
+      "original_sha256": "12b2d5660ddc7f806b775798c09d754c095f7f4acba6fab55ff5bdf487722064",
+      "png_dimensions": [
+        1756,
+        1756
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        251,
+        268,
+        283,
+        251
+      ],
+      "svg_paths": 29058,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/aav-particle/prompt.json",
+      "qa": "qa/inventory/aav-particle",
+      "visual_review": "Reviewed PNG and editable SVG on light and dark backgrounds. Complete near-spherical non-enveloped capsid with rounded protein relief and single-stranded genome cutaway; broad depth and crisp outline retained. Capsid subunit arrangement is schematic, not an exact structural model.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/aav-particle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/aav-particle/inspection.webm"
+      }
     },
     "electroporation-cuvette": {
       "name": "electroporation cuvette",
       "category": "38. Gene delivery and cell engineering",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/electroporation-cuvette-bioart-transparent.png",
+      "svg": "svg/electroporation-cuvette-bioart-traced.svg",
+      "png_sha256": "c9c914c1423d6c381ac342176a4040f087e86c6125052749db6c0b54b1f2ad1c",
+      "svg_sha256": "64e7479dadce9a9005f5b1cf56599a64b86cd5332a41a396a188700943a7de24",
+      "original_sha256": "0811e3a0f50d932e9f813ed88dcffc36ef348e9ddb0d9f2bd77593c5da126946",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        684,
+        323,
+        631,
+        349
+      ],
+      "svg_paths": 6712,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/electroporation-cuvette/prompt-v2.json",
+      "qa": "qa/inventory/electroporation-cuvette",
+      "visual_review": "Version 2 reviewed on light and dark backgrounds: solid pale-blue plastic shading fixes internal tracing holes; opposing plate electrodes, cyan sample, complete cap and feet retained in editable SVG. Transparent padding clean.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/electroporation-cuvette/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/electroporation-cuvette/inspection.webm"
+      }
     },
     "electroporator-nucleofector": {
       "name": "electroporator / nucleofector",
       "category": "38. Gene delivery and cell engineering",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/electroporator-nucleofector-bioart-transparent.png",
+      "svg": "svg/electroporator-nucleofector-bioart-traced.svg",
+      "png_sha256": "8ba0f7345cacb64b98a6d8fe5585295b22aca57e3c814f4edc874d7b0ee993ea",
+      "svg_sha256": "df1491661244816e6db1756adfadca1754a527a4da9eda2917b3069de8b1ce15",
+      "original_sha256": "e20b540e59808ab8670158f6ebbe98d8576481c7651b1950e3c5f6a67d28dcb6",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        332,
+        586,
+        399,
+        563
+      ],
+      "svg_paths": 8540,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/electroporator-nucleofector/prompt.json",
+      "qa": "qa/inventory/electroporator-nucleofector",
+      "visual_review": "Reviewed complete instrument and SVG on both backgrounds. Open safety lid, recessed cuvette, display, three controls and feet retained; real alpha clean. Generic single-cuvette architecture rather than a specific branded model.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/electroporator-nucleofector/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/electroporator-nucleofector/inspection.webm"
+      }
     },
     "dna-lipid-transfection-complex": {
       "name": "DNA-lipid transfection complex",
       "category": "38. Gene delivery and cell engineering",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/dna-lipid-transfection-complex-bioart-transparent.png",
+      "svg": "svg/dna-lipid-transfection-complex-bioart-traced.svg",
+      "png_sha256": "0c7a72ce0a8177f7cd20a519e0f648f04d94fdbfb190b3138c4e3182a1cae0c4",
+      "svg_sha256": "22d4f5224fc7c52a50eff462fe5db358a37830ef66d87a96b0dea8f9cc4a419a",
+      "original_sha256": "20c26650863be8bce1ccd8efd7dd69a809581629b27165474e16c4baf160408f",
+      "png_dimensions": [
+        1836,
+        1836
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        262,
+        327,
+        263,
+        362
+      ],
+      "svg_paths": 30781,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/dna-lipid-transfection-complex/prompt.json",
+      "qa": "qa/inventory/dna-lipid-transfection-complex",
+      "visual_review": "Reviewed both light and dark PNG/SVG renders. Three nested lipid layers and interlamellar violet DNA remain clear, complete particle and transparent padding preserved. Representative lamellar lipoplex with schematic tail and molecule counts.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-lipid-transfection-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-lipid-transfection-complex/inspection.webm"
+      }
     },
     "mrna-lipid-nanoparticle-transfection-complex": {
       "name": "mRNA-lipid nanoparticle transfection complex",
       "category": "38. Gene delivery and cell engineering",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/mrna-lipid-nanoparticle-transfection-complex-bioart-transparent.png",
+      "svg": "svg/mrna-lipid-nanoparticle-transfection-complex-bioart-traced.svg",
+      "png_sha256": "f78e8abb37ed0405039ea0ac7cdd4fb85993b48e84008c3f18ded2a2a62db2e6",
+      "svg_sha256": "56fef7f7cd4ee6259bdcdb4e1f67a9b33c9536280761ff0c9f6e04dd32604374",
+      "original_sha256": "bde5f2f2f46eb14df615ade1ecf5a9901ad80f3111453be663f6b8d871856c03",
+      "png_dimensions": [
+        1778,
+        1778
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "transparent_margins_px": [
+        254,
+        284,
+        268,
+        270
+      ],
+      "svg_paths": 28982,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/mrna-lipid-nanoparticle-transfection-complex/prompt.json",
+      "qa": "qa/inventory/mrna-lipid-nanoparticle-transfection-complex",
+      "visual_review": "Reviewed PNG and editable SVG on light/dark backgrounds. Dense mixed lipid core, three single-stranded RNA pockets and four complete PEG tethers retained; clean alpha padding. Internal organization and stoichiometry are schematic.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mrna-lipid-nanoparticle-transfection-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mrna-lipid-nanoparticle-transfection-complex/inspection.webm"
+      }
     },
     "transposase-dna-complex": {
       "name": "transposase-DNA complex",
       "category": "38. Gene delivery and cell engineering",
-      "status": "pending"
+      "status": "complete",
+      "png": "png/transposase-dna-complex-bioart-transparent.png",
+      "svg": "svg/transposase-dna-complex-bioart-traced.svg",
+      "png_sha256": "284624c104d3c1a8386bd4b498fdfa2ac0fda3d43ebfa64a73ea33214dec58a6",
+      "svg_sha256": "932a1b257d5c1a53437c5c6f600e25dd36f50154ff9d15d57790574c4e10ac4e",
+      "original_sha256": "651ce985edca8f857a0b60ac3650c83ba96782669e6acbd343fef13a9a44206d",
+      "png_dimensions": [
+        2150,
+        2150
+      ],
+      "alpha_extrema": [
+        0,
+        254
+      ],
+      "transparent_margins_px": [
+        341,
+        581,
+        336,
+        579
+      ],
+      "svg_paths": 19846,
+      "embedded_rasters": 0,
+      "prompt": "originals/inventory/transposase-dna-complex/prompt.json",
+      "qa": "qa/inventory/transposase-dna-complex",
+      "visual_review": "Reviewed two-color dimer and two DNA fragments with cross-contact lobes on light/dark renders. Editable SVG preserves lobes, helices, full termini outside and transparent padding. Inner DNA termini are occluded; schematic architecture, not an atomic mechanism.",
+      "qa_urls": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/transposase-dna-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/transposase-dna-complex/inspection.webm"
+      }
     },
     "cell-pellet-in-tube": {
       "name": "cell pellet in tube",

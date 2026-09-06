@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a kidney organoid, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Representative immature human pluripotent-stem-cell kidney organoid, one small low rounded tissue mound with front cutaway. Pale peach stromal tissue contains several separate developing nephron-like units: three small dense violet podocyte/glomerular-like cell clusters each adjacent to and connected with a short curved epithelial tubule; additional curved teal and coral tubule profiles composed of cuboidal cells with purple nuclei and small clear lumens. Tubules distributed irregularly within tissue, no neatly arranged adult cortical-medullary pyramids, no kidney bean organ shape, no pelvis or ureter, no large arteries, no claim of perfused mature glomeruli. Smooth schematic architecture, counts symbolic. Crisp muted plum and teal outlines, broad matte pastel peach/coral/teal gradients with saturated violet nuclei. No histological grain, no wet glossy texture. Entire tissue aggregate isolated with generous true transparent PNG alpha background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-eaff151b-2037-434c-aefe-f1487e8429fc.png",
+  "refinement": "Preserve kidney organoid tissue mound, three violet glomerular-like clusters connected to short tubules, teal and coral cuboidal epithelial tubule profiles and all clear lumens. Replace all granular fibrous and glossy texture with smooth matte broad peach, teal, coral and violet gradients. Simplify violet clusters to compact groups of smooth rounded podocyte-like cells with short broad interlocking processes and distinct nuclei, no tangled thread textures or mature red capillary tufts. Crisp muted plum outlines, professional schematic biomedical illustration. Complete object, generous true transparent PNG alpha background.",
+  "archetype": "Representative immature kidney organoid with three podocyte/glomerular-like clusters and epithelial tubules in stroma. Simplified unit numbers and tubular continuity; not mature perfused kidney, no collecting-system or vascular-function claim.",
+  "references": [
+    "https://www.nature.com/articles/nature15695",
+    "https://www.nature.com/articles/s41467-019-13382-0"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "kidney-organoid",
+  "name": "kidney organoid",
+  "original": "originals/inventory/kidney-organoid/generated.png",
+  "original_sha256": "8bbc2a778daf5cc6c61d42e6fb62080782b60229215291571213bbe2c0a9e3d3"
+}

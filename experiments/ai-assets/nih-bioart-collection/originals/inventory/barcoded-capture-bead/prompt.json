@@ -1,0 +1,25 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a barcoded capture bead, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Use the attached approved image only for style and bead appearance: draw ONLY its gold spherical capture bead, enlarged and centered, without the cell or droplet. A smooth matte gold sphere carrying twelve short flexible teal oligonucleotide strands anchored to its surface and projecting outward with gentle bends. Each strand has a short identical sequence of three colored segments near its distal portion to symbolize a shared cell barcode, followed by a short plain teal free end representing a capture tail. No letters or actual barcode marks. Strands remain separated, all physically attached, no detached dots or antibodies. One bead only, soft broad highlights and crisp dark outlines, no grain or photoreal texture. Entire bead and every strand tip with generous genuine transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-e3fc6a37-c20f-41da-80ae-547ed938b48c.png",
+  "style_reference": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-1ca16b31-d25c-4d32-a9eb-15f16f431d1a.png",
+  "refinement": "Preserve this single gold capture bead and all ten visible attached teal oligonucleotide strands. Correct EVERY colored barcode segment triplet to the SAME order when moving AWAY from the bead: RED first, then GOLD/ORANGE, then PURPLE, then the free TEAL end. In particular fix the three lower strands which currently have reversed or repeated purple segments. All ten triplets must be identical red-orange-purple outward. Keep smooth polished biomedical vector appearance and every strand fully visible with generous true transparent PNG alpha padding, no letters or symbols.",
+  "refinement_2": "Make FOUR small color changes only in this image. At the lower-left downward strand near the 7 o'clock direction, change the PURPLE band closest to the gold bead to RED. At the straight downward strand near 6 o'clock, change its PURPLE band closest to bead to RED. At the lower-right strand near 4:30, swap its two outer colored bands: change PURPLE nearest bead to RED, and RED nearest the teal free tip to PURPLE. Keep middle orange bands unchanged. After this all ten strands must have RED then ORANGE then PURPLE from bead toward tip. Do not regenerate geometry or change any other colors. Preserve smooth illustration and transparent background.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Capture bead carrying ten visible symbolic oligonucleotide strands with common red-orange-purple segment order and distal teal capture end. Schematic barcode motif, not chemical sequence or full primer/UMI architecture. Two correction attempts fixed initially inconsistent lower strand colors.",
+  "references": [
+    "https://mccarrolllab.org/dropseq/",
+    "https://cdn.10xgenomics.com/image/upload/v1666737555/support-documents/CG000390_ChromiumNextGEMSingleCell3-v3.1_CellSurfaceProtein_CellMultiplexing_RevC.pdf"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "barcoded-capture-bead",
+  "name": "barcoded capture bead",
+  "original": "originals/inventory/barcoded-capture-bead/generated.png",
+  "original_sha256": "494120cc73b8f0840c82f905f57df52ee0753cf5395c10161f10ad1d7fe355fa"
+}

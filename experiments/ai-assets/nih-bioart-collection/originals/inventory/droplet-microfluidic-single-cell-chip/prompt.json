@@ -1,0 +1,25 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a droplet microfluidic single-cell chip, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One thin rectangular transparent pale cyan PDMS-on-glass chip viewed slightly from above in three-quarter perspective. Clearly visible simple embedded microfluidic channels: two left inlet reservoirs feed separate cell and bead aqueous channels that merge into a central channel. Two side oil channels approach a narrow flow-focusing junction symmetrically above and below. To the right of the junction a wider outlet channel contains four separated pale cyan droplets, each schematically holding one small purple nucleated cell and one smaller gold capture bead, ending in one right collection reservoir. A few purple cells only in cell input channel and gold beads only in bead input channel, no mixing before merger. Gold-tinted oil stream, no arrows or labels. Internal objects deliberately enlarged for recognition. Smooth matte vector-style biomedical illustration, crisp navy contours, broad subtle gradients; no pumps or tubes outside chip. Complete rectangular corners, generous genuine transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-40c14efb-1447-4bb0-a374-20aa78c93dd7.png",
+  "refinement": "Redraw this same complete single-cell droplet microfluidic chip with smooth matte biomedical vector-style shading, crisp navy outlines, no grain on cells and no photographic glass texture. Preserve separate purple nucleated cell input at upper left, gold bead input at lower left, upper and lower oil inputs at central flow-focusing junction, and exactly four distinct outlet droplets each containing one purple nucleated cell and one gold bead. Keep all contents within channels. Entire right collection reservoir and all chip corners inside generous transparent PNG alpha padding. Broad restrained gradients and soft highlights, no glow, no labels.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "refinement_2": "Preserve this exact single-cell microfluidic chip illustration but zoom out and center it smaller on a larger transparent canvas with at least 15 percent blank transparent margin on every side. Restore the full rounded lower-left corner and complete uninterrupted navy outline, no clipped edges. Keep all four outlet droplets and all reservoirs and channels unchanged. Clean exterior edge artifacts, genuine transparent PNG with alpha, no checkerboard painted into image and no glow.",
+  "alpha_attempts": 2,
+  "archetype": "Schematic single-cell droplet chip with separate cell and bead inlets merging before opposed oil inlets and four idealized occupied droplets. Not dimensional geometry, not an occupancy/yield claim; real droplets have stochastic occupancy.",
+  "references": [
+    "https://mccarrolllab.org/dropseq/",
+    "https://mccarrolllab.org/wp-content/uploads/2014/12/Macosko_Cell_1-s2.0-S0092867415005498-main.pdf"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "droplet-microfluidic-single-cell-chip",
+  "name": "droplet microfluidic single-cell chip",
+  "original": "originals/inventory/droplet-microfluidic-single-cell-chip/generated.png",
+  "original_sha256": "f0cd50ae472a2544c3a2caf0b844de86d92ce4013f95eadcb0359d008c7c8afd"
+}

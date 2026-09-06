@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a capture antibody bound to a plate, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A single blue Y-shaped capture IgG immobilized by its Fc base on a small pale-cyan rectangular patch of polystyrene assay plate surface in three-quarter view. Surface patch is a thin slab with complete rounded corners and subtle thickness, no full multiwell plate, no border graphic. IgG centered upright: paired Fc stem with FOUR blue rounded domains arranged two columns by two rows, a short flexible hinge above, two diverging Fab arms each with TWO blue heavy-chain domains paired alongside TWO smaller cyan light-chain domains. Free antigen-binding tips point upward away from plate. A short small gold immobilization linker attaches Fc base to slab. No captured antigen or detection antibody, no floating components, no reaction arrows. Oriented immobilization schematic, not a claim that passive adsorption always orients Fc down. Smooth matte blue/cyan gradients, crisp navy contours, no photographic texture. Entire antibody and full plate patch in generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-03a94356-f996-4ea0-9589-0f9bfd746f4e.png",
+  "refinement": "Keep this plate-bound antibody geometry but redraw with clean smooth rounded oval domains instead of knobbly cloud texture. Exactly four blue Fc ovals in two-by-two stem, then two Fab arms each with two blue ovals alongside two cyan ovals. Keep flexible blue hinge and small gold linker to pale-cyan plate patch. Broad smooth matte gradients, crisp navy outlines, no grain. Plate patch uses continuous pale cyan solid fill, no internal transparency holes. Full object and true transparent PNG alpha background with generous padding.",
+  "archetype": "Single IgG on plate-surface patch via schematic oriented linker. Four Fc domains and paired heavy/light Fab domains, with depth contours; glycans and exact hinge disulfides omitted. Not a claim that passive adsorption has uniform orientation. Refined generation supplied real alpha.",
+  "references": [
+    "https://tools.thermofisher.com/content/sfs/manuals/DynabeadsProteinG_man.pdf"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "capture-antibody-bound-to-plate",
+  "name": "capture antibody bound to plate",
+  "original": "originals/inventory/capture-antibody-bound-to-plate/generated.png",
+  "original_sha256": "716c2665ebd58a3726356d97d1a9b6abb88912944c79f4c7bd3a9fb1b23e6c4b"
+}

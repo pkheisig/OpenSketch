@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a lateral-flow strip, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One bare assembled lateral-flow immunoassay test strip in three-quarter perspective, long narrow thin rectangular laminated backing with four overlapping functional regions along its length: short off-white fibrous sample pad on LEFT, short pale pink conjugate pad adjacent and slightly overlapping, long ivory nitrocellulose membrane in middle with TWO narrow parallel magenta transverse capture bands toward its right half, and thicker off-white absorbent wicking pad at RIGHT overlapping membrane end. Full strip on pale blue-gray thin plastic backing. Pads actually touch/overlap as a continuous capillary path, no gaps. No plastic cassette housing, no sample tube, no liquid drops, no labels or C/T letters, no ruler marks. Subtle simplified fine fiber hints only, clean smooth biomedical illustration broad matte shading and crisp gray-blue outlines, not photographic paper grain. Complete strip with generous true transparent PNG alpha padding. Two bands are a schematic example, not patient data.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-573d9e3b-8bc2-48bb-be0f-1785309842dc.png",
+  "refinement": "Refine this same complete lateral-flow strip into polished biomedical vector-style illustration: replace photographic paper fibers and grain with smooth off-white and pale pink pad surfaces plus only a few subtle short fiber hints, crisp gray-blue outlines, broad matte shading. Preserve all four overlapping regions, exactly two magenta transverse bands, thin pale-blue backing and complete corners. No text, no labels, no housing or extra objects. True transparent PNG alpha background with generous padding.",
+  "archetype": "Bare assembled lateral-flow strip: sample pad, conjugate pad, nitrocellulose membrane and absorbent pad overlapping on backing. Two magenta bands are synthetic illustrative signal, not patient data. Relative dimensions and pad texture schematic.",
+  "references": [
+    "https://www.cytivalifesciences.com/en/us/solutions/diagnostics/immunoassay-rapid-test-components/lateral-flow"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "lateral-flow-strip",
+  "name": "lateral-flow strip",
+  "original": "originals/inventory/lateral-flow-strip/generated.png",
+  "original_sha256": "9d369dbf6b784891ae107f321b562d9a0943cf9c61d335f2814316b7c7764920"
+}

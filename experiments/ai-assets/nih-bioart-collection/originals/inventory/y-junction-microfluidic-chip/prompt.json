@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a Y-junction microfluidic chip, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Thin rectangular pale cyan polymer slab bonded to a blue glass base, oblique top view. Exactly THREE circular ports: two inlet ports at the far short end each connect through a separate narrow teal channel, joining in one clean Y junction near center; a single straight outlet channel continues to third circular port at the near short end. Continuous connected Y topology, no other channels, no droplets, no cells, tubing or connectors. Solid pale cyan material fill, crisp dark teal outlines, matte smooth surfaces, gentle broad gradients, no grain or photoreal glare. Entire slab centered with generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-6774f1ad-91af-405b-8337-8727e038ef52.png",
+  "archetype": "Generic bonded Y-junction microfluidic slab with two inlets merging into one outlet. Port elevation and channel dimensions schematic.",
+  "references": [
+    "https://www.microfluidic-chipshop.com/3-microfluidic-chips"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "y-junction-microfluidic-chip",
+  "name": "Y-junction microfluidic chip",
+  "original": "originals/inventory/y-junction-microfluidic-chip/generated.png",
+  "original_sha256": "ea24b477a92ea1e1e35961e9220713920779bf5e8b4a605dac5a86cc5d0902aa"
+}

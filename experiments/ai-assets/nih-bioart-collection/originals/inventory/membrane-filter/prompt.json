@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a membrane filter, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One thin circular microporous laboratory membrane disc, viewed obliquely in three-quarter perspective as a clean broad ellipse with subtle pale-blue edge thickness. Off-white/light icy-blue membrane surface with many tiny evenly distributed pinprick pore openings in irregular distribution, represented as subtle blue-gray speckles, no large drilled holes, no woven mesh, no gridlines, no paper folds. A small curved front-right edge segment curls upward very slightly to suggest flexible thin membrane, remain one intact connected disc. No holder, syringe, funnel, cells, liquid, backing sheet or tweezers. Pores symbolically enlarged for recognition, no pore-size claim. Polished smooth matte biomedical illustration with crisp thin gray-blue contour and broad soft shading, no noisy photographic paper texture. Whole disc centered, generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-875ebc36-216c-4e32-ad4e-f3a9605a7090.png",
+  "refinement": "Keep this thin microporous membrane disc and tiny curled edge, but simplify all rough fibrous photo texture to continuous smooth pale icy-blue shading. Preserve subtle small blue-gray pore dots at irregular positions, no added large holes, a crisp thin gray-blue outline and clean soft depth at curled edge. Polished matte biomedical vector-style illustration, no photographic grain, no glow. True transparent PNG alpha outside complete disc and generous padding.",
+  "archetype": "Standalone thin microporous membrane disc with slight curled edge. Pores are enlarged symbolic dots, not measured morphology or pore-size distribution.",
+  "references": [
+    "https://www.cytivalifesciences.com/en/us/solutions/diagnostics/immunoassay-rapid-test-components"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "membrane-filter",
+  "name": "membrane filter",
+  "original": "originals/inventory/membrane-filter/generated.png",
+  "original_sha256": "a0c7981c3d5ec5f92376539e08bade54a712803e7ba96a44d032c57d43c265f7"
+}

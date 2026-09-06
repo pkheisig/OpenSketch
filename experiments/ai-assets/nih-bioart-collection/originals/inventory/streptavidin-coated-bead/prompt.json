@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a streptavidin-coated bead, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One smooth warm-gold spherical assay bead coated with six clearly separated teal streptavidin tetramers, distributed around rim and front in perspective. Each tetramer is one compact four-lobed protein assembly, FOUR roughly equal smooth rounded subunits grouped tightly as a dimer-of-dimers rather than a flower with a central fifth subunit. Subunits in alternating light/dark teal with shallow visible pocket indentations, attached close to the bead surface by short small gold linkers. No Y-shaped antibodies, no bound biotin or DNA, no floating free proteins, no magnet. Molecular size and density schematic. Complete clean gold sphere with broad smooth gradient, crisp ochre edge and soft highlight; protein shapes crisp navy contours and gentle pseudo-3D shading. Polished matte biomedical vector style, no grain, no glitter. All tetramers intact and generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-f376b526-5cf7-4174-ab09-292e17de4a3e.png",
+  "refinement": "Smooth this streptavidin-coated bead into clean matte biomedical vector-style illustration: broad golden gradients without grain, clean navy protein outlines. Preserve the eight existing compact four-subunit teal tetramers. Each subunit should be a solid rounded globular lobe, not a doughnut ring: close the large central holes, leaving only small shallow binding clefts on TWO outward-facing subunits per tetramer; the other two pockets face away and are hidden. Do not add a fifth central lobe. Keep all attached tetramers and linkers intact, full object and generous true transparent PNG alpha padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Eight visible attached streptavidin tetramers, each four main subunit lobes; initial large holes corrected to shallow clefts. Binding-pocket detail, orientation, coating density and linker chemistry schematic; no bound biotin.",
+  "references": [
+    "https://www.thermofisher.com/TFS-Assets/BID/brochures/dynabeads-streptavidin-manual-automated-protocols-brochure.pdf"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "streptavidin-coated-bead",
+  "name": "streptavidin-coated bead",
+  "original": "originals/inventory/streptavidin-coated-bead/generated.png",
+  "original_sha256": "d28b89d865b166407152f44148a2394dbb3f64ee08faae5fa3d8dde537e20966"
+}

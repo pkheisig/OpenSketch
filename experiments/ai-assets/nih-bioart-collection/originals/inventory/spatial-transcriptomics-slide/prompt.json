@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a spatial transcriptomics slide, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One slender rectangular pale cyan glass microscope slide, length about three times width, viewed from slightly above in three-quarter perspective. Blank frosted ivory label end at left. Along remaining length FOUR square capture areas in one row, each an orderly field of tiny teal circular oligonucleotide capture spots with small intrinsic corner fiducial marks, no letters. Place one very thin irregular pink and lavender histological tissue section flat across part of the second capture area, leaving its surrounding dots visible; other three capture areas empty. Tissue is a flat smooth lightly mottled biomedical schematic with a few tiny purple nuclei, no organ-shaped object or thick tissue chunk. Capture dots enlarged and sparse enough for readability, no measurement or data heatmap. Smooth matte vector-style shading, crisp navy edges, subtle glass highlights without grain. Entire slide corners centered with generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-ea57ba4b-15b8-4958-be96-9cecdd60b9b7.png",
+  "refinement": "Refine the same complete spatial transcriptomics slide to smooth biomedical vector-style shading. Preserve four square capture-spot fields in one row, the blank frosted end, corner fiducial marks, and the thin tissue section on the second field. Replace photographic grain and mottled cells in the tissue with smooth rose-pink contiguous tissue and a modest number of crisp small purple oval nuclei, subtle broad lavender shading; tissue remains flat, not a raised blob. Smooth glass and blank frosted end, crisp navy contours. Full slide corners with generous genuine transparent PNG alpha padding, no labels or text.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Four-capture-area spatial gene-expression slide with one mounted thin tissue section. First-generation four-area archetype, not current HD architecture. Dot number, size, spacing, fiducials and specimen morphology schematic; no expression data.",
+  "references": [
+    "https://cdn.10xgenomics.com/image/upload/v1723742999/support-documents/CG000239_Visium_Spatial_Gene_Expression_User_Guide_RevH.pdf"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "spatial-transcriptomics-slide",
+  "name": "spatial transcriptomics slide",
+  "original": "originals/inventory/spatial-transcriptomics-slide/generated.png",
+  "original_sha256": "603e276eb09cea16621256fd17d710c5e5c1db235d23cd9c4d8abb5ea1b3895a"
+}

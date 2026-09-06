@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an intestinal organoid, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One representative adult-stem-cell small intestinal epithelial organoid, central hollow cyst with THREE short outward crypt-like buds at left, upper right, lower right. Three-quarter cutaway removes front section to show one continuous pale peach lumen extending into all three buds. Entire wall one continuous layer of tightly adjoining coral pink columnar epithelial cells with violet basal nuclei, tiny short apical brush-border strokes facing ONLY the lumen. At rounded tips of crypt buds a few Paneth-like cells with small orange apical granules mixed among small stem-like cells. Complete outer outline, closed back surface, connected bud lumens clear. No miniature intestine tube, no internal villus trees, no vessels, no gel or dish. Smooth matte biomedical cartoon, restrained broad gradients and crisp muted plum outlines; no granular texture. True transparent PNG alpha background with generous padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-c92974fc-2f9b-407c-b111-84c86712546d.png",
+  "refinement": "Preserve the three-budded hollow intestinal organoid cutaway, continuous connected lumen, one-cell-thick epithelial wall, all basal violet nuclei, inward-facing brush border and orange Paneth-like granules at bud tips. Make the three buds shorter and blunter relative to central cyst. Replace wet glossy textured shading with smooth matte broad coral pink and peach gradients and crisp muted plum outlines. No grain, no cast shadow. Show complete object centered with generous true transparent PNG alpha padding.",
+  "archetype": "Representative budding adult intestinal epithelial organoid; three crypt-like buds with connected lumen, apical brush border and tip Paneth-like granules. Counts, cell types and dimensions schematic.",
+  "references": [
+    "https://www.nature.com/articles/nature07935",
+    "https://www.nature.com/articles/nature09637"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "intestinal-organoid",
+  "name": "intestinal organoid",
+  "original": "originals/inventory/intestinal-organoid/generated.png",
+  "original_sha256": "85793ccacf43ef24c4d4de77e8e48a8aeec58902930a130a534a10bb0781961c"
+}

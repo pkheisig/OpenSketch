@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a patient-derived xenograft tumor fragment, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One small excised irregular cuboidal solid tumor tissue fragment, three-quarter view, soft slightly uneven cut faces and rounded torn corners. Warm pink/coral solid tissue containing irregular nests of densely packed violet-nucleated tumor cells separated by a few pale cream fibrous stromal bands. Three faces visible, short height about half width, not a rounded organoid or cellular sphere. Show heterogeneous tissue organization with schematic enlarged nuclei, no organ identity, no diagnostic subtype, no central cavity, no blood dripping, no mouse or human, no container, forceps or blade. Smooth matte biomedical drawing, crisp muted burgundy outlines, broad gentle coral gradients, simple purple nuclei and pale stromal bands, no microscopic granular texture or glossy wet surface. Complete isolated fragment with generous transparent PNG alpha background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-78bd9fdf-d1d5-4e92-9d1f-839e47ef3590.png",
+  "refinement": "Preserve the irregular cuboidal tumor tissue fragment, three cut faces, nests of violet-nucleated cells and pale stromal bands. Remove all granular histology texture, fine fibrous streaks and glow. Smooth matte coral cell bodies, smooth violet nuclei with one tiny nucleolus, broad pale cream stromal bands containing a few simple spindle nuclei. Crisp muted burgundy outlines, broad restrained gradients, slightly softened irregular fragment corners. No new objects. Complete fragment and generous true transparent PNG alpha padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Representative excised PDX tumor tissue fragment with tumor-cell nests and stromal bands. Experimental form is a fragment; appearance alone cannot identify patient derivation or xenograft status. Enlarged schematic cells, no diagnostic subtype.",
+  "references": [
+    "https://resources.jax.org/immuno-oncology-oncology/patient-derived-xenograft-pdx-mice-hacking-the-haystack-to-find-better-anti-cancer-needles",
+    "https://www.jax.org/jax-mice-and-services/preclinical-research-services/oncology-services/pdx-tumors"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "patient-derived-xenograft-tumor-fragment",
+  "name": "patient-derived xenograft tumor fragment",
+  "original": "originals/inventory/patient-derived-xenograft-tumor-fragment/generated.png",
+  "original_sha256": "fe2506d3cee8c83ce6cd90338f815ab0b3a8b13d97db6eb94f850e0309b088cc"
+}

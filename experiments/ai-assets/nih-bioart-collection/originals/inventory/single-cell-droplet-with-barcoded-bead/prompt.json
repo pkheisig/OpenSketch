@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a single-cell droplet with a barcoded bead, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One round aqueous microdroplet represented as a very pale cyan translucent sphere with a thin smooth navy boundary and restrained upper-left highlight, with exactly ONE intact purple mammalian cell and ONE separate smaller gold capture bead enclosed inside. Cell has lavender cytoplasm and one darker kidney-rounded purple nucleus, a clean slightly undulating membrane and only a few subtle intrinsic granules. Gold bead has a smooth spherical surface with several short curved oligonucleotide tethers attached, each stylized as a thin teal strand with small colored rectangular sequence segments, no letters or actual written barcodes. Tethers remain attached to bead and fully inside droplet, never touch cell or outer droplet rim. Show clear gap between cell and bead. No oil surround, no free extra beads, no icons, no magnification inset. Smooth matte vector-style biomedical rendering, crisp clean outlines and broad soft gradients, no grain or strong specular glare. True transparent PNG alpha surroundings and generous padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-1ca16b31-d25c-4d32-a9eb-15f16f431d1a.png",
+  "refinement": "Redraw the same single-cell droplet with one purple nucleated cell and one gold oligonucleotide-tethered bead in polished smooth biomedical vector style. Remove ALL floating bubbles or round dots outside the cell and bead; droplet fluid must be plain smooth pale cyan. Smooth grainy cell cytoplasm and nucleus into broad matte lavender and purple gradients with crisp outlines and just a few tiny intrinsic organelles. Smooth gold bead and teal tethers, preserve short colored sequence segments without letters. Shrink bead/tethers slightly and move them a little toward center so every tether has clear space from outer droplet boundary and cell membrane. Full round droplet centered with generous true transparent PNG alpha padding, no glow, no extra objects.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "One intact cell and one oligonucleotide-coated capture bead within an aqueous droplet before lysis. Colored tether segments symbolize oligonucleotide structure, not an actual barcode or molecular scale; no occupancy-frequency claim.",
+  "references": [
+    "https://mccarrolllab.org/dropseq/",
+    "https://mccarrolllab.org/wp-content/uploads/2014/12/Macosko_Cell_1-s2.0-S0092867415005498-main.pdf"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "single-cell-droplet-with-barcoded-bead",
+  "name": "single-cell droplet with barcoded bead",
+  "original": "originals/inventory/single-cell-droplet-with-barcoded-bead/generated.png",
+  "original_sha256": "58efbcf3b78f24d71761c4ca00a3f7de180ab71d664192648bcb04fcd3bc350b"
+}

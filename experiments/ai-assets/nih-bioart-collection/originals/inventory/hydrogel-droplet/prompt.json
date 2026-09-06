@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a hydrogel droplet, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One spherical pale-cyan hydrated microgel droplet, gently translucent in illustration but with continuous pale aqua fill inside its complete circular boundary. Show a loose connected THREE-DIMENSIONAL crosslinked polymer network inside: thin curved teal strands forming irregular mesh, small darker teal junction nodes where strands meet, mesh visible at front with faint receding strands behind. All strands contained within droplet. No cell, bead cargo, DNA, lipids, membrane bilayer, separate bubbles, liquid splash or teardrop tip. A smooth round microgel with a soft broad highlight on upper left and subtle depth on lower right, crisp thin deep-teal edge. Molecular network schematic and pore/strand counts not literal. Clean matte biomedical vector style, no glitter, no grain, no large cast shadow. Complete droplet centered with generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-62f03cb7-0fa7-44ba-9a2a-97341167adca.png",
+  "archetype": "Spherical hydrated microgel with crosslinked polymer network visible at several depths. Strand/node sizes and network topology schematic, no specific polymer chemistry or pore-size claim. Fresh generation with alpha.",
+  "references": [
+    "https://www.nature.com/articles/ncomms4355"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "hydrogel-droplet",
+  "name": "hydrogel droplet",
+  "original": "originals/inventory/hydrogel-droplet/generated.png",
+  "original_sha256": "66a0ed1cef45957981c305325464173750c666451b404686dfb55afc2845ca6d"
+}

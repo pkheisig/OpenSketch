@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a microwell single-cell array, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One thin rectangular teal microfabricated chip with an enlarged regular 4 by 5 array of twenty small open cylindrical microwells, three-quarter view from above. Each well has distinct recessed side wall and pale cyan bottom, flat top surface between wells, no raised test tubes. In eight separated wells show one small lavender cell with a single purple nucleus nestled inside, and one smaller gold capture bead beside it within same well. Remaining wells empty, no cells on top surface. All wells open and fully visible, no full plate skirt, no labels or row numbers, no droplet spheres. Smooth matte vector-style biomedical rendering, crisp navy edges, restrained broad gradients without cell grain. Diagrammatic enlargement, not an actual cartridge footprint. Full rectangular corners and generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-2ccd3ad2-1cba-40d6-bff8-619133df35a7.png",
+  "archetype": "Enlarged 4-by-5 microwell field with eight representative cell-bead occupied wells and twelve empty wells. Not a commercial cartridge footprint or capture-efficiency claim; cells and wells enlarged schematically.",
+  "references": [
+    "https://scomix.bd.com/hc/en-us/article_attachments/28751484825485",
+    "https://go.bd.com/BD_Rhapsody_LP.html"
+  ]
+}

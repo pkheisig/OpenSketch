@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a microfluidic droplet generator, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Generic flow-focusing chip, thin pale cyan rectangular polymer slab with blue bonded base, nearly top-down oblique view. Exactly FOUR round ports and cross-junction topology. Left round aqueous inlet connects via narrow channel containing a continuous magenta liquid stream to center cross junction. Upper and lower round oil inlet ports each connect directly to junction in teal channels. At junction two opposing teal oil streams squeeze central magenta stream into a narrow neck. Right downstream channel contains exactly FOUR separate small magenta droplets in teal carrier liquid, evenly separated, then leads to the right outlet round port. No cells or beads inside droplets. All four ports inside slab boundaries. Clean smooth filled cyan substrate, crisp teal outlines, subtle broad gradients, matte scientific illustration, no photoreal glare or grain. True transparent PNG alpha exterior with generous padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-46e30778-b036-4d73-b566-1b4b3ae3f9f0.png",
+  "archetype": "Schematic flow-focusing cross junction with one aqueous inlet, two opposing continuous-phase inlets and one outlet containing four separated empty droplets. Fluid colors, dimensions and droplet size schematic.",
+  "references": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC10971894/",
+    "https://www.microfluidic-chipshop.com/wp-content/uploads/2022/06/DropletFlyerV2.3_Mail.pdf"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "microfluidic-droplet-generator",
+  "name": "microfluidic droplet generator",
+  "original": "originals/inventory/microfluidic-droplet-generator/generated.png",
+  "original_sha256": "4e14abd668a6acbd71fa46ac42cbeb2b72818c39ec22e72be5e1f0811fce3196"
+}

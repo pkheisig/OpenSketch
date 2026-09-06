@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an antibody-coated bead, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One smooth warm-gold spherical assay bead coated with about eight clearly separated outward-facing blue Y-shaped IgG antibodies. Each antibody has a paired Fc stem attached to bead by a short linker and two outward Fab arms; each Fab consists of two main heavy-chain domains with two smaller adjacent cyan light-chain domains, making four domains per arm. Antibodies distributed around rim and front in perspective, recognizable Ys with antigen-binding tips facing away from bead. No captured antigen, no cells, no DNA, no magnet, no detached antibodies. Represent an Fc-oriented immobilization archetype, not random covalent coupling or actual density. Smooth matte bead with restrained broad golden highlight and crisp ochre contour. Antibody forms clean smooth rounded domains, navy outlines, saturated blue/cyan with gentle gradients. No photographic texture or sparkles. Entire bead and all antibody tips surrounded by generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-df6b51b2-bb08-48da-87f6-b4b3ed32f82a.png",
+  "refinement": "Refine this same antibody-coated bead. Smooth the grainy gold sphere into clean matte golden broad gradients. Smooth antibody domain texture into rounded clean blue/cyan shapes with crisp navy outlines. Each Fc stem currently has only one visible blue domain per heavy chain: make each Fc stem TWO blue domains long per chain, four blue oval domains total in a paired two-by-two arrangement between bead linker and Y hinge. Keep existing correct two blue plus two cyan domains on EACH Fab arm, eight antibodies and all outer tips. No extra antibodies or detached objects. Preserve complete asset with generous true transparent PNG alpha padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Eight Fc-oriented IgG antibodies attached to one assay bead with symbolic linkers. Paired Fc domains corrected before tracing. Immobilization geometry and density schematic; individual linker chemistry and glycans omitted.",
+  "references": [
+    "https://tools.thermofisher.com/content/sfs/manuals/DynabeadsProteinG_man.pdf"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "antibody-coated-bead",
+  "name": "antibody-coated bead",
+  "original": "originals/inventory/antibody-coated-bead/generated.png",
+  "original_sha256": "3333fc165d4ede243769f6d6c672ced21bd6e74a32f16777a3f919b5a0d0e332"
+}

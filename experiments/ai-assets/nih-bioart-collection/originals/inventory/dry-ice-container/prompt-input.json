@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a dry ice container, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Generic reusable insulated laboratory dry-ice storage chest in three-quarter view, low rectangular navy outer shell with rounded corners, very thick pale blue insulated walls, hinged thick teal lid propped open at rear. Recessed integral side carry handles, broad stable base. Show empty pale blue interior with thick continuous rim and a small nonsealing vent notch in rim; lid not clamped or airtight. No dry-ice pieces, no frost, fog, samples, labels, hazard symbols or attached thermometer. Distinct rugged reusable chest, no cardboard carton. Smooth matte navy/teal/pale blue scientific equipment drawing, crisp dark slate outlines, broad subtle gradients, no gritty foam texture. Complete chest and lid with generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-4dd027e8-4bbb-4ab4-90da-95af9b2c3203.png",
+  "archetype": "Generic reusable insulated dry-ice chest, open hinged lid and nonsealing vent notch. Empty container, not a shipping-compliance or insulation-performance specification.",
+  "references": [
+    "https://www.thermofisher.com/order/catalog/product/kr/en/1167620"
+  ]
+}

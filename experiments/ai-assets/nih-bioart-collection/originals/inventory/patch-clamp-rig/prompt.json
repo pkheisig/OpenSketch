@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a patch-clamp rig, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One complete compact electrophysiology apparatus on its intrinsic rectangular navy vibration-isolation platform, three-quarter view. A central ivory and teal upright microscope has binocular eyepieces, a side camera and a long downward water-immersion objective positioned above a shallow round recording bath on a broad open stage. On the right a three-axis micromanipulator with stacked precision slides holds one teal electrode holder and fine tapered glass patch pipette angled down into bath beneath objective. A small silver reference electrode enters bath on opposite side. One compact amplifier box mounted on platform with a short neat cable to pipette headstage, two small bath perfusion tubes. No cells or biological inset, no computer, no room furniture, no Faraday cage obscuring apparatus. Preserve clear space around recording bath and manipulator, entire base and feet. Smooth matte vector-style surfaces, crisp navy outlines, restrained broad gradients, saturated teal navy ivory accents, true transparent PNG alpha background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-db15d560-609d-422d-bc9f-a0fe54dc7daa.png",
+  "refinement": "Refine this same complete patch-clamp rig illustration. Zoom out enough to leave a wide transparent margin all around, especially right edge of platform, top eyepieces and left perfusion tubes. Preserve microscope, objective above recording bath, right micromanipulator with fine glass pipette entering bath, reference electrode and amplifier. Clean jagged halo artifacts along contours; use smooth matte vector-style gradients and crisp navy outlines without noise. Make the two left perfusion tubes end in small neat connector fittings fully inside frame, not cropped or fading ends. Full platform and all feet, genuine transparent PNG alpha background.",
+  "archetype": "Open patch-clamp electrophysiology rig with upright microscope, bath, micromanipulator, electrode and amplifier on isolation platform. Schematic connections; no Faraday cage or full perfusion system shown.",
+  "references": [
+    "https://www.sutter.com/airtables/airtable",
+    "https://www.sutter.com/microscopes/nan"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "patch-clamp-rig",
+  "name": "patch-clamp rig",
+  "original": "originals/inventory/patch-clamp-rig/generated.png",
+  "original_sha256": "f43ca2aeebb628455a436bf73ef4bdc561d831314e409cfed446a15ae1c56636"
+}

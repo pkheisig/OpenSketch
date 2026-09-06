@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a minus 80 degree Celsius ultra-low freezer, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Generic upright laboratory ultra-low temperature freezer in three-quarter front view. Broad ivory cabinet with visibly very thick insulation around cavity, navy lower compressor section with ventilation grille, teal control panel with blank dark display and three small buttons. Massive solid outer door swung open on right, thick raised insulated liner and two dark sealing gasket contours, heavy latch handle on free edge. Interior contains FOUR stacked separately hinged closed insulated inner compartment doors, pale blue-gray rigid panels with small individual metal latch handles on right. These are flat hinged doors, NOT pull-out drawers. Cabinet on four short dark feet. Complete outer door and all corners. No temperature numbers, snowflakes, frost, fog, labels or samples. Smooth matte ivory/navy/teal biomedical drawing, crisp dark slate outlines, broad restrained gradients, no photoreal grain. Generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-8c242642-1cde-4e1e-9dfc-7575b31434e1.png",
+  "archetype": "Generic upright ultra-low freezer with four individually hinged inner compartment doors, thick insulated outer door and heavy latch. Unbranded; exact operating temperature not encoded in unlabeled artwork.",
+  "references": [
+    "https://www.thermofisher.com/uk/en/home/life-science/lab-equipment/lab-equipment-learning-center/lab-construction-information/ultra-low-temperature-freezers-lab-construction-resources.html",
+    "https://assets.thermofisher.com/TFS-Assets/LED/manuals/333480H01_RevB_EN.pdf"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "80-c-ultra-low-freezer",
+  "name": "-80 C ultra-low freezer",
+  "original": "originals/inventory/80-c-ultra-low-freezer/generated.png",
+  "original_sha256": "510a55fcfc13ebdb7b944364b9578ce47e545104048069bcd1445d01ad514b80"
+}

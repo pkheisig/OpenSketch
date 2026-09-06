@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a precision-cut tissue slice, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. ONE representative precision-cut liver tissue slice from a cylindrical biopsy core, very thin circular disk viewed obliquely as ellipse, diameter roughly twenty times thickness. Smooth evenly cut top and bottom, slight natural soft edge. Coral peach tissue with many small tightly adjoining polygonal hepatocyte-like cells, violet nuclei and a few narrow pale branching sinusoidal spaces between short cell cords. Detail simplified and enlarged symbolically; several cell layers visible at thin front cut edge, not a single-cell monolayer. No entire liver lobule diagram, no large central vein, no gel, no plate or blade. Smooth matte vector-like biomedical drawing, crisp muted burgundy contours, broad subtle gradients, no wet histology texture or grain. Complete thin disk with generous transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-30823310-8ac3-47c8-9bba-6b123429a4fc.png",
+  "refinement": "Preserve same thin circular liver tissue slice with complete top and short multi-cell-layer cut edge, polygonal hepatocyte-like cells, violet nuclei, narrow sinusoidal spaces and occasional red blood cells. Remove all granular mottling inside cells and nuclei, glossy highlights and glow. Use smooth broad matte peach/coral fills and gradients, simple violet nuclei with one small nucleolus, crisp muted burgundy outlines. Keep geometry and full perimeter. True transparent PNG alpha background, generous padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Representative precision-cut liver slice, thin disk from cylindrical core with multicellular tissue depth and sinusoidal spaces. Cell size and visible layer count enlarged/schematic, not measured thickness or diagnostic histology.",
+  "references": [
+    "https://www.nature.com/articles/s42003-024-07070-z",
+    "https://organslices.com/wp-content/uploads/2016/04/Nat-Protoc-2010-de-Graaf.pdf"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "precision-cut-tissue-slice",
+  "name": "precision-cut tissue slice",
+  "original": "originals/inventory/precision-cut-tissue-slice/generated.png",
+  "original_sha256": "231860d61615126085e18284392ca10c6b60db51a905e7643d6aee0fa4df0644"
+}

@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an extracellular-matrix gel dome, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One small isolated low hemispherical extracellular-matrix hydrogel dome used for organoid culture. Smooth pale rose-pink gel with flattened circular base seen in three-quarter view, broad gently rounded upper surface, continuous pale pink illustration fill with subtle translucency. Inside show a sparse fine intertwined pink-violet mesh of basement-membrane proteins: curved thin collagen-IV-like network strands plus a few short branched laminin-like connectors, no thick banded collagen bundles. Strands remain contained inside gel, delicate enough to preserve dome silhouette and material appearance. No organoids, cells, plate, dish, droplets, tubes, floor or detached fibers. Not a sphere or a cube; low domed mound with full elliptical contact edge. Molecular mesh is representative not exact composition. Clean smooth matte biomedical illustration with crisp muted-violet outline, broad subtle highlights, no photographic grain or glitter. Generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-604e70b5-737c-4977-b00f-56a6acf11406.png",
+  "refinement": "Smooth this same pink extracellular-matrix dome into clean biomedical vector-style illustration: remove all icy mottling and watery reflections, use continuous pale rose broad gradients with a crisp muted-violet outer edge. Preserve the delicate purple network strands and small branched protein connectors within the dome, no cells or added objects. Keep low hemispherical shape and complete elliptical base. No glow, no checkerboard, no photographic grain. True transparent PNG alpha outside with generous padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Cell-free extracellular matrix gel dome, representative organoid-culture basement-membrane matrix. Fine network and branched connectors illustrative, not exact laminin/collagen structures or composition.",
+  "references": [
+    "https://cdn.stemcell.com/human-intestinal-organoid-faqs.html"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "extracellular-matrix-gel-dome",
+  "name": "extracellular matrix gel dome",
+  "original": "originals/inventory/extracellular-matrix-gel-dome/generated.png",
+  "original_sha256": "0d5a257aeec9337d43c079a2212d04d58152f9c2669b10d91682060412b9e3fc"
+}

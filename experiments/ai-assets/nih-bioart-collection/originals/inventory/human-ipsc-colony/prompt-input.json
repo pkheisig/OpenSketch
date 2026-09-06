@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a human iPSC colony, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Representative conventional primed human induced pluripotent stem cell colony seen obliquely from above. ONE flat compact adherent monolayer disk of about 45 tightly packed polygonal cells, sharp mildly irregular circular perimeter seen as ellipse in perspective. Pale lavender cytoplasm, one large violet oval nucleus per visible cell, one small purple nucleolus each, narrow cytoplasmic rims. The colony is very flat with only one-cell-thick short front edge; no domed mound and no multilayer ball. Closely touching cells share boundaries. No feeder cells, no culture dish, no gel, no substrate slab. Matte smooth cartoon biomedical illustration with crisp dark violet outlines and broad gentle gradients; no grain or photoreal texture or glow. Entire flat colony, generous transparent alpha PNG background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-2225941d-e113-47b2-b871-5651342438c0.png",
+  "archetype": "Representative conventional primed human iPSC flat compact colony. Cells and counts schematic; culture state affects morphology, naive human PSCs may also dome.",
+  "references": [
+    "https://www.stemcell.com/rset-human-pluripotent-stem-cells.html",
+    "https://cdn.stemcell.com/technical-resources/educational-materials/tech-tips/assessing-morphology-of-hpscs.html"
+  ]
+}

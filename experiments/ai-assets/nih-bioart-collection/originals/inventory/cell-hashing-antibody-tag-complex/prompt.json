@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a cell hashing antibody-tag complex, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One Y-shaped IgG antibody conjugated to ONE flexible single-stranded DNA sample-tag oligonucleotide. Show IgG as two blue heavy chains that form the paired Fc stem and extend into two upper Fab arms; two shorter cyan light chains lie alongside the outer halves of those Fab arms. Smooth connected oval immunoglobulin domains with slight gaps separating chains, a small hinge connecting arms to stem, two compact antigen-binding tips. One short gold chemical linker attaches the DNA tag to the side of the antibody lower Fc region, not to antigen-binding tips. DNA tag is a single thin curved teal strand extending toward lower right, with three short colored segments red-orange-purple symbolizing sample barcode and a short teal terminal capture tail. No letters, nucleobase labels, actual printed barcode, cell, antigen or extra tags. Clearly ONE antibody and ONE oligonucleotide, all attached. Smooth matte vector-style biomedical rendering, crisp navy outlines, broad subtle gradients and generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-7ffa089f-8035-4766-b3c9-c5f9028b8989.png",
+  "refinement": "Correct the attached DNA tag: REMOVE the entire double-helix ladder and replace it with ONE single thin gently curved teal strand, no second backbone, no rungs, no helix. It attaches at the same gold linker on lower right Fc and arcs down-right. Along this one strand place three short colored bands red then orange then purple followed by plain teal free end. Preserve antibody with two blue heavy chains and two cyan light chains. Remove the two tiny extra blue cap-ovals at the very outer upper tips, leaving exactly two large cyan light-chain domains alongside two blue heavy-chain domains in each Fab arm. Smooth all blue and cyan domains with broad matte gradients instead of mottled grain. Crisp navy outlines and full antibody/tag inside generous true transparent PNG alpha padding.",
+  "refinement_2": "Restore the antibody light chains while preserving everything else. Each Fab arm must have TWO CYAN oval domains connected end-to-end, alongside the TWO BLUE oval domains. Currently there is only one cyan oval on the outer side of each upper arm. ADD one additional matching cyan oval immediately BELOW each existing cyan oval, lying alongside the lower blue Fab oval, and connect the two cyan ovals with a very short cyan neck. There must be four cyan domains total, two on each outer arm. Cyan light chains end near the hinge and do not enter Fc stem. Keep all eight blue domains, gold hinge/linker, and single teal oligonucleotide unchanged. Smooth matte biomedical vector style, full object on genuine transparent PNG alpha.",
+  "archetype": "IgG-like two-heavy/two-light-chain antibody conjugated to one single-stranded oligonucleotide sample tag. Eight heavy and four light domains schematic; linker position and one-tag stoichiometry illustrative, not specified chemistry. Initial duplex tag and missing light domains corrected.",
+  "references": [
+    "https://link.springer.com/article/10.1186/s13059-018-1603-1"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "cell-hashing-antibody-tag-complex",
+  "name": "cell hashing antibody-tag complex",
+  "original": "originals/inventory/cell-hashing-antibody-tag-complex/generated.png",
+  "original_sha256": "ef20f5c2194f92f267b57660d93867cfa5f1829122de92f9e9e4e7132dc39ef2"
+}

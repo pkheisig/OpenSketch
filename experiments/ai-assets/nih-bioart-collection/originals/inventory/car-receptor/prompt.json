@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a CAR receptor, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One second-generation chimeric antigen receptor polypeptide, upright isolated without membrane or cell. At top one compact scFv antigen-binding head formed by TWO side-by-side rounded immunoglobulin variable domains, one blue VH and one cyan VL, joined by one thin flexible peptide linker looping between them. From the bottom of one variable domain descends a single slender teal flexible hinge stalk. This continues into ONE short vertical darker teal alpha-helical transmembrane segment depicted as a compact smooth ribbon helix. Below it a SINGLE flexible cytoplasmic tail, first a short gold proximal segment for costimulatory sequence, then a longer violet gently curved disordered tail with three subtle paired colored motif marks representing CD3-zeta ITAM regions. All domains connected in ONE continuous chain. No full Y-shaped antibody, no Fc, no multiple stems, no membrane slab, no ligand or activation glow. Domain topology schematic and not atomic. Smooth matte vector-style biomedical shading, crisp navy outlines and broad subtle highlights, entire tail and linker inside generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-aa829495-c742-434b-83f6-95cb46725896.png",
+  "refinement": "Refine this same CAR receptor into smooth polished biomedical vector illustration. Preserve two side-by-side blue and cyan variable domains joined by upper flexible linker, single descending hinge, one membrane-spanning helix, gold proximal cytoplasmic segment and violet distal tail with three paired motif marks. Simplify lumpy surface texture of the two top domains into smooth rounded oval protein forms with only two or three subtle curved beta-sheet ribbon features each; no ragged molecular surface, no grain. Crisp navy outlines, restrained broad gradients and highlights, no external glow. Complete linker and tail with generous genuine transparent PNG alpha padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Second-generation single-chain CAR topology: paired variable domains with linker, hinge, one TM helix, proximal costimulation segment and distal CD3-zeta-like tail. Ribbon folds and three paired motif marks schematic, not atomic structure or residue positions; no specific construct asserted.",
+  "references": [
+    "https://pubmed.ncbi.nlm.nih.gov/28807568/",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC6330382/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "car-receptor",
+  "name": "CAR receptor",
+  "original": "originals/inventory/car-receptor/generated.png",
+  "original_sha256": "ed810eaaed4c8a20fb4efd9f2851e884b863c49c53a0a7143fc9c5ae473b588f"
+}

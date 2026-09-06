@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a DNA–lipid transfection complex, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Depict one compact rounded lamellar cationic-lipid DNA lipoplex as a clean three-quarter cutaway. Three nested curved lipid bilayers form concentric shells, each bilayer with small teal spherical headgroups on its two aqueous-facing surfaces and paired gold hydrophobic tails meeting inside that bilayer. Violet double-stranded DNA helices lie in the aqueous spaces BETWEEN neighboring bilayers. Front quarter cleanly cut away to show these alternating lipid/DNA layers; no empty single-vesicle lumen with DNA floating freely, no lipid nanoparticle solid core, no viral proteins. Only a few clearly separated visible DNA double-helix segments to avoid clutter, with two purple backbones and short connecting rungs. Intrinsic connected layered particle, no floating fragments. Schematic representative lamellar lipoplex, no claim of exact molecular counts. Crisp deep teal outlines, smooth matte surfaces and broad gentle highlights, no glitter or grain. Generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-c28954dd-987b-41d4-9434-0556c7849c55.png",
+  "archetype": "Representative lamellar cationic-lipid DNA lipoplex: three nested lipid bilayers with dsDNA in interlamellar spaces. Molecular counts, DNA continuity outside cutaway and tail arrangement schematic; not all lipid-DNA formulations adopt this phase. Fresh generation supplied real alpha.",
+  "references": [
+    "https://pubmed.ncbi.nlm.nih.gov/9012343/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "dna-lipid-transfection-complex",
+  "name": "DNA-lipid transfection complex",
+  "original": "originals/inventory/dna-lipid-transfection-complex/generated.png",
+  "original_sha256": "20c26650863be8bce1ccd8efd7dd69a809581629b27165474e16c4baf160408f"
+}

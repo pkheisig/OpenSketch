@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a mouse embryonic stem cell colony, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Representative undifferentiated naive mouse ESC colony in three-quarter view: one compact highly domed mound with a flattened adherent base, densely packed small polygonal pale lavender cells with large round violet nuclei and narrow cytoplasmic rims. About 35 visible surface cells, closely touching with shared boundaries, several cell layers deep forming the dome. Each visible cell one large nucleus and a small nucleolus. Clear sharp continuous colony perimeter and smoothly rounded top, not a hollow cyst, not a loose cluster of separate marbles, no feeder cells, no culture dish or substrate slab. Matte smooth biomedical drawing, restrained broad gradients, crisp dark violet outlines, no grain, no photoreal texture. Complete base and dome with generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-2e7dd177-bbc1-4fe7-85ca-9b5a94c2e45b.png",
+  "refinement": "Preserve the same compact domed colony, complete base, all cell boundaries and large violet nuclei. Replace all mottled granular textures inside cells and nuclei with smooth matte broad lavender and violet gradients. Remove glossy wet highlights, use only restrained soft highlights and crisp dark violet outlines. No glow outside colony. Complete isolated colony with true transparent PNG alpha background and generous padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Representative naive mouse ESC compact domed colony; visible cell count, nuclear geometry and thickness schematic; no feeder layer. Colony form depends on culture state.",
+  "references": [
+    "https://www.stemcell.com/rset-human-pluripotent-stem-cells.html"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "mouse-embryonic-stem-cell-colony",
+  "name": "mouse embryonic stem-cell colony",
+  "original": "originals/inventory/mouse-embryonic-stem-cell-colony/generated.png",
+  "original_sha256": "fab0521a5ddbb9d9f2f184839e0664f957e5bb706fda5ecf54541dcdf081c465"
+}

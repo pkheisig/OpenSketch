@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an mRNA–lipid nanoparticle transfection complex, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One near-spherical ionizable lipid nanoparticle, three-quarter cutaway with front-right quarter neatly removed. Teal and blue lipid-rich outer surface, a few short flexible pale-cyan PEG chains attached at widely spaced outer lipids. Cutaway reveals a compact heterogeneous golden lipid-rich internal matrix with several small curved aqueous pockets containing coiled violet SINGLE-stranded RNA, gently folded unpaired strands without DNA ladder or double helix. Clearly RNA-containing dense lipid particle, not a hollow liposome and not a concentric multilamellar onion. No viral capsid, no protein spikes or cell. Lipid assembly and RNA location schematic, no precise chemical stoichiometry. Smooth matte vector-style biomedical forms, clean navy contours, broad soft gradients and highlights, no photographic grain. Keep entire particle and PEG chains inside generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-9a0acf65-a00c-4a2f-8eec-291cbc8a7dda.png",
+  "archetype": "Schematic mRNA lipid nanoparticle cutaway with dense heterogeneous lipid matrix, three RNA-containing aqueous pockets and four visible PEG tethers. RNA copies, lipid stoichiometry and compartment architecture illustrative; not universal across formulations or a molecular structure.",
+  "references": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC5899464/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "mrna-lipid-nanoparticle-transfection-complex",
+  "name": "mRNA-lipid nanoparticle transfection complex",
+  "original": "originals/inventory/mrna-lipid-nanoparticle-transfection-complex/generated.png",
+  "original_sha256": "bde5f2f2f46eb14df615ade1ecf5a9901ad80f3111453be663f6b8d871856c03"
+}

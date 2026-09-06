@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a transposase–DNA complex, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. A representative Tn5 paired-end synaptic complex, schematic molecular surface three-quarter view: exactly two large interlocking globular protein subunits, one teal and one blue, forming a compact dimer with lobed catalytic cores and smaller DNA-binding lobes. Exactly two short distinct violet DNA double-helical transposon-end fragments are held across the dimer, one on each side, each DNA segment contacting both protein subunits and ending near the central active-site region. Each dsDNA has exactly two backbones with paired cross rungs, about two turns visible outside protein grooves. Both free outer DNA ends and complete protein perimeter visible. No circular DNA, third DNA molecule, guide RNA, scissors, target-DNA reaction diagram or isolated floating domains. Protein lobes schematic rather than atomic coordinates; preserve two-subunit/two-DNA architecture. Clean smooth matte surfaces, crisp navy outlines, gentle saturated shading, no grain, no fuzzy surface texture. True transparent PNG alpha background with generous padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-9f7aff8c-7cfe-4479-8175-f342ec440f16.png",
+  "refinement": "Refine this transposase–DNA illustration. Make the TWO DNA fragments visibly separate: expose a small central cleft showing the blunt inner terminus of each double-stranded fragment, with a clear gap between those termini. The left DNA fragment enters across the teal protein and ends at the blue protein central cleft; the right DNA fragment enters across blue and ends at teal central cleft. Thus each fragment contacts both subunits, but the two fragments are NOT one continuous helix passing through. Preserve one teal and one blue connected protein subunit. Smooth the mottled cloud-like protein surface into clean broad lobes, matte biomedical illustration gradients with crisp outlines. Keep both complete outside DNA ends and the full protein outline. No labels or arrows. True transparent PNG background and generous padding.",
+  "refinement_2": "Keep the two distinct DNA double helices and exposed separated inner ends. Add a small BLUE protein finger that extends continuously from the central blue subunit across behind the gap to cradle the inner end of the LEFT DNA fragment. Add a small TEAL protein finger extending continuously from the teal subunit across behind the gap to cradle the inner end of the RIGHT DNA fragment. These two cross-contact arms remain attached to their parent protein subunits. Preserve the gap between the two DNA termini and both DNA outer ends, no extra DNA. Smooth matte biomedical illustration, clean broad gradients. Remove checkerboard; true transparent PNG alpha background, full object.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Tn5-like two-subunit/two-transposon-end synaptic complex. Cross-contact lobes added after initial image suggested one through-going DNA. Inner DNA termini occluded by cross-contact protein lobes in final surface view. Schematic domain shapes and orientations, not a coordinate rendering or detailed catalytic mechanism.",
+  "references": [
+    "https://www.rcsb.org/structure/1MUH"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "transposase-dna-complex",
+  "name": "transposase-DNA complex",
+  "original": "originals/inventory/transposase-dna-complex/generated.png",
+  "original_sha256": "651ce985edca8f857a0b60ac3650c83ba96782669e6acbd343fef13a9a44206d"
+}

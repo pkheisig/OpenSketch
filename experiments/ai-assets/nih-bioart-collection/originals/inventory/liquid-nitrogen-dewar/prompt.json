@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a liquid nitrogen dewar, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One portable vacuum-insulated aluminum liquid nitrogen storage dewar in three-quarter view: broad cylindrical silver body, rounded shoulder tapering to a narrow short neck, loose-fitting navy insulated neck plug seated in opening, two sturdy teal side lifting handles at shoulders, dark navy protective base ring. Recognizable nonpressurized laboratory LN2 dewar, simple neck plug with vented fit rather than threaded pressure seal. No pressure gauge, no hoses, no wheels, no electronic display, no samples or canisters, no fog or frost. Smooth matte silver pale blue gradients, crisp dark slate outlines, restrained highlights, no brushed grain or photoreal reflections. Whole vessel and handles complete, generous true transparent PNG alpha background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-a720445b-96ea-48fd-a019-b47c63ed9df7.png",
+  "refinement": "Keep same portable liquid-nitrogen dewar shape, loose neck plug, two handles and base ring. Remove ALL fine grain and metallic brushed texture from body, handles and plug. Use smooth matte pale silver-blue broad gradients, restrained simple highlights and crisp dark slate outlines. Keep open spaces in handles, no new fittings or labels. Entire vessel with generous true transparent PNG alpha padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Generic portable vacuum-insulated nonpressurized liquid-nitrogen dewar with narrow neck plug, lifting handles and protective base. Schematic unbranded vessel, no gas-cylinder pressure fittings.",
+  "references": [
+    "https://icbiomedical.com/products/dewars/",
+    "https://icbiomedical.com/knowledge-center/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "liquid-nitrogen-dewar",
+  "name": "liquid nitrogen dewar",
+  "original": "originals/inventory/liquid-nitrogen-dewar/generated.png",
+  "original_sha256": "6f505cd6195492c19bcd1f0fabbbabe65ef246b8ecc2eccb5f1e51bca322e020"
+}

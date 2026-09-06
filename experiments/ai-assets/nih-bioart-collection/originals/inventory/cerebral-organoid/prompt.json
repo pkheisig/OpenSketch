@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a cerebral organoid, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One representative early human cerebral organoid: irregular rounded lavender tissue aggregate with a broad front cutaway revealing FOUR separate small ventricular-like pale lumens scattered in neural tissue. Each lumen surrounded by radially elongated violet neural progenitor cells with dark oval nuclei, forming thick rosette-like ventricular zones, and broader outer pale pink neuronal tissue zones with small scattered nuclei. Lumens must be separate, irregular small oval shapes, not connected chambers. Outer surface rounded gently lobulated, not mature adult brain gyri, no miniature brain hemispheres, no skull, no vessels. Distinct radial cellular organization around local lumens, no central single giant cavity, no intact whole-body embryo. Smooth matte biomedical cartoon, crisp plum outlines, broad gentle lavender and pink gradients, no granular histology texture. Entire aggregate centered with generous transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-e7353a44-370d-4c34-905e-3dbfb3dc5cac.png",
+  "refinement": "Preserve the rounded cerebral organoid cutaway and exactly four separate pale ventricular-like lumens with thick surrounding radial violet progenitor zones and outer pink neural tissue. Remove ALL speckled fibrous tissue texture and glossy wet shading. Render smooth broad matte lavender and pink fills with subtle gradients, crisp dark plum cell outlines, simplified small nuclei in the outer tissue. Radial cells elongated with single oval nucleus each; do not add circular glandular tubes or mature brain gyri. Smooth gently lobulated exterior with no grain. Complete object and generous true transparent PNG alpha padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "archetype": "Representative early cerebral organoid cutaway with four separate ventricular-like lumens and radial neural progenitor zones. Cellular number, layering and region identities schematic; not a mature brain or full regional map.",
+  "references": [
+    "https://www.nature.com/articles/nature12517",
+    "https://www.nature.com/articles/nprot.2014.158"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "cerebral-organoid",
+  "name": "cerebral organoid",
+  "original": "originals/inventory/cerebral-organoid/generated.png",
+  "original_sha256": "26ec8fde69a98159d427575c4e73a4fdc9fb8c07021884a50478849aa365a0db"
+}
