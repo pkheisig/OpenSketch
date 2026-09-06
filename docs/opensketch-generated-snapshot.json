@@ -1,7 +1,7 @@
 {
-  "sourceCommit": "6b27cdc1764851bae4e55ac346879be254815b56",
-  "distinctAssets": 611,
-  "completedNames": 629,
+  "sourceCommit": "601fead222e37988dc80ae950f1c3d3fd065dc1f",
+  "distinctAssets": 741,
+  "completedNames": 768,
   "assets": [
     {
       "id": "t-lymphocyte",
@@ -695,7 +695,8 @@
     {
       "id": "cell-spheroid",
       "aliases": [
-        "cell-spheroid"
+        "cell-spheroid",
+        "tissue-engineered-spheroid"
       ],
       "sha256": "6f0e64c855de1050639b744429eabc939f5524ea1d6b9096a7c511a606d62314",
       "visualReview": "Compact three-dimensional cell aggregate with closely apposed surface profiles and peripheral occlusion. Complete spheroid, one nucleus per visible profile, no extra cells or lumen. Clean transparency on white/dark; SVG preserves surface-cell boundaries and rounded shading with mild banding.",
@@ -2354,7 +2355,8 @@
       "aliases": [
         "single-stranded-dna",
         "rna-strand",
-        "viral-rna-genome"
+        "viral-rna-genome",
+        "cdna-molecule"
       ],
       "sha256": "7ac2a50510084d068aa2800226f882e17fc0e5ba084627b2a0ffd93d3779dcf1",
       "visualReview": "PNG/SVG inspected on light and dark: one continuous backbone, singly attached unpaired base tabs, two complete ends and smooth shading preserved. Transparent exterior clean; chemical rings and sequence represented symbolically.",
@@ -2907,7 +2909,8 @@
     {
       "id": "fluorescent-bead",
       "aliases": [
-        "fluorescent-bead"
+        "fluorescent-bead",
+        "fluorescent-calibration-bead"
       ],
       "sha256": "277a2e746683888f5a3e5e0061b980c5c625127130fd5f4a0c6c57c9d92a751c",
       "visualReview": "Emerald bead, solid cut faces and distributed dye dots remain clear in SVG. Minor surface gradient banding acceptable; full silhouette and true transparency on both backgrounds.",
@@ -5359,7 +5362,8 @@
     {
       "id": "transwell-insert",
       "aliases": [
-        "transwell-insert"
+        "transwell-insert",
+        "porous-membrane-insert"
       ],
       "sha256": "0c638976a0207cb0510138e498d5342bd79c840402294190559dc1522ba3479a",
       "visualReview": "Revised source and SVG compared on light/dark backgrounds: three hanging tabs, open rim, continuous solid plastic side wall and porous bottom membrane preserved. Earlier trace transparency gap resolved by refined PNG; final SVG uses traced paths without raster embedding. Complete padding and no text.",
@@ -6884,7 +6888,8 @@
     {
       "id": "pathology-specimen-jar",
       "aliases": [
-        "pathology-specimen-jar"
+        "pathology-specimen-jar",
+        "tissue-specimen-container"
       ],
       "sha256": "b08eee588cb17928d197cff9c9e5bebcd2b1a7cc205f7f7f88f7234354c48016",
       "visualReview": "Complete closed jar and submerged simplified specimen, smooth meniscus and no painted checkerboard. Exterior alpha clean on light/dark; SVG retains lid ribs tissue and liquid boundary with minor gradient banding. Glass and liquid are illustrative pale reflective fills rather than optically clear.",
@@ -6999,6 +7004,1317 @@
       "qa": {
         "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/patch-clamp-electrode/comparison.png",
         "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/patch-clamp-electrode/inspection.webm"
+      }
+    },
+    {
+      "id": "patch-clamp-rig",
+      "aliases": [
+        "patch-clamp-rig"
+      ],
+      "sha256": "25b90cd7b45a6e330f16ca59079dd613219de9ac430c5eb5050cd0e197c44d27",
+      "visualReview": "Viewed refined source and four-panel comparison. Complete microscope, bath, fine pipette, manipulator, amplifier and isolation base; all feet and tubing fittings inside frame. Clean alpha, no exterior glow. Editable trace retains recognizable apparatus with minor banding; connections schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/patch-clamp-rig/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/patch-clamp-rig/inspection.webm"
+      }
+    },
+    {
+      "id": "microelectrode-array",
+      "aliases": [
+        "microelectrode-array",
+        "microelectrode-array-chip"
+      ],
+      "sha256": "6118ccfacd2f99d2bbac618d7257185673bc93615948c161d3721edec945f30a",
+      "visualReview": "Reviewed final source and light/dark PNG/SVG comparison. Sixteen separate radial recording sites, each connected to its own peripheral pad; no shared central connections. Low culture ring and complete carrier retained. Background transparent, glass intentionally pale filled schematic; trace comparable with subtle banding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microelectrode-array/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microelectrode-array/inspection.webm"
+      }
+    },
+    {
+      "id": "droplet-microfluidic-single-cell-chip",
+      "aliases": [
+        "droplet-microfluidic-single-cell-chip"
+      ],
+      "sha256": "7119ec65ad5e56e06e448dc64e7c4b01116ad215d14562e6990ee07725f459eb",
+      "visualReview": "Viewed final source and padded four-panel render: complete chip contour, separate aqueous inlets, opposing oil inlets and four cell-bead droplets retained. Transparent exterior clean in final padded masters; trace comparable. Occupied droplets are idealized examples, not yield or universal occupancy.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/droplet-microfluidic-single-cell-chip/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/droplet-microfluidic-single-cell-chip/inspection.webm"
+      }
+    },
+    {
+      "id": "single-cell-droplet-with-barcoded-bead",
+      "aliases": [
+        "single-cell-droplet-with-barcoded-bead"
+      ],
+      "sha256": "e37f2797bff30fdd84f959e842f3d40bc5a89c92ad51a3cf75ddc541af22b6ff",
+      "visualReview": "Viewed source and light/dark PNG-SVG comparison. One intact nucleated cell and one separate oligo-tethered bead fully inside complete droplet, no floating bubbles. Clean outer transparency, pale filled fluid retained; editable trace maintains structure and gradients with slight banding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/single-cell-droplet-with-barcoded-bead/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/single-cell-droplet-with-barcoded-bead/inspection.webm"
+      }
+    },
+    {
+      "id": "barcoded-capture-bead",
+      "aliases": [
+        "barcoded-capture-bead",
+        "barcode-oligonucleotide-bead"
+      ],
+      "sha256": "5626d078035268c330ab6bf3a5beb2428e3ff43e130d637306015172ef05c64f",
+      "visualReview": "Viewed final source and four-panel render: ten attached strands all carry matching red-orange-purple motif outward, complete ends and single gold bead. Clean alpha without surrounding glow; editable trace preserves strand shapes and segment colors with minor gradient banding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/barcoded-capture-bead/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/barcoded-capture-bead/inspection.webm"
+      }
+    },
+    {
+      "id": "spatial-transcriptomics-slide",
+      "aliases": [
+        "spatial-transcriptomics-slide"
+      ],
+      "sha256": "a151253fa36746f049cc3f027153f8ffb9833a9738f491ea4cb88ce9e1fd6543",
+      "visualReview": "Viewed source and light/dark comparison. Four capture fields, one thin tissue section on second field, blank end and complete slide retained. Clean alpha exterior, pale glass filled schematically. SVG preserves spots and tissue nuclei with small trace banding; no biological data implied.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/spatial-transcriptomics-slide/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/spatial-transcriptomics-slide/inspection.webm"
+      }
+    },
+    {
+      "id": "tissue-capture-spot-array",
+      "aliases": [
+        "tissue-capture-spot-array"
+      ],
+      "sha256": "8cd60607d20e631ee13b8f185342a39a04746131bf7d641a28024956b4062ae9",
+      "visualReview": "Viewed source and four-panel render: thin attached tissue with five schematic gland profiles, exposed flat capture dots and complete substrate retained. Transparent exterior clean on both backgrounds; SVG comparable, no expression measurements represented.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tissue-capture-spot-array/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tissue-capture-spot-array/inspection.webm"
+      }
+    },
+    {
+      "id": "microwell-single-cell-array",
+      "aliases": [
+        "microwell-single-cell-array"
+      ],
+      "sha256": "26bdf129267d923e6f8807e6dc5f7fd7e0cf48630575f4adde1d30bf63fbe3ff",
+      "visualReview": "Viewed original and light/dark comparison: 4 by 5 recessed wells, eight with one nucleated cell and one gold bead, twelve empty. Contents inside wells, complete corners. Clean alpha and comparable editable trace with subtle well-shading banding; no capture yield claim.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microwell-single-cell-array/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microwell-single-cell-array/inspection.webm"
+      }
+    },
+    {
+      "id": "cell-hashing-antibody-tag-complex",
+      "aliases": [
+        "cell-hashing-antibody-tag-complex",
+        "dna-barcoded-antibody"
+      ],
+      "sha256": "031b7b22b644027cdf026be5f1cf9f1cb54147d40636de2ce361faa302e7653c",
+      "visualReview": "Viewed source and PNG-SVG light/dark render. Eight blue heavy-chain domains and four cyan light-chain domains, hinge and one attached single-strand tag retained. Complete fine tail, no double helix. Clean alpha, editable trace comparable with slight shading banding; stoichiometry and linker schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-hashing-antibody-tag-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-hashing-antibody-tag-complex/inspection.webm"
+      }
+    },
+    {
+      "id": "rodent-cage",
+      "aliases": [
+        "rodent-cage"
+      ],
+      "sha256": "6c99812cc97ef4dc4cce06b78bb0a74d1dcc10a9a5fd2e07008befd6ccb8a0c7",
+      "visualReview": "Viewed original, smoothed alpha PNG and v2 four-panel comparison. Wire lid, recessed feed hopper, bottle and spout, bedding and complete tub preserved. Native low-opacity left-wall path improves thresholded glass continuity; SVG still has somewhat stepped glass highlights versus PNG, but overall detail and silhouette remain comparable. Exterior transparent with ample margins; no embedded raster.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rodent-cage/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rodent-cage/inspection.webm"
+      }
+    },
+    {
+      "id": "individually-ventilated-cage",
+      "aliases": [
+        "individually-ventilated-cage"
+      ],
+      "sha256": "0cd5413d36416a61dbf6c96f65c857b1cd176ceffb8677f772c8f6fe60129d1f",
+      "visualReview": "Viewed source, texture correction and four-panel PNG/SVG comparison. Sealed lid, filter grille, two passive ports, latches, bottle with internal spout, feed bin and bedding preserved. Continuous pale-blue wall tones, complete outline and generous transparent padding, minor vector gradient steps.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/individually-ventilated-cage/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/individually-ventilated-cage/inspection.webm"
+      }
+    },
+    {
+      "id": "metabolic-cage",
+      "aliases": [
+        "metabolic-cage"
+      ],
+      "sha256": "416f573b9241387c3448cdb9b4d67dc1f113f6b8349017b0d04faccee0923104",
+      "visualReview": "Viewed source and four-panel PNG/SVG comparison. Vented lid, grid floor, bottle and feeder, tapered separator with two distinct attached collection bottles, three legs preserved. Transparent exterior including leg gaps and generous complete-outline padding. Slight glass reflection and fine grid banding, no embedded raster.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/metabolic-cage/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/metabolic-cage/inspection.webm"
+      }
+    },
+    {
+      "id": "mouse-restrainer",
+      "aliases": [
+        "mouse-restrainer"
+      ],
+      "sha256": "97a247fc18df2a8a5e6c5ddd8a855158582160deeae3a953e164e2a40a325176",
+      "visualReview": "Viewed source, topology correction, failed first trace, and final v2 PNG/SVG light/dark comparison. Continuous pale-blue tube shading replaces patchy partial-alpha glass; ventilation holes, full internal stop, top screw, tail notch and both feet remain distinct. Complete outline, generous transparent padding, no embedded raster. Earlier original preserved.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mouse-restrainer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mouse-restrainer/inspection.webm"
+      }
+    },
+    {
+      "id": "rodent-anesthesia-nose-cone",
+      "aliases": [
+        "rodent-anesthesia-nose-cone"
+      ],
+      "sha256": "0b23eb9183e92de3e42b5df9f9c496ce91c59d1aaa80897281a07889e148b289",
+      "visualReview": "Viewed source and four-panel PNG/SVG comparison. Tapered mask, soft teal rim, dark recessed opening, navy collar and two separate hose barbs preserved. Whole object, transparent exterior and generous padding; mild vector shading bands and no embedded raster.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rodent-anesthesia-nose-cone/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/rodent-anesthesia-nose-cone/inspection.webm"
+      }
+    },
+    {
+      "id": "isoflurane-vaporizer",
+      "aliases": [
+        "isoflurane-vaporizer"
+      ],
+      "sha256": "441d2df0876bb3309e1eb2bfe05ea0832af4789295389a1a382691a22251185e",
+      "visualReview": "Viewed corrected source and four-panel PNG/SVG comparison. Purple external controls, clear liquid sight window, two gas ports, mounting bracket and drain retained; no printed calibration or text. Smooth silver gradients with minor vector banding, complete outline and generous transparent margins, no embedded raster.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/isoflurane-vaporizer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/isoflurane-vaporizer/inspection.webm"
+      }
+    },
+    {
+      "id": "anesthesia-induction-chamber",
+      "aliases": [
+        "anesthesia-induction-chamber"
+      ],
+      "sha256": "fec2f91d112d9c0daa23b869314300603b603327d3e0addd78e00a1a2fb83f18",
+      "visualReview": "Viewed source and four-panel PNG/SVG comparison. Closed hinged lid, gasket, two latches, opposing barbs and empty chamber maintained. Continuous acrylic shading, complete box and fittings, transparent exterior and generous padding. Slight vector gradient steps, no embedded raster.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/anesthesia-induction-chamber/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/anesthesia-induction-chamber/inspection.webm"
+      }
+    },
+    {
+      "id": "stereotaxic-frame",
+      "aliases": [
+        "stereotaxic-frame"
+      ],
+      "sha256": "a2bab4dcac3de2eee1be01bcf53f5beb4cd40b95beaa67efb0d85299b5bcec9a",
+      "visualReview": "Viewed source and four-panel PNG/SVG comparison. U frame, opposing separated ear bars, midline support, connected manipulator slides and fine vertical probe preserved. Three visible feet with fourth occluded, full outline and generous transparent padding. Small metallic gradient bands, no embedded raster.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/stereotaxic-frame/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/stereotaxic-frame/inspection.webm"
+      }
+    },
+    {
+      "id": "surgical-operating-platform",
+      "aliases": [
+        "surgical-operating-platform"
+      ],
+      "sha256": "469e47e18a114e862dc3d1bcbbf017433a5816c65d0a5f25c66a4ef7b31d6693",
+      "visualReview": "Viewed source and four-panel PNG/SVG comparison. Four separate positioning clips, central teal mat, head support and metal plate on ivory base preserved, three visible feet and fourth occluded. Complete outline, transparent padding, minor broad shading steps, no embedded raster.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/surgical-operating-platform/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/surgical-operating-platform/inspection.webm"
+      }
+    },
+    {
+      "id": "heating-pad",
+      "aliases": [
+        "heating-pad"
+      ],
+      "sha256": "80398562a2b27b5a3d7f44ce5736674c98a432aa4b19d44492670bdf6a4b3ea9",
+      "visualReview": "Viewed source and four-panel PNG/SVG comparison. Flexible curled teal pad, sealed perimeter and one continuous cable ending in barrel connector preserved. Transparent outside and cable loop, generous margins, mild broad gradient steps, no embedded raster.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/heating-pad/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/heating-pad/inspection.webm"
+      }
+    },
+    {
+      "id": "gavage-needle",
+      "aliases": [
+        "gavage-needle"
+      ],
+      "sha256": "c5a0ac5fe9a3a545c13861ffeee944f590a4241cab355a51da76c96004f080a6",
+      "visualReview": "Viewed source and four-panel PNG/SVG comparison. Continuous gently curved metal shaft, Luer hub and blunt ball tip with side opening preserved. Full instrument and ample transparent padding; fine metal highlight slightly stepped in SVG, no embedded raster.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gavage-needle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/gavage-needle/inspection.webm"
+      }
+    },
+    {
+      "id": "insulin-syringe",
+      "aliases": [
+        "insulin-syringe"
+      ],
+      "sha256": "a45a262913232e9b130641cb1f955ea14cb992823519b1efca824cefe24c4887",
+      "visualReview": "Viewed source and four-panel PNG/SVG comparison. Orange thumb pad, continuous plunger, rubber stopper, clear slim barrel and fixed fine needle preserved. Blank barrel, complete tip, transparent exterior and generous margins; small glass shading steps, no embedded raster.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/insulin-syringe/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/insulin-syringe/inspection.webm"
+      }
+    },
+    {
+      "id": "injection-needle",
+      "aliases": [
+        "injection-needle"
+      ],
+      "sha256": "7dfc218fd0bad9aa8382e5e74827dc7f5c9017dc01b0fb209877f2a6740daad5",
+      "visualReview": "Viewed source and four-panel PNG/SVG comparison. Blue Luer hub, continuous thin cannula and sharp hollow bevel preserved. Both ends complete, transparent exterior and ample padding; no extra cap, text or embedded raster.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/injection-needle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/injection-needle/inspection.webm"
+      }
+    },
+    {
+      "id": "tail-vein-injection-setup",
+      "aliases": [
+        "tail-vein-injection-setup"
+      ],
+      "sha256": "020653745bb201baa28ed954be01af16545000db52a44fee2b552b5fc9e4203c",
+      "visualReview": "Viewed source and four-panel PNG/SVG comparison. Ventilated restraint tube, rear adjustment, front tail notch, aligned grooved support and adjustment guide preserved as one connected assembly. Empty equipment, complete outline and generous transparent padding; subtle metallic bands, no embedded raster.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tail-vein-injection-setup/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tail-vein-injection-setup/inspection.webm"
+      }
+    },
+    {
+      "id": "oral-gavage-syringe",
+      "aliases": [
+        "oral-gavage-syringe"
+      ],
+      "sha256": "82740761fb8650d0477a659a1174a94b149dadc2a1e8a77d01479ce4dc80115c",
+      "visualReview": "Viewed source and four-panel PNG/SVG comparison. Syringe, attached Luer connector, continuous curved flexible feeding tube and rounded distal tip preserved. Complete tips and transparent open curve, ample margins, fine plastic highlights comparable, no embedded raster.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/oral-gavage-syringe/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/oral-gavage-syringe/inspection.webm"
+      }
+    },
+    {
+      "id": "blood-collection-capillary",
+      "aliases": [
+        "blood-collection-capillary"
+      ],
+      "sha256": "bb4dd6654f79a22b2e5fc7367c9ba20430d783c4f40cd223de8dc22c8ec0d476",
+      "visualReview": "Viewed PNG and SVG on light and dark backgrounds: continuous glass tube, central blood column, open ends and red band retained; clean transparent padding and comparable vector detail.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/blood-collection-capillary/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/blood-collection-capillary/inspection.webm"
+      }
+    },
+    {
+      "id": "ear-punch",
+      "aliases": [
+        "ear-punch"
+      ],
+      "sha256": "5d9d7bc35bfe284027c0fb63231b7472f43946423dbd62d03cbd3cf967a34ebe",
+      "visualReview": "Viewed both formats on light and dark backgrounds: open finger loops, hinge, opposed punch and die retained, comparable smooth shading, complete silhouette and transparent padding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ear-punch/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/ear-punch/inspection.webm"
+      }
+    },
+    {
+      "id": "microchip-transponder",
+      "aliases": [
+        "microchip-transponder"
+      ],
+      "sha256": "c378403fa69f5af0e77ab5e503b39802f3c8b21b29a95666bf58437f0c4b5ddc",
+      "visualReview": "Viewed light and dark PNG/SVG comparison: complete sealed capsule, copper coil, ferrite core and connected chip retained; smooth clear-glass silhouette and comparable trace, no background.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microchip-transponder/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microchip-transponder/inspection.webm"
+      }
+    },
+    {
+      "id": "animal-imaging-chamber",
+      "aliases": [
+        "animal-imaging-chamber"
+      ],
+      "sha256": "14afa1febff660f237279b3c937db0d5115bfd096a65f3a55931410f4a21863e",
+      "visualReview": "Viewed PNG and SVG on both backgrounds: complete cover, bed, paired latches and gas connectors remain; smooth surfaces and comparable vector shading, clean alpha padding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/animal-imaging-chamber/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/animal-imaging-chamber/inspection.webm"
+      }
+    },
+    {
+      "id": "small-animal-ivis-style-optical-imaging-system",
+      "aliases": [
+        "small-animal-ivis-style-optical-imaging-system"
+      ],
+      "sha256": "2f969464af72fcaf7b6b666e4c66f56d57ec23dcaa0732dafe01ecc56bccba99",
+      "visualReview": "Viewed both formats on light and dark: complete open cabinet, downward camera and empty tray preserved, minor gradient banding but comparable detail, clean background and padding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/small-animal-ivis-style-optical-imaging-system/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/small-animal-ivis-style-optical-imaging-system/inspection.webm"
+      }
+    },
+    {
+      "id": "small-animal-mri-scanner",
+      "aliases": [
+        "small-animal-mri-scanner"
+      ],
+      "sha256": "0f5d7b7ba8973ea57b4c39cff0063f7f7017747f84ca9add4f782c304aecd4f7",
+      "visualReview": "Viewed light/dark comparison: long magnet enclosure, small bore, aligned bed and supports retained, comparable smooth vector shading and clean complete silhouette.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/small-animal-mri-scanner/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/small-animal-mri-scanner/inspection.webm"
+      }
+    },
+    {
+      "id": "small-animal-ct-scanner",
+      "aliases": [
+        "small-animal-ct-scanner"
+      ],
+      "sha256": "9697cd785c604f243fc040ac5fca7a6412784c800e63556bb943d6a0f2c0e3e8",
+      "visualReview": "Viewed PNG/SVG light and dark: compact enclosure, short aperture, cassette and motorized bed retained; smooth comparable vector forms and transparent complete silhouette.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/small-animal-ct-scanner/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/small-animal-ct-scanner/inspection.webm"
+      }
+    },
+    {
+      "id": "blood-collection-needle-and-tube",
+      "aliases": [
+        "blood-collection-needle-and-tube"
+      ],
+      "sha256": "e91f30c01f5f35b2f272a5748c1634894e258f4dbc27be0cb78c8274b08f584b",
+      "visualReview": "Viewed PNG/SVG on light and dark backgrounds: coaxial needle, hub, holder and inserted stopper-first tube retained, complete tip and tube end, comparable vector finish and clean alpha.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/blood-collection-needle-and-tube/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/blood-collection-needle-and-tube/inspection.webm"
+      }
+    },
+    {
+      "id": "vacutainer-holder",
+      "aliases": [
+        "vacutainer-holder"
+      ],
+      "sha256": "af91757d2fa5bb14d50ef816e1d4e05a2f6ff3cbe3158284e84d275308f7761f",
+      "visualReview": "Viewed corrected v2 PNG/SVG on both backgrounds: ragged alpha hole removed, continuous blue plastic shading, flange and threaded socket preserved, comparable crisp complete object.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/vacutainer-holder/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/vacutainer-holder/inspection.webm"
+      }
+    },
+    {
+      "id": "blood-bag",
+      "aliases": [
+        "blood-bag"
+      ],
+      "sha256": "98ada435df9c494eee7d74967acebe60ded73e04e2f94b8d642ca44c712552eb",
+      "visualReview": "Viewed both formats on light and dark: sealed flexible bag, open eyelet, two ports and capped attached tube retained; comparable smooth red shading and complete transparency.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/blood-bag/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/blood-bag/inspection.webm"
+      }
+    },
+    {
+      "id": "leukapheresis-bag",
+      "aliases": [
+        "leukapheresis-bag"
+      ],
+      "sha256": "b62895e9a36caad839c26fc6a4aabfe7c21bbc899a043966f155dfc5616d7dd5",
+      "visualReview": "Viewed light and dark comparison: complete collection bag, hanging slot, three ports and clamped capped tube retained; cloudy suspension and seam shading comparable across formats, transparent padding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/leukapheresis-bag/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/leukapheresis-bag/inspection.webm"
+      }
+    },
+    {
+      "id": "leukapheresis-machine",
+      "aliases": [
+        "leukapheresis-machine"
+      ],
+      "sha256": "7032b4d37d32dc3788a050d5a99a9a9de91140b39b669da925500fee78942bf6",
+      "visualReview": "Viewed both formats on light and dark: complete wheeled instrument with three pump heads, centrifuge cover, attached bags and blank display preserved, comparable vector detail and clean alpha.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/leukapheresis-machine/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/leukapheresis-machine/inspection.webm"
+      }
+    },
+    {
+      "id": "biopsy-needle",
+      "aliases": [
+        "biopsy-needle"
+      ],
+      "sha256": "9c84bac68d8f3e79ac00f4bdaf1d610ce680ae6f3cff759794fff3b78630f6c9",
+      "visualReview": "Viewed both formats on light and dark: complete instrument, handle, actuator, long cannula and pointed specimen recess retained; comparable shading and clean transparent padding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/biopsy-needle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/biopsy-needle/inspection.webm"
+      }
+    },
+    {
+      "id": "core-biopsy-specimen",
+      "aliases": [
+        "core-biopsy-specimen"
+      ],
+      "sha256": "7258f28255ccc92cf3a4bdc098f97e04817277c7c755facfd9ea402be25c145c",
+      "visualReview": "Viewed corrected PNG/SVG on both backgrounds: cohesive curved solid tissue core with two cut faces, fine fibers and vessel traces retained, comparable shading and clean alpha.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/core-biopsy-specimen/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/core-biopsy-specimen/inspection.webm"
+      }
+    },
+    {
+      "id": "swab",
+      "aliases": [
+        "swab"
+      ],
+      "sha256": "af145fb4eff1ecc0649cc9b5166624362b79a94d6ab61f0404a90b4c9340d8be",
+      "visualReview": "Viewed light/dark PNG/SVG: single flocked tip and continuous straight shaft preserved, complete ends, comparable fiber detail and clean alpha.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/swab/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/swab/inspection.webm"
+      }
+    },
+    {
+      "id": "saliva-collection-tube",
+      "aliases": [
+        "saliva-collection-tube"
+      ],
+      "sha256": "53d25c41dd21e83523c54cf7873518cd4ef84a629b8f85095983c386c8d87e3b",
+      "visualReview": "Viewed light/dark PNG/SVG: blue cap, nested perforated insert, absorbent swab and lower fluid volume retained, comparable clear-wall shading and clean complete alpha.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/saliva-collection-tube/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/saliva-collection-tube/inspection.webm"
+      }
+    },
+    {
+      "id": "urine-specimen-cup",
+      "aliases": [
+        "urine-specimen-cup"
+      ],
+      "sha256": "1382a8dc76a127da5cd26d7ff87a1bacb4a760c9ea6b557261dacc799a1c2a22",
+      "visualReview": "Viewed both formats on light/dark: lid ribs, continuous cup walls and yellow fluid meniscus retained, comparable clear plastic shading, complete transparent silhouette.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/urine-specimen-cup/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/urine-specimen-cup/inspection.webm"
+      }
+    },
+    {
+      "id": "stool-collection-tube",
+      "aliases": [
+        "stool-collection-tube"
+      ],
+      "sha256": "de364713306a53bebae358666a4f3181b60bf251d71896833804c9c89a178bf0",
+      "visualReview": "Viewed both formats on light/dark: intact brown cap with attached stem and concave spoon, complete clear tube, comparable smooth shading and clean alpha.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/stool-collection-tube/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/stool-collection-tube/inspection.webm"
+      }
+    },
+    {
+      "id": "bronchoalveolar-lavage-collection-container",
+      "aliases": [
+        "bronchoalveolar-lavage-collection-container"
+      ],
+      "sha256": "5e4a24a49bc72f0ce617a9f4aa90645e0b79e05ab31f1668a4ebc4b2d836af87",
+      "visualReview": "Viewed final v3 PNG/SVG on both backgrounds: ports and low fluid volume retained, ragged glass holes repaired with editable gradient. SVG glass intentionally more opaque than PNG on dark background; smooth continuous professional silhouette and clear padding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bronchoalveolar-lavage-collection-container/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bronchoalveolar-lavage-collection-container/inspection.webm"
+      }
+    },
+    {
+      "id": "laboratory-refrigerator",
+      "aliases": [
+        "laboratory-refrigerator"
+      ],
+      "sha256": "81b25ad97c291461d64053840f74ef6f38aa25d6e6a95c3cf8328c899aa92198",
+      "visualReview": "Viewed generated alpha and four-panel browser comparison. Complete upright cabinet, closed glass door, four wire shelves, handle, blank control display and lower compressor grille. Glass remains filled on dark background; SVG preserves structure, no clipping or external glow.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/laboratory-refrigerator/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/laboratory-refrigerator/inspection.webm"
+      }
+    },
+    {
+      "id": "20-c-freezer",
+      "aliases": [
+        "20-c-freezer"
+      ],
+      "sha256": "01519e4cb1fb99948576cae80588886f6d3d6ee60f753246a9cbed2314ce2c18",
+      "visualReview": "Viewed final alpha and browser PNG/SVG light-dark comparison. Six internal drawers, open solid insulated door with gasket, control panel, compressor grille and complete feet. Filled panels and clear outlines retained, no background or clipping.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/20-c-freezer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/20-c-freezer/inspection.webm"
+      }
+    },
+    {
+      "id": "80-c-ultra-low-freezer",
+      "aliases": [
+        "80-c-ultra-low-freezer"
+      ],
+      "sha256": "1a45362f7e880ad076889ce567db7d8724528b30c5fe929a60dfb0a8c07e542a",
+      "visualReview": "Viewed final alpha and browser comparison on light/dark. Four hinged inner doors, thick insulated outer door, gasket, heavy latch, control panel and compressor section retained. Mild gradient banding in SVG at inspection scale, overall comparable clean complete equipment silhouette.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/80-c-ultra-low-freezer/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/80-c-ultra-low-freezer/inspection.webm"
+      }
+    },
+    {
+      "id": "liquid-nitrogen-dewar",
+      "aliases": [
+        "liquid-nitrogen-dewar"
+      ],
+      "sha256": "586172b3430197bd48d6a89931c0234d7dd5fe86c3e98016c3adcd571d36edad",
+      "visualReview": "Viewed final alpha and browser PNG/SVG comparison. Complete portable vessel, neck plug, two open handles and protective base. True alpha outside and through handle spaces, no external glow. Mild trace gradient banding, overall clean comparable equipment silhouette.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/liquid-nitrogen-dewar/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/liquid-nitrogen-dewar/inspection.webm"
+      }
+    },
+    {
+      "id": "cryogenic-storage-tank",
+      "aliases": [
+        "cryogenic-storage-tank"
+      ],
+      "sha256": "8092ffaf57ed1edbf7b97d43850e511e697762b205ba5ee9860e6ba9d6cbd33b",
+      "visualReview": "Viewed final alpha and PNG/SVG browser comparison. Complete open insulated lid, four racks including partially raised three-box rack, attached control unit and wheeled base. Vector retains fittings and clean outline on both backgrounds, no clipping or external glow.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cryogenic-storage-tank/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cryogenic-storage-tank/inspection.webm"
+      }
+    },
+    {
+      "id": "dry-ice-container",
+      "aliases": [
+        "dry-ice-container"
+      ],
+      "sha256": "dcf0d069765af299be798a8e41098ef003d215aef0b839d451c5582fd64bcda2",
+      "visualReview": "Viewed alpha and four-panel browser comparison. Complete reusable insulated chest and open lid, thick rim with vent notch, recessed handle and filled interior. SVG comparable with restrained trace banding, clean padding on both backgrounds.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dry-ice-container/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dry-ice-container/inspection.webm"
+      }
+    },
+    {
+      "id": "insulated-sample-shipping-box",
+      "aliases": [
+        "insulated-sample-shipping-box"
+      ],
+      "sha256": "0de9076f935943584e49399ca85d4fde16ba01add8a936d0a8f3a50aaf27763b",
+      "visualReview": "Viewed generated alpha and browser PNG/SVG light-dark comparison. Four attached carton flaps, thick fitted foam liner, empty cavity and supported foam lid fully visible. Vector preserves shape and material distinction with clean padded edges.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/insulated-sample-shipping-box/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/insulated-sample-shipping-box/inspection.webm"
+      }
+    },
+    {
+      "id": "cryogenic-vial-rack",
+      "aliases": [
+        "cryogenic-vial-rack"
+      ],
+      "sha256": "63cd585929c62226b287416995ffb9e10c03dd729a925c0390c12ca428b55154",
+      "visualReview": "Viewed final alpha and browser PNG/SVG comparison. Exactly 16 sockets in 4 by 4 grid, visible anti-rotation ribs, side grip recesses and navy feet. Whole shape and socket detail retained on both backgrounds; no external glow. Generic socket count and rib geometry.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cryogenic-vial-rack/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cryogenic-vial-rack/inspection.webm"
+      }
+    },
+    {
+      "id": "lab-coat",
+      "aliases": [
+        "lab-coat"
+      ],
+      "sha256": "62e1fd58090ed41347b2d8aab568dd39961295b7b8f0af38b90600dcf83167ca",
+      "visualReview": "Viewed light/dark PNG/SVG: two sleeves, lapels, five buttons and three pockets retained, complete hem and cuffs, comparable fabric shading and transparent background.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lab-coat/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lab-coat/inspection.webm"
+      }
+    },
+    {
+      "id": "disposable-gloves",
+      "aliases": [
+        "disposable-gloves"
+      ],
+      "sha256": "a03eba5524f8430b9ff7782b84d34100727fb31ef9f24a095311d20bd517de43",
+      "visualReview": "Viewed corrected PNG/SVG on light/dark: exactly five digits per empty glove, open cuffs and folds preserved, comparable blue shading and clean alpha.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/disposable-gloves/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/disposable-gloves/inspection.webm"
+      }
+    },
+    {
+      "id": "safety-goggles",
+      "aliases": [
+        "safety-goggles"
+      ],
+      "sha256": "250c9cdf7c241f75d8a5476e5d11857f592f81f918f57d1eef20887053ae9019",
+      "visualReview": "Viewed light/dark comparison: panoramic lens, nose bridge, side vents and complete elastic loop preserved, comparable smooth illustrated lens, true transparent padding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/safety-goggles/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/safety-goggles/inspection.webm"
+      }
+    },
+    {
+      "id": "face-shield",
+      "aliases": [
+        "face-shield"
+      ],
+      "sha256": "b844c54606ec1d1c8da017474198fee1981b6c6eb21aec812156fd1e5e096dd9",
+      "visualReview": "Viewed light/dark PNG/SVG: full curved visor, forehead band, foam and complete head loop preserved. SVG visor slightly flatter and more opaque, but clean continuous comparable illustration without holes.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/face-shield/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/face-shield/inspection.webm"
+      }
+    },
+    {
+      "id": "surgical-mask",
+      "aliases": [
+        "surgical-mask"
+      ],
+      "sha256": "251530f213e250bacebe868852d383ee4005c28fac3d7af5dd858ebae8b72ba9",
+      "visualReview": "Viewed light/dark PNG/SVG: pleats, seams, nose strip and both ear loops preserved, comparable nonwoven detail and clean alpha with complete shape.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/surgical-mask/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/surgical-mask/inspection.webm"
+      }
+    },
+    {
+      "id": "n95-respirator",
+      "aliases": [
+        "n95-respirator"
+      ],
+      "sha256": "82a6c784696c88a4cf118df7345f0d9a6ec49cb04136f42ef896b479bb5dbe61",
+      "visualReview": "Viewed light/dark comparison: cup body, nose clip and two head straps with four attachment points preserved; complete clean silhouette and comparable shading.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/n95-respirator/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/n95-respirator/inspection.webm"
+      }
+    },
+    {
+      "id": "disposable-gown",
+      "aliases": [
+        "disposable-gown"
+      ],
+      "sha256": "890ef5ae62e1488f1384d18c17d60cbda5f569391ff5c5f67d319d393c2a7e84",
+      "visualReview": "Viewed light/dark PNG/SVG: full empty gown, cuffs and two tie ends preserved, grain removed, comparable smooth teal folds and clean alpha.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/disposable-gown/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/disposable-gown/inspection.webm"
+      }
+    },
+    {
+      "id": "biohazard-waste-bin",
+      "aliases": [
+        "biohazard-waste-bin"
+      ],
+      "sha256": "2425b2fe77b8b926673cfe85745aeb60f7e1166226b8fa96c8f1a774b37cd716",
+      "visualReview": "Viewed light/dark PNG/SVG: closed lid, hinge, liner rim and foot pedal preserved, complete silhouette and comparable red gradients, clean alpha.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/biohazard-waste-bin/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/biohazard-waste-bin/inspection.webm"
+      }
+    },
+    {
+      "id": "sharps-container",
+      "aliases": [
+        "sharps-container"
+      ],
+      "sha256": "f803803f29792f3376b81c5408a7ae2f60264b36fccabc6409d8bfdcecdb6d82",
+      "visualReview": "Complete yellow body, restricted red sliding lid and handle preserved in editable paths. Comparable PNG and SVG on light and dark backgrounds.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sharps-container/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sharps-container/inspection.webm"
+      }
+    },
+    {
+      "id": "autoclave",
+      "aliases": [
+        "autoclave"
+      ],
+      "sha256": "380babeec22e2436c14006560509392493e4f4aeb674ac0227b518f257588c89",
+      "visualReview": "Pressure door, locking handle, controls and housing retained. Light and dark PNG/SVG comparison passed with minor gradient banding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/autoclave/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/autoclave/inspection.webm"
+      }
+    },
+    {
+      "id": "fume-hood",
+      "aliases": [
+        "fume-hood"
+      ],
+      "sha256": "2db62d3720b1941d6ed809717258bf10cc2d18162a09fa886f0ec06d8204fb3c",
+      "visualReview": "Sash, empty chamber, baffles, worktop and duct retained in SVG. No background glow in alpha; light/dark comparison passed.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fume-hood/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fume-hood/inspection.webm"
+      }
+    },
+    {
+      "id": "chemical-storage-cabinet",
+      "aliases": [
+        "chemical-storage-cabinet"
+      ],
+      "sha256": "595251987b6a0dbf7562c885e0dc040cfb5be5bb201297ea4eb2bca9622fd2f0",
+      "visualReview": "Two doors, lock, hinges and capped vent retained. Smooth yellow cabinet comparable in light and dark PNG/SVG views.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chemical-storage-cabinet/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chemical-storage-cabinet/inspection.webm"
+      }
+    },
+    {
+      "id": "eyewash-station",
+      "aliases": [
+        "eyewash-station"
+      ],
+      "sha256": "473e04c53b00a97461ab4ee7b623a45c3f6e36e360ff551b2005aa0a04fa90c2",
+      "visualReview": "Twin spray heads, basin, paddle valve and pedestal remain connected and clear. Transparent PNG/SVG comparison passed.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/eyewash-station/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/eyewash-station/inspection.webm"
+      }
+    },
+    {
+      "id": "emergency-shower",
+      "aliases": [
+        "emergency-shower"
+      ],
+      "sha256": "1140fc339fe05d8bbba0d05ce5070775d4e9ff6559367f2616d4288966c9fb51",
+      "visualReview": "Complete supply pipe, shower head, pull rod and mounting foot remain intact. Transparent PNG/SVG comparison passed.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/emergency-shower/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/emergency-shower/inspection.webm"
+      }
+    },
+    {
+      "id": "antibody-coated-bead",
+      "aliases": [
+        "antibody-coated-bead"
+      ],
+      "sha256": "e902fdd7c152fc4186556b0c88c007e2fdb799ce995b0e565b8a2237406a2548",
+      "visualReview": "Reviewed eight complete IgGs with corrected four-domain Fc stems and two blue plus two cyan domains per Fab. PNG/SVG retain full sphere, tips and clean transparent padding on light/dark. Density and linkers schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/antibody-coated-bead/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/antibody-coated-bead/inspection.webm"
+      }
+    },
+    {
+      "id": "streptavidin-coated-bead",
+      "aliases": [
+        "streptavidin-coated-bead"
+      ],
+      "sha256": "e06bcf19b9b9d9609d58b4effbe30b3c5a5da71702b7a0ad8d2ea3670df18795",
+      "visualReview": "Reviewed eight compact four-lobed streptavidin assemblies on gold bead; shallow clefts and complete contours retained by editable SVG on both backgrounds. Real transparent padding clean; coating and pocket details schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/streptavidin-coated-bead/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/streptavidin-coated-bead/inspection.webm"
+      }
+    },
+    {
+      "id": "magnetic-bead-cell-complex",
+      "aliases": [
+        "magnetic-bead-cell-complex"
+      ],
+      "sha256": "5bf7fd7caefcd94347000995f552205102d7d349ea4fc905b7f08cf9c9f8b1e2",
+      "visualReview": "Reviewed all five external beads and antibody bridges; Fc points toward bead, Fab toward cell antigens. Complete cell, nucleus and bead silhouettes retained in SVG with clean transparent padding. Molecular domains and sizes simplified.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/magnetic-bead-cell-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/magnetic-bead-cell-complex/inspection.webm"
+      }
+    },
+    {
+      "id": "capture-antibody-bound-to-plate",
+      "aliases": [
+        "capture-antibody-bound-to-plate"
+      ],
+      "sha256": "1be4328dfd8d604150bddc58de3d922b8b93f80854bf55b2ccd5a9c27edf3420",
+      "visualReview": "Reviewed complete IgG with four Fc domains, paired heavy/light Fab domains and immobilization linker on small plate patch. SVG preserves clean contours and alpha on light/dark. Oriented immobilization is schematic, not passive-adsorption orientation.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/capture-antibody-bound-to-plate/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/capture-antibody-bound-to-plate/inspection.webm"
+      }
+    },
+    {
+      "id": "sandwich-immunoassay-complex",
+      "aliases": [
+        "sandwich-immunoassay-complex"
+      ],
+      "sha256": "234fb22491a35832bdfb4922bf3911c3e3e842384a61d323f1d670b624a9d9f5",
+      "visualReview": "Reviewed two IgGs binding distinct sides of one antigen, detector Fc with green reporter, and plate attachment. Corrected heavy/light domain colors retained in SVG. Complete assembly and clean transparent padding on both backgrounds.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sandwich-immunoassay-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sandwich-immunoassay-complex/inspection.webm"
+      }
+    },
+    {
+      "id": "lateral-flow-strip",
+      "aliases": [
+        "lateral-flow-strip"
+      ],
+      "sha256": "a564df28b74147a6995215849257a3359086918848ab3c30991e7ea2c80f4ab3",
+      "visualReview": "Reviewed complete backing and four overlapping pad regions with two illustrative magenta bands. SVG retains thin geometry and pad distinction on light/dark; transparent padding clean. Synthetic signal only, not a diagnostic result.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lateral-flow-strip/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/lateral-flow-strip/inspection.webm"
+      }
+    },
+    {
+      "id": "membrane-filter",
+      "aliases": [
+        "membrane-filter"
+      ],
+      "sha256": "7b0b8446ae223d1d1b6af8ef984b9c38c2f666cf947f100cacdeda7a2862eb3e",
+      "visualReview": "Reviewed complete thin disc, curled edge and symbolic pore field. Smooth pale membrane and silhouette retained in SVG with clean alpha on light/dark. Pores enlarged for illustration, not a pore-size specification.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/membrane-filter/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/membrane-filter/inspection.webm"
+      }
+    },
+    {
+      "id": "hydrogel-droplet",
+      "aliases": [
+        "hydrogel-droplet"
+      ],
+      "sha256": "1bef58573487f3074d4e6517ba38ffdbd78b8319543a1c3baa8775b6a4eb3e46",
+      "visualReview": "Reviewed hydrated sphere and crosslinked polymer strands at front and rear depths. SVG retains the network and complete boundary with clean transparent padding on both backgrounds; molecular network schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hydrogel-droplet/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hydrogel-droplet/inspection.webm"
+      }
+    },
+    {
+      "id": "hydrogel-scaffold",
+      "aliases": [
+        "hydrogel-scaffold"
+      ],
+      "sha256": "7e8f9f601c0e67dde62a5cdb10a1c45915ff606a1103fab2a0b46b97de59943f",
+      "visualReview": "Reviewed complete cutaway block, smooth gel faces and crosslinked mesh at several depths. Editable SVG preserves network and alpha on light/dark. Mesh and formulation schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hydrogel-scaffold/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hydrogel-scaffold/inspection.webm"
+      }
+    },
+    {
+      "id": "extracellular-matrix-gel-dome",
+      "aliases": [
+        "extracellular-matrix-gel-dome"
+      ],
+      "sha256": "babf7547622d464ef9d68366a9bad5b7e39e26e79a039a3492fa671743d0ca7b",
+      "visualReview": "Reviewed low dome with complete elliptical base and contained fine matrix network. PNG/SVG retain smooth pink fill, strand detail and clean alpha on both backgrounds. Protein mesh schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/extracellular-matrix-gel-dome/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/extracellular-matrix-gel-dome/inspection.webm"
+      }
+    },
+    {
+      "id": "fluorescent-reporter-protein",
+      "aliases": [
+        "fluorescent-reporter-protein"
+      ],
+      "sha256": "6cc8971f161dbd8c73509ded35a3318e8b73d2d7e5e603973b524c3bb1cae42d",
+      "visualReview": "Reviewed green barrel-surface cutaway with coaxial helix and integrated yellow chromophore symbol. SVG retains recognizable fold shorthand, smooth depth and clean alpha on light/dark. Surface ridges and chromophore are schematic, not exact strand count or chemistry.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fluorescent-reporter-protein/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/fluorescent-reporter-protein/inspection.webm"
+      }
+    },
+    {
+      "id": "luciferase-reporter-protein",
+      "aliases": [
+        "luciferase-reporter-protein"
+      ],
+      "sha256": "5d5b504f373115ad08bb3fb7fda42306611320c192a76a9896c88f5afbe7533a",
+      "visualReview": "Reviewed unequal connected gold/orange domains and clear cleft. SVG preserves full protein silhouette, hinge, surface depth and clean alpha on light/dark. Representative firefly-luciferase domain architecture, not exact coordinates.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/luciferase-reporter-protein/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/luciferase-reporter-protein/inspection.webm"
+      }
+    },
+    {
+      "id": "straight-microfluidic-channel",
+      "aliases": [
+        "straight-microfluidic-channel"
+      ],
+      "sha256": "ba22e52cb3cb75b90ddf98942ff030bcf7dff9b04ac4b97f9ff47407138ae98c",
+      "visualReview": "Reviewed PNG and editable SVG on light and dark backgrounds: complete bonded slab, two reservoir ports connected by one continuous straight channel; transparent exterior and generous padding preserved. Minor gradient banding remains comparable at asset scale.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/straight-microfluidic-channel/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/straight-microfluidic-channel/inspection.webm"
+      }
+    },
+    {
+      "id": "microfluidic-droplet-generator",
+      "aliases": [
+        "microfluidic-droplet-generator"
+      ],
+      "sha256": "40453ae7d6a50ee9740d1b4ef8a74016ac95d6a0cde460020460637479445e81",
+      "visualReview": "Reviewed PNG and editable SVG on light and dark backgrounds: one aqueous and two opposing carrier channels meet at cross junction, followed by four separated magenta droplets and one outlet. Four complete ports, filled substrate and transparent padded exterior preserved. Droplet size and fluids schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microfluidic-droplet-generator/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microfluidic-droplet-generator/inspection.webm"
+      }
+    },
+    {
+      "id": "y-junction-microfluidic-chip",
+      "aliases": [
+        "y-junction-microfluidic-chip"
+      ],
+      "sha256": "e5f4ec13f40d62d70ad9b609a29a3e869c61540245cf05a30433809e35cffffb",
+      "visualReview": "Viewed PNG and SVG on light and dark backgrounds: two separate inlet branches merge at one Y into one outlet, three complete ports and slab edges preserved. Transparent exterior and generous padding; restrained trace banding comparable at asset scale.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/y-junction-microfluidic-chip/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/y-junction-microfluidic-chip/inspection.webm"
+      }
+    },
+    {
+      "id": "perfusion-chamber",
+      "aliases": [
+        "perfusion-chamber"
+      ],
+      "sha256": "f1138a47aa060af93ab713af0b6c92de9bac8d6690e4aaef543e3732044ac4f3",
+      "visualReview": "Compared PNG and SVG on light and dark: complete low-profile oval holder, glass-bottom diamond bath, opposing barbed fittings and two screws remain recognizable. Exterior transparent with ample padding. Minor rim gradient banding at enlarged scale.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/perfusion-chamber/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/perfusion-chamber/inspection.webm"
+      }
+    },
+    {
+      "id": "microfluidic-cell-trap",
+      "aliases": [
+        "microfluidic-cell-trap"
+      ],
+      "sha256": "a7d2f9f5dbd772c235e74fa257b65d076b0e3f9d8a73017aa10c8ea72d1a15d1",
+      "visualReview": "Viewed original and PNG/SVG comparison: one nucleated cell retained within paired curved posts, narrow downstream slit and open lateral bypass paths, two ports and complete substrate. Transparent exterior and padding verified; small cell texture retained comparably.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microfluidic-cell-trap/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microfluidic-cell-trap/inspection.webm"
+      }
+    },
+    {
+      "id": "porous-membrane-chip",
+      "aliases": [
+        "porous-membrane-chip"
+      ],
+      "sha256": "32151398e4f5646cb7f80b0e27e3bac43588b28ba763b750c5c0be7040ac72af",
+      "visualReview": "Reviewed source and PNG/SVG on light and dark: stacked teal and lavender channels, continuous porous partition and four distinct ports preserved. Cutaway walls and complete outer form recognizable. True exterior transparency and padding, comparable subtle gradient banding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/porous-membrane-chip/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/porous-membrane-chip/inspection.webm"
+      }
+    },
+    {
+      "id": "biosensor-chip",
+      "aliases": [
+        "biosensor-chip"
+      ],
+      "sha256": "dda1b9b6ac926d3878cfbbec3c1de0db3df30e2595d167412556e52e570fb32a",
+      "visualReview": "Reviewed corrected original and light/dark PNG/SVG: three isolated electrode disks each connected to its own trace and pad, no shared working/counter connection. Three teal recognition symbols confined to gold disk. Complete strip, alpha exterior and padding preserved; trace comparable.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/biosensor-chip/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/biosensor-chip/inspection.webm"
+      }
+    },
+    {
+      "id": "wearable-biosensor-patch",
+      "aliases": [
+        "wearable-biosensor-patch"
+      ],
+      "sha256": "9e35bc3627cc31ea51873e5f0617a3417778d13abb79f5e1fdc05cc143870cfb",
+      "visualReview": "Reviewed final PNG and SVG on light and dark: three distinct gold traces connect all three sensing sites to separate electronics pads; curled adhesive backing and teal collection layer complete. Actual alpha exterior confirmed, no checkerboard; shading and connections preserved by trace.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/wearable-biosensor-patch/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/wearable-biosensor-patch/inspection.webm"
+      }
+    },
+    {
+      "id": "porous-scaffold",
+      "aliases": [
+        "porous-scaffold"
+      ],
+      "sha256": "927bf0b1983eab6fea81dcdaf1614e7f7ae0a820e31c016b8b202ff6f92348fd",
+      "visualReview": "Inspected original and light/dark comparison: coherent porous disk with rounded interconnected struts, open through-pores remain transparent in PNG and SVG, no cells. Complete padded silhouette and depth shading retained; trace comparable.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/porous-scaffold/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/porous-scaffold/inspection.webm"
+      }
+    },
+    {
+      "id": "electrospun-fiber-scaffold",
+      "aliases": [
+        "electrospun-fiber-scaffold"
+      ],
+      "sha256": "01b6f94e72619edf433ce678f2170429dc04b9f56fd1a9e87dbacc9ff35a1a46",
+      "visualReview": "Reviewed source and light/dark PNG/SVG: irregular nonwoven crossing fibers, finite thin sheet and curled corner retained. Inter-fiber through-gaps and exterior transparent, ample padding; trace preserves strand separation and shading comparably.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/electrospun-fiber-scaffold/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/electrospun-fiber-scaffold/inspection.webm"
+      }
+    },
+    {
+      "id": "3d-bioprinted-construct",
+      "aliases": [
+        "3d-bioprinted-construct"
+      ],
+      "sha256": "67110fa95b705f95b9072b0dceabef373a538c852792f2fd03f296e73adf924f",
+      "visualReview": "Reviewed version 2 source and light/dark PNG/SVG: four alternating perpendicular filament layers with embedded cell symbols, complete ends and lattice geometry. Corrected white remnants absent from through-openings; real alpha and generous padding retained. Five visible filaments per layer, schematic density, some deeper nuclei obscured. Trace comparable.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/3d-bioprinted-construct/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/3d-bioprinted-construct/inspection.webm"
+      }
+    },
+    {
+      "id": "cell-seeded-scaffold",
+      "aliases": [
+        "cell-seeded-scaffold"
+      ],
+      "sha256": "09bb7d803656f524da8291164d7bc1d57a2afed1c47df9b89f20412cdeec86be",
+      "visualReview": "Viewed source and light/dark PNG/SVG: eight complete adherent teal cells each with violet nucleus spread along scaffold struts. Coherent porous form and through-hole alpha preserved; complete outline after padding, trace comparable with minor gradient banding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-seeded-scaffold/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cell-seeded-scaffold/inspection.webm"
+      }
+    },
+    {
+      "id": "decellularized-matrix",
+      "aliases": [
+        "decellularized-matrix"
+      ],
+      "sha256": "a1ec56015f6a0c675cb95720a5973ec9fc4d5bdd2aab2ac7667ccc4300e16825",
+      "visualReview": "Reviewed source and light/dark comparison: wavy collagen-like bundles, fine purple fibers, pale ground substance and empty spaces remain distinct, no nuclei or intact cells. Complete layered patch and curled corners preserved. Exterior and through-spaces transparent; trace comparable.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/decellularized-matrix/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/decellularized-matrix/inspection.webm"
+      }
+    },
+    {
+      "id": "microcarrier-bead-with-adherent-cells",
+      "aliases": [
+        "microcarrier-bead-with-adherent-cells"
+      ],
+      "sha256": "4f222051bf09f6676f88658744418f568306f798249db22902be749c8f61aca4",
+      "visualReview": "Reviewed final source and light/dark PNG/SVG: one gold carrier with seven tangentially spread teal cells and seven violet nuclei; substrate visible between cells. Complete outline and cell processes retained, transparent padded exterior. Minor trace banding on bead acceptable at asset scale.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microcarrier-bead-with-adherent-cells/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/microcarrier-bead-with-adherent-cells/inspection.webm"
+      }
+    },
+    {
+      "id": "mouse-embryonic-stem-cell-colony",
+      "aliases": [
+        "mouse-embryonic-stem-cell-colony"
+      ],
+      "sha256": "8861ad59182a963e98bd40bd0283f3f7fcd7158530ddfc8bfbf73cad3aef2059",
+      "visualReview": "Viewed final alpha PNG and four-panel browser comparison. Compact domed colony with tightly touching lavender cells, large violet nuclei, complete flattened base; SVG retains smooth shape and boundaries on light and dark backgrounds with no external glow. Cell number and internal layering schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mouse-embryonic-stem-cell-colony/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mouse-embryonic-stem-cell-colony/inspection.webm"
+      }
+    },
+    {
+      "id": "human-ipsc-colony",
+      "aliases": [
+        "human-ipsc-colony"
+      ],
+      "sha256": "c50f6ed852c3ee9766d3d2b000e3ed3b6ccee18fb7584f1e1b6ae8d5ea61a083",
+      "visualReview": "Viewed final alpha and four-panel browser comparison. Flat compact one-cell-thick colony with closely touching polygonal cells and large violet nuclei; complete perimeter and clean background on both surfaces. SVG visually comparable to PNG. Representative primed culture, not all iPSC states.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/human-ipsc-colony/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/human-ipsc-colony/inspection.webm"
+      }
+    },
+    {
+      "id": "intestinal-organoid",
+      "aliases": [
+        "intestinal-organoid"
+      ],
+      "sha256": "16590e6d37188f0f10408fbc0a9270b866243b4fbaf7acc112c7f3bd91096b7b",
+      "visualReview": "Viewed final alpha and browser PNG/SVG light-dark comparison. Three outward crypt buds share a continuous central lumen; apical brush border faces inward, Paneth-like granules at tips, violet basal nuclei. Complete padded outline, no external background; vector retains epithelial detail and broad gradients.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/intestinal-organoid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/intestinal-organoid/inspection.webm"
+      }
+    },
+    {
+      "id": "cerebral-organoid",
+      "aliases": [
+        "cerebral-organoid"
+      ],
+      "sha256": "6ed33894101812d7e2329f3fe4c5df13cb88c1b1bba0106739025a5a18b3263d",
+      "visualReview": "Viewed alpha and four-panel browser comparison. Four separate pale lumens with elongated radial neural progenitor zones and outer pink tissue inside lobulated aggregate. Smooth vector shape and internal rosettes retained on both backgrounds; no extraneous marks visible. Regional anatomy and cell counts schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cerebral-organoid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cerebral-organoid/inspection.webm"
+      }
+    },
+    {
+      "id": "tumor-organoid",
+      "aliases": [
+        "tumor-organoid"
+      ],
+      "sha256": "bd7525d48db3754e4c5b0fdaae180942f021e9157d817ccfc6d181f964ebd768",
+      "visualReview": "Viewed final alpha and PNG/SVG comparison on light and dark backgrounds. Three irregular unequal gland-like lumens in compact lobulated aggregate, uneven cellular walls and varied violet nuclei. Smooth shading and complete perimeter preserved in SVG; representative schematic, not diagnostic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tumor-organoid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/tumor-organoid/inspection.webm"
+      }
+    },
+    {
+      "id": "airway-organoid",
+      "aliases": [
+        "airway-organoid"
+      ],
+      "sha256": "5814ef4f0936635628bac6e27a08845e57aaa6bf8a255c259f4eafa0529b0de2",
+      "visualReview": "Viewed final alpha and four-panel light-dark comparison. Hollow airway cyst section with all cilia inward, four nonciliated secretory cells each retaining basal violet nucleus and apical gold granules, smaller basal cells on outer side. Transparent lumen is intentional section view in final metadata. Complete outline with padded margins and comparable SVG detail.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/airway-organoid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/airway-organoid/inspection.webm"
+      }
+    },
+    {
+      "id": "kidney-organoid",
+      "aliases": [
+        "kidney-organoid"
+      ],
+      "sha256": "c3465dc2f2793666ade0a7ecaa5336e9f6921747bb3e01b74398f5e6c9661b6a",
+      "visualReview": "Viewed final alpha and PNG/SVG browser comparison. Three violet immature glomerular-like clusters with adjacent tubules, additional teal/coral tubular profiles in peach stroma. Complete tissue outline, clean padding and preserved detail on light/dark backgrounds. No mature vascular function implied.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/kidney-organoid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/kidney-organoid/inspection.webm"
+      }
+    },
+    {
+      "id": "cardiac-organoid",
+      "aliases": [
+        "cardiac-organoid"
+      ],
+      "sha256": "c8eac83cabaa3c09f36d3d26b6c963c8c5ab793345b0a104ae5a38fa3c13a673",
+      "visualReview": "Viewed final alpha and browser light-dark PNG/SVG comparison. Single cavity, thin teal endocardial-like lining and thick coral cellular wall with violet nuclei. Complete padded outline and smooth vector shading; muscle markings schematic, no adult chamber anatomy implied.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cardiac-organoid/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/cardiac-organoid/inspection.webm"
+      }
+    },
+    {
+      "id": "precision-cut-tissue-slice",
+      "aliases": [
+        "precision-cut-tissue-slice"
+      ],
+      "sha256": "14703b5fec6d6745afff664ec014eb4c084e53121dbb346099ed72840fc02ed9",
+      "visualReview": "Viewed final alpha and four-panel PNG/SVG comparison. Thin oblique tissue disk with intact complete edge, multiple visible cellular layers, hepatocyte-like cells and narrow sinusoidal spaces. Smooth color and cellular detail retained, no external glow on either background. Dimensions and counts schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/precision-cut-tissue-slice/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/precision-cut-tissue-slice/inspection.webm"
+      }
+    },
+    {
+      "id": "patient-derived-xenograft-tumor-fragment",
+      "aliases": [
+        "patient-derived-xenograft-tumor-fragment"
+      ],
+      "sha256": "be421ab4adfd85a609db2476dbe5ebb0db56d96e040f20225d3d9a07b41fc9d3",
+      "visualReview": "Viewed alpha and browser PNG/SVG comparison. Irregular cuboidal excised fragment with three cut faces, violet tumor-cell nests and pale stromal bands. Complete shape and smooth shading preserved on both backgrounds, no external glow. PDX identity is contextual, tissue representation schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/patient-derived-xenograft-tumor-fragment/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/patient-derived-xenograft-tumor-fragment/inspection.webm"
+      }
+    },
+    {
+      "id": "car-receptor",
+      "aliases": [
+        "car-receptor"
+      ],
+      "sha256": "a1356ab3ffe894378ea712c3cebdf1ba66bbe9c4b317ad834d21575d509f65e1",
+      "visualReview": "Viewed source and four-panel comparison. Paired variable domains joined by linker, hinge, one TM helix and continuous gold-violet cytoplasmic tail with three paired motifs retained. Complete endpoints and clean alpha; trace comparable. All folds and motif marks schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/car-receptor/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/car-receptor/inspection.webm"
+      }
+    },
+    {
+      "id": "car-t-cell",
+      "aliases": [
+        "car-t-cell"
+      ],
+      "sha256": "b109ae3d03b6599b9cf3b84427380ddece564fa9fee99b9cfb215796aad379b4",
+      "visualReview": "Viewed original and four-panel render: six membrane-spanning CARs with outward paired blue-cyan heads and inward signaling tails, large nucleus and small organelles. Entire heads and loops visible. Clean alpha; editable trace retains topology with minor nucleus gradient banding. Receptor number and motif marks schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/car-t-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/car-t-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "aav-particle",
+      "aliases": [
+        "aav-particle"
+      ],
+      "sha256": "13a9de6ebcf5cf83bf79828f4ab654f6a18365df3e144f13e9f250e9f4aa7976",
+      "visualReview": "Reviewed PNG and editable SVG on light and dark backgrounds. Complete near-spherical non-enveloped capsid with rounded protein relief and single-stranded genome cutaway; broad depth and crisp outline retained. Capsid subunit arrangement is schematic, not an exact structural model.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/aav-particle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/aav-particle/inspection.webm"
+      }
+    },
+    {
+      "id": "electroporation-cuvette",
+      "aliases": [
+        "electroporation-cuvette"
+      ],
+      "sha256": "64e7479dadce9a9005f5b1cf56599a64b86cd5332a41a396a188700943a7de24",
+      "visualReview": "Version 2 reviewed on light and dark backgrounds: solid pale-blue plastic shading fixes internal tracing holes; opposing plate electrodes, cyan sample, complete cap and feet retained in editable SVG. Transparent padding clean.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/electroporation-cuvette/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/electroporation-cuvette/inspection.webm"
+      }
+    },
+    {
+      "id": "electroporator-nucleofector",
+      "aliases": [
+        "electroporator-nucleofector"
+      ],
+      "sha256": "df1491661244816e6db1756adfadca1754a527a4da9eda2917b3069de8b1ce15",
+      "visualReview": "Reviewed complete instrument and SVG on both backgrounds. Open safety lid, recessed cuvette, display, three controls and feet retained; real alpha clean. Generic single-cuvette architecture rather than a specific branded model.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/electroporator-nucleofector/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/electroporator-nucleofector/inspection.webm"
+      }
+    },
+    {
+      "id": "dna-lipid-transfection-complex",
+      "aliases": [
+        "dna-lipid-transfection-complex"
+      ],
+      "sha256": "22d4f5224fc7c52a50eff462fe5db358a37830ef66d87a96b0dea8f9cc4a419a",
+      "visualReview": "Reviewed both light and dark PNG/SVG renders. Three nested lipid layers and interlamellar violet DNA remain clear, complete particle and transparent padding preserved. Representative lamellar lipoplex with schematic tail and molecule counts.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-lipid-transfection-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-lipid-transfection-complex/inspection.webm"
+      }
+    },
+    {
+      "id": "mrna-lipid-nanoparticle-transfection-complex",
+      "aliases": [
+        "mrna-lipid-nanoparticle-transfection-complex"
+      ],
+      "sha256": "56fef7f7cd4ee6259bdcdb4e1f67a9b33c9536280761ff0c9f6e04dd32604374",
+      "visualReview": "Reviewed PNG and editable SVG on light/dark backgrounds. Dense mixed lipid core, three single-stranded RNA pockets and four complete PEG tethers retained; clean alpha padding. Internal organization and stoichiometry are schematic.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mrna-lipid-nanoparticle-transfection-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/mrna-lipid-nanoparticle-transfection-complex/inspection.webm"
+      }
+    },
+    {
+      "id": "transposase-dna-complex",
+      "aliases": [
+        "transposase-dna-complex"
+      ],
+      "sha256": "932a1b257d5c1a53437c5c6f600e25dd36f50154ff9d15d57790574c4e10ac4e",
+      "visualReview": "Reviewed two-color dimer and two DNA fragments with cross-contact lobes on light/dark renders. Editable SVG preserves lobes, helices, full termini outside and transparent padding. Inner DNA termini are occluded; schematic architecture, not an atomic mechanism.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/transposase-dna-complex/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/transposase-dna-complex/inspection.webm"
       }
     },
     {
@@ -7304,13 +8620,266 @@
     {
       "id": "peristaltic-pump",
       "aliases": [
-        "peristaltic-pump"
+        "peristaltic-pump",
+        "perfusion-pump"
       ],
       "sha256": "dc7654c188b0fb76a904eef6605a68d9b9cb0df6864e89bd226f4115d7bc7e7a",
       "visualReview": "Verified three rollers, continuous external tube path and two complete ends in PNG/SVG light/dark composites. Pump head, blank controls and casing retained with clean alpha padding; no labels or extra tubing.",
       "qa": {
         "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/peristaltic-pump/comparison.png",
         "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/peristaltic-pump/inspection.webm"
+      }
+    },
+    {
+      "id": "dna-fragment-with-sequencing-adapters",
+      "aliases": [
+        "dna-fragment-with-sequencing-adapters"
+      ],
+      "sha256": "0cec9b8f6ece75ee05572fb6fb346f994e3095bc94ab5f0c4347015c414db589",
+      "visualReview": "Reviewed smoothed source and PNG/SVG light/dark: two continuous backbones with paired rungs and distinct terminal adapter regions, no detached caps or tags. Spaces between rungs and exterior transparent, entire fragment padded. Trace preserves contours and shading.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-fragment-with-sequencing-adapters/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dna-fragment-with-sequencing-adapters/inspection.webm"
+      }
+    },
+    {
+      "id": "indexed-dna-library-fragment",
+      "aliases": [
+        "indexed-dna-library-fragment"
+      ],
+      "sha256": "f355f637afaab2068592f59a43d3229b490f3acfce69e5df7e0e1446b1975e20",
+      "visualReview": "Viewed PNG source and four-panel browser comparison. Two continuous helical strands, paired rungs, coral and gold terminal adapters, short violet and green index regions remain visible in both formats. Transparent interior gaps and generous complete-outline padding on light and dark; minor gradient banding in editable paths.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/indexed-dna-library-fragment/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/indexed-dna-library-fragment/inspection.webm"
+      }
+    },
+    {
+      "id": "barcoded-oligonucleotide",
+      "aliases": [
+        "barcoded-oligonucleotide"
+      ],
+      "sha256": "683514a0ef9be46818a58330e2693b8392755a2fdf4c6b36c6d0d8b88a3fa5cf",
+      "visualReview": "Viewed original and PNG/SVG on light and dark. One continuous strand with unpaired bases and five-base violet functional barcode region; no second strand, background glow or raster embedding. Complete outline and generous padding, slight trace banding.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/barcoded-oligonucleotide/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/barcoded-oligonucleotide/inspection.webm"
+      }
+    },
+    {
+      "id": "sequencing-flow-cell",
+      "aliases": [
+        "sequencing-flow-cell"
+      ],
+      "sha256": "f279f502cb5d0b900c2b33da46fd454618ea05bc4bd646b5897aa9aa5181fb52",
+      "visualReview": "Viewed source and PNG/SVG light/dark comparison. Four continuous parallel lanes, eight individual ports, navy end grips and cluster dots preserved, complete rectangular outline with transparent exterior and generous padding. Minor stipple and glass shading banding; no embedded raster.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sequencing-flow-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sequencing-flow-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "capture-probe-spot",
+      "aliases": [
+        "capture-probe-spot"
+      ],
+      "sha256": "2952a8b99c19675e78f02db98514ed9b1e5ad4ceae5f78a2b8a6f506d509c81f",
+      "visualReview": "Viewed source and four-panel PNG/SVG comparison. Seven distinct surface-tethered single strands with violet, teal and gold sequence regions preserved; transparent exterior and chain gaps, complete disk and tips, generous margins. Minor glass shading banding in editable paths. Functional magnification rather than physical scale.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/capture-probe-spot/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/capture-probe-spot/inspection.webm"
+      }
+    },
+    {
+      "id": "axolotl",
+      "aliases": [
+        "axolotl"
+      ],
+      "sha256": "18771b67f9e0819888ffd657a8d864dd21123028e807af64bfc14d65e020a2e7",
+      "visualReview": "Six gill stalks, four-toed visible forefeet, five-toed near hindfoot and complete finned tail retained. Far hind limb occluded. Smoothed PNG and editable SVG comparable on light/dark backgrounds.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/axolotl/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/axolotl/inspection.webm"
+      }
+    },
+    {
+      "id": "medaka-fish",
+      "aliases": [
+        "medaka-fish"
+      ],
+      "sha256": "24b26530e90414689d71cef99cbe592d4a14ed9d40a1a306e4d9f6b1b13ef8b3",
+      "visualReview": "Posterior dorsal fin, long anal fin, eye and complete tail preserved. Fine scale detail retained with comparable PNG/SVG appearance on both backgrounds.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/medaka-fish/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/medaka-fish/inspection.webm"
+      }
+    },
+    {
+      "id": "sea-urchin",
+      "aliases": [
+        "sea-urchin"
+      ],
+      "sha256": "4b450891851781f64b37999487456991aec64404c0bd8df99f957607d33372a5",
+      "visualReview": "Complete radial spine silhouette and visible tube feet retained. Editable SVG comparable to PNG against light/dark backgrounds.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sea-urchin/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/sea-urchin/inspection.webm"
+      }
+    },
+    {
+      "id": "planarian-flatworm",
+      "aliases": [
+        "planarian-flatworm"
+      ],
+      "sha256": "e56ca971a8bf6c39cf194150b9d44cc8606e22ae878c85049495c36b595277f1",
+      "visualReview": "Intact external dorsal silhouette with auricles, two eyespots and tapering tail. Internal gut removed. PNG/SVG comparison passed on both backgrounds.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/planarian-flatworm/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/planarian-flatworm/inspection.webm"
+      }
+    },
+    {
+      "id": "hydra",
+      "aliases": [
+        "hydra"
+      ],
+      "sha256": "af016f1694159b275fb556bed8049dd8653333fd09af9912340fe55ed7692cf6",
+      "visualReview": "Five visible tentacles remain attached around hypostome; complete body and basal disk. Smoothed PNG and SVG comparable on light/dark backgrounds.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hydra/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/hydra/inspection.webm"
+      }
+    },
+    {
+      "id": "dictyostelium-amoeba",
+      "aliases": [
+        "dictyostelium-amoeba"
+      ],
+      "sha256": "3eda3a50399f7c47d4fb46def92460e8f64589bbbd2fc06f9e8171491253ee21",
+      "visualReview": "Lobose single-cell silhouette, one nucleus, vacuoles and four mitochondria retained. Smoothed PNG/SVG comparison passed with clean transparency.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dictyostelium-amoeba/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/dictyostelium-amoeba/inspection.webm"
+      }
+    },
+    {
+      "id": "chlamydomonas-cell",
+      "aliases": [
+        "chlamydomonas-cell"
+      ],
+      "sha256": "f8631572ebdf6216ce5c1b9b9d5ca71973a0afcee65ffda29934e8f6f3919b52",
+      "visualReview": "Two complete flagella, single cup chloroplast, lateral eyespot, nucleus and pyrenoid retained. PNG/SVG comparison passed on light/dark backgrounds.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chlamydomonas-cell/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/chlamydomonas-cell/inspection.webm"
+      }
+    },
+    {
+      "id": "glycocalyx",
+      "aliases": [
+        "glycocalyx"
+      ],
+      "sha256": "ece72d2c4ae156ec18edeef87c8e5d2ecc9889eaaffa0fdaf48fff1237bb5fbf",
+      "visualReview": "Viewed corrected alpha source and four-panel PNG/SVG comparison. All carbohydrate chains remain extracellular, three tall purple cores and shorter teal anchors preserved. Opposing membrane tail leaflets are separated at the midplane. Transparent exterior and branch gaps, complete outline, generous margins. Fine sugar detail and mild vector banding remain comparable.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/glycocalyx/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/glycocalyx/inspection.webm"
+      }
+    },
+    {
+      "id": "extracellular-dna-web",
+      "aliases": [
+        "extracellular-dna-web"
+      ],
+      "sha256": "43f473fc2344571f1746dacdcec0381fc988b7cfb1fa08f2c7830b5b0b20d14e",
+      "visualReview": "Viewed source and PNG/SVG on light and dark. Interwoven duplex DNA strands, helical rungs, free ends and open mesh gaps preserved. No background glow, clipping, attached cells or raster embedding. Fine helix outlines darken slightly in SVG; network remains comparable.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/extracellular-dna-web/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/extracellular-dna-web/inspection.webm"
+      }
+    },
+    {
+      "id": "bacterial-pilus",
+      "aliases": [
+        "bacterial-pilus"
+      ],
+      "sha256": "aac1904397d50b031dd16d308f96c2456f8bcfb63873ab48315fb7b816b945fc",
+      "visualReview": "Viewed smoothed source and four-panel PNG/SVG comparison. One gently curved narrow pilin filament with closely packed subunits and both ends intact. Teal shading and outlines preserved, transparent exterior on both backgrounds, ample padding, minor vector gradient bands.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bacterial-pilus/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bacterial-pilus/inspection.webm"
+      }
+    },
+    {
+      "id": "bacterial-flagellum-bundle",
+      "aliases": [
+        "bacterial-flagellum-bundle"
+      ],
+      "sha256": "388c0519d0d702e30f963ca71c53562dd00eb7aac05008623e97900c19ae41be",
+      "visualReview": "Viewed source and four-panel PNG/SVG comparison. Four separate blue-teal filaments with common coiled waveform and eight visible cut tips preserved; no rungs, common stalk, background or clipped ends. Generous margins; minor vector shading bands.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bacterial-flagellum-bundle/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/bacterial-flagellum-bundle/inspection.webm"
+      }
+    },
+    {
+      "id": "3d-bioprinter",
+      "aliases": [
+        "3d-bioprinter"
+      ],
+      "sha256": "db1af8841f402cd4c86a6e5e2bf334055c7de5291b29d6ecb97719ca30f8211d",
+      "visualReview": "Reviewed source and light/dark comparison: cartridge and cyan extruded filament agree, gantry, build stage, small lattice, blank controls and complete enclosure remain recognizable. Padded transparent exterior, no labels or detached parts; SVG comparable.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/3d-bioprinter/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/3d-bioprinter/inspection.webm"
+      }
+    },
+    {
+      "id": "perfusion-bioreactor",
+      "aliases": [
+        "perfusion-bioreactor"
+      ],
+      "sha256": "891bfa2357502dcfe8c263cfdbe1b53c7911a0a002b1b4594aaec20b2ece51e2",
+      "visualReview": "Reviewed source and light/dark PNG/SVG: filled chambers replace initial jets, scaffold contacts perforated supports and sealing rims, axial connectors and complete caps/tie rods preserved. No detached flow splashes. True padded exterior alpha, trace comparable; schematic chamber and exaggerated scaffold detail.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/perfusion-bioreactor/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/perfusion-bioreactor/inspection.webm"
+      }
+    },
+    {
+      "id": "infusion-bag",
+      "aliases": [
+        "infusion-bag"
+      ],
+      "sha256": "e9bec3e2bd8068a7f85b3f4910e31dd75bb8f7225f7df9963f620743591f1b3b",
+      "visualReview": "Pouch seam, hanging hole, fluid meniscus and both capped ports retained. Continuous illustrated bag fill without jagged transparency holes. PNG/SVG comparison passed.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/infusion-bag/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/infusion-bag/inspection.webm"
+      }
+    },
+    {
+      "id": "infusion-pump",
+      "aliases": [
+        "infusion-pump"
+      ],
+      "sha256": "1baaa859301a9239d7780a568fb80e4d626ce25f2d7132efa988709da2cecd64",
+      "visualReview": "Complete housing, closed pump door, screen, handle and pole clamp retained. Minor screen gradient banding; PNG/SVG comparison otherwise comparable on both backgrounds.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/infusion-pump/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/infusion-pump/inspection.webm"
+      }
+    },
+    {
+      "id": "subcutaneous-tumor-xenograft-nodule",
+      "aliases": [
+        "subcutaneous-tumor-xenograft-nodule"
+      ],
+      "sha256": "e924a9c569d0e3cedcbcff810ee405c5da3f2ca7566330e12b97b0dfa060cac5",
+      "visualReview": "Complete lobulated nodule and intrinsic surface vessels retained. Refined matte shading and transparent background verified in comparable PNG/SVG light/dark views.",
+      "qa": {
+        "comparison.png": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/subcutaneous-tumor-xenograft-nodule/comparison.png",
+        "inspection.webm": "https://pub-2522e09cc0ae4b1ba2ff37cbba779674.r2.dev/opensketch/experimental-ai-assets-20260904/inventory/subcutaneous-tumor-xenograft-nodule/inspection.webm"
       }
     }
   ]
