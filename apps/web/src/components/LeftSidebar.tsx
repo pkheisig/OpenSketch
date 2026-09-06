@@ -1234,7 +1234,7 @@ function AssetsPanel({
               className="asset-list"
               height={assetListHeight}
               itemCount={rows}
-              itemSize={184}
+              itemSize={155}
               overscanCount={8}
               width="100%"
             >
