@@ -75,10 +75,7 @@ import {
   rasterLimitMessage
 } from "@workspace/editor-core";
 import { sanitizeImportedSvg } from "@/assets/browserSanitizer";
-import {
-  importDecisionMessage,
-  prepareInterchangeFile
-} from "@/interchange/registry";
+import { importDecisionMessage, prepareInterchangeFile } from "@/interchange/registry";
 import {
   encodeBmpRgba,
   encodeTiffRgba,
