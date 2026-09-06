@@ -65,8 +65,8 @@ describe("stylesheet ownership checks", () => {
     }, "selector .commented is owned by both");
     expectFixtureFailure(
       (stylesDir) =>
-        fs.appendFileSync(path.join(stylesDir, "home.css"), "\nHTML[data-theme='light'] {}\n"),
-      "selector html[data-theme=light] is owned by both"
+        fs.appendFileSync(path.join(stylesDir, "home.css"), "\n.opensketch-app .button {}\n"),
+      "selector .opensketch-app .button is owned by both"
     );
   });
 

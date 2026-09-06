@@ -3,6 +3,7 @@ import {
   createContext,
   createElement,
   useContext,
+  useLayoutEffect,
   useState,
   type ReactNode
 } from "react";
@@ -19,6 +20,7 @@ import type { ProjectLoadResult } from "@/persistence/portable";
 import type { OfflineAssetPackStatus } from "@/assets/offlineAssetPack";
 
 export type Theme = "light" | "dark";
+export type ThemeAppearance = "system" | "light" | "dark";
 
 export const OPENSKETCH_APPLICATION_VERSION = "0.1.0" as const;
 export const OPENSKETCH_APPLICATION_CONTRACT_VERSION = "1.0.0" as const;
@@ -191,6 +193,11 @@ export interface OpenSketchApplicationContext {
   activeProjectId?: string | null;
   mode?: "standalone" | "opensuite";
   theme?: Theme;
+  appearance?: ThemeAppearance;
+  systemTheme?: Theme;
+  style?: string;
+  palette?: string;
+  themeContractVersion?: string;
   density?: "comfortable" | "compact" | "standard";
   reducedMotion?: boolean;
   uiContractVersion?: string;
@@ -206,6 +213,18 @@ export interface OpenSketchApplicationContext {
   ownsShutdown?: boolean;
   themeRootId?: string;
   portalRootId?: string;
+}
+
+export interface OpenSketchPortalScope {
+  mode: "standalone" | "opensuite";
+  theme: Theme;
+  density: "compact" | "standard";
+  reducedMotion: boolean;
+  uiContractVersion: string;
+  style: string;
+  palette: string;
+  appearance: ThemeAppearance;
+  themeContractVersion: string;
 }
 
 export interface OpenSketchLifecycleState extends OpenSketchApplicationContext {
@@ -274,17 +293,68 @@ export function useOpenSketchHostServices(): OpenSketchHostServices {
 
 export function OpenSketchPortalRoot({
   children,
-  portalRootId
+  portalRootId,
+  scope
 }: {
   children?: ReactNode;
   portalRootId?: string;
+  scope?: OpenSketchPortalScope;
 }) {
   const [root, setRoot] = useState<HTMLDivElement | null>(null);
+  const [hostPortalRoot, setHostPortalRoot] = useState<HTMLDivElement | null>(null);
   const hostRoot =
     portalRootId && typeof document !== "undefined" ? document.getElementById(portalRootId) : null;
+
+  useLayoutEffect(() => {
+    if (!hostRoot) {
+      setHostPortalRoot(null);
+      return undefined;
+    }
+    const scopedRoot = document.createElement("div");
+    scopedRoot.className = "opensketch-app opensketch-portal-host";
+    hostRoot.append(scopedRoot);
+    setHostPortalRoot(scopedRoot);
+    return () => {
+      setHostPortalRoot((current) => (current === scopedRoot ? null : current));
+      scopedRoot.remove();
+    };
+  }, [hostRoot]);
+
+  useLayoutEffect(() => {
+    if (!hostPortalRoot || !scope) return undefined;
+    const attributes: Record<string, string> = {
+      "data-opensketch-mode": scope.mode,
+      "data-opensketch-theme": scope.theme,
+      "data-opensketch-density": scope.density,
+      "data-opensketch-reduced-motion": String(scope.reducedMotion),
+      "data-opensketch-ui-contract": scope.uiContractVersion,
+      "data-suite-theme-root": "",
+      "data-suite-ui": "opensketch",
+      "data-suite-style": scope.style,
+      "data-suite-palette": scope.palette,
+      "data-suite-appearance": scope.appearance,
+      "data-suite-theme-contract-version": scope.themeContractVersion,
+      "data-theme": scope.theme,
+      "data-density": scope.density
+    };
+    for (const [name, value] of Object.entries(attributes)) {
+      hostPortalRoot.setAttribute(name, value);
+    }
+    hostPortalRoot.classList.toggle("theme-light", scope.theme === "light");
+    hostPortalRoot.classList.toggle("theme-dark", scope.theme === "dark");
+    return () => {
+      for (const name of Object.keys(attributes)) {
+        hostPortalRoot.removeAttribute(name);
+      }
+      hostPortalRoot.classList.remove("theme-light", "theme-dark");
+    };
+  }, [hostPortalRoot, scope]);
+
+  const portalTarget = hostRoot ? hostPortalRoot : root;
+
   return createElement(
     OpenSketchPortalRootContext.Provider,
-    { value: hostRoot ?? root },
+    { value: portalTarget },
     createElement(
       Fragment,
       null,

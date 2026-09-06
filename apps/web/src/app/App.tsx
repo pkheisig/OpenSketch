@@ -1,4 +1,13 @@
-import { lazy, Suspense, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode
+} from "react";
 import { AlertTriangle, X } from "lucide-react";
 import type { ProjectFolderRecord, ProjectRecord } from "@workspace/editor-core";
 import { normalizeProjectForLoad } from "@/persistence/portable";
@@ -47,6 +56,30 @@ export function App({
   );
   const presentation = resolveOpenSketchApplicationPresentation(initialContext, standaloneTheme);
   const { theme } = presentation;
+  const portalScope = useMemo(
+    () => ({
+      mode: presentation.mode,
+      theme,
+      density: presentation.density === "comfortable" ? "standard" : presentation.density,
+      reducedMotion: presentation.reducedMotion,
+      uiContractVersion: presentation.uiContractVersion,
+      style: presentation.style,
+      palette: presentation.palette,
+      appearance: presentation.appearance,
+      themeContractVersion: presentation.themeContractVersion
+    }),
+    [
+      presentation.appearance,
+      presentation.density,
+      presentation.mode,
+      presentation.palette,
+      presentation.reducedMotion,
+      presentation.style,
+      presentation.themeContractVersion,
+      presentation.uiContractVersion,
+      theme
+    ]
+  );
   const [projects, setProjects] = useState<ProjectRecord[]>([]);
   const [folders, setFolders] = useState<ProjectFolderRecord[]>([]);
   const [current, setCurrent] = useState<ProjectRecord | null>(null);
@@ -366,8 +399,16 @@ export function App({
       data-opensketch-owns-global-chrome={presentation.ownsGlobalChrome}
       data-opensketch-owns-theme={presentation.ownsTheme}
       data-opensketch-owns-updating={presentation.ownsUpdating}
+      data-suite-theme-root=""
+      data-suite-ui="opensketch"
+      data-suite-style={presentation.style}
+      data-suite-palette={presentation.palette}
+      data-suite-appearance={presentation.appearance}
+      data-suite-theme-contract-version={presentation.themeContractVersion}
+      data-theme={theme}
+      data-density={presentation.density === "comfortable" ? "standard" : presentation.density}
     >
-      <OpenSketchPortalRoot portalRootId={initialContext?.portalRootId}>
+      <OpenSketchPortalRoot portalRootId={initialContext?.portalRootId} scope={portalScope}>
         {content}
       </OpenSketchPortalRoot>
     </div>

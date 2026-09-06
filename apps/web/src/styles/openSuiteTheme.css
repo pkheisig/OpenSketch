@@ -1,101 +1,141 @@
-/* OpenSuite adapter ownership. The host owns suite tokens; this maps the
-   module's legacy semantic names without importing private host selectors. */
+/* OpenSuite foundation adapter ownership. The host may provide the canonical
+   --suite-* tokens; standalone uses the same defaults locally. */
 
-.opensketch-app[data-opensketch-mode="opensuite"] {
-  --shell-bg: var(--suite-bg-shell, #eee7db);
-  --shell-card: var(--suite-bg-surface, #fffaf0);
-  --shell-raised: var(--suite-bg-surface-raised, #fffdf6);
-  --shell-border: var(--suite-border, #d5c8b7);
-  --shell-border-strong: var(--suite-border-strong, #c5b6a4);
-  --shell-text: var(--suite-text-main, #29251f);
-  --shell-muted: var(--suite-text-muted, #766c61);
-  --shell-faint: var(--suite-text-faint, #9a8d7e);
-  --shell-accent: var(--suite-accent, #c65a24);
-  --shell-accent-strong: var(--suite-accent-hover, #a4481b);
-  --shell-accent-soft: var(--suite-accent-soft, #f7e2d3);
-  --shell-on-accent: var(--suite-text-on-accent, #ffffff);
-  --shell-danger: var(--suite-semantic-danger, #b84c38);
-  --shell-input: var(--suite-bg-input, color-mix(in srgb, var(--shell-card) 92%, var(--shell-bg)));
+:is(.opensketch-app, [data-suite-ui="opensketch"]) {
+  --shell-bg: var(--suite-bg-shell, var(--suite-color-shell, #eee7db));
+  --shell-card: var(--suite-bg-surface, var(--suite-color-surface, #fffaf0));
+  --shell-raised: var(--suite-bg-surface-raised, var(--suite-color-surface-raised, #fffdf8));
+  --shell-border: var(--suite-border, var(--suite-color-border, #cfc3b4));
+  --shell-border-strong: var(--suite-border-strong, var(--suite-color-border-strong, #ab9b8a));
+  --shell-text: var(--suite-text-main, var(--suite-color-text, #29251f));
+  --shell-muted: var(--suite-text-muted, var(--suite-color-text-muted, #766c61));
+  --shell-faint: var(--suite-text-faint, var(--suite-color-text-placeholder, #9a8d7e));
+  --shell-accent: var(--suite-accent, var(--suite-color-accent, #b84f1e));
+  --shell-accent-strong: var(--suite-accent-hover, var(--suite-color-accent-hover, #aa4819));
+  --shell-accent-soft: var(--suite-accent-soft, var(--suite-color-accent-soft, #f4d8c6));
+  --shell-on-accent: var(--suite-text-on-accent, var(--suite-color-text-on-accent, #fffaf0));
+  --shell-danger: var(--suite-semantic-danger, var(--suite-color-danger, #a13e34));
+  --shell-input: var(
+    --suite-bg-input,
+    var(--suite-color-input, color-mix(in srgb, var(--shell-card) 92%, var(--shell-bg)))
+  );
   --shell-canvas: var(
     --suite-bg-workspace,
     color-mix(in srgb, var(--shell-bg) 82%, var(--shell-border))
   );
-  --shell-row: var(--suite-bg-subtle, color-mix(in srgb, var(--shell-card) 90%, var(--shell-bg)));
-  --shell-focus: var(--suite-focus, color-mix(in srgb, var(--shell-accent) 18%, var(--shell-card)));
-  --font-sans: var(--suite-font-app, Inter, "Avenir Next", Avenir, "Helvetica Neue", sans-serif);
+  --shell-row: var(--suite-bg-subtle, var(--suite-color-subtle, #e7ded1));
+  --shell-focus: var(
+    --suite-focus,
+    var(--suite-color-focus, color-mix(in srgb, var(--shell-accent) 18%, var(--shell-card)))
+  );
+  --font-sans: var(
+    --suite-font-app,
+    var(--suite-font-family-app, Inter, "Avenir Next", Avenir, "Helvetica Neue", sans-serif)
+  );
   --motion-ui: var(--suite-motion-normal, 160ms cubic-bezier(0.2, 0.7, 0.2, 1));
   --motion-panel: var(--suite-motion-slow, 220ms cubic-bezier(0.2, 0.7, 0.2, 1));
-  --opensketch-control-normal: var(--suite-control-normal, 36px);
-  --opensketch-control-compact: var(--suite-control-compact, 30px);
+  --opensketch-control-normal: var(
+    --suite-control-normal,
+    var(--suite-control-height-normal, 36px)
+  );
+  --opensketch-control-compact: var(
+    --suite-control-compact,
+    var(--suite-control-height-compact, 30px)
+  );
   --opensketch-radius-control: var(--suite-radius-control, 7px);
   --opensketch-radius-card: var(--suite-radius-card, 9px);
   --opensketch-radius-dialog: var(--suite-radius-dialog, 10px);
+  --opensketch-border-width: var(--suite-border-width, 1px);
+  --opensketch-space-control-gap: var(--suite-space-control-gap, 8px);
   font-family: var(--font-sans);
   color-scheme: light;
 }
 
-.opensketch-app[data-opensketch-mode="opensuite"][data-opensketch-theme="dark"] {
-  --shell-bg: var(--suite-bg-shell, #1d1916);
-  --shell-card: var(--suite-bg-surface, #2a241f);
-  --shell-raised: var(--suite-bg-surface-raised, #332a24);
-  --shell-border: var(--suite-border, #504338);
-  --shell-border-strong: var(--suite-border-strong, #665548);
-  --shell-text: var(--suite-text-main, #f6eee5);
-  --shell-muted: var(--suite-text-muted, #c4b5a7);
-  --shell-faint: var(--suite-text-faint, #9e8c7d);
-  --shell-accent: var(--suite-accent, #ff9654);
-  --shell-accent-strong: var(--suite-accent-hover, #ffb27d);
-  --shell-accent-soft: var(--suite-accent-soft, #4a2d1e);
-  --shell-on-accent: var(--suite-text-on-accent, #2a180e);
-  --shell-danger: var(--suite-semantic-danger, #f08a78);
+:is(.opensketch-app, [data-suite-ui="opensketch"])[data-opensketch-theme="dark"] {
+  --shell-bg: var(--suite-bg-shell, var(--suite-color-shell, #1d1916));
+  --shell-card: var(--suite-bg-surface, var(--suite-color-surface, #2a241f));
+  --shell-raised: var(--suite-bg-surface-raised, var(--suite-color-surface-raised, #322a24));
+  --shell-border: var(--suite-border, var(--suite-color-border, #56493e));
+  --shell-border-strong: var(--suite-border-strong, var(--suite-color-border-strong, #766558));
+  --shell-text: var(--suite-text-main, var(--suite-color-text, #f6eee5));
+  --shell-muted: var(--suite-text-muted, var(--suite-color-text-muted, #c4b5a7));
+  --shell-faint: var(--suite-text-faint, var(--suite-color-text-placeholder, #9e8c7d));
+  --shell-accent: var(--suite-accent, var(--suite-color-accent, #ff9654));
+  --shell-accent-strong: var(--suite-accent-hover, var(--suite-color-accent-hover, #ffad77));
+  --shell-accent-soft: var(--suite-accent-soft, var(--suite-color-accent-soft, #5a321f));
+  --shell-on-accent: var(--suite-text-on-accent, var(--suite-color-text-on-accent, #1d1916));
+  --shell-danger: var(--suite-semantic-danger, var(--suite-color-danger, #ff9589));
+  --shell-row: var(--suite-bg-subtle, var(--suite-color-subtle, #393029));
   color-scheme: dark;
 }
 
-.opensketch-app[data-opensketch-mode="opensuite"][data-opensketch-reduced-motion="true"] {
+:is(.opensketch-app, [data-suite-ui="opensketch"])[data-opensketch-density="compact"] {
+  --opensketch-control-normal: var(
+    --suite-control-compact,
+    var(--suite-control-height-compact, 30px)
+  );
+  --opensketch-control-compact: var(
+    --suite-control-compact,
+    var(--suite-control-height-compact, 26px)
+  );
+  --opensketch-space-control-gap: var(--suite-space-control-gap, 6px);
+}
+
+:is(.opensketch-app, [data-suite-ui="opensketch"])[data-opensketch-reduced-motion="true"] {
   --motion-ui: 0.01ms;
   --motion-panel: 0.01ms;
 }
 
-.opensketch-app[data-opensketch-mode="opensuite"] :is(.button, .ui-select-trigger) {
+:is(.opensketch-app, [data-suite-ui="opensketch"]) :is(.button, .ui-select-trigger) {
   min-height: var(--opensketch-control-normal);
   border-radius: var(--opensketch-radius-control);
   transition-duration: var(--motion-ui);
 }
 
-.opensketch-app[data-opensketch-mode="opensuite"] .icon-button {
+:is(.opensketch-app, [data-suite-ui="opensketch"]) .icon-button {
   width: var(--opensketch-control-normal);
   min-height: var(--opensketch-control-normal);
   border-radius: var(--opensketch-radius-control);
   transition-duration: var(--motion-ui);
 }
 
-.opensketch-app[data-opensketch-mode="opensuite"] :is(.text-button, .quiet-button) {
+:is(.opensketch-app, [data-suite-ui="opensketch"]) :is(.text-button, .quiet-button) {
   min-height: var(--opensketch-control-compact);
   border-radius: var(--opensketch-radius-control);
   transition-duration: var(--motion-ui);
 }
 
-.opensketch-app[data-opensketch-mode="opensuite"] :is(.menu, .ui-select-menu, .asset-variant-menu) {
+:is(.opensketch-app, [data-suite-ui="opensketch"]) :is(.ui-select-menu, .asset-variant-menu) {
+  border-radius: var(--opensketch-radius-control);
+  border-width: var(--opensketch-border-width);
+  background: var(--shell-card);
+  box-shadow: var(
+    --suite-shadow-md,
+    0 10px 30px color-mix(in srgb, var(--shell-text) 12%, transparent)
+  );
+}
+
+:is(.opensketch-app, [data-suite-ui="opensketch"]) .menu {
   border-radius: var(--opensketch-radius-control);
 }
 
-.opensketch-app[data-opensketch-mode="opensuite"] :is(.dialog, .dialog-backdrop) {
+:is(.opensketch-app, [data-suite-ui="opensketch"]) :is(.dialog, .dialog-backdrop) {
   --opensketch-dialog-radius: var(--opensketch-radius-dialog);
 }
 
-.opensketch-app[data-opensketch-mode="opensuite"]
+:is(.opensketch-app, [data-suite-ui="opensketch"])
   :is(button, input, select, textarea):focus-visible {
   outline: 2px solid var(--suite-focus, color-mix(in srgb, var(--shell-accent) 56%, transparent));
   outline-offset: 2px;
 }
 
-.opensketch-app[data-opensketch-mode="opensuite"] .opensketch-portal-root {
+.opensketch-app[data-suite-ui="opensketch"] .opensketch-portal-root {
   position: fixed;
   z-index: 300;
   inset: 0;
   pointer-events: none;
 }
 
-.opensketch-app[data-opensketch-mode="opensuite"] .opensketch-portal-root > * {
+.opensketch-app[data-suite-ui="opensketch"] .opensketch-portal-root > * {
   pointer-events: auto;
 }

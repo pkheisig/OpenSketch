@@ -15,6 +15,8 @@ export interface RenderHandle {
 
 export type Theme = "light" | "dark";
 
+export type ThemeAppearance = "system" | "light" | "dark";
+
 export type CanvasUnit = "px" | "mm" | "in";
 
 export interface CanvasSettings {
@@ -277,6 +279,11 @@ export interface OpenSketchApplicationContext {
   activeProjectId?: string | null;
   mode?: "standalone" | "opensuite";
   theme?: Theme;
+  appearance?: ThemeAppearance;
+  systemTheme?: Theme;
+  style?: string;
+  palette?: string;
+  themeContractVersion?: string;
   density?: "comfortable" | "compact" | "standard";
   reducedMotion?: boolean;
   uiContractVersion?: string;

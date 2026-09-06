@@ -1,10 +1,19 @@
-import type { OpenSketchApplicationContext, Theme } from "@/application/hostServices";
+import type {
+  OpenSketchApplicationContext,
+  Theme,
+  ThemeAppearance
+} from "@/application/hostServices";
 
 export const OPENSUITE_UI_CONTRACT_VERSION = "0.1.0-bootstrap" as const;
 
 export interface OpenSketchApplicationPresentation {
   mode: "standalone" | "opensuite";
   theme: Theme;
+  appearance: ThemeAppearance;
+  systemTheme: Theme;
+  style: string;
+  palette: string;
+  themeContractVersion: string;
   density: "comfortable" | "compact" | "standard";
   reducedMotion: boolean;
   uiContractVersion: string;
@@ -30,9 +39,16 @@ export function resolveOpenSketchApplicationPresentation(
   standaloneTheme: Theme = "light"
 ): OpenSketchApplicationPresentation {
   const mode = context.mode === "opensuite" ? "opensuite" : "standalone";
+  const systemTheme = context.systemTheme ?? standaloneTheme;
+  const appearance = context.appearance ?? context.theme ?? standaloneTheme;
   return {
     mode,
-    theme: context.theme ?? standaloneTheme,
+    theme: appearance === "system" ? systemTheme : appearance,
+    appearance,
+    systemTheme,
+    style: context.style ?? "default",
+    palette: context.palette ?? "opensuite-default",
+    themeContractVersion: context.themeContractVersion ?? "1.0.0",
     density: context.density ?? "comfortable",
     reducedMotion: context.reducedMotion ?? false,
     uiContractVersion: context.uiContractVersion ?? OPENSUITE_UI_CONTRACT_VERSION,
