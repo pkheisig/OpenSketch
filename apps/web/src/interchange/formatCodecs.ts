@@ -481,7 +481,7 @@ export async function prepareStrictInterchangeImport(
   if (
     file.size > probeByteLength &&
     !probeIsUsable(probe) &&
-    (probe.format === "gif" || probe.format === "tiff")
+    (probe.format === "gif" || probe.format === "jpeg" || probe.format === "tiff")
   ) {
     fullBytes = new Uint8Array(await file.arrayBuffer());
     checkAbort(options.signal);

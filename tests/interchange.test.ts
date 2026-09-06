@@ -16,6 +16,30 @@ function pngHeader(width: number, height: number): Uint8Array {
   return bytes;
 }
 
+function jpegWithLateSof(): Uint8Array {
+  const appSegmentLength = 65_535;
+  const appSegmentCount = 16;
+  const sofLength = 17;
+  const bytes = new Uint8Array(2 + appSegmentCount * (2 + appSegmentLength) + 2 + sofLength + 2);
+  const view = new DataView(bytes.buffer);
+  let offset = 0;
+  bytes.set([0xff, 0xd8], offset);
+  offset += 2;
+  for (let segment = 0; segment < appSegmentCount; segment += 1) {
+    bytes.set([0xff, 0xe1], offset);
+    offset += 2;
+    view.setUint16(offset, appSegmentLength, false);
+    offset += 2 + appSegmentLength - 2;
+  }
+  bytes.set([0xff, 0xc0], offset);
+  view.setUint16(offset + 2, sofLength, false);
+  bytes.set(
+    [8, 0, 2, 0, 3, 3, 1, 0x11, 0, 2, 0x11, 0, 3, 0x11],
+    offset + 4
+  );
+  return bytes;
+}
+
 describe("strict interchange probing", () => {
   it("detects the signature and dimensions instead of trusting the extension", () => {
     const probe = probeInterchangeBytes(pngHeader(320, 240), {
@@ -43,6 +67,20 @@ describe("strict interchange probing", () => {
       "extension_mismatch"
     ]);
     expect(probe.diagnostics.every((diagnostic) => diagnostic.severity === "warning")).toBe(true);
+  });
+
+  it("finds a JPEG SOF marker beyond the bounded probe window", () => {
+    const probe = probeInterchangeBytes(jpegWithLateSof(), {
+      mimeType: "image/jpeg",
+      name: "metadata-heavy.jpg"
+    });
+
+    expect(probe).toMatchObject({
+      format: "jpeg",
+      dimensions: { width: 3, height: 2 },
+      diagnostics: []
+    });
+    expect(probeIsUsable(probe)).toBe(true);
   });
 
   it("reads out-of-line TIFF RATIONAL resolution values", () => {

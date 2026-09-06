@@ -3587,7 +3587,8 @@ export function EditorProvider({
             id: stored.id,
             name: stored.name,
             mimeType: stored.mimeType,
-            dataUrl: stored.dataUrl
+            dataUrl: stored.dataUrl,
+            ...(stored.sourceResource ? { sourceResource: stored.sourceResource } : {})
           }
         ]
       };
