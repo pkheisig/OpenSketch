@@ -219,6 +219,35 @@ describe("semantic editor adapter", () => {
     expect(adapter.refreshConnectors).not.toHaveBeenCalled();
   });
 
+  it("rejects zero-sized resolved children before mutating any scene geometry", async () => {
+    const first = new Rect({ width: 300, height: 20, left: 12, top: 18 });
+    first.objectId = "first";
+    const second = new Rect({ width: 20, height: 20, left: 350, top: 18 });
+    second.objectId = "second";
+    const canvas = makeCanvas([first, second]);
+    const adapter = makeAdapter(canvas);
+
+    await adapter.execute("create_layout_frame", {
+      frameId: "frame",
+      bounds: { left: 0, top: 0, width: 100, height: 100 },
+      flow: "horizontal",
+      children: [
+        { objectId: "first", sizing: "content-sized" },
+        { objectId: "second", sizing: "fill" }
+      ]
+    });
+    const before = [first, second].map((object) => object.getBoundingRect());
+    const commitCount = adapter.commit.mock.calls.length;
+
+    await expect(
+      adapter.execute("reflow_layout_frame", { frameId: "frame" })
+    ).rejects.toMatchObject({ code: "INVALID_LAYOUT" });
+
+    expect([first, second].map((object) => object.getBoundingRect())).toEqual(before);
+    expect(adapter.commit.mock.calls).toHaveLength(commitCount);
+    expect(adapter.refreshConnectors).not.toHaveBeenCalled();
+  });
+
   it("returns visible overflow diagnostics alongside materialized export geometry", async () => {
     const object = new Rect({ width: 20, height: 20, left: 12, top: 18 });
     object.objectId = "object";
@@ -246,6 +275,44 @@ describe("semantic editor adapter", () => {
     );
     expect(object.getBoundingRect().width).toBeCloseTo(200);
     expect(object.toSVG()).not.toMatch(/NaN|Infinity/);
+  });
+
+  it("keeps numeric SVG bounds aligned with editor bounds after reflow", async () => {
+    const object = new Rect({ width: 20, height: 10, strokeWidth: 0 });
+    object.objectId = "object";
+    const adapter = makeAdapter(makeCanvas([object]));
+
+    await adapter.execute("create_layout_frame", {
+      frameId: "frame",
+      bounds: { left: 100, top: 110, width: 20, height: 10 },
+      flow: "horizontal",
+      children: [{ objectId: "object", sizing: "fixed", width: 20, height: 10 }]
+    });
+    await adapter.execute("reflow_layout_frame", { frameId: "frame" });
+
+    const bounds = object.getBoundingRect();
+    const svg = object.toSVG();
+    const matrix = svg
+      .match(/matrix\(([^)]+)\)/)?.[1]
+      ?.trim()
+      .split(/\s+/)
+      .map(Number);
+    const x = Number(svg.match(/\bx="([^\"]+)"/)?.[1]);
+    const y = Number(svg.match(/\by="([^\"]+)"/)?.[1]);
+    const width = Number(svg.match(/\bwidth="([^\"]+)"/)?.[1]);
+    const height = Number(svg.match(/\bheight="([^\"]+)"/)?.[1]);
+    if (!matrix || matrix.length !== 6) throw new Error("SVG transform matrix was not exported.");
+    const [scaleX, skewY, skewX, scaleY, translateX, translateY] = matrix;
+
+    expect(
+      [x, y, width, height, scaleX, skewY, skewX, scaleY, translateX, translateY].every(
+        Number.isFinite
+      )
+    ).toBe(true);
+    expect(translateX + x * scaleX).toBeCloseTo(bounds.left, 6);
+    expect(translateY + y * scaleY).toBeCloseTo(bounds.top, 6);
+    expect(width * scaleX).toBeCloseTo(bounds.width, 6);
+    expect(height * scaleY).toBeCloseTo(bounds.height, 6);
   });
 
   it("keeps layout identities stable across grouping, ungrouping, and duplication", async () => {

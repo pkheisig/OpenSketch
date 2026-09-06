@@ -175,6 +175,26 @@ describe("persistent layout frames", () => {
     ).toEqual([]);
   });
 
+  it("reports zero-space implicit grid starvation before materialization", () => {
+    const frame = createLayoutFrame(createLayoutDocument(), {
+      frameId: "starved-grid",
+      bounds: { left: 0, top: 0, width: 100, height: 100 },
+      flow: "grid",
+      gap: { horizontal: 100, vertical: 100 },
+      children: [
+        { objectId: "a", sizing: "fill" },
+        { objectId: "b", sizing: "fill" }
+      ]
+    }).frames[0]!;
+
+    const resolved = layoutFrame(frame, [child("a", 0, 0, 10, 10), child("b", 0, 0, 10, 10)]);
+
+    expect(resolved.children.map(({ bounds }) => bounds.width)).toEqual([0, 0]);
+    expect(resolved.diagnostics).toEqual(
+      expect.arrayContaining([expect.objectContaining({ code: "FRAME_OVERFLOW" })])
+    );
+  });
+
   it("validates child references and ancestor/descendant membership before persistence", () => {
     const document = createLayoutDocument();
     const next = createLayoutFrame(document, {
@@ -242,6 +262,35 @@ describe("persistent layout frames", () => {
     ).toThrow(/invalid cells|overlap/i);
   });
 
+  it("bounds overlapping-cell diagnostics by child rather than occupied cell", () => {
+    const objectCount = 500;
+    const frame = createLayoutFrame(createLayoutDocument(), {
+      frameId: "bounded-diagnostics",
+      bounds: { left: 0, top: 0, width: 10_000, height: 10_000 },
+      flow: "grid",
+      tracks: {
+        rows: Array.from({ length: 32 }, () => ({ type: "flex" as const, value: 1 })),
+        columns: Array.from({ length: 32 }, () => ({ type: "flex" as const, value: 1 }))
+      },
+      children: Array.from({ length: objectCount }, (_, index) => ({
+        objectId: `object-${index}`,
+        row: 0,
+        column: 0,
+        rowSpan: 32,
+        columnSpan: 32,
+        sizing: "fill" as const
+      }))
+    }).frames[0]!;
+
+    const result = layoutFrame(
+      frame,
+      Array.from({ length: objectCount }, (_, index) => child(`object-${index}`, 0, 0, 10, 10))
+    );
+
+    expect(result.diagnostics).toHaveLength(objectCount - 1);
+    expect(result.diagnostics.every(({ code }) => code === "INVALID_CELL")).toBe(true);
+  });
+
   it("rejects explicit flexible tracks with no positive remaining space", () => {
     expect(() =>
       createLayoutFrame(createLayoutDocument(), {
@@ -281,4 +330,39 @@ describe("persistent layout frames", () => {
     expect(result.diagnostics).toEqual([]);
     expect(performance.now() - started).toBeLessThan(1000);
   });
+
+  it("reflows dozens of frames containing hundreds of objects deterministically", () => {
+    const frameCount = 32;
+    const childrenPerFrame = 16;
+    let document = createLayoutDocument();
+    for (let frameIndex = 0; frameIndex < frameCount; frameIndex += 1) {
+      document = createLayoutFrame(document, {
+        frameId: `frame-${frameIndex}`,
+        bounds: { left: frameIndex * 10, top: 0, width: 400, height: 400 },
+        flow: "grid",
+        children: Array.from({ length: childrenPerFrame }, (_, childIndex) => ({
+          objectId: `object-${frameIndex}-${childIndex}`,
+          sizing: "fill" as const
+        }))
+      });
+    }
+
+    const geometries = document.frames.map((frame) =>
+      frame.children.map((child) => childGeometry(child.objectId))
+    );
+    const started = performance.now();
+    const first = document.frames.map((frame, index) => layoutFrame(frame, geometries[index]!));
+    const second = document.frames.map((frame, index) => layoutFrame(frame, geometries[index]!));
+
+    expect(first).toEqual(second);
+    expect(first.flatMap((resolution) => resolution.children)).toHaveLength(
+      frameCount * childrenPerFrame
+    );
+    expect(first.every((resolution) => resolution.diagnostics.length === 0)).toBe(true);
+    expect(performance.now() - started).toBeLessThan(1000);
+  });
 });
+
+function childGeometry(objectId: string): LayoutChildGeometry {
+  return child(objectId, 0, 0, 10, 10);
+}

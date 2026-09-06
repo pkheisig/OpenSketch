@@ -119,6 +119,22 @@ export function applyLayoutFrameToCanvas(
       invalidCellDiagnostics
     );
   }
+  const invalidBounds = resolution.children.filter(
+    ({ bounds }) =>
+      !Number.isFinite(bounds.left) ||
+      !Number.isFinite(bounds.top) ||
+      !Number.isFinite(bounds.width) ||
+      !Number.isFinite(bounds.height) ||
+      bounds.width <= MIN_GEOMETRY ||
+      bounds.height <= MIN_GEOMETRY
+  );
+  if (invalidBounds.length > 0) {
+    const first = invalidBounds[0]!;
+    throw new LayoutResolutionError(
+      `Layout frame "${frame.id}" resolved child "${first.objectId}" to an invalid bound.`,
+      resolution.diagnostics
+    );
+  }
   const index = sceneObjectIndex(canvas);
   resolution.children.forEach((child) => {
     const object = index.get(child.objectId);

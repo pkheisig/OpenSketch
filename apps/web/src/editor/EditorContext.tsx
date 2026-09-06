@@ -1967,7 +1967,7 @@ export function EditorProvider({
 
   const commit = useCallback(
     (label = "Change") => {
-      if (!canvas || restoring.current) return;
+      if (restoring.current) return;
       const snapshot = captureDocumentSnapshot();
       if (documentSnapshotsEqual(historyBuffer.current.current(), snapshot)) return;
       const now = performance.now();
@@ -1984,7 +1984,7 @@ export function EditorProvider({
       lastCommit.current = { label, at: now };
       updateHistoryState();
       persist(snapshot);
-      warmCanvasPdfFonts(canvas, services.fonts);
+      if (canvas) warmCanvasPdfFonts(canvas, services.fonts);
     },
     [canvas, captureDocumentSnapshot, persist, services.fonts, updateHistoryState]
   );

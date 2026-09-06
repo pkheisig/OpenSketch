@@ -18,6 +18,7 @@ export type LayoutTrackType = (typeof LAYOUT_TRACK_TYPES)[number];
 export const LAYOUT_LIMITS = {
   maxFrames: 256,
   maxChildrenPerFrame: 500,
+  maxDiagnostics: 500,
   maxTracksPerAxis: 64,
   maxRoleLength: 120,
   maxFrameIdLength: 128,
@@ -26,6 +27,8 @@ export const LAYOUT_LIMITS = {
   maxGap: 100_000,
   maxPadding: 100_000
 } as const;
+
+const MIN_LAYOUT_SIZE = 0.000001;
 
 export interface LayoutBounds {
   left: number;
@@ -707,7 +710,13 @@ function trackSizes(
   const sizes = tracks.map((track) =>
     track.type === "fixed" ? track.value : track.value * flexUnit
   );
-  return { sizes, overflow: Math.max(0, -remaining) };
+  return {
+    sizes,
+    overflow:
+      flex > 0 && remaining <= MIN_LAYOUT_SIZE
+        ? Math.max(MIN_LAYOUT_SIZE, -remaining)
+        : Math.max(0, -remaining)
+  };
 }
 
 function starts(sizes: readonly number[], start: number, gapSize: number): number[] {
@@ -835,17 +844,19 @@ function resolveGrid(
       diagnostics.push(diagnostic);
       return { objectId: child.objectId, bounds: child.bounds };
     }
+    let overlapDiagnosticAdded = false;
     for (let rowOffset = 0; rowOffset < rowSpan; rowOffset += 1) {
       for (let columnOffset = 0; columnOffset < columnSpan; columnOffset += 1) {
         const cellKey = `${row + rowOffset}:${column + columnOffset}`;
         const previousObjectId = occupiedCells.get(cellKey);
-        if (previousObjectId) {
+        if (previousObjectId && !overlapDiagnosticAdded) {
           diagnostics.push({
             code: "INVALID_CELL",
             frameId: frame.id,
             objectId: child.objectId,
             message: `Objects "${previousObjectId}" and "${child.objectId}" overlap grid cell ${cellKey}.`
           });
+          overlapDiagnosticAdded = true;
         }
         occupiedCells.set(cellKey, child.objectId);
       }
@@ -911,6 +922,9 @@ export function layoutFrame(
             };
   if (normalized.flow === "free") {
     result.diagnostics.push(...childOverflowDiagnostics(normalized, result.children));
+  }
+  if (result.diagnostics.length > LAYOUT_LIMITS.maxDiagnostics) {
+    result.diagnostics = result.diagnostics.slice(0, LAYOUT_LIMITS.maxDiagnostics);
   }
   if (normalized.overflow === "reject" && result.diagnostics.length > 0) {
     throw new LayoutResolutionError(
