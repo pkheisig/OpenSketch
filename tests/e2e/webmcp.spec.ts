@@ -198,6 +198,16 @@ test("registers a safe figure workflow through the browser model context", async
       ok: boolean;
       data: { width: number; height: number };
     };
+    const resizeUndo = await call("undo", {});
+    const undoScene = (await call("inspect_scene", { maxObjects: 50, maxDepth: 8 })) as {
+      ok: boolean;
+      data: { canvas: { width: number; height: number } };
+    };
+    const resizeRedo = await call("redo", {});
+    const redoScene = (await call("inspect_scene", { maxObjects: 50, maxDepth: 8 })) as {
+      ok: boolean;
+      data: { canvas: { width: number; height: number } };
+    };
     const initialScene = (await call("inspect_scene", { maxObjects: 50, maxDepth: 8 })) as {
       ok: boolean;
       data: { canvasReady: boolean; canvas: { width: number; height: number } };
@@ -258,6 +268,10 @@ test("registers a safe figure workflow through the browser model context", async
     return {
       capabilities,
       resize,
+      resizeUndo,
+      undoScene,
+      resizeRedo,
+      redoScene,
       initialScene,
       insert,
       secondInsert,
@@ -280,6 +294,10 @@ test("registers a safe figure workflow through the browser model context", async
     ok: true,
     data: { width: 1200, height: 700 }
   });
+  expect(initialWorkflow.resizeUndo).toMatchObject({ ok: true, data: { applied: true } });
+  expect(initialWorkflow.undoScene.data.canvas).not.toMatchObject({ width: 1200, height: 700 });
+  expect(initialWorkflow.resizeRedo).toMatchObject({ ok: true, data: { applied: true } });
+  expect(initialWorkflow.redoScene.data.canvas).toMatchObject({ width: 1200, height: 700 });
   expect(initialWorkflow.initialScene.data.canvas).toMatchObject({ width: 1200, height: 700 });
   expect(initialWorkflow.initialScene.ok).toBe(true);
   expect(initialWorkflow.insert.ok).toBe(true);
@@ -448,6 +466,37 @@ test("registers a safe figure workflow through the browser model context", async
   }, transition.projectId);
   expect(reopened).toMatchObject({ ok: true, data: { opened: true } });
   await expect(page.locator(".workspace-plane")).toHaveAttribute("data-canvas-ready", "true");
+  await expect
+    .poll(async () =>
+      page.evaluate(() => {
+        const tools = (
+          window as typeof window & {
+            __webmcpTools?: Array<{
+              name: string;
+              execute: (input: Record<string, unknown>) => Promise<unknown>;
+            }>;
+          }
+        ).__webmcpTools;
+        return Boolean(tools?.some((candidate) => candidate.name === "inspect_scene"));
+      })
+    )
+    .toBe(true);
+  const reopenedScene = await page.evaluate(async () => {
+    const tool = (
+      window as typeof window & {
+        __webmcpTools?: Array<{
+          name: string;
+          execute: (input: Record<string, unknown>) => Promise<unknown>;
+        }>;
+      }
+    ).__webmcpTools?.find((candidate) => candidate.name === "inspect_scene");
+    if (!tool) throw new Error("Missing inspect_scene tool after reopening.");
+    return tool.execute({ maxObjects: 1, maxDepth: 1 });
+  });
+  expect(reopenedScene).toMatchObject({
+    ok: true,
+    data: { canvas: { width: 1200, height: 700 } }
+  });
 });
 
 test("executes compound composition and analysis through registered WebMCP callbacks", async ({
