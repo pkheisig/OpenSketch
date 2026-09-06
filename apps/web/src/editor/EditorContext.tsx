@@ -60,6 +60,7 @@ import {
   type LayoutCellSpec,
   type LayoutDocument,
   type LayoutFrame,
+  type InterchangeDiagnostic,
   type InterchangeFidelityReport,
   type InterchangeFormat,
   type ProjectTemplateRecord,
@@ -357,6 +358,7 @@ async function exportFidelityReport(args: {
   mappedCount?: number;
   flattenedCount?: number;
   substitutions?: string[];
+  diagnostics?: InterchangeDiagnostic[];
   dimensions?: { width: number; height: number };
 }): Promise<InterchangeFidelityReport> {
   const checksum = await sha256Hex(new Uint8Array(await args.blob.arrayBuffer()));
@@ -371,7 +373,7 @@ async function exportFidelityReport(args: {
       format: args.format,
       dimensions: args.dimensions ?? { width: args.width, height: args.height },
       ...(args.physicalResolution ? { physicalResolution: args.physicalResolution } : {}),
-      diagnostics: []
+      diagnostics: args.diagnostics ?? []
     },
     checksum,
     status: args.status,
@@ -5239,7 +5241,8 @@ export function EditorProvider({
           mappedCount: 0,
           flattenedCount: 1,
           dimensions: { width: result.widthEmu, height: result.heightEmu },
-          substitutions: result.report.substitutions
+          substitutions: result.report.substitutions,
+          diagnostics: result.report.diagnostics
         });
         await services.exports.deliver({ blob: result.blob, filename, kind: format, fidelity });
         return fidelity;

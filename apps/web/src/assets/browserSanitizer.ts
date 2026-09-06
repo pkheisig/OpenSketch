@@ -1,5 +1,5 @@
 import DOMPurify from "dompurify";
-import { rewriteSvgCssSelectors } from "@workspace/editor-core";
+import { PORTABLE_PROJECT_LIMITS, rewriteSvgCssSelectors } from "@workspace/editor-core";
 
 const EXECUTABLE = /(?:javascript:|@import|<\s*(?:script|foreignObject)\b)/i;
 const NETWORK = /(?:https?:\/\/|^\/\/)/i;
@@ -14,6 +14,33 @@ const URL_ATTRIBUTES = new Set([
   "mask",
   "clip-path"
 ]);
+const EMBEDDED_IMAGE_DATA_URL =
+  /^data:(image\/(?:png|jpe?g|gif|webp|svg\+xml));base64,([A-Za-z0-9+/]*={0,2})$/i;
+
+function isSafeEmbeddedImageDataUrl(value: string): boolean {
+  if (new TextEncoder().encode(value).byteLength > PORTABLE_PROJECT_LIMITS.maxDataUrlBytes) {
+    return false;
+  }
+  const match = value.match(EMBEDDED_IMAGE_DATA_URL);
+  if (!match || match[2].length === 0) return false;
+  if (match[1].toLowerCase() !== "image/svg+xml") return true;
+  try {
+    const binary = atob(match[2]);
+    const source = new TextDecoder().decode(
+      Uint8Array.from(binary, (character) => character.charCodeAt(0))
+    );
+    return !(
+      /<!DOCTYPE\b|<!ENTITY\b|<\s*(?:script|foreignObject|iframe|object|embed|animate|style)\b/i.test(
+        source
+      ) ||
+      /\bon[a-z][\w:-]*\s*=|(?:href|src)\s*=\s*["']?\s*(?:https?:|file:|javascript:|data:)|url\s*\(/i.test(
+        source
+      )
+    );
+  } catch {
+    return false;
+  }
+}
 
 export function sanitizeImportedSvg(
   source: string,
@@ -69,8 +96,13 @@ export function sanitizeImportedSvg(
         return;
       }
       let value = attribute.value;
+      const embeddedImage =
+        ["href", "xlink:href", "src"].includes(name) && isSafeEmbeddedImageDataUrl(value);
       const externalHref =
-        ["href", "xlink:href", "src"].includes(name) && value !== "" && !value.startsWith("#");
+        ["href", "xlink:href", "src"].includes(name) &&
+        value !== "" &&
+        !value.startsWith("#") &&
+        !embeddedImage;
       if (
         EXECUTABLE.test(value) ||
         externalHref ||

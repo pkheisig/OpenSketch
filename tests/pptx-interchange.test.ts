@@ -253,6 +253,48 @@ describe("bounded PPTX interchange", () => {
     });
   });
 
+  it("reports omitted slide, layout, and master appearance instead of fabricating content", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const files = await packageFiles(exported.blob);
+    const background =
+      '<p:bg><p:bgPr><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill></p:bgPr></p:bg>';
+    files["ppt/slides/slide1.xml"] = bytes(
+      text(files, "ppt/slides/slide1.xml")
+        .replace(/<p:pic>[\s\S]*?<\/p:pic>/, "")
+        .replace("</p:spTree></p:cSld>", `</p:spTree>${background}</p:cSld>`)
+    );
+    files["ppt/slideLayouts/slideLayout1.xml"] = bytes(
+      text(files, "ppt/slideLayouts/slideLayout1.xml").replace(
+        "</p:spTree></p:cSld>",
+        `</p:spTree>${background}</p:cSld>`
+      )
+    );
+    files["ppt/slideMasters/slideMaster1.xml"] = bytes(
+      text(files, "ppt/slideMasters/slideMaster1.xml").replace(
+        "</p:spTree></p:cSld>",
+        `</p:spTree>${background}</p:cSld>`
+      )
+    );
+
+    const parsed = parsePptxPackage(zipSync(files));
+    expect(parsed.slides[0].flattenedCount).toBe(0);
+    expect(parsed.slides[0].refusedCount).toBeGreaterThanOrEqual(3);
+    expect(parsed.slides[0].diagnostics).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "unsupported_slide_background" }),
+        expect.objectContaining({ code: "unsupported_inherited_slide_content" }),
+        expect.objectContaining({ code: "empty_slide_snapshot" })
+      ])
+    );
+    expect(parsed.diagnostics.length).toBeLessThanOrEqual(4_096);
+  });
+
   it("preserves shape flips and reports unresolved text styling", async () => {
     const exported = await exportPptx({
       svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
@@ -309,6 +351,18 @@ describe("bounded PPTX interchange", () => {
       });
       expect(exported.blob.size).toBeGreaterThan(0);
       expect(context.drawImage).toHaveBeenCalledOnce();
+      const capped = await exportPptx({
+        svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+        width: 6_000,
+        height: 6_000,
+        dpi: 300
+      });
+      expect(capped.report.diagnostics).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ code: "pptx_raster_resolution_capped", severity: "warning" })
+        ])
+      );
+      expect(capped.report.diagnostics[0]?.message).toContain("200.0 effective dpi");
     } finally {
       getContext.mockRestore();
       toBlob.mockRestore();

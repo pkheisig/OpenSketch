@@ -40,6 +40,7 @@ const PPTX_MAX_XML_ATTRIBUTES = 750_000;
 const PPTX_MAX_XML_TEXT_BYTES = 16 * 1024 * 1024;
 const PPTX_MAX_XML_DEPTH = 2_048;
 const PPTX_MAX_COMPRESSION_RATIO = 500;
+const PPTX_MAX_DIAGNOSTICS = 4_096;
 const ZIP_EOCD_SIGNATURE = 0x06054b50;
 const ZIP_CENTRAL_SIGNATURE = 0x02014b50;
 const ZIP_LOCAL_SIGNATURE = 0x04034b50;
@@ -535,6 +536,20 @@ function attr(node: Element | undefined, name: string): string | undefined {
   return node.getAttribute(name) ?? node.getAttribute(`a:${name}`) ?? undefined;
 }
 
+function boundedDiagnostics(
+  diagnostics: readonly InterchangeDiagnostic[]
+): InterchangeDiagnostic[] {
+  if (diagnostics.length <= PPTX_MAX_DIAGNOSTICS) return [...diagnostics];
+  return [
+    ...diagnostics.slice(0, PPTX_MAX_DIAGNOSTICS - 1),
+    {
+      code: "diagnostics_truncated",
+      severity: "warning",
+      message: `Additional PPTX diagnostics were omitted after the ${PPTX_MAX_DIAGNOSTICS}-item limit.`
+    }
+  ];
+}
+
 function requiredPositiveInteger(value: string | undefined, message: string): number {
   const parsed = Number(value);
   if (!Number.isSafeInteger(parsed) || parsed <= 0) {
@@ -634,6 +649,83 @@ function relationTarget(
   const relation = relations.find((candidate) => candidate.id === id);
   if (!relation || relation.targetMode?.toLowerCase() === "external") return undefined;
   return resolveTarget(basePart, relation.target);
+}
+
+function relationshipsPath(partPath: string): string {
+  return partPath.replace(/\/([^/]+)$/, "/_rels/$1.rels");
+}
+
+function hasVisibleShapeTreeContent(document: Document): boolean {
+  const tree = firstDescendant(document.documentElement, "spTree");
+  return Boolean(
+    tree &&
+      childElements(tree).some((child) => !["nvGrpSpPr", "grpSpPr"].includes(localName(child)))
+  );
+}
+
+function hasBackgroundContent(document: Document): boolean {
+  const cSld = firstDescendant(document.documentElement, "cSld");
+  return Boolean(
+    childElements(document.documentElement, "bg").length > 0 ||
+      (cSld && childElements(cSld, "bg").length > 0)
+  );
+}
+
+function inheritedSlideAppearanceDiagnostics(
+  slidePath: string,
+  slideRelations: readonly PackageRelationship[],
+  entries: Record<string, Uint8Array>,
+  relationPart: (path: string) => { relations: PackageRelationship[]; diagnostics: InterchangeDiagnostic[] }
+): InterchangeDiagnostic[] {
+  const diagnostics: InterchangeDiagnostic[] = [];
+  const layoutRelation = slideRelations.find((relation) =>
+    relation.type.endsWith("/slideLayout")
+  );
+  if (!layoutRelation) return diagnostics;
+  const layoutPath = relationTarget(slideRelations, layoutRelation.id, slidePath);
+  if (!layoutPath || !entries[layoutPath]) {
+    diagnostics.push({
+      code: "inherited_slide_content_unavailable",
+      severity: "warning",
+      message: "The slide layout was unavailable, so inherited slide appearance could not be rendered."
+    });
+    return diagnostics;
+  }
+  const layoutXml = parseXml(entries[layoutPath], layoutPath);
+  requireXmlRoot(layoutXml, "sldLayout", PPTX_PRESENTATION_NAMESPACE, layoutPath);
+  if (hasBackgroundContent(layoutXml) || hasVisibleShapeTreeContent(layoutXml)) {
+    diagnostics.push({
+      code: "unsupported_inherited_slide_content",
+      severity: "warning",
+      message:
+        "Inherited slide-layout background or decorations were not rendered; the imported appearance snapshot may omit them."
+    });
+  }
+  const layoutRelations = relationPart(relationshipsPath(layoutPath)).relations;
+  const masterRelation = layoutRelations.find((relation) =>
+    relation.type.endsWith("/slideMaster")
+  );
+  if (!masterRelation) return diagnostics;
+  const masterPath = relationTarget(layoutRelations, masterRelation.id, layoutPath);
+  if (!masterPath || !entries[masterPath]) {
+    diagnostics.push({
+      code: "inherited_slide_content_unavailable",
+      severity: "warning",
+      message: "The slide master was unavailable, so inherited slide appearance could not be rendered."
+    });
+    return diagnostics;
+  }
+  const masterXml = parseXml(entries[masterPath], masterPath);
+  requireXmlRoot(masterXml, "sldMaster", PPTX_PRESENTATION_NAMESPACE, masterPath);
+  if (hasBackgroundContent(masterXml) || hasVisibleShapeTreeContent(masterXml)) {
+    diagnostics.push({
+      code: "unsupported_inherited_slide_content",
+      severity: "warning",
+      message:
+        "Inherited slide-master background or decorations were not rendered; the imported appearance snapshot may omit them."
+    });
+  }
+  return diagnostics;
 }
 
 function mimeForPackagePath(path: string): string | undefined {
@@ -913,13 +1005,23 @@ function renderSlide(
   relations: readonly PackageRelationship[],
   entries: Record<string, Uint8Array>,
   widthEmu: number,
-  heightEmu: number
+  heightEmu: number,
+  inheritedDiagnostics: readonly InterchangeDiagnostic[] = []
 ): PptxRenderedSlide {
-  const diagnostics: InterchangeDiagnostic[] = [];
+  const diagnostics: InterchangeDiagnostic[] = [...inheritedDiagnostics];
   let mappedCount = 0;
   let flattenedCount = 0;
-  let refusedCount = 0;
+  let refusedCount = inheritedDiagnostics.length;
   const root = slideXml.documentElement;
+  if (hasBackgroundContent(slideXml)) {
+    refusedCount += 1;
+    diagnostics.push({
+      code: "unsupported_slide_background",
+      severity: "warning",
+      message:
+        "Slide-local background content was not rendered; the imported appearance snapshot may omit it."
+    });
+  }
   const tree = firstDescendant(root, "spTree");
   const content: string[] = [];
   for (const child of tree ? childElements(tree) : []) {
@@ -942,6 +1044,14 @@ function renderSlide(
       message: `Slide ${index + 1} contains unsupported ${name || "content"}; it was not approximated.`
     });
   }
+  if (content.length === 0) {
+    diagnostics.push({
+      code: "empty_slide_snapshot",
+      severity: "warning",
+      message:
+        "No supported slide content was rendered; the imported appearance snapshot is empty rather than fabricated."
+    });
+  }
   const title = textContent(root).split("\n")[0] || `Slide ${index + 1}`;
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${widthEmu}" height="${heightEmu}" viewBox="0 0 ${widthEmu} ${heightEmu}">${content.join("")}</svg>`;
   if (mappedCount > 0) {
@@ -958,7 +1068,7 @@ function renderSlide(
     title,
     svg,
     mappedCount: 0,
-    flattenedCount: Math.max(1, flattenedCount),
+    flattenedCount,
     refusedCount,
     diagnostics
   };
@@ -1147,7 +1257,13 @@ export function parsePptxPackage(bytes: Uint8Array, signal?: AbortSignal): PptxP
     }
     const slideXml = parseXml(entries[target], target);
     requireXmlRoot(slideXml, "sld", PPTX_PRESENTATION_NAMESPACE, target);
-    const slideRels = relationPart(target.replace(/\/([^/]+)$/, "/_rels/$1.rels"));
+    const slideRels = relationPart(relationshipsPath(target));
+    const inheritedDiagnostics = inheritedSlideAppearanceDiagnostics(
+      target,
+      slideRels.relations,
+      entries,
+      relationPart
+    );
     const rendered = renderSlide(
       index,
       stableId,
@@ -1156,11 +1272,12 @@ export function parsePptxPackage(bytes: Uint8Array, signal?: AbortSignal): PptxP
       slideRels.relations,
       entries,
       widthEmu,
-      heightEmu
+      heightEmu,
+      inheritedDiagnostics
     );
     slides.push(rendered);
   }
-  return { widthEmu, heightEmu, slides, diagnostics };
+  return { widthEmu, heightEmu, slides, diagnostics: boundedDiagnostics(diagnostics) };
 }
 
 async function checksum(bytes: Uint8Array): Promise<string | undefined> {
@@ -1197,7 +1314,7 @@ function probeForPptx(
     signature: "zip",
     dimensions: { width: parsed.widthEmu, height: parsed.heightEmu },
     pageCount: parsed.slides.length,
-    diagnostics: [...base.diagnostics, ...parsed.diagnostics]
+    diagnostics: boundedDiagnostics([...base.diagnostics, ...parsed.diagnostics])
   };
 }
 
@@ -1208,7 +1325,10 @@ function reportForPptx(
   checksumValue?: string,
   extraDiagnostics: readonly InterchangeDiagnostic[] = []
 ): InterchangeFidelityReport {
-  const diagnostics = [...selected.flatMap((slide) => slide.diagnostics), ...extraDiagnostics];
+  const diagnostics = boundedDiagnostics([
+    ...selected.flatMap((slide) => slide.diagnostics),
+    ...extraDiagnostics
+  ]);
   return createFidelityReport({
     source,
     probe,
@@ -1529,6 +1649,13 @@ function isPng(bytes: Uint8Array): boolean {
   );
 }
 
+interface PptxRasterizationResult {
+  bytes: Uint8Array;
+  width: number;
+  height: number;
+  scale: number;
+}
+
 function readBlobBytes(blob: Blob): Promise<Uint8Array> {
   if (typeof blob.arrayBuffer === "function") {
     return blob.arrayBuffer().then((buffer) => new Uint8Array(buffer));
@@ -1549,7 +1676,7 @@ async function rasterizeSvgForPptx(
   width: number,
   height: number,
   signal?: AbortSignal
-): Promise<Uint8Array> {
+): Promise<PptxRasterizationResult> {
   checkAbort(signal);
   if (typeof document === "undefined" || typeof Image === "undefined" || !URL.createObjectURL) {
     throw new InterchangeImportError(
@@ -1599,7 +1726,7 @@ async function rasterizeSvgForPptx(
     });
     const bytes = await readBlobBytes(png);
     if (!isPng(bytes)) throw new Error("The browser produced an invalid PNG fallback.");
-    return bytes;
+    return { bytes, width: rasterWidth, height: rasterHeight, scale };
   } catch (error) {
     if (error instanceof InterchangeImportError) throw error;
     throw new InterchangeImportError(
@@ -1624,9 +1751,15 @@ export async function exportPptx(options: PptxExportOptions): Promise<PptxExport
       code: "pptx_package_limit"
     });
   }
-  const pngBytes = options.rasterFallback
-    ? await readBlobBytes(options.rasterFallback)
+  const rasterization = options.rasterFallback
+    ? {
+        bytes: await readBlobBytes(options.rasterFallback),
+        width: options.width,
+        height: options.height,
+        scale: 1
+      }
     : await rasterizeSvgForPptx(options.svg, options.width, options.height, options.signal);
+  const pngBytes = rasterization.bytes;
   if (!isPng(pngBytes) || pngBytes.byteLength === 0 || pngBytes.byteLength > PPTX_MAX_ENTRY_BYTES) {
     throw new InterchangeImportError(
       "The PPTX PNG fallback is invalid or exceeds the entry limit.",
@@ -1634,6 +1767,17 @@ export async function exportPptx(options: PptxExportOptions): Promise<PptxExport
         code: "pptx_rasterization"
       }
     );
+  }
+  const rasterDiagnostics: InterchangeDiagnostic[] = [];
+  if (!options.rasterFallback && rasterization.scale < 1) {
+    const effectiveWidthDpi = rasterization.width / extent.widthInches;
+    const effectiveHeightDpi = rasterization.height / extent.heightInches;
+    const effectiveDpi = Math.min(effectiveWidthDpi, effectiveHeightDpi);
+    rasterDiagnostics.push({
+      code: "pptx_raster_resolution_capped",
+      severity: "warning",
+      message: `The requested ${options.dpi} dpi raster fallback was capped to ${effectiveDpi.toFixed(1)} effective dpi at ${rasterization.width} × ${rasterization.height} pixels; the embedded SVG remains available through the DrawingML extension.`
+    });
   }
   const title = options.title || "OpenSketch export";
   const description = options.description || "";
@@ -1683,7 +1827,7 @@ export async function exportPptx(options: PptxExportOptions): Promise<PptxExport
       format: "pptx",
       signature: "zip",
       dimensions: { width: extent.widthEmu, height: extent.heightEmu },
-      diagnostics: []
+      diagnostics: rasterDiagnostics
     },
     status: "appearance-snapshot",
     mappedCount: 0,
@@ -1692,7 +1836,8 @@ export async function exportPptx(options: PptxExportOptions): Promise<PptxExport
     substitutions: [
       "the resolved OpenSketch scene was materialized as one SVG appearance snapshot",
       "a standards-valid PNG fallback was rasterized for broad PowerPoint compatibility; the SVG was retained through the DrawingML SVG extension",
-      "OpenSketch layout constraints were not exported as fake PowerPoint metadata"
+      "OpenSketch layout constraints were not exported as fake PowerPoint metadata",
+      ...rasterDiagnostics.map((diagnostic) => diagnostic.message)
     ]
   });
   return {
