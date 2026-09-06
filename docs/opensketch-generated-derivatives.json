@@ -1,5 +1,5 @@
 {
-  "sourceCommit": "6b27cdc1764851bae4e55ac346879be254815b56",
+  "sourceCommit": "601fead222e37988dc80ae950f1c3d3fd065dc1f",
   "recipe": {
     "vtracer": "0.6.15",
     "Pillow": "11.3.0",
@@ -5668,6 +5668,1096 @@
       "maxSide": 1024
     },
     {
+      "id": "patch-clamp-rig",
+      "sourcePngSha256": "1f05b489e7c83d59cf256a59cfcdbd8431f57ef40516da4b8cb337ae680a6f90",
+      "sourceSvgSha256": "25b90cd7b45a6e330f16ca59079dd613219de9ac430c5eb5050cd0e197c44d27",
+      "appSvgSha256": "75f317b5ffa4c3258e8046f8e13642bd94dbeefdf8650517590de49b6b34822b",
+      "paths": 808,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "microelectrode-array",
+      "sourcePngSha256": "60d78e850b8d5594c0b7700e207f5c11394d659c02dbf5a638c5dea49b960db5",
+      "sourceSvgSha256": "6118ccfacd2f99d2bbac618d7257185673bc93615948c161d3721edec945f30a",
+      "appSvgSha256": "37061d65dce392bfb878aeaeb7c841af88a792f6078af59f826680eeb2a032f0",
+      "paths": 858,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "droplet-microfluidic-single-cell-chip",
+      "sourcePngSha256": "903b4dc419e1a3e8b5f3ca8f4cf34b9e46d7827b3ba0e59c6961c15f40098738",
+      "sourceSvgSha256": "7119ec65ad5e56e06e448dc64e7c4b01116ad215d14562e6990ee07725f459eb",
+      "appSvgSha256": "ca732fe0846dc7bbb2b22d3153377c121db02bc6d23fd09b4d456f36909c1203",
+      "paths": 1247,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "single-cell-droplet-with-barcoded-bead",
+      "sourcePngSha256": "5f46126185318d12db942b4f44fbeed1790498299cf8facb5eef837a0935a714",
+      "sourceSvgSha256": "e37f2797bff30fdd84f959e842f3d40bc5a89c92ad51a3cf75ddc541af22b6ff",
+      "appSvgSha256": "d1d69f70a62f33cee30eca93507e1e5d09d19dde1aa81dfa399256f5b5ad2a94",
+      "paths": 637,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "barcoded-capture-bead",
+      "sourcePngSha256": "833440dbf8c9f15be577a9902bc0f30e24986a0be8acd9b6c2541ff6b17724e8",
+      "sourceSvgSha256": "5626d078035268c330ab6bf3a5beb2428e3ff43e130d637306015172ef05c64f",
+      "appSvgSha256": "b29af6ffc9abcb36af9c98cf907c7e9bf02d0c191e672100079694743ef8ae6b",
+      "paths": 511,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "spatial-transcriptomics-slide",
+      "sourcePngSha256": "c754039259b21659c1fb55663d7ccb9c4c0b7ae06f6ed88297ac6b18f3ae1f63",
+      "sourceSvgSha256": "a151253fa36746f049cc3f027153f8ffb9833a9738f491ea4cb88ce9e1fd6543",
+      "appSvgSha256": "967b0497b84201aa40be970a3118ee2beb4785fd17fed361fcca8fd456473da1",
+      "paths": 514,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "tissue-capture-spot-array",
+      "sourcePngSha256": "0ca0de88397f4dee441b1cb6daf228073b48476e2ee6e07bb8fc5982e9d7cce5",
+      "sourceSvgSha256": "8cd60607d20e631ee13b8f185342a39a04746131bf7d641a28024956b4062ae9",
+      "appSvgSha256": "9c0fdde1c90b1fb985f0a2fc25b64d00880607904b10e6c53433436f6cee0cfa",
+      "paths": 848,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "microwell-single-cell-array",
+      "sourcePngSha256": "1945e27f72f72e321a7e0e49affa5491b0ee20dbdb2c9feafe26d84d5867bdc4",
+      "sourceSvgSha256": "26bdf129267d923e6f8807e6dc5f7fd7e0cf48630575f4adde1d30bf63fbe3ff",
+      "appSvgSha256": "1513e4e9318f3a07a573553b10814ec7eab2e2dae44071a1a85171e4470ff1c1",
+      "paths": 593,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "cell-hashing-antibody-tag-complex",
+      "sourcePngSha256": "127a54b06b7007b6510c61241212535c832f2890b6f097d0bc7dd5f79fc539c6",
+      "sourceSvgSha256": "031b7b22b644027cdf026be5f1cf9f1cb54147d40636de2ce361faa302e7653c",
+      "appSvgSha256": "035d1b39080c3c550ca389e7a3474df012a37fe7a8ea7c2bc9e18bd7ae98ec97",
+      "paths": 381,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "rodent-cage",
+      "sourcePngSha256": "471f3b7f99371597e0161c3e906a2ae2a2fff1c2c764a1a8e594951e142b0936",
+      "sourceSvgSha256": "6c99812cc97ef4dc4cce06b78bb0a74d1dcc10a9a5fd2e07008befd6ccb8a0c7",
+      "appSvgSha256": "79e4f9af8fd3a04526e616cd3286bbb6331289cd19d80af9e092403a345d0078",
+      "paths": 2332,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "individually-ventilated-cage",
+      "sourcePngSha256": "7b2c54a821dd04db452e7b7de3be9c8528e40d810fa752c499c466e2ca0fc625",
+      "sourceSvgSha256": "0cd5413d36416a61dbf6c96f65c857b1cd176ceffb8677f772c8f6fe60129d1f",
+      "appSvgSha256": "c197c9459013398448ab8457df1ba939b5a4d2d03e7728950ca7040b8ac7158f",
+      "paths": 1994,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "metabolic-cage",
+      "sourcePngSha256": "8a7bba26b18460229ccd0ff91b1ebf9857f0d56aa35db257b185d089afd5a07c",
+      "sourceSvgSha256": "416f573b9241387c3448cdb9b4d67dc1f113f6b8349017b0d04faccee0923104",
+      "appSvgSha256": "9e77316343f7f24e3963ed6c164ab58e363bd2b4bd79a2cd8a74619cc686983a",
+      "paths": 1153,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "mouse-restrainer",
+      "sourcePngSha256": "f1207fc143ab08b8bc53915e2734de0f45d1b1a60fead4abf142407a688518a6",
+      "sourceSvgSha256": "97a247fc18df2a8a5e6c5ddd8a855158582160deeae3a953e164e2a40a325176",
+      "appSvgSha256": "213defb5868a125d104d334dee3b9bb5265bc333c03af8efdd01a2deb03b1359",
+      "paths": 794,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "rodent-anesthesia-nose-cone",
+      "sourcePngSha256": "80674b4fc92ba805ca73d0a0fd569da6953eb63da72e3fd5ee96c852f4e4d0f1",
+      "sourceSvgSha256": "0b23eb9183e92de3e42b5df9f9c496ce91c59d1aaa80897281a07889e148b289",
+      "appSvgSha256": "be0fb8e7ab7b6fe08e8469659cf3d790b9bafb0374667f52e3b183ffc9ed452c",
+      "paths": 355,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "isoflurane-vaporizer",
+      "sourcePngSha256": "d6dd68e289b169ab5fdf61f0bffdad3278de1f254602c8e5073c0785df260f31",
+      "sourceSvgSha256": "441d2df0876bb3309e1eb2bfe05ea0832af4789295389a1a382691a22251185e",
+      "appSvgSha256": "05ed3c74e3ce7d94dafecab7576d8c9892a41a2cf9cc70f4ddf7cc5b49322081",
+      "paths": 563,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "anesthesia-induction-chamber",
+      "sourcePngSha256": "ea5f66eb135e5f525fe581ff79e75ca737d863c368b1f5a68deb6113cb5dcf0f",
+      "sourceSvgSha256": "fec2f91d112d9c0daa23b869314300603b603327d3e0addd78e00a1a2fb83f18",
+      "appSvgSha256": "56c97e03324d56a0b1272655dd6dc8cb1a8ed6c32d125e281600d63422440fe9",
+      "paths": 643,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "stereotaxic-frame",
+      "sourcePngSha256": "96d6638637494802e19c7e93c275aae507e71bc7cb9cdd277cf5a406c2e44951",
+      "sourceSvgSha256": "a2bab4dcac3de2eee1be01bcf53f5beb4cd40b95beaa67efb0d85299b5bcec9a",
+      "appSvgSha256": "534b6d1f9ab5649f0f1261dcc32f41be0df59b70bfd882addac9e6fe464ad92c",
+      "paths": 897,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "surgical-operating-platform",
+      "sourcePngSha256": "bfc0427db9eb737a4f58eaaeb1d33bd7c821533714cfbc0ff172dff6111970e9",
+      "sourceSvgSha256": "469e47e18a114e862dc3d1bcbbf017433a5816c65d0a5f25c66a4ef7b31d6693",
+      "appSvgSha256": "9b3d2a77dd610f56147363914b7cbbf2dbe86909bf77d95285b1ed2281eb8acd",
+      "paths": 436,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "heating-pad",
+      "sourcePngSha256": "c8ce87a03272ed16c72701f1426543a3a7e964680218f34c7aa1e99f049fbd96",
+      "sourceSvgSha256": "80398562a2b27b5a3d7f44ce5736674c98a432aa4b19d44492670bdf6a4b3ea9",
+      "appSvgSha256": "00f67215881b38a43eee1cbb967bcb002b6701bf695af3fad79c5bc458610f4c",
+      "paths": 288,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "gavage-needle",
+      "sourcePngSha256": "364a4100e3c5e25a013de111037170e3541b60dd0cdcce0dff28ad2a3a6d9e9a",
+      "sourceSvgSha256": "c5a0ac5fe9a3a545c13861ffeee944f590a4241cab355a51da76c96004f080a6",
+      "appSvgSha256": "1db7678afc52db5ce2cd954259d1579879982eb2abc865d8216b89e00d5bdac4",
+      "paths": 322,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "insulin-syringe",
+      "sourcePngSha256": "f801a1ae1e34b3c84b8404ac4de8be97a6fb54f851fb87c8b92edd1d5af6be8b",
+      "sourceSvgSha256": "a45a262913232e9b130641cb1f955ea14cb992823519b1efca824cefe24c4887",
+      "appSvgSha256": "f57c16ac86949ceb0bbb9619baad055e7d6e0cac58ae01c9b8a5835d166c9428",
+      "paths": 392,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "injection-needle",
+      "sourcePngSha256": "40002e02814662cdec135013c79b3cfade73af7fcb5a06a399cb2b524d307ffa",
+      "sourceSvgSha256": "7dfc218fd0bad9aa8382e5e74827dc7f5c9017dc01b0fb209877f2a6740daad5",
+      "appSvgSha256": "9d9fa9ddb3e6c0c88840dbf297cc04a9924fcdc9eb5f45dc717f1e5e18f74513",
+      "paths": 343,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "tail-vein-injection-setup",
+      "sourcePngSha256": "d202c06e3d08eb93316f664290b09fa5cfa1857c4e76831c5a2e845a23bc209c",
+      "sourceSvgSha256": "020653745bb201baa28ed954be01af16545000db52a44fee2b552b5fc9e4203c",
+      "appSvgSha256": "8f71f8058156cabab568fc6f753a587ce36def839599558ac584e46af051ea45",
+      "paths": 594,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "oral-gavage-syringe",
+      "sourcePngSha256": "2fb73ea021d7c2cd01920d3b988dcd184473b436955ec9c1789d7bc419ac18a1",
+      "sourceSvgSha256": "82740761fb8650d0477a659a1174a94b149dadc2a1e8a77d01479ce4dc80115c",
+      "appSvgSha256": "cb095936317d0d64d9f338df2a57d48b08f0bc46fd513fc8a2e73b6e39d88766",
+      "paths": 197,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "blood-collection-capillary",
+      "sourcePngSha256": "28169c3e4eca95804eec9301158d076d2099f9cbeb68bd46b18e0a8a40438e76",
+      "sourceSvgSha256": "bb4dd6654f79a22b2e5fc7367c9ba20430d783c4f40cd223de8dc22c8ec0d476",
+      "appSvgSha256": "957c56912d2903324ff793642900da406af452b15577f764c1c62cf2ad75f578",
+      "paths": 198,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "ear-punch",
+      "sourcePngSha256": "0c0a37267ddc4d1d5768846544f49c64e31102c8a77ae1ad4374e6081c5c2282",
+      "sourceSvgSha256": "5d9d7bc35bfe284027c0fb63231b7472f43946423dbd62d03cbd3cf967a34ebe",
+      "appSvgSha256": "1d3d8da0a5200db41da69b31f34ac5d5d699283a5646538ce5c1a8aaebfbbfe2",
+      "paths": 343,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "microchip-transponder",
+      "sourcePngSha256": "eff439b89dd336b577458b926ca1c6c2797d6827dcc2fe1b87c08df583577379",
+      "sourceSvgSha256": "c378403fa69f5af0e77ab5e503b39802f3c8b21b29a95666bf58437f0c4b5ddc",
+      "appSvgSha256": "a70c8a4c540a97322c7cd3d96d4feb5d3d45b623f7f9bd7b60d75ad9942e2e7a",
+      "paths": 1394,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "animal-imaging-chamber",
+      "sourcePngSha256": "c7ee1ec7a53862ef8e581e741dae11ef62e9d46ac5636ac509f6aba032ca524a",
+      "sourceSvgSha256": "14afa1febff660f237279b3c937db0d5115bfd096a65f3a55931410f4a21863e",
+      "appSvgSha256": "0f711ffc31e2f7054410b405a4edc837a323f2fc3023dfb92cf5a9712abc95da",
+      "paths": 729,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "small-animal-ivis-style-optical-imaging-system",
+      "sourcePngSha256": "634a82a45533f87cbd7d4bef6e06a3addce28593c9dcb7636cde8a3a50536a6c",
+      "sourceSvgSha256": "2f969464af72fcaf7b6b666e4c66f56d57ec23dcaa0732dafe01ecc56bccba99",
+      "appSvgSha256": "8251d71214d36314af4423d4662006f39f8fd9236b26ca7d008ea76c4576603d",
+      "paths": 391,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "small-animal-mri-scanner",
+      "sourcePngSha256": "542b2ff490f393070173574e077e1225f9ed4303438c5af9496a08ebca25af6d",
+      "sourceSvgSha256": "0f5d7b7ba8973ea57b4c39cff0063f7f7017747f84ca9add4f782c304aecd4f7",
+      "appSvgSha256": "9e82de63228fa4f85d225bd3386a3fe1b3988238cf42927a0b56c970f570020b",
+      "paths": 282,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "small-animal-ct-scanner",
+      "sourcePngSha256": "c4815dee88f8b54af4bfc876f97610c1a12047a4da4f4b30ae7a00e31ed3a565",
+      "sourceSvgSha256": "9697cd785c604f243fc040ac5fca7a6412784c800e63556bb943d6a0f2c0e3e8",
+      "appSvgSha256": "2f242da68e2e6d31d166a98d6010b03caf23899cce9725b349983b2387403df2",
+      "paths": 352,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "blood-collection-needle-and-tube",
+      "sourcePngSha256": "1de81785f3a72c0d826f56c40cf2c52883df3eb0cec1ed13cd44dfb9be88d912",
+      "sourceSvgSha256": "e91f30c01f5f35b2f272a5748c1634894e258f4dbc27be0cb78c8274b08f584b",
+      "appSvgSha256": "3b30f5d681743cc76cc83962c5f8fef7bf8abefe69bc7e9851f7b620350bfedf",
+      "paths": 568,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "vacutainer-holder",
+      "sourcePngSha256": "dbdfd3ffa92e01c00e044ff77eefdbccfaa5a598c67bb52c9594877fc4613338",
+      "sourceSvgSha256": "af91757d2fa5bb14d50ef816e1d4e05a2f6ff3cbe3158284e84d275308f7761f",
+      "appSvgSha256": "0f00ba61789cb81b9ec84bfcac84f16031f2cd355f1fef127438304d54b6f5bb",
+      "paths": 1057,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "blood-bag",
+      "sourcePngSha256": "cada11e583c04cb0f45cad6587fec66b83b869ca828929b4d1656d1af5f09d28",
+      "sourceSvgSha256": "98ada435df9c494eee7d74967acebe60ded73e04e2f94b8d642ca44c712552eb",
+      "appSvgSha256": "5a9c7dc2f218856717229130f10c8dd8c7bdf601ca966b02813a28f94fa943c5",
+      "paths": 959,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "leukapheresis-bag",
+      "sourcePngSha256": "1729ba4a829c18dbe88738b4329fbe5627a2c369413697b42c4c47cf9f864605",
+      "sourceSvgSha256": "b62895e9a36caad839c26fc6a4aabfe7c21bbc899a043966f155dfc5616d7dd5",
+      "appSvgSha256": "29399b9ead9403b545fcc9bb572db7ceed266fff18f2dd2184335987a297fd24",
+      "paths": 303,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "leukapheresis-machine",
+      "sourcePngSha256": "1551b87ac1ed035244fac956131a20e268df6e0f46f77f40771d785006ca7568",
+      "sourceSvgSha256": "7032b4d37d32dc3788a050d5a99a9a9de91140b39b669da925500fee78942bf6",
+      "appSvgSha256": "65283b552bfd093373ba31c68202784530b41ae1016eefc73546aa661549b871",
+      "paths": 602,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "biopsy-needle",
+      "sourcePngSha256": "8cc56fe6567084913aadecdbaddc4707597331630abf00e602e237c5e6bfb319",
+      "sourceSvgSha256": "9c84bac68d8f3e79ac00f4bdaf1d610ce680ae6f3cff759794fff3b78630f6c9",
+      "appSvgSha256": "9cfe5d0573b92b0c72146e35851ac5fd776430d27cd13dd8666e996f7e17d792",
+      "paths": 276,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "core-biopsy-specimen",
+      "sourcePngSha256": "d84ae130246e78bf54ade305415da91e7740ac7ecbcdabafb9d667f71acc0407",
+      "sourceSvgSha256": "7258f28255ccc92cf3a4bdc098f97e04817277c7c755facfd9ea402be25c145c",
+      "appSvgSha256": "bfaf45d8835617f65940027a7f0268c9aeae05b40126193c7e033e899346331b",
+      "paths": 883,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "swab",
+      "sourcePngSha256": "95c0299757de5c5293748b0c70e06b4c4de601fd33e2ac46405490a23094508b",
+      "sourceSvgSha256": "af145fb4eff1ecc0649cc9b5166624362b79a94d6ab61f0404a90b4c9340d8be",
+      "appSvgSha256": "7da09433ef632a941423b4c73c86291b02a93015c9c4d5833e8c6e57505e6979",
+      "paths": 129,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "saliva-collection-tube",
+      "sourcePngSha256": "f1e360469ddf4c6d042e5fe4baf68d786564f5dc3b64d82c67be872e956a63e8",
+      "sourceSvgSha256": "53d25c41dd21e83523c54cf7873518cd4ef84a629b8f85095983c386c8d87e3b",
+      "appSvgSha256": "6a32fa901f285185242f9cf3e54e09a5efb0b0c3efcb8a2e7a12d4649b141d99",
+      "paths": 771,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "urine-specimen-cup",
+      "sourcePngSha256": "54d7af14b9a83492418c6923b282c114359ecb5fce6370a91d33fe1f1d909e62",
+      "sourceSvgSha256": "1382a8dc76a127da5cd26d7ff87a1bacb4a760c9ea6b557261dacc799a1c2a22",
+      "appSvgSha256": "354e99487d359cf410e1a8f129ece5eb5de604512f683fbd77f24e45b22f0a06",
+      "paths": 629,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "stool-collection-tube",
+      "sourcePngSha256": "86010e897b74f30011c2284881fe123004e3cd52c8f9d704abcb6d207fede5cf",
+      "sourceSvgSha256": "de364713306a53bebae358666a4f3181b60bf251d71896833804c9c89a178bf0",
+      "appSvgSha256": "b2fa3742623e5003cdf3db1619b6e6ed659e538a6584eb3c7b1e579df8ea7ef8",
+      "paths": 400,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "bronchoalveolar-lavage-collection-container",
+      "sourcePngSha256": "9aed0d8a7f98dafdf899e7724aa9afe27df65b548fb8bef00a3e2125f3276dac",
+      "sourceSvgSha256": "5e4a24a49bc72f0ce617a9f4aa90645e0b79e05ab31f1668a4ebc4b2d836af87",
+      "appSvgSha256": "e49157d486f4dae1e3cc853a676df60c8c38a5f0619a91275ba6c58746fea258",
+      "paths": 498,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "laboratory-refrigerator",
+      "sourcePngSha256": "237a75d458c7443c4fda42f338d80be2dd982cb610c967f3ee14b580b3901ffd",
+      "sourceSvgSha256": "81b25ad97c291461d64053840f74ef6f38aa25d6e6a95c3cf8328c899aa92198",
+      "appSvgSha256": "6eb00e5ae672fd87520100775170cb374ab881a423d0c7702eb9e32040609824",
+      "paths": 734,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "20-c-freezer",
+      "sourcePngSha256": "19ba8d8476c9ea20e7f2658f056ff5259cf5790b41b8a95232e8bda0cf555ee7",
+      "sourceSvgSha256": "01519e4cb1fb99948576cae80588886f6d3d6ee60f753246a9cbed2314ce2c18",
+      "appSvgSha256": "9f283971d2f0287dac09f8ecb5c7b0516ce19b89ce481a357396d3e1910e355c",
+      "paths": 553,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "80-c-ultra-low-freezer",
+      "sourcePngSha256": "625bf6ea902f3f92f0b6013bd4a7d355621eab6de537e88928897047b406e094",
+      "sourceSvgSha256": "1a45362f7e880ad076889ce567db7d8724528b30c5fe929a60dfb0a8c07e542a",
+      "appSvgSha256": "a655c2a1cdfcce351fd0d71c913153311bf86a176ec9425cf7ae798fedbe4f42",
+      "paths": 599,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "liquid-nitrogen-dewar",
+      "sourcePngSha256": "86a1767d2e2c3c92a7d40fbdb1591d11d8f6717558fa69aa789444ae46b2e8ce",
+      "sourceSvgSha256": "586172b3430197bd48d6a89931c0234d7dd5fe86c3e98016c3adcd571d36edad",
+      "appSvgSha256": "88db72c015149904897914db425a7a09ca191ea9cd1e28d5ffffe1e866fbd2b4",
+      "paths": 321,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "cryogenic-storage-tank",
+      "sourcePngSha256": "d060e723561ab84d296b2c5ac88019e1c81ffea4366b1b8a728ef60bb01a9676",
+      "sourceSvgSha256": "8092ffaf57ed1edbf7b97d43850e511e697762b205ba5ee9860e6ba9d6cbd33b",
+      "appSvgSha256": "9b48bd9b6af502e1f6f7929896b218225ed3e601f90230523d382d11c67dc878",
+      "paths": 1178,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "dry-ice-container",
+      "sourcePngSha256": "99f448daef5b127d4861b747481f522c2044771eb8fab9764a84ec2d49aa2c80",
+      "sourceSvgSha256": "dcf0d069765af299be798a8e41098ef003d215aef0b839d451c5582fd64bcda2",
+      "appSvgSha256": "7c8d13f35143a9a8a5893634b3405ca46c45565d7df6be4167b715aece10205e",
+      "paths": 402,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "insulated-sample-shipping-box",
+      "sourcePngSha256": "f80d9cbd376122d5b52cfd8628b8264eaffa4e2ac4e27d4ecc600f81dd2afa92",
+      "sourceSvgSha256": "0de9076f935943584e49399ca85d4fde16ba01add8a936d0a8f3a50aaf27763b",
+      "appSvgSha256": "21f2c6e2267c8db4d5c4c59ea8fd968e4db610f7765084bfa451690bd78abf28",
+      "paths": 587,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "cryogenic-vial-rack",
+      "sourcePngSha256": "e35c3f0237c70e1e543f41910fc1a40439ae2497d479a27a6276d74e8688af57",
+      "sourceSvgSha256": "63cd585929c62226b287416995ffb9e10c03dd729a925c0390c12ca428b55154",
+      "appSvgSha256": "aa4a25e56112da6be0e78cf7d6bff03a9762295bc41d090b73df152b53653d29",
+      "paths": 466,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "lab-coat",
+      "sourcePngSha256": "cec9ca448a9692025f4022cfb2a9b241deb1113a25902cd50ca401f2356f8467",
+      "sourceSvgSha256": "62e1fd58090ed41347b2d8aab568dd39961295b7b8f0af38b90600dcf83167ca",
+      "appSvgSha256": "18bc579396f84000ee75ad6441770685a1b7e7b7bfea1c84a0990c2f7d5b42e1",
+      "paths": 107,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "disposable-gloves",
+      "sourcePngSha256": "be3f6aaea96712ad743f42c7db70ca10c418948640f6d1280a14b452bb19f3a1",
+      "sourceSvgSha256": "a03eba5524f8430b9ff7782b84d34100727fb31ef9f24a095311d20bd517de43",
+      "appSvgSha256": "6044c33a86558eb0bbc109cfe149e947f33b78496a2e880ac245ed9c1ae4cd4d",
+      "paths": 1705,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "safety-goggles",
+      "sourcePngSha256": "48867c6c1fca4c0a85808158d6c8f6dff2a327e3362ae6e1c54a43c3f9c94a5f",
+      "sourceSvgSha256": "250c9cdf7c241f75d8a5476e5d11857f592f81f918f57d1eef20887053ae9019",
+      "appSvgSha256": "8c763dd939a6c30979234f19fd6278daa6255994d3a7fa3be9a2b02443086e8e",
+      "paths": 793,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "face-shield",
+      "sourcePngSha256": "57416d7cd863012c86e51ccd3cb543aa23f4b9c0a7fc8a7b3a6cb525035201b8",
+      "sourceSvgSha256": "b844c54606ec1d1c8da017474198fee1981b6c6eb21aec812156fd1e5e096dd9",
+      "appSvgSha256": "fdde7932fba4b15ca206b39ad3770afdea681370b48aff310e9e9cbd3be32e92",
+      "paths": 645,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "surgical-mask",
+      "sourcePngSha256": "0c6f5479919314dae6fabea670989d8e457835da8aef4a4430c8519bd4ce4a4e",
+      "sourceSvgSha256": "251530f213e250bacebe868852d383ee4005c28fac3d7af5dd858ebae8b72ba9",
+      "appSvgSha256": "c5c0530611d951ee17452cab6f09dd204f34d69e2adb94cbfe72f714ca227cb0",
+      "paths": 406,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "n95-respirator",
+      "sourcePngSha256": "89525242d550bde4b102f529443c9dc798ea58293d4af8dfb89ad551b7822f9c",
+      "sourceSvgSha256": "82a6c784696c88a4cf118df7345f0d9a6ec49cb04136f42ef896b479bb5dbe61",
+      "appSvgSha256": "836acab0b5919f07d67bf18206188cad4d40c0b97254860db761869c5eee4865",
+      "paths": 256,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "disposable-gown",
+      "sourcePngSha256": "fbae0dc7e7ae788b90b0241d343efc40f40d0ab3d87f04b3e40f031cb322850f",
+      "sourceSvgSha256": "890ef5ae62e1488f1384d18c17d60cbda5f569391ff5c5f67d319d393c2a7e84",
+      "appSvgSha256": "85768467d9fc1fda76048ad64918ed33605078c0bf13606bb80d59cd62e689e3",
+      "paths": 423,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "biohazard-waste-bin",
+      "sourcePngSha256": "c3c997cacec405b2d55037cb25b12a6426759e32f03c786ee74f34552429f608",
+      "sourceSvgSha256": "2425b2fe77b8b926673cfe85745aeb60f7e1166226b8fa96c8f1a774b37cd716",
+      "appSvgSha256": "1ce1c53d339bcffaf8e0ffe0fbaa42f20f7573c1e99b98b0fa605d15be0c9f11",
+      "paths": 304,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "sharps-container",
+      "sourcePngSha256": "8f343c225ca14dc6c3a6baf2586b1b01f7fdd7fcde26cde9427b1f6a10f4ba8b",
+      "sourceSvgSha256": "f803803f29792f3376b81c5408a7ae2f60264b36fccabc6409d8bfdcecdb6d82",
+      "appSvgSha256": "eef6446ef271254cd5e5d038e8bcf1b0f72c773dc7fa17f570005f06a0595ea7",
+      "paths": 373,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "autoclave",
+      "sourcePngSha256": "0602dced67b0e6f09978d44232d1d0b3538d76e8d0463b2f5467f798fe257b06",
+      "sourceSvgSha256": "380babeec22e2436c14006560509392493e4f4aeb674ac0227b518f257588c89",
+      "appSvgSha256": "17066ce6c1f31c82fd62356ac3b89a4adc58ef85561ee57b2ff6b70b1b2577df",
+      "paths": 532,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "fume-hood",
+      "sourcePngSha256": "075a19c0c2ff91954e971ad90ac17bbaf2d61a986f4b97d495102fd65ee36dcd",
+      "sourceSvgSha256": "2db62d3720b1941d6ed809717258bf10cc2d18162a09fa886f0ec06d8204fb3c",
+      "appSvgSha256": "893a14c9245b0a92b84d1b742db2a9ca9f9ff78bbf61cfdc47cd073d558101ad",
+      "paths": 353,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "chemical-storage-cabinet",
+      "sourcePngSha256": "73920a362c172b5a4d923e0d1ebe0225dbbc25301cd2fb9269f47b1cec498906",
+      "sourceSvgSha256": "595251987b6a0dbf7562c885e0dc040cfb5be5bb201297ea4eb2bca9622fd2f0",
+      "appSvgSha256": "64abcdf78db67c107e01254b10ba6fee74adad36769d0e8c98ae2ff6aea33e5a",
+      "paths": 223,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "eyewash-station",
+      "sourcePngSha256": "eb3fe0ef5dfb02e49668d7b2de38c4496e7dd808f4522a5e0706445108661de7",
+      "sourceSvgSha256": "473e04c53b00a97461ab4ee7b623a45c3f6e36e360ff551b2005aa0a04fa90c2",
+      "appSvgSha256": "d8bda8a098a2ab94071c8b7c26197d8085c2768a24180c17d306efc13a6fcccd",
+      "paths": 537,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "emergency-shower",
+      "sourcePngSha256": "6c5d8814806e7629d8057ff51131d03e7da3c1ad6c333a0fb062d449a5c25ebc",
+      "sourceSvgSha256": "1140fc339fe05d8bbba0d05ce5070775d4e9ff6559367f2616d4288966c9fb51",
+      "appSvgSha256": "70d438c8dcdc06a8ff7a229b60a06e3d4a6d4a6c0d3e288264ed4bdba55e97a3",
+      "paths": 248,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "antibody-coated-bead",
+      "sourcePngSha256": "e0614ffcddbf840f971989dc89e5a694ab0a610b34e43182da3a965b17c98504",
+      "sourceSvgSha256": "e902fdd7c152fc4186556b0c88c007e2fdb799ce995b0e565b8a2237406a2548",
+      "appSvgSha256": "048c0349d3518f1f8ec0bc7efbe082ba236594ef3f9ce5b1874a6671b171fff6",
+      "paths": 1107,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "streptavidin-coated-bead",
+      "sourcePngSha256": "d70131a020c7ab9504d2a62ec95b250bc79eb66f5f5db3aa50ecd71c58e3c48f",
+      "sourceSvgSha256": "e06bcf19b9b9d9609d58b4effbe30b3c5a5da71702b7a0ad8d2ea3670df18795",
+      "appSvgSha256": "74e50edabd15c28a356bac2518fe7b3f8bdcebe36b1730bd9712a11704c51b0a",
+      "paths": 756,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "magnetic-bead-cell-complex",
+      "sourcePngSha256": "1f9346f826f8acd0759c55d474c30096e4b34a76894c8802a96f124ff1f2eab6",
+      "sourceSvgSha256": "5bf7fd7caefcd94347000995f552205102d7d349ea4fc905b7f08cf9c9f8b1e2",
+      "appSvgSha256": "1ff513de474e065143e234a7a41cac605dbf41848b400accab3e12c3fe2b6601",
+      "paths": 985,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "capture-antibody-bound-to-plate",
+      "sourcePngSha256": "14465e3652fcb63c1f1a59ed032909de24db2fb0129a56414850db88bf56de23",
+      "sourceSvgSha256": "1be4328dfd8d604150bddc58de3d922b8b93f80854bf55b2ccd5a9c27edf3420",
+      "appSvgSha256": "69075637204942f37ff33fba2932b769bd99eb39eb17ff24de3e66dad7b6f3e9",
+      "paths": 430,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "sandwich-immunoassay-complex",
+      "sourcePngSha256": "cdf660ac5088b2de594ea270254e017d1a748e866fdbfe7cd49ff8882995413c",
+      "sourceSvgSha256": "234fb22491a35832bdfb4922bf3911c3e3e842384a61d323f1d670b624a9d9f5",
+      "appSvgSha256": "ba73a127a4eaca0e4caa0d453f782a84ff82fe90c3e189ae3c4e11460ec7c5f8",
+      "paths": 495,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "lateral-flow-strip",
+      "sourcePngSha256": "0e004792ad3529e5a139ef48ff5fe4456deb1ef3bd038215fcb79ecc24f0507b",
+      "sourceSvgSha256": "a564df28b74147a6995215849257a3359086918848ab3c30991e7ea2c80f4ab3",
+      "appSvgSha256": "032f6a4f57195848a7c4093f88df5a5c569b7428808941a5f61a5da6145dc16b",
+      "paths": 316,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "membrane-filter",
+      "sourcePngSha256": "b911ebbd3117562ab4081a089e5e38b84466704c89beb4eba74c2c7979b868ef",
+      "sourceSvgSha256": "7b0b8446ae223d1d1b6af8ef984b9c38c2f666cf947f100cacdeda7a2862eb3e",
+      "appSvgSha256": "fccfd22ec55883fbe917f6bd5fa7b014d63e6d3f1200e9841e2dbb91b87dfa84",
+      "paths": 563,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "hydrogel-droplet",
+      "sourcePngSha256": "74e3d2447f2dfb045ad4b2d8ea50f18c336328670b60637bebc592992ea8a132",
+      "sourceSvgSha256": "1bef58573487f3074d4e6517ba38ffdbd78b8319543a1c3baa8775b6a4eb3e46",
+      "appSvgSha256": "2a390de9acd68c86b9a2954caa7aee57f88d87813bc0ae90e800e6a8b375ac29",
+      "paths": 2231,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "hydrogel-scaffold",
+      "sourcePngSha256": "bfe68a81f76bc05eecf54dd6e20374dfcaecd7d3f4dfca9da58794da1d883458",
+      "sourceSvgSha256": "7e8f9f601c0e67dde62a5cdb10a1c45915ff606a1103fab2a0b46b97de59943f",
+      "appSvgSha256": "189ad2278346ba3faa45af27fb4686469e17a6201b979cbae59291a370d69b92",
+      "paths": 2656,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "extracellular-matrix-gel-dome",
+      "sourcePngSha256": "2738984f50cbf793aa0a1b98c86f65a4257e2f5a6b3a9f21e9e04b42a7f8f39d",
+      "sourceSvgSha256": "babf7547622d464ef9d68366a9bad5b7e39e26e79a039a3492fa671743d0ca7b",
+      "appSvgSha256": "d28c5a5d95ce5ea3ddf8a1fa753c3e3158ca694d4e06e205f21d35c2856a225c",
+      "paths": 1279,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "fluorescent-reporter-protein",
+      "sourcePngSha256": "d82cd39dccbd00750950006c29cee56b6218e6e75c8e99ab6eda754040d70c69",
+      "sourceSvgSha256": "6cc8971f161dbd8c73509ded35a3318e8b73d2d7e5e603973b524c3bb1cae42d",
+      "appSvgSha256": "33941fab6d27fb2666d3e38e810df2f36df45023ee97e44936ebbb2962b9a0d4",
+      "paths": 846,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "luciferase-reporter-protein",
+      "sourcePngSha256": "5b2365ae4637a756bb387ec8faf29e56d23d8320e37f5e79156b962530cd6ee4",
+      "sourceSvgSha256": "5d5b504f373115ad08bb3fb7fda42306611320c192a76a9896c88f5afbe7533a",
+      "appSvgSha256": "057dfae3fbe4866e8edcd82ce46070603a9765e280b77347f7b725cf3cfb179c",
+      "paths": 1419,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "straight-microfluidic-channel",
+      "sourcePngSha256": "9bb0f9acc88cbeed79c68e4f9f4736aa44881bc6681f694bca70ad0ac55df805",
+      "sourceSvgSha256": "ba22e52cb3cb75b90ddf98942ff030bcf7dff9b04ac4b97f9ff47407138ae98c",
+      "appSvgSha256": "c6b135e9cb0d9e354ad107d8222272b977ad218de66c448eeab692a57afad775",
+      "paths": 207,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "microfluidic-droplet-generator",
+      "sourcePngSha256": "69e97fe616b4043e03adc3a83c10446f39595684986691323d6a5460ad4522b6",
+      "sourceSvgSha256": "40453ae7d6a50ee9740d1b4ef8a74016ac95d6a0cde460020460637479445e81",
+      "appSvgSha256": "b7884396c7f60e6b14610452197188498bd612ddf4b6ff3e64dbfa5ad59fc243",
+      "paths": 421,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "y-junction-microfluidic-chip",
+      "sourcePngSha256": "001bf1a54711e09eef33cb00d646acd9b892c32ee12c61eca85fee8c4ebff15d",
+      "sourceSvgSha256": "e5f4ec13f40d62d70ad9b609a29a3e869c61540245cf05a30433809e35cffffb",
+      "appSvgSha256": "20c4c08fb56ec22b8b7f9748741e98f4f0b177ffdecdd4feb1220bd097d2a77b",
+      "paths": 257,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "perfusion-chamber",
+      "sourcePngSha256": "08af62ad7b216f0106d611addb4c1381330867669200365cf366438371327738",
+      "sourceSvgSha256": "f1138a47aa060af93ab713af0b6c92de9bac8d6690e4aaef543e3732044ac4f3",
+      "appSvgSha256": "d46466c98dac19c78604d9065f87ff7b1e0a071e88ec422e40d7f307631164c9",
+      "paths": 413,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "microfluidic-cell-trap",
+      "sourcePngSha256": "eb6ec3163cbac94e345883016c00c80e98f1bcd3436498d9ff0428c0d8b0774f",
+      "sourceSvgSha256": "a7d2f9f5dbd772c235e74fa257b65d076b0e3f9d8a73017aa10c8ea72d1a15d1",
+      "appSvgSha256": "e06cb6deecbc599c3e0b229da05a6bb577d604d6f46787d341132dd4843846d0",
+      "paths": 355,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "porous-membrane-chip",
+      "sourcePngSha256": "2895b274228f507fe77787234516bab9f654ab2fcd08ffae8ed9d2be23d3976d",
+      "sourceSvgSha256": "32151398e4f5646cb7f80b0e27e3bac43588b28ba763b750c5c0be7040ac72af",
+      "appSvgSha256": "7d2d1ff53af4469c9f7f017e0f16de1832969288eb1d9fb45fd5d911027f95d9",
+      "paths": 554,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "biosensor-chip",
+      "sourcePngSha256": "6b6506ad66c4ba40ccbe5b3dcdb824fa055906e0233718cccd39f183169bfd1e",
+      "sourceSvgSha256": "dda1b9b6ac926d3878cfbbec3c1de0db3df30e2595d167412556e52e570fb32a",
+      "appSvgSha256": "427af17c24f88445dcc1d6fcdf10a8aacdfca6aff3fa2eca1edf6f48bc009aa7",
+      "paths": 357,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "wearable-biosensor-patch",
+      "sourcePngSha256": "a01bce6a13651feaefac8b4c70f82d23fae3290e95e7b550e8d7c297b6a43e37",
+      "sourceSvgSha256": "9e35bc3627cc31ea51873e5f0617a3417778d13abb79f5e1fdc05cc143870cfb",
+      "appSvgSha256": "d63d699a34a4d6f62de7d6fa3bc0a6b3f1fc6d8eb04e9dba233457946bf7a429",
+      "paths": 566,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "porous-scaffold",
+      "sourcePngSha256": "970671f58cc7f89e81cd62179f1c31f1a29b73b8872fbf09d2f5ac6d5ddb5755",
+      "sourceSvgSha256": "927bf0b1983eab6fea81dcdaf1614e7f7ae0a820e31c016b8b202ff6f92348fd",
+      "appSvgSha256": "485d515a83d44065228b0752a72bca0d61b1d6b67b59073cb104bf4a42cc7278",
+      "paths": 882,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "electrospun-fiber-scaffold",
+      "sourcePngSha256": "e9e59ac4c59b9b9e5e738c64f1bfe6355fded36b54c62fb1735ec24c256bd38e",
+      "sourceSvgSha256": "01b6f94e72619edf433ce678f2170429dc04b9f56fd1a9e87dbacc9ff35a1a46",
+      "appSvgSha256": "aa8127803f554953f25e3c05d7848ee172ae6e6283de4486bbb465c76549eecb",
+      "paths": 2787,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "3d-bioprinted-construct",
+      "sourcePngSha256": "54222948e5f541e8666ce14e90b21b887fe983710a5211f8ef00f90b4df78b89",
+      "sourceSvgSha256": "67110fa95b705f95b9072b0dceabef373a538c852792f2fd03f296e73adf924f",
+      "appSvgSha256": "9cdacc03f9cc7aefd7aac88e0207bf3f44c28eddc8bd8b132b13b059dc5dcda7",
+      "paths": 1426,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "cell-seeded-scaffold",
+      "sourcePngSha256": "8874b3141a512f2450313f2e7709feaf5cd1360d649297200b90e3ba33690655",
+      "sourceSvgSha256": "09bb7d803656f524da8291164d7bc1d57a2afed1c47df9b89f20412cdeec86be",
+      "appSvgSha256": "c5aad3cff46ce6b8729d1f238af8cdaa3c7d0b47c3db1f2f3b290e8eef6f358b",
+      "paths": 1380,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "decellularized-matrix",
+      "sourcePngSha256": "28b5e85e16d7445d9e9b3c1d6ff4e5af6886757b15c4752fc1d8fcd5ad9b9ca8",
+      "sourceSvgSha256": "a1ec56015f6a0c675cb95720a5973ec9fc4d5bdd2aab2ac7667ccc4300e16825",
+      "appSvgSha256": "0d44f067b0e98f4749c8c4035690c23bf0c13857600f012e6e5aa13a2d8a9aa8",
+      "paths": 1786,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "microcarrier-bead-with-adherent-cells",
+      "sourcePngSha256": "38b063d15a8dd70e0aaceb9c81a9be9a606ff59399def4be5b44c46b3180d06c",
+      "sourceSvgSha256": "4f222051bf09f6676f88658744418f568306f798249db22902be749c8f61aca4",
+      "appSvgSha256": "d472f62ac3cd9c56251067ffa67b082dffae0629e805b4357d9a86d20bd73f49",
+      "paths": 1383,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "mouse-embryonic-stem-cell-colony",
+      "sourcePngSha256": "f08f2edefd15a86333061ea8197e4f18e75a418b2be5514d8aeeb96a8de6d161",
+      "sourceSvgSha256": "8861ad59182a963e98bd40bd0283f3f7fcd7158530ddfc8bfbf73cad3aef2059",
+      "appSvgSha256": "ec366aa2556ce21564eb3cb954ec9a35a71fa785061d3588c4856a297f6f5a3d",
+      "paths": 1844,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "human-ipsc-colony",
+      "sourcePngSha256": "c613a170779768dc56fb31f3d296050853223d75d21d3c29506b512666df2eeb",
+      "sourceSvgSha256": "c50f6ed852c3ee9766d3d2b000e3ed3b6ccee18fb7584f1e1b6ae8d5ea61a083",
+      "appSvgSha256": "89aa35a2bac112d38335f42f31c91c85c889c0c1b0a4c05674cac79b182ed5dc",
+      "paths": 3542,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "intestinal-organoid",
+      "sourcePngSha256": "bd3111ebaf4494bc2a62a365954d248bf2ec8b38448f7251af6456a5eccc76b4",
+      "sourceSvgSha256": "16590e6d37188f0f10408fbc0a9270b866243b4fbaf7acc112c7f3bd91096b7b",
+      "appSvgSha256": "08832e2f0c5b70cb7f89a9a29586feb6caa501b44b43dcd130a0a76cdf4c9af3",
+      "paths": 1285,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "cerebral-organoid",
+      "sourcePngSha256": "c90e34d18c0f6bab832c4a89fe4411719adbf0e86b6b523128e83a5b0e9324af",
+      "sourceSvgSha256": "6ed33894101812d7e2329f3fe4c5df13cb88c1b1bba0106739025a5a18b3263d",
+      "appSvgSha256": "e4b6edddd854615bc823d2f1a32aebeda6deceda3702dcff3db502a7e4158c85",
+      "paths": 2067,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "tumor-organoid",
+      "sourcePngSha256": "e26ba581a49fc862ddcfccc2de8447048f2ad58a64303af9c216dcef4c3f447d",
+      "sourceSvgSha256": "bd7525d48db3754e4c5b0fdaae180942f021e9157d817ccfc6d181f964ebd768",
+      "appSvgSha256": "1853fb59c964a18829a285f2664c87ca52922ba50a22be341bf01e329ac7153b",
+      "paths": 1609,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "airway-organoid",
+      "sourcePngSha256": "85b1d32ac3360b5d84761dfdc69a4e2cb0588b06e247a592d0fb31fd1a7c7cac",
+      "sourceSvgSha256": "5814ef4f0936635628bac6e27a08845e57aaa6bf8a255c259f4eafa0529b0de2",
+      "appSvgSha256": "28a010b5543d4a3ecabf25d43d1406af9bcccbc17984830a5e58854bdb411f1c",
+      "paths": 1692,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "kidney-organoid",
+      "sourcePngSha256": "2e6fa5ccd719522864ab6aaa60cde4e524c9672243b092d30d7b39481a2b08c3",
+      "sourceSvgSha256": "c3465dc2f2793666ade0a7ecaa5336e9f6921747bb3e01b74398f5e6c9661b6a",
+      "appSvgSha256": "2668feadb3a8ba9e39f8fb8656cfce289899d1afc95914af4f3d1a316eef0393",
+      "paths": 2091,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "cardiac-organoid",
+      "sourcePngSha256": "6b84d50f4227f3919c60fd050176a12a8b8ffd3ee9f9ef51afd288e2785521dc",
+      "sourceSvgSha256": "c8eac83cabaa3c09f36d3d26b6c963c8c5ab793345b0a104ae5a38fa3c13a673",
+      "appSvgSha256": "6d0b2a42cf566a7ec7aa3ffb9eceebf35bde7cea04ac19888e5e7e7e77adde9b",
+      "paths": 823,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "precision-cut-tissue-slice",
+      "sourcePngSha256": "48473b95aa5e11a25deb1f805fede753542ff8c69704ab7b6fc9cf714bf0feff",
+      "sourceSvgSha256": "14703b5fec6d6745afff664ec014eb4c084e53121dbb346099ed72840fc02ed9",
+      "appSvgSha256": "6bf8f3eb48da257dcae4802d776702ee318e54c19bbab4faacad89cba518d706",
+      "paths": 1560,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "patient-derived-xenograft-tumor-fragment",
+      "sourcePngSha256": "8e1e82ab74486152fa9113e2381080ad5ddbeca05840d00ef398123996c5b6df",
+      "sourceSvgSha256": "be421ab4adfd85a609db2476dbe5ebb0db56d96e040f20225d3d9a07b41fc9d3",
+      "appSvgSha256": "dd4cbf1decbed26fedfaf6ab1e64af1bf3099f8a66ba99f0e2b851427dfb2d2c",
+      "paths": 1652,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "car-receptor",
+      "sourcePngSha256": "11d32d6e2f0ad0bb322302437cbe292b025643042b78d8b14254a2ca099aca86",
+      "sourceSvgSha256": "a1356ab3ffe894378ea712c3cebdf1ba66bbe9c4b317ad834d21575d509f65e1",
+      "appSvgSha256": "85c7b312d8edc0762006802ce2c625fc5987dce5b69155bcbe471ca197cf6bdc",
+      "paths": 515,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "car-t-cell",
+      "sourcePngSha256": "c1a6c1cf7fc6ec809fca003fc6ea2f0c92c4714bf771afe01053c11bfaadc2b6",
+      "sourceSvgSha256": "b109ae3d03b6599b9cf3b84427380ddece564fa9fee99b9cfb215796aad379b4",
+      "appSvgSha256": "a60a41a98ca13e533e284a19dacb899524239df0041b2e6a9a0948c25399f885",
+      "paths": 1194,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "aav-particle",
+      "sourcePngSha256": "85259a939d8ef9fc6a26cddc145808f87520bd608794ffb873423c3b377f951f",
+      "sourceSvgSha256": "13a9de6ebcf5cf83bf79828f4ab654f6a18365df3e144f13e9f250e9f4aa7976",
+      "appSvgSha256": "06639a378bb22f83a23b3d151c2f2b3f4310c7e73dfe5f60c94739f1e1724240",
+      "paths": 1962,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "electroporation-cuvette",
+      "sourcePngSha256": "c9c914c1423d6c381ac342176a4040f087e86c6125052749db6c0b54b1f2ad1c",
+      "sourceSvgSha256": "64e7479dadce9a9005f5b1cf56599a64b86cd5332a41a396a188700943a7de24",
+      "appSvgSha256": "de086c58b06f1ec19813afc8aa63e5ef685e188d38fce3a47cdc2b0736c8be64",
+      "paths": 330,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "electroporator-nucleofector",
+      "sourcePngSha256": "8ba0f7345cacb64b98a6d8fe5585295b22aca57e3c814f4edc874d7b0ee993ea",
+      "sourceSvgSha256": "df1491661244816e6db1756adfadca1754a527a4da9eda2917b3069de8b1ce15",
+      "appSvgSha256": "605f415385dfbe62263514d276f437c985fc42a7775db8ca2bd2d37176ee74ed",
+      "paths": 309,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "dna-lipid-transfection-complex",
+      "sourcePngSha256": "0c7a72ce0a8177f7cd20a519e0f648f04d94fdbfb190b3138c4e3182a1cae0c4",
+      "sourceSvgSha256": "22d4f5224fc7c52a50eff462fe5db358a37830ef66d87a96b0dea8f9cc4a419a",
+      "appSvgSha256": "4bd579333381f511191652d0dceb2fb46a401d616518f7facda0888b5954ce8a",
+      "paths": 3886,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "mrna-lipid-nanoparticle-transfection-complex",
+      "sourcePngSha256": "f78e8abb37ed0405039ea0ac7cdd4fb85993b48e84008c3f18ded2a2a62db2e6",
+      "sourceSvgSha256": "56fef7f7cd4ee6259bdcdb4e1f67a9b33c9536280761ff0c9f6e04dd32604374",
+      "appSvgSha256": "191dff2d4eef689742414d3fd6ee9ef27785cf4236722f7d93198f0b8384ea13",
+      "paths": 3186,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "transposase-dna-complex",
+      "sourcePngSha256": "284624c104d3c1a8386bd4b498fdfa2ac0fda3d43ebfa64a73ea33214dec58a6",
+      "sourceSvgSha256": "932a1b257d5c1a53437c5c6f600e25dd36f50154ff9d15d57790574c4e10ac4e",
+      "appSvgSha256": "e02d58538d6cb2d31dcad9674cd853747348e5b30d38ae73b4cbd12f4a240ee8",
+      "paths": 1221,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
       "id": "cell-pellet-in-tube",
       "sourcePngSha256": "c764b79c488022bbe13c9f711b61ec4a850a6d6383bea11e84bcab1fd217fe3b",
       "sourceSvgSha256": "2fdca46a01723adca98ba7f992e63541cf5112559325a2cf60616e237765bf84",
@@ -5910,6 +7000,216 @@
       "sourceSvgSha256": "dc7654c188b0fb76a904eef6605a68d9b9cb0df6864e89bd226f4115d7bc7e7a",
       "appSvgSha256": "c0def7e1b2aba8b34b734aad02c1ad99612745751310549377b8efac89a83b3b",
       "paths": 810,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "dna-fragment-with-sequencing-adapters",
+      "sourcePngSha256": "732d928b9f7e5e287e114a70f1eec3ba654e5a805e6c779e2ba016f4ce519425",
+      "sourceSvgSha256": "0cec9b8f6ece75ee05572fb6fb346f994e3095bc94ab5f0c4347015c414db589",
+      "appSvgSha256": "40ade2834e929e40b9197c32995955f423b228b5072b6038f54407525e413dbd",
+      "paths": 542,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "indexed-dna-library-fragment",
+      "sourcePngSha256": "b747828fb69655854eaf26648a6b37dbca376ac69ce4df122592bd47ebda0d26",
+      "sourceSvgSha256": "f355f637afaab2068592f59a43d3229b490f3acfce69e5df7e0e1446b1975e20",
+      "appSvgSha256": "ef9b330ded83faef3723e9bff00e4bf27d3ecacb21688cfb3f636e88f617a872",
+      "paths": 429,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "barcoded-oligonucleotide",
+      "sourcePngSha256": "8ecbcf48cc68dc232865abff6cfbd3afc9492b5c72c242028e244a0286df696e",
+      "sourceSvgSha256": "683514a0ef9be46818a58330e2693b8392755a2fdf4c6b36c6d0d8b88a3fa5cf",
+      "appSvgSha256": "9e6d81c49c705996107eac7e56a4fec345cf44a1316cd751aa9a1b9ccb024dfa",
+      "paths": 251,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "sequencing-flow-cell",
+      "sourcePngSha256": "a377673e4c94c730e92d74f47540af4b7b49c86c0a9c7105b13754ffe08a3501",
+      "sourceSvgSha256": "f279f502cb5d0b900c2b33da46fd454618ea05bc4bd646b5897aa9aa5181fb52",
+      "appSvgSha256": "64218d8efa528c33b7fae34b5b6efccf22da081fab9621e3561bf90bbbfc52fa",
+      "paths": 353,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "capture-probe-spot",
+      "sourcePngSha256": "52b469b0a633e8106ce60e235786a2c21a634240abc2745c9b8b2726f50824ff",
+      "sourceSvgSha256": "2952a8b99c19675e78f02db98514ed9b1e5ad4ceae5f78a2b8a6f506d509c81f",
+      "appSvgSha256": "6cf8f4615a1e803bf3de4cf751a802793012700a4e38642f26eb953cf8daea0f",
+      "paths": 588,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "axolotl",
+      "sourcePngSha256": "d5c926ac8aac6c51e5195e44853ab44174bbc8f2b9fcf6d1159a9de57d11896b",
+      "sourceSvgSha256": "18771b67f9e0819888ffd657a8d864dd21123028e807af64bfc14d65e020a2e7",
+      "appSvgSha256": "3e2fa130df3fcef730f45c85fbf0f70f7d16a9e01c12e2762930449faed8d062",
+      "paths": 973,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "medaka-fish",
+      "sourcePngSha256": "1550133b7b73da11881409184bd2faebfce0d7dc1c18d6194497bf19d9d9e03f",
+      "sourceSvgSha256": "24b26530e90414689d71cef99cbe592d4a14ed9d40a1a306e4d9f6b1b13ef8b3",
+      "appSvgSha256": "7ee51d98291b07a7e76b7bdeb95304705813fd8f272e1608bdb39db45847f022",
+      "paths": 1904,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "sea-urchin",
+      "sourcePngSha256": "cb2289b4f5591aa021ad7a86912e4a7f65ee7c50d23e8e5cf094ed40a67b9d50",
+      "sourceSvgSha256": "4b450891851781f64b37999487456991aec64404c0bd8df99f957607d33372a5",
+      "appSvgSha256": "ddc844b46e89fcb0c77f662fed50474aca3e9ae62cafa6cb6ec018152f1340fb",
+      "paths": 2978,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "planarian-flatworm",
+      "sourcePngSha256": "1e85bcba2b04ac59706badcf1a3f6bc5e05955760034cd6c3efaa9f9dd020172",
+      "sourceSvgSha256": "e56ca971a8bf6c39cf194150b9d44cc8606e22ae878c85049495c36b595277f1",
+      "appSvgSha256": "83b2bcabd1b580b5a7f20a3ff9b884a1d9424056dab2d12bf7bbdb533dd82e45",
+      "paths": 120,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "hydra",
+      "sourcePngSha256": "7569d39eeaff51e384111265150e41befccb92676b8cccf9bad7f164ee3f40ee",
+      "sourceSvgSha256": "af016f1694159b275fb556bed8049dd8653333fd09af9912340fe55ed7692cf6",
+      "appSvgSha256": "c071f56189ffc08c73b81e711a45da28467b7e18a1ba67e9ebb21ca759ccc39a",
+      "paths": 378,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "dictyostelium-amoeba",
+      "sourcePngSha256": "c4983dab6b5fb45d65a05f8941792876ecde020580a90f8e75be1fc294cffe93",
+      "sourceSvgSha256": "3eda3a50399f7c47d4fb46def92460e8f64589bbbd2fc06f9e8171491253ee21",
+      "appSvgSha256": "ef47cb1fc6b514023cb80436afae753668f050792a6026d0824902c6f7b0691b",
+      "paths": 342,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "chlamydomonas-cell",
+      "sourcePngSha256": "92accaa2c87381bcfd163ca78d22eb54348f8c3b44e08eacfa2bb77ce761cdc9",
+      "sourceSvgSha256": "f8631572ebdf6216ce5c1b9b9d5ca71973a0afcee65ffda29934e8f6f3919b52",
+      "appSvgSha256": "cd69ac3a114bb59c69aae9a3bf220f7f154d3ff17192c60beb7eaa969afdba99",
+      "paths": 1191,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "glycocalyx",
+      "sourcePngSha256": "1f24983c964b892beebe1ea1f0866baaddc5dbd5ae4de1f6a184a8e8a0a1feee",
+      "sourceSvgSha256": "ece72d2c4ae156ec18edeef87c8e5d2ecc9889eaaffa0fdaf48fff1237bb5fbf",
+      "appSvgSha256": "244d158d44e3a5af6f1811d99409d8de7d31b358b80f00dd87d76424429fc13d",
+      "paths": 2771,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "extracellular-dna-web",
+      "sourcePngSha256": "b847c760b643a520c8d44814c1270ca2e39fe385de854282a4b8e42108ac4140",
+      "sourceSvgSha256": "43f473fc2344571f1746dacdcec0381fc988b7cfb1fa08f2c7830b5b0b20d14e",
+      "appSvgSha256": "b2ff49423aa87e0832cf247b35616eb76428677a7baf040388ef10e8ec720a01",
+      "paths": 2098,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "bacterial-pilus",
+      "sourcePngSha256": "a7a206619868b62b6b4471768c4733fe4d9862e80b294750de31cf9b82ec6098",
+      "sourceSvgSha256": "aac1904397d50b031dd16d308f96c2456f8bcfb63873ab48315fb7b816b945fc",
+      "appSvgSha256": "bd522bd1bda65c771ac2d1b830b445478f073265b3b12a9fb578ec93ab05201d",
+      "paths": 873,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "bacterial-flagellum-bundle",
+      "sourcePngSha256": "61e9bf16d6b1ba98460043e191305d5c2dbd72aabfaa5a78388fc7622b61dd7b",
+      "sourceSvgSha256": "388c0519d0d702e30f963ca71c53562dd00eb7aac05008623e97900c19ae41be",
+      "appSvgSha256": "b74f1f7f7118ba7b96fd248717e792f3dd1ad44923369398887a36fb50bc7635",
+      "paths": 317,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "3d-bioprinter",
+      "sourcePngSha256": "b49db883787a482ba9da855f99bae83ad31e5dd6f755e23959d9017df218dd4a",
+      "sourceSvgSha256": "db1af8841f402cd4c86a6e5e2bf334055c7de5291b29d6ecb97719ca30f8211d",
+      "appSvgSha256": "fdb521e11cf6800184845d07eaf9a63298f84d2708d6586422b57e391965e9cd",
+      "paths": 784,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "perfusion-bioreactor",
+      "sourcePngSha256": "56c55066108338c3d6a6d543919a155dd60e379c45042b5504fdfca8609cbcef",
+      "sourceSvgSha256": "891bfa2357502dcfe8c263cfdbe1b53c7911a0a002b1b4594aaec20b2ece51e2",
+      "appSvgSha256": "2a2fb1be3e0734361b4472b36e23db373ede1ef8a98d3cd66d3eaeacd52f1e0b",
+      "paths": 1280,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "infusion-bag",
+      "sourcePngSha256": "525ddbcbcad0e6f4a404771fb883417d50008acebaa323ef025cdbda4138c84c",
+      "sourceSvgSha256": "e9bec3e2bd8068a7f85b3f4910e31dd75bb8f7225f7df9963f620743591f1b3b",
+      "appSvgSha256": "a2b7d6f5a28a506ba1343dc10c30118637188191e714308435ef2688a8b4ed3c",
+      "paths": 606,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "infusion-pump",
+      "sourcePngSha256": "b45ecb708d06f36cf5aa09797b0e418b1a1019ee85976e90c1e70a55d7c032b0",
+      "sourceSvgSha256": "1baaa859301a9239d7780a568fb80e4d626ce25f2d7132efa988709da2cecd64",
+      "appSvgSha256": "be7237278d41ec9118f80c372f79486caed0df502168b948ff398d77554049c4",
+      "paths": 322,
+      "width": 1024,
+      "height": 1024,
+      "maxSide": 1024
+    },
+    {
+      "id": "subcutaneous-tumor-xenograft-nodule",
+      "sourcePngSha256": "733e86b923f1017f29beb44293cb67773386a91481b46914c69a16a5311f2335",
+      "sourceSvgSha256": "e924a9c569d0e3cedcbcff810ee405c5da3f2ca7566330e12b97b0dfa060cac5",
+      "appSvgSha256": "e092a23c9c788558fddb2703855b7492d4ba579ab06af0a66ebafe7d0210963a",
+      "paths": 601,
       "width": 1024,
       "height": 1024,
       "maxSide": 1024

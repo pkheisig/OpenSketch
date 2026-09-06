@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "sourceCommit": "6b27cdc1764851bae4e55ac346879be254815b56",
-  "uniqueArtworkCount": 611,
-  "completedConceptCount": 629,
+  "sourceCommit": "601fead222e37988dc80ae950f1c3d3fd065dc1f",
+  "uniqueArtworkCount": 741,
+  "completedConceptCount": 768,
   "note": "Concept IDs record generation history only and are not additional search aliases or claims of biological equivalence. Uncommitted artwork is not included.",
   "assets": [
     {
@@ -846,7 +846,8 @@
       "title": "cell spheroid",
       "sourceSha256": "6f0e64c855de1050639b744429eabc939f5524ea1d6b9096a7c511a606d62314",
       "sourceConceptIds": [
-        "cell-spheroid"
+        "cell-spheroid",
+        "tissue-engineered-spheroid"
       ],
       "keywords": [
         "cell spheroid",
@@ -2798,7 +2799,8 @@
       "sourceConceptIds": [
         "single-stranded-dna",
         "rna-strand",
-        "viral-rna-genome"
+        "viral-rna-genome",
+        "cdna-molecule"
       ],
       "keywords": [
         "single-stranded DNA",
@@ -3413,7 +3415,8 @@
       "title": "fluorescent bead",
       "sourceSha256": "277a2e746683888f5a3e5e0061b980c5c625127130fd5f4a0c6c57c9d92a751c",
       "sourceConceptIds": [
-        "fluorescent-bead"
+        "fluorescent-bead",
+        "fluorescent-calibration-bead"
       ],
       "keywords": [
         "fluorescent bead",
@@ -6123,7 +6126,8 @@
       "title": "Transwell insert",
       "sourceSha256": "0c638976a0207cb0510138e498d5342bd79c840402294190559dc1522ba3479a",
       "sourceConceptIds": [
-        "transwell-insert"
+        "transwell-insert",
+        "porous-membrane-insert"
       ],
       "keywords": [
         "Transwell insert",
@@ -7824,7 +7828,8 @@
       "title": "pathology specimen jar",
       "sourceSha256": "b08eee588cb17928d197cff9c9e5bebcd2b1a7cc205f7f7f88f7234354c48016",
       "sourceConceptIds": [
-        "pathology-specimen-jar"
+        "pathology-specimen-jar",
+        "tissue-specimen-container"
       ],
       "keywords": [
         "pathology specimen jar",
@@ -7951,6 +7956,1456 @@
         "patch-clamp electrode",
         "Instruments",
         "structural biology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-patch-clamp-rig",
+      "title": "patch-clamp rig",
+      "sourceSha256": "25b90cd7b45a6e330f16ca59079dd613219de9ac430c5eb5050cd0e197c44d27",
+      "sourceConceptIds": [
+        "patch-clamp-rig"
+      ],
+      "keywords": [
+        "patch-clamp rig",
+        "Instruments",
+        "structural biology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-microelectrode-array",
+      "title": "microelectrode array",
+      "sourceSha256": "6118ccfacd2f99d2bbac618d7257185673bc93615948c161d3721edec945f30a",
+      "sourceConceptIds": [
+        "microelectrode-array",
+        "microelectrode-array-chip"
+      ],
+      "keywords": [
+        "microelectrode array",
+        "Instruments",
+        "structural biology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-droplet-microfluidic-single-cell-chip",
+      "title": "droplet microfluidic single-cell chip",
+      "sourceSha256": "7119ec65ad5e56e06e448dc64e7c4b01116ad215d14562e6990ee07725f459eb",
+      "sourceConceptIds": [
+        "droplet-microfluidic-single-cell-chip"
+      ],
+      "keywords": [
+        "droplet microfluidic single-cell chip",
+        "Culture & microfluidics",
+        "single cell biology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-single-cell-droplet-with-barcoded-bead",
+      "title": "single-cell droplet with barcoded bead",
+      "sourceSha256": "e37f2797bff30fdd84f959e842f3d40bc5a89c92ad51a3cf75ddc541af22b6ff",
+      "sourceConceptIds": [
+        "single-cell-droplet-with-barcoded-bead"
+      ],
+      "keywords": [
+        "single-cell droplet with barcoded bead",
+        "Experimental assemblies",
+        "single cell biology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-barcoded-capture-bead",
+      "title": "barcoded capture bead",
+      "sourceSha256": "5626d078035268c330ab6bf3a5beb2428e3ff43e130d637306015172ef05c64f",
+      "sourceConceptIds": [
+        "barcoded-capture-bead",
+        "barcode-oligonucleotide-bead"
+      ],
+      "keywords": [
+        "barcoded capture bead",
+        "Molecules & particles",
+        "single cell biology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-spatial-transcriptomics-slide",
+      "title": "spatial transcriptomics slide",
+      "sourceSha256": "a151253fa36746f049cc3f027153f8ffb9833a9738f491ea4cb88ce9e1fd6543",
+      "sourceConceptIds": [
+        "spatial-transcriptomics-slide"
+      ],
+      "keywords": [
+        "spatial transcriptomics slide",
+        "Labware & consumables",
+        "single cell biology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-tissue-capture-spot-array",
+      "title": "tissue capture spot array",
+      "sourceSha256": "8cd60607d20e631ee13b8f185342a39a04746131bf7d641a28024956b4062ae9",
+      "sourceConceptIds": [
+        "tissue-capture-spot-array"
+      ],
+      "keywords": [
+        "tissue capture spot array",
+        "Experimental assemblies",
+        "single cell biology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-microwell-single-cell-array",
+      "title": "microwell single-cell array",
+      "sourceSha256": "26bdf129267d923e6f8807e6dc5f7fd7e0cf48630575f4adde1d30bf63fbe3ff",
+      "sourceConceptIds": [
+        "microwell-single-cell-array"
+      ],
+      "keywords": [
+        "microwell single-cell array",
+        "Culture & microfluidics",
+        "single cell biology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cell-hashing-antibody-tag-complex",
+      "title": "cell hashing antibody-tag complex",
+      "sourceSha256": "031b7b22b644027cdf026be5f1cf9f1cb54147d40636de2ce361faa302e7653c",
+      "sourceConceptIds": [
+        "cell-hashing-antibody-tag-complex",
+        "dna-barcoded-antibody"
+      ],
+      "keywords": [
+        "cell hashing antibody-tag complex",
+        "Experimental assemblies",
+        "single cell biology",
+        "antibody"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-rodent-cage",
+      "title": "rodent cage",
+      "sourceSha256": "6c99812cc97ef4dc4cce06b78bb0a74d1dcc10a9a5fd2e07008befd6ccb8a0c7",
+      "sourceConceptIds": [
+        "rodent-cage"
+      ],
+      "keywords": [
+        "rodent cage",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-individually-ventilated-cage",
+      "title": "individually ventilated cage",
+      "sourceSha256": "0cd5413d36416a61dbf6c96f65c857b1cd176ceffb8677f772c8f6fe60129d1f",
+      "sourceConceptIds": [
+        "individually-ventilated-cage"
+      ],
+      "keywords": [
+        "individually ventilated cage",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-metabolic-cage",
+      "title": "metabolic cage",
+      "sourceSha256": "416f573b9241387c3448cdb9b4d67dc1f113f6b8349017b0d04faccee0923104",
+      "sourceConceptIds": [
+        "metabolic-cage"
+      ],
+      "keywords": [
+        "metabolic cage",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-mouse-restrainer",
+      "title": "mouse restrainer",
+      "sourceSha256": "97a247fc18df2a8a5e6c5ddd8a855158582160deeae3a953e164e2a40a325176",
+      "sourceConceptIds": [
+        "mouse-restrainer"
+      ],
+      "keywords": [
+        "mouse restrainer",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-rodent-anesthesia-nose-cone",
+      "title": "rodent anesthesia nose cone",
+      "sourceSha256": "0b23eb9183e92de3e42b5df9f9c496ce91c59d1aaa80897281a07889e148b289",
+      "sourceConceptIds": [
+        "rodent-anesthesia-nose-cone"
+      ],
+      "keywords": [
+        "rodent anesthesia nose cone",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-isoflurane-vaporizer",
+      "title": "isoflurane vaporizer",
+      "sourceSha256": "441d2df0876bb3309e1eb2bfe05ea0832af4789295389a1a382691a22251185e",
+      "sourceConceptIds": [
+        "isoflurane-vaporizer"
+      ],
+      "keywords": [
+        "isoflurane vaporizer",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-anesthesia-induction-chamber",
+      "title": "anesthesia induction chamber",
+      "sourceSha256": "fec2f91d112d9c0daa23b869314300603b603327d3e0addd78e00a1a2fb83f18",
+      "sourceConceptIds": [
+        "anesthesia-induction-chamber"
+      ],
+      "keywords": [
+        "anesthesia induction chamber",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-stereotaxic-frame",
+      "title": "stereotaxic frame",
+      "sourceSha256": "a2bab4dcac3de2eee1be01bcf53f5beb4cd40b95beaa67efb0d85299b5bcec9a",
+      "sourceConceptIds": [
+        "stereotaxic-frame"
+      ],
+      "keywords": [
+        "stereotaxic frame",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-surgical-operating-platform",
+      "title": "surgical operating platform",
+      "sourceSha256": "469e47e18a114e862dc3d1bcbbf017433a5816c65d0a5f25c66a4ef7b31d6693",
+      "sourceConceptIds": [
+        "surgical-operating-platform"
+      ],
+      "keywords": [
+        "surgical operating platform",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-heating-pad",
+      "title": "heating pad",
+      "sourceSha256": "80398562a2b27b5a3d7f44ce5736674c98a432aa4b19d44492670bdf6a4b3ea9",
+      "sourceConceptIds": [
+        "heating-pad"
+      ],
+      "keywords": [
+        "heating pad",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-gavage-needle",
+      "title": "gavage needle",
+      "sourceSha256": "c5a0ac5fe9a3a545c13861ffeee944f590a4241cab355a51da76c96004f080a6",
+      "sourceConceptIds": [
+        "gavage-needle"
+      ],
+      "keywords": [
+        "gavage needle",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-insulin-syringe",
+      "title": "insulin syringe",
+      "sourceSha256": "a45a262913232e9b130641cb1f955ea14cb992823519b1efca824cefe24c4887",
+      "sourceConceptIds": [
+        "insulin-syringe"
+      ],
+      "keywords": [
+        "insulin syringe",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-injection-needle",
+      "title": "injection needle",
+      "sourceSha256": "7dfc218fd0bad9aa8382e5e74827dc7f5c9017dc01b0fb209877f2a6740daad5",
+      "sourceConceptIds": [
+        "injection-needle"
+      ],
+      "keywords": [
+        "injection needle",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-tail-vein-injection-setup",
+      "title": "tail-vein injection setup",
+      "sourceSha256": "020653745bb201baa28ed954be01af16545000db52a44fee2b552b5fc9e4203c",
+      "sourceConceptIds": [
+        "tail-vein-injection-setup"
+      ],
+      "keywords": [
+        "tail-vein injection setup",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-oral-gavage-syringe",
+      "title": "oral gavage syringe",
+      "sourceSha256": "82740761fb8650d0477a659a1174a94b149dadc2a1e8a77d01479ce4dc80115c",
+      "sourceConceptIds": [
+        "oral-gavage-syringe"
+      ],
+      "keywords": [
+        "oral gavage syringe",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-blood-collection-capillary",
+      "title": "blood collection capillary",
+      "sourceSha256": "bb4dd6654f79a22b2e5fc7367c9ba20430d783c4f40cd223de8dc22c8ec0d476",
+      "sourceConceptIds": [
+        "blood-collection-capillary"
+      ],
+      "keywords": [
+        "blood collection capillary",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-ear-punch",
+      "title": "ear punch",
+      "sourceSha256": "5d9d7bc35bfe284027c0fb63231b7472f43946423dbd62d03cbd3cf967a34ebe",
+      "sourceConceptIds": [
+        "ear-punch"
+      ],
+      "keywords": [
+        "ear punch",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-microchip-transponder",
+      "title": "microchip transponder",
+      "sourceSha256": "c378403fa69f5af0e77ab5e503b39802f3c8b21b29a95666bf58437f0c4b5ddc",
+      "sourceConceptIds": [
+        "microchip-transponder"
+      ],
+      "keywords": [
+        "microchip transponder",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-animal-imaging-chamber",
+      "title": "animal imaging chamber",
+      "sourceSha256": "14afa1febff660f237279b3c937db0d5115bfd096a65f3a55931410f4a21863e",
+      "sourceConceptIds": [
+        "animal-imaging-chamber"
+      ],
+      "keywords": [
+        "animal imaging chamber",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-small-animal-ivis-style-optical-imaging-system",
+      "title": "small-animal IVIS-style optical imaging system",
+      "sourceSha256": "2f969464af72fcaf7b6b666e4c66f56d57ec23dcaa0732dafe01ecc56bccba99",
+      "sourceConceptIds": [
+        "small-animal-ivis-style-optical-imaging-system"
+      ],
+      "keywords": [
+        "small-animal IVIS-style optical imaging system",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-small-animal-mri-scanner",
+      "title": "small-animal MRI scanner",
+      "sourceSha256": "0f5d7b7ba8973ea57b4c39cff0063f7f7017747f84ca9add4f782c304aecd4f7",
+      "sourceConceptIds": [
+        "small-animal-mri-scanner"
+      ],
+      "keywords": [
+        "small-animal MRI scanner",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-small-animal-ct-scanner",
+      "title": "small-animal CT scanner",
+      "sourceSha256": "9697cd785c604f243fc040ac5fca7a6412784c800e63556bb943d6a0f2c0e3e8",
+      "sourceConceptIds": [
+        "small-animal-ct-scanner"
+      ],
+      "keywords": [
+        "small-animal CT scanner",
+        "Animal & clinical equipment",
+        "animal research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-blood-collection-needle-and-tube",
+      "title": "blood collection needle and tube",
+      "sourceSha256": "e91f30c01f5f35b2f272a5748c1634894e258f4dbc27be0cb78c8274b08f584b",
+      "sourceConceptIds": [
+        "blood-collection-needle-and-tube"
+      ],
+      "keywords": [
+        "blood collection needle and tube",
+        "Animal & clinical equipment",
+        "sample collection",
+        "tube"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-vacutainer-holder",
+      "title": "vacutainer holder",
+      "sourceSha256": "af91757d2fa5bb14d50ef816e1d4e05a2f6ff3cbe3158284e84d275308f7761f",
+      "sourceConceptIds": [
+        "vacutainer-holder"
+      ],
+      "keywords": [
+        "vacutainer holder",
+        "Animal & clinical equipment",
+        "sample collection"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-blood-bag",
+      "title": "blood bag",
+      "sourceSha256": "98ada435df9c494eee7d74967acebe60ded73e04e2f94b8d642ca44c712552eb",
+      "sourceConceptIds": [
+        "blood-bag"
+      ],
+      "keywords": [
+        "blood bag",
+        "Animal & clinical equipment",
+        "sample collection"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-leukapheresis-bag",
+      "title": "leukapheresis bag",
+      "sourceSha256": "b62895e9a36caad839c26fc6a4aabfe7c21bbc899a043966f155dfc5616d7dd5",
+      "sourceConceptIds": [
+        "leukapheresis-bag"
+      ],
+      "keywords": [
+        "leukapheresis bag",
+        "Animal & clinical equipment",
+        "sample collection"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-leukapheresis-machine",
+      "title": "leukapheresis machine",
+      "sourceSha256": "7032b4d37d32dc3788a050d5a99a9a9de91140b39b669da925500fee78942bf6",
+      "sourceConceptIds": [
+        "leukapheresis-machine"
+      ],
+      "keywords": [
+        "leukapheresis machine",
+        "Animal & clinical equipment",
+        "sample collection"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-biopsy-needle",
+      "title": "biopsy needle",
+      "sourceSha256": "9c84bac68d8f3e79ac00f4bdaf1d610ce680ae6f3cff759794fff3b78630f6c9",
+      "sourceConceptIds": [
+        "biopsy-needle"
+      ],
+      "keywords": [
+        "biopsy needle",
+        "Animal & clinical equipment",
+        "sample collection"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-core-biopsy-specimen",
+      "title": "core biopsy specimen",
+      "sourceSha256": "7258f28255ccc92cf3a4bdc098f97e04817277c7c755facfd9ea402be25c145c",
+      "sourceConceptIds": [
+        "core-biopsy-specimen"
+      ],
+      "keywords": [
+        "core biopsy specimen",
+        "Animal & clinical equipment",
+        "sample collection"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-swab",
+      "title": "swab",
+      "sourceSha256": "af145fb4eff1ecc0649cc9b5166624362b79a94d6ab61f0404a90b4c9340d8be",
+      "sourceConceptIds": [
+        "swab"
+      ],
+      "keywords": [
+        "swab",
+        "Animal & clinical equipment",
+        "sample collection"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-saliva-collection-tube",
+      "title": "saliva collection tube",
+      "sourceSha256": "53d25c41dd21e83523c54cf7873518cd4ef84a629b8f85095983c386c8d87e3b",
+      "sourceConceptIds": [
+        "saliva-collection-tube"
+      ],
+      "keywords": [
+        "saliva collection tube",
+        "Animal & clinical equipment",
+        "sample collection",
+        "tube"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-urine-specimen-cup",
+      "title": "urine specimen cup",
+      "sourceSha256": "1382a8dc76a127da5cd26d7ff87a1bacb4a760c9ea6b557261dacc799a1c2a22",
+      "sourceConceptIds": [
+        "urine-specimen-cup"
+      ],
+      "keywords": [
+        "urine specimen cup",
+        "Animal & clinical equipment",
+        "sample collection"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-stool-collection-tube",
+      "title": "stool collection tube",
+      "sourceSha256": "de364713306a53bebae358666a4f3181b60bf251d71896833804c9c89a178bf0",
+      "sourceConceptIds": [
+        "stool-collection-tube"
+      ],
+      "keywords": [
+        "stool collection tube",
+        "Animal & clinical equipment",
+        "sample collection",
+        "tube"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-bronchoalveolar-lavage-collection-container",
+      "title": "bronchoalveolar lavage collection container",
+      "sourceSha256": "5e4a24a49bc72f0ce617a9f4aa90645e0b79e05ab31f1668a4ebc4b2d836af87",
+      "sourceConceptIds": [
+        "bronchoalveolar-lavage-collection-container"
+      ],
+      "keywords": [
+        "bronchoalveolar lavage collection container",
+        "Animal & clinical equipment",
+        "sample collection"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-laboratory-refrigerator",
+      "title": "laboratory refrigerator",
+      "sourceSha256": "81b25ad97c291461d64053840f74ef6f38aa25d6e6a95c3cf8328c899aa92198",
+      "sourceConceptIds": [
+        "laboratory-refrigerator"
+      ],
+      "keywords": [
+        "laboratory refrigerator",
+        "Lab infrastructure & safety",
+        "cold storage"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-20-c-freezer",
+      "title": "−20 °C freezer",
+      "sourceSha256": "01519e4cb1fb99948576cae80588886f6d3d6ee60f753246a9cbed2314ce2c18",
+      "sourceConceptIds": [
+        "20-c-freezer"
+      ],
+      "keywords": [
+        "−20 °C freezer",
+        "Lab infrastructure & safety",
+        "minus 20 freezer",
+        "-20 C",
+        "cold storage"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-80-c-ultra-low-freezer",
+      "title": "−80 °C ultra-low freezer",
+      "sourceSha256": "1a45362f7e880ad076889ce567db7d8724528b30c5fe929a60dfb0a8c07e542a",
+      "sourceConceptIds": [
+        "80-c-ultra-low-freezer"
+      ],
+      "keywords": [
+        "−80 °C ultra-low freezer",
+        "Lab infrastructure & safety",
+        "minus 80 freezer",
+        "-80 C",
+        "cold storage"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-liquid-nitrogen-dewar",
+      "title": "liquid nitrogen dewar",
+      "sourceSha256": "586172b3430197bd48d6a89931c0234d7dd5fe86c3e98016c3adcd571d36edad",
+      "sourceConceptIds": [
+        "liquid-nitrogen-dewar"
+      ],
+      "keywords": [
+        "liquid nitrogen dewar",
+        "Lab infrastructure & safety",
+        "cold storage"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cryogenic-storage-tank",
+      "title": "cryogenic storage tank",
+      "sourceSha256": "8092ffaf57ed1edbf7b97d43850e511e697762b205ba5ee9860e6ba9d6cbd33b",
+      "sourceConceptIds": [
+        "cryogenic-storage-tank"
+      ],
+      "keywords": [
+        "cryogenic storage tank",
+        "Lab infrastructure & safety",
+        "cold storage",
+        "cryogenic methods"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-dry-ice-container",
+      "title": "dry-ice container",
+      "sourceSha256": "dcf0d069765af299be798a8e41098ef003d215aef0b839d451c5582fd64bcda2",
+      "sourceConceptIds": [
+        "dry-ice-container"
+      ],
+      "keywords": [
+        "dry-ice container",
+        "Lab infrastructure & safety",
+        "cold storage"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-insulated-sample-shipping-box",
+      "title": "insulated sample shipping box",
+      "sourceSha256": "0de9076f935943584e49399ca85d4fde16ba01add8a936d0a8f3a50aaf27763b",
+      "sourceConceptIds": [
+        "insulated-sample-shipping-box"
+      ],
+      "keywords": [
+        "insulated sample shipping box",
+        "Lab infrastructure & safety",
+        "cold storage"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cryogenic-vial-rack",
+      "title": "cryogenic vial rack",
+      "sourceSha256": "63cd585929c62226b287416995ffb9e10c03dd729a925c0390c12ca428b55154",
+      "sourceConceptIds": [
+        "cryogenic-vial-rack"
+      ],
+      "keywords": [
+        "cryogenic vial rack",
+        "Lab infrastructure & safety",
+        "cold storage",
+        "cryogenic methods"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-lab-coat",
+      "title": "lab coat",
+      "sourceSha256": "62e1fd58090ed41347b2d8aab568dd39961295b7b8f0af38b90600dcf83167ca",
+      "sourceConceptIds": [
+        "lab-coat"
+      ],
+      "keywords": [
+        "lab coat",
+        "Lab infrastructure & safety",
+        "biosafety"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-disposable-gloves",
+      "title": "disposable gloves",
+      "sourceSha256": "a03eba5524f8430b9ff7782b84d34100727fb31ef9f24a095311d20bd517de43",
+      "sourceConceptIds": [
+        "disposable-gloves"
+      ],
+      "keywords": [
+        "disposable gloves",
+        "Lab infrastructure & safety",
+        "biosafety"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-safety-goggles",
+      "title": "safety goggles",
+      "sourceSha256": "250c9cdf7c241f75d8a5476e5d11857f592f81f918f57d1eef20887053ae9019",
+      "sourceConceptIds": [
+        "safety-goggles"
+      ],
+      "keywords": [
+        "safety goggles",
+        "Lab infrastructure & safety",
+        "biosafety"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-face-shield",
+      "title": "face shield",
+      "sourceSha256": "b844c54606ec1d1c8da017474198fee1981b6c6eb21aec812156fd1e5e096dd9",
+      "sourceConceptIds": [
+        "face-shield"
+      ],
+      "keywords": [
+        "face shield",
+        "Lab infrastructure & safety",
+        "biosafety"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-surgical-mask",
+      "title": "surgical mask",
+      "sourceSha256": "251530f213e250bacebe868852d383ee4005c28fac3d7af5dd858ebae8b72ba9",
+      "sourceConceptIds": [
+        "surgical-mask"
+      ],
+      "keywords": [
+        "surgical mask",
+        "Lab infrastructure & safety",
+        "biosafety"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-n95-respirator",
+      "title": "N95 respirator",
+      "sourceSha256": "82a6c784696c88a4cf118df7345f0d9a6ec49cb04136f42ef896b479bb5dbe61",
+      "sourceConceptIds": [
+        "n95-respirator"
+      ],
+      "keywords": [
+        "N95 respirator",
+        "Lab infrastructure & safety",
+        "biosafety"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-disposable-gown",
+      "title": "disposable gown",
+      "sourceSha256": "890ef5ae62e1488f1384d18c17d60cbda5f569391ff5c5f67d319d393c2a7e84",
+      "sourceConceptIds": [
+        "disposable-gown"
+      ],
+      "keywords": [
+        "disposable gown",
+        "Lab infrastructure & safety",
+        "biosafety"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-biohazard-waste-bin",
+      "title": "biohazard waste bin",
+      "sourceSha256": "2425b2fe77b8b926673cfe85745aeb60f7e1166226b8fa96c8f1a774b37cd716",
+      "sourceConceptIds": [
+        "biohazard-waste-bin"
+      ],
+      "keywords": [
+        "biohazard waste bin",
+        "Lab infrastructure & safety",
+        "biosafety"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-sharps-container",
+      "title": "sharps container",
+      "sourceSha256": "f803803f29792f3376b81c5408a7ae2f60264b36fccabc6409d8bfdcecdb6d82",
+      "sourceConceptIds": [
+        "sharps-container"
+      ],
+      "keywords": [
+        "sharps container",
+        "Lab infrastructure & safety",
+        "biosafety"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-autoclave",
+      "title": "autoclave",
+      "sourceSha256": "380babeec22e2436c14006560509392493e4f4aeb674ac0227b518f257588c89",
+      "sourceConceptIds": [
+        "autoclave"
+      ],
+      "keywords": [
+        "autoclave",
+        "Lab infrastructure & safety",
+        "biosafety"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-fume-hood",
+      "title": "fume hood",
+      "sourceSha256": "2db62d3720b1941d6ed809717258bf10cc2d18162a09fa886f0ec06d8204fb3c",
+      "sourceConceptIds": [
+        "fume-hood"
+      ],
+      "keywords": [
+        "fume hood",
+        "Lab infrastructure & safety",
+        "biosafety"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-chemical-storage-cabinet",
+      "title": "chemical storage cabinet",
+      "sourceSha256": "595251987b6a0dbf7562c885e0dc040cfb5be5bb201297ea4eb2bca9622fd2f0",
+      "sourceConceptIds": [
+        "chemical-storage-cabinet"
+      ],
+      "keywords": [
+        "chemical storage cabinet",
+        "Lab infrastructure & safety",
+        "biosafety"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-eyewash-station",
+      "title": "eyewash station",
+      "sourceSha256": "473e04c53b00a97461ab4ee7b623a45c3f6e36e360ff551b2005aa0a04fa90c2",
+      "sourceConceptIds": [
+        "eyewash-station"
+      ],
+      "keywords": [
+        "eyewash station",
+        "Lab infrastructure & safety",
+        "biosafety"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-emergency-shower",
+      "title": "emergency shower",
+      "sourceSha256": "1140fc339fe05d8bbba0d05ce5070775d4e9ff6559367f2616d4288966c9fb51",
+      "sourceConceptIds": [
+        "emergency-shower"
+      ],
+      "keywords": [
+        "emergency shower",
+        "Lab infrastructure & safety",
+        "biosafety"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-antibody-coated-bead",
+      "title": "antibody-coated bead",
+      "sourceSha256": "e902fdd7c152fc4186556b0c88c007e2fdb799ce995b0e565b8a2237406a2548",
+      "sourceConceptIds": [
+        "antibody-coated-bead"
+      ],
+      "keywords": [
+        "antibody-coated bead",
+        "Molecules & particles",
+        "assays",
+        "antibody"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-streptavidin-coated-bead",
+      "title": "streptavidin-coated bead",
+      "sourceSha256": "e06bcf19b9b9d9609d58b4effbe30b3c5a5da71702b7a0ad8d2ea3670df18795",
+      "sourceConceptIds": [
+        "streptavidin-coated-bead"
+      ],
+      "keywords": [
+        "streptavidin-coated bead",
+        "Molecules & particles",
+        "assays"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-magnetic-bead-cell-complex",
+      "title": "magnetic-bead-cell complex",
+      "sourceSha256": "5bf7fd7caefcd94347000995f552205102d7d349ea4fc905b7f08cf9c9f8b1e2",
+      "sourceConceptIds": [
+        "magnetic-bead-cell-complex"
+      ],
+      "keywords": [
+        "magnetic-bead-cell complex",
+        "Experimental assemblies",
+        "assays"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-capture-antibody-bound-to-plate",
+      "title": "capture antibody bound to plate",
+      "sourceSha256": "1be4328dfd8d604150bddc58de3d922b8b93f80854bf55b2ccd5a9c27edf3420",
+      "sourceConceptIds": [
+        "capture-antibody-bound-to-plate"
+      ],
+      "keywords": [
+        "capture antibody bound to plate",
+        "Experimental assemblies",
+        "assays",
+        "antibody",
+        "plate"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-sandwich-immunoassay-complex",
+      "title": "sandwich immunoassay complex",
+      "sourceSha256": "234fb22491a35832bdfb4922bf3911c3e3e842384a61d323f1d670b624a9d9f5",
+      "sourceConceptIds": [
+        "sandwich-immunoassay-complex"
+      ],
+      "keywords": [
+        "sandwich immunoassay complex",
+        "Experimental assemblies",
+        "assays"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-lateral-flow-strip",
+      "title": "lateral-flow strip",
+      "sourceSha256": "a564df28b74147a6995215849257a3359086918848ab3c30991e7ea2c80f4ab3",
+      "sourceConceptIds": [
+        "lateral-flow-strip"
+      ],
+      "keywords": [
+        "lateral-flow strip",
+        "Experimental assemblies",
+        "assays"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-membrane-filter",
+      "title": "membrane filter",
+      "sourceSha256": "7b0b8446ae223d1d1b6af8ef984b9c38c2f666cf947f100cacdeda7a2862eb3e",
+      "sourceConceptIds": [
+        "membrane-filter"
+      ],
+      "keywords": [
+        "membrane filter",
+        "Labware & consumables",
+        "assays"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-hydrogel-droplet",
+      "title": "hydrogel droplet",
+      "sourceSha256": "1bef58573487f3074d4e6517ba38ffdbd78b8319543a1c3baa8775b6a4eb3e46",
+      "sourceConceptIds": [
+        "hydrogel-droplet"
+      ],
+      "keywords": [
+        "hydrogel droplet",
+        "Molecules & particles",
+        "assays"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-hydrogel-scaffold",
+      "title": "hydrogel scaffold",
+      "sourceSha256": "7e8f9f601c0e67dde62a5cdb10a1c45915ff606a1103fab2a0b46b97de59943f",
+      "sourceConceptIds": [
+        "hydrogel-scaffold"
+      ],
+      "keywords": [
+        "hydrogel scaffold",
+        "Tissues & models",
+        "assays",
+        "scaffold"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-extracellular-matrix-gel-dome",
+      "title": "extracellular matrix gel dome",
+      "sourceSha256": "babf7547622d464ef9d68366a9bad5b7e39e26e79a039a3492fa671743d0ca7b",
+      "sourceConceptIds": [
+        "extracellular-matrix-gel-dome"
+      ],
+      "keywords": [
+        "extracellular matrix gel dome",
+        "Tissues & models",
+        "assays"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-fluorescent-reporter-protein",
+      "title": "fluorescent reporter protein",
+      "sourceSha256": "6cc8971f161dbd8c73509ded35a3318e8b73d2d7e5e603973b524c3bb1cae42d",
+      "sourceConceptIds": [
+        "fluorescent-reporter-protein"
+      ],
+      "keywords": [
+        "fluorescent reporter protein",
+        "Proteins & complexes",
+        "assays",
+        "protein"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-luciferase-reporter-protein",
+      "title": "luciferase reporter protein",
+      "sourceSha256": "5d5b504f373115ad08bb3fb7fda42306611320c192a76a9896c88f5afbe7533a",
+      "sourceConceptIds": [
+        "luciferase-reporter-protein"
+      ],
+      "keywords": [
+        "luciferase reporter protein",
+        "Proteins & complexes",
+        "assays",
+        "protein"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-straight-microfluidic-channel",
+      "title": "straight microfluidic channel",
+      "sourceSha256": "ba22e52cb3cb75b90ddf98942ff030bcf7dff9b04ac4b97f9ff47407138ae98c",
+      "sourceConceptIds": [
+        "straight-microfluidic-channel"
+      ],
+      "keywords": [
+        "straight microfluidic channel",
+        "Culture & microfluidics",
+        "microfluidics",
+        "channel"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-microfluidic-droplet-generator",
+      "title": "microfluidic droplet generator",
+      "sourceSha256": "40453ae7d6a50ee9740d1b4ef8a74016ac95d6a0cde460020460637479445e81",
+      "sourceConceptIds": [
+        "microfluidic-droplet-generator"
+      ],
+      "keywords": [
+        "microfluidic droplet generator",
+        "Culture & microfluidics",
+        "microfluidics"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-y-junction-microfluidic-chip",
+      "title": "Y-junction microfluidic chip",
+      "sourceSha256": "e5f4ec13f40d62d70ad9b609a29a3e869c61540245cf05a30433809e35cffffb",
+      "sourceConceptIds": [
+        "y-junction-microfluidic-chip"
+      ],
+      "keywords": [
+        "Y-junction microfluidic chip",
+        "Culture & microfluidics",
+        "microfluidics"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-perfusion-chamber",
+      "title": "perfusion chamber",
+      "sourceSha256": "f1138a47aa060af93ab713af0b6c92de9bac8d6690e4aaef543e3732044ac4f3",
+      "sourceConceptIds": [
+        "perfusion-chamber"
+      ],
+      "keywords": [
+        "perfusion chamber",
+        "Culture & microfluidics",
+        "microfluidics"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-microfluidic-cell-trap",
+      "title": "microfluidic cell trap",
+      "sourceSha256": "a7d2f9f5dbd772c235e74fa257b65d076b0e3f9d8a73017aa10c8ea72d1a15d1",
+      "sourceConceptIds": [
+        "microfluidic-cell-trap"
+      ],
+      "keywords": [
+        "microfluidic cell trap",
+        "Culture & microfluidics",
+        "microfluidics"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-porous-membrane-chip",
+      "title": "porous membrane chip",
+      "sourceSha256": "32151398e4f5646cb7f80b0e27e3bac43588b28ba763b750c5c0be7040ac72af",
+      "sourceConceptIds": [
+        "porous-membrane-chip"
+      ],
+      "keywords": [
+        "porous membrane chip",
+        "Culture & microfluidics",
+        "microfluidics"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-biosensor-chip",
+      "title": "biosensor chip",
+      "sourceSha256": "dda1b9b6ac926d3878cfbbec3c1de0db3df30e2595d167412556e52e570fb32a",
+      "sourceConceptIds": [
+        "biosensor-chip"
+      ],
+      "keywords": [
+        "biosensor chip",
+        "Culture & microfluidics",
+        "microfluidics"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-wearable-biosensor-patch",
+      "title": "wearable biosensor patch",
+      "sourceSha256": "9e35bc3627cc31ea51873e5f0617a3417778d13abb79f5e1fdc05cc143870cfb",
+      "sourceConceptIds": [
+        "wearable-biosensor-patch"
+      ],
+      "keywords": [
+        "wearable biosensor patch",
+        "Culture & microfluidics",
+        "microfluidics"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-porous-scaffold",
+      "title": "porous scaffold",
+      "sourceSha256": "927bf0b1983eab6fea81dcdaf1614e7f7ae0a820e31c016b8b202ff6f92348fd",
+      "sourceConceptIds": [
+        "porous-scaffold"
+      ],
+      "keywords": [
+        "porous scaffold",
+        "Tissues & models",
+        "tissue engineering",
+        "scaffold"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-electrospun-fiber-scaffold",
+      "title": "electrospun fiber scaffold",
+      "sourceSha256": "01b6f94e72619edf433ce678f2170429dc04b9f56fd1a9e87dbacc9ff35a1a46",
+      "sourceConceptIds": [
+        "electrospun-fiber-scaffold"
+      ],
+      "keywords": [
+        "electrospun fiber scaffold",
+        "Tissues & models",
+        "tissue engineering",
+        "scaffold"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-3d-bioprinted-construct",
+      "title": "3D-bioprinted construct",
+      "sourceSha256": "67110fa95b705f95b9072b0dceabef373a538c852792f2fd03f296e73adf924f",
+      "sourceConceptIds": [
+        "3d-bioprinted-construct"
+      ],
+      "keywords": [
+        "3D-bioprinted construct",
+        "Tissues & models",
+        "tissue engineering"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cell-seeded-scaffold",
+      "title": "cell-seeded scaffold",
+      "sourceSha256": "09bb7d803656f524da8291164d7bc1d57a2afed1c47df9b89f20412cdeec86be",
+      "sourceConceptIds": [
+        "cell-seeded-scaffold"
+      ],
+      "keywords": [
+        "cell-seeded scaffold",
+        "Tissues & models",
+        "tissue engineering",
+        "scaffold"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-decellularized-matrix",
+      "title": "decellularized matrix",
+      "sourceSha256": "a1ec56015f6a0c675cb95720a5973ec9fc4d5bdd2aab2ac7667ccc4300e16825",
+      "sourceConceptIds": [
+        "decellularized-matrix"
+      ],
+      "keywords": [
+        "decellularized matrix",
+        "Tissues & models",
+        "tissue engineering"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-microcarrier-bead-with-adherent-cells",
+      "title": "microcarrier bead with adherent cells",
+      "sourceSha256": "4f222051bf09f6676f88658744418f568306f798249db22902be749c8f61aca4",
+      "sourceConceptIds": [
+        "microcarrier-bead-with-adherent-cells"
+      ],
+      "keywords": [
+        "microcarrier bead with adherent cells",
+        "Tissues & models",
+        "tissue engineering"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-mouse-embryonic-stem-cell-colony",
+      "title": "mouse embryonic stem-cell colony",
+      "sourceSha256": "8861ad59182a963e98bd40bd0283f3f7fcd7158530ddfc8bfbf73cad3aef2059",
+      "sourceConceptIds": [
+        "mouse-embryonic-stem-cell-colony"
+      ],
+      "keywords": [
+        "mouse embryonic stem-cell colony",
+        "Tissues & models",
+        "model systems"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-human-ipsc-colony",
+      "title": "human iPSC colony",
+      "sourceSha256": "c50f6ed852c3ee9766d3d2b000e3ed3b6ccee18fb7584f1e1b6ae8d5ea61a083",
+      "sourceConceptIds": [
+        "human-ipsc-colony"
+      ],
+      "keywords": [
+        "human iPSC colony",
+        "Tissues & models",
+        "model systems"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-intestinal-organoid",
+      "title": "intestinal organoid",
+      "sourceSha256": "16590e6d37188f0f10408fbc0a9270b866243b4fbaf7acc112c7f3bd91096b7b",
+      "sourceConceptIds": [
+        "intestinal-organoid"
+      ],
+      "keywords": [
+        "intestinal organoid",
+        "Tissues & models",
+        "model systems",
+        "organoid"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cerebral-organoid",
+      "title": "cerebral organoid",
+      "sourceSha256": "6ed33894101812d7e2329f3fe4c5df13cb88c1b1bba0106739025a5a18b3263d",
+      "sourceConceptIds": [
+        "cerebral-organoid"
+      ],
+      "keywords": [
+        "cerebral organoid",
+        "Tissues & models",
+        "model systems",
+        "organoid"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-tumor-organoid",
+      "title": "tumor organoid",
+      "sourceSha256": "bd7525d48db3754e4c5b0fdaae180942f021e9157d817ccfc6d181f964ebd768",
+      "sourceConceptIds": [
+        "tumor-organoid"
+      ],
+      "keywords": [
+        "tumor organoid",
+        "Tissues & models",
+        "model systems",
+        "organoid"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-airway-organoid",
+      "title": "airway organoid",
+      "sourceSha256": "5814ef4f0936635628bac6e27a08845e57aaa6bf8a255c259f4eafa0529b0de2",
+      "sourceConceptIds": [
+        "airway-organoid"
+      ],
+      "keywords": [
+        "airway organoid",
+        "Tissues & models",
+        "model systems",
+        "organoid"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-kidney-organoid",
+      "title": "kidney organoid",
+      "sourceSha256": "c3465dc2f2793666ade0a7ecaa5336e9f6921747bb3e01b74398f5e6c9661b6a",
+      "sourceConceptIds": [
+        "kidney-organoid"
+      ],
+      "keywords": [
+        "kidney organoid",
+        "Tissues & models",
+        "model systems",
+        "organoid"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-cardiac-organoid",
+      "title": "cardiac organoid",
+      "sourceSha256": "c8eac83cabaa3c09f36d3d26b6c963c8c5ab793345b0a104ae5a38fa3c13a673",
+      "sourceConceptIds": [
+        "cardiac-organoid"
+      ],
+      "keywords": [
+        "cardiac organoid",
+        "Tissues & models",
+        "model systems",
+        "organoid"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-precision-cut-tissue-slice",
+      "title": "precision-cut tissue slice",
+      "sourceSha256": "14703b5fec6d6745afff664ec014eb4c084e53121dbb346099ed72840fc02ed9",
+      "sourceConceptIds": [
+        "precision-cut-tissue-slice"
+      ],
+      "keywords": [
+        "precision-cut tissue slice",
+        "Tissues & models",
+        "model systems"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-patient-derived-xenograft-tumor-fragment",
+      "title": "patient-derived xenograft tumor fragment",
+      "sourceSha256": "be421ab4adfd85a609db2476dbe5ebb0db56d96e040f20225d3d9a07b41fc9d3",
+      "sourceConceptIds": [
+        "patient-derived-xenograft-tumor-fragment"
+      ],
+      "keywords": [
+        "patient-derived xenograft tumor fragment",
+        "Tissues & models",
+        "model systems"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-car-receptor",
+      "title": "CAR receptor",
+      "sourceSha256": "a1356ab3ffe894378ea712c3cebdf1ba66bbe9c4b317ad834d21575d509f65e1",
+      "sourceConceptIds": [
+        "car-receptor"
+      ],
+      "keywords": [
+        "CAR receptor",
+        "Proteins & complexes",
+        "cell engineering",
+        "receptor",
+        "protein"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-car-t-cell",
+      "title": "CAR-T cell",
+      "sourceSha256": "b109ae3d03b6599b9cf3b84427380ddece564fa9fee99b9cfb215796aad379b4",
+      "sourceConceptIds": [
+        "car-t-cell"
+      ],
+      "keywords": [
+        "CAR-T cell",
+        "Cells",
+        "chimeric antigen receptor T cell",
+        "cell engineering",
+        "cell"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-aav-particle",
+      "title": "AAV particle",
+      "sourceSha256": "13a9de6ebcf5cf83bf79828f4ab654f6a18365df3e144f13e9f250e9f4aa7976",
+      "sourceConceptIds": [
+        "aav-particle"
+      ],
+      "keywords": [
+        "AAV particle",
+        "Viruses",
+        "cell engineering"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-electroporation-cuvette",
+      "title": "electroporation cuvette",
+      "sourceSha256": "64e7479dadce9a9005f5b1cf56599a64b86cd5332a41a396a188700943a7de24",
+      "sourceConceptIds": [
+        "electroporation-cuvette"
+      ],
+      "keywords": [
+        "electroporation cuvette",
+        "Labware & consumables",
+        "cell engineering"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-electroporator-nucleofector",
+      "title": "electroporator / nucleofector",
+      "sourceSha256": "df1491661244816e6db1756adfadca1754a527a4da9eda2917b3069de8b1ce15",
+      "sourceConceptIds": [
+        "electroporator-nucleofector"
+      ],
+      "keywords": [
+        "electroporator / nucleofector",
+        "Instruments",
+        "cell engineering"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-dna-lipid-transfection-complex",
+      "title": "DNA-lipid transfection complex",
+      "sourceSha256": "22d4f5224fc7c52a50eff462fe5db358a37830ef66d87a96b0dea8f9cc4a419a",
+      "sourceConceptIds": [
+        "dna-lipid-transfection-complex"
+      ],
+      "keywords": [
+        "DNA-lipid transfection complex",
+        "Experimental assemblies",
+        "cell engineering"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-mrna-lipid-nanoparticle-transfection-complex",
+      "title": "mRNA-lipid nanoparticle transfection complex",
+      "sourceSha256": "56fef7f7cd4ee6259bdcdb4e1f67a9b33c9536280761ff0c9f6e04dd32604374",
+      "sourceConceptIds": [
+        "mrna-lipid-nanoparticle-transfection-complex"
+      ],
+      "keywords": [
+        "mRNA-lipid nanoparticle transfection complex",
+        "Experimental assemblies",
+        "cell engineering"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-transposase-dna-complex",
+      "title": "transposase-DNA complex",
+      "sourceSha256": "932a1b257d5c1a53437c5c6f600e25dd36f50154ff9d15d57790574c4e10ac4e",
+      "sourceConceptIds": [
+        "transposase-dna-complex"
+      ],
+      "keywords": [
+        "transposase-DNA complex",
+        "Experimental assemblies",
+        "cell engineering"
       ]
     },
     {
@@ -8291,12 +9746,287 @@
       "title": "peristaltic pump",
       "sourceSha256": "dc7654c188b0fb76a904eef6605a68d9b9cb0df6864e89bd226f4115d7bc7e7a",
       "sourceConceptIds": [
-        "peristaltic-pump"
+        "peristaltic-pump",
+        "perfusion-pump"
       ],
       "keywords": [
         "peristaltic pump",
         "Instruments",
         "automation"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-dna-fragment-with-sequencing-adapters",
+      "title": "DNA fragment with sequencing adapters",
+      "sourceSha256": "0cec9b8f6ece75ee05572fb6fb346f994e3095bc94ab5f0c4347015c414db589",
+      "sourceConceptIds": [
+        "dna-fragment-with-sequencing-adapters"
+      ],
+      "keywords": [
+        "DNA fragment with sequencing adapters",
+        "Nucleic acids",
+        "sequencing"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-indexed-dna-library-fragment",
+      "title": "indexed DNA library fragment",
+      "sourceSha256": "f355f637afaab2068592f59a43d3229b490f3acfce69e5df7e0e1446b1975e20",
+      "sourceConceptIds": [
+        "indexed-dna-library-fragment"
+      ],
+      "keywords": [
+        "indexed DNA library fragment",
+        "Nucleic acids",
+        "sequencing"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-barcoded-oligonucleotide",
+      "title": "barcoded oligonucleotide",
+      "sourceSha256": "683514a0ef9be46818a58330e2693b8392755a2fdf4c6b36c6d0d8b88a3fa5cf",
+      "sourceConceptIds": [
+        "barcoded-oligonucleotide"
+      ],
+      "keywords": [
+        "barcoded oligonucleotide",
+        "Nucleic acids",
+        "sequencing"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-sequencing-flow-cell",
+      "title": "sequencing flow cell",
+      "sourceSha256": "f279f502cb5d0b900c2b33da46fd454618ea05bc4bd646b5897aa9aa5181fb52",
+      "sourceConceptIds": [
+        "sequencing-flow-cell"
+      ],
+      "keywords": [
+        "sequencing flow cell",
+        "Labware & consumables",
+        "sequencing"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-capture-probe-spot",
+      "title": "capture-probe spot",
+      "sourceSha256": "2952a8b99c19675e78f02db98514ed9b1e5ad4ceae5f78a2b8a6f506d509c81f",
+      "sourceConceptIds": [
+        "capture-probe-spot"
+      ],
+      "keywords": [
+        "capture-probe spot",
+        "Experimental assemblies",
+        "sequencing"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-axolotl",
+      "title": "axolotl",
+      "sourceSha256": "18771b67f9e0819888ffd657a8d864dd21123028e807af64bfc14d65e020a2e7",
+      "sourceConceptIds": [
+        "axolotl"
+      ],
+      "keywords": [
+        "axolotl",
+        "Animals",
+        "model organisms"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-medaka-fish",
+      "title": "medaka fish",
+      "sourceSha256": "24b26530e90414689d71cef99cbe592d4a14ed9d40a1a306e4d9f6b1b13ef8b3",
+      "sourceConceptIds": [
+        "medaka-fish"
+      ],
+      "keywords": [
+        "medaka fish",
+        "Animals",
+        "model organisms"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-sea-urchin",
+      "title": "sea urchin",
+      "sourceSha256": "4b450891851781f64b37999487456991aec64404c0bd8df99f957607d33372a5",
+      "sourceConceptIds": [
+        "sea-urchin"
+      ],
+      "keywords": [
+        "sea urchin",
+        "Animals",
+        "model organisms"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-planarian-flatworm",
+      "title": "planarian flatworm",
+      "sourceSha256": "e56ca971a8bf6c39cf194150b9d44cc8606e22ae878c85049495c36b595277f1",
+      "sourceConceptIds": [
+        "planarian-flatworm"
+      ],
+      "keywords": [
+        "planarian flatworm",
+        "Animals",
+        "model organisms"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-hydra",
+      "title": "Hydra",
+      "sourceSha256": "af016f1694159b275fb556bed8049dd8653333fd09af9912340fe55ed7692cf6",
+      "sourceConceptIds": [
+        "hydra"
+      ],
+      "keywords": [
+        "Hydra",
+        "Animals",
+        "model organisms"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-dictyostelium-amoeba",
+      "title": "Dictyostelium amoeba",
+      "sourceSha256": "3eda3a50399f7c47d4fb46def92460e8f64589bbbd2fc06f9e8171491253ee21",
+      "sourceConceptIds": [
+        "dictyostelium-amoeba"
+      ],
+      "keywords": [
+        "Dictyostelium amoeba",
+        "Fungi & protists",
+        "model organisms"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-chlamydomonas-cell",
+      "title": "Chlamydomonas cell",
+      "sourceSha256": "f8631572ebdf6216ce5c1b9b9d5ca71973a0afcee65ffda29934e8f6f3919b52",
+      "sourceConceptIds": [
+        "chlamydomonas-cell"
+      ],
+      "keywords": [
+        "Chlamydomonas cell",
+        "Fungi & protists",
+        "algal biology",
+        "model organisms"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-glycocalyx",
+      "title": "glycocalyx",
+      "sourceSha256": "ece72d2c4ae156ec18edeef87c8e5d2ecc9889eaaffa0fdaf48fff1237bb5fbf",
+      "sourceConceptIds": [
+        "glycocalyx"
+      ],
+      "keywords": [
+        "glycocalyx",
+        "Membranes & junctions",
+        "cell biology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-extracellular-dna-web",
+      "title": "extracellular DNA web",
+      "sourceSha256": "43f473fc2344571f1746dacdcec0381fc988b7cfb1fa08f2c7830b5b0b20d14e",
+      "sourceConceptIds": [
+        "extracellular-dna-web"
+      ],
+      "keywords": [
+        "extracellular DNA web",
+        "Nucleic acids",
+        "cell biology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-bacterial-pilus",
+      "title": "bacterial pilus",
+      "sourceSha256": "aac1904397d50b031dd16d308f96c2456f8bcfb63873ab48315fb7b816b945fc",
+      "sourceConceptIds": [
+        "bacterial-pilus"
+      ],
+      "keywords": [
+        "bacterial pilus",
+        "Bacteria & archaea",
+        "cell biology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-bacterial-flagellum-bundle",
+      "title": "bacterial flagellum bundle",
+      "sourceSha256": "388c0519d0d702e30f963ca71c53562dd00eb7aac05008623e97900c19ae41be",
+      "sourceConceptIds": [
+        "bacterial-flagellum-bundle"
+      ],
+      "keywords": [
+        "bacterial flagellum bundle",
+        "Bacteria & archaea",
+        "cell biology"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-3d-bioprinter",
+      "title": "3D bioprinter",
+      "sourceSha256": "db1af8841f402cd4c86a6e5e2bf334055c7de5291b29d6ecb97719ca30f8211d",
+      "sourceConceptIds": [
+        "3d-bioprinter"
+      ],
+      "keywords": [
+        "3D bioprinter",
+        "Culture & microfluidics",
+        "tissue engineering"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-perfusion-bioreactor",
+      "title": "perfusion bioreactor",
+      "sourceSha256": "891bfa2357502dcfe8c263cfdbe1b53c7911a0a002b1b4594aaec20b2ece51e2",
+      "sourceConceptIds": [
+        "perfusion-bioreactor"
+      ],
+      "keywords": [
+        "perfusion bioreactor",
+        "Culture & microfluidics",
+        "tissue engineering"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-infusion-bag",
+      "title": "infusion bag",
+      "sourceSha256": "e9bec3e2bd8068a7f85b3f4910e31dd75bb8f7225f7df9963f620743591f1b3b",
+      "sourceConceptIds": [
+        "infusion-bag"
+      ],
+      "keywords": [
+        "infusion bag",
+        "Animal & clinical equipment",
+        "clinical research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-infusion-pump",
+      "title": "infusion pump",
+      "sourceSha256": "1baaa859301a9239d7780a568fb80e4d626ce25f2d7132efa988709da2cecd64",
+      "sourceConceptIds": [
+        "infusion-pump"
+      ],
+      "keywords": [
+        "infusion pump",
+        "Animal & clinical equipment",
+        "clinical research"
+      ]
+    },
+    {
+      "canonicalId": "opensketch-generated-subcutaneous-tumor-xenograft-nodule",
+      "title": "subcutaneous tumor xenograft nodule",
+      "sourceSha256": "e924a9c569d0e3cedcbcff810ee405c5da3f2ca7566330e12b97b0dfa060cac5",
+      "sourceConceptIds": [
+        "subcutaneous-tumor-xenograft-nodule"
+      ],
+      "keywords": [
+        "subcutaneous tumor xenograft nodule",
+        "Tissues & models",
+        "clinical research"
       ]
     }
   ]
