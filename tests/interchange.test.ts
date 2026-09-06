@@ -78,7 +78,7 @@ describe("strict interchange probing", () => {
     });
   });
 
-  it("refuses an SVG whose bounded probe is known to be truncated", () => {
+  it("accepts a large SVG when its bounded header is valid", () => {
     const bytes = new Uint8Array(INTERCHANGE_PROBE_READ_BYTES);
     bytes.set(new TextEncoder().encode('<svg xmlns="http://www.w3.org/2000/svg">'));
     const probe = probeInterchangeBytes(bytes, {
@@ -87,8 +87,36 @@ describe("strict interchange probing", () => {
       byteLength: INTERCHANGE_PROBE_READ_BYTES + 1
     });
 
-    expect(probe.diagnostics.map((diagnostic) => diagnostic.code)).toContain("probe_truncated");
-    expect(probeIsUsable(probe)).toBe(false);
+    expect(probe.diagnostics).toEqual([]);
+    expect(probeIsUsable(probe)).toBe(true);
+  });
+
+  it("walks a static GIF whose image data exceeds the bounded probe window", () => {
+    const parts: number[] = [...new TextEncoder().encode("GIF89a")];
+    parts.push(10, 0, 10, 0, 0, 0, 0);
+    parts.push(0x2c, 0, 0, 0, 0, 10, 0, 10, 0, 0);
+    parts.push(0x02);
+    const blockSize = 255;
+    const blockCount = Math.ceil((INTERCHANGE_PROBE_READ_BYTES + 100_000) / blockSize);
+    for (let block = 0; block < blockCount; block += 1) {
+      parts.push(blockSize);
+      for (let byte = 0; byte < blockSize; byte += 1) parts.push(0x84);
+    }
+    parts.push(0, 0x3b);
+
+    const probe = probeInterchangeBytes(Uint8Array.from(parts), {
+      mimeType: "image/gif",
+      name: "large.gif"
+    });
+
+    expect(probe).toMatchObject({
+      format: "gif",
+      dimensions: { width: 10, height: 10 },
+      frameCount: 1,
+      animated: false,
+      diagnostics: []
+    });
+    expect(probeIsUsable(probe)).toBe(true);
   });
 
   it("accepts SVG files with a bounded DOCTYPE prolog", () => {

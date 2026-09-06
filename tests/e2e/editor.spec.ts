@@ -769,6 +769,13 @@ test("creates, edits, saves, reopens, and exports a local figure", async ({ page
   expect(assetRecord.author).toBeTruthy();
   expect(assetRecord.license).toBeTruthy();
   expect(assetRecord.credit).toBeTruthy();
+  const neuronManifest = generatedManifest.families.find((family) => family.title === "neuron");
+  expect(neuronManifest).toBeDefined();
+  expect(assetRecord).toMatchObject({
+    author: neuronManifest!.author,
+    credit: neuronManifest!.credit,
+    license: neuronManifest!.license
+  });
   expect(svg).toContain("<metadata>");
   expect(svg).toContain("<rect");
   expect(svg).toContain("CD8 T cell");
@@ -1788,6 +1795,9 @@ const generatedManifest = JSON.parse(
   families: Array<{
     title: string;
     category: string;
+    author: string;
+    credit: string;
+    license: string;
     variants: Array<{ id: string; assetPath: string }>;
   }>;
 };

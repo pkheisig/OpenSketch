@@ -407,7 +407,7 @@ function probeGif(
 
   let frameCount = 0;
   let trailerFound = false;
-  for (let block = 0; block < 1_024 && offset < bytes.length; block += 1) {
+  for (let block = 0; block < bytes.length && offset < bytes.length; block += 1) {
     const introducer = bytes[offset++];
     if (introducer === 0x3b) {
       trailerFound = true;
@@ -652,16 +652,6 @@ export function probeInterchangeBytes(
       code: "extension_mismatch",
       severity: "warning",
       message: `The .${extension} extension does not match the detected ${signature.format} signature.`
-    });
-  }
-  if (
-    signature.format === "svg" &&
-    (source.byteLength ?? bytes.length) > INTERCHANGE_PROBE_READ_BYTES
-  ) {
-    diagnostics.push({
-      code: "probe_truncated",
-      severity: "error",
-      message: "The SVG header exceeds the bounded probe window."
     });
   }
   let parsedDimensions: InterchangeDimensions | undefined;

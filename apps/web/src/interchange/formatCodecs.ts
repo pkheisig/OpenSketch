@@ -232,8 +232,17 @@ export async function decodeTiffRgba(bytes: Uint8Array): Promise<RgbaRaster> {
     const input = bytes.slice().buffer;
     const metadataPage = decode(input, { pages: [0], ignoreImageData: true })[0];
     if (!metadataPage) throw new Error("The TIFF contains no image pages.");
+    if (metadataPage.planarConfiguration !== undefined && metadataPage.planarConfiguration !== 1) {
+      throw new InterchangeImportError(
+        "TIFF planar storage is unsupported because it cannot be decoded without risking scrambled pixels.",
+        { code: "planar_storage_unsupported" }
+      );
+    }
     assertRasterDimensions(metadataPage.width, metadataPage.height);
-    if (metadataPage.sampleFormat !== 1 && !(metadataPage.bitsPerSample === 32 && metadataPage.sampleFormat === 3)) {
+    if (
+      metadataPage.sampleFormat !== 1 &&
+      !(metadataPage.bitsPerSample === 32 && metadataPage.sampleFormat === 3)
+    ) {
       throw new Error(
         "Only unsigned integer TIFF samples and 32-bit floating-point TIFF samples have a deterministic display mapping."
       );
@@ -462,11 +471,22 @@ export async function prepareStrictInterchangeImport(
   const probeByteLength = Math.min(file.size, INTERCHANGE_PROBE_READ_BYTES);
   const boundedProbe = new Uint8Array(await file.slice(0, probeByteLength).arrayBuffer());
   checkAbort(options.signal);
-  const probe = probeInterchangeBytes(boundedProbe, {
+  const sourceDetails = {
     mimeType: file.type,
     name: file.name,
     byteLength: file.size
-  });
+  };
+  let probe = probeInterchangeBytes(boundedProbe, sourceDetails);
+  let fullBytes: Uint8Array | undefined;
+  if (
+    file.size > probeByteLength &&
+    !probeIsUsable(probe) &&
+    (probe.format === "gif" || probe.format === "tiff")
+  ) {
+    fullBytes = new Uint8Array(await file.arrayBuffer());
+    checkAbort(options.signal);
+    probe = probeInterchangeBytes(fullBytes, sourceDetails);
+  }
   let source: InterchangeSourceResource = {
     name: file.name,
     mimeType: file.type || mimeTypeForFormat(probe.format ?? "png"),
@@ -525,7 +545,7 @@ export async function prepareStrictInterchangeImport(
       }
     );
   }
-  const fullBytes = new Uint8Array(await file.arrayBuffer());
+  fullBytes ??= new Uint8Array(await file.arrayBuffer());
   checkAbort(options.signal);
   const checksum = await sha256Hex(fullBytes);
   source = { ...source, ...(checksum ? { sha256: checksum } : {}) };
