@@ -161,6 +161,31 @@ describe("semantic runtime", () => {
     ).toBe("CONFIRMATION_REQUIRED");
   });
 
+  it("forwards asset style qualifiers to the semantic adapter", async () => {
+    const adapter = fakeAdapter();
+    let searchedStyle: string | undefined;
+    let inspectedStyle: string | undefined;
+    adapter.searchAssets = async (options) => {
+      searchedStyle = options.style;
+      return { results: [], total: 0 };
+    };
+    adapter.inspectAsset = async (options) => {
+      inspectedStyle = options.style;
+      return { family: {} };
+    };
+    const runtime = createSemanticRuntime(adapter);
+
+    expect(
+      (await runtime.execute("search_assets", { query: "cell", style: "simplified" })).ok
+    ).toBe(true);
+    expect(
+      (await runtime.execute("inspect_asset", { familyId: "editable-cell", style: "simplified" }))
+        .ok
+    ).toBe(true);
+    expect(searchedStyle).toBe("simplified");
+    expect(inspectedStyle).toBe("simplified");
+  });
+
   it("supports explicit aliases and one transaction for bounded batches", async () => {
     const adapter = fakeAdapter();
     const runtime = createSemanticRuntime(adapter);

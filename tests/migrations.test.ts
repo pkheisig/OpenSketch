@@ -448,6 +448,18 @@ describe("project migrations", () => {
         objects: { objects: [{ type: "Rect", executable: "payload" }] }
       })
     ).toThrow("unsupported property");
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: { objects: [{ type: "Rect", assetStyle: "realistic" }] }
+      })
+    ).toThrow("assetStyle");
+    expect(
+      migrateProject({
+        ...project,
+        objects: { objects: [{ type: "Rect", assetStyle: "simplified" }] }
+      }).objects.objects[0]
+    ).toMatchObject({ assetStyle: "simplified" });
 
     const nestedLeaf: Record<string, unknown> = { type: "Rect" };
     let nested: Record<string, unknown> = nestedLeaf;

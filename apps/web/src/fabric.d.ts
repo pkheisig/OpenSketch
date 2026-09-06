@@ -14,6 +14,7 @@ declare module "fabric" {
     OpenSketchType?: string;
     assetId?: string;
     familyId?: string;
+    assetStyle?: import("@workspace/editor-core").AssetStyle;
     provenance?: Record<string, string>;
     originalPalette?: Record<string, string>;
     originalFill?: string;

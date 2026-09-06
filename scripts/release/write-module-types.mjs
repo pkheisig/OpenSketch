@@ -89,6 +89,8 @@ export interface ImportedMediaLibraryRecord extends ImportedMediaRecord {
 
 export interface AssetVariant {
   id: string;
+  /** Legacy manifests omit this field; the canonical resolver treats them as Detailed. */
+  style?: "detailed" | "simplified";
   label?: string;
   assetPath: string;
   thumbnailPath: string;

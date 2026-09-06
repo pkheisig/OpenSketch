@@ -10,9 +10,13 @@ import {
   util
 } from "fabric";
 import {
+  assetStyleOf,
+  findAssetVariantForStyle,
   filterAssetFamilies,
+  isAssetStyle,
   type AssetManifest,
   type AssetFamily,
+  type AssetStyle,
   type AssetVariant,
   type CanvasSettings,
   type ConnectorBinding,
@@ -288,6 +292,7 @@ function describeObject(
     descriptor.asset = {
       ...(object.familyId ? { familyId: object.familyId } : {}),
       ...(object.assetId ? { variantId: object.assetId } : {}),
+      ...(isAssetStyle(object.assetStyle) ? { style: object.assetStyle } : {}),
       ...(object.provenance ? { provenance: { ...object.provenance } } : {})
     };
   }
@@ -552,6 +557,7 @@ const RESTORABLE_GROUP_PROPERTIES = [
   "OpenSketchType",
   "assetId",
   "familyId",
+  "assetStyle",
   "provenance",
   "originalPalette",
   "assetColorRole",
@@ -689,6 +695,7 @@ function isEffectivelyVisible(path: readonly { visible?: boolean; opacity?: numb
 }
 
 function assetSummary(family: AssetFamily) {
+  const styles = [...new Set(family.variants.map(assetStyleOf))];
   return {
     familyId: family.familyId,
     title: boundedText(family.title, 200) ?? family.familyId,
@@ -702,9 +709,12 @@ function assetSummary(family: AssetFamily) {
     sourceName: boundedText(family.sourceName, 200),
     sourcePage: boundedText(family.sourcePage, 500),
     defaultVariantId: family.defaultVariantId,
+    availableStyles: styles,
     variants: family.variants.slice(0, 64).map((variant) => ({
       id: variant.id,
       label: boundedText(variant.label, 200) ?? variant.id,
+      style: assetStyleOf(variant),
+      ...(variant.localSha256 ? { localSha256: variant.localSha256 } : {}),
       width: variant.width,
       height: variant.height
     }))
@@ -747,14 +757,23 @@ export function createSemanticEditorAdapter(
   const searchAssets = async ({
     query,
     category,
+    style,
     limit
   }: {
     query: string;
     category?: string;
+    style?: AssetStyle;
     limit: number;
   }) => {
+    if (style !== undefined && !isAssetStyle(style))
+      throw new SemanticAdapterError(
+        "INVALID_ASSET_STYLE",
+        `Asset style "${String(style)}" is unsupported.`
+      );
     const assetManifest = await dependencies.getAssetManifest();
-    const matches = filterAssetFamilies(assetManifest.families, query, category ?? "All");
+    const matches = filterAssetFamilies(assetManifest.families, query, category ?? "All").filter(
+      (family) => style === undefined || findAssetVariantForStyle(family, style) !== undefined
+    );
     return {
       results: matches.slice(0, limit).map(assetSummary),
       total: matches.length
@@ -763,10 +782,12 @@ export function createSemanticEditorAdapter(
 
   const inspectAsset = async ({
     familyId,
-    variantId
+    variantId,
+    style
   }: {
     familyId: string;
     variantId?: string;
+    style?: AssetStyle;
   }) => {
     const assetManifest = await dependencies.getAssetManifest();
     const family = assetManifest.families.find((candidate) => candidate.familyId === familyId);
@@ -775,18 +796,43 @@ export function createSemanticEditorAdapter(
         "STALE_ASSET_ID",
         `Asset family "${familyId}" does not exist.`
       );
-    if (variantId && !family.variants.some((variant) => variant.id === variantId)) {
+    if (style !== undefined && !isAssetStyle(style))
+      throw new SemanticAdapterError(
+        "INVALID_ASSET_STYLE",
+        `Asset style "${String(style)}" is unsupported.`
+      );
+    const explicitVariant = variantId
+      ? family.variants.find((variant) => variant.id === variantId)
+      : undefined;
+    if (variantId && !explicitVariant) {
       throw new SemanticAdapterError(
         "INVALID_ASSET_VARIANT",
         `Asset variant "${variantId}" is not available in family "${familyId}".`
       );
     }
+    if (style && explicitVariant && assetStyleOf(explicitVariant) !== style)
+      throw new SemanticAdapterError(
+        "ASSET_STYLE_MISMATCH",
+        `Asset variant "${variantId}" is not the ${style} representation of family "${familyId}".`
+      );
+    const selectedVariant =
+      explicitVariant ??
+      (style
+        ? findAssetVariantForStyle(family, style)
+        : findAssetVariantForStyle(family, "detailed"));
+    if (!selectedVariant)
+      throw new SemanticAdapterError(
+        "ASSET_STYLE_UNAVAILABLE",
+        `Family "${familyId}" has no ${style} representation.`
+      );
     return {
       family: {
         ...assetSummary(family),
-        ...(variantId
-          ? { selectedVariantId: variantId }
-          : { selectedVariantId: family.defaultVariantId })
+        selectedVariantId: selectedVariant.id,
+        selectedStyle: assetStyleOf(selectedVariant),
+        selectedVariant: assetSummary(family).variants.find(
+          (variant) => variant.id === selectedVariant.id
+        )
       }
     };
   };
@@ -2699,6 +2745,12 @@ export function createSemanticEditorAdapter(
     if (command === "insert_asset") {
       const familyId = input.familyId as string;
       const variantId = input.variantId as string;
+      const style = input.style as AssetStyle | undefined;
+      if (style !== undefined && !isAssetStyle(style))
+        throw new SemanticAdapterError(
+          "INVALID_ASSET_STYLE",
+          `Asset style "${String(style)}" is unsupported.`
+        );
       const family = assetManifest.families.find((candidate) => candidate.familyId === familyId);
       if (!family)
         throw new SemanticAdapterError(
@@ -2712,6 +2764,11 @@ export function createSemanticEditorAdapter(
           `Asset variant "${variantId}" is not available in family "${familyId}".`
         );
       }
+      if (style !== undefined && assetStyleOf(variant) !== style)
+        throw new SemanticAdapterError(
+          "ASSET_STYLE_MISMATCH",
+          `Asset variant "${variantId}" is not the ${style} representation of family "${familyId}".`
+        );
       const objectId = await dependencies.insertAsset(
         family,
         variant,
@@ -2722,11 +2779,20 @@ export function createSemanticEditorAdapter(
         throwIfSemanticExecutionAborted(options.signal);
         throw new SemanticAdapterError("INSERT_FAILED", `Could not insert asset "${variantId}".`);
       }
-      return { data: { objectId, familyId, variantId }, changedObjectIds: [objectId] };
+      return {
+        data: { objectId, familyId, variantId, style: assetStyleOf(variant) },
+        changedObjectIds: [objectId]
+      };
     }
     if (command === "replace_asset_variant") {
       const objectId = input.objectId as string;
       const variantId = input.variantId as string;
+      const style = input.style as AssetStyle | undefined;
+      if (style !== undefined && !isAssetStyle(style))
+        throw new SemanticAdapterError(
+          "INVALID_ASSET_STYLE",
+          `Asset style "${String(style)}" is unsupported.`
+        );
       const [object] = resolveObjects(canvas, [objectId]);
       if (!(object instanceof Group) || !object.familyId) {
         throw new SemanticAdapterError(
@@ -2737,16 +2803,22 @@ export function createSemanticEditorAdapter(
       const family = assetManifest.families.find(
         (candidate) => candidate.familyId === object.familyId
       );
-      if (!family || !family.variants.some((variant) => variant.id === variantId)) {
+      const variant = family?.variants.find((candidate) => candidate.id === variantId);
+      if (!family || !variant) {
         throw new SemanticAdapterError(
           "INVALID_ASSET_VARIANT",
           `Asset variant "${variantId}" is not available for scene object "${objectId}".`
         );
       }
+      if (style !== undefined && assetStyleOf(variant) !== style)
+        throw new SemanticAdapterError(
+          "ASSET_STYLE_MISMATCH",
+          `Asset variant "${variantId}" is not the ${style} representation for scene object "${objectId}".`
+        );
       const replaced = await dependencies.replaceAssetVariant(objectId, variantId, options);
       if (!replaced) throwIfSemanticExecutionAborted(options.signal);
       return {
-        data: { objectId, variantId },
+        data: { objectId, variantId, style: assetStyleOf(variant) },
         changedObjectIds: replaced ? [objectId] : []
       };
     }

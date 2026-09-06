@@ -1,4 +1,5 @@
 import { Group, type FabricObject } from "fabric";
+import { isAssetStyle, type AssetStyle } from "@workspace/editor-core";
 
 export const PROVENANCE_MANIFEST_VERSION = 1 as const;
 export const PROVENANCE_METADATA_KEY = "OpenSketch:provenance";
@@ -6,6 +7,7 @@ export const PROVENANCE_METADATA_KEY = "OpenSketch:provenance";
 export interface AssetProvenanceRecord {
   assetId?: string;
   familyId?: string;
+  style?: AssetStyle;
   name?: string;
   source?: string;
   sourceUrl?: string;
@@ -32,6 +34,7 @@ type ProvenanceValue = Record<string, unknown>;
 const RECORD_FIELDS: Array<keyof AssetProvenanceRecord> = [
   "assetId",
   "familyId",
+  "style",
   "name",
   "source",
   "sourceUrl",
@@ -79,10 +82,14 @@ function provenanceRecordForObject(object: FabricObject): AssetProvenanceRecord 
     ...((nonEmptyString(object.name) ?? nonEmptyString(provenance.name))
       ? { name: nonEmptyString(object.name) ?? nonEmptyString(provenance.name) }
       : {}),
+    ...(isAssetStyle(object.assetStyle) || isAssetStyle(provenance.style)
+      ? { style: object.assetStyle ?? provenance.style }
+      : {}),
     ...(sourcePage ? { source: sourcePage } : {}),
     ...Object.fromEntries(
       RECORD_FIELDS.filter(
-        (field) => field !== "assetId" && field !== "familyId" && field !== "name"
+        (field) =>
+          field !== "assetId" && field !== "familyId" && field !== "name" && field !== "style"
       )
         .map((field) => [field, nonEmptyString(provenance[field])])
         .filter(([, value]) => value !== undefined)
@@ -152,6 +159,7 @@ export function formatProvenanceCredits(
     lines.push("", `${index + 1}. ${asset.name ?? asset.assetId ?? "Unnamed asset"}`);
     if (asset.assetId) lines.push(`   Asset ID: ${asset.assetId}`);
     if (asset.familyId) lines.push(`   Family ID: ${asset.familyId}`);
+    if (asset.style) lines.push(`   Style: ${asset.style}`);
     if (asset.source) lines.push(`   Source: ${asset.source}`);
     if (asset.sourceUrl) lines.push(`   Source URL: ${asset.sourceUrl}`);
     if (asset.sourceReference) lines.push(`   Source reference: ${asset.sourceReference}`);

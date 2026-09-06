@@ -220,6 +220,7 @@ FabricObject.customProperties = [
   "OpenSketchType",
   "assetId",
   "familyId",
+  "assetStyle",
   "provenance",
   "originalPalette",
   "assetColorRole",
@@ -255,6 +256,7 @@ const RESTORABLE_GROUP_PROPERTIES = [
   "OpenSketchType",
   "assetId",
   "familyId",
+  "assetStyle",
   "provenance",
   "originalPalette",
   "assetColorRole",
@@ -518,11 +520,13 @@ async function createBundledAssetGroup(
   const group = await prepareSvgComponents(groupSvgElements(objects, result.options));
   group.assetId = variant.id;
   group.familyId = family.familyId;
+  group.assetStyle = variant.style ?? "detailed";
   const sourcePage = family.sourcePage ?? "";
   group.provenance = {
     sourcePage,
     ...(family.sourceName ? { sourceName: family.sourceName } : {}),
     ...(family.licenseUrl ? { licenseUrl: family.licenseUrl } : {}),
+    style: group.assetStyle,
     credit: family.credit,
     author: family.author,
     license: family.license
@@ -3297,12 +3301,26 @@ export function EditorProvider({
         assetInsertQueue.current.then(async () => {
           if (options?.signal?.aborted) return undefined;
           if (!semanticCanvasRef.current) return undefined;
-          const preset = family.editableStructure ? scientificPreset(family.familyId) : undefined;
+          const preset =
+            family.editableStructure && (variant.style ?? "detailed") === "detailed"
+              ? scientificPreset(family.familyId)
+              : undefined;
           const group = preset
             ? createScientificObject(preset.id, semanticCreationDefaultsRef.current)!
             : await createBundledAssetGroup(services.assets, family, variant);
           if (preset) {
+            group.assetId = variant.id;
             group.familyId = family.familyId;
+            group.assetStyle = variant.style ?? "detailed";
+            group.provenance = {
+              sourcePage: family.sourcePage ?? "",
+              ...(family.sourceName ? { sourceName: family.sourceName } : {}),
+              ...(family.licenseUrl ? { licenseUrl: family.licenseUrl } : {}),
+              style: group.assetStyle,
+              credit: family.credit,
+              author: family.author,
+              license: family.license
+            };
             rememberOriginalColors(group);
           }
           if (options?.signal?.aborted) return undefined;
