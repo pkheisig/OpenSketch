@@ -9,6 +9,27 @@ export function isProjectKind(value: unknown): value is ProjectKind {
 
 export type CanvasUnit = "px" | "mm" | "in";
 
+export const ASSET_STYLES = ["detailed", "simplified"] as const;
+export type AssetStyle = (typeof ASSET_STYLES)[number];
+
+export function isAssetStyle(value: unknown): value is AssetStyle {
+  return typeof value === "string" && (ASSET_STYLES as readonly string[]).includes(value);
+}
+
+export type AssetQualificationState = "approved" | "rejected" | "pending";
+
+export interface AssetVariantLineage {
+  sourceVariantId: string;
+  relationship: "simplified-counterpart";
+}
+
+export interface AssetVariantQualification {
+  state: AssetQualificationState;
+  reviewedAt: string;
+  reviewer: string;
+  notes: string;
+}
+
 export interface CanvasSettings {
   width: number;
   height: number;
@@ -22,6 +43,8 @@ export interface CanvasSettings {
 
 export interface AssetVariant {
   id: string;
+  /** Legacy manifests omit this field; the canonical resolver treats them as Detailed. */
+  style?: AssetStyle;
   label?: string;
   assetPath: string;
   thumbnailPath: string;
@@ -29,6 +52,8 @@ export interface AssetVariant {
   localSha256?: string;
   width?: number;
   height?: number;
+  lineage?: AssetVariantLineage;
+  qualification?: AssetVariantQualification;
 }
 
 export type AssetLicense =

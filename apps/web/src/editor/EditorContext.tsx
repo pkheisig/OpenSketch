@@ -42,6 +42,7 @@ import {
   util
 } from "fabric";
 import {
+  assetVariantIsEditable,
   type AssetFamily,
   type AssetVariant,
   type CanvasSettings,
@@ -237,6 +238,7 @@ FabricObject.customProperties = [
   "OpenSketchType",
   "assetId",
   "familyId",
+  "assetStyle",
   "provenance",
   "originalPalette",
   "assetColorRole",
@@ -272,6 +274,7 @@ const RESTORABLE_GROUP_PROPERTIES = [
   "OpenSketchType",
   "assetId",
   "familyId",
+  "assetStyle",
   "provenance",
   "originalPalette",
   "assetColorRole",
@@ -588,11 +591,14 @@ async function createBundledAssetGroup(
   const group = await prepareSvgComponents(groupSvgElements(objects, result.options));
   group.assetId = variant.id;
   group.familyId = family.familyId;
+  group.assetStyle = variant.style ?? "detailed";
   const sourcePage = family.sourcePage ?? "";
   group.provenance = {
     sourcePage,
     ...(family.sourceName ? { sourceName: family.sourceName } : {}),
     ...(family.licenseUrl ? { licenseUrl: family.licenseUrl } : {}),
+    style: group.assetStyle,
+    ...(variant.localSha256 ? { localSha256: variant.localSha256 } : {}),
     credit: family.credit,
     author: family.author,
     license: family.license
@@ -3378,12 +3384,26 @@ export function EditorProvider({
         assetInsertQueue.current.then(async () => {
           if (options?.signal?.aborted) return undefined;
           if (!semanticCanvasRef.current) return undefined;
-          const preset = family.editableStructure ? scientificPreset(family.familyId) : undefined;
+          const preset = assetVariantIsEditable(family, variant)
+            ? scientificPreset(family.familyId)
+            : undefined;
           const group = preset
             ? createScientificObject(preset.id, semanticCreationDefaultsRef.current)!
             : await createBundledAssetGroup(services.assets, family, variant);
           if (preset) {
+            group.assetId = variant.id;
             group.familyId = family.familyId;
+            group.assetStyle = variant.style ?? "detailed";
+            group.provenance = {
+              sourcePage: family.sourcePage ?? "",
+              ...(family.sourceName ? { sourceName: family.sourceName } : {}),
+              ...(family.licenseUrl ? { licenseUrl: family.licenseUrl } : {}),
+              style: group.assetStyle,
+              ...(variant.localSha256 ? { localSha256: variant.localSha256 } : {}),
+              credit: family.credit,
+              author: family.author,
+              license: family.license
+            };
             rememberOriginalColors(group);
           }
           if (options?.signal?.aborted) return undefined;
@@ -3471,7 +3491,29 @@ export function EditorProvider({
           const variant = family?.variants.find((candidate) => candidate.id === variantId);
           if (!family || !variant) return false;
 
-          const replacement = await createBundledAssetGroup(services.assets, family, variant);
+          const preset = assetVariantIsEditable(family, variant)
+            ? scientificPreset(family.familyId)
+            : undefined;
+          const replacement = preset
+            ? createScientificObject(preset.id, semanticCreationDefaultsRef.current)
+            : await createBundledAssetGroup(services.assets, family, variant);
+          if (!replacement) return false;
+          if (preset) {
+            replacement.assetId = variant.id;
+            replacement.familyId = family.familyId;
+            replacement.assetStyle = variant.style ?? "detailed";
+            replacement.provenance = {
+              sourcePage: family.sourcePage ?? "",
+              ...(family.sourceName ? { sourceName: family.sourceName } : {}),
+              ...(family.licenseUrl ? { licenseUrl: family.licenseUrl } : {}),
+              style: replacement.assetStyle,
+              ...(variant.localSha256 ? { localSha256: variant.localSha256 } : {}),
+              credit: family.credit,
+              author: family.author,
+              license: family.license
+            };
+            rememberOriginalColors(replacement);
+          }
           if (options?.signal?.aborted) return false;
           if (
             semanticCanvasRef.current !== currentCanvas ||
@@ -3485,7 +3527,11 @@ export function EditorProvider({
           replacement.set({
             objectId: current.objectId,
             name: current.name ?? family.title,
-            OpenSketchType: "library-asset",
+            OpenSketchType: preset
+              ? preset.form === "parts"
+                ? "group"
+                : "scientific-brush"
+              : "library-asset",
             scaleX: scale,
             scaleY: scale,
             angle: current.angle,

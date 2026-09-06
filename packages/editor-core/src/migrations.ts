@@ -12,6 +12,7 @@ import {
   type ConnectorRouting,
   type ImportedMediaRecord,
   type ImportedMediaSourceResource,
+  isAssetStyle,
   isProjectKind,
   type PortableProject
 } from "./types";
@@ -183,6 +184,7 @@ const SCENE_PROPERTIES = new Set([
   "OpenSketchType",
   "assetId",
   "familyId",
+  "assetStyle",
   "provenance",
   "originalPalette",
   "originalFill",
@@ -1065,6 +1067,7 @@ function validateCustomProperties(
     "OpenSketchType",
     "assetId",
     "familyId",
+    "assetStyle",
     "provenance",
     "originalPalette",
     "originalFill",
@@ -1097,12 +1100,15 @@ function validateCustomProperties(
   for (const [key, item] of Object.entries(value)) {
     if (key === "assetColorRole") {
       if (!isAssetColorRole(item)) fail(`${path}.assetColorRole`, "is invalid");
+    } else if (key === "assetStyle") {
+      if (!isAssetStyle(item)) fail(`${path}.assetStyle`, "is invalid");
     } else if (
       [
         "name",
         "OpenSketchType",
         "assetId",
         "familyId",
+        "assetStyle",
         "assetTint",
         "assetColorPreset",
         "svgComponent"
@@ -1481,8 +1487,10 @@ function validateSceneObject(
       if (item !== null) assertString(item, `${path}.${key}`, { maxLength: 64 });
     } else if (key === "assetColorRole") {
       if (!isAssetColorRole(item)) fail(`${path}.assetColorRole`, "is invalid");
+    } else if (key === "assetStyle") {
+      if (!isAssetStyle(item)) fail(`${path}.assetStyle`, "is invalid");
     } else if (SCENE_STRING_PROPERTIES.has(key)) {
-      if (["objectId", "assetId", "familyId"].includes(key)) {
+      if (["objectId", "assetId", "familyId", "assetStyle"].includes(key)) {
         assertNonEmptyString(item, `${path}.${key}`, PORTABLE_PROJECT_LIMITS.maxObjectIdLength);
       } else if (key === "name") {
         assertString(item, `${path}.${key}`, {

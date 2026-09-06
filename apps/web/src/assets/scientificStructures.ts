@@ -50,6 +50,7 @@ export const SCIENTIFIC_STRUCTURE_FAMILIES: AssetFamily[] = SCIENTIFIC_PRESETS.m
   variants: [
     {
       id: preset.id,
+      style: "detailed",
       assetPath: `assets/scientific-structures/${preset.id}.svg`,
       thumbnailPath: `assets/scientific-structures/${preset.id}.svg`
     }
@@ -69,6 +70,7 @@ export const FIXED_MEMBRANE_FAMILIES: AssetFamily[] = FIXED_MEMBRANE_PRESETS.map
   variants: [
     {
       id: preset.id,
+      style: "detailed",
       assetPath: `assets/scientific-structures/${preset.id}.svg`,
       thumbnailPath: `assets/scientific-structures/${preset.id}.svg`
     }
