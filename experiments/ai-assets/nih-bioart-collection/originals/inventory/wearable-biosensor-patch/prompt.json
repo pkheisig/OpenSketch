@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a wearable biosensor patch, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Generic flexible epidermal sensing patch isolated without skin or person. Rounded rectangular ivory thin adhesive sheet, one corner gently curled up showing thin layered construction. On top a smaller flexible pale cyan sensor layer with three small circular gold sensing sites joined by separate fine serpentine gold traces to a single low navy electronics island at one end. Each trace separate, no crossing, contact its own pad on electronics. One pale teal microfluidic collection channel runs through sensing area without external tubes. Blank electronics cap, no display icons. Soft matte materials, teal gold navy palette, smooth crisp biomedical forms and broad gentle gradients. No photographic grain or cast shadow, complete patch centered with generous true transparent PNG alpha padding.",
+  "refinement": "Correct the middle electrode connection on this wearable biosensor patch. Add a continuous thin GOLD conductive trace from the right edge of the MIDDLE gold circular sensing disk to the middle gold contact pad on navy electronics. It must be a gold line for its full length, electrically continuous, distinct from teal microfluidic channels, and separated from the upper and lower gold traces. Existing upper and lower gold traces remain unchanged. Remove the empty circular teal chamber between middle disk and electronics, replacing it with smooth pale cyan substrate beneath the new gold trace. Keep three gold sensor disks, three independent gold traces, three gold contact pads. Smooth all grainy texture on patch/sensor/metal into clean matte biomedical forms with broad subtle gradients; preserve curled adhesive corner and complete patch. True transparent PNG background, no text or arrows.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-1e107c40-cc73-4921-983c-fdb3499333b7.png",
+  "archetype": "Generic flexible epidermal biosensor patch with adhesive backing, microfluidic collection layer, three independently connected sensing sites and covered electronics island. Molecular target and electronics architecture unspecified; schematic form, not a validated device.",
+  "references": [
+    "https://www.nature.com/articles/nature16521",
+    "https://www.nature.com/articles/s41467-021-22109-z"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "wearable-biosensor-patch",
+  "name": "wearable biosensor patch",
+  "original": "originals/inventory/wearable-biosensor-patch/generated.png",
+  "original_sha256": "322a0deba5a10b894b4c9e70afda0f9d5223219571a7911edbe1a92947a690ae"
+}

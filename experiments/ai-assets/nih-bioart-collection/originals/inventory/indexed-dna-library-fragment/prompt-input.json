@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an indexed DNA library fragment, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Use the supplied approved adapter-bearing DNA illustration for style and continuous two-strand topology. Show a generic mature dual-indexed double-stranded sequencing library molecule, horizontal double helix, two continuous smooth backbones and paired rungs. Central long teal/blue insert. At left an adapter region composed of terminal coral DNA followed inward by a short distinct VIOLET index DNA segment before teal insert. At right a short distinct GREEN index DNA segment follows teal insert then terminal GOLD adapter DNA. Colors are contiguous segments of BOTH backbones and their corresponding rungs; no floating tags, proteins, beads, barcode symbols or text. Both ends blunt. Index segments short but clearly visible, functional schematic without nucleotide letters. Smooth matte forms and fine dark contours, broad subtle gradients, no grain. Entire molecule centered with generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-0b4f8d65-97bb-4ef1-8a90-ea16bc3f0fa0.png",
+  "style_reference": "/Users/pkheisig/.codex/worktrees/OpenSketch/ai-bioart-assets-20260904/experiments/ai-assets/nih-bioart-collection/png/dna-fragment-with-sequencing-adapters-bioart-transparent.png",
+  "archetype": "Generic mature dual-indexed double-stranded DNA library fragment with functional color-coded insert, adapters and short index regions; not a nucleotide-resolved sequence.",
+  "references": [
+    "https://support-docs.illumina.com/SHARE/AdapterSequences/Content/Overview.htm",
+    "https://www.illumina.com/techniques/sequencing/ngs-library-prep/multiplexing/unique-dual-indexes.html"
+  ]
+}

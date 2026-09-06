@@ -1,0 +1,11 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a vacutainer holder, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One empty evacuated blood collection tube holder, a short clear pale-blue plastic cylinder with a wide open rear mouth and broad finger flange at that mouth, closed rounded front end with a small central threaded needle-hub socket. Three-quarter diagonal view clearly shows hollow interior through rear opening. Only empty holder, no needle, tube, plunger or blood. Smooth continuous blue glasslike illustrated plastic fill, crisp contours, simple broad gradients, no photographic reflections or grain. True transparent PNG alpha background.",
+  "refinement": "Preserve the exact empty tube-holder geometry and complete silhouette. Replace all partially transparent interior plastic shading with smooth fully opaque pale-blue illustrated color and broad gradients. In particular fill the far inner circular face visible through the wide flange opening with one continuous pale-blue oval with crisp smooth elliptical edge, no alpha holes or mottling. The object should look like clear plastic through illustrated edges and highlights, with no partial transparency within its silhouette. Only the surrounding background should have transparent alpha. No text, new components, needle or tube.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-8f6c8b72-29b7-42dd-a083-73243537149b.png",
+  "archetype": "Generic empty holder; blue illustrated opaque plastic shading avoids ragged alpha threshold holes in SVG. Threading enlarged.",
+  "references": [
+    "https://www.bd.com/en-us/products-and-solutions/products/product-families/bd-vacutainer-one-use-holder"
+  ]
+}

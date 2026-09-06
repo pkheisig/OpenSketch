@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a heating pad, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One small laboratory animal warming pad, a thin flexible rectangular teal silicone mat with rounded corners and a slightly raised sealed navy perimeter, seen at three-quarter angle. One near corner curls upward gently to show flexibility. A single short dark cable emerges through a molded strain relief from the far side and makes one loose curve ending in a small barrel connector fully within canvas. Pad is empty, smooth surface, no heating coils visible, no temperature readout, separate controller, animal, hands or heat-wave symbols. Fine crisp outlines, soft broad matte gradients, subtle highlights, no fabric grain or bumps. Whole pad and cable centered with generous true transparent PNG background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-c3366774-d903-4e50-a618-4412305520f9.png",
+  "archetype": "Generic flexible laboratory warming pad with integral cable and connector. Controller and temperature sensing not shown.",
+  "references": [
+    "https://kentscientific.com/wp-content/uploads/2025/10/KentScientific-SurgiSuiteManual-2022Update-1up-8-5-22.pdf"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an injection needle, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One isolated conventional hypodermic needle, diagonally oriented. Compact translucent BLUE plastic female Luer hub with two small locking lugs at its open proximal rim and molded ribs; one long thin straight polished stainless-steel hollow cannula emerges from the narrow end. Distal needle tip has a clearly recognizable sharp oblique bevel with dark oval lumen, one continuous shaft. No syringe, cap, liquid, hand, vial, tissue or second needle. Fine dark outlines, smooth broad material gradients and restrained white highlights, no grain. Entire hub through sharp tip centered with generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-0cdc6b4a-35bf-484f-8297-11fae404b65a.png",
+  "archetype": "Generic detachable hypodermic needle with plastic Luer hub and sharp hollow bevel; enlarged for recognition, no dimensional or gauge claim.",
+  "references": [
+    "https://www.bd.com/en-ca/products-and-solutions/products/product-lines/conventional-syringes-needles"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "injection-needle",
+  "name": "injection needle",
+  "original": "originals/inventory/injection-needle/generated.png",
+  "original_sha256": "36bb5bed610c9fce833b41be7edd5be2990819f0e7041709dcbfa04d18bf6b1f"
+}

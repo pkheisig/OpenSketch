@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a sequencing flow cell, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Generic four-lane glass sequencing flow-cell cartridge seen at three-quarter angle, a thin elongated rectangular pale-blue glass slab in a narrow ivory polymer frame with small navy gripping ends. Four parallel straight enclosed microfluidic lanes run lengthwise across the glass, evenly spaced pale teal channels, each with its own tiny circular inlet and outlet aperture at opposite ends. Fine sparse turquoise surface dots inside each lane suggest immobilized sequencing clusters, not cells. Closed flat glass lid, no raised walls, no wells or test tubes, no machine. No brand, numbers, barcode or display. Smooth matte contours, broad subtle gradients, softly reflective glass, professional white navy teal palette. Whole cartridge centered with generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-a156c06d-042f-49af-bbb6-8e5596456b73.png",
+  "archetype": "Generic four-lane sequencing flow-cell cartridge with eight ports. Surface cluster dots and lane depth exaggerated for recognition, not a manufacturer-compatible technical drawing.",
+  "references": [
+    "https://support-docs.illumina.com/IN/NextSeq_550-500/Content/IN/NextSeq/FlowCell_Overview_fNS.htm",
+    "https://www.illumina.com/science/technology/next-generation-sequencing/sequencing-technology/patterned-flow-cells.html"
+  ]
+}

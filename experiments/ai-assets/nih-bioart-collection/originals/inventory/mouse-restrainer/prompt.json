@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a mouse restrainer, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One empty transparent acrylic cylindrical mouse restraint tube lying horizontally on two low navy support feet, three-quarter view looking slightly into its near end. Clear pale-blue tube, a narrow longitudinal access slot on top with a small teal thumb screw securing an adjustable internal ivory nose stop. Near circular end has a removable clear end plate with one small tail-access notch opening at its bottom edge. Several small ventilation holes through tube side. No mouse, needles, tubing, labels or scale marks. Smooth broad glass-like gradients and a few crisp highlights, fine dark outlines, no photographic texture. Complete apparatus with both ends and feet visible, centered with generous true transparent PNG alpha padding.",
+  "refinement": "Correct only the adjustable ivory internal nose stop: currently it hangs from the top screw and stops midway through the tube. Extend it downward and sideways into a near-full-diameter circular internal stop plate perpendicular to the tube axis, seated inside the tube, with a small centered breathing aperture. The teal top thumb screw connects to and locks this plate through the longitudinal top slot. Preserve tube, ventilation holes, near end plate tail notch, both navy feet and clear plastic styling. No animal or labels. Smooth fine dark outlines, broad subtle gradients, true transparent background.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-af50522c-f68a-4515-a56f-cfedfb6a3133.png",
+  "archetype": "Generic empty cylindrical rodent restrainer with adjustable full-diameter stop, ventilation holes, tail access and two feet. Not operational instructions or a manufactured design.",
+  "references": [
+    "https://www.kentscientific.com/products/tube-rodent-holders/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "mouse-restrainer",
+  "name": "mouse restrainer",
+  "original": "originals/inventory/mouse-restrainer/generated.png",
+  "original_sha256": "715fc01f27383fcb74a222386308a4c070025bf72991bd8698927acc4ef7137a"
+}

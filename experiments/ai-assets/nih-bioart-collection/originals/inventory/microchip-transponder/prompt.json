@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a microchip transponder, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One implantable animal-identification RFID microchip transponder: tiny elongated hermetically sealed glass capsule with rounded ends, shown enlarged diagonally. Inside its pale blue clear glass envelope show a dense copper coil wound around a dark ferrite rod occupying most of its length, connected to a tiny dark integrated circuit at one end. Continuous smooth pale blue glass shading, crisp dark outlines, polished restrained highlights and saturated copper. No syringe, applicator, animal, antenna rays, printed circuit board outside the capsule, letters or numbers. True transparent PNG alpha background.",
+  "refinement": "Keep the exact complete capsule, internal copper antenna coil, ferrite rod and chip geometry. Redraw as smooth polished NIH BioArt biomedical illustration with broad simple gradients and crisp clean outlines. Remove all photographic grain, mottled glass reflections, rough metal texture and busy micro-highlights. Use continuous pale-blue glass illustrated as a clear envelope with smooth color fill, simple dark ferrite, satin copper coil, navy chip. No labels, shadows or extra objects. Transparent background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-c27b3858-43b7-4dd4-84ab-50d24e24201b.png",
+  "archetype": "Enlarged schematic passive RFID glass capsule with ferrite-core coil and connected integrated circuit. Internal chip package and winding count illustrative, not manufacturer-specific.",
+  "references": [
+    "https://www.avidid.com/products/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "microchip-transponder",
+  "name": "microchip transponder",
+  "original": "originals/inventory/microchip-transponder/generated.png",
+  "original_sha256": "8da876c01b21ffc1e26ea81f1a32f8aeba8d3713b31fa58143cb64ac78962326"
+}

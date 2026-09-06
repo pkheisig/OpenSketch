@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an individually ventilated cage, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One standalone laboratory mouse individually ventilated cage, elevated three-quarter view. Clear pale-blue rectangular tub with rounded corners and a thin clean tan bedding layer simplified as a few broad chips. Sealed fitted ivory raised lid with navy perimeter gasket and two teal side latches. Lid has two clearly separate circular rear air-docking valves for inlet and exhaust and a flat rectangular off-white filter panel under a fine protective grille. A small water bottle sits in an integrated front lid recess, its slim drinking spout extends inside; shallow feed hopper visible through clear front wall. No rack, air tubing, animal or external fan. Distinct sealed filter top, not an open wire cage. Smooth broad gradients, fine clean contours, no grain or dense bedding texture, professional ivory navy teal palette. Complete cage centered, generous true transparent PNG alpha padding.",
+  "refinement": "Preserve this exact individually ventilated cage design with two air docking ports, sealed ivory filter lid, navy gasket, teal latches, water bottle and drinking spout. Convert to polished smooth biomedical illustration with fine dark outlines. Replace all grainy bedding with a flat warm tan layer and a few dozen simple broad outlined rounded wood-chip shapes; smooth food pellets. Broad pale-blue glass gradients, simple clean highlights, no photographic noise or mottling. Top air ports should have passive simple perforated grilles, not spinning fan blades. Keep complete outline, no animal, text or extra objects. True transparent PNG background.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-1c8ff102-97e3-4239-87ad-e95f12fe0012.png",
+  "archetype": "Generic standalone individually ventilated cage with sealed filtered lid and two passive docking air ports. Hardware illustrative, no claim of compatibility or validated airflow.",
+  "references": [
+    "https://www.tecniplast.it/usermedia/us/Website/HOUSING_IVC.pdf"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "individually-ventilated-cage",
+  "name": "individually ventilated cage",
+  "original": "originals/inventory/individually-ventilated-cage/generated.png",
+  "original_sha256": "d1831df08fcc6438cf2070e8e50e0ce4d743f3a7809f9a65cd0210c8f4abc5f4"
+}

@@ -1,0 +1,9 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a porous scaffold, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Generic acellular tissue-engineering porous biomaterial scaffold, small thick cylindrical disk in three-quarter view. Cream-peach solid rounded struts form an irregular interconnected open-cell sponge network throughout disk, many smoothly rounded pores of varied size visibly opening into deeper connected pores. Finite coherent disk silhouette, visible top and side thickness. No cells, nuclei, vessels, molecular meshes, regular printed grid, bones or dishes. Material struts smooth and substantial, peach shadow and ivory highlights, crisp warm-brown fine outlines, polished biomedical illustration with broad gradients, no microscopic grain or photoreal crumb texture. Whole scaffold centered with generous true transparent PNG alpha background and open pore transparency where holes pass through.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-208ad25b-4c34-4c17-990f-369db9333cc7.png",
+  "archetype": "Generic acellular open-pore biomaterial scaffold disk with irregular interconnected cavities and rounded solid struts. Pore geometry and proportions schematic; not a bone specimen or specified polymer.",
+  "references": [
+    "https://www.nature.com/articles/s41467-019-11397-1"
+  ]
+}

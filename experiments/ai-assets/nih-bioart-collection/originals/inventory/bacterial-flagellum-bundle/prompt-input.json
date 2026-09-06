@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a bacterial flagellum bundle, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Isolated bundle of FOUR long slender bacterial flagellar filaments in a common loosely packed helical supercoil running horizontally with about four broad corkscrew turns. Four individual filaments remain distinguishable and parallel through the bundle, colored four close teal-blue shades, separate slightly at the two ends. Each filament is a continuous smooth narrow protein tube with very subtle repeating surface seams, not DNA, no rungs or branches. No shared stalk, no cell body, no basal motor, no arrows. Complete four-filament bundle with visible separate free tips, fine crisp dark contours, matte broad subtle gradients, no bumps, grain or glow. Whole shape centered with generous true transparent PNG padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-bd3d33c9-a87a-451c-a5d0-7d409670cea2.png",
+  "archetype": "Isolated schematic four-filament flagellar bundle with common helical waveform, separate ends and subtle repeated surface seams. Ends shown as illustrative cut ends; filament caps, hooks and motors omitted. Relative lengths and filament bore exaggerated.",
+  "references": [
+    "https://www.nature.com/articles/s41598-017-16428-9",
+    "https://www.nature.com/articles/s41467-018-07802-w"
+  ]
+}

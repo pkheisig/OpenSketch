@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an electrospun fiber scaffold, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Small finite square sheet of nonwoven electrospun polymer fibers shown oblique top view, very thin layered mat with one corner gently curled up. Many smooth slender lavender and pale violet fibers crisscross at irregular angles with visible over-under overlap and elongated interstitial pores. Fibers relatively uniform fine diameter, slight curvature, no nodes or beads, not a woven regular grid, not sponge or hydrogel bulk. All fibers part of sheet with clipped ends defining four soft edges, no detached strands outside. No cells, nuclei, support frame or dish. Polished clean biomedical schematic, crisp purple outlines, broad soft highlights on smooth fibers, no speckle texture. Complete mat centered with generous true transparent PNG alpha background; open inter-fiber holes transparent where through sheet.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-1cbf555f-77f8-43bf-83fd-e6a148536093.png",
+  "archetype": "Generic nonwoven electrospun fiber scaffold sheet with irregular crossing polymer fibers and gently curled corner. Fiber size and spacing exaggerated, not a calibrated micrograph or specified material.",
+  "references": [
+    "https://www.nature.com/articles/ncomms7933",
+    "https://www.nature.com/articles/s41467-019-11397-1"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "electrospun-fiber-scaffold",
+  "name": "electrospun fiber scaffold",
+  "original": "originals/inventory/electrospun-fiber-scaffold/generated.png",
+  "original_sha256": "994f9742881bd64a89633f4b7a3b3b308f5f9ac3b3f9d1010b23e2c2bd21258f"
+}

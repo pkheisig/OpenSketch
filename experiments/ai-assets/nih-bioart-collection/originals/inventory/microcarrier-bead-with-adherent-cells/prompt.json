@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a microcarrier bead with adherent cells, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. ONE smooth pale gold spherical solid microcarrier bead, surface partly covered by exactly seven flattened teal adherent mammalian cells. Each cell wraps tangentially along bead curvature, spindle or polygonal shape with tapered processes attached to bead, one violet oval nucleus clearly visible per cell. Space between cells reveals gold carrier substrate, cells only on outer surface not inside bead. Some cells foreshortened near spherical edge, all seven nuclei visible, no detached cells, no second bead. Smooth matte biomedical forms with crisp dark teal cell outlines, fine ochre bead outline, broad subtle gradients and restrained highlights. No photoreal grain, pores or molecular tethers. Complete coated bead centered with generous true transparent PNG alpha padding.",
+  "refinement": "Refine this single cell-coated microcarrier bead to clean polished NIH BioArt biomedical illustration. Preserve exactly seven teal spread adherent cells, seven violet oval nuclei, each wrapping the gold bead surface, and all gold gaps between cells. Remove photographic grain and mottled cytoplasm/nuclear texture. Use smooth matte filled forms, crisp dark teal cell contours, ochre bead edge, broad soft gradients and restrained highlights. No granular texture. Keep cell processes attached tangentially, complete whole bead with generous transparent PNG padding, no text or extra objects.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-61f84e4e-1727-46a6-bf02-d0d7e40425fc.png",
+  "archetype": "Single solid surface microcarrier with seven spread adherent mammalian cells and visible nuclei. Surface coating and cell-to-bead scale schematic; no specific cell line or microcarrier material asserted.",
+  "references": [
+    "https://cdn.cytivalifesciences.com/api/public/content/digi-12160-original",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC5023556/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "microcarrier-bead-with-adherent-cells",
+  "name": "microcarrier bead with adherent cells",
+  "original": "originals/inventory/microcarrier-bead-with-adherent-cells/generated.png",
+  "original_sha256": "89ec967eeb852c3326edf540460b92dbd0bfd5918566ee95469af9cc3bba979a"
+}

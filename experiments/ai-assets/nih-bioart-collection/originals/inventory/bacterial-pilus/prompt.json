@@ -1,0 +1,22 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a bacterial pilus, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One isolated type IV pilus filament as a reusable molecular appendage, gently curved elongated thin cylindrical fiber running diagonally. The fiber is built from closely packed small repeating rounded teal pilin protein subunits in a tight staggered helical surface array; continuous narrow solid-looking cylinder, not a DNA ladder, not a string of separate beads, no large corkscrew. Ends rounded and visible, no cell body, motor, membrane, hook or other appendages. Show sufficient zoom that the repeating subunit pattern is clear with fine dark contours and turquoise highlights. Broad subtle smooth pseudo-3D gradients, matte illustration, no microscopic grain or fuzz. Complete filament centered with generous transparent PNG alpha padding.",
+  "refinement": "Preserve the exact curved type IV pilus silhouette and close-packed staggered subunit arrangement. Redraw as smooth polished biomedical vector-style illustration: each rounded pilin subunit has one broad teal gradient and one restrained highlight, no tiny pits, grain, bumpy microtexture or mottling. Fine crisp dark teal outlines distinguish neighboring subunits. Retain complete ends, isolated single fiber, transparent background with generous padding. No other objects or text.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-75b18229-fa87-45bd-8e50-f30379968108.png",
+  "archetype": "Isolated generic type IV pilus filament. Repeated surface subunits and curvature illustrative, not atomic coordinates or an exact species-specific symmetry.",
+  "references": [
+    "https://www.rcsb.org/structure/6XXD",
+    "https://pdb101.rcsb.org/motm/211"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "bacterial-pilus",
+  "name": "bacterial pilus",
+  "original": "originals/inventory/bacterial-pilus/generated.png",
+  "original_sha256": "862e355230ffd8389d6dd8f6fc9ce8f482b920642540dcf8e98f81ea32bb4bab"
+}

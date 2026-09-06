@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a decellularized matrix, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Generic small acellular extracellular-matrix tissue patch, irregular rounded rectangular sheet shown oblique with modest thickness. Cream and pale peach wavy collagen bundles interlace through sheet, finer lavender elastic fibers weave between them, sparse soft pale blue ground-substance fill. Irregular elongated empty spaces show removed cells; absolutely no intact cells, nuclei, red blood cells or cell debris. Coherent natural fibrous tissue architecture, not regular printed grid, not plastic sponge or a whole organ. Visible layered fibrous edge and a gently curled corner. Smooth matte polished illustration, crisp fine outlines, restrained soft gradients, no photographic or microscopic grain. Whole patch centered with generous true transparent PNG alpha padding.",
+  "refinement": "Refine this acellular matrix patch into clean smooth NIH BioArt biomedical illustration. Preserve the finite sheet, curved corners, thick wavy cream-peach collagen bundles, thin purple elastic fibers, pale blue ground substance and empty elongated spaces. Replace ALL fine hairlike texture, glossy ripples and photographic microtexture with smooth simple filled forms, fine crisp outlines, broad subtle gradients and restrained highlights. Collagen bundles may have two or three smooth parallel contour lines, not hundreds of hairs. Keep no cells or nuclei. Complete patch centered with generous transparent PNG padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-da5602b3-75aa-4604-ab6c-c3e8f38520a1.png",
+  "archetype": "Generic acellular ECM tissue patch with wavy collagen-like bundles, fine elastic fibers, ground substance and empty spaces. No intact cells or nuclei. Composition and architecture schematic, not a measured decellularization outcome or tissue-specific specimen.",
+  "references": [
+    "https://www.nature.com/articles/s41467-019-12545-3",
+    "https://www.nature.com/articles/s41598-021-00226-5"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "decellularized-matrix",
+  "name": "decellularized matrix",
+  "original": "originals/inventory/decellularized-matrix/generated.png",
+  "original_sha256": "285da7274bd59ce08fd377b02abff0353e102edf31f1e34f0142506096563930"
+}

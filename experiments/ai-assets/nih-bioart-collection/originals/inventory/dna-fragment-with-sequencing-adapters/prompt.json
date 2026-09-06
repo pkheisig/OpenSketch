@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a DNA fragment with sequencing adapters, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One complete linear double-stranded DNA molecule horizontally oriented with gentle right-handed double-helix twist, roughly five turns, two continuous smooth backbones and paired cross-rungs. Central long insert region colored teal and blue. At both ends, short adapter segments are integrated CONTINUOUSLY into the same two DNA backbones and rungs, left adapter coral and right adapter gold, each roughly half a helix turn. Both ends blunt double-stranded, a generic post-amplification adapter-bearing molecule. Adapters are DNA extensions, not separate protein caps, tags, beads or detached objects. No Y branches or arrowheads, no nucleotide letters. Smooth matte forms, crisp dark outlines, soft pseudo-3D depth and subtle gradients, professional saturated colors. Entire molecule and both terminal segments centered with generous true transparent PNG alpha padding.",
+  "refinement": "Refine this adapter-bearing double-stranded DNA to smooth polished NIH BioArt-style illustration. Preserve exactly two continuous intertwined backbones, paired cross-rungs, coral adapter at left and gold adapter at right, central teal/blue insert. Remove ALL bumpy beadlike/mottled texture from backbones; use smooth tubular ribbons, crisp dark outlines, broad subtle gradients and restrained highlights. Preserve continuous DNA topology and separated rungs, no new branches or closed loops. Complete blunt ends visible, no letters or arrows, generous true transparent PNG alpha padding.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-87a13926-d008-4742-a833-a22cfccee48c.png",
+  "archetype": "Schematic post-amplification double-stranded library fragment with continuous adapter DNA at both ends. Coral and gold encode functional terminal regions, not natural DNA colors. Rung count, sequence, helix pitch and relative adapter length schematic; no specific kit sequence.",
+  "references": [
+    "https://support-docs.illumina.com/SHARE/AdapterSequences/Content/Overview.htm",
+    "https://support.illumina.com/content/dam/illumina-support/documents/documentation/chemistry_documentation/samplepreps_truseq/truseqdna/TruSeq_DNA_SamplePrep_Guide_15026486_C.pdf"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "dna-fragment-with-sequencing-adapters",
+  "name": "DNA fragment with sequencing adapters",
+  "original": "originals/inventory/dna-fragment-with-sequencing-adapters/generated.png",
+  "original_sha256": "6b845d5ee1bddcba1ff9a0cc5ca34277528a8accf740b57a8bb1a59ced0033f2"
+}

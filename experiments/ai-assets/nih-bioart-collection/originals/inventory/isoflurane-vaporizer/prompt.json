@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of an isoflurane vaporizer, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Standalone precision anesthetic vaporizer unit, elevated three-quarter view. Compact heavy upright rectangular brushed-silver and ivory body with rounded edges, large knurled PURPLE circular concentration-control dial on top with blank dial face, purple agent-specific filler cap on lower front beside a narrow vertical transparent liquid-level sight window, small silver drain fitting below. Two opposite short metal gas connection ports project from upper rear sides; rear mounting bracket partly visible. No gas cylinder, hoses, patient, stand or full anesthesia machine. Absolutely no text, numbers, tick marks, logo or labels. Broad smooth matte gradients, fine dark outlines, subtle metallic highlights, purple accents consistent with isoflurane color coding. Complete device centered with generous true transparent PNG alpha padding.",
+  "refinement": "Keep the exact vaporizer geometry, purple control dial and purple filler cap, two metal gas ports, level sight window and drain. Correct the liquid in the sight window: isoflurane liquid is colorless, replace purple liquid with clear nearly colorless fluid, a subtle pale gray-blue meniscus only. Purple belongs to external device accents, not liquid. Smooth all brushed-metal grain and noise into broad clean silver gradients with fine dark outlines and restrained highlights, polished biomedical illustration. No text or labels, complete device, true transparent background.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-35d478f3-6ca8-41ea-b82c-7bd213c6071a.png",
+  "archetype": "Generic standalone isoflurane vaporizer with agent-colored controls, clear sight-window liquid and gas ports. Blank controls deliberately omit calibration; not a technical or operational device drawing.",
+  "references": [
+    "https://support.harvardapparatus.com/hc/en-us/article_attachments/7201875807891",
+    "https://www.apsf.org/article/colors-used-on-isoflurane-vaporizer/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "isoflurane-vaporizer",
+  "name": "isoflurane vaporizer",
+  "original": "originals/inventory/isoflurane-vaporizer/generated.png",
+  "original_sha256": "cf8a9b7c9e72cea89b31b98c407783f8179c0ebb0e688118825432e3661d96ae"
+}

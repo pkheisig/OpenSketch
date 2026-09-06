@@ -1,0 +1,21 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a tail-vein injection setup, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Empty benchtop rodent tail-vein access apparatus as one connected equipment assembly. Three-quarter elevated view. A short clear cylindrical ventilated mouse restraint chamber held horizontally on a compact ivory platform at the left, with an adjustable teal rear stop. Its front circular end has a bottom tail-access notch. Immediately aligned with this notch, a narrow smooth teal grooved tail-support channel extends horizontally to the right along the same base. The support has a small rounded adjustable guide near its end and open access from above. Two low navy feet under base. No mouse, tail, syringe, needle, hands, blood or procedure. Pale-blue acrylic represented with continuous smooth color fills, broad gentle gradients, fine dark contours, no grain. Whole connected restrainer-and-tail-platform assembly centered with generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-dad2d2bb-644e-4087-b8e6-dd59583b4816.png",
+  "archetype": "Generic empty tail-vein access equipment assembly with ventilated restraint chamber and aligned grooved tail support. Not a procedural depiction, dimensional specification or manufacturer copy.",
+  "references": [
+    "https://www.braintreesci.com/addon-catalogue-products/rotating-tail-injector-restrainer/",
+    "https://www.braintreesci.com/content/BraintreeScientific2026Catalog.pdf"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "tail-vein-injection-setup",
+  "name": "tail-vein injection setup",
+  "original": "originals/inventory/tail-vein-injection-setup/generated.png",
+  "original_sha256": "10a4b684f0ed736cae7402b3cddad84239b002d2352e441371334bf7e39e0939"
+}

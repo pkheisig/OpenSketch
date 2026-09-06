@@ -1,0 +1,10 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a blood bag, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One flexible transparent medical blood collection bag filled with deep burgundy-red blood, gently rounded rectangular body with heat-sealed perimeter, hanging eyelet at one short edge and two sealed access ports at opposite short edge, one short integral tubing segment with sealed capped end. Upright slightly tilted three-quarter view. Smooth satin plastic creases only near seams, broad dark-red fluid shading and restrained highlights. No white label patch, branding, graduations, symbols, stand, needle or other bags. True transparent PNG alpha background.",
+  "refinement": "Keep this exact blood bag silhouette and attached ports and tubing. Redraw in smooth biomedical illustration style, remove all mottling, grain, photographic plastic texture, bubbles and busy reflections. Use continuous pale blue smooth plastic seams, satin burgundy fluid with broad gentle gradients, restrained clean white highlights and crisp dark red outlines. Preserve the hanging eyelet as a smooth open hole. No labels. True transparent background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-8a7b5b08-16fd-4e81-ad5a-9cad60e982bb.png",
+  "archetype": "Generic single blood bag with sealed ports, integral capped tube and hanging eyelet. No volume or product calibration.",
+  "references": [
+    "https://www.fresenius-kabi.com/no/documents/Produktkatalog_Fresenius_Kabi_Transfusion_Technolo-Q_smpFCuAau2bGekq5W8jXHusten_LjM97QZf_MP7CA.pdf"
+  ]
+}

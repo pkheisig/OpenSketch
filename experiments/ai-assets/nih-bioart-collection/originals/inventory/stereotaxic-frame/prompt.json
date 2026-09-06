@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a stereotaxic frame, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Empty small-animal stereotaxic apparatus in three-quarter elevated view. Flat ivory rectangular base plate with four low navy feet supports a rigid silver U-shaped frame. Two opposing horizontal silver ear bars point inward across the central head position from adjustable left and right supports; their tips separated. A small central nose/tooth support sits forward along the midline. One vertical three-axis micromanipulator tower mounted on the back-left rail, with three orthogonal linear slides and teal knurled adjustment knobs, an arm reaches inward holding a fine vertical probe above the empty center. No animal, tissue, syringe, extra tools, wires or cage. No numbers, labels or ruler marks. Clear mechanical connections, smooth broad metallic gradients, fine crisp navy-gray outlines, professional ivory silver navy teal colors. Whole frame and probe centered with generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-04535676-8fe7-4cbb-823a-e6be8e0b5d3a.png",
+  "archetype": "Generic empty stereotaxic frame with opposing ear bars, central nose support and micromanipulator. No coordinate calibration or operational positioning specification.",
+  "references": [
+    "https://kopfinstruments.com/product/model-900-small-animal-stereotaxic-instrument1/"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "stereotaxic-frame",
+  "name": "stereotaxic frame",
+  "original": "originals/inventory/stereotaxic-frame/generated.png",
+  "original_sha256": "7e727eefae3f100336bc7dc555ec151b526866f31297d90b6f13cf9f422780fd"
+}

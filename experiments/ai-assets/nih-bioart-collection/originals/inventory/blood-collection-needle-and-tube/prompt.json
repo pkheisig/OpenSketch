@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a blood collection needle and tube, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. One assembled evacuated blood collection system lying diagonally: short straight stainless steel venipuncture needle projects from green threaded hub at closed front of a clear pale-blue cylindrical holder; a lavender-stoppered blood collection tube is inserted stopper-first inside the holder, its round-bottom rear end protrudes beyond the broad open flange at the rear. Show dark red blood inside the tube. Needle, hub, holder and tube share one straight longitudinal axis. No plunger, syringe, tubing, hand or skin. Smooth illustrated plastic with broad subtle gradients and crisp contours, no calibrations, numbers or branding. True transparent PNG alpha background.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-a14a591e-5593-48c9-ae43-8cdb5891ae56.png",
+  "archetype": "Generic assembled evacuated venous collection needle, holder and stopper-first inserted tube. No volume calibration or procedural instructions.",
+  "references": [
+    "https://www.bd.com/documents/alerts/Vacutainer%20Recall%20-%20Updated%20Package%20Insert.pdf"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "blood-collection-needle-and-tube",
+  "name": "blood collection needle and tube",
+  "original": "originals/inventory/blood-collection-needle-and-tube/generated.png",
+  "original_sha256": "246abf54eb63c668209f916a93a5475321b12257c428afb46540246f22518ee5"
+}

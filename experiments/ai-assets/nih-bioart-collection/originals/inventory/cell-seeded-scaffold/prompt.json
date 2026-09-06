@@ -1,0 +1,23 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a cell-seeded scaffold, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Small cream-peach cylindrical porous tissue-engineering scaffold disk, oblique top view, irregular interconnected open pores and rounded solid struts. Exactly eight teal adherent fibroblast-like cells spread on strut surfaces, each flattened spindle or stellate form with tapered processes gripping adjacent struts and one clearly visible violet oval nucleus. Cells adhere on surfaces rather than floating in empty pores; some on top, some on front side. Coherent complete scaffold disk, open pores, no detached cells or dishes. Smooth matte biomedical forms, crisp outlines, subtle broad gradients, no grain, no photographic bone texture. Entire scaffold centered with generous true transparent PNG alpha background, through-pores transparent.",
+  "refinement": "Convert the supplied cell-seeded porous scaffold to polished clean NIH BioArt-style biomedical illustration. Preserve exactly eight teal spread adherent cells, each with one violet oval nucleus, attached to cream scaffold struts; preserve every cell position, open pore topology and whole disk. Remove fine photographic texture on scaffold and cell cytoplasm. Use smooth matte filled shapes, crisp warm-brown scaffold outlines and dark teal cell outlines, subtle broad gradients and restrained highlights. Remove stray edge speckles and preserve complete uncut outline with generous padding. True transparent PNG alpha exterior and through-pores. No text, symbols or extra objects.",
+  "alpha": "Remove the background. Output a transparent PNG with an alpha channel. Preserve the illustration.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-dddd8507-71d7-4e3f-a8d1-f14c20c4688f.png",
+  "archetype": "Schematic porous scaffold disk seeded with eight spread adherent fibroblast-like cells, each with one violet nucleus. Scaffold composition, pore dimensions, cell number and relative scale illustrative.",
+  "references": [
+    "https://www.nature.com/articles/s41598-019-53972-y",
+    "https://www.nature.com/articles/s41467-019-11397-1"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "cell-seeded-scaffold",
+  "name": "cell-seeded scaffold",
+  "original": "originals/inventory/cell-seeded-scaffold/generated.png",
+  "original_sha256": "8b4aca90bda53ec4e144f5fbcc6d77b23175800e743bb5a3800b6a5771866725"
+}

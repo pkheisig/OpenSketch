@@ -1,0 +1,20 @@
+{
+  "tool": "built-in image_gen",
+  "generation": "Create a single isolated scientific illustration of a surgical operating platform, matching the supplied NIH BioArt reference image’s visual style: detailed polished biomedical illustration, scientifically recognizable structure, clean smooth forms, crisp outlines, soft pseudo-3D depth, subtle gradients and highlights, and professional saturated colors. Show the complete asset centered with generous transparent padding, with only the requested object and its intrinsic components; no text, labels, arrows, borders, scenery, unrelated objects, or large cast shadows. Empty benchtop small-animal surgical platform, three-quarter elevated view. Low rectangular ivory base on four short navy feet, smooth flat stainless-steel rectangular operating surface inset on top with softly rounded corners, a thin teal washable silicone mat centered on it. Four small adjustable magnetic limb-positioning posts with rounded clips arranged near corners of operating surface, no connected animal or straps crossing the empty mat. Small low head-positioning support at far short edge. No stereotaxic tower, probe, tools, animal, fluids, cable, labels or surgical scene. Smooth clean matte forms, broad subtle metallic gradients, fine crisp contours. Complete platform centered with generous true transparent PNG alpha padding.",
+  "generated_source": "/Users/pkheisig/.codex/generated_images/01a06e12-28de-76e2-b15e-f376aeaa2aa9/exec-5f7ce74d-f685-4d45-bd9d-8f31560ac4ef.png",
+  "archetype": "Generic empty benchtop animal surgical platform with four positioning clips, removable mat and head support; fixture positions and mat construction illustrative.",
+  "references": [
+    "https://kentscientific.com/wp-content/uploads/2025/10/KentScientific-SurgiSuiteManual-2022Update-1up-8-5-22.pdf"
+  ],
+  "trace_settings": {
+    "color_step": 8,
+    "color_precision": 8,
+    "filter_speckle": 2,
+    "layer_difference": 1,
+    "mode": "spline"
+  },
+  "id": "surgical-operating-platform",
+  "name": "surgical operating platform",
+  "original": "originals/inventory/surgical-operating-platform/generated.png",
+  "original_sha256": "f8cdaedbed48d222ef59635a65be949218c43efd1a78aeaec9370fc30a367718"
+}
