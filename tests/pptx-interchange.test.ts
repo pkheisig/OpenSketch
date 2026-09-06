@@ -44,6 +44,49 @@ function bytes(value: string): Uint8Array {
   return new TextEncoder().encode(value);
 }
 
+function readU16At(value: Uint8Array, offset: number): number {
+  return value[offset] | (value[offset + 1] << 8);
+}
+
+function readU32At(value: Uint8Array, offset: number): number {
+  return (
+    (value[offset] |
+      (value[offset + 1] << 8) |
+      (value[offset + 2] << 16) |
+      (value[offset + 3] * 0x1000000)) >>> 0
+  );
+}
+
+function writeU16At(value: Uint8Array, offset: number, next: number): void {
+  value[offset] = next & 0xff;
+  value[offset + 1] = (next >>> 8) & 0xff;
+}
+
+function writeU32At(value: Uint8Array, offset: number, next: number): void {
+  value[offset] = next & 0xff;
+  value[offset + 1] = (next >>> 8) & 0xff;
+  value[offset + 2] = (next >>> 16) & 0xff;
+  value[offset + 3] = (next >>> 24) & 0xff;
+}
+
+function centralDirectoryOffsets(value: Uint8Array): number[] {
+  const signature = 0x02014b50;
+  const offsets: number[] = [];
+  for (let offset = 0; offset + 46 <= value.length; offset += 1) {
+    if (readU32At(value, offset) === signature) offsets.push(offset);
+  }
+  return offsets;
+}
+
+function expectPptxError(action: () => unknown, code: string): void {
+  try {
+    action();
+    throw new Error(`Expected PPTX error ${code}.`);
+  } catch (error) {
+    expect(error).toMatchObject({ code });
+  }
+}
+
 const PNG_FALLBACK = new Blob(
   [
     Uint8Array.from(
@@ -172,6 +215,77 @@ describe("bounded PPTX interchange", () => {
     await expect(preparePptxImport(macro)).rejects.toMatchObject({
       code: "pptx_macro_refused"
     });
+
+    const files = await packageFiles(exported.blob);
+    files["vbaProject.bin"] = bytes("VBA");
+    expectPptxError(() => parsePptxPackage(zipSync(files)), "pptx_macro_refused");
+  });
+
+  it("rejects hostile ZIP paths, duplicates, ZIP64, overlap, and resource bounds", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const baseFiles = await packageFiles(exported.blob);
+
+    expectPptxError(
+      () => parsePptxPackage(zipSync({ ...baseFiles, "../unsafe.bin": bytes("x") })),
+      "pptx_path_rejected"
+    );
+    expectPptxError(
+      () =>
+        parsePptxPackage(
+          zipSync({ ...baseFiles, "PPT/SLIDES/SLIDE1.XML": baseFiles["ppt/slides/slide1.xml"] })
+        ),
+      "pptx_duplicate_path"
+    );
+
+    const zip64 = new Uint8Array(await blobBytes(exported.blob));
+    const zip64Central = centralDirectoryOffsets(zip64)[0];
+    expect(zip64Central).toBeDefined();
+    writeU32At(zip64, zip64Central + 20, 0xffffffff);
+    expectPptxError(() => parsePptxPackage(zip64), "pptx_zip64_rejected");
+
+    const overlap = zipSync({ "a.bin": bytes("a"), "b.bin": bytes("b") });
+    const overlapRecords = centralDirectoryOffsets(overlap).sort(
+      (left, right) => readU32At(overlap, left + 42) - readU32At(overlap, right + 42)
+    );
+    const firstCentral = overlapRecords[0];
+    const secondLocal = readU32At(overlap, overlapRecords[1] + 42);
+    const firstLocal = readU32At(overlap, firstCentral + 42);
+    const firstNameLength = readU16At(overlap, firstLocal + 26);
+    const firstExtraLength = readU16At(overlap, firstLocal + 28);
+    const firstDataStart = firstLocal + 30 + firstNameLength + firstExtraLength;
+    writeU16At(overlap, firstCentral + 8, readU16At(overlap, firstCentral + 8) | 0x8);
+    writeU32At(overlap, firstCentral + 20, secondLocal - firstDataStart + 1);
+    expectPptxError(() => parsePptxPackage(overlap), "pptx_zip_structure");
+
+    const ratio = zipSync({ "ratio.bin": new Uint8Array(1_000) });
+    const ratioCentral = centralDirectoryOffsets(ratio)[0];
+    writeU32At(ratio, ratioCentral + 20, 1);
+    expectPptxError(() => parsePptxPackage(ratio), "pptx_decompression_limit");
+
+    const oversized = zipSync({ "oversized.bin": new Uint8Array(26 * 1024 * 1024) });
+    expectPptxError(() => parsePptxPackage(oversized), "pptx_decompression_limit");
+
+    const tooManySlides = await packageFiles(exported.blob);
+    const slideIds = Array.from(
+      { length: 101 },
+      (_, index) => `<p:sldId id="${256 + index}" r:id="rId2"/>`
+    ).join("");
+    tooManySlides["ppt/presentation.xml"] = bytes(
+      text(tooManySlides, "ppt/presentation.xml").replace(
+        /<p:sldIdLst>[\s\S]*?<\/p:sldIdLst>/,
+        `<p:sldIdLst>${slideIds}</p:sldIdLst>`
+      )
+    );
+    expectPptxError(
+      () => parsePptxPackage(zipSync(tooManySlides)),
+      "pptx_slide_limit"
+    );
   });
 
   it("rejects DTD/entity declarations and reports external media without fetching it", async () => {
@@ -351,6 +465,11 @@ describe("bounded PPTX interchange", () => {
       });
       expect(exported.blob.size).toBeGreaterThan(0);
       expect(context.drawImage).toHaveBeenCalledOnce();
+      expect(exported.report.diagnostics).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ code: "font_substitution", severity: "warning" })
+        ])
+      );
       const capped = await exportPptx({
         svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
         width: 6_000,
@@ -362,7 +481,10 @@ describe("bounded PPTX interchange", () => {
           expect.objectContaining({ code: "pptx_raster_resolution_capped", severity: "warning" })
         ])
       );
-      expect(capped.report.diagnostics[0]?.message).toContain("200.0 effective dpi");
+      expect(
+        capped.report.diagnostics.find((diagnostic) => diagnostic.code === "pptx_raster_resolution_capped")
+          ?.message
+      ).toContain("200.0 effective dpi");
     } finally {
       getContext.mockRestore();
       toBlob.mockRestore();

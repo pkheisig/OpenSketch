@@ -41,6 +41,7 @@ const PPTX_MAX_XML_TEXT_BYTES = 16 * 1024 * 1024;
 const PPTX_MAX_XML_DEPTH = 2_048;
 const PPTX_MAX_COMPRESSION_RATIO = 500;
 const PPTX_MAX_DIAGNOSTICS = 4_096;
+const PPTX_MAX_RENDERED_SNAPSHOT_BYTES = 64 * 1024 * 1024;
 const ZIP_EOCD_SIGNATURE = 0x06054b50;
 const ZIP_CENTRAL_SIGNATURE = 0x02014b50;
 const ZIP_LOCAL_SIGNATURE = 0x04034b50;
@@ -84,6 +85,11 @@ interface SlideTransform {
   rotation: number;
   flipH: boolean;
   flipV: boolean;
+}
+
+interface MediaDataUrlCache {
+  byPath: Map<string, string | undefined>;
+  byContentHash: Map<string, string | undefined>;
 }
 
 export interface PptxRenderedSlide {
@@ -785,15 +791,49 @@ function safeEmbeddedSvg(source: string): string | undefined {
   return source;
 }
 
-function dataUrlForMedia(path: string, bytes: Uint8Array): string | undefined {
+function mediaContentHash(bytes: Uint8Array): string {
+  let first = 2_166_136_261;
+  let second = 2_246_822_519;
+  for (const value of bytes) {
+    first = Math.imul(first ^ value, 16_777_619);
+    second = Math.imul(second ^ value, 2_654_435_761);
+  }
+  return `${bytes.byteLength}:${first >>> 0}:${second >>> 0}`;
+}
+
+function dataUrlForMediaWithCache(
+  path: string,
+  bytes: Uint8Array,
+  cache: MediaDataUrlCache
+): string | undefined {
+  if (cache.byPath.has(path)) return cache.byPath.get(path);
   const mimeType = mimeForPackagePath(path);
-  if (!mimeType) return undefined;
+  if (!mimeType) {
+    cache.byPath.set(path, undefined);
+    return undefined;
+  }
+  const contentKey = `${mimeType}:${mediaContentHash(bytes)}`;
+  if (cache.byContentHash.has(contentKey)) {
+    const cached = cache.byContentHash.get(contentKey);
+    cache.byPath.set(path, cached);
+    return cached;
+  }
   if (mimeType === "image/svg+xml") {
     const source = safeEmbeddedSvg(decodeUtf8(bytes, `embedded image ${path}`));
-    if (!source) return undefined;
-    return svgDataUrlForPptx(source).replace("data:image/svg+xml", `data:${mimeType}`);
+    if (!source) {
+      cache.byContentHash.set(contentKey, undefined);
+      cache.byPath.set(path, undefined);
+      return undefined;
+    }
+    const dataUrl = svgDataUrlForPptx(source).replace("data:image/svg+xml", `data:${mimeType}`);
+    cache.byContentHash.set(contentKey, dataUrl);
+    cache.byPath.set(path, dataUrl);
+    return dataUrl;
   }
-  return `data:${mimeType};base64,${bytesToBase64(bytes)}`;
+  const dataUrl = `data:${mimeType};base64,${bytesToBase64(bytes)}`;
+  cache.byContentHash.set(contentKey, dataUrl);
+  cache.byPath.set(path, dataUrl);
+  return dataUrl;
 }
 
 function colorFrom(node: Element | undefined, fallback: string): string {
@@ -862,6 +902,18 @@ function transformAttribute(transform: SlideTransform): string {
   const e = cx - a * cx - c * cy;
   const f = cy - b * cx - d * cy;
   return ` transform="matrix(${a} ${b} ${c} ${d} ${e} ${f})"`;
+}
+
+function rotationAttribute(transform: SlideTransform): string {
+  if (!transform.rotation) return "";
+  const cx = transform.x + transform.width / 2;
+  const cy = transform.y + transform.height / 2;
+  const radians = (transform.rotation * Math.PI) / 180;
+  const cosine = Math.cos(radians);
+  const sine = Math.sin(radians);
+  const e = cx - cosine * cx + sine * cy;
+  const f = cy - sine * cx - cosine * cy;
+  return ` transform="matrix(${cosine} ${sine} ${-sine} ${cosine} ${e} ${f})"`;
 }
 
 function svgText(value: string): string {
@@ -967,7 +1019,7 @@ function renderShape(shape: Element): RenderedContent | undefined {
           `<tspan x="${x}" dy="${index === 0 ? 0 : lineHeight}"${index === 0 ? "" : ""}>${svgText(lineValue)}</tspan>`
       )
       .join("");
-    svg += `<text x="${x}" y="${firstY}" fill="${style.color}" font-family="${svgText(style.fontFamily)}" font-size="${style.fontSize}"${rotation}>${text}</text>`;
+    svg += `<text x="${x}" y="${firstY}" fill="${style.color}" font-family="${svgText(style.fontFamily)}" font-size="${style.fontSize}"${rotationAttribute(transform)}>${text}</text>`;
   }
   return { svg, mapped: 1, diagnostics };
 }
@@ -976,7 +1028,8 @@ function renderPicture(
   picture: Element,
   relations: readonly PackageRelationship[],
   slidePath: string,
-  entries: Record<string, Uint8Array>
+  entries: Record<string, Uint8Array>,
+  mediaCache: MediaDataUrlCache
 ): RenderedContent | undefined {
   const shapeProperties = firstDescendant(picture, "spPr");
   const transform = transformFor(shapeProperties);
@@ -989,7 +1042,7 @@ function renderPicture(
   const target = relationTarget(relations, embedId, slidePath);
   const bytes = target ? entries[target] : undefined;
   if (!target || !bytes) return undefined;
-  const dataUrl = dataUrlForMedia(target, bytes);
+  const dataUrl = dataUrlForMediaWithCache(target, bytes, mediaCache);
   if (!dataUrl) return undefined;
   return {
     mapped: 1,
@@ -1006,6 +1059,7 @@ function renderSlide(
   entries: Record<string, Uint8Array>,
   widthEmu: number,
   heightEmu: number,
+  mediaCache: MediaDataUrlCache,
   inheritedDiagnostics: readonly InterchangeDiagnostic[] = []
 ): PptxRenderedSlide {
   const diagnostics: InterchangeDiagnostic[] = [...inheritedDiagnostics];
@@ -1028,7 +1082,7 @@ function renderSlide(
     const name = localName(child);
     let rendered: RenderedContent | undefined;
     if (name === "sp") rendered = renderShape(child);
-    else if (name === "pic") rendered = renderPicture(child, relations, slidePath, entries);
+    else if (name === "pic") rendered = renderPicture(child, relations, slidePath, entries, mediaCache);
     if (rendered) {
       content.push(rendered.svg);
       mappedCount += rendered.mapped;
@@ -1067,10 +1121,10 @@ function renderSlide(
     stableId,
     title,
     svg,
-    mappedCount: 0,
+    mappedCount,
     flattenedCount,
     refusedCount,
-    diagnostics
+    diagnostics: boundedDiagnostics(diagnostics)
   };
 }
 
@@ -1096,7 +1150,7 @@ function parseContentTypes(entries: Record<string, Uint8Array>): Document {
   );
   if (
     macroType ||
-    Object.keys(entries).some((path) => path.toLowerCase().endsWith("/vbaproject.bin"))
+    Object.keys(entries).some((path) => /(?:^|\/)vbaproject\.bin$/i.test(path))
   ) {
     throw new InterchangeImportError(
       "Macro-enabled PPTX content is refused; executable VBA parts are never imported.",
@@ -1200,6 +1254,8 @@ export function parsePptxPackage(bytes: Uint8Array, signal?: AbortSignal): PptxP
     });
   }
   const slides: PptxRenderedSlide[] = [];
+  const mediaCache: MediaDataUrlCache = { byPath: new Map(), byContentHash: new Map() };
+  let renderedSnapshotBytes = 0;
   const seenTargets = new Set<string>();
   const seenStableIds = new Set<string>();
   for (let index = 0; index < slideIdElements.length; index += 1) {
@@ -1273,8 +1329,20 @@ export function parsePptxPackage(bytes: Uint8Array, signal?: AbortSignal): PptxP
       entries,
       widthEmu,
       heightEmu,
+      mediaCache,
       inheritedDiagnostics
     );
+    const renderedBytes = new TextEncoder().encode(rendered.svg).byteLength;
+    if (
+      renderedBytes > PPTX_MAX_RENDERED_SNAPSHOT_BYTES ||
+      renderedSnapshotBytes > PPTX_MAX_RENDERED_SNAPSHOT_BYTES - renderedBytes
+    ) {
+      throw new InterchangeImportError(
+        `Rendered PPTX appearance snapshots exceed the ${PPTX_MAX_RENDERED_SNAPSHOT_BYTES}-byte import limit.`,
+        { code: "pptx_render_limit" }
+      );
+    }
+    renderedSnapshotBytes += renderedBytes;
     slides.push(rendered);
   }
   return { widthEmu, heightEmu, slides, diagnostics: boundedDiagnostics(diagnostics) };
@@ -1777,6 +1845,14 @@ export async function exportPptx(options: PptxExportOptions): Promise<PptxExport
       code: "pptx_raster_resolution_capped",
       severity: "warning",
       message: `The requested ${options.dpi} dpi raster fallback was capped to ${effectiveDpi.toFixed(1)} effective dpi at ${rasterization.width} × ${rasterization.height} pixels; the embedded SVG remains available through the DrawingML extension.`
+    });
+  }
+  if (!options.rasterFallback) {
+    rasterDiagnostics.push({
+      code: "font_substitution",
+      severity: "warning",
+      message:
+        "The PNG fallback was rasterized from serialized SVG without embedding OpenSketch web fonts; text may use a browser or system fallback. The retained SVG layer likewise depends on matching viewer fonts."
     });
   }
   const title = options.title || "OpenSketch export";

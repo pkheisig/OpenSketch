@@ -40,3 +40,13 @@ the existing Format dropdown, make slide selection an explicit import decision
 when a package has multiple slides, and surface fidelity/flattening findings
 only when they affect the result. There is no Office-style toolbar, permanent
 compatibility panel, or hidden conversion mode.
+
+## Strict import policy
+
+OpenSketch refuses a selected slide when its local content or inherited
+layout/master appearance falls outside the qualified snapshot renderer. The
+import report names the omitted content and keeps the rendered snapshot empty
+when nothing was safely mapped. This is an intentional fail-closed product
+choice: a visibly incomplete slide is not presented as a faithful import, and
+the supported subset can expand later without weakening the current safety
+boundary.
