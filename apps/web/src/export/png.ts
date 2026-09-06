@@ -30,7 +30,7 @@ function formatBytes(bytes: number): string {
 
 function invalidPngResource(): Error {
   return new Error(
-    "PNG export dimensions are invalid. Choose a finite, positive canvas DPI and output DPI."
+    "Raster export dimensions are invalid. Choose a finite, positive canvas DPI and output DPI."
   );
 }
 
@@ -73,7 +73,7 @@ export function calculatePngExportResource(
     pixels > PNG_EXPORT_MAX_PIXELS
   ) {
     throw new Error(
-      `PNG export at ${outputDpi} DPI would create ${width} × ${height} pixels ` +
+      `Raster export at ${outputDpi} DPI would create ${width} × ${height} pixels ` +
         `(${formatBytes(estimatedRgbaBytes)}) and exceeds the safe raster budget. ` +
         "Choose a lower DPI or export SVG/PDF instead."
     );

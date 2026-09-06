@@ -122,7 +122,7 @@ describe("PNG export resource limits", () => {
 
   it("rejects a raster that exceeds the pixel budget even below the dimension limit", () => {
     expect(() => calculatePngExportResource(8_001, 8_000, 300, 300)).toThrow(
-      "PNG export at 300 DPI would create 8001 × 8000 pixels"
+      "Raster export at 300 DPI would create 8001 × 8000 pixels"
     );
   });
 
@@ -156,13 +156,13 @@ describe("PNG export resource limits", () => {
 
   it("fails closed for non-finite and non-positive export inputs", () => {
     expect(() => calculatePngExportResource(1920, 1080, 0, 300)).toThrow(
-      "PNG export dimensions are invalid"
+      "Raster export dimensions are invalid"
     );
     expect(() => calculatePngExportResource(1920, 1080, 300, Number.POSITIVE_INFINITY)).toThrow(
-      "PNG export dimensions are invalid"
+      "Raster export dimensions are invalid"
     );
     expect(() => calculatePngExportResource(Number.POSITIVE_INFINITY, 1080, 300, 300)).toThrow(
-      "PNG export dimensions are invalid"
+      "Raster export dimensions are invalid"
     );
   });
 });

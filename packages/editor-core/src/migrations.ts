@@ -1854,7 +1854,11 @@ export function migrateProject(input: unknown): PortableProject {
   if (!isRecord(input)) throw new Error("This file is not an OpenSketch project.");
   const project = input;
   if (project.format !== "OpenSketch") throw new Error("The project marker is missing or invalid.");
-  if (project.formatVersion !== 1 && project.formatVersion !== OpenSketch_FORMAT_VERSION) {
+  if (
+    project.formatVersion !== 1 &&
+    project.formatVersion !== 2 &&
+    project.formatVersion !== OpenSketch_FORMAT_VERSION
+  ) {
     throw new Error(
       `Project version ${String(project.formatVersion)} is not supported by this release.`
     );

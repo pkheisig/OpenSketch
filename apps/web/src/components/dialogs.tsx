@@ -24,7 +24,7 @@ export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => 
   const [advancedOpen, setAdvancedOpen] = useState(false);
   const [exportError, setExportError] = useState("");
   const [exporting, setExporting] = useState(false);
-  const showDpi = format === "png" || format === "tiff" || format === "bmp";
+  const showDpi = format !== "svg" && format !== "pdf";
   const showQuality = format === "jpeg" || format === "webp";
   const showBackground =
     format !== "svg" && format !== "pdf" && (format === "jpeg" || !transparent);

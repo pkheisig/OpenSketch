@@ -40,7 +40,7 @@ describe("OpenSketch application module", () => {
       editorCore: {
         packageName: "@workspace/editor-core",
         version: "0.1.0",
-        projectFormatVersion: 2
+        projectFormatVersion: 3
       },
       compatibility: {
         openSuiteContractVersion: "0.1.0-bootstrap",

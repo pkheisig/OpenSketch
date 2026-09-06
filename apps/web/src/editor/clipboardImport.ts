@@ -34,12 +34,12 @@ export function isSupportedImportedImageFile(file: File): boolean {
 }
 
 export function importedMediaFilesFromDataTransfer(data: DataTransfer): File[] {
-  const files = Array.from(data.files).filter(isSupportedImportedImageFile);
+  const files = Array.from(data.files);
   if (files.length > 0) return files;
   return Array.from(data.items)
     .filter((item) => item.kind === "file")
     .map((item) => item.getAsFile())
-    .filter((file): file is File => file !== null && isSupportedImportedImageFile(file));
+    .filter((file): file is File => file !== null);
 }
 
 function embeddedImageDataUrl(data: DataTransfer): string | undefined {

@@ -1,4 +1,4 @@
-export const OpenSketch_FORMAT_VERSION = 2;
+export const OpenSketch_FORMAT_VERSION = 3;
 
 export const PROJECT_KINDS = ["diagram", "figure", "poster"] as const;
 export type ProjectKind = (typeof PROJECT_KINDS)[number];
