@@ -6,7 +6,8 @@ import {
   type InterchangeFidelityReport,
   type InterchangeImportPreparation,
   type InterchangeProbe,
-  type InterchangeSourceResource
+  type InterchangeSourceResource,
+  PORTABLE_PROJECT_LIMITS
 } from "@workspace/editor-core";
 import { InterchangeImportError } from "./errors";
 import {
@@ -42,6 +43,7 @@ const PPTX_MAX_XML_DEPTH = 2_048;
 const PPTX_MAX_COMPRESSION_RATIO = 500;
 const PPTX_MAX_DIAGNOSTICS = 4_096;
 const PPTX_MAX_RENDERED_SNAPSHOT_BYTES = 64 * 1024 * 1024;
+const PPTX_MAX_PERSISTED_SNAPSHOT_BYTES = PORTABLE_PROJECT_LIMITS.maxDataUrlBytes - 4 * 1024;
 const ZIP_EOCD_SIGNATURE = 0x06054b50;
 const ZIP_CENTRAL_SIGNATURE = 0x02014b50;
 const ZIP_LOCAL_SIGNATURE = 0x04034b50;
@@ -944,17 +946,20 @@ function textContent(shape: Element): string {
     .join("\n");
 }
 
-function textStyle(shape: Element): {
-  fontFamily: string;
-  fontSize: number;
-  color: string;
-  fontSubstituted: boolean;
-} {
+function textStyle(shape: Element):
+  | {
+      fontFamily: string;
+      fontSize: number;
+      color: string;
+      fontSubstituted: boolean;
+    }
+  | undefined {
   const runProperties = firstDescendant(shape, "rPr");
   const font = firstDescendant(runProperties ?? shape, "latin");
   const explicitTypeface = attr(font, "typeface")?.replace(/["<>]/g, "").trim();
   const typeface = explicitTypeface || "Arial";
   const points = Number(attr(runProperties, "sz") ?? 1800) / 100;
+  if (!Number.isFinite(points) || points <= 0) return undefined;
   return {
     fontFamily: typeface,
     fontSize: Math.max(1, points * (PPTX_EMU_PER_INCH / 72)),
@@ -1009,6 +1014,7 @@ function renderShape(shape: Element): RenderedContent | undefined {
   const diagnostics: InterchangeDiagnostic[] = [];
   if (value) {
     const style = textStyle(shape);
+    if (!style) return undefined;
     if (style.fontSubstituted) {
       diagnostics.push({
         code: "font_substitution",
@@ -1351,6 +1357,12 @@ export function parsePptxPackage(bytes: Uint8Array, signal?: AbortSignal): PptxP
       inheritedDiagnostics
     );
     const renderedBytes = new TextEncoder().encode(rendered.svg).byteLength;
+    if (renderedBytes > PPTX_MAX_PERSISTED_SNAPSHOT_BYTES) {
+      throw new InterchangeImportError(
+        `A rendered PPTX slide exceeds the ${PORTABLE_PROJECT_LIMITS.maxDataUrlBytes}-byte portable media limit.`,
+        { code: "pptx_render_limit" }
+      );
+    }
     if (
       renderedBytes > PPTX_MAX_RENDERED_SNAPSHOT_BYTES ||
       renderedSnapshotBytes > PPTX_MAX_RENDERED_SNAPSHOT_BYTES - renderedBytes

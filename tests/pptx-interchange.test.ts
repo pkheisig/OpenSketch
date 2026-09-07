@@ -618,6 +618,37 @@ describe("bounded PPTX interchange", () => {
     );
   });
 
+  it("refuses malformed text sizes instead of emitting NaN SVG metrics", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const files = await packageFiles(exported.blob);
+    files["ppt/slides/slide1.xml"] = bytes(
+      text(files, "ppt/slides/slide1.xml").replace(
+        "</p:spTree>",
+        '<p:sp><p:nvSpPr><p:cNvPr id="3" name="Malformed text size"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="1000" cy="1000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill></p:spPr><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr sz="not-a-number"/><a:t>Malformed</a:t></a:r></a:p></p:txBody></p:sp></p:spTree>'
+      )
+    );
+    const malformed = fileLike(
+      zipSync(files),
+      "malformed-text-size.pptx",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    );
+    const parsed = parsePptxPackage(await blobBytes(malformed));
+    expect(parsed.slides[0].svg).not.toContain("NaN");
+    expect(parsed.slides[0].diagnostics).toEqual(
+      expect.arrayContaining([expect.objectContaining({ code: "unsupported_slide_content" })])
+    );
+    await expect(preparePptxImport(malformed)).rejects.toMatchObject({
+      code: "pptx_slide_refused",
+      slideIndices: [0]
+    });
+  });
+
   it("uses the browser rasterizer when no fallback is supplied", async () => {
     class FakeImage {
       onload?: () => void;
