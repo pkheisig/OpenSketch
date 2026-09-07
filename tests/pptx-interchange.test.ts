@@ -691,6 +691,38 @@ describe("bounded PPTX interchange", () => {
     });
   });
 
+  it("accepts safe embedded SVG fragments and metadata resembling handlers", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const files = await packageFiles(exported.blob);
+    const embeddedPng =
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII+ONA=";
+    files["ppt/media/scene.svg"] = bytes(
+      `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><defs><linearGradient id="grad"><stop offset="0" stop-color="#fff"/></linearGradient></defs><g data-note="${embeddedPng}"><rect width="10" height="10" fill="url(#grad)"/></g></svg>`
+    );
+    files["ppt/slides/_rels/slide1.xml.rels"] = bytes(
+      text(files, "ppt/slides/_rels/slide1.xml.rels").replace(
+        'Target="../media/scene.png"',
+        'Target="../media/scene.svg"'
+      )
+    );
+    const safe = fileLike(
+      zipSync(files),
+      "safe-embedded-svg.pptx",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    );
+    const parsed = parsePptxPackage(await blobBytes(safe));
+    expect(parsed.slides[0].svg).toContain("data:image/svg+xml");
+    expect(parsed.slides[0].diagnostics).not.toEqual(
+      expect.arrayContaining([expect.objectContaining({ code: "unsupported_slide_content" })])
+    );
+  });
+
   it("refuses theme-inherited outlines instead of dropping them silently", async () => {
     const exported = await exportPptx({
       svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',

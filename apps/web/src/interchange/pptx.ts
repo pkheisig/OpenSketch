@@ -798,13 +798,23 @@ export function base64ToBytes(value: string): Uint8Array {
 }
 
 function safeEmbeddedSvg(source: string): string | undefined {
+  const tags = [...source.matchAll(/<(?:(?:[^"'<>]|"[^"]*"|'[^']*'))*>/g)]
+    .map(([tag]) => tag)
+    .join("\n");
+  const tagsWithoutQuotedValues = tags.replace(/"[^"]*"|'[^']*'/g, '""');
+  const hasUnsafeMarkup =
+    /<\s*(?:script|foreignObject|iframe|object|embed|animate|style)\b|\bon[a-z][\w:-]*\s*=/i.test(
+      tagsWithoutQuotedValues
+    );
+  const hasExternalAttribute =
+    /(?:^|[\s<])(?:href|xlink:href|src)\s*=\s*["']?\s*(?:https?:|\/\/|file:|javascript:|data:)/i.test(
+      tags
+    );
   if (
-    /<!DOCTYPE\b|<!ENTITY\b|<script\b|<foreignObject\b|<iframe\b|<object\b|<embed\b|<animate\b|<style\b/i.test(
-      source
-    ) ||
-    /\bon[a-z]+\s*=|(?:href|src)\s*=\s*["']?\s*(?:https?:|\/\/|file:|javascript:|data:)|url\s*\(/i.test(
-      source
-    )
+    /<!DOCTYPE\b|<!ENTITY\b/i.test(source) ||
+    hasUnsafeMarkup ||
+    hasExternalAttribute ||
+    /url\s*\(\s*["']?\s*(?:https?:|\/\/|file:|javascript:|data:)/i.test(source)
   ) {
     return undefined;
   }
