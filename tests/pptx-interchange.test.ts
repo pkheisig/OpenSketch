@@ -550,6 +550,37 @@ describe("bounded PPTX interchange", () => {
     });
   });
 
+  it("refuses tiled pictures instead of stretching them", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const files = await packageFiles(exported.blob);
+    files["ppt/slides/slide1.xml"] = bytes(
+      text(files, "ppt/slides/slide1.xml").replace(
+        "<a:stretch><a:fillRect/></a:stretch>",
+        '<a:tile tx="0" ty="0" sx="100000" sy="100000"/>'
+      )
+    );
+    const tiled = fileLike(
+      zipSync(files),
+      "tiled-picture.pptx",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    );
+    const parsed = parsePptxPackage(await blobBytes(tiled));
+    expect(parsed.slides[0].svg).not.toContain("<image ");
+    expect(parsed.slides[0].diagnostics).toEqual(
+      expect.arrayContaining([expect.objectContaining({ code: "unsupported_slide_content" })])
+    );
+    await expect(preparePptxImport(tiled)).rejects.toMatchObject({
+      code: "pptx_slide_refused",
+      slideIndices: [0]
+    });
+  });
+
   it("refuses theme-inherited outlines instead of dropping them silently", async () => {
     const exported = await exportPptx({
       svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',

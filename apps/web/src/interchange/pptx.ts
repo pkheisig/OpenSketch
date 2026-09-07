@@ -1112,7 +1112,8 @@ function renderPicture(
     !transform ||
     transform.width <= 0 ||
     transform.height <= 0 ||
-    firstDescendant(picture, "srcRect")
+    firstDescendant(picture, "srcRect") ||
+    firstDescendant(picture, "tile")
   )
     return undefined;
   const blip = firstDescendant(picture, "blip");

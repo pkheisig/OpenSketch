@@ -4083,8 +4083,8 @@ export function EditorProvider({
             const pointForSlide =
               slideSources.length > 1 && placementOrigin
                 ? {
-                    x: placementOrigin.x + Math.min(slideIndex, 8) * 24,
-                    y: placementOrigin.y + Math.min(slideIndex, 8) * 24
+                    x: placementOrigin.x + slideIndex * 24,
+                    y: placementOrigin.y + slideIndex * 24
                   }
                 : point;
             pendingMedia.push({ media, point: pointForSlide, knownInspection: rasterInspection });
