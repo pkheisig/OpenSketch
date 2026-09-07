@@ -7,6 +7,7 @@ export * from "./rasterResources";
 export * from "./resourceLimits";
 export * from "./search";
 export * from "./svgSelectors";
+export * from "./svgSafety";
 export * from "./types";
 
 /** The independently versioned editor-core contract consumed by released modules. */

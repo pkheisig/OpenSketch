@@ -7,6 +7,7 @@ import {
   type InterchangeImportPreparation,
   type InterchangeProbe,
   type InterchangeSourceResource,
+  isSafeEmbeddedImageDataUrl,
   PORTABLE_PROJECT_LIMITS
 } from "@workspace/editor-core";
 import { InterchangeImportError } from "./errors";
@@ -62,9 +63,6 @@ const PPTX_SVG_EXTENSION_URI = "{96DAC541-7B7A-43D3-8B79-37D633B846F1}";
 const XML_RELATIONSHIP_NAMESPACE = "http://schemas.openxmlformats.org/package/2006/relationships";
 const XML_CONTENT_TYPES_NAMESPACE = "http://schemas.openxmlformats.org/package/2006/content-types";
 const PPTX_PRESENTATION_NAMESPACE = "http://schemas.openxmlformats.org/presentationml/2006/main";
-const PPTX_EMBEDDED_IMAGE_DATA_URL =
-  /^data:image\/(?:png|jpe?g|gif|webp|svg\+xml);base64,[A-Za-z0-9+/]+={0,2}$/i;
-
 interface ZipEntryMeta {
   name: string;
   compressedSize: number;
@@ -815,8 +813,7 @@ function safeEmbeddedSvg(source: string): string | undefined {
   ].some((match) => {
     const value = (match[1] ?? match[2] ?? match[3] ?? "").trim();
     return (
-      /^(?:https?:|\/\/|file:|javascript:|data:)/i.test(value) &&
-      !PPTX_EMBEDDED_IMAGE_DATA_URL.test(value)
+      /^(?:https?:|\/\/|file:|javascript:|data:)/i.test(value) && !isSafeEmbeddedImageDataUrl(value)
     );
   });
   if (

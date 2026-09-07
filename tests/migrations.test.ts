@@ -569,6 +569,21 @@ describe("project migrations", () => {
     ).not.toThrow();
   });
 
+  it("rejects unsafe nested SVG image data during project reload", () => {
+    const nested = `data:image/svg+xml;base64,${btoa(
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"><script>alert(1)</script></svg>'
+    )}`;
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"><image href="${nested}"/></svg>`;
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: {
+          objects: [{ type: "Image", src: `data:image/svg+xml,${encodeURIComponent(svg)}` }]
+        }
+      })
+    ).toThrow("external or executable");
+  });
+
   it("rejects malformed canvas and imported-media records", () => {
     expect(() =>
       migrateProject({

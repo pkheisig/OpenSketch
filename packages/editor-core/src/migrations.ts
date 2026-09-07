@@ -28,13 +28,11 @@ import {
 } from "./rasterResources";
 import { PORTABLE_PROJECT_LIMITS } from "./resourceLimits";
 import { validateLayoutDocument, type LayoutDocument } from "./layout";
+import { isSafeEmbeddedImageDataUrl } from "./svgSafety";
 
 export { remintProjectIdentity, repairProjectIdentity } from "./identity";
 export type { ProjectIdentityRepair } from "./identity";
 export { PORTABLE_PROJECT_LIMITS } from "./resourceLimits";
-
-const EMBEDDED_IMAGE_DATA_URL =
-  /^data:image\/(?:png|jpe?g|gif|webp|svg\+xml);base64,[A-Za-z0-9+/]+={0,2}$/i;
 
 const SUPPORTED_SCENE_TYPES = new Set([
   "Circle",
@@ -596,8 +594,7 @@ function assertSafeSvgText(value: string, path: string): void {
   ].some((match) => {
     const value = (match[1] ?? match[2] ?? match[3] ?? "").trim();
     return (
-      /^(?:https?:|\/\/|file:|javascript:|data:)/i.test(value) &&
-      !EMBEDDED_IMAGE_DATA_URL.test(value)
+      /^(?:https?:|\/\/|file:|javascript:|data:)/i.test(value) && !isSafeEmbeddedImageDataUrl(value)
     );
   });
   if (
