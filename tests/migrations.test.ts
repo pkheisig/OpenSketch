@@ -512,6 +512,19 @@ describe("project migrations", () => {
     ).not.toThrow();
   });
 
+  it("rejects external SVG anchors", () => {
+    const svg =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><a href="https://example.org"><rect width="10" height="10"/></a></svg>';
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: {
+          objects: [{ type: "Image", src: `data:image/svg+xml,${encodeURIComponent(svg)}` }]
+        }
+      })
+    ).toThrow("external or executable");
+  });
+
   it("accepts SVG text containing attribute-like prose", () => {
     const svg =
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><text>Only=yes, online=off, url(https://example.org/figure.png)</text></svg>';

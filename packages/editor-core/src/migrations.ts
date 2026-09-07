@@ -584,11 +584,18 @@ function assertSafeSvgText(value: string, path: string): void {
     .map(([, style]) => style)
     .join("\n");
   const markupAndStyles = `${tags}\n${styles}`;
+  const hasUnsafeMarkup =
+    /<\s*(?:script|foreignObject|iframe|object|embed)\b|\bon[a-z][\w:-]*\s*=/i.test(
+      tagsWithoutQuotedValues
+    );
+  const hasExternalAttribute =
+    /(?:^|[\s<])(?:href|xlink:href|src)\s*=\s*["']?\s*(?:https?:|\/\/|javascript:|data:text\/html)/i.test(
+      tags
+    );
   if (
     /<!doctype\b|<!entity\b/i.test(value) ||
-    /<\s*(?:script|foreignObject|iframe|object|embed)\b|\bon[a-z][\w:-]*\s*=|(?:href|xlink:href|src)\s*=\s*["']?\s*(?:https?:|\/\/|javascript:|data:text\/html)/i.test(
-      tagsWithoutQuotedValues
-    ) ||
+    hasUnsafeMarkup ||
+    hasExternalAttribute ||
     /url\(\s*["']?(?:https?:|\/\/|javascript:|data:text\/html)/i.test(markupAndStyles)
   ) {
     throw new Error("The project contains an external or executable scene reference.");
