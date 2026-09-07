@@ -113,6 +113,7 @@ export interface PptxParsedPackage {
 export interface PptxImportOptions {
   signal?: AbortSignal;
   selectedSlideIndices?: readonly number[];
+  parsedPackage?: PptxParsedPackage;
 }
 
 export interface PptxImportPreparation extends InterchangeImportPreparation {
@@ -611,7 +612,7 @@ function relationshipsFor(
         severity: "warning",
         message: `External PPTX relationship ${id} was not fetched or executed; linked media is unavailable.`
       });
-      result.push({ id, type, target, targetMode });
+      result.push({ id, type, target, targetMode: "external" });
       continue;
     }
     result.push({ id, type, target, ...(targetMode ? { targetMode } : {}) });
@@ -666,7 +667,9 @@ function hasVisibleShapeTreeContent(document: Document): boolean {
   const tree = firstDescendant(document.documentElement, "spTree");
   return Boolean(
     tree &&
-    childElements(tree).some((child) => !["nvGrpSpPr", "grpSpPr"].includes(localName(child)))
+    childElements(tree).some(
+      (child) => !["nvGrpSpPr", "grpSpPr", "extLst"].includes(localName(child))
+    )
   );
 }
 
@@ -971,7 +974,9 @@ function renderShape(shape: Element): RenderedContent | undefined {
   const transform = transformFor(shapeProperties);
   if (!shapeProperties || !transform) return undefined;
   const geometry = firstDescendant(shapeProperties, "prstGeom");
-  const preset = attr(geometry, "prst") ?? "rect";
+  if (!geometry) return undefined;
+  const preset = attr(geometry, "prst");
+  if (!preset) return undefined;
   if (!["rect", "roundRect", "ellipse", "line"].includes(preset)) return undefined;
   if (
     preset === "line"
@@ -1451,7 +1456,7 @@ export async function preparePptxImport(
   const initialSource = sourceForPptx(file, probeBytes);
   let parsed: PptxParsedPackage;
   try {
-    parsed = parsePptxPackage(bytes, options.signal);
+    parsed = options.parsedPackage ?? parsePptxPackage(bytes, options.signal);
   } catch (reason) {
     if (reason instanceof InterchangeImportError) {
       const probe = probeInterchangeBytes(probeBytes, {

@@ -12,7 +12,7 @@ import {
   type InterchangeSourceResource
 } from "@workspace/editor-core";
 import { InterchangeImportError } from "./errors";
-import type { PptxImportPreparation } from "./pptx";
+import type { PptxImportPreparation, PptxParsedPackage } from "./pptx";
 
 export { InterchangeImportError } from "./errors";
 export interface RgbaRaster {
@@ -440,6 +440,7 @@ export async function prepareStrictInterchangeImport(
     allowFirstPage?: boolean;
     allowLossyBitDepth?: boolean;
     pptxSlideIndices?: readonly number[];
+    pptxParsedPackage?: PptxParsedPackage;
   } = {}
 ): Promise<
   InterchangeImportPreparation & {
@@ -501,7 +502,8 @@ export async function prepareStrictInterchangeImport(
     const { preparePptxImport } = await import("./pptx");
     return preparePptxImport(file, {
       signal: options.signal,
-      selectedSlideIndices: options.pptxSlideIndices
+      selectedSlideIndices: options.pptxSlideIndices,
+      parsedPackage: options.pptxParsedPackage
     });
   }
   let fullBytes: Uint8Array | undefined;

@@ -29,7 +29,7 @@ import {
 import type { ProjectTemplateRecord } from "@workspace/editor-core";
 import { MotionPresence } from "@/components/MotionPresence";
 import { PptxSlideChooser } from "@/components/PptxSlideChooser";
-import type { PptxRenderedSlide } from "@/interchange/pptx";
+import type { PptxParsedPackage } from "@/interchange/pptx";
 import { PPTX_MAX_PACKAGE_BYTES } from "@/interchange/pptxShared";
 import { Logo } from "./Logo";
 import { useModalDialog } from "./useModalDialog";
@@ -79,7 +79,11 @@ export function HomeScreen({
   onRenameFolder: (folder: ProjectFolderRecord) => void;
   onDeleteFolder: (folder: ProjectFolderRecord) => void;
   onRename: (project: ProjectRecord) => void;
-  onImport: (file: File, pptxSlideIndices?: readonly number[]) => void;
+  onImport: (
+    file: File,
+    pptxSlideIndices?: readonly number[],
+    pptxParsedPackage?: PptxParsedPackage
+  ) => void;
   onImportError?: (reason: unknown) => void;
 }) {
   const services = useOpenSketchHostServices();
@@ -97,7 +101,7 @@ export function HomeScreen({
   const [newProjectOpen, setNewProjectOpen] = useState(false);
   const [selectedKind, setSelectedKind] = useState<ProjectKind | null>(null);
   const [pptxChooser, setPptxChooser] = useState<
-    { file: File; slides: readonly PptxRenderedSlide[] } | undefined
+    { file: File; parsedPackage: PptxParsedPackage } | undefined
   >();
   const aboutRef = useModalDialog(about, () => setAbout(false));
   const activeProjects = useMemo(
@@ -217,9 +221,9 @@ export function HomeScreen({
                     const { parsePptxPackage } = await import("@/interchange/pptx");
                     const parsed = parsePptxPackage(new Uint8Array(await file.arrayBuffer()));
                     if (parsed.slides.length > 1) {
-                      setPptxChooser({ file, slides: parsed.slides });
+                      setPptxChooser({ file, parsedPackage: parsed });
                     } else {
-                      onImport(file, [0]);
+                      onImport(file, [0], parsed);
                     }
                   })().catch((reason) => onImportError?.(reason));
                 }
@@ -529,12 +533,12 @@ export function HomeScreen({
       {pptxChooser ? (
         <PptxSlideChooser
           fileName={pptxChooser.file.name}
-          slides={pptxChooser.slides}
+          slides={pptxChooser.parsedPackage.slides}
           onCancel={() => setPptxChooser(undefined)}
           onConfirm={(slideIndices) => {
             const choice = pptxChooser;
             setPptxChooser(undefined);
-            onImport(choice.file, slideIndices);
+            onImport(choice.file, slideIndices, choice.parsedPackage);
           }}
         />
       ) : null}

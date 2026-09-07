@@ -11,7 +11,7 @@ import {
   type InterchangeProbe
 } from "@workspace/editor-core";
 import { prepareStrictInterchangeImport } from "./formatCodecs";
-import type { PptxRenderedSlide } from "./pptx";
+import type { PptxParsedPackage, PptxRenderedSlide } from "./pptx";
 
 export interface RegisteredInterchangeAdapter {
   readonly format: InterchangeFormat;
@@ -91,6 +91,7 @@ export async function prepareInterchangeFile(
     allowFirstPage?: boolean;
     allowLossyBitDepth?: boolean;
     pptxSlideIndices?: readonly number[];
+    pptxParsedPackage?: PptxParsedPackage;
   } = {}
 ): Promise<
   InterchangeImportPreparation & {

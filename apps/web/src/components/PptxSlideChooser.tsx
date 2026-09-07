@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { PptxRenderedSlide } from "@/interchange/pptx";
 import { svgDataUrlForPptx, svgForPptxCanvas } from "@/interchange/pptxShared";
 import { useModalDialog } from "./useModalDialog";
@@ -15,6 +15,47 @@ function thumbnailSource(source: string): string {
     source,
     Math.max(1, Math.round(width * scale)),
     Math.max(1, Math.round(height * scale))
+  );
+}
+
+function LazyPptxThumbnail({ slide }: { slide: PptxRenderedSlide }) {
+  const containerRef = useRef<HTMLSpanElement>(null);
+  const [source, setSource] = useState<string>();
+
+  useEffect(() => {
+    let active = true;
+    setSource(undefined);
+    const render = () => {
+      if (active) setSource(svgDataUrlForPptx(thumbnailSource(slide.svg)));
+    };
+    const container = containerRef.current;
+    if (!container || typeof IntersectionObserver === "undefined") {
+      const timer = globalThis.setTimeout(render, 0);
+      return () => {
+        active = false;
+        globalThis.clearTimeout(timer);
+      };
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          observer.disconnect();
+          render();
+        }
+      },
+      { rootMargin: "180px" }
+    );
+    observer.observe(container);
+    return () => {
+      active = false;
+      observer.disconnect();
+    };
+  }, [slide.svg]);
+
+  return (
+    <span className="pptx-slide-thumbnail" ref={containerRef}>
+      {source ? <img src={source} alt="" loading="lazy" decoding="async" /> : null}
+    </span>
   );
 }
 
@@ -80,14 +121,7 @@ export function PptxSlideChooser({
                     });
                   }}
                 />
-                <span className="pptx-slide-thumbnail">
-                  <img
-                    src={svgDataUrlForPptx(thumbnailSource(slide.svg))}
-                    alt=""
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </span>
+                <LazyPptxThumbnail slide={slide} />
                 <span className="pptx-slide-label">
                   <strong>Slide {slide.index + 1}</strong>
                   <small>{slide.title || "Untitled slide"}</small>

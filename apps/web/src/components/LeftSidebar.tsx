@@ -43,7 +43,7 @@ import {
 } from "@workspace/editor-core";
 import { AssetPreviewImage } from "@/components/AssetPreviewImage";
 import { interchangeFileAccept } from "@/interchange/registry";
-import type { PptxRenderedSlide } from "@/interchange/pptx";
+import type { PptxParsedPackage } from "@/interchange/pptx";
 import { PPTX_MAX_PACKAGE_BYTES } from "@/interchange/pptxShared";
 import { PptxSlideChooser } from "@/components/PptxSlideChooser";
 import { fidelityBadge, fidelityNotice, fidelityTooltip } from "@/interchange/fidelityNotice";
@@ -1852,7 +1852,7 @@ function ImportsPanel() {
   const [fidelityNoticeText, setFidelityNoticeText] = useState("");
   const [imports, setImports] = useState<ImportedMediaLibraryRecord[]>([]);
   const [pptxChooser, setPptxChooser] = useState<
-    { file: File; slides: readonly PptxRenderedSlide[] } | undefined
+    { file: File; parsedPackage: PptxParsedPackage } | undefined
   >();
   useEffect(() => {
     let active = true;
@@ -1903,10 +1903,13 @@ function ImportsPanel() {
               const { parsePptxPackage } = await import("@/interchange/pptx");
               const parsed = parsePptxPackage(new Uint8Array(await file.arrayBuffer()));
               if (parsed.slides.length > 1) {
-                setPptxChooser({ file, slides: parsed.slides });
+                setPptxChooser({ file, parsedPackage: parsed });
                 return;
               }
-              const result = await editor.importMedia(file, undefined, { pptxSlideIndices: [0] });
+              const result = await editor.importMedia(file, undefined, {
+                pptxSlideIndices: [0],
+                pptxParsedPackage: parsed
+              });
               setFidelityNoticeText(fidelityNotice(result.fidelity) ?? "");
             })().catch((reason) => setError(userErrorMessage(reason)));
           }
@@ -1916,13 +1919,16 @@ function ImportsPanel() {
       {pptxChooser ? (
         <PptxSlideChooser
           fileName={pptxChooser.file.name}
-          slides={pptxChooser.slides}
+          slides={pptxChooser.parsedPackage.slides}
           onCancel={() => setPptxChooser(undefined)}
           onConfirm={(slideIndices) => {
             const choice = pptxChooser;
             setPptxChooser(undefined);
             void editor
-              .importMedia(choice.file, undefined, { pptxSlideIndices: slideIndices })
+              .importMedia(choice.file, undefined, {
+                pptxSlideIndices: slideIndices,
+                pptxParsedPackage: choice.parsedPackage
+              })
               .then((result) => setFidelityNoticeText(fidelityNotice(result.fidelity) ?? ""))
               .catch((reason) => setError(userErrorMessage(reason)));
           }}

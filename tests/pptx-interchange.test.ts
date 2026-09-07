@@ -329,6 +329,27 @@ describe("bounded PPTX interchange", () => {
         ])
       })
     });
+
+    const implicitExternalFiles = await packageFiles(exported.blob);
+    implicitExternalFiles["ppt/slides/_rels/slide1.xml.rels"] = bytes(
+      text(implicitExternalFiles, "ppt/slides/_rels/slide1.xml.rels").replace(
+        'Target="../media/scene.png"',
+        'Target="https://example.invalid/scene.png"'
+      )
+    );
+    const implicitExternal = fileLike(
+      zipSync(implicitExternalFiles),
+      "implicit-external.pptx",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    );
+    await expect(preparePptxImport(implicitExternal)).rejects.toMatchObject({
+      code: "pptx_slide_refused",
+      report: expect.objectContaining({
+        diagnostics: expect.arrayContaining([
+          expect.objectContaining({ code: "external_relationship_ignored" })
+        ])
+      })
+    });
   });
 
   it("refuses out-of-range physical export instead of silently scaling", async () => {
@@ -360,6 +381,37 @@ describe("bounded PPTX interchange", () => {
       "application/vnd.openxmlformats-officedocument.presentationml.presentation"
     );
     await expect(preparePptxImport(unsupported)).rejects.toMatchObject({
+      code: "pptx_slide_refused",
+      slideIndices: [0]
+    });
+  });
+
+  it("refuses custom geometry instead of defaulting to a rectangle", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const files = await packageFiles(exported.blob);
+    files["ppt/slides/slide1.xml"] = bytes(
+      text(files, "ppt/slides/slide1.xml").replace(
+        "</p:spTree>",
+        '<p:sp><p:nvSpPr><p:cNvPr id="3" name="Custom geometry"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="1000" cy="1000"/></a:xfrm><a:custGeom><a:avLst/><a:pathLst><a:path w="1000" h="1000"><a:lnTo><a:pt x="1000" y="1000"/></a:lnTo></a:path></a:pathLst></a:custGeom><a:solidFill><a:srgbClr val="FF0000"/></a:solidFill></p:spPr></p:sp></p:spTree>'
+      )
+    );
+    const customGeometry = fileLike(
+      zipSync(files),
+      "custom-geometry.pptx",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    );
+    const parsed = parsePptxPackage(await blobBytes(customGeometry));
+    expect(parsed.slides[0].svg).not.toContain('fill="#ff0000"');
+    expect(parsed.slides[0].diagnostics).toEqual(
+      expect.arrayContaining([expect.objectContaining({ code: "unsupported_slide_content" })])
+    );
+    await expect(preparePptxImport(customGeometry)).rejects.toMatchObject({
       code: "pptx_slide_refused",
       slideIndices: [0]
     });
@@ -502,6 +554,43 @@ describe("bounded PPTX interchange", () => {
       ])
     );
     expect(parsed.diagnostics.length).toBeLessThanOrEqual(4_096);
+  });
+
+  it("does not treat a layout or master extension list as visible content", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const files = await packageFiles(exported.blob);
+    files["ppt/slideLayouts/slideLayout1.xml"] = bytes(
+      text(files, "ppt/slideLayouts/slideLayout1.xml").replace(
+        "</p:spTree>",
+        '<p:extLst><p:ext uri="{test}"/></p:extLst></p:spTree>'
+      )
+    );
+    files["ppt/slideMasters/slideMaster1.xml"] = bytes(
+      text(files, "ppt/slideMasters/slideMaster1.xml").replace(
+        "</p:spTree>",
+        '<p:extLst><p:ext uri="{test}"/></p:extLst></p:spTree>'
+      )
+    );
+    const extensionOnly = fileLike(
+      zipSync(files),
+      "extension-only-appearance.pptx",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    );
+    const parsed = parsePptxPackage(await blobBytes(extensionOnly));
+    expect(parsed.slides[0].diagnostics).not.toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "unsupported_inherited_slide_content" })
+      ])
+    );
+    await expect(preparePptxImport(extensionOnly)).resolves.toMatchObject({
+      fidelity: { refusedCount: 0 }
+    });
   });
 
   it("preserves shape flips and reports unresolved text styling", async () => {

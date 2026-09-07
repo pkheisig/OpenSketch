@@ -36,6 +36,7 @@ import {
   svgDataUrlForPptx,
   svgForPptxCanvas
 } from "@/interchange/pptxShared";
+import type { PptxParsedPackage } from "@/interchange/pptx";
 import { fidelityNotice } from "@/interchange/fidelityNotice";
 
 const EditorStudio = lazy(() =>
@@ -481,12 +482,15 @@ export function App({
   );
 
   const importPptxProjects = useCallback(
-    async (file: File, slideIndices: readonly number[]) => {
+    async (file: File, slideIndices: readonly number[], parsedPackage?: PptxParsedPackage) => {
       const created: ProjectRecord[] = [];
       let folder: ProjectFolderRecord | undefined;
       try {
         const { preparePptxImport } = await import("@/interchange/pptx");
-        const prepared = await preparePptxImport(file, { selectedSlideIndices: slideIndices });
+        const prepared = await preparePptxImport(file, {
+          selectedSlideIndices: slideIndices,
+          parsedPackage
+        });
         const dimensions = prepared.probe.dimensions;
         if (!dimensions || prepared.slides.length === 0) {
           throw new Error("The PPTX did not contain an importable slide.");
@@ -742,13 +746,13 @@ export function App({
               .then(refresh)
               .catch((reason) => setError(String(reason)));
           }}
-          onImport={(file, slideIndices) => {
+          onImport={(file, slideIndices, parsedPackage) => {
             const isPptx =
               file.name.toLowerCase().endsWith(".pptx") ||
               file.type ===
                 "application/vnd.openxmlformats-officedocument.presentationml.presentation";
             if (isPptx) {
-              void importPptxProjects(file, slideIndices ?? [0]);
+              void importPptxProjects(file, slideIndices ?? [0], parsedPackage);
               return;
             }
             services.files

@@ -90,6 +90,7 @@ import {
   svgDataUrlForPptx,
   svgForPptxCanvas
 } from "@/interchange/pptxShared";
+import type { PptxParsedPackage } from "@/interchange/pptx";
 import { calculatePngExportResource, setPngDpi } from "@/export/png";
 import { setJpegDpi } from "@/export/jpeg";
 import {
@@ -716,6 +717,7 @@ export interface EditorContextValue {
     point?: Point,
     options?: {
       pptxSlideIndices?: readonly number[];
+      pptxParsedPackage?: PptxParsedPackage;
       signal?: AbortSignal;
       interactive?: boolean;
     }
@@ -3877,6 +3879,7 @@ export function EditorProvider({
       point?: Point,
       importOptions?: {
         pptxSlideIndices?: readonly number[];
+        pptxParsedPackage?: PptxParsedPackage;
         signal?: AbortSignal;
         interactive?: boolean;
       }
@@ -3895,6 +3898,7 @@ export function EditorProvider({
                 allowFirstPage,
                 allowLossyBitDepth,
                 pptxSlideIndices,
+                pptxParsedPackage: importOptions?.pptxParsedPackage,
                 signal: importOptions?.signal
               });
             } catch (reason) {
