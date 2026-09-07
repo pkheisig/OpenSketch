@@ -143,6 +143,55 @@ describe("bounded PPTX interchange", () => {
     expect(parsed.slides[0].svg).toContain("data:image/png;base64,");
   });
 
+  it("passes independent package-structure validation", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080"><rect width="1920" height="1080" fill="#fff"/></svg>',
+      width: 1920,
+      height: 1080,
+      dpi: 120,
+      rasterFallback: PNG_FALLBACK,
+      title: "Independent package check"
+    });
+    const files = await packageFiles(exported.blob);
+    const requiredParts = [
+      "[Content_Types].xml",
+      "_rels/.rels",
+      "ppt/presentation.xml",
+      "ppt/_rels/presentation.xml.rels",
+      "ppt/slides/slide1.xml",
+      "ppt/slides/_rels/slide1.xml.rels",
+      "ppt/theme/theme1.xml",
+      "docProps/core.xml",
+      "docProps/app.xml",
+      "ppt/media/scene.png",
+      "ppt/media/scene.svg"
+    ];
+    expect(Object.keys(files)).toEqual(expect.arrayContaining(requiredParts));
+
+    const contentTypes = text(files, "[Content_Types].xml");
+    expect(contentTypes).toContain(
+      '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+    );
+    expect(contentTypes).toContain(
+      '<Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>'
+    );
+    expect(contentTypes).toContain(
+      '<Override PartName="/ppt/slides/slide1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>'
+    );
+    expect(contentTypes).toContain(
+      '<Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>'
+    );
+    expect(text(files, "_rels/.rels")).toContain('Target="ppt/presentation.xml"');
+    expect(text(files, "ppt/_rels/presentation.xml.rels")).toContain(
+      'Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide1.xml"'
+    );
+    const slideRels = text(files, "ppt/slides/_rels/slide1.xml.rels");
+    expect(slideRels).toContain('Target="../media/scene.png"');
+    expect(slideRels).toContain('Target="../media/scene.svg"');
+    expect(text(files, "ppt/slides/slide1.xml")).toContain("<p:spTree>");
+    expect(Object.keys(files).some((path) => /(?:^|\/)vbaProject\.bin$/i.test(path))).toBe(false);
+  });
+
   it("requires explicit selection for a multi-slide package and accepts multiple indices", async () => {
     const exported = await exportPptx({
       svg: '<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000" viewBox="0 0 1000 1000"/>',
@@ -441,6 +490,39 @@ describe("bounded PPTX interchange", () => {
     expect(parsed.slides[0].svg).not.toContain("<line ");
     expect(parsed.slides[0].refusedCount).toBeGreaterThan(0);
     await expect(preparePptxImport(lineOnly)).rejects.toMatchObject({
+      code: "pptx_slide_refused",
+      slideIndices: [0]
+    });
+  });
+
+  it("refuses theme-inherited outlines instead of dropping them silently", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const files = await packageFiles(exported.blob);
+    files["ppt/slides/slide1.xml"] = bytes(
+      text(files, "ppt/slides/slide1.xml").replace(
+        "</p:spTree>",
+        '<p:sp><p:nvSpPr><p:cNvPr id="3" name="Theme outline"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:style><a:lnRef idx="1"><a:schemeClr val="accent1"/></a:lnRef></p:style><p:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="1000" cy="1000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill></p:spPr></p:sp></p:spTree>'
+      )
+    );
+    const themeOutline = fileLike(
+      zipSync(files),
+      "theme-outline.pptx",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    );
+    const parsed = parsePptxPackage(await blobBytes(themeOutline));
+    expect(parsed.slides[0].svg).not.toContain('fill="#ffffff"');
+    expect(parsed.slides[0].diagnostics).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "theme_inherited_stroke_unsupported", severity: "warning" })
+      ])
+    );
+    await expect(preparePptxImport(themeOutline)).rejects.toMatchObject({
       code: "pptx_slide_refused",
       slideIndices: [0]
     });

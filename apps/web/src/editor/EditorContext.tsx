@@ -551,6 +551,37 @@ function projectMediaTotals(
   return { rasterPixels, dataUrlBytes };
 }
 
+interface PendingImportedMedia {
+  media: ImportedMediaRecord;
+  point?: Point;
+  knownInspection?: RasterInspection;
+}
+
+function preflightImportedMediaBatch(
+  pending: readonly PendingImportedMedia[],
+  uploads: ImportedMediaRecord[],
+  canvas: Canvas | null | undefined
+): void {
+  const totals = projectMediaTotals(uploads, canvas);
+  const seenDataUrls = new Set<string>();
+  let rasterPixels = totals.rasterPixels;
+  let dataUrlBytes = totals.dataUrlBytes;
+  for (const { media, knownInspection } of pending) {
+    const inspected = inspectImportedMediaRecord(media, knownInspection);
+    if (seenDataUrls.has(media.dataUrl)) continue;
+    seenDataUrls.add(media.dataUrl);
+    dataUrlBytes += inspected.byteLength;
+    if (dataUrlBytes > PORTABLE_PROJECT_LIMITS.maxTotalDataUrlBytes) {
+      throw new Error("Adding these images would exceed the document's embedded data budget.");
+    }
+    if (inspected.inspection) {
+      const limitMessage = rasterLimitMessage(inspected.inspection, rasterPixels);
+      if (limitMessage) throw new Error(limitMessage);
+      rasterPixels += inspected.inspection.pixels;
+    }
+  }
+}
+
 function loadBundledVariants(assets: AssetService): Promise<Map<string, AssetVariant>> {
   return assets
     .getManifest()
@@ -3990,8 +4021,7 @@ export function EditorProvider({
                   name: `${file.name} — slide ${slide.index + 1}`
                 }))
               : [{ blob: prepared.normalized, name: file.name }];
-          let firstStored: PlacedImportedMedia | undefined;
-          const importedObjectIds: string[] = [];
+          const pendingMedia: PendingImportedMedia[] = [];
           for (const [slideIndex, slideSource] of slideSources.entries()) {
             throwIfSemanticExecutionAborted(importOptions?.signal);
             const inferredMimeType =
@@ -4042,14 +4072,21 @@ export function EditorProvider({
                   }
                 : {})
             };
-            const placementPoint =
+            const pointForSlide =
               slideSources.length > 1 && point
                 ? {
                     x: point.x + Math.min(slideIndex, 8) * 24,
                     y: point.y + Math.min(slideIndex, 8) * 24
                   }
                 : point;
-            const stored = await placeImportedMedia(media, placementPoint, rasterInspection);
+            pendingMedia.push({ media, point: pointForSlide, knownInspection: rasterInspection });
+          }
+          preflightImportedMediaBatch(pendingMedia, latestProject.current.uploads, canvas);
+          let firstStored: PlacedImportedMedia | undefined;
+          const importedObjectIds: string[] = [];
+          for (const { media, point: placementPoint, knownInspection } of pendingMedia) {
+            throwIfSemanticExecutionAborted(importOptions?.signal);
+            const stored = await placeImportedMedia(media, placementPoint, knownInspection);
             if (stored.objectId) importedObjectIds.push(stored.objectId);
             firstStored ??= stored;
           }
@@ -4060,7 +4097,7 @@ export function EditorProvider({
       importQueue.current = operation.then(() => undefined).catch(() => undefined);
       return operation;
     },
-    [placeImportedMedia, services, trackPendingEditorWork]
+    [canvas, placeImportedMedia, services, trackPendingEditorWork]
   );
   semanticImportMediaRef.current = importMedia;
 

@@ -946,6 +946,13 @@ function textContent(shape: Element): string {
     .join("\n");
 }
 
+function hasThemeInheritedStroke(shape: Element): boolean {
+  const shapeProperties = firstDescendant(shape, "spPr");
+  if (!shapeProperties || firstDescendant(shapeProperties, "ln")) return false;
+  const style = firstDescendant(shape, "style");
+  return Boolean(style && firstDescendant(style, "lnRef"));
+}
+
 function textStyle(shape: Element):
   | {
       fontFamily: string;
@@ -996,6 +1003,7 @@ function renderShape(shape: Element): RenderedContent | undefined {
       : qualifiedPaintColor(shapeProperties);
   if (!fill) return undefined;
   const line = firstDescendant(shapeProperties, "ln");
+  if (!line && hasThemeInheritedStroke(shape)) return undefined;
   const stroke = line ? qualifiedPaintColor(line) : "none";
   if (!stroke || (preset === "line" && stroke === "none")) return undefined;
   const strokeWidth = Number(attr(line, "w") ?? 9525);
@@ -1106,6 +1114,15 @@ function renderSlide(
   const content: string[] = [];
   for (const child of tree ? childElements(tree) : []) {
     const name = localName(child);
+    if (name === "sp" && hasThemeInheritedStroke(child)) {
+      refusedCount += 1;
+      diagnostics.push({
+        code: "theme_inherited_stroke_unsupported",
+        severity: "warning",
+        message: `Slide ${index + 1} contains a theme-inherited shape outline that was not resolved; the outline was refused instead of silently dropped.`
+      });
+      continue;
+    }
     let rendered: RenderedContent | undefined;
     if (name === "sp") rendered = renderShape(child);
     else if (name === "pic")
