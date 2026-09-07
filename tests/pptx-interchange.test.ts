@@ -130,6 +130,15 @@ describe("bounded PPTX interchange", () => {
     expect(text(files, "ppt/slides/_rels/slide1.xml.rels")).toContain(
       'Target="../media/scene.png"'
     );
+    const presentationXml = text(files, "ppt/presentation.xml");
+    const masterXml = text(files, "ppt/slideMasters/slideMaster1.xml");
+    const masterId = Number(presentationXml.match(/<p:sldMasterId id="(\d+)"/)?.[1]);
+    const slideId = Number(presentationXml.match(/<p:sldId id="(\d+)"/)?.[1]);
+    const layoutId = Number(masterXml.match(/<p:sldLayoutId id="(\d+)"/)?.[1]);
+    expect(masterId).toBeGreaterThanOrEqual(2_147_483_648);
+    expect(slideId).toBeGreaterThanOrEqual(256);
+    expect(layoutId).toBeGreaterThanOrEqual(2_147_483_648);
+    expect(new Set([masterId, slideId, layoutId]).size).toBe(3);
     expect((themeXml.match(/<a:fillStyleLst>/g) ?? []).length).toBe(1);
     expect((themeXml.match(/<a:solidFill>/g) ?? []).length).toBeGreaterThanOrEqual(3);
     expect((themeXml.match(/<a:ln /g) ?? []).length).toBe(3);
@@ -399,6 +408,31 @@ describe("bounded PPTX interchange", () => {
         ])
       })
     });
+  });
+
+  it("accepts ordinary SYSTEM and PUBLIC text", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const files = await packageFiles(exported.blob);
+    files["ppt/slides/slide1.xml"] = bytes(
+      text(files, "ppt/slides/slide1.xml").replace(
+        "</p:spTree>",
+        '<p:sp><p:nvSpPr><p:cNvPr id="3" name="Text"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="1000" cy="1000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill></p:spPr><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr sz="1800"/><a:t>Follow the PUBLIC "safe" guide or SYSTEM "check" list</a:t></a:r></a:p></p:txBody></p:sp></p:spTree>'
+      )
+    );
+    const textDeck = fileLike(
+      zipSync(files),
+      "system-public-text.pptx",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    );
+    const parsed = parsePptxPackage(await blobBytes(textDeck));
+    expect(parsed.slides[0].svg).toContain("PUBLIC");
+    expect(parsed.slides[0].svg).toContain("SYSTEM");
   });
 
   it("refuses out-of-range physical export instead of silently scaling", async () => {
