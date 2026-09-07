@@ -72,6 +72,15 @@ describe("SVG sanitization", () => {
     expect(clean).not.toContain("example.org");
   });
 
+  it("preserves internal references inside embedded SVG image data URLs", () => {
+    const nested =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><defs><linearGradient id="grad"><stop stop-color="#fff"/></linearGradient></defs><rect width="10" height="10" fill="url(#grad)"/></svg>';
+    const embedded = `data:image/svg+xml;base64,${btoa(nested)}`;
+    const source = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><image href="${embedded}" width="10" height="10"/></svg>`;
+    const clean = sanitizeImportedSvg(source, "nested");
+    expect(clean).toContain(embedded);
+  });
+
   it("removes external references embedded in imported SVG styles", () => {
     const styled = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
       <style>.tracked { fill: url(https://example.org/paint.svg); }</style>

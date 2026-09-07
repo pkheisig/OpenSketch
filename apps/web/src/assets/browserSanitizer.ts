@@ -29,13 +29,23 @@ function isSafeEmbeddedImageDataUrl(value: string): boolean {
     const source = new TextDecoder().decode(
       Uint8Array.from(binary, (character) => character.charCodeAt(0))
     );
+    const tags = [...source.matchAll(/<(?:(?:[^"'<>]|"[^"]*"|'[^']*'))*>/g)]
+      .map(([tag]) => tag)
+      .join("\n");
+    const tagsWithoutQuotedValues = tags.replace(/"[^"]*"|'[^']*'/g, '""');
+    const hasUnsafeMarkup =
+      /<\s*(?:script|foreignObject|iframe|object|embed|animate|style)\b|\bon[a-z][\w:-]*\s*=/i.test(
+        tagsWithoutQuotedValues
+      );
+    const hasExternalAttribute =
+      /(?:^|[\s<])(?:href|xlink:href|src)\s*=\s*["']?\s*(?:https?:|\/\/|file:|javascript:|data:)/i.test(
+        tags
+      );
     return !(
-      /<!DOCTYPE\b|<!ENTITY\b|<\s*(?:script|foreignObject|iframe|object|embed|animate|style)\b/i.test(
-        source
-      ) ||
-      /\bon[a-z][\w:-]*\s*=|(?:href|src)\s*=\s*["']?\s*(?:https?:|file:|javascript:|data:)|url\s*\(/i.test(
-        source
-      )
+      /<!DOCTYPE\b|<!ENTITY\b/i.test(source) ||
+      hasUnsafeMarkup ||
+      hasExternalAttribute ||
+      /url\s*\(\s*["']?\s*(?:https?:|\/\/|file:|javascript:|data:)/i.test(source)
     );
   } catch {
     return false;
