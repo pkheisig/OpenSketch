@@ -620,11 +620,12 @@ function relationshipsFor(
 }
 
 function resolveTarget(basePart: string, target: string): string {
-  if (/^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(target) || target.startsWith("/")) {
+  if (/^(?:[a-z][a-z0-9+.-]*:|\/\/)/i.test(target)) {
     throw new InterchangeImportError(`The PPTX relationship target is external: ${target}.`, {
       code: "pptx_external_target"
     });
   }
+  if (target.startsWith("/")) return packagePath(target.slice(1));
   const baseSegments = basePart.split("/");
   baseSegments.pop();
   const result: string[] = [...baseSegments];
@@ -869,9 +870,9 @@ function transformFor(node: Element | undefined): SlideTransform | undefined {
   const width = Number(attr(ext, "cx"));
   const height = Number(attr(ext, "cy"));
   if (
-    ![x, y, width, height].every((value) => Number.isSafeInteger(value) && value >= 0) ||
-    width <= 0 ||
-    height <= 0
+    ![x, y, width, height].every((value) => Number.isSafeInteger(value)) ||
+    width < 0 ||
+    height < 0
   ) {
     return undefined;
   }
@@ -972,6 +973,13 @@ function renderShape(shape: Element): RenderedContent | undefined {
   const geometry = firstDescendant(shapeProperties, "prstGeom");
   const preset = attr(geometry, "prst") ?? "rect";
   if (!["rect", "roundRect", "ellipse", "line"].includes(preset)) return undefined;
+  if (
+    preset === "line"
+      ? transform.width === 0 && transform.height === 0
+      : transform.width === 0 || transform.height === 0
+  ) {
+    return undefined;
+  }
   const fill =
     preset === "line"
       ? (qualifiedPaintColor(shapeProperties) ?? "none")
@@ -1034,7 +1042,13 @@ function renderPicture(
 ): RenderedContent | undefined {
   const shapeProperties = firstDescendant(picture, "spPr");
   const transform = transformFor(shapeProperties);
-  if (!transform || firstDescendant(picture, "srcRect")) return undefined;
+  if (
+    !transform ||
+    transform.width <= 0 ||
+    transform.height <= 0 ||
+    firstDescendant(picture, "srcRect")
+  )
+    return undefined;
   const blip = firstDescendant(picture, "blip");
   const embedId = attr(blip, "r:embed") ?? attr(blip, "embed");
   if (!embedId) return undefined;
@@ -1701,8 +1715,9 @@ function coreProperties(title: string, description: string): string {
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/"><dc:title>${xml(title)}</dc:title><dc:description>${xml(description)}</dc:description><dc:creator>OpenSketch</dc:creator></cp:coreProperties>`;
 }
 
-function appProperties(): string {
-  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>OpenSketch</Application><PresentationFormat>On-screen Show (16:9)</PresentationFormat><Slides>1</Slides></Properties>`;
+function appProperties(widthEmu: number, heightEmu: number): string {
+  const presentationFormat = widthEmu * 9 === heightEmu * 16 ? "On-screen Show (16:9)" : "Custom";
+  return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"><Application>OpenSketch</Application><PresentationFormat>${presentationFormat}</PresentationFormat><Slides>1</Slides></Properties>`;
 }
 
 const PNG_SIGNATURE = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]);
@@ -1860,7 +1875,7 @@ export async function exportPptx(options: PptxExportOptions): Promise<PptxExport
     "[Content_Types].xml": new TextEncoder().encode(contentTypes()),
     "_rels/.rels": new TextEncoder().encode(packageRelationships()),
     "docProps/core.xml": new TextEncoder().encode(coreProperties(title, description)),
-    "docProps/app.xml": new TextEncoder().encode(appProperties()),
+    "docProps/app.xml": new TextEncoder().encode(appProperties(extent.widthEmu, extent.heightEmu)),
     "ppt/presentation.xml": new TextEncoder().encode(
       presentationXml(extent.widthEmu, extent.heightEmu)
     ),

@@ -394,6 +394,74 @@ describe("bounded PPTX interchange", () => {
     });
   });
 
+  it("accepts standard zero-extent lines and off-slide coordinates", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const files = await packageFiles(exported.blob);
+    files["ppt/slides/slide1.xml"] = bytes(
+      text(files, "ppt/slides/slide1.xml").replace(
+        "</p:spTree>",
+        '<p:sp><p:nvSpPr><p:cNvPr id="3" name="Horizontal line"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="-914400" y="0"/><a:ext cx="1828800" cy="0"/></a:xfrm><a:prstGeom prst="line"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:solidFill><a:srgbClr val="FF0000"/></a:solidFill></a:ln></p:spPr></p:sp></p:spTree>'
+      )
+    );
+    const lineFile = fileLike(
+      zipSync(files),
+      "line.pptx",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    );
+    const parsed = parsePptxPackage(await blobBytes(new Blob([await lineFile.arrayBuffer()])));
+    expect(parsed.slides[0].svg).toContain('<line x1="-914400" y1="0"');
+    expect(parsed.slides[0].refusedCount).toBe(0);
+    await expect(preparePptxImport(lineFile)).resolves.toMatchObject({
+      fidelity: { refusedCount: 0 }
+    });
+  });
+
+  it("resolves package-absolute internal relationship targets", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const files = await packageFiles(exported.blob);
+    files["ppt/slides/_rels/slide1.xml.rels"] = bytes(
+      text(files, "ppt/slides/_rels/slide1.xml.rels").replace(
+        "../slideLayouts/slideLayout1.xml",
+        "/ppt/slideLayouts/slideLayout1.xml"
+      )
+    );
+    const absoluteTarget = fileLike(
+      zipSync(files),
+      "absolute-target.pptx",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    );
+    await expect(preparePptxImport(absoluteTarget)).resolves.toMatchObject({
+      probe: { format: "pptx" },
+      slides: [{ index: 0 }]
+    });
+  });
+
+  it("labels non-16:9 exports as custom presentations", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const files = await packageFiles(exported.blob);
+    expect(text(files, "docProps/app.xml")).toContain(
+      "<PresentationFormat>Custom</PresentationFormat>"
+    );
+  });
+
   it("reports omitted slide, layout, and master appearance instead of fabricating content", async () => {
     const exported = await exportPptx({
       svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
