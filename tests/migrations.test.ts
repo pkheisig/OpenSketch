@@ -514,7 +514,7 @@ describe("project migrations", () => {
 
   it("accepts SVG text containing attribute-like prose", () => {
     const svg =
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><text>Only=yes and online=off</text></svg>';
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><text>Only=yes, online=off, url(https://example.org/figure.png)</text></svg>';
     expect(() =>
       migrateProject({
         ...project,

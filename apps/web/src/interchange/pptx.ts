@@ -34,6 +34,7 @@ const PPTX_MAX_DECOMPRESSED_BYTES = 100 * 1024 * 1024;
 const PPTX_MAX_ENTRY_BYTES = 25 * 1024 * 1024;
 const PPTX_MAX_ENTRIES = 4_096;
 const PPTX_MAX_RELATIONSHIPS = 4_096;
+const PPTX_MAX_RELATIONSHIP_VALUE_LENGTH = 512;
 const PPTX_MAX_SLIDES = 100;
 const PPTX_MAX_XML_BYTES = 4 * 1024 * 1024;
 const PPTX_MAX_XML_ELEMENTS = 250_000;
@@ -598,6 +599,17 @@ function relationshipsFor(
         {
           code: "pptx_relationship_malformed"
         }
+      );
+    }
+    if (
+      id.length > PPTX_MAX_RELATIONSHIP_VALUE_LENGTH ||
+      type.length > PPTX_MAX_RELATIONSHIP_VALUE_LENGTH ||
+      target.length > PPTX_MAX_RELATIONSHIP_VALUE_LENGTH ||
+      (targetMode?.length ?? 0) > PPTX_MAX_RELATIONSHIP_VALUE_LENGTH
+    ) {
+      throw new InterchangeImportError(
+        `The PPTX relationship part ${relsPath} contains an oversized relation value.`,
+        { code: "pptx_relationship_malformed" }
       );
     }
     if (ids.has(id)) {

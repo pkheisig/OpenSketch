@@ -408,6 +408,22 @@ describe("bounded PPTX interchange", () => {
         ])
       })
     });
+
+    const oversizedIdFiles = await packageFiles(exported.blob);
+    oversizedIdFiles["ppt/slides/_rels/slide1.xml.rels"] = bytes(
+      text(oversizedIdFiles, "ppt/slides/_rels/slide1.xml.rels").replace(
+        'Id="rId1"',
+        `Id="${"r".repeat(513)}"`
+      )
+    );
+    const oversizedId = fileLike(
+      zipSync(oversizedIdFiles),
+      "oversized-relationship-id.pptx",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    );
+    await expect(preparePptxImport(oversizedId)).rejects.toMatchObject({
+      code: "pptx_relationship_malformed"
+    });
   });
 
   it("accepts ordinary SYSTEM and PUBLIC text", async () => {
