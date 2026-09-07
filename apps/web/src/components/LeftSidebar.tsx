@@ -46,6 +46,7 @@ import { interchangeFileAccept } from "@/interchange/registry";
 import type { PptxRenderedSlide } from "@/interchange/pptx";
 import { PPTX_MAX_PACKAGE_BYTES } from "@/interchange/pptxShared";
 import { PptxSlideChooser } from "@/components/PptxSlideChooser";
+import { fidelityBadge, fidelityNotice, fidelityTooltip } from "@/interchange/fidelityNotice";
 import { MotionCollapse } from "@/components/MotionCollapse";
 import { MotionPresence } from "@/components/MotionPresence";
 import { useEditorFields } from "@/editor/editorHooks";
@@ -1848,6 +1849,7 @@ function ImportsPanel() {
   const editor = useEditorFields(["addImportedMedia", "importMedia"]);
   const input = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
+  const [fidelityNoticeText, setFidelityNoticeText] = useState("");
   const [imports, setImports] = useState<ImportedMediaLibraryRecord[]>([]);
   const [pptxChooser, setPptxChooser] = useState<
     { file: File; slides: readonly PptxRenderedSlide[] } | undefined
@@ -1884,13 +1886,15 @@ function ImportsPanel() {
           const file = event.target.files?.[0];
           if (file) {
             setError("");
+            setFidelityNoticeText("");
             const isPptx =
               file.name.toLowerCase().endsWith(".pptx") ||
               file.type ===
                 "application/vnd.openxmlformats-officedocument.presentationml.presentation";
             void (async () => {
               if (!isPptx) {
-                await editor.importMedia(file);
+                const result = await editor.importMedia(file);
+                setFidelityNoticeText(fidelityNotice(result.fidelity) ?? "");
                 return;
               }
               if (file.size > PPTX_MAX_PACKAGE_BYTES) {
@@ -1902,7 +1906,8 @@ function ImportsPanel() {
                 setPptxChooser({ file, slides: parsed.slides });
                 return;
               }
-              await editor.importMedia(file, undefined, { pptxSlideIndices: [0] });
+              const result = await editor.importMedia(file, undefined, { pptxSlideIndices: [0] });
+              setFidelityNoticeText(fidelityNotice(result.fidelity) ?? "");
             })().catch((reason) => setError(userErrorMessage(reason)));
           }
           event.currentTarget.value = "";
@@ -1918,6 +1923,7 @@ function ImportsPanel() {
             setPptxChooser(undefined);
             void editor
               .importMedia(choice.file, undefined, { pptxSlideIndices: slideIndices })
+              .then((result) => setFidelityNoticeText(fidelityNotice(result.fidelity) ?? ""))
               .catch((reason) => setError(userErrorMessage(reason)));
           }}
         />
@@ -1925,6 +1931,11 @@ function ImportsPanel() {
       {error ? (
         <p className="panel-error" role="alert">
           {error}
+        </p>
+      ) : null}
+      {fidelityNoticeText ? (
+        <p className="import-fidelity-notice" role="status">
+          {fidelityNoticeText}
         </p>
       ) : null}
       {imports.length > 0 ? (
@@ -1957,6 +1968,11 @@ function ImportsPanel() {
                       ? "JPEG"
                       : media.mimeType.replace("image/", "").toUpperCase()}
                 </small>
+                {fidelityBadge(media.fidelity) ? (
+                  <small className="import-fidelity-badge" title={fidelityTooltip(media.fidelity)}>
+                    {fidelityBadge(media.fidelity)}
+                  </small>
+                ) : null}
               </div>
             </article>
           ))}

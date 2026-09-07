@@ -104,6 +104,26 @@ describe("portable OpenSketch projects", () => {
             mimeType: "image/tiff",
             byteLength: 128,
             sha256: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+          },
+          fidelity: {
+            format: "pptx",
+            status: "appearance-snapshot",
+            sourceName: "pixel-source.tiff",
+            sourceMimeType: "image/tiff",
+            sourceBytes: 128,
+            checksum: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef",
+            dimensions: { width: 1920, height: 1080 },
+            mappedCount: 0,
+            flattenedCount: 1,
+            refusedCount: 0,
+            substitutions: ["rendered as a bounded snapshot"],
+            diagnostics: [
+              {
+                code: "font_substitution",
+                severity: "warning",
+                message: "A fallback font was used."
+              }
+            ]
           }
         }
       ]

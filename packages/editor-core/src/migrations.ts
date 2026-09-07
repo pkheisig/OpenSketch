@@ -16,6 +16,7 @@ import {
   isProjectKind,
   type PortableProject
 } from "./types";
+import type { InterchangeFidelityReport } from "./interchange";
 import { repairProjectIdentity } from "./identity";
 import {
   decodeImageDataUrlText,
@@ -444,6 +445,28 @@ const CONNECTOR_PATH_SHAPES = new Set<ConnectorPathShape>([
   "bracket-round",
   "bracket-curly"
 ]);
+
+const FIDELITY_FORMATS = new Set([
+  "svg",
+  "png",
+  "jpeg",
+  "webp",
+  "tiff",
+  "bmp",
+  "gif",
+  "avif",
+  "heif",
+  "pptx",
+  "pdf",
+  "unknown"
+]);
+const FIDELITY_STATUSES = new Set([
+  "native-editable",
+  "appearance-snapshot",
+  "editable-with-losses",
+  "unsupported/refused"
+]);
+const FIDELITY_DIAGNOSTIC_SEVERITIES = new Set(["info", "warning", "error"]);
 
 type JsonRecord = Record<string, unknown>;
 
@@ -1799,6 +1822,144 @@ function validateCanvas(value: unknown): PortableProject["canvas"] {
   return canvas;
 }
 
+function validateFidelityReport(value: unknown, path: string): InterchangeFidelityReport {
+  if (!isRecord(value)) fail(path, "is invalid");
+  assertKnownKeys(
+    value,
+    path,
+    new Set([
+      "format",
+      "status",
+      "sourceName",
+      "sourceMimeType",
+      "sourceBytes",
+      "checksum",
+      "dimensions",
+      "physicalResolution",
+      "mappedCount",
+      "flattenedCount",
+      "refusedCount",
+      "substitutions",
+      "diagnostics"
+    ])
+  );
+  assertNonEmptyString(value.format, `${path}.format`, 64);
+  if (!FIDELITY_FORMATS.has(value.format)) fail(`${path}.format`, "is invalid");
+  assertNonEmptyString(value.status, `${path}.status`, 64);
+  if (!FIDELITY_STATUSES.has(value.status)) fail(`${path}.status`, "is invalid");
+  assertNonEmptyString(
+    value.sourceName,
+    `${path}.sourceName`,
+    PORTABLE_PROJECT_LIMITS.maxObjectNameLength
+  );
+  assertNonEmptyString(value.sourceMimeType, `${path}.sourceMimeType`, 128);
+  assertFiniteNumber(value.sourceBytes, `${path}.sourceBytes`, {
+    min: 0,
+    max: PORTABLE_PROJECT_LIMITS.maxDataUrlBytes,
+    integer: true
+  });
+
+  let checksum: string | undefined;
+  if (value.checksum !== undefined) {
+    assertString(value.checksum, `${path}.checksum`, { maxLength: 64, nonEmpty: true });
+    if (!/^[0-9a-f]{64}$/i.test(value.checksum)) fail(`${path}.checksum`, "is invalid");
+    checksum = value.checksum.toLowerCase();
+  }
+
+  let dimensions: InterchangeFidelityReport["dimensions"];
+  if (value.dimensions !== undefined) {
+    const dimensionsPath = `${path}.dimensions`;
+    if (!isRecord(value.dimensions)) fail(dimensionsPath, "is invalid");
+    assertKnownKeys(value.dimensions, dimensionsPath, new Set(["width", "height"]));
+    assertFiniteNumber(value.dimensions.width, `${dimensionsPath}.width`, {
+      min: 0,
+      max: Number.MAX_SAFE_INTEGER
+    });
+    assertFiniteNumber(value.dimensions.height, `${dimensionsPath}.height`, {
+      min: 0,
+      max: Number.MAX_SAFE_INTEGER
+    });
+    dimensions = { width: value.dimensions.width, height: value.dimensions.height };
+  }
+
+  let physicalResolution: InterchangeFidelityReport["physicalResolution"];
+  if (value.physicalResolution !== undefined) {
+    const resolutionPath = `${path}.physicalResolution`;
+    if (!isRecord(value.physicalResolution)) fail(resolutionPath, "is invalid");
+    assertKnownKeys(value.physicalResolution, resolutionPath, new Set(["x", "y", "unit"]));
+    assertFiniteNumber(value.physicalResolution.x, `${resolutionPath}.x`, {
+      min: 0,
+      max: PORTABLE_PROJECT_LIMITS.maxDpi
+    });
+    assertFiniteNumber(value.physicalResolution.y, `${resolutionPath}.y`, {
+      min: 0,
+      max: PORTABLE_PROJECT_LIMITS.maxDpi
+    });
+    assertNonEmptyString(value.physicalResolution.unit, `${resolutionPath}.unit`, 8);
+    if (!new Set(["dpi", "dpcm", "unknown"]).has(value.physicalResolution.unit)) {
+      fail(`${resolutionPath}.unit`, "is invalid");
+    }
+    physicalResolution = {
+      x: value.physicalResolution.x,
+      y: value.physicalResolution.y,
+      unit: value.physicalResolution.unit as "dpi" | "dpcm" | "unknown"
+    };
+  }
+
+  const count = (key: "mappedCount" | "flattenedCount" | "refusedCount"): number => {
+    assertFiniteNumber(value[key], `${path}.${key}`, {
+      min: 0,
+      max: PORTABLE_PROJECT_LIMITS.maxArrayLength,
+      integer: true
+    });
+    return value[key];
+  };
+  assertArray(value.substitutions, `${path}.substitutions`, 4_096);
+  const substitutions = value.substitutions.map((substitution, index) => {
+    assertString(substitution, `${path}.substitutions[${index}]`, {
+      maxLength: PORTABLE_PROJECT_LIMITS.maxStringLength
+    });
+    return substitution;
+  });
+  assertArray(value.diagnostics, `${path}.diagnostics`, 4_096);
+  const diagnostics = value.diagnostics.map((diagnostic, index) => {
+    const diagnosticPath = `${path}.diagnostics[${index}]`;
+    if (!isRecord(diagnostic)) fail(diagnosticPath, "is invalid");
+    assertKnownKeys(diagnostic, diagnosticPath, new Set(["code", "severity", "message"]));
+    assertNonEmptyString(diagnostic.code, `${diagnosticPath}.code`, 128);
+    assertNonEmptyString(diagnostic.severity, `${diagnosticPath}.severity`, 16);
+    if (!FIDELITY_DIAGNOSTIC_SEVERITIES.has(diagnostic.severity)) {
+      fail(`${diagnosticPath}.severity`, "is invalid");
+    }
+    assertNonEmptyString(
+      diagnostic.message,
+      `${diagnosticPath}.message`,
+      PORTABLE_PROJECT_LIMITS.maxStringLength
+    );
+    return {
+      code: diagnostic.code,
+      severity: diagnostic.severity as "info" | "warning" | "error",
+      message: diagnostic.message
+    };
+  });
+
+  return {
+    format: value.format as InterchangeFidelityReport["format"],
+    status: value.status as InterchangeFidelityReport["status"],
+    sourceName: value.sourceName,
+    sourceMimeType: value.sourceMimeType,
+    sourceBytes: value.sourceBytes,
+    ...(checksum ? { checksum } : {}),
+    ...(dimensions ? { dimensions } : {}),
+    ...(physicalResolution ? { physicalResolution } : {}),
+    mappedCount: count("mappedCount"),
+    flattenedCount: count("flattenedCount"),
+    refusedCount: count("refusedCount"),
+    substitutions,
+    diagnostics
+  };
+}
+
 function validateUploads(value: unknown, context: ValidationContext): ImportedMediaRecord[] {
   if (value === undefined) return [];
   assertArray(value, "imported media", PORTABLE_PROJECT_LIMITS.maxUploads);
@@ -1806,7 +1967,11 @@ function validateUploads(value: unknown, context: ValidationContext): ImportedMe
   return value.map((media, index) => {
     const path = `imported media[${index}]`;
     if (!isRecord(media)) fail(path, "is invalid");
-    assertKnownKeys(media, path, new Set(["id", "name", "mimeType", "dataUrl", "sourceResource"]));
+    assertKnownKeys(
+      media,
+      path,
+      new Set(["id", "name", "mimeType", "dataUrl", "sourceResource", "fidelity"])
+    );
     assertNonEmptyString(media.id, `${path}.id`, PORTABLE_PROJECT_LIMITS.maxObjectIdLength);
     if (ids.has(media.id)) fail(`${path}.id`, "is duplicated");
     ids.add(media.id);
@@ -1883,12 +2048,17 @@ function validateUploads(value: unknown, context: ValidationContext): ImportedMe
           : { slideStableId: media.sourceResource.slideStableId })
       };
     }
+    const fidelity =
+      media.fidelity === undefined
+        ? undefined
+        : validateFidelityReport(media.fidelity, `${path}.fidelity`);
     return {
       id: media.id,
       name: media.name,
       mimeType,
       dataUrl: media.dataUrl,
-      ...(sourceResource ? { sourceResource } : {})
+      ...(sourceResource ? { sourceResource } : {}),
+      ...(fidelity ? { fidelity } : {})
     };
   });
 }

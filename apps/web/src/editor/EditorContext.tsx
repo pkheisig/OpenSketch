@@ -3847,7 +3847,8 @@ export function EditorProvider({
             name: stored.name,
             mimeType: stored.mimeType,
             dataUrl: stored.dataUrl,
-            ...(stored.sourceResource ? { sourceResource: stored.sourceResource } : {})
+            ...(stored.sourceResource ? { sourceResource: stored.sourceResource } : {}),
+            ...(stored.fidelity ? { fidelity: stored.fidelity } : {})
           }
         ]
       };
@@ -4018,6 +4019,7 @@ export function EditorProvider({
               name: slideSource.name,
               mimeType: inferredMimeType,
               dataUrl,
+              fidelity: prepared.fidelity,
               ...(prepared.source.sha256
                 ? {
                     sourceResource: {

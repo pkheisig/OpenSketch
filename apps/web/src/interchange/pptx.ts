@@ -665,7 +665,7 @@ function hasVisibleShapeTreeContent(document: Document): boolean {
   const tree = firstDescendant(document.documentElement, "spTree");
   return Boolean(
     tree &&
-      childElements(tree).some((child) => !["nvGrpSpPr", "grpSpPr"].includes(localName(child)))
+    childElements(tree).some((child) => !["nvGrpSpPr", "grpSpPr"].includes(localName(child)))
   );
 }
 
@@ -673,7 +673,7 @@ function hasBackgroundContent(document: Document): boolean {
   const cSld = firstDescendant(document.documentElement, "cSld");
   return Boolean(
     childElements(document.documentElement, "bg").length > 0 ||
-      (cSld && childElements(cSld, "bg").length > 0)
+    (cSld && childElements(cSld, "bg").length > 0)
   );
 }
 
@@ -681,19 +681,21 @@ function inheritedSlideAppearanceDiagnostics(
   slidePath: string,
   slideRelations: readonly PackageRelationship[],
   entries: Record<string, Uint8Array>,
-  relationPart: (path: string) => { relations: PackageRelationship[]; diagnostics: InterchangeDiagnostic[] }
+  relationPart: (path: string) => {
+    relations: PackageRelationship[];
+    diagnostics: InterchangeDiagnostic[];
+  }
 ): InterchangeDiagnostic[] {
   const diagnostics: InterchangeDiagnostic[] = [];
-  const layoutRelation = slideRelations.find((relation) =>
-    relation.type.endsWith("/slideLayout")
-  );
+  const layoutRelation = slideRelations.find((relation) => relation.type.endsWith("/slideLayout"));
   if (!layoutRelation) return diagnostics;
   const layoutPath = relationTarget(slideRelations, layoutRelation.id, slidePath);
   if (!layoutPath || !entries[layoutPath]) {
     diagnostics.push({
       code: "inherited_slide_content_unavailable",
       severity: "warning",
-      message: "The slide layout was unavailable, so inherited slide appearance could not be rendered."
+      message:
+        "The slide layout was unavailable, so inherited slide appearance could not be rendered."
     });
     return diagnostics;
   }
@@ -708,16 +710,15 @@ function inheritedSlideAppearanceDiagnostics(
     });
   }
   const layoutRelations = relationPart(relationshipsPath(layoutPath)).relations;
-  const masterRelation = layoutRelations.find((relation) =>
-    relation.type.endsWith("/slideMaster")
-  );
+  const masterRelation = layoutRelations.find((relation) => relation.type.endsWith("/slideMaster"));
   if (!masterRelation) return diagnostics;
   const masterPath = relationTarget(layoutRelations, masterRelation.id, layoutPath);
   if (!masterPath || !entries[masterPath]) {
     diagnostics.push({
       code: "inherited_slide_content_unavailable",
       severity: "warning",
-      message: "The slide master was unavailable, so inherited slide appearance could not be rendered."
+      message:
+        "The slide master was unavailable, so inherited slide appearance could not be rendered."
     });
     return diagnostics;
   }
@@ -978,7 +979,7 @@ function renderShape(shape: Element): RenderedContent | undefined {
   if (!fill) return undefined;
   const line = firstDescendant(shapeProperties, "ln");
   const stroke = line ? qualifiedPaintColor(line) : "none";
-  if (!stroke) return undefined;
+  if (!stroke || (preset === "line" && stroke === "none")) return undefined;
   const strokeWidth = Number(attr(line, "w") ?? 9525);
   if (!Number.isFinite(strokeWidth) || strokeWidth < 0) return undefined;
   const rotation = transformAttribute(transform);
@@ -986,7 +987,7 @@ function renderShape(shape: Element): RenderedContent | undefined {
   if (preset === "ellipse") {
     svg = `<ellipse cx="${transform.x + transform.width / 2}" cy="${transform.y + transform.height / 2}" rx="${transform.width / 2}" ry="${transform.height / 2}" fill="${fill}" stroke="${stroke}" stroke-width="${Math.max(1, strokeWidth)}"${rotation} />`;
   } else if (preset === "line") {
-    svg = `<line x1="${transform.x}" y1="${transform.y}" x2="${transform.x + transform.width}" y2="${transform.y + transform.height}" stroke="${stroke === "none" ? "#1f2937" : stroke}" stroke-width="${Math.max(1, strokeWidth)}"${rotation} />`;
+    svg = `<line x1="${transform.x}" y1="${transform.y}" x2="${transform.x + transform.width}" y2="${transform.y + transform.height}" stroke="${stroke}" stroke-width="${Math.max(1, strokeWidth)}"${rotation} />`;
   } else {
     const radius = preset === "roundRect" ? Math.min(transform.width, transform.height) * 0.08 : 0;
     svg = `<rect x="${transform.x}" y="${transform.y}" width="${transform.width}" height="${transform.height}" rx="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="${Math.max(1, strokeWidth)}"${rotation} />`;
@@ -1082,7 +1083,8 @@ function renderSlide(
     const name = localName(child);
     let rendered: RenderedContent | undefined;
     if (name === "sp") rendered = renderShape(child);
-    else if (name === "pic") rendered = renderPicture(child, relations, slidePath, entries, mediaCache);
+    else if (name === "pic")
+      rendered = renderPicture(child, relations, slidePath, entries, mediaCache);
     if (rendered) {
       content.push(rendered.svg);
       mappedCount += rendered.mapped;
@@ -1148,10 +1150,7 @@ function parseContentTypes(entries: Record<string, Uint8Array>): Document {
   const macroType = Array.from(document.getElementsByTagName("*")).some((node) =>
     /macroEnabled|vbaProject/i.test(attr(node, "ContentType") ?? "")
   );
-  if (
-    macroType ||
-    Object.keys(entries).some((path) => /(?:^|\/)vbaproject\.bin$/i.test(path))
-  ) {
+  if (macroType || Object.keys(entries).some((path) => /(?:^|\/)vbaproject\.bin$/i.test(path))) {
     throw new InterchangeImportError(
       "Macro-enabled PPTX content is refused; executable VBA parts are never imported.",
       { code: "pptx_macro_refused" }

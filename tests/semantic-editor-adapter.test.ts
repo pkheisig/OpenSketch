@@ -9,6 +9,7 @@ import { describe, expect, it, vi } from "vitest";
 import type { InterchangeFidelityReport } from "@workspace/editor-core";
 import { DEFAULT_CREATION_DEFAULTS } from "../apps/web/src/editor/creation";
 import { createSemanticEditorAdapter } from "../apps/web/src/semantic/semanticEditorAdapter";
+import { exportPptx } from "../apps/web/src/interchange/pptx";
 import { assetManifest } from "../apps/web/src/assets/manifest";
 import {
   createLayoutDocument,
@@ -148,11 +149,95 @@ function makeAdapter(
     setLayoutState,
     removeLayoutReferences,
     applyFrame,
-    refreshConnectors
+    refreshConnectors,
+    importPptx
   });
 }
 
+async function pptxSourceBase64(): Promise<string> {
+  const exported = await exportPptx({
+    svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+    width: 1000,
+    height: 1000,
+    dpi: 100,
+    rasterFallback: new Blob(
+      [
+        Uint8Array.from(
+          atob(
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="
+          ),
+          (character) => character.charCodeAt(0)
+        )
+      ],
+      { type: "image/png" }
+    )
+  });
+  const bytes = await new Promise<Uint8Array>((resolve, reject) => {
+    if (typeof exported.blob.arrayBuffer === "function") {
+      void exported.blob.arrayBuffer().then((value) => resolve(new Uint8Array(value)), reject);
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => resolve(new Uint8Array(reader.result as ArrayBuffer));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsArrayBuffer(exported.blob);
+  });
+  let binary = "";
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary);
+}
+
 describe("semantic editor adapter", () => {
+  it("probes and imports PPTX with explicit slide selection", async () => {
+    const sourceBase64 = await pptxSourceBase64();
+    const adapter = makeAdapter(makeCanvas());
+
+    const probe = await adapter.execute("probe_pptx", {
+      sourceName: "fixture.pptx",
+      sourceBase64
+    });
+    expect(probe.data).toMatchObject({
+      format: "pptx",
+      widthEmu: expect.any(Number),
+      heightEmu: expect.any(Number),
+      slides: [expect.objectContaining({ index: 0, flattenedCount: expect.any(Number) })]
+    });
+
+    const imported = await adapter.execute("import_pptx", {
+      sourceName: "fixture.pptx",
+      sourceBase64,
+      slideIndices: [0, 1]
+    });
+    expect(imported.data).toMatchObject({
+      format: "pptx",
+      importedSlides: 2,
+      fidelity: expect.objectContaining({ format: "pptx" })
+    });
+    expect(adapter.importPptx).toHaveBeenCalledWith(
+      expect.any(Uint8Array),
+      "fixture.pptx",
+      [0, 1],
+      undefined,
+      {}
+    );
+  });
+
+  it("rejects invalid PPTX semantic input before decoding or importing", async () => {
+    const adapter = makeAdapter(makeCanvas());
+    const input = { sourceName: "fixture.pptx", sourceBase64: "not-needed" };
+
+    await expect(adapter.execute("probe_pptx", { ...input, sourceName: "" })).rejects.toMatchObject(
+      {
+        code: "INVALID_INPUT"
+      }
+    );
+    for (const slideIndices of [[], [0, 0], [-1], [100], [1.5]]) {
+      await expect(
+        adapter.execute("import_pptx", { ...input, slideIndices })
+      ).rejects.toMatchObject({ code: "INVALID_INPUT" });
+    }
+  });
+
   it("persists, configures, edits, and reflows layout frames through semantic commands", async () => {
     const first = new Rect({ width: 20, height: 20, left: 10, top: 10 });
     first.objectId = "first";

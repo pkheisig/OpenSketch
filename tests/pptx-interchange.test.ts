@@ -53,7 +53,8 @@ function readU32At(value: Uint8Array, offset: number): number {
     (value[offset] |
       (value[offset + 1] << 8) |
       (value[offset + 2] << 16) |
-      (value[offset + 3] * 0x1000000)) >>> 0
+      (value[offset + 3] * 0x1000000)) >>>
+    0
   );
 }
 
@@ -282,10 +283,7 @@ describe("bounded PPTX interchange", () => {
         `<p:sldIdLst>${slideIds}</p:sldIdLst>`
       )
     );
-    expectPptxError(
-      () => parsePptxPackage(zipSync(tooManySlides)),
-      "pptx_slide_limit"
-    );
+    expectPptxError(() => parsePptxPackage(zipSync(tooManySlides)), "pptx_slide_limit");
   });
 
   it("rejects DTD/entity declarations and reports external media without fetching it", async () => {
@@ -362,6 +360,35 @@ describe("bounded PPTX interchange", () => {
       "application/vnd.openxmlformats-officedocument.presentationml.presentation"
     );
     await expect(preparePptxImport(unsupported)).rejects.toMatchObject({
+      code: "pptx_slide_refused",
+      slideIndices: [0]
+    });
+  });
+
+  it("refuses line shapes without a resolved stroke instead of fabricating one", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const files = await packageFiles(exported.blob);
+    files["ppt/slides/slide1.xml"] = bytes(
+      text(files, "ppt/slides/slide1.xml").replace(
+        "</p:spTree>",
+        '<p:sp><p:nvSpPr><p:cNvPr id="3" name="Invisible line"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="1000" cy="1000"/></a:xfrm><a:prstGeom prst="line"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:noFill/></a:ln></p:spPr></p:sp></p:spTree>'
+      )
+    );
+    const lineOnly = fileLike(
+      zipSync(files),
+      "line-without-stroke.pptx",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    );
+    const parsed = parsePptxPackage(await blobBytes(new Blob([await lineOnly.arrayBuffer()])));
+    expect(parsed.slides[0].svg).not.toContain("<line ");
+    expect(parsed.slides[0].refusedCount).toBeGreaterThan(0);
+    await expect(preparePptxImport(lineOnly)).rejects.toMatchObject({
       code: "pptx_slide_refused",
       slideIndices: [0]
     });
@@ -482,8 +509,9 @@ describe("bounded PPTX interchange", () => {
         ])
       );
       expect(
-        capped.report.diagnostics.find((diagnostic) => diagnostic.code === "pptx_raster_resolution_capped")
-          ?.message
+        capped.report.diagnostics.find(
+          (diagnostic) => diagnostic.code === "pptx_raster_resolution_capped"
+        )?.message
       ).toContain("200.0 effective dpi");
     } finally {
       getContext.mockRestore();

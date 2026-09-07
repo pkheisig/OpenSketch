@@ -298,7 +298,13 @@ export async function saveImportedMediaWithStatus(
   const contentHash = await importedMediaHash(media);
   const matching = await database.imports.where("contentHash").equals(contentHash).first();
   const record: ImportedMediaLibraryRecord = matching
-    ? { ...matching, name: media.name, updatedAt: timestamp }
+    ? {
+        ...matching,
+        name: media.name,
+        updatedAt: timestamp,
+        ...(media.sourceResource ? { sourceResource: media.sourceResource } : {}),
+        ...(media.fidelity ? { fidelity: media.fidelity } : {})
+      }
     : {
         ...media,
         createdAt: timestamp,

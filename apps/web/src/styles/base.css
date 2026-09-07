@@ -193,6 +193,21 @@ a:focus-visible {
   animation: feedback-in var(--motion-ui) both;
 }
 
+.import-fidelity-notice {
+  margin: 0;
+  padding: 7px 9px;
+  border: 1px solid #d8b56e;
+  border-radius: 5px;
+  color: #76531c;
+  background: #fff8e6;
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.import-fidelity-badge {
+  color: #8a641f !important;
+}
+
 .creation-default-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

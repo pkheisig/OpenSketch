@@ -1,4 +1,5 @@
 import type { LayoutDocument } from "./layout";
+import type { InterchangeFidelityReport } from "./interchange";
 
 export const OpenSketch_FORMAT_VERSION = 3;
 
@@ -113,6 +114,8 @@ export interface ImportedMediaRecord {
   dataUrl: string;
   /** Source identity retained without embedding a second copy of the source bytes. */
   sourceResource?: ImportedMediaSourceResource;
+  /** Bounded import diagnostics retained with the rendered media snapshot. */
+  fidelity?: InterchangeFidelityReport;
 }
 
 export interface PortableProject {

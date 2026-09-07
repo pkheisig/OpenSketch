@@ -60,6 +60,7 @@ import {
 } from "@workspace/editor-core";
 import { ColorPalettePicker } from "@/components/ColorPalettePicker";
 import { CanvasRulers } from "@/components/CanvasRulers";
+import { fidelityNotice } from "@/interchange/fidelityNotice";
 import { MotionPresence } from "@/components/MotionPresence";
 import { UiSelect } from "@/components/UiSelect";
 import { useEditorFields } from "@/editor/editorHooks";
@@ -765,7 +766,15 @@ export function CanvasWorkspace() {
             result.reason instanceof Error ? result.reason.message : String(result.reason);
           return [`${files[index]?.name ?? "Dropped file"}: ${message}`];
         });
+        const notices = [
+          ...new Set(
+            results.flatMap((result) =>
+              result.status === "fulfilled" ? [fidelityNotice(result.value.fidelity)] : []
+            )
+          )
+        ].filter((notice): notice is string => Boolean(notice));
         if (failures.length > 0) setDropError(failures.join(" "));
+        else if (notices.length > 0) setDropError(notices.join(" "));
       });
     }
   };

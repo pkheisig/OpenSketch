@@ -11,6 +11,7 @@ import {
 import { AlertTriangle, X } from "lucide-react";
 import type {
   ImportedMediaRecord,
+  InterchangeFidelityReport,
   ProjectFolderRecord,
   ProjectKind,
   ProjectRecord,
@@ -35,6 +36,7 @@ import {
   svgDataUrlForPptx,
   svgForPptxCanvas
 } from "@/interchange/pptxShared";
+import { fidelityNotice } from "@/interchange/fidelityNotice";
 
 const EditorStudio = lazy(() =>
   import("@/components/EditorStudio").then((module) => ({ default: module.EditorStudio }))
@@ -73,7 +75,8 @@ function projectFromPptxSlide(
   },
   widthEmu: number,
   heightEmu: number,
-  checksum?: string
+  checksum?: string,
+  fidelity?: InterchangeFidelityReport
 ): ProjectRecord {
   const dpi = 96;
   const width = (widthEmu / PPTX_EMU_PER_INCH) * dpi;
@@ -87,6 +90,7 @@ function projectFromPptxSlide(
     name: `${file.name} — slide ${slide.index + 1}`,
     mimeType: "image/svg+xml",
     dataUrl,
+    ...(fidelity ? { fidelity } : {}),
     ...(checksum
       ? {
           sourceResource: {
@@ -501,7 +505,8 @@ export function App({
             slide,
             dimensions.width,
             dimensions.height,
-            prepared.source.sha256
+            prepared.source.sha256,
+            prepared.fidelity
           );
           if (folder) project.folderId = folder.id;
           await services.projects.save(project);
@@ -509,6 +514,8 @@ export function App({
         }
         await refresh();
         if (!openProject(created[0])) throw new Error("The imported PPTX project could not open.");
+        const notice = fidelityNotice(prepared.fidelity);
+        if (notice) setError(notice);
       } catch (reason) {
         await Promise.all(
           created.map((project) => services.projects.delete(project.id, project.revision))
