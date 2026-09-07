@@ -4072,11 +4072,19 @@ export function EditorProvider({
                   }
                 : {})
             };
-            const pointForSlide =
-              slideSources.length > 1 && point
+            const placementOrigin =
+              point ??
+              (canvas
                 ? {
-                    x: point.x + Math.min(slideIndex, 8) * 24,
-                    y: point.y + Math.min(slideIndex, 8) * 24
+                    x: (canvas.vptCoords.tl.x + canvas.vptCoords.br.x) / 2,
+                    y: (canvas.vptCoords.tl.y + canvas.vptCoords.br.y) / 2
+                  }
+                : undefined);
+            const pointForSlide =
+              slideSources.length > 1 && placementOrigin
+                ? {
+                    x: placementOrigin.x + Math.min(slideIndex, 8) * 24,
+                    y: placementOrigin.y + Math.min(slideIndex, 8) * 24
                   }
                 : point;
             pendingMedia.push({ media, point: pointForSlide, knownInspection: rasterInspection });

@@ -500,6 +500,27 @@ describe("bounded PPTX interchange", () => {
     });
   });
 
+  it("preserves standard and adjusted roundRect geometry", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const files = await packageFiles(exported.blob);
+    files["ppt/slides/slide1.xml"] = bytes(
+      text(files, "ppt/slides/slide1.xml").replace(
+        "</p:spTree>",
+        '<p:sp><p:nvSpPr><p:cNvPr id="3" name="Default roundRect"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="1000" cy="1000"/></a:xfrm><a:prstGeom prst="roundRect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="FF0000"/></a:solidFill></p:spPr></p:sp><p:sp><p:nvSpPr><p:cNvPr id="4" name="Adjusted roundRect"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="1000" y="0"/><a:ext cx="1000" cy="1000"/></a:xfrm><a:prstGeom prst="roundRect"><a:avLst><a:gd name="adj" fmla="val 25000"/></a:avLst></a:prstGeom><a:solidFill><a:srgbClr val="00FF00"/></a:solidFill></p:spPr></p:sp></p:spTree>'
+      )
+    );
+    const parsed = parsePptxPackage(zipSync(files));
+    expect(parsed.slides[0].svg).toContain('rx="166.67"');
+    expect(parsed.slides[0].svg).toContain('rx="250"');
+    expect(parsed.slides[0].mappedCount).toBe(3);
+  });
+
   it("refuses line shapes without a resolved stroke instead of fabricating one", async () => {
     const exported = await exportPptx({
       svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',

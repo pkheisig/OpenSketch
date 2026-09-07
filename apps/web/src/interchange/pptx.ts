@@ -1000,6 +1000,20 @@ type RenderedContent = {
   diagnostics?: InterchangeDiagnostic[];
 };
 
+function roundRectAdjustmentValue(geometry: Element): number | undefined {
+  const avLst = childElements(geometry, "avLst")[0];
+  const adjustment = avLst
+    ? childElements(avLst, "gd").find((candidate) => attr(candidate, "name") === "adj")
+    : undefined;
+  if (!adjustment) return 16667;
+  const formula = attr(adjustment, "fmla")?.trim();
+  const match = formula ? /^val\s+([+-]?(?:\d+(?:\.\d*)?|\.\d+))$/i.exec(formula) : null;
+  if (!match) return undefined;
+  const value = Number(match[1]);
+  if (!Number.isFinite(value)) return undefined;
+  return Math.min(50000, Math.max(0, value));
+}
+
 function renderShape(shape: Element): RenderedContent | undefined {
   const shapeProperties = firstDescendant(shape, "spPr");
   const transform = transformFor(shapeProperties);
@@ -1016,6 +1030,9 @@ function renderShape(shape: Element): RenderedContent | undefined {
   ) {
     return undefined;
   }
+  const roundRectAdjustment =
+    preset === "roundRect" ? roundRectAdjustmentValue(geometry) : undefined;
+  if (preset === "roundRect" && roundRectAdjustment === undefined) return undefined;
   const fill =
     preset === "line"
       ? (qualifiedPaintColor(shapeProperties) ?? "none")
@@ -1034,7 +1051,10 @@ function renderShape(shape: Element): RenderedContent | undefined {
   } else if (preset === "line") {
     svg = `<line x1="${transform.x}" y1="${transform.y}" x2="${transform.x + transform.width}" y2="${transform.y + transform.height}" stroke="${stroke}" stroke-width="${Math.max(1, strokeWidth)}"${rotation} />`;
   } else {
-    const radius = preset === "roundRect" ? Math.min(transform.width, transform.height) * 0.08 : 0;
+    const radius =
+      preset === "roundRect"
+        ? (Math.min(transform.width, transform.height) * roundRectAdjustment!) / 100000
+        : 0;
     svg = `<rect x="${transform.x}" y="${transform.y}" width="${transform.width}" height="${transform.height}" rx="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="${Math.max(1, strokeWidth)}"${rotation} />`;
   }
   const value = textContent(shape);
