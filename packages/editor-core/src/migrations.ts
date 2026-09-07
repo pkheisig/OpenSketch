@@ -33,6 +33,9 @@ export { remintProjectIdentity, repairProjectIdentity } from "./identity";
 export type { ProjectIdentityRepair } from "./identity";
 export { PORTABLE_PROJECT_LIMITS } from "./resourceLimits";
 
+const EMBEDDED_IMAGE_DATA_URL =
+  /^data:image\/(?:png|jpe?g|gif|webp|svg\+xml);base64,[A-Za-z0-9+/]+={0,2}$/i;
+
 const SUPPORTED_SCENE_TYPES = new Set([
   "Circle",
   "Ellipse",
@@ -588,15 +591,20 @@ function assertSafeSvgText(value: string, path: string): void {
     /<\s*(?:script|foreignObject|iframe|object|embed)\b|\bon[a-z][\w:-]*\s*=/i.test(
       tagsWithoutQuotedValues
     );
-  const hasExternalAttribute =
-    /(?:^|[\s<])(?:href|xlink:href|src)\s*=\s*["']?\s*(?:https?:|\/\/|javascript:|data:text\/html)/i.test(
-      tags
+  const hasExternalAttribute = [
+    ...tags.matchAll(/(?:^|[\s<])(?:href|xlink:href|src)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi)
+  ].some((match) => {
+    const value = (match[1] ?? match[2] ?? match[3] ?? "").trim();
+    return (
+      /^(?:https?:|\/\/|file:|javascript:|data:)/i.test(value) &&
+      !EMBEDDED_IMAGE_DATA_URL.test(value)
     );
+  });
   if (
     /<!doctype\b|<!entity\b/i.test(value) ||
     hasUnsafeMarkup ||
     hasExternalAttribute ||
-    /url\(\s*["']?(?:https?:|\/\/|javascript:|data:text\/html)/i.test(markupAndStyles)
+    /url\(\s*["']?(?:https?:|\/\/|file:|javascript:|data:)/i.test(markupAndStyles)
   ) {
     throw new Error("The project contains an external or executable scene reference.");
   }

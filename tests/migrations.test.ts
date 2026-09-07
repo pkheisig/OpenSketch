@@ -525,6 +525,23 @@ describe("project migrations", () => {
     ).toThrow("external or executable");
   });
 
+  it("rejects file SVG references during project reload", () => {
+    const fileAttribute =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><image href="file:///tmp/figure.png"/></svg>';
+    const filePaint =
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><rect fill="url(file:///tmp/paint.svg)"/></svg>';
+    for (const svg of [fileAttribute, filePaint]) {
+      expect(() =>
+        migrateProject({
+          ...project,
+          objects: {
+            objects: [{ type: "Image", src: `data:image/svg+xml,${encodeURIComponent(svg)}` }]
+          }
+        })
+      ).toThrow("external or executable");
+    }
+  });
+
   it("accepts SVG text containing attribute-like prose", () => {
     const svg =
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><text>Only=yes, online=off, url(https://example.org/figure.png)</text></svg>';

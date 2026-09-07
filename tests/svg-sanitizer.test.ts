@@ -79,7 +79,7 @@ describe("SVG sanitization", () => {
 
   it("preserves internal references inside embedded SVG image data URLs", () => {
     const nested =
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><defs><linearGradient id="grad"><stop stop-color="#fff"/></linearGradient></defs><rect width="10" height="10" fill="url(#grad)"/></svg>';
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><defs><linearGradient id="grad"><stop stop-color="#fff"/></linearGradient></defs><rect width="10" height="10" fill="url(#grad)"/><image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=" width="1" height="1"/></svg>';
     const embedded = `data:image/svg+xml;base64,${btoa(nested)}`;
     const source = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><image href="${embedded}" width="10" height="10"/></svg>`;
     const clean = sanitizeImportedSvg(source, "nested");
