@@ -168,6 +168,16 @@ describe("bounded PPTX interchange", () => {
       expect.arrayContaining([expect.objectContaining({ code: "picture_svg_layer_fallback" })])
     );
 
+    const nestedRasterFiles = await packageFiles(exported.blob);
+    nestedRasterFiles["ppt/media/scene.svg"] = bytes(
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"><image href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII="/></svg>'
+    );
+    const nestedRasterParsed = parsePptxPackage(zipSync(nestedRasterFiles));
+    expect(nestedRasterParsed.slides[0].svg).toContain("data:image/svg+xml;base64,");
+    expect(nestedRasterParsed.slides[0].diagnostics).not.toEqual(
+      expect.arrayContaining([expect.objectContaining({ code: "picture_svg_layer_fallback" })])
+    );
+
     const unsafeFiles = await packageFiles(exported.blob);
     unsafeFiles["ppt/media/scene.svg"] = bytes(
       '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'

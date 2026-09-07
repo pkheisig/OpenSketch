@@ -62,6 +62,8 @@ const PPTX_SVG_EXTENSION_URI = "{96DAC541-7B7A-43D3-8B79-37D633B846F1}";
 const XML_RELATIONSHIP_NAMESPACE = "http://schemas.openxmlformats.org/package/2006/relationships";
 const XML_CONTENT_TYPES_NAMESPACE = "http://schemas.openxmlformats.org/package/2006/content-types";
 const PPTX_PRESENTATION_NAMESPACE = "http://schemas.openxmlformats.org/presentationml/2006/main";
+const PPTX_EMBEDDED_IMAGE_DATA_URL =
+  /^data:image\/(?:png|jpe?g|gif|webp|svg\+xml);base64,[A-Za-z0-9+/]+={0,2}$/i;
 
 interface ZipEntryMeta {
   name: string;
@@ -808,10 +810,15 @@ function safeEmbeddedSvg(source: string): string | undefined {
     /<\s*(?:script|foreignObject|iframe|object|embed|animate|style)\b|\bon[a-z][\w:-]*\s*=/i.test(
       tagsWithoutQuotedValues
     );
-  const hasExternalAttribute =
-    /(?:^|[\s<])(?:href|xlink:href|src)\s*=\s*["']?\s*(?:https?:|\/\/|file:|javascript:|data:)/i.test(
-      tags
+  const hasExternalAttribute = [
+    ...tags.matchAll(/(?:^|[\s<])(?:href|xlink:href|src)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi)
+  ].some((match) => {
+    const value = (match[1] ?? match[2] ?? match[3] ?? "").trim();
+    return (
+      /^(?:https?:|\/\/|file:|javascript:|data:)/i.test(value) &&
+      !PPTX_EMBEDDED_IMAGE_DATA_URL.test(value)
     );
+  });
   if (
     /<!DOCTYPE\b|<!ENTITY\b/i.test(source) ||
     hasUnsafeMarkup ||
@@ -1066,9 +1073,13 @@ function shapeDecorationDiagnostics(shapeProperties: Element): InterchangeDiagno
   ];
 }
 
-function pictureDecorationDiagnostics(picture: Element, blip: Element): InterchangeDiagnostic[] {
+function pictureDecorationDiagnostics(
+  picture: Element,
+  blip: Element,
+  usingSvgLayer: boolean
+): InterchangeDiagnostic[] {
   const dropped: string[] = [];
-  if (childElements(blip).some((child) => localName(child) !== "extLst")) {
+  if (!usingSvgLayer && childElements(blip).some((child) => localName(child) !== "extLst")) {
     dropped.push("picture adjustments");
   }
   const effect = [
@@ -1219,7 +1230,7 @@ function renderPicture(
     svgDataUrl ??
     (target && bytes ? dataUrlForMediaWithCache(target, bytes, mediaCache) : undefined);
   if (!dataUrl) return undefined;
-  const diagnostics = pictureDecorationDiagnostics(picture, blip);
+  const diagnostics = pictureDecorationDiagnostics(picture, blip, Boolean(svgDataUrl));
   if (svgEmbedId && !svgDataUrl) {
     diagnostics.push({
       code: "picture_svg_layer_fallback",
