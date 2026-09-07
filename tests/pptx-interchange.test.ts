@@ -149,7 +149,36 @@ describe("bounded PPTX interchange", () => {
     expect(parsed.heightEmu).toBe(9 * PPTX_EMU_PER_INCH);
     expect(parsed.slides).toHaveLength(1);
     expect(parsed.slides[0].flattenedCount).toBe(1);
-    expect(parsed.slides[0].svg).toContain("data:image/png;base64,");
+    expect(parsed.slides[0].svg).toContain("data:image/svg+xml;base64,");
+    expect(parsed.slides[0].svg).not.toContain("data:image/png;base64,");
+  });
+
+  it("prefers a safe SVG picture layer and reports a raster fallback when it is unsafe", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1000"><rect width="1000" height="1000"/></svg>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const safeFiles = await packageFiles(exported.blob);
+    const safeParsed = parsePptxPackage(zipSync(safeFiles));
+    expect(safeParsed.slides[0].svg).toContain("data:image/svg+xml;base64,");
+    expect(safeParsed.slides[0].diagnostics).not.toEqual(
+      expect.arrayContaining([expect.objectContaining({ code: "picture_svg_layer_fallback" })])
+    );
+
+    const unsafeFiles = await packageFiles(exported.blob);
+    unsafeFiles["ppt/media/scene.svg"] = bytes(
+      '<svg xmlns="http://www.w3.org/2000/svg"><script>alert(1)</script></svg>'
+    );
+    const unsafeParsed = parsePptxPackage(zipSync(unsafeFiles));
+    expect(unsafeParsed.slides[0].svg).toContain("data:image/png;base64,");
+    expect(unsafeParsed.slides[0].diagnostics).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "picture_svg_layer_fallback", severity: "warning" })
+      ])
+    );
   });
 
   it("passes independent package-structure validation", async () => {
@@ -377,11 +406,9 @@ describe("bounded PPTX interchange", () => {
       "external.pptx",
       "application/vnd.openxmlformats-officedocument.presentationml.presentation"
     );
-    await expect(preparePptxImport(external)).rejects.toMatchObject({
-      code: "pptx_slide_refused",
-      report: expect.objectContaining({
-        status: "unsupported/refused",
-        refusedCount: expect.any(Number),
+    await expect(preparePptxImport(external)).resolves.toMatchObject({
+      fidelity: expect.objectContaining({
+        status: "appearance-snapshot",
         diagnostics: expect.arrayContaining([
           expect.objectContaining({ code: "external_relationship_ignored", severity: "warning" })
         ])
@@ -400,9 +427,8 @@ describe("bounded PPTX interchange", () => {
       "implicit-external.pptx",
       "application/vnd.openxmlformats-officedocument.presentationml.presentation"
     );
-    await expect(preparePptxImport(implicitExternal)).rejects.toMatchObject({
-      code: "pptx_slide_refused",
-      report: expect.objectContaining({
+    await expect(preparePptxImport(implicitExternal)).resolves.toMatchObject({
+      fidelity: expect.objectContaining({
         diagnostics: expect.arrayContaining([
           expect.objectContaining({ code: "external_relationship_ignored" })
         ])
@@ -949,6 +975,31 @@ describe("bounded PPTX interchange", () => {
     expect(parsed.slides[0].diagnostics).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ code: "hyperlink_dropped", severity: "warning" })
+      ])
+    );
+  });
+
+  it("reports theme font references as substitutions", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const files = await packageFiles(exported.blob);
+    files["ppt/slides/slide1.xml"] = bytes(
+      text(files, "ppt/slides/slide1.xml").replace(
+        "</p:spTree>",
+        '<p:sp><p:nvSpPr><p:cNvPr id="3" name="Theme font"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="1000" cy="1000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill></p:spPr><p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r><a:rPr sz="1800"><a:latin typeface="+mn-lt"/></a:rPr><a:t>Theme</a:t></a:r></a:p></p:txBody></p:sp></p:spTree>'
+      )
+    );
+    const parsed = parsePptxPackage(zipSync(files));
+    expect(parsed.slides[0].svg).toContain('font-family="Arial"');
+    expect(parsed.slides[0].svg).not.toContain("+mn-lt");
+    expect(parsed.slides[0].diagnostics).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "font_substitution", severity: "warning" })
       ])
     );
   });

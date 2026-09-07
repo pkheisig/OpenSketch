@@ -1010,14 +1010,16 @@ function textStyle(shape: Element):
   const runProperties = firstDescendant(shape, "rPr");
   const font = firstDescendant(runProperties ?? shape, "latin");
   const explicitTypeface = attr(font, "typeface")?.replace(/["<>]/g, "").trim();
-  const typeface = explicitTypeface || "Arial";
+  const usableTypeface =
+    explicitTypeface && !explicitTypeface.startsWith("+") ? explicitTypeface : undefined;
+  const typeface = usableTypeface || "Arial";
   const points = Number(attr(runProperties, "sz") ?? 1800) / 100;
   if (!Number.isFinite(points) || points <= 0) return undefined;
   return {
     fontFamily: typeface,
     fontSize: Math.max(1, points * (PPTX_EMU_PER_INCH / 72)),
     color: colorFrom(runProperties, "#111827"),
-    fontSubstituted: !explicitTypeface
+    fontSubstituted: !usableTypeface
   };
 }
 
@@ -1082,6 +1084,11 @@ function pictureDecorationDiagnostics(picture: Element, blip: Element): Intercha
       message: `The imported picture retained its qualified image bytes but omitted ${dropped.join(", ")} from the appearance snapshot.`
     }
   ];
+}
+
+function pictureSvgExtensionId(blip: Element): string | undefined {
+  const svgBlip = firstDescendant(blip, "svgBlip");
+  return svgBlip ? (attr(svgBlip, "r:embed") ?? attr(svgBlip, "embed")) : undefined;
 }
 
 function renderShape(shape: Element): RenderedContent | undefined {
@@ -1188,16 +1195,39 @@ function renderPicture(
     return undefined;
   const blip = firstDescendant(picture, "blip");
   if (!blip) return undefined;
+  const svgEmbedId = pictureSvgExtensionId(blip);
+  const svgRelation = svgEmbedId
+    ? relations.find((candidate) => candidate.id === svgEmbedId)
+    : undefined;
+  const svgTarget = svgEmbedId ? relationTarget(relations, svgEmbedId, slidePath) : undefined;
+  const svgBytes = svgTarget ? entries[svgTarget] : undefined;
+  const svgDataUrl =
+    svgRelation?.type.endsWith(PPTX_IMAGE_RELATIONSHIP_SUFFIX) &&
+    svgTarget &&
+    svgBytes &&
+    mimeForPackagePath(svgTarget) === "image/svg+xml"
+      ? dataUrlForMediaWithCache(svgTarget, svgBytes, mediaCache)
+      : undefined;
   const embedId = attr(blip, "r:embed") ?? attr(blip, "embed");
-  if (!embedId) return undefined;
-  const relation = relations.find((candidate) => candidate.id === embedId);
-  if (!relation || !relation.type.endsWith(PPTX_IMAGE_RELATIONSHIP_SUFFIX)) return undefined;
-  const target = relationTarget(relations, embedId, slidePath);
+  if (!embedId && !svgDataUrl) return undefined;
+  const relation = embedId ? relations.find((candidate) => candidate.id === embedId) : undefined;
+  if (embedId && (!relation || !relation.type.endsWith(PPTX_IMAGE_RELATIONSHIP_SUFFIX)))
+    return undefined;
+  const target = embedId ? relationTarget(relations, embedId, slidePath) : undefined;
   const bytes = target ? entries[target] : undefined;
-  if (!target || !bytes) return undefined;
-  const dataUrl = dataUrlForMediaWithCache(target, bytes, mediaCache);
+  const dataUrl =
+    svgDataUrl ??
+    (target && bytes ? dataUrlForMediaWithCache(target, bytes, mediaCache) : undefined);
   if (!dataUrl) return undefined;
   const diagnostics = pictureDecorationDiagnostics(picture, blip);
+  if (svgEmbedId && !svgDataUrl) {
+    diagnostics.push({
+      code: "picture_svg_layer_fallback",
+      severity: "warning",
+      message:
+        "The picture's embedded SVG layer was unavailable or unsafe; the qualified raster fallback was imported instead."
+    });
+  }
   if (hasDroppedInteraction(picture)) {
     diagnostics.push({
       code: "hyperlink_dropped",
