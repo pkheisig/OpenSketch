@@ -802,7 +802,7 @@ function safeEmbeddedSvg(source: string): string | undefined {
     /<!DOCTYPE\b|<!ENTITY\b|<script\b|<foreignObject\b|<iframe\b|<object\b|<embed\b|<animate\b|<style\b/i.test(
       source
     ) ||
-    /\bon[a-z]+\s*=|(?:href|src)\s*=\s*["']\s*(?:https?:|file:|javascript:|data:)|url\s*\(/i.test(
+    /\bon[a-z]+\s*=|(?:href|src)\s*=\s*["']?\s*(?:https?:|\/\/|file:|javascript:|data:)|url\s*\(/i.test(
       source
     )
   ) {
@@ -1049,6 +1049,28 @@ function shapeDecorationDiagnostics(shapeProperties: Element): InterchangeDiagno
   ];
 }
 
+function pictureDecorationDiagnostics(
+  picture: Element,
+  blip: Element
+): InterchangeDiagnostic[] {
+  const dropped: string[] = [];
+  if (childElements(blip).some((child) => localName(child) !== "extLst")) {
+    dropped.push("picture adjustments");
+  }
+  const effect = [firstDescendant(picture, "effectLst"), firstDescendant(picture, "effectDag")].some(
+    (candidate) => candidate !== undefined && childElements(candidate).length > 0
+  );
+  if (effect) dropped.push("picture effects");
+  if (dropped.length === 0) return [];
+  return [
+    {
+      code: "picture_decoration_dropped",
+      severity: "warning",
+      message: `The imported picture retained its qualified image bytes but omitted ${dropped.join(", ")} from the appearance snapshot.`
+    }
+  ];
+}
+
 function renderShape(shape: Element): RenderedContent | undefined {
   const shapeProperties = firstDescendant(shape, "spPr");
   const transform = transformFor(shapeProperties);
@@ -1152,6 +1174,7 @@ function renderPicture(
   )
     return undefined;
   const blip = firstDescendant(picture, "blip");
+  if (!blip) return undefined;
   const embedId = attr(blip, "r:embed") ?? attr(blip, "embed");
   if (!embedId) return undefined;
   const relation = relations.find((candidate) => candidate.id === embedId);
@@ -1163,7 +1186,8 @@ function renderPicture(
   if (!dataUrl) return undefined;
   return {
     mapped: 1,
-    svg: `<image x="${transform.x}" y="${transform.y}" width="${transform.width}" height="${transform.height}" href="${dataUrl}" preserveAspectRatio="none"${transformAttribute(transform)} />`
+    svg: `<image x="${transform.x}" y="${transform.y}" width="${transform.width}" height="${transform.height}" href="${dataUrl}" preserveAspectRatio="none"${transformAttribute(transform)} />`,
+    diagnostics: pictureDecorationDiagnostics(picture, blip)
   };
 }
 

@@ -626,6 +626,71 @@ describe("bounded PPTX interchange", () => {
     );
   });
 
+  it("reports dropped picture adjustments and effects instead of silently losing them", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const files = await packageFiles(exported.blob);
+    files["ppt/slides/slide1.xml"] = bytes(
+      text(files, "ppt/slides/slide1.xml")
+        .replace("</a:blip>", '<a:alphaModFix amt="50000"/></a:blip>')
+        .replace(
+          "</p:spPr>",
+          '<a:effectLst><a:outerShdw blurRad="1000"/></a:effectLst></p:spPr>'
+        )
+    );
+    const decorated = fileLike(
+      zipSync(files),
+      "decorated-picture.pptx",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    );
+    const parsed = parsePptxPackage(await blobBytes(decorated));
+    expect(parsed.slides[0].svg).toContain("<image ");
+    expect(parsed.slides[0].diagnostics).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "picture_decoration_dropped", severity: "warning" })
+      ])
+    );
+  });
+
+  it("refuses unquoted external references in embedded SVG media", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const files = await packageFiles(exported.blob);
+    files["ppt/media/scene.svg"] = bytes(
+      '<svg xmlns="http://www.w3.org/2000/svg"><image href=https://example.org/lost.png /></svg>'
+    );
+    files["ppt/slides/_rels/slide1.xml.rels"] = bytes(
+      text(files, "ppt/slides/_rels/slide1.xml.rels").replace(
+        'Target="../media/scene.png"',
+        'Target="../media/scene.svg"'
+      )
+    );
+    const unsafe = fileLike(
+      zipSync(files),
+      "unquoted-external-svg.pptx",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    );
+    const parsed = parsePptxPackage(await blobBytes(unsafe));
+    expect(parsed.slides[0].svg).not.toContain("data:image/svg+xml");
+    expect(parsed.slides[0].diagnostics).toEqual(
+      expect.arrayContaining([expect.objectContaining({ code: "unsupported_slide_content" })])
+    );
+    await expect(preparePptxImport(unsafe)).rejects.toMatchObject({
+      code: "pptx_slide_refused",
+      slideIndices: [0]
+    });
+  });
+
   it("refuses theme-inherited outlines instead of dropping them silently", async () => {
     const exported = await exportPptx({
       svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
