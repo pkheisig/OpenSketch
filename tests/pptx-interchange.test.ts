@@ -597,6 +597,35 @@ describe("bounded PPTX interchange", () => {
     });
   });
 
+  it("reports dropped shape decorations instead of silently losing them", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const files = await packageFiles(exported.blob);
+    files["ppt/slides/slide1.xml"] = bytes(
+      text(files, "ppt/slides/slide1.xml").replace(
+        "</p:spTree>",
+        '<p:sp><p:nvSpPr><p:cNvPr id="3" name="Decorated line"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="1000" cy="0"/></a:xfrm><a:prstGeom prst="line"><a:avLst/></a:prstGeom><a:noFill/><a:ln><a:solidFill><a:srgbClr val="FF0000"/></a:solidFill><a:prstDash val="dash"/><a:headEnd type="triangle"/><a:tailEnd type="stealth"/></a:ln><a:effectLst><a:outerShdw blurRad="1000"/></a:effectLst></p:spPr></p:sp></p:spTree>'
+      )
+    );
+    const decorated = fileLike(
+      zipSync(files),
+      "decorated-line.pptx",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    );
+    const parsed = parsePptxPackage(await blobBytes(decorated));
+    expect(parsed.slides[0].svg).toContain("<line ");
+    expect(parsed.slides[0].diagnostics).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ code: "shape_decoration_dropped", severity: "warning" })
+      ])
+    );
+  });
+
   it("refuses theme-inherited outlines instead of dropping them silently", async () => {
     const exported = await exportPptx({
       svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',

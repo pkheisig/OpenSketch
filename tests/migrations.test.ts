@@ -525,6 +525,20 @@ describe("project migrations", () => {
     ).not.toThrow();
   });
 
+  it("accepts embedded SVG image data whose base64 resembles an event attribute", () => {
+    const embeddedPng =
+      "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII+ONA=";
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1"><image href="data:image/png;base64,${embeddedPng}" width="1" height="1"/></svg>`;
+    expect(() =>
+      migrateProject({
+        ...project,
+        objects: {
+          objects: [{ type: "Image", src: `data:image/svg+xml,${encodeURIComponent(svg)}` }]
+        }
+      })
+    ).not.toThrow();
+  });
+
   it("rejects malformed canvas and imported-media records", () => {
     expect(() =>
       migrateProject({

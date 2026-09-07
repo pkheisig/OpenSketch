@@ -1026,6 +1026,29 @@ function roundRectAdjustmentValue(geometry: Element): number | undefined {
   return Math.min(50000, Math.max(0, value));
 }
 
+function shapeDecorationDiagnostics(shapeProperties: Element): InterchangeDiagnostic[] {
+  const dropped: string[] = [];
+  const dash = firstDescendant(shapeProperties, "prstDash");
+  if (dash && attr(dash, "val")?.toLowerCase() !== "solid") dropped.push("dash patterns");
+  for (const [name, label] of [
+    ["headEnd", "arrowheads"],
+    ["tailEnd", "arrow tails"]
+  ] as const) {
+    const endpoint = firstDescendant(shapeProperties, name);
+    if (endpoint && attr(endpoint, "type")?.toLowerCase() !== "none") dropped.push(label);
+  }
+  const effectList = firstDescendant(shapeProperties, "effectLst");
+  if (effectList && childElements(effectList).length > 0) dropped.push("shape effects");
+  if (dropped.length === 0) return [];
+  return [
+    {
+      code: "shape_decoration_dropped",
+      severity: "warning",
+      message: `The imported shape retained its qualified geometry but omitted ${dropped.join(", ")} from the appearance snapshot.`
+    }
+  ];
+}
+
 function renderShape(shape: Element): RenderedContent | undefined {
   const shapeProperties = firstDescendant(shape, "spPr");
   const transform = transformFor(shapeProperties);
@@ -1070,7 +1093,7 @@ function renderShape(shape: Element): RenderedContent | undefined {
     svg = `<rect x="${transform.x}" y="${transform.y}" width="${transform.width}" height="${transform.height}" rx="${radius}" fill="${fill}" stroke="${stroke}" stroke-width="${Math.max(1, strokeWidth)}"${rotation} />`;
   }
   const value = textContent(shape);
-  const diagnostics: InterchangeDiagnostic[] = [];
+  const diagnostics = shapeDecorationDiagnostics(shapeProperties);
   if (value) {
     const style = textStyle(shape);
     if (!style) return undefined;

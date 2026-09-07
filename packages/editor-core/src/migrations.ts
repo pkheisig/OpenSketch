@@ -579,6 +579,7 @@ function assertSafeSvgText(value: string, path: string): void {
   const tags = [...value.matchAll(/<(?:(?:[^"'<>]|"[^"]*"|'[^']*'))*>/g)]
     .map(([tag]) => tag)
     .join("\n");
+  const tagsWithoutQuotedValues = tags.replace(/"[^"]*"|'[^']*'/g, '""');
   const styles = [...value.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style\s*>/gi)]
     .map(([, style]) => style)
     .join("\n");
@@ -586,7 +587,7 @@ function assertSafeSvgText(value: string, path: string): void {
   if (
     /<!doctype\b|<!entity\b/i.test(value) ||
     /<\s*(?:script|foreignObject|iframe|object|embed)\b|\bon[a-z][\w:-]*\s*=|(?:href|xlink:href|src)\s*=\s*["']?\s*(?:https?:|\/\/|javascript:|data:text\/html)/i.test(
-      tags
+      tagsWithoutQuotedValues
     ) ||
     /url\(\s*["']?(?:https?:|\/\/|javascript:|data:text\/html)/i.test(markupAndStyles)
   ) {
