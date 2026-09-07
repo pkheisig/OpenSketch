@@ -638,10 +638,7 @@ describe("bounded PPTX interchange", () => {
     files["ppt/slides/slide1.xml"] = bytes(
       text(files, "ppt/slides/slide1.xml")
         .replace("</a:blip>", '<a:alphaModFix amt="50000"/></a:blip>')
-        .replace(
-          "</p:spPr>",
-          '<a:effectLst><a:outerShdw blurRad="1000"/></a:effectLst></p:spPr>'
-        )
+        .replace("</p:spPr>", '<a:effectLst><a:outerShdw blurRad="1000"/></a:effectLst></p:spPr>')
     );
     const decorated = fileLike(
       zipSync(files),
@@ -956,6 +953,36 @@ describe("bounded PPTX interchange", () => {
     );
   });
 
+  it("reports dropped shape and picture hyperlinks and actions", async () => {
+    const exported = await exportPptx({
+      svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+      width: 1000,
+      height: 1000,
+      dpi: 100,
+      rasterFallback: PNG_FALLBACK
+    });
+    const files = await packageFiles(exported.blob);
+    const shape =
+      '<p:sp><p:nvSpPr><p:cNvPr id="3" name="Linked shape"><a:hlinkClick action="ppaction://hlinkshowjump?jump=nextslide"/></p:cNvPr><p:cNvSpPr/><p:nvPr/></p:nvSpPr><p:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="1000" cy="1000"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill></p:spPr></p:sp>';
+    files["ppt/slides/slide1.xml"] = bytes(
+      text(files, "ppt/slides/slide1.xml")
+        .replace(
+          '<p:cNvPr id="2" name="OpenSketch appearance snapshot"/>',
+          '<p:cNvPr id="2" name="OpenSketch appearance snapshot"><a:hlinkClick action="ppaction://hlinkshowjump?jump=nextslide"/></p:cNvPr>'
+        )
+        .replace("</p:spTree>", `${shape}</p:spTree>`)
+    );
+    const linkedContent = fileLike(
+      zipSync(files),
+      "linked-shape-and-picture.pptx",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+    );
+    const parsed = parsePptxPackage(await blobBytes(linkedContent));
+    expect(
+      parsed.slides[0].diagnostics.filter((diagnostic) => diagnostic.code === "hyperlink_dropped")
+    ).toHaveLength(2);
+  });
+
   it("refuses malformed text sizes instead of emitting NaN SVG metrics", async () => {
     const exported = await exportPptx({
       svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
@@ -1023,6 +1050,15 @@ describe("bounded PPTX interchange", () => {
           expect.objectContaining({ code: "font_substitution", severity: "warning" })
         ])
       );
+      vi.mocked(context.drawImage).mockClear();
+      await exportPptx({
+        svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
+        width: 1000,
+        height: 1000,
+        dpi: 100,
+        rasterDpi: 200
+      });
+      expect(context.drawImage).toHaveBeenCalledWith(expect.anything(), 0, 0, 2000, 2000);
       const capped = await exportPptx({
         svg: '<svg xmlns="http://www.w3.org/2000/svg"/>',
         width: 6_000,

@@ -5275,6 +5275,7 @@ export function EditorProvider({
           width: canvasSettings.width,
           height: canvasSettings.height,
           dpi: canvasSettings.dpi,
+          rasterDpi: options.dpi ?? canvasSettings.dpi,
           title,
           description,
           signal: options.signal

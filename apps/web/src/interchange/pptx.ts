@@ -133,6 +133,8 @@ export interface PptxExportOptions {
   width: number;
   height: number;
   dpi: number;
+  /** Requested DPI for the standards-valid PNG fallback; defaults to the slide DPI. */
+  rasterDpi?: number;
   title?: string;
   description?: string;
   signal?: AbortSignal;
@@ -984,13 +986,16 @@ function hasThemeInheritedStroke(shape: Element): boolean {
   return Boolean(style && firstDescendant(style, "lnRef"));
 }
 
-function hasDroppedTextInteraction(shape: Element): boolean {
-  const body = firstDescendant(shape, "txBody");
-  return Boolean(
-    body &&
-    (firstDescendant(body, "hlinkClick") ||
-      firstDescendant(body, "hlinkHover") ||
-      firstDescendant(body, "action"))
+function hasDroppedInteraction(shape: Element): boolean {
+  const interactionRoots = [firstDescendant(shape, "cNvPr"), firstDescendant(shape, "txBody")];
+  return interactionRoots.some(
+    (root) =>
+      Boolean(root) &&
+      Boolean(
+        firstDescendant(root!, "hlinkClick") ||
+        firstDescendant(root!, "hlinkHover") ||
+        firstDescendant(root!, "action")
+      )
   );
 }
 
@@ -1059,17 +1064,15 @@ function shapeDecorationDiagnostics(shapeProperties: Element): InterchangeDiagno
   ];
 }
 
-function pictureDecorationDiagnostics(
-  picture: Element,
-  blip: Element
-): InterchangeDiagnostic[] {
+function pictureDecorationDiagnostics(picture: Element, blip: Element): InterchangeDiagnostic[] {
   const dropped: string[] = [];
   if (childElements(blip).some((child) => localName(child) !== "extLst")) {
     dropped.push("picture adjustments");
   }
-  const effect = [firstDescendant(picture, "effectLst"), firstDescendant(picture, "effectDag")].some(
-    (candidate) => candidate !== undefined && childElements(candidate).length > 0
-  );
+  const effect = [
+    firstDescendant(picture, "effectLst"),
+    firstDescendant(picture, "effectDag")
+  ].some((candidate) => candidate !== undefined && childElements(candidate).length > 0);
   if (effect) dropped.push("picture effects");
   if (dropped.length === 0) return [];
   return [
@@ -1126,6 +1129,14 @@ function renderShape(shape: Element): RenderedContent | undefined {
   }
   const value = textContent(shape);
   const diagnostics = shapeDecorationDiagnostics(shapeProperties);
+  if (hasDroppedInteraction(shape)) {
+    diagnostics.push({
+      code: "hyperlink_dropped",
+      severity: "warning",
+      message:
+        "Shape hyperlinks or actions were not retained in the appearance snapshot and are unavailable after import."
+    });
+  }
   if (value) {
     const style = textStyle(shape);
     if (!style) return undefined;
@@ -1135,14 +1146,6 @@ function renderShape(shape: Element): RenderedContent | undefined {
         severity: "warning",
         message:
           "Slide text did not declare a usable font face in its run properties; Arial was used as an explicit fallback."
-      });
-    }
-    if (hasDroppedTextInteraction(shape)) {
-      diagnostics.push({
-        code: "hyperlink_dropped",
-        severity: "warning",
-        message:
-          "Text hyperlinks or actions were not retained in the appearance snapshot and are unavailable after import."
       });
     }
     diagnostics.push({
@@ -1194,10 +1197,19 @@ function renderPicture(
   if (!target || !bytes) return undefined;
   const dataUrl = dataUrlForMediaWithCache(target, bytes, mediaCache);
   if (!dataUrl) return undefined;
+  const diagnostics = pictureDecorationDiagnostics(picture, blip);
+  if (hasDroppedInteraction(picture)) {
+    diagnostics.push({
+      code: "hyperlink_dropped",
+      severity: "warning",
+      message:
+        "Picture hyperlinks or actions were not retained in the appearance snapshot and are unavailable after import."
+    });
+  }
   return {
     mapped: 1,
     svg: `<image x="${transform.x}" y="${transform.y}" width="${transform.width}" height="${transform.height}" href="${dataUrl}" preserveAspectRatio="none"${transformAttribute(transform)} />`,
-    diagnostics: pictureDecorationDiagnostics(picture, blip)
+    diagnostics
   };
 }
 
@@ -1908,6 +1920,8 @@ async function rasterizeSvgForPptx(
   source: string,
   width: number,
   height: number,
+  canvasDpi: number,
+  rasterDpi: number,
   signal?: AbortSignal
 ): Promise<PptxRasterizationResult> {
   checkAbort(signal);
@@ -1917,8 +1931,14 @@ async function rasterizeSvgForPptx(
       { code: "pptx_rasterization" }
     );
   }
+  if (![canvasDpi, rasterDpi].every((value) => Number.isFinite(value) && value > 0)) {
+    throw new InterchangeImportError("PPTX raster DPI must be finite and positive.", {
+      code: "pptx_geometry"
+    });
+  }
+  const requestedScale = rasterDpi / canvasDpi;
   const scale = Math.min(
-    1,
+    requestedScale,
     PPTX_RASTER_MAX_DIMENSION / width,
     PPTX_RASTER_MAX_DIMENSION / height,
     Math.sqrt(PPTX_RASTER_MAX_PIXELS / (width * height))
@@ -1978,6 +1998,12 @@ async function rasterizeSvgForPptx(
 export async function exportPptx(options: PptxExportOptions): Promise<PptxExportResult> {
   checkAbort(options.signal);
   const extent = physicalExtent(options.width, options.height, options.dpi);
+  const rasterDpi = options.rasterDpi ?? options.dpi;
+  if (!Number.isFinite(rasterDpi) || rasterDpi <= 0) {
+    throw new InterchangeImportError("PPTX raster DPI must be finite and positive.", {
+      code: "pptx_geometry"
+    });
+  }
   const svgBytes = new TextEncoder().encode(options.svg);
   if (svgBytes.byteLength > PPTX_MAX_ENTRY_BYTES) {
     throw new InterchangeImportError("The SVG appearance snapshot exceeds the PPTX entry limit.", {
@@ -1991,7 +2017,14 @@ export async function exportPptx(options: PptxExportOptions): Promise<PptxExport
         height: options.height,
         scale: 1
       }
-    : await rasterizeSvgForPptx(options.svg, options.width, options.height, options.signal);
+    : await rasterizeSvgForPptx(
+        options.svg,
+        options.width,
+        options.height,
+        options.dpi,
+        rasterDpi,
+        options.signal
+      );
   const pngBytes = rasterization.bytes;
   if (!isPng(pngBytes) || pngBytes.byteLength === 0 || pngBytes.byteLength > PPTX_MAX_ENTRY_BYTES) {
     throw new InterchangeImportError(
@@ -2002,14 +2035,15 @@ export async function exportPptx(options: PptxExportOptions): Promise<PptxExport
     );
   }
   const rasterDiagnostics: InterchangeDiagnostic[] = [];
-  if (!options.rasterFallback && rasterization.scale < 1) {
+  const requestedRasterScale = rasterDpi / options.dpi;
+  if (!options.rasterFallback && rasterization.scale < requestedRasterScale) {
     const effectiveWidthDpi = rasterization.width / extent.widthInches;
     const effectiveHeightDpi = rasterization.height / extent.heightInches;
     const effectiveDpi = Math.min(effectiveWidthDpi, effectiveHeightDpi);
     rasterDiagnostics.push({
       code: "pptx_raster_resolution_capped",
       severity: "warning",
-      message: `The requested ${options.dpi} dpi raster fallback was capped to ${effectiveDpi.toFixed(1)} effective dpi at ${rasterization.width} × ${rasterization.height} pixels; the embedded SVG remains available through the DrawingML extension.`
+      message: `The requested ${rasterDpi} dpi raster fallback was capped to ${effectiveDpi.toFixed(1)} effective dpi at ${rasterization.width} × ${rasterization.height} pixels; the embedded SVG remains available through the DrawingML extension.`
     });
   }
   if (!options.rasterFallback) {

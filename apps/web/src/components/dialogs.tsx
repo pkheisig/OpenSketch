@@ -44,10 +44,10 @@ export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => 
     return {
       value,
       label: `${value} DPI`,
-      disabled: Boolean(resource.error)
+      disabled: format !== "pptx" && Boolean(resource.error)
     };
   });
-  const displayedError = exportError || (showDpi ? pngResource.error : "");
+  const displayedError = exportError || (showDpi && format !== "pptx" ? pngResource.error : "");
   return (
     <MotionPresence open={open} exitMs={180}>
       <div className="dialog-backdrop" onMouseDown={onClose}>
@@ -152,7 +152,7 @@ export function ExportDialog({ open, onClose }: { open: boolean; onClose: () => 
           ) : null}
           <button
             className="button primary wide"
-            disabled={exporting || (showDpi && Boolean(pngResource.error))}
+            disabled={exporting || (showDpi && format !== "pptx" && Boolean(pngResource.error))}
             onClick={async () => {
               setExporting(true);
               setExportError("");

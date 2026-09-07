@@ -1938,6 +1938,12 @@ test("prevents PNG export above the browser raster budget", async ({ page }) => 
   await expect(page.getByRole("button", { name: "Export PNG" })).toBeDisabled();
   await expect(page.getByRole("alert")).toContainText("9920 × 14032 pixels");
   await expect(page.getByRole("alert")).toContainText("SVG/PDF");
+
+  await selectUiOption(page, "Format", "PPTX");
+  await expect(page.getByRole("button", { name: "Export PPTX" })).toBeEnabled();
+  await outputDpi.click();
+  await expect(page.getByRole("option", { name: "1200 DPI" })).toBeEnabled();
+  await page.keyboard.press("Escape");
 });
 
 test("offers selection-aware canvas context actions", async ({ page }) => {
