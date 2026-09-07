@@ -17,6 +17,16 @@ const URL_ATTRIBUTES = new Set([
 const EMBEDDED_IMAGE_DATA_URL =
   /^data:(image\/(?:png|jpe?g|gif|webp|svg\+xml));base64,([A-Za-z0-9+/]*={0,2})$/i;
 
+function svgMarkupAndStyles(value: string): string {
+  const tags = [...value.matchAll(/<(?:(?:[^"'<>]|"[^"]*"|'[^']*'))*>/g)]
+    .map(([tag]) => tag)
+    .join("\n");
+  const styles = [...value.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style\s*>/gi)]
+    .map(([, style]) => style)
+    .join("\n");
+  return `${tags}\n${styles}`;
+}
+
 function isSafeEmbeddedImageDataUrl(value: string): boolean {
   if (new TextEncoder().encode(value).byteLength > PORTABLE_PROJECT_LIMITS.maxDataUrlBytes) {
     return false;
@@ -56,7 +66,7 @@ export function sanitizeImportedSvg(
   source: string,
   prefix = `import-${crypto.randomUUID()}`
 ): string {
-  if (EXECUTABLE.test(source) || /<!DOCTYPE|<!ENTITY/i.test(source)) {
+  if (EXECUTABLE.test(svgMarkupAndStyles(source)) || /<!DOCTYPE|<!ENTITY/i.test(source)) {
     throw new Error("The SVG contains external or executable content.");
   }
   const svgNamespacePrefix = source.match(

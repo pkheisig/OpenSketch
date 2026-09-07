@@ -63,6 +63,11 @@ describe("SVG sanitization", () => {
     expect(clean).toContain("url(#local-g)");
   });
 
+  it("accepts executable-looking prose in imported SVG text", () => {
+    const prose = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><text>Learn javascript: the basics; use @import for CSS.</text></svg>`;
+    expect(sanitizeImportedSvg(prose, "prose")).toContain("javascript:");
+  });
+
   it("preserves bounded embedded image data URLs while removing external references", () => {
     const embedded =
       "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=";
