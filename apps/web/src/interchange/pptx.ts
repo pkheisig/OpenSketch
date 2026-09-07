@@ -91,7 +91,7 @@ interface SlideTransform {
 
 interface MediaDataUrlCache {
   byPath: Map<string, string | undefined>;
-  byContentHash: Map<string, string | undefined>;
+  byContentHash: Map<string, { bytes: Uint8Array; dataUrl: string | undefined }>;
 }
 
 export interface PptxRenderedSlide {
@@ -119,6 +119,7 @@ export interface PptxImportOptions {
 }
 
 export interface PptxImportPreparation extends InterchangeImportPreparation {
+  /** The first selected slide's SVG; multi-slide consumers must use `slides`. */
   normalized: Blob;
   normalizedMimeType: "image/svg+xml";
   requiresDecision: boolean;
@@ -808,6 +809,14 @@ function mediaContentHash(bytes: Uint8Array): string {
   return `${bytes.byteLength}:${first >>> 0}:${second >>> 0}`;
 }
 
+function sameBytes(left: Uint8Array, right: Uint8Array): boolean {
+  if (left.byteLength !== right.byteLength) return false;
+  for (let index = 0; index < left.byteLength; index += 1) {
+    if (left[index] !== right[index]) return false;
+  }
+  return true;
+}
+
 function dataUrlForMediaWithCache(
   path: string,
   bytes: Uint8Array,
@@ -820,25 +829,25 @@ function dataUrlForMediaWithCache(
     return undefined;
   }
   const contentKey = `${mimeType}:${mediaContentHash(bytes)}`;
-  if (cache.byContentHash.has(contentKey)) {
-    const cached = cache.byContentHash.get(contentKey);
-    cache.byPath.set(path, cached);
-    return cached;
+  const cached = cache.byContentHash.get(contentKey);
+  if (cached && sameBytes(cached.bytes, bytes)) {
+    cache.byPath.set(path, cached.dataUrl);
+    return cached.dataUrl;
   }
   if (mimeType === "image/svg+xml") {
     const source = safeEmbeddedSvg(decodeUtf8(bytes, `embedded image ${path}`));
     if (!source) {
-      cache.byContentHash.set(contentKey, undefined);
+      if (!cached) cache.byContentHash.set(contentKey, { bytes, dataUrl: undefined });
       cache.byPath.set(path, undefined);
       return undefined;
     }
     const dataUrl = svgDataUrlForPptx(source).replace("data:image/svg+xml", `data:${mimeType}`);
-    cache.byContentHash.set(contentKey, dataUrl);
+    if (!cached) cache.byContentHash.set(contentKey, { bytes, dataUrl });
     cache.byPath.set(path, dataUrl);
     return dataUrl;
   }
   const dataUrl = `data:${mimeType};base64,${bytesToBase64(bytes)}`;
-  cache.byContentHash.set(contentKey, dataUrl);
+  if (!cached) cache.byContentHash.set(contentKey, { bytes, dataUrl });
   cache.byPath.set(path, dataUrl);
   return dataUrl;
 }
@@ -953,6 +962,16 @@ function hasThemeInheritedStroke(shape: Element): boolean {
   return Boolean(style && firstDescendant(style, "lnRef"));
 }
 
+function hasDroppedTextInteraction(shape: Element): boolean {
+  const body = firstDescendant(shape, "txBody");
+  return Boolean(
+    body &&
+    (firstDescendant(body, "hlinkClick") ||
+      firstDescendant(body, "hlinkHover") ||
+      firstDescendant(body, "action"))
+  );
+}
+
 function textStyle(shape: Element):
   | {
       fontFamily: string;
@@ -1029,6 +1048,14 @@ function renderShape(shape: Element): RenderedContent | undefined {
         severity: "warning",
         message:
           "Slide text did not declare a usable font face in its run properties; Arial was used as an explicit fallback."
+      });
+    }
+    if (hasDroppedTextInteraction(shape)) {
+      diagnostics.push({
+        code: "hyperlink_dropped",
+        severity: "warning",
+        message:
+          "Text hyperlinks or actions were not retained in the appearance snapshot and are unavailable after import."
       });
     }
     diagnostics.push({
